@@ -1,9 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage.Params;
 
@@ -11,6 +43,25 @@ namespace VDS.RDF.Parsing
 {
     public static partial class UriLoader
     {
+        /// <summary>
+        /// Attempts to load a RDF Graph from a URI asynchronously
+        /// </summary>
+        /// <param name="g">Graph to assert triple in</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// </para>
+        /// <para>
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// </para>
+        /// <para>
+        /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
+        /// </para>
+        /// </remarks>
         public static void Load(IGraph g, Uri u, IRdfReader parser, GraphCallback callback, Object state)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -52,11 +103,42 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(new GraphHandler(g), u, parser, (_,s) => callback(g, s), state);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF Graph from a URI asynchronously
+        /// </summary>
+        /// <param name="g">Graph to assert triple in</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Will attempt to autodetect the format of the RDF based on the Content-Type header of the HTTP response
+        /// </para>
+        /// </remarks>
         public static void Load(IGraph g, Uri u, GraphCallback callback, Object state)
         {
             UriLoader.Load(g, u, null, callback, state);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="parser">Parser to use</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Uses the supplied parser to attempt parsing regardless of the actual Content Type returned
+        /// </para>
+        /// <para>
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead
+        /// </para>
+        /// <para>
+        /// If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IRdfReader parser, RdfHandlerCallback callback, Object state)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");
@@ -174,11 +256,40 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Attempts to load a RDF Graph from a URI asynchronously using an RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to load from</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to autodetect the RDF format based on the Content-Type header of the HTTP response
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
         {
             UriLoader.Load(handler, u, (IRdfReader)null, callback, state);
         }
 
+
+        /// <summary>
+        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+        /// </para>
+        /// </remarks>
         public static void Load(ITripleStore store, Uri u, IStoreReader parser, TripleStoreCallback callback, Object state)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Triple Store");
@@ -186,11 +297,39 @@ namespace VDS.RDF.Parsing
             UriLoader.Load(new StoreHandler(store), u, parser, (_, s) => callback(store, s), state);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF dataset asynchronously from the given URI into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// </remarks>
         public static void Load(ITripleStore store, Uri u, TripleStoreCallback callback, Object state)
         {
             UriLoader.Load(store, u, null, callback, state);
         }
 
+        /// <summary>
+        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="parser">Parser to use to parse the RDF dataset</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// If the <paramref name="parser"/> parameter is set to null then this method attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// <para>
+        /// If you know ahead of time the Content Type you can explicitly pass in the parser to use.
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, Uri u, IStoreReader parser, RdfHandlerCallback callback, Object state)
         {
             if (u == null) throw new RdfParseException("Cannot read a RDF dataset from a null URI");
@@ -322,6 +461,18 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Attempts to load a RDF dataset asynchronously from the given URI using a RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="u">URI to attempt to get a RDF dataset from</param>
+        /// <param name="callback">Callback to invoke when the operation completes</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Attempts to select the relevant Store Parser based on the Content Type header returned in the HTTP Response.
+        /// </para>
+        /// </remarks>
         public static void LoadDataset(IRdfHandler handler, Uri u, RdfHandlerCallback callback, Object state)
         {
             UriLoader.Load(handler, u, (IStoreReader)null, callback, state);

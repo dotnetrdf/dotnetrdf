@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// The Strict Algebra Optimiser is an optimiser that takes our BGPs which typically contain placed FILTERs and BINDs and transforms them into their strict algebra form using Filter() and Extend()
     /// </summary>
-    public class StrictAlgebraOptimiser : IAlgebraOptimiser
+    public class StrictAlgebraOptimiser 
+        : IAlgebraOptimiser
     {
         /// <summary>
         /// Optimises BGPs in the Algebra to use Filter() and Extend() rather than the embedded FILTER and BIND
@@ -155,6 +156,11 @@ namespace VDS.RDF.Query.Optimisation
             return true;
         }
 
+        /// <summary>
+        /// Returns that the optimiser is applicable to all updates
+        /// </summary>
+        /// <param name="cmds">Updates</param>
+        /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;

@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Base Class for XPath Unary String functions
     /// </summary>
-    public abstract class BaseUnaryXPathStringFunction : ISparqlExpression
+    public abstract class BaseUnaryXPathStringFunction
+        : ISparqlExpression
     {
         /// <summary>
         /// Expression the function applies over
@@ -170,13 +171,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
     /// Abstract Base class for XPath Binary String functions
     /// </summary>
-    public abstract class BaseBinaryXPathStringFunction : ISparqlExpression
+    public abstract class BaseBinaryXPathStringFunction
+        : ISparqlExpression
     {
         /// <summary>
         /// Expression the function applies over
@@ -370,6 +377,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
@@ -380,7 +392,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:string-length() function
     /// </summary>
-    public class XPathStringLengthFunction : BaseUnaryXPathStringFunction
+    public class XPathStringLengthFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath String Length function
@@ -419,6 +432,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathStringLengthFunction(transformer.Transform(this._expr));
@@ -428,7 +446,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:encode-for-uri() function
     /// </summary>
-    public class XPathEncodeForUriFunction : BaseUnaryXPathStringFunction
+    public class XPathEncodeForUriFunction 
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Encode for URI function
@@ -467,6 +486,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathEncodeForUriFunction(transformer.Transform(this._expr));
@@ -476,7 +500,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:escape-html-uri() function
     /// </summary>
-    public class XPathEscapeHtmlUriFunction : BaseUnaryXPathStringFunction
+    public class XPathEscapeHtmlUriFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Escape HTML for URI function
@@ -516,6 +541,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathEscapeHtmlUriFunction(transformer.Transform(this._expr));
@@ -525,7 +555,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:lower-case() function
     /// </summary>
-    public class XPathLowerCaseFunction : BaseUnaryXPathStringFunction
+    public class XPathLowerCaseFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Lower Case function
@@ -564,6 +595,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathLowerCaseFunction(transformer.Transform(this._expr));
@@ -573,7 +609,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:upper-case() function
     /// </summary>
-    public class XPathUpperCaseFunction : BaseUnaryXPathStringFunction
+    public class XPathUpperCaseFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Upper Case function
@@ -612,6 +649,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathUpperCaseFunction(transformer.Transform(this._expr));
@@ -621,7 +663,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:normalize-space() function
     /// </summary>
-    public class XPathNormalizeSpaceFunction : BaseUnaryXPathStringFunction
+    public class XPathNormalizeSpaceFunction
+        : BaseUnaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Normalize Space function
@@ -664,6 +707,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathNormalizeSpaceFunction(transformer.Transform(this._expr));
@@ -679,7 +727,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:normalize-unicode() function
     /// </summary>
-    public class XPathNormalizeUnicodeFunction : BaseBinaryXPathStringFunction
+    public class XPathNormalizeUnicodeFunction 
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Normalize Unicode function
@@ -776,6 +825,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._arg != null)
@@ -794,7 +848,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:contains() function
     /// </summary>
-    public class XPathContainsFunction : BaseBinaryXPathStringFunction
+    public class XPathContainsFunction
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Contains function
@@ -849,6 +904,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathContainsFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -858,7 +918,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:ends-with() function
     /// </summary>
-    public class XPathEndsWithFunction : BaseBinaryXPathStringFunction
+    public class XPathEndsWithFunction
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Ends With function
@@ -921,6 +982,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathEndsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -930,7 +996,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:starts-with() function
     /// </summary>
-    public class XPathStartsWithFunction : BaseBinaryXPathStringFunction
+    public class XPathStartsWithFunction
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Starts With function
@@ -993,6 +1060,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathStartsWithFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -1002,7 +1074,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:substring-before() function
     /// </summary>
-    public class XPathSubstringBeforeFunction : BaseBinaryXPathStringFunction
+    public class XPathSubstringBeforeFunction
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Substring Before function
@@ -1061,6 +1134,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathSubstringBeforeFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -1070,7 +1148,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:substring-after() function
     /// </summary>
-    public class XPathSubstringAfterFunction : BaseBinaryXPathStringFunction
+    public class XPathSubstringAfterFunction
+        : BaseBinaryXPathStringFunction
     {
         /// <summary>
         /// Creates a new XPath Substring After function
@@ -1129,6 +1208,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathSubstringAfterFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -1138,7 +1222,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:compare() function
     /// </summary>
-    public class XPathCompareFunction : BaseBinaryXPathStringFunction, ISparqlNumericExpression
+    public class XPathCompareFunction 
+        : BaseBinaryXPathStringFunction, ISparqlNumericExpression
     {
         /// <summary>
         /// Creates a new XPath Compare function
@@ -1255,6 +1340,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathCompareFunction(transformer.Transform(this._expr), transformer.Transform(this._arg));
@@ -1266,7 +1356,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:substring() function
     /// </summary>
-    public class XPathSubstringFunction : ISparqlExpression
+    public class XPathSubstringFunction
+        : ISparqlExpression
     {
         private ISparqlExpression _expr, _start, _length;
 
@@ -1492,6 +1583,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._length != null)
@@ -1508,7 +1604,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:replace() function
     /// </summary>
-    public class XPathReplaceFunction : ISparqlExpression
+    public class XPathReplaceFunction 
+        : ISparqlExpression
     {
         private String _find = null;
         private String _replace = null;
@@ -1854,6 +1951,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             if (this._optionExpr != null)
@@ -1870,7 +1972,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:concat() function
     /// </summary>
-    public class XPathConcatFunction : ISparqlExpression
+    public class XPathConcatFunction 
+        : ISparqlExpression
     {
         private List<ISparqlExpression> _exprs = new List<ISparqlExpression>();
 
@@ -1997,6 +2100,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathConcatFunction(this._exprs.Select(e => transformer.Transform(e)));
@@ -2006,7 +2114,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:string-join() aggregate
     /// </summary>
-    public class XPathStringJoinFunction : BaseAggregate
+    public class XPathStringJoinFunction
+        : BaseAggregate
     {
         /// <summary>
         /// Separator Expression
@@ -2186,7 +2295,5 @@ namespace VDS.RDF.Query.Expressions.Functions
                 return XPathFunctionFactory.XPathFunctionsNamespace + XPathFunctionFactory.StringJoin;
             }
         }
-
-        
     }
 }

@@ -506,6 +506,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serilization Information</param>
+        /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("s", this._subject);
@@ -517,11 +522,19 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Gets the schema for XML serialization
+        /// </summary>
+        /// <returns></returns>
         public XmlSchema GetSchema()
         {
             return null;
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
             reader.Read();
@@ -533,6 +546,10 @@ namespace VDS.RDF
             this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
             this._subject.SerializeNode(writer);

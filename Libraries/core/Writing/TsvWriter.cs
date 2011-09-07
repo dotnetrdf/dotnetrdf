@@ -55,6 +55,9 @@ namespace VDS.RDF.Writing
     {
         private TsvFormatter _formatter = new TsvFormatter();
 
+        /// <summary>
+        /// Gets the type of the Triple Formatter used by this writer
+        /// </summary>
         public Type TripleFormatterType
         {
             get
@@ -148,6 +151,9 @@ namespace VDS.RDF.Writing
         private int _threads = 4;
         private TsvFormatter _formatter = new TsvFormatter();
 
+        /// <summary>
+        /// Gets the type of the Triple Formatter used by this writer
+        /// </summary>
         public Type TripleFormatterType
         {
             get

@@ -70,11 +70,19 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected BaseVariableNode()
             : base(null, NodeType.Variable) { }
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Variable)
         {
@@ -357,17 +365,30 @@ namespace VDS.RDF
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("name", this._var);
         }
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             this._var = reader.ReadElementContentAsString();
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteValue(this._var);
@@ -393,10 +414,18 @@ namespace VDS.RDF
         protected internal VariableNode(IGraph g, String varname)
             : base(g, varname) { }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected VariableNode()
             : base() { }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected VariableNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif

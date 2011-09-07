@@ -72,14 +72,18 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
+    /// Has full support for Stardog Transactions, connection is in auto-commit mode by default i.e. all write operations (Delete/Save/Update) will create and use a dedicated transaction for their operation, if the operation fails the transaction will automatically be rolled back.  You can manage Transactions using the <see cref="StardogConnector.Begin">Begin()</see>, <see cref="StardogConnector.Commit">Commit()</see> and <see cref="StardogConnector.Rollback">Rollback()</see> methods.
     /// </para>
     /// <para>
-    /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  In the case where you are not managed transactions yourself each thread will attempt to auto-commit using different transactions which may fail.
+    /// The connector maintains a single transaction which is shared across all threads since Stardog is currently provides only MRSW (Multiple Reader Single Writer) concurrency and does not permit multiple transactions to occur simultaneously.  
     /// </para>
     /// </remarks>
-    public class StardogConnector : IQueryableGenericIOManager, IConfigurationSerializable
+    public class StardogConnector 
+        : IQueryableGenericIOManager, IConfigurationSerializable
     {
+        /// <summary>
+        /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
+        /// </summary>
         public const String AnonymousUser = "anonymous";
 
         private String _baseUri;
@@ -195,6 +199,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
@@ -299,15 +310,23 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         /// <remarks>
-        /// If an empty/null Uri is specified then the Default Graph of the Store will be loaded
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
         /// </remarks>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
+        /// </remarks>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
@@ -330,6 +349,14 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// If an empty/null URI is specified then the Default Graph of the Store will be loaded
+        /// </remarks>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try

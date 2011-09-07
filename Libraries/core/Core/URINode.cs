@@ -105,11 +105,19 @@ namespace VDS.RDF
         protected internal BaseUriNode(Uri uri)
             : this(null, uri) { }
 
+        /// <summary>
+        /// Deserialization Only Constructor
+        /// </summary>
         protected BaseUriNode()
             : base(null, NodeType.Uri) { }
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected BaseUriNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Uri)
         {
@@ -397,6 +405,11 @@ namespace VDS.RDF
 
         #region ISerializable Members
 
+        /// <summary>
+        /// Gets the data for serialization
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("uri", this._uri.ToString());
@@ -406,6 +419,10 @@ namespace VDS.RDF
 
         #region IXmlSerializable Members
 
+        /// <summary>
+        /// Reads the data for XML deserialization
+        /// </summary>
+        /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
             this._uri = new Uri(reader.ReadElementContentAsString());
@@ -413,6 +430,10 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+        /// <summary>
+        /// Writes the data for XML serialization
+        /// </summary>
+        /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
             writer.WriteString(this._uri.ToString());
@@ -451,11 +472,19 @@ namespace VDS.RDF
         protected internal UriNode(IGraph g, String qname)
             : base(g, qname) { }
 
+        /// <summary>
+        /// Deserilization Only Constructor
+        /// </summary>
         protected UriNode()
             : base() { }
 
 #if !SILVERLIGHT
 
+        /// <summary>
+        /// Deserialization Constructor
+        /// </summary>
+        /// <param name="info">Serialization Information</param>
+        /// <param name="context">Streaming Context</param>
         protected UriNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 

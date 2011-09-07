@@ -399,6 +399,17 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Copies a Node using another Node Factory
+        /// </summary>
+        /// <param name="original">Node to copy</param>
+        /// <param name="target">Factory to copy into</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done
+        /// </para>
+        /// </remarks>
         public static INode CopyNode(INode original, INodeFactory target)
         {
             if (ReferenceEquals(original.Graph, target)) return original;

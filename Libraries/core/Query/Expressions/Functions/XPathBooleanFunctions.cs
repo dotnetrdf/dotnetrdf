@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath boolean() function
     /// </summary>
-    public class XPathBooleanFunction : BaseUnaryExpression
+    public class XPathBooleanFunction
+        : BaseUnaryExpression
     {
         /// <summary>
         /// Creates a new XPath Boolean Function
@@ -94,6 +95,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathBooleanFunction(transformer.Transform(this._expr));

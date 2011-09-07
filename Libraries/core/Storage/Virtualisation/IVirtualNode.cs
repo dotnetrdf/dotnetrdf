@@ -70,7 +70,7 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
-        /// Gets the materialised value
+        /// Gets the materialised value forcing it to be materialised if necessary
         /// </summary>
         INode MaterialisedValue
         {

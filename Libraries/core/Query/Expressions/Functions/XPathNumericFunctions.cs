@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:abs() function
     /// </summary>
-    public class XPathAbsoluteFunction : BaseUnaryArithmeticExpression
+    public class XPathAbsoluteFunction
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new XPath Absolute function
@@ -121,6 +122,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathAbsoluteFunction(transformer.Transform(this._expr));
@@ -130,7 +136,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:ceiling() function
     /// </summary>
-    public class XPathCeilingFunction : BaseUnaryArithmeticExpression
+    public class XPathCeilingFunction 
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new XPath Ceiling function
@@ -210,6 +217,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathCeilingFunction(transformer.Transform(this._expr));
@@ -219,7 +231,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:floor() function
     /// </summary>
-    public class XPathFloorFunction : BaseUnaryArithmeticExpression
+    public class XPathFloorFunction
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new XPath Floor function
@@ -300,6 +313,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathFloorFunction(transformer.Transform(this._expr));
@@ -309,7 +327,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:round() function
     /// </summary>
-    public class XPathRoundFunction : BaseUnaryArithmeticExpression
+    public class XPathRoundFunction
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new XPath Round function
@@ -398,6 +417,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathRoundFunction(transformer.Transform(this._expr));
@@ -409,7 +433,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath fn:round-half-to-even() function
     /// </summary>
-    public class XPathRoundHalfToEvenFunction : BaseUnaryArithmeticExpression
+    public class XPathRoundHalfToEvenFunction
+        : BaseUnaryArithmeticExpression
     {
         private ISparqlExpression _precisionExpr;
 
@@ -509,6 +534,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathRoundHalfToEvenFunction(transformer.Transform(this._expr));

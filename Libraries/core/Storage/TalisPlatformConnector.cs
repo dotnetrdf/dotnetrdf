@@ -137,7 +137,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Graph describing the given resource from the Store
         /// </summary>
-        /// <param name="resourceUri">Uri of Resource to Describe</param>
+        /// <param name="resourceUri">URI of Resource to Describe</param>
         /// <param name="g">Graph to load the description into</param>
         public void Describe(IGraph g, String resourceUri)
         {
@@ -147,6 +147,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Graph describing the given resource from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="resourceUri">URI of Resource to Describe</param>
         public void Describe(IRdfHandler handler, String resourceUri)
         {
             if (!resourceUri.Equals(String.Empty))
@@ -168,6 +173,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Graph describing the given resource from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="resourceUri">URI of Resource to Describe</param>
         public void Describe(IRdfHandler handler, Uri resourceUri)
         {
             if (!resourceUri.Equals(String.Empty))
@@ -181,7 +191,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="privateGraphID">ID of the Private Graph</param>
-        /// <param name="resourceUri">Uri of the Resource to Describe</param>
+        /// <param name="resourceUri">URI of the Resource to Describe</param>
         public void Describe(IGraph g, String privateGraphID, String resourceUri)
         {
             if (!resourceUri.Equals(String.Empty))
@@ -190,6 +200,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Graph describing the given resource from a particular Private Graph in the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="privateGraphID">ID of the Private Graph</param>
+        /// <param name="resourceUri">URI of the Resource to Describe</param>
         public void Describe(IRdfHandler handler, String privateGraphID, String resourceUri)
         {
             if (!resourceUri.Equals(String.Empty))
@@ -212,6 +228,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Graph describing the given resource from a particular Private Graph in the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="privateGraphID">ID of the Private Graph</param>
+        /// <param name="resourceUri">URI of the Resource to Describe</param>
         public void Describe(IRdfHandler handler, String privateGraphID, Uri resourceUri)
         {
             if (resourceUri != null)
@@ -581,32 +603,54 @@ namespace VDS.RDF.Storage
         #region Query
 
         /// <summary>
-        /// Makes a Sparql query against the Talis Store Metabox using the Store Sparql Service
+        /// Makes a SPARQL query against the Talis Store Metabox using the Store SPARQL Service
         /// </summary>
-        /// <param name="query">Sparql Query</param>
+        /// <param name="query">SPARQL Query</param>
         /// <returns>Either a Result Set or a Graph depending on the type of Sparql Query</returns>
-        /// <remarks>The Sparql Query will be parsed locally by the internal Sparql Parser to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform</remarks>
+        /// <remarks>
+        /// The SPARQL Query will be parsed locally by the libararies <see cref="SparqlQueryParser">SparqlQueryParser</see> to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform
+        /// </remarks>
         public Object Query(String query)
         {
             return this.QueryInternal(query, "services/sparql");
         }
 
+        /// <summary>
+        /// Makes a SPARQL query against the Talis Store Metabox using the Store SPARQL Service processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <remarks>
+        /// The SPARQL Query will be parsed locally by the libraries <see cref="SparqlQueryParser">SparqlQueryParser</see> to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform
+        /// </remarks>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
         {
             this.QueryInternal(rdfHandler, resultsHandler, query, "services/sparql");
         }
 
         /// <summary>
-        /// Makes a Sparql query against the Talis Store Metabox and Private Graphs using the Store Multi-Sparql Service
+        /// Makes a SPARQL query against the Talis Store Metabox and Private Graphs using the Store Multi-SPARQL Service
         /// </summary>
-        /// <param name="query">Sparql Query</param>
+        /// <param name="query">SPARQL Query</param>
         /// <returns>Either a Result Set or a Graph depending on the type of Sparql Query</returns>
-        /// <remarks>The Sparql Query will be parsed locally by the internal Sparql Parser to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform</remarks>
+        /// <remarks>
+        /// The SPARQL Query will be parsed locally by the libraries <see cref="SparqlQueryParser">SparqlQueryParser</see> to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform
+        /// </remarks>
         public Object QueryAll(String query)
         {
             return this.QueryInternal(query, "services/multisparql");
         }
 
+        /// <summary>
+        /// Makes a SPARQL query against the Talis Store Metabox and Private Graphs using the Store SPARQL Service processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <remarks>
+        /// The SPARQL Query will be parsed locally by the libraries <see cref="SparqlQueryParser">SparqlQueryParser</see> to ensure that it is a valid Query, this adds some extra overhead but potentially saves the overhead of submitting a malformed Sparql query via a <see cref="HttpWebRequest">HttpWebRequest</see> to the Talis Platform
+        /// </remarks>
         public void QueryAll(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
         {
             this.QueryInternal(rdfHandler, resultsHandler, query, "services/multisparql");
@@ -615,7 +659,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Internal implementation of querying the Store 
         /// </summary>
-        /// <param name="query">Sparql Query</param>
+        /// <param name="query">SPARQL Query</param>
         /// <param name="servicePath">Service to Query</param>
         /// <returns></returns>
         private Object QueryInternal(String query, String servicePath)
@@ -817,12 +861,12 @@ namespace VDS.RDF.Storage
         #region Generic IO Manager Implementation
 
         /// <summary>
-        /// Loads a Graph which is the Description of the given Uri from the Metabox of the Talis Store
+        /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         /// <remarks>
-        /// If there are no Triples with the given Uri as the Subject then no Triples will be loaded into the given Graph
+        /// If there are no Triples with the given URI as the Subject then no Triples will be loaded into the given Graph
         /// <br /><br />
         /// Equivalent to calling the <see cref="TalisPlatformConnector.Describe">Describe()</see> method
         /// </remarks>
@@ -831,18 +875,28 @@ namespace VDS.RDF.Storage
             this.LoadGraph(g, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// If there are no Triples with the given URI as the Subject then no Triples will be loaded into the given Graph
+        /// <br /><br />
+        /// Equivalent to calling the <see cref="TalisPlatformConnector.Describe">Describe()</see> method
+        /// </remarks>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
         }
 
         /// <summary>
-        /// Loads a Graph which is the Description of the given Uri from the Metabox of the Talis Store
+        /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to load</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
         /// <remarks>
-        /// If there are no Triples with the given Uri as the Subject then no Triples will be loaded into the given Graph
+        /// If there are no Triples with the given URI as the Subject then no Triples will be loaded into the given Graph
         /// <br /><br />
         /// Equivalent to calling the <see cref="TalisPlatformConnector.Describe">Describe()</see> method
         /// </remarks>
@@ -852,6 +906,16 @@ namespace VDS.RDF.Storage
             this.Describe(g, graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <remarks>
+        /// If there are no Triples with the given URI as the Subject then no Triples will be loaded into the given Graph
+        /// <br /><br />
+        /// Equivalent to calling the <see cref="TalisPlatformConnector.Describe">Describe()</see> method
+        /// </remarks>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty)) throw new TalisException("Cannot load the Description of a null/empty URI");

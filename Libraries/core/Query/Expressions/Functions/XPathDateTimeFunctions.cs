@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Base Class for functions which are Unary functions applied to Date Time objects in the XPath function library
     /// </summary>
-    public abstract class BaseUnaryXPathDateTimeFunction : BaseUnaryArithmeticExpression
+    public abstract class BaseUnaryXPathDateTimeFunction 
+        : BaseUnaryArithmeticExpression
     {
         /// <summary>
         /// Creates a new Unary XPath Date Time function
@@ -131,7 +132,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath year-from-dateTime() function
     /// </summary>
-    public class XPathYearFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathYearFromDateTimeFunction
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Year from Date Time function
@@ -170,6 +172,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathYearFromDateTimeFunction(transformer.Transform(this._expr));
@@ -179,7 +186,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath month-from-dateTime() function
     /// </summary>
-    public class XPathMonthFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathMonthFromDateTimeFunction 
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Month from Date Time function
@@ -218,6 +226,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathMonthFromDateTimeFunction(transformer.Transform(this._expr));
@@ -227,7 +240,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath day-from-dateTime() function
     /// </summary>
-    public class XPathDayFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathDayFromDateTimeFunction 
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Day from Date Time function
@@ -266,6 +280,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathDayFromDateTimeFunction(transformer.Transform(this._expr));
@@ -275,7 +294,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath hours-from-dateTime() function
     /// </summary>
-    public class XPathHoursFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathHoursFromDateTimeFunction 
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Hours from Date Time function
@@ -314,6 +334,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathHoursFromDateTimeFunction(transformer.Transform(this._expr));
@@ -323,7 +348,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath minutes-from-dateTime() function
     /// </summary>
-    public class XPathMinutesFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathMinutesFromDateTimeFunction 
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Minutes from Date Time function
@@ -362,7 +388,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
-
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathMinutesFromDateTimeFunction(transformer.Transform(this._expr));
@@ -372,7 +402,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath seconds-from-dateTime() function
     /// </summary>
-    public class XPathSecondsFromDateTimeFunction : BaseUnaryXPathDateTimeFunction
+    public class XPathSecondsFromDateTimeFunction
+        : BaseUnaryXPathDateTimeFunction
     {
         /// <summary>
         /// Creates a new XPath Seconds from Date Time function
@@ -414,6 +445,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathSecondsFromDateTimeFunction(transformer.Transform(this._expr));
@@ -423,7 +459,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Represents the XPath timezone-from-dateTime() function
     /// </summary>
-    public class XPathTimezoneFromDateTimeFunction : ISparqlExpression
+    public class XPathTimezoneFromDateTimeFunction
+        : ISparqlExpression
     {
         /// <summary>
         /// Expression that the Function applies to
@@ -574,10 +611,14 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public virtual ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathTimezoneFromDateTimeFunction(transformer.Transform(this._expr));
         }
-
     }
 }

@@ -95,7 +95,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Nodes belong to a Graph
+        /// Gets the Graph the Node belongs to
         /// </summary>
         IGraph Graph
         {
@@ -103,7 +103,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// The Graph a Node belongs to may have a Uri
+        /// Gets/Sets the Graph URI associated with a Node
         /// </summary>
         Uri GraphUri
         {
@@ -148,7 +148,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for URI Nodes
     /// </summary>
-    public interface IUriNode : INode
+    public interface IUriNode
+        : INode
     {
         /// <summary>
         /// Gets the URI the Node represents
@@ -162,7 +163,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Blank Nodes
     /// </summary>
-    public interface IBlankNode : INode
+    public interface IBlankNode 
+        : INode
     {
         /// <summary>
         /// Gets the Internal ID of the Blank Node
@@ -176,7 +178,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Literal Nodes
     /// </summary>
-    public interface ILiteralNode : INode
+    public interface ILiteralNode
+        : INode
     {
         /// <summary>
         /// Gets the Lexical Value of the Literal
@@ -206,7 +209,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Graph Literal Nodes
     /// </summary>
-    public interface IGraphLiteralNode : INode
+    public interface IGraphLiteralNode
+        : INode
     {
         /// <summary>
         /// Gets the Sub-graph the Graph Literal represents
@@ -220,7 +224,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Variable Nodes
     /// </summary>
-    public interface IVariableNode : INode
+    public interface IVariableNode
+        : INode
     {
         /// <summary>
         /// Gets the Variable Name

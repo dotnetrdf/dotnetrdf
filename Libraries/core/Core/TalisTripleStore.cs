@@ -103,6 +103,16 @@ namespace VDS.RDF
             return this._talis.Query(query);
         }
 
+        /// <summary>
+        /// Executes a Sparql Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This method invokes the <see cref="TalisPlatformConnector.Query">Query</see> method of the <see cref="TalisPlatformConnector">TalisPlatformConnector</see> which invokes the SPARQL service of the Talis Store specified by the connector.  This means that only the Metabox of the Talis Store is queried and therefore any queries containing FROM and FROM NAMED clauses may fail since the Talis API states that these clauses are not supported.
+        /// </remarks>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
             this._talis.Query(rdfHandler, resultsHandler, query);

@@ -45,7 +45,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Abstract Expression class used as the base class for implementation of XPath Casting Function expressions
     /// </summary>
-    public abstract class BaseXPathCast : ISparqlExpression 
+    public abstract class BaseXPathCast
+        : ISparqlExpression 
     {
         /// <summary>
         /// Expression to be Cast by the Cast Function
@@ -129,13 +130,19 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public abstract ISparqlExpression Transform(IExpressionTransformer transformer);
     }
 
     /// <summary>
     /// Class representing an XPath Boolean Cast Function
     /// </summary>
-    public class XPathBooleanCast : BaseXPathCast
+    public class XPathBooleanCast
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Boolean Cast Function Expression
@@ -297,6 +304,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathBooleanCast(transformer.Transform(this._expr));
@@ -306,7 +318,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath Double Cast Function
     /// </summary>
-    public class XPathDoubleCast : BaseXPathCast
+    public class XPathDoubleCast 
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Double Cast Function Expression
@@ -409,6 +422,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathDoubleCast(transformer.Transform(this._expr));
@@ -418,7 +436,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath Float Cast Function
     /// </summary>
-    public class XPathFloatCast : BaseXPathCast
+    public class XPathFloatCast
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Float Cast Function Expression
@@ -515,6 +534,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathFloatCast(transformer.Transform(this._expr));
@@ -524,7 +548,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath Decimal Cast Function
     /// </summary>
-    public class XPathDecimalCast : BaseXPathCast
+    public class XPathDecimalCast 
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Decimal Cast Function Expression
@@ -627,6 +652,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathDecimalCast(transformer.Transform(this._expr));
@@ -636,7 +666,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath Integer Cast Function
     /// </summary>
-    public class XPathIntegerCast : BaseXPathCast
+    public class XPathIntegerCast 
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Integer Cast Function Expression
@@ -739,6 +770,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathIntegerCast(transformer.Transform(this._expr));
@@ -748,7 +784,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath Date Time Cast Function
     /// </summary>
-    public class XPathDateTimeCast : BaseXPathCast
+    public class XPathDateTimeCast
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath Date Time Cast Function Expression
@@ -845,6 +882,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathDateTimeCast(transformer.Transform(this._expr));
@@ -854,7 +896,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// <summary>
     /// Class representing an XPath String Cast Function
     /// </summary>
-    public class XPathStringCast : BaseXPathCast
+    public class XPathStringCast 
+        : BaseXPathCast
     {
         /// <summary>
         /// Creates a new XPath String Cast Function Expression
@@ -918,6 +961,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new XPathStringCast(transformer.Transform(this._expr));

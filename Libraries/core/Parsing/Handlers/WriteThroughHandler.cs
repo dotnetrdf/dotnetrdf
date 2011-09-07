@@ -46,7 +46,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which writes the handled Triples out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="ITripleFormatter">ITripleFormatter</see>
     /// </summary>
-    public class WriteThroughHandler : BaseRdfHandler
+    public class WriteThroughHandler
+        : BaseRdfHandler
     {
         private Type _formatterType;
         private ITripleFormatter _formatter;
@@ -237,7 +238,11 @@ namespace VDS.RDF.Parsing.Handlers
         }
     }
 
-    public class ResultWriteThroughHandler : BaseResultsHandler
+    /// <summary>
+    /// A Results Handler which writes the handled Results out to a <see cref="TextWriter">TextWriter</see> using a provided <see cref="IResultFormatter">IResultFormatter</see>
+    /// </summary>
+    public class ResultWriteThroughHandler 
+        : BaseResultsHandler
     {
         private Type _formatterType;
         private IResultFormatter _formatter;
@@ -300,6 +305,9 @@ namespace VDS.RDF.Parsing.Handlers
         public ResultWriteThroughHandler(Type formatterType, TextWriter writer)
             : this(formatterType, writer, true) { }
 
+        /// <summary>
+        /// Starts writing results
+        /// </summary>
         protected override void StartResultsInternal()
         {
             if (this._closeOnEnd && this._writer == null) throw new RdfParseException("Cannot use this ResultWriteThroughHandler as an Results Handler for parsing as you set closeOnEnd to true and you have already used this Handler and so the provided TextWriter was closed");
@@ -350,6 +358,10 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Ends the writing of results closing the <see cref="TextWriter">TextWriter</see> depending on the option set when this instance was instantiated
+        /// </summary>
+        /// <param name="ok"></param>
         protected override void EndResultsInternal(bool ok)
         {
             if (this._formatter is IResultSetFormatter)
@@ -366,6 +378,10 @@ namespace VDS.RDF.Parsing.Handlers
             this._headerWritten = false;
         }
 
+        /// <summary>
+        /// Writes a Boolean Result to the output
+        /// </summary>
+        /// <param name="result">Boolean Result</param>
         protected override void HandleBooleanResultInternal(bool result)
         {
             if (this._currentType != SparqlResultsType.Unknown) throw new RdfParseException("Cannot handle a Boolean Result when the handler has already handled other types of results");
@@ -379,6 +395,11 @@ namespace VDS.RDF.Parsing.Handlers
             this._writer.WriteLine(this._formatter.FormatBooleanResult(result));
         }
 
+        /// <summary>
+        /// Writes a Variable declaration to the output
+        /// </summary>
+        /// <param name="var">Variable Name</param>
+        /// <returns></returns>
         protected override bool HandleVariableInternal(string var)
         {
             if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handler a Variable when the handler has already handled a boolean result");
@@ -387,6 +408,11 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        /// <summary>
+        /// Writes a Result to the output
+        /// </summary>
+        /// <param name="result">SPARQL Result</param>
+        /// <returns></returns>
         protected override bool HandleResultInternal(SparqlResult result)
         {
             if (this._currentType == SparqlResultsType.Boolean) throw new RdfParseException("Cannot handle a Result when the handler has already handled a boolean result");

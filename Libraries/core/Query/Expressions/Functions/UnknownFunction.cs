@@ -48,7 +48,8 @@ namespace VDS.RDF.Query.Expressions.Functions
     /// This exists as a placeholder class so users may choose to parse Unknown Functions and have them appear in queries even if they cannot be evaluated.  This is useful when you wish to parse a query locally to check syntactic validity before passing it to an external query processor which may understand how to evaluate the function.  Using this placeholder also allows queries containing Unknown Functions to still be formatted properly.
     /// </para>
     /// </remarks>
-    public class UnknownFunction : ISparqlExpression
+    public class UnknownFunction
+        : ISparqlExpression
     {
         private Uri _funcUri;
         private List<ISparqlExpression> _args = new List<ISparqlExpression>();
@@ -176,6 +177,11 @@ namespace VDS.RDF.Query.Expressions.Functions
             return output.ToString();
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new UnknownFunction(this._funcUri, this._args.Select(e => transformer.Transform(e)));

@@ -722,6 +722,12 @@ namespace VDS.RDF
             return query.Evaluate(this);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query)
         {
             //Parse the Query
@@ -732,6 +738,12 @@ namespace VDS.RDF
             this.ExecuteQuery(rdfHandler, resultsHandler, q);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.Evaluate(rdfHandler, resultsHandler, this);
