@@ -432,7 +432,7 @@ namespace VDS.RDF.Query.Expressions
         public BooleanExpressionTerm(bool value)
         {
             this._value = value;
-            this._node = new LiteralNode(null, this._value.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+            this._node = new LiteralNode(null, this._value.ToString().ToLower(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
         }
 
         /// <summary>

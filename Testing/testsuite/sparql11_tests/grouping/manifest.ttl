@@ -14,6 +14,8 @@
     :group03
     :group04
     :group05
+    :group06
+    :group07
     ) .
 
 
@@ -66,3 +68,15 @@
            qt:data   <group-data-2.ttl> ] ;
     mf:result  <group05.srx>
     .
+
+:group06 rdf:type  mf:NegativeSyntaxTest11;
+    mf:name    "Group-6" ;
+    rdfs:comment "projection of ungrouped variable";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <group06.rq> .
+
+:group07 rdf:type  mf:NegativeSyntaxTest11;
+    mf:name    "Group-7" ;
+    rdfs:comment "projection of ungrouped variable, more complex example than Group-6";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action <group07.rq> .

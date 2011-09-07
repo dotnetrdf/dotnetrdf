@@ -70,15 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
             bool condition;
-            try
-            {
-                condition = this._condition.EffectiveBooleanValue(context, bindingID);
-            }
-            catch (RdfQueryException)
-            {
-                //Condition expression errored so we'll go down the ELSE branch
-                condition = false;
-            }
+            condition = this._condition.EffectiveBooleanValue(context, bindingID);
 
             //Condition evaluated without error so we go to the appropriate branch of the IF ELSE
             //depending on whether it evaluated to true or false

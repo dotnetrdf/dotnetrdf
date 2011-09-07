@@ -19,6 +19,8 @@
     mf:name    "jsonres01 - JSON Result Format" ;
     rdfs:comment "SELECT * WHERE { ?S ?P ?O }";
     dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
     mf:action
          [ qt:query  <jsonres01.rq> ;
            qt:data   <data.ttl> ] ;
@@ -28,7 +30,8 @@
 :jsonres02 rdf:type mf:QueryEvaluationTest ;
     mf:name    "jsonres02 - JSON Result Format" ;
     rdfs:comment "SELECT with OPTIONAL (i.e. not all vars bound in all results)";
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
     mf:action
          [ qt:query  <jsonres02.rq> ;
            qt:data   <data.ttl> ] ;
@@ -38,7 +41,8 @@
 :jsonres03 rdf:type mf:QueryEvaluationTest ;
     mf:name    "jsonres03 - JSON Result Format" ;
     rdfs:comment "ASK - answer: true";
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
     mf:action
          [ qt:query  <jsonres03.rq> ;
            qt:data   <data.ttl> ] ;
@@ -48,7 +52,8 @@
 :jsonres04 rdf:type mf:QueryEvaluationTest ;
     mf:name    "jsonres04 - JSON Result Format" ;
     rdfs:comment "ASK - answer: false";
-    dawgt:approval dawgt:NotClassified ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-08-16#resolution_2>; 
     mf:action
          [ qt:query  <jsonres04.rq> ;
            qt:data   <data.ttl> ] ;

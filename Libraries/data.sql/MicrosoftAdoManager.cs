@@ -205,6 +205,10 @@ namespace VDS.RDF.Storage
             return this._optimisers;
         }
 
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
         public override void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             //Firstly need to ensure our object factory has been referenced
@@ -236,6 +240,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the string representation of the connection
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             if (this._user != null)

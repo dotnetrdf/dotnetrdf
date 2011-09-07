@@ -19,6 +19,10 @@
     :subquery08
     :subquery09
     :subquery10
+    :subquery11
+    :subquery12
+    :subquery13
+    :subquery14
    ) .
 
 
@@ -123,3 +127,41 @@
     mf:result  <sq10.srx>
     .     
                 
+  :subquery11 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq11 - Subquery limit per resource" ;
+    rdfs:comment "This query limits results per number of orders, rather than by number of rows";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <sq11.rq> ;
+           qt:data   <sq11.ttl> ] ;
+    mf:result  <sq11.srx>
+    .     
+
+  :subquery12 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq12 - Subquery in CONSTRUCT with built-ins" ;
+    rdfs:comment "This query constructs full names from first and last names";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <sq12.rq> ;
+           qt:data   <sq12.ttl> ] ;
+    mf:result  <sq12_out.ttl>
+    .     
+
+  :subquery13 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq13 - Subqueries don't inject bindings" ;
+    rdfs:comment "The result of this subquery is a Kartesian product of all orders, rather than paris of orders sharing products, since subqueries are evaluated independent from bindings from outside the subquery";
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <sq11.rq> ;
+           qt:data   <sq11.ttl> ] ;
+    mf:result  <sq11.srx>
+    . 
+
+  :subquery14 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "sq14 - limit by resource" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <sq14.rq> ;
+           qt:data   <sq14.ttl> ] ;
+    mf:result  <sq14-out.ttl>
+    . 
