@@ -46,25 +46,30 @@ Requirements
 To use this library you will need .Net Framework 3.5 SP1 and you may need to install/have available the 
 following third party libraries:
 - MySQL Connector.Net 6.0.3 which can be obtained from http://dev.mysql.com/downloads/connector/net/
-- Virtuoso ADO.Net Provider which can be obtained from http://docs.openlinksw.com/virtuoso/virtclientref.html
-- JSON.Net 3.5r7 which can be obtained from http://www.codeplex.com/Json
+- JSON.Net 4.0r2 which can be obtained from http://www.codeplex.com/Json
 - HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
 
-The relevant DLLs (HtmlAgilityPack.dll, MySql.Data.dll, Newtonsoft.Json.dll and OpenLink.Data.Virtuoso.dll) are included with
+The relevant DLLs (HtmlAgilityPack.dll, MySql.Data.dll and Newtonsoft.Json.Net35.dll) are included with
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
+
 If you have downloaded the full source code for the Library you can add a Project Reference to your Solution
 instead of referencing the DLL directly.  If you do this Visual Studio should automatically copy the 
 relevant DLLs into your output directory if they are required.
+
+If you obtained the library via NuGet then the dependencies will automatically have been included for you
 
 Known Issues
 ------------
 
 We are aware of the following issues with the library.  Please remember that this is an Beta release and so
-there are things that may be buggy still and the API is subject to change at our discretion.
+there are things that may be buggy still and the API is subject to change at our discretion or based upon
+user feedback.
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
+- The SPARQL CSV/TSV results formats which we support do not currently match the official recommendations, this
+  will be addressed in the next release
 
 Storage
 - Old SQL Stores are officially deprecated, a new SQL store is available as a separate library dotNetRDF.Data.Sql.dll
@@ -105,56 +110,9 @@ Release History
 
 20/5/2011 - Release of Version 0.4.1 Beta (Build 0.4.1.15669)
 
-?/8/2011 - Release of Version 0.5.0 Beta (Build 0.5.0.?)
- 
+10/9/2011 - Release of Version 0.5.0 Beta (Build 0.5.0.?)
+
 Acknowledgements
 ----------------
 
-Uses code (3rd Party Libraries) from the following sources:
--MySQL Connector.Net from MySQL AB http://www.mysql.org
--JSON.Net from James Newton-King http://james.newtonking.com
--HtmlAgilityPack from Simon Mourier http://www.codeplex.com/htmlagilitypack
-
-Uses code (embedded in the library) from the following sources:
--HashLib http://hashlib.codeplex.com/
-
-Thanks to the following people who have helped in the development process or whose suggestions have led to 
-improvements in the code:
-- Eamon Nerbonne for the BlockingStreamReader fix (http://eamon.nerbonne.org/) which is much nicer than the
-  alternative of pre-caching in a MemoryStream
-- Hugh Williams and Jacqui Hand of OpenLink Software (http://www.openlinksw.com) for helping me resolve some
-  issues with their ADO.Net provider including promptly providing me with a fixed version once the issue
-  I'd identified had been traced to it's cause and extending my evaluation license so I could build the code
-- Toby Inkster (http://tobyinkster.co.uk/) for providing me with some TriX extensibility stylesheets that I 
-  could use to test my TriX parser
-- Marek Safar from the Mono project for fixing the bug in gmcs I identified which meant I couldn't compile
-  a Mono build of dotNetRDF
-- Andy Seaborne and Steve Harris for excellent answers to various SPARQL and ARQ function library related questions 
-  which have contributed to resolving various issues in the Leviathan engine and adding the ARQ function library support
-- Peter Kahle for his efforts in producing a Windows Phone 7 version of the library
-- Paul Hermans for various suggestions related to the improvement of the Toolkit
-- The SPARQL Working Group for useful feedback and responses to my comments
-- Graham Moore for excellent input on needed changes in the API to better support 3rd party developers
-  plugging their stuff into the API
-- Laurent Lefort for feedback and suggestions regarding rdfEditor
-- Kendall Clark and Mike Grove for giving my early access to Stardog
-- Ben Lavender for help getting Dydra support up and running
-- The following people who have contributed bug reports, patches, ideas etc on the mailing lists:
- - Tana Isaac
- - Koos Strydoom
- - Alexander Sidorov
- - Michael Friis
- - Bob DuCharme
- - Alexander Zapirov
- - Sergey Novikov
- - Jeen Broekstra
- - Robert P DeCarlo
- - Clive Emberey
- - Anton Andreev
- - Steve Fraleigh
- - Felipe Santos
- - Bob Morris
- - Daniel Bittencourt
- - Rodrigo de Castro Reis
- - Rafael Dias Araujo
- - Jim Rhyne
+Acknowledgements can be found in the Acknowledgments.txt file

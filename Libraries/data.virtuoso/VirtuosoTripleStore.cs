@@ -39,6 +39,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using OpenLink.Data.Virtuoso;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
 
@@ -49,17 +51,18 @@ namespace VDS.RDF
     /// </summary>
     /// <remarks>
     /// <para>
-    /// No data is automatically loaded into this class when it is instantiated, it acts as a queryable view onto the given Virtuoso Store specified by the given <see cref="VirutosoManager">VirtuosoManager</see>
+    /// No data is automatically loaded into this class when it is instantiated, it acts as a queryable view onto the given Virtuoso Store specified by the given <see cref="VirtuosoManager">VirtuosoManager</see>
     /// </para>
     /// <para>
     /// Currently Graphs added/removed from this Class do not affect the Virtuoso Store
     /// </para>
     /// <para>
-    /// If you wish to alter the Store you must manipulate the Store directly using the <see cref="VirtuosoManager">VirtuosoManager</see> or by issuing SPARQL Update commands using the <see cref="VirtuosoTripleStore.ExecuteUpdate">ExecuteUpdate()</see> method.
+    /// If you wish to alter the Store you must manipulate the Store directly using the <see cref="VirtuosoManager">VirtuosoManager</see> or by issuing SPARQL Update commands using the <see cref="VirtuosoTripleStore.ExecuteUpdate()">ExecuteUpdate()</see> method.
     /// </para>
     /// </remarks>
-    [Obsolete("The NativeTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
-    public class VirtuosoTripleStore : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore
+    [Obsolete("The VirtuosoTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
+    public class VirtuosoTripleStore 
+        : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore
     {
         private VirtuosoManager _manager;
 
@@ -119,6 +122,28 @@ namespace VDS.RDF
             return this._manager.Query(query);
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the Triple Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query as unparsed String</param>
+        /// <returns>
+        /// A <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> if the query is a normal SPARQL Query or a null if the query is a SPARQL Update command.
+        /// </returns>
+        /// <remarks>
+        /// <para>
+        /// This method invokes the <see cref="VirtuosoManager.Query">Query</see> method of the <see cref="VirtuosoManager">VirtuosoManager</see> which executes the SPARQL query against the store using SPASQL (Sparql+SQL).
+        /// </para>
+        /// <para>
+        /// You can use this method to issue SPARQL Update commands against the Store if the user account you are using to connect has the relevant privilege <strong>SPARQL_UPDATE</strong> granted to them, for new development we recommend you use the <see cref="VirtuosoTripleStore.ExecuteUpdate()">ExecuteUpdate()</see> method instead.
+        /// </para>
+        /// <para>
+        /// <strong>Warning:</strong> In rare cases we have been able to crash Virtuoso by issuing malformed Sparql Update commands to it, this appears to be an issue with Virtuoso.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="RdfQueryException">Thrown if the query is malformed or the results cannot be processed</exception>
+        /// <exception cref="VirtuosoException">Thrown if accessing Virtuoso fails in some way</exception>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
             this._manager.Query(rdfHandler, resultsHandler, query);

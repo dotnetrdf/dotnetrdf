@@ -58,6 +58,7 @@ Changed
  - Fixed a bug where NegotiateByFileExtension module could cause special ASP.Net extensions like .axd to not be respected properly
  - Fixed a bug where attempts to use synchronous HTTP on Silverlight/WP7 would hang applications
  - Fixed a bug where temporary namespace generation for properties would fail in PrettyRdfXmlWriter
+ - Fixed a bug where IF evaluation deviated from latest SPARQL 1.1 Query working drafts
 - Query
  - Further refactored the Leviathan engine to make it even easier to extend
   - The majority of methods on the engine can now be overridden

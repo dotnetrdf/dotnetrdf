@@ -403,7 +403,12 @@ namespace VDS.RDF.Query.Expressions
                         case SparqlNumericType.Integer:
                         case SparqlNumericType.Decimal:
                             //For Division Integers are treated as decimals
-                            return a.DecimalValue(context, bindingID) / b.DecimalValue(context, bindingID);
+                            decimal d = a.DecimalValue(context, bindingID) / b.DecimalValue(context, bindingID);
+                            if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
+                            {
+                                return Convert.ToInt64(d);
+                            }
+                            return d;
                         case SparqlNumericType.Float:
                             return a.FloatValue(context, bindingID) / b.FloatValue(context, bindingID);
                         case SparqlNumericType.Double:

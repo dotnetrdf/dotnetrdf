@@ -108,6 +108,11 @@ namespace VDS.RDF.Storage
 
         #region Abstract Implementation
 
+        /// <summary>
+        /// Method that will be called by the constructor to allow the derived class to instantiate the connection
+        /// </summary>
+        /// <param name="parameters">Parameters</param>
+        /// <returns></returns>
         protected abstract TConn CreateConnection(Dictionary<String, String> parameters);
 
         /// <summary>
@@ -127,12 +132,12 @@ namespace VDS.RDF.Storage
         /// Gets an Adaptor for converting results from SQL queries on the underlying Database into a DataTable
         /// </summary>
         /// <returns></returns>
-        protected internal abstract TAdaptor GetAdaptor();
+        protected internal abstract TAdaptor GetAdapter();
 
         /// <summary>
         /// Ensures that the Database is setup and returns the Version of the Database Schema
         /// </summary>
-        /// <param name="connection">Database Connection</param>
+        /// <param name="parameters">Parameters for the connection</param>
         /// <returns>The Version of the Database Schema</returns>
         protected abstract int EnsureSetup(Dictionary<String,String> parameters);
 
@@ -264,6 +269,7 @@ namespace VDS.RDF.Storage
         /// <ol>
         ///     <li>Future proofing so later versions of the library can add additional stored procedures to the database and the code can decide which are available to it</li>
         ///     <li>Detecting when users try to use the class to connect to legacy databases created with the old Schema which are not compatible with this code</li>
+        /// </ol>
         /// </para>
         /// </remarks>
         public int CheckVersion()
@@ -343,11 +349,23 @@ namespace VDS.RDF.Storage
             return (String)cmd.ExecuteScalar();
         }
 
+        /// <summary>
+        /// Clears the Store
+        /// </summary>
         public void ClearStore()
         {
             this.ClearStore(false);
         }
 
+        /// <summary>
+        /// Clears the Store
+        /// </summary>
+        /// <param name="fullClear">Whether to perform a full clear</param>
+        /// <remarks>
+        /// <para>
+        /// A Full Clear will remove all existing Node Value to ID mappings whereas a normal clear leaves those in place.  If the data you intend to insert into the store after clearing it is similar to the data in the store currently then you should <strong>not</strong> perform a full clear as leaving the Node Value to ID mappings will make future imports faster.
+        /// </para>
+        /// </remarks>
         public void ClearStore(bool fullClear)
         {
             TCommand cmd = this.GetCommand();
@@ -602,6 +620,14 @@ namespace VDS.RDF.Storage
             cmd.Parameters[prefix + "ID"].Value = id;
         }
 
+        /// <summary>
+        /// Decodes a Node from the constituent values in the database
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="type">Node Type</param>
+        /// <param name="value">Node Value</param>
+        /// <param name="meta">Node Meta</param>
+        /// <returns></returns>
         internal INode DecodeNode(IGraph g, byte type, String value, String meta)
         {
             return this.DecodeNode((INodeFactory)g, type, value, meta);
@@ -610,7 +636,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Decodes a Node from the constituent values in the database
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="factory">Node Factory</param>
         /// <param name="type">Node Type</param>
         /// <param name="value">Node Value</param>
         /// <param name="meta">Node Meta</param>
@@ -645,7 +671,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Decodes a Virtual Node from ID and type
         /// </summary>
-        /// <param name="g">Graph</param>
+        /// <param name="factory">Node Factory</param>
         /// <param name="type">Node Type</param>
         /// <param name="id">Node ID</param>
         /// <returns></returns>
@@ -763,6 +789,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             if (handler == null) throw new RdfStorageException("Cannot load a Graph using a null RDF Handler");
@@ -848,6 +879,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">Graph URI</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -1162,6 +1198,11 @@ namespace VDS.RDF.Storage
 
         #region IQueryableGenericIOManager Members
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
             Graph g = new Graph();
@@ -1178,6 +1219,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             //Parse the Query
@@ -1203,8 +1250,16 @@ namespace VDS.RDF.Storage
             this._queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
 
+        /// <summary>
+        /// Gets the <see cref="ISparqlDataset">ISparqlDataset</see> implementation that should be used within the Query methods of this instance
+        /// </summary>
+        /// <returns></returns>
         protected abstract ISparqlDataset GetDataset();
 
+        /// <summary>
+        /// Gets the <see cref="IAlgebraOptimiser">IAlgebraOptimiser</see> instances that should be used to optimise queries made via the Query methods of this instance
+        /// </summary>
+        /// <returns></returns>
         protected virtual IEnumerable<IAlgebraOptimiser> GetOptimisers()
         {
             return Enumerable.Empty<IAlgebraOptimiser>();
@@ -1214,6 +1269,10 @@ namespace VDS.RDF.Storage
 
         #region IUpdateableGenericIOManager Members
 
+        /// <summary>
+        /// Performa a SPARQL Update on the Store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
         public void Update(String sparqlUpdate)
         {
             //Parse the Updates
@@ -1565,16 +1624,31 @@ namespace VDS.RDF.Storage
 
         #region IConfigurationSerializable Members
 
+        /// <summary>
+        /// Serializes this connection to a Configuration Graph
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
         public abstract void SerializeConfiguration(ConfigurationSerializationContext context);
 
         #endregion
 
+        /// <summary>
+        /// Gets the string representation of this connection
+        /// </summary>
+        /// <returns></returns>
         public abstract override string ToString();
     }
 
+    /// <summary>
+    /// Abstract Base implementation of the ADO Store for stores that are accessed using the System.Data.SqlClient API
+    /// </summary>
     public abstract class BaseAdoSqlClientStore
         : BaseAdoStore<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>
     {
+        /// <summary>
+        /// Creates a new SQL Client based ADO Store
+        /// </summary>
+        /// <param name="parameters">Connection Parameters</param>
         public BaseAdoSqlClientStore(Dictionary<String,String> parameters)
             : base(parameters) { }
     }

@@ -158,7 +158,7 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Quad Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to Load</param>
+        /// <param name="graphUri">URI of the Graph to Load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             if (g.IsEmpty && graphUri != null)
@@ -168,6 +168,11 @@ namespace VDS.RDF.Storage
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Quad Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to Load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
@@ -220,7 +225,7 @@ namespace VDS.RDF.Storage
         /// Loads a Graph from the Quad Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
-        /// <param name="graphUri">Uri of the Graph to Load</param>
+        /// <param name="graphUri">URI of the Graph to Load</param>
         public void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -233,6 +238,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Quad Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to Load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
@@ -289,7 +299,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Decodes an Object into an appropriate Node
         /// </summary>
-        /// <param name="g">Graph to create the Node in</param>
+        /// <param name="factory">Node Factory to use to create Node</param>
         /// <param name="n">Object to convert</param>
         /// <returns></returns>
         private INode LoadNode(INodeFactory factory, Object n)
@@ -585,7 +595,7 @@ namespace VDS.RDF.Storage
         /// This method will first attempt to parse the query into a <see cref="SparqlQuery">SparqlQuery</see> object.  If this succeeds then the Query Type can be used to determine how to handle the response.
         /// </para>
         /// <para>
-        /// If the parsing fails then the query will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support.  These include things like aggregate functions but also SPARQL Update statements.
+        /// If the parsing fails then the query will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support.  These include things like aggregate functions but also SPARUL updates (the non-standard precusor to SPARQL 1.1 Update).
         /// </para>
         /// <para>
         /// If you use an aggregate query which has an Integer, Decimal or Double type result then you will receive a <see cref="SparqlResultSet">SparqlResultSet</see> containing a single <see cref="SparqlResult">SparqlResult</see> which has contains a binding for a variable named <strong>Result</strong> which contains a <see cref="LiteralNode">LiteralNode</see> typed to the appropriate datatype.
@@ -608,6 +618,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Executes a SPARQL Query on the native Quad Store processing the results with an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query to execute</param>
+        /// <remarks>
+        /// <para>
+        /// This method will first attempt to parse the query into a <see cref="SparqlQuery">SparqlQuery</see> object.  If this succeeds then the Query Type can be used to determine how to handle the response.
+        /// </para>
+        /// <para>
+        /// If the parsing fails then the query will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL non-standardised extensions which the library does not support.  These include things like aggregate functions but also SPARUL updates (the non-standard precusor to SPARQL 1.1 Update).
+        /// </para>
+        /// <para>
+        /// If you use an aggregate query which has an Integer, Decimal or Double type result then you will receive a <see cref="SparqlResultSet">SparqlResultSet</see> containing a single <see cref="SparqlResult">SparqlResult</see> which has contains a binding for a variable named <strong>Result</strong> which contains a <see cref="LiteralNode">LiteralNode</see> typed to the appropriate datatype.
+        /// </para>
+        /// </remarks>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs in making the query</exception>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
             try
@@ -941,10 +969,10 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdate">SPARQL Update to execute</param>
         /// <remarks>
         /// <para>
-        /// This method will first attempt to parse the updat einto a <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> object.  If this succeeds then each command in the command set will be issued to Virtuoso.
+        /// This method will first attempt to parse the update into a <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> object.  If this succeeds then each command in the command set will be issued to Virtuoso.
         /// </para>
         /// <para>
-        /// If the parsing fails then the update will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support.
+        /// If the parsing fails then the update will be executed anyway using Virtuoso's SPASQL (SPARQL + SQL) syntax.  Parsing can fail because Virtuoso supports various SPARQL extensions which the library does not support and primarily supports SPARUL updates (the precusor to SPARQL 1.1 Update).
         /// </para>
         /// </remarks>
         /// <exception cref="SparqlUpdateException">Thrown if an error occurs in making the update</exception>

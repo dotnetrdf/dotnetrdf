@@ -1,4 +1,39 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -11,16 +46,36 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Implementation of the ADO Store against Microsoft SQL Server
+    /// </summary>
     public class MicrosoftAdoManager 
         : BaseAdoSqlClientStore
     {
         private String _connString;
+        /// <summary>
+        /// Connection Parameters
+        /// </summary>
         protected String _server, _db, _user, _password;
+        /// <summary>
+        /// Connection Encryption setting
+        /// </summary>
         protected bool _encrypt = false;
         private IEnumerable<IAlgebraOptimiser> _optimisers;
 
+        /// <summary>
+        /// Default Server if none is explicitly specified (localhost)
+        /// </summary>
         public const String DefaultServer = "localhost";
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
         public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt)
             : base(CreateConnectionParameters(server, db, user, password, encrypt))
         {
@@ -32,24 +87,82 @@ namespace VDS.RDF.Storage
             this._encrypt = encrypt;
         }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
         public MicrosoftAdoManager(String server, String db, String user, String password)
             : this(server, db, user, password, false) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server
+        /// </remarks>
         public MicrosoftAdoManager(String db, String user, String password, bool encrypt)
             : this(DefaultServer, db, user, password, encrypt) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server
+        /// </remarks>
         public MicrosoftAdoManager(String db, String user, String password)
             : this(db, user, password, false) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <remarks>
+        /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
         public MicrosoftAdoManager(String server, String db, bool encrypt)
             : this(server, db, null, null, encrypt) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <remarks>
+        /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
         public MicrosoftAdoManager(String server, String db)
             : this(server, db, false) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
         public MicrosoftAdoManager(String db, bool encrypt)
             : this(DefaultServer, db, encrypt) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
         public MicrosoftAdoManager(String db)
             : this(db, false) { }
 
@@ -83,16 +196,30 @@ namespace VDS.RDF.Storage
             return ps;
         }
 
+        /// <summary>
+        /// Creates the connection to Microsoft SQL Server
+        /// </summary>
+        /// <param name="parameters">Connection Parameters</param>
+        /// <returns></returns>
         protected override SqlConnection CreateConnection(Dictionary<string,string> parameters)
         {
             return new SqlConnection(CreateConnectionString(parameters["server"], parameters["db"], parameters["user"], parameters["password"], Boolean.Parse(parameters["encrypt"])));
         }
 
+        /// <summary>
+        /// Gets a SQL Command that can be executed against Microsoft SQL Server
+        /// </summary>
+        /// <returns></returns>
         protected internal override SqlCommand GetCommand()
         {
             return new SqlCommand();
         }
 
+        /// <summary>
+        /// Gets a SQL Parameter that can be attached to an SQL Command
+        /// </summary>
+        /// <param name="name">Parameter Name</param>
+        /// <returns></returns>
         protected internal override SqlParameter GetParameter(string name)
         {
             SqlParameter param = new SqlParameter();
@@ -100,11 +227,20 @@ namespace VDS.RDF.Storage
             return param;
         }
 
-        protected internal override SqlDataAdapter GetAdaptor()
+        /// <summary>
+        /// Gets a SQL Data Adapter
+        /// </summary>
+        /// <returns></returns>
+        protected internal override SqlDataAdapter GetAdapter()
         {
             return new SqlDataAdapter();
         }
 
+        /// <summary>
+        /// Checks whether a schema upgrade is required and applies it if necessary
+        /// </summary>
+        /// <param name="currVersion">Current Version</param>
+        /// <returns></returns>
         protected override int CheckForUpgrades(int currVersion)
         {
             switch (currVersion)
@@ -117,6 +253,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Ensures that the database is setup appropriately
+        /// </summary>
+        /// <param name="parameters">Connection Parameters</param>
+        /// <returns></returns>
         protected override int EnsureSetup(Dictionary<String,String> parameters)
         {
             AdoSchemaDefinition definition = AdoSchemaHelper.DefaultSchema;
@@ -191,11 +332,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a <see cref="ISparqlDataset">ISparqlDataset</see> instance for use in queries and updates
+        /// </summary>
+        /// <returns></returns>
         protected override ISparqlDataset GetDataset()
         {
             return new MicrosoftAdoDataset(this);
         }
 
+        /// <summary>
+        /// Gets the optimisers for use with queries
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<IAlgebraOptimiser> GetOptimisers()
         {
             if (this._optimisers == null)

@@ -511,6 +511,12 @@ namespace VDS.RDF.Parsing.Tokens
                 }
             } while (ok);
 
+            //May need to do backtracking if there was no whitespace between query keyword and {
+            if (!this._queryKeywordSeen && this.Value.EndsWith("{"))
+            {
+                this.Backtrack();
+            }
+
             //Work out what type of Token we've got
             String value = this.Value;
             switch (this.LastTokenType)

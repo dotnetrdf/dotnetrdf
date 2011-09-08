@@ -386,7 +386,8 @@ namespace VDS.RDF.Query.Expressions
             }
             catch (RdfQueryException)
             {
-                return false;
+                //return false;
+                return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
             }
         }
 

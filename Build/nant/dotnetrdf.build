@@ -16,11 +16,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="041" />
+  <property name="dotnetrdf.version" value="050" />
   <property name="dotnetrdf.releasetype" value="beta" />
-  <property name="dotnetrdf.toolsversion" value="020" />
+  <property name="dotnetrdf.toolsversion" value="030" />
   <property name="dotnetrdf.toolsreleasetype" value="alpha" />
-  <property name="dotnetrdf.nuspecversion" value="0.4.1" />
+  <property name="dotnetrdf.nuspecversion" value="0.5.0" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -91,7 +91,7 @@
     <property name="dotnetrdf.nocompile" value="true" />
   </target>
 
-  <target name="compile" description="Compile the dotNetRDF Solution and the Silverlight, Lite and Mono Builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono">
+  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono,compile-windowsphone,compile-clientprofile">
 
   </target>
 
@@ -197,6 +197,28 @@
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
     </exec>
   </target>
+
+  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
   
   <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
 
@@ -212,7 +234,7 @@
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
@@ -235,21 +257,21 @@
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.dll" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.xml" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.Net35.dll" />
   </target>
 
   <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
   </target>
 
   <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
   </target>
 
@@ -260,20 +282,75 @@
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.Net35.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+  </target>
+
+  <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/MySql.Data.dll" />
+  </target>
+
+  <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/MySql.Data.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ChangeLog.txt" />
-    <copy overwrite="true" todir="../bin/stable" file="Libraries/core/ReleaseNotes.txt" />
+    <!-- Documentation -->
+    <copy overwrite="true" todir="../bin/stable/" file="../Acknowledgments.txt" />
+    <copy overwrite="true" todir="../bin/stable/" file="Libraries/core/ChangeLog.txt" />
+    <copy overwrite="true" todir="../bin/stable/" file="Libraries/core/ReleaseNotes.txt" />
+    <copy overwrite="true" todir="../bin/stable/" file="Libraries/core/Readme.txt" />
+    <!-- Core .Net 3.5 Build -->
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/MySql.Data.dll" />
+    <!-- Core .Net 3.5 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <!-- Core Silverlight 4.0 Build -->
+    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <!-- Core Silverlight 4.0 Build for Windows Phone 7 Build -->
+    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.WindowsPhone.dll" />
+    <!-- Data.Sql Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/MySql.Data.dll" />
+    <!-- Data.Virtuoso Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/MySql.Data.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
   
   <!-- Clean Targets for Cleaning the Builds -->
@@ -397,46 +474,41 @@
 
   <target name="dist-release" description="Creates the ZIP files for the Release" depends="build-release">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
-      <fileset basedir="../bin/stable/" prefix="DotNet_And_Mono">
-        <include name="*" />
-      </fileset>
-      <fileset basedir="../bin/silverlight-nightly/" prefix="Silverlight">
-        <include name="*" />
-      </fileset>
-      <!--<fileset basedir="../bin/mono-nightly" prefix="Mono">
-        <include name="*" />
-      </fileset>-->
-      <!--<fileset basedir="../bin/lite-nightly" prefix="Lite">
-        <include name="*" />
-      </fileset>-->
-      <fileset basedir="../bin/windowsphone-nightly/" prefix="WindowsPhone7">
-        <include name="*" />
+      <fileset basedir="../bin/stable/" failonempty="true">
+        <include name="/**/*" />
       </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
-      <fileset basedir="Trunk/">
-        <include name="*/*" />
+      <fileset failonempty="true">
+        <include name="**/*" />
         <exclude name="bin/" />
         <exclude name="obj/" />
+        <exclude name="*.exe" />
+        <exclude name="Testing/" />
+        <exclude name="TestResults/" />
+        <exclude name="Samples/" />
       </fileset>
     </zip>
   </target>
 
   <target name="dist-nightly" description="Creates the Nightly ZIP files" depends="build-nightly">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
-      <fileset basedir="../bin/nightly/" prefix="DotNet">
+      <fileset basedir="../bin/nightly/" prefix="Core/net35/">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/silverlight-nightly/" prefix="Silverlight">
+      <fileset basedir="../bin/silverlight-nightly/" prefix="Core/sl4/">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/mono-nightly" prefix="Mono">
+      <fileset basedir="../bin/lite-nightly" prefix="Core/net35-cp/">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/lite-nightly" prefix="Lite">
+      <fileset basedir="../bin/windowsphone-nightly" prefix="Core/sl4-wp/">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/windowsphone-nightly" prefix="WindowsPhone7">
+      <fileset basedir="../bin/data-sql-nightly" prefix="Data/Sql/net35/">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/data-virtuoso-nightly" prefix="Data/Virtuoso/net35/">
         <include name="*" />
       </fileset>
     </zip>
@@ -446,6 +518,7 @@
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
+        <include name="../../Acknowlegments.txt" />
       </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
         <include name="*" />
@@ -460,6 +533,12 @@
         <exclude name="temp.*" />
       </fileset>
       <fileset basedir="Utilities/rdfQuery/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+        <exclude name="*.vshost.*" />
+        <exclude name="temp.*" />
+      </fileset>
+      <fileset basedir="Utilities/rdfSqlStorage/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />
         <exclude name="*.vshost.*" />
@@ -499,9 +578,61 @@
         <include name="*" />
       </fileset>
     </delete>
-    <!-- Then create the .Net 3.5 distribution -->
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/net35-cp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/sl4">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/sl4-wp">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Sql/lib/net35">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <!-- First create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net35/">
-      <fileset basedir="../bin/stable/">
+      <fileset basedir="../bin/stable/Core/net35/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/net35-cp/">
+      <fileset basedir="../bin/stable/Core/net35-cp/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/sl4/">
+      <fileset basedir="../bin/stable/Core/sl4/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/sl4-wp/">
+      <fileset basedir="../bin/stable/Core/sl4-wp/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <!-- Then create the Data.Sql package -->
+    <copy todir="Build/nuget/Data.Sql/lib/net35/">
+      <fileset basedir="../bin/stable/Data/Sql/net35/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <!-- Then create the Data.Virtuoso package -->
+    <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
+      <fileset basedir="../bin/stable/Data/Virtuoso/net35/">
         <include name="*" />
       </fileset>
     </copy>
@@ -509,6 +640,16 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
+      <arg value="-verbose" />
+    </exec>
+    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.Data.Sql.nuspec" />
+      <arg value="-verbose" />
+    </exec>
+    <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
       <arg value="-verbose" />
     </exec>
   </target>

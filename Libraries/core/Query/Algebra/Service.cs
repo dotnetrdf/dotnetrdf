@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Service Clause
     /// </summary>
-    public class Service : ITerminalOperator
+    public class Service 
+        : ITerminalOperator
     {
         private IToken _endpointSpecifier;
         private GraphPattern _pattern;

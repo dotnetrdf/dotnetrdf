@@ -82,5 +82,10 @@ namespace VDS.RDF.Storage
                 return false;
             }
         }
+
+        public override int GetHashCode()
+        {
+            return this._n.GetHashCode();
+        }
     }
 }

@@ -171,6 +171,8 @@ namespace dotNetRDFTest
                 queryParser.DefaultBaseUri = (manifest.BaseUri != null ? manifest.BaseUri : manifest.NamespaceMap.GetNamespaceUri(String.Empty));
                 updateParser.DefaultBaseUri = manifest.NamespaceMap.GetNamespaceUri(String.Empty);
 
+                int dirTests = 0;
+
                 //Find all the Positive Syntax Tests
                 foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, positiveSyntaxTest).Concat(manifest.GetTriplesWithPredicateObject(rdfType, positiveSyntaxTest11)).Concat(manifest.GetTriplesWithPredicateObject(rdfType, positiveUpdateSyntaxTest)))
                 {
@@ -182,6 +184,7 @@ namespace dotNetRDFTest
                     {
                         tests++;
                         testsSyntax++;
+                        dirTests++;
 
                         //Find the Test Query
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
@@ -212,6 +215,7 @@ namespace dotNetRDFTest
                     {
                         tests++;
                         testsSyntax++;
+                        dirTests++;
 
                         //Find the Test Query
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
@@ -241,6 +245,7 @@ namespace dotNetRDFTest
                     {
                         tests++;
                         testsEvaluation++;
+                        dirTests++;
                         
                         //Find the Action ID
                         Triple actionDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
@@ -304,6 +309,7 @@ namespace dotNetRDFTest
                     {
                         tests++;
                         testsEvaluation++;
+                        dirTests++;
                         int eval = this.ProcessUpdateEvaluationTest(manifest, t.Subject);
 
                         Console.WriteLine();
@@ -312,6 +318,9 @@ namespace dotNetRDFTest
                         Debug.WriteLine(tests + " Tests Completed");
                     }
                 }
+
+                Console.WriteLine();
+                Console.WriteLine("Directory contained " + dirTests + " Test(s)");
             }
 
             Console.WriteLine();
@@ -981,6 +990,7 @@ namespace dotNetRDFTest
             Console.WriteLine("# Our Results");
             Console.WriteLine("Total Results = " + actual.Count);
             Console.WriteLine("Boolean Result = " + actual.Result);
+            Console.WriteLine("Variables = {" + String.Join(",", actual.Variables.ToArray()) + "}");
             foreach (SparqlResult r in actual)
             {
                 Console.WriteLine(r.ToString(this._formatter));
@@ -990,6 +1000,7 @@ namespace dotNetRDFTest
             Console.WriteLine("# Expected Results");
             Console.WriteLine("Total Results = " + expected.Count);
             Console.WriteLine("Boolean Result = " + expected.Result);
+            Console.WriteLine("Variables = {" + String.Join(",", expected.Variables.ToArray()) + "}");
             foreach (SparqlResult r in expected)
             {
                 Console.WriteLine(r.ToString(this._formatter));

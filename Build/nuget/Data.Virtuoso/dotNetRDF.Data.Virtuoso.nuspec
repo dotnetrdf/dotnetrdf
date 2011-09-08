@@ -7,6 +7,7 @@
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>http://www.dotnetrdf.org</projectUrl>
+    <iconUrl>http://www.w3.org/RDF/icons/rdf_w3c_icon.128.gif</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>dotNetRDF.Data.Virtuoso provides support for using OpenLink Virtuoso as a backend triplestore with dotNetRDF</description>
     <tags>RDF Semantic Web SPARQL Virtuoso OpenLink</tags>

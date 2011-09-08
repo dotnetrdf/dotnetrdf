@@ -73,6 +73,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
+                Options.HttpFullDebugging = false;
                 Options.HttpDebugging = false;
             }
         }
@@ -106,6 +107,53 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.IsTrue(g.HasSubGraph(orig), "Original Graph should be a sub-graph of retrieved Graph");
                 }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpFullDebugging = false;
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraLoadDefaultGraph()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+                Graph g = new Graph();
+                dydra.LoadGraph(g, String.Empty);
+
+                TestTools.ShowGraph(g);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, true);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageDydraLoadNamedGraph()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+                Graph g = new Graph();
+                dydra.LoadGraph(g, new Uri("http://www.dotnetrdf.org/configuration#"));
+
+                TestTools.ShowGraph(g);
             }
             catch (Exception ex)
             {
