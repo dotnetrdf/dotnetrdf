@@ -56,10 +56,20 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private static List<String> _requiredDLLs = new List<string>()
         {
             "dotNetRDF.dll",
-            "OpenLink.Data.Virtuoso.dll",
             "HtmlAgilityPack.dll",
-            "Newtonsoft.Json.dll",
+            "Newtonsoft.Json.Net35.dll",
             "MySql.Data.dll"
+        };
+
+        private static List<String> _sqlDLLs = new List<string>()
+        {
+            "dotNetRDF.Data.Sql.dll"
+        };
+
+        private static List<String> _virtuosoDLLs = new List<string>()
+        {
+            "dotNetRDF.Data.Virtuoso.dll",
+            "OpenLink.Data.Virtuoso.dll"
         };
 
         public static IEnumerable<String> RequiredDLLs
@@ -67,6 +77,22 @@ namespace VDS.RDF.Utilities.Web.Deploy
             get
             {
                 return _requiredDLLs;
+            }
+        }
+
+        public static IEnumerable<String> RequiredSqlDLLs
+        {
+            get
+            {
+                return _sqlDLLs;
+            }
+        }
+
+        public static IEnumerable<String> RequiredVirtuosoDLLs
+        {
+            get
+            {
+                return _virtuosoDLLs;
             }
         }
 
@@ -133,7 +159,6 @@ namespace VDS.RDF.Utilities.Web.Deploy
             }
         }
 
-
         private void ShowUsage()
         {
             Console.WriteLine("rdfWebDeploy Utility for dotNetRDF");
@@ -198,6 +223,12 @@ namespace VDS.RDF.Utilities.Web.Deploy
             Console.WriteLine();
             Console.WriteLine("-site \"Site Name\"");
             Console.WriteLine("Specifies the IIS site in which the web application resides.  Supported by all modes that take the webapp parameter");
+            Console.WriteLine();
+            Console.WriteLine("-sql");
+            Console.WriteLine("Includes Data.Sql related DLLs.  Supported by any mode that deploys DLLs");
+            Console.WriteLine();
+            Console.WriteLine("-virtuoso");
+            Console.WriteLine("Includes Data.Virtuoso related DLLs.  Supported by any mode that deploys DLLs");
         }
     }
 }

@@ -52,6 +52,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private bool _noIntegratedRegistration = false;
         private bool _noLocalIIS = false;
         private bool _negotiate = false;
+        private bool _sql = false, _virtuoso = false;
 
         public void RunXmlDeploy(String[] args)
         {
@@ -132,7 +133,10 @@ namespace VDS.RDF.Utilities.Web.Deploy
 
                 //Deploy dotNetRDF and required DLLs to the bin directory of the application
                 String sourceFolder = RdfWebDeployHelper.ExecutablePath;
-                foreach (String dll in RdfWebDeployHelper.RequiredDLLs)
+                IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
+                if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
+                if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
+                foreach (String dll in dlls)
                 {
                     if (File.Exists(Path.Combine(sourceFolder, dll)))
                     {
@@ -582,6 +586,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
                         Console.WriteLine("rdfWebDeploy: IIS Classic Handler registration will not be performed");
                         break;
                     case "-noiis":
+                        break;
+                    case "-sql":
+                        this._sql = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
+                        break;
+                    case "-virtuoso":
+                        this._virtuoso = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Virtuoso DLLs");
                         break;
                     default:
                         Console.Error.WriteLine("rdfWebDeploy: Error: " + args[i] + " is not a known option for the -xmldeploy mode of this tool");

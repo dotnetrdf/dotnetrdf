@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Configuration;
 using System.IO;
@@ -45,6 +46,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
     {
         private bool _noLocalIIS = false;
         private String _site = "Default Web Site";
+        private bool _sql = false, _virtuoso = false;
 
         public void Verify(String[] args)
         {
@@ -85,11 +87,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
             }
 
             //Verify all required DLLs are in the bin directory of the application
-            foreach (String dll in RdfWebDeployHelper.RequiredDLLs)
+            IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
+            if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
+            if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
+            foreach (String dll in dlls)
             {
                 if (!File.Exists(Path.Combine(binFolder, dll)))
                 {
-                    Console.Error.WriteLine("rdfWebDeploy: Error: Required DLL " + dll + " which needs deploying to the web applications bin directory is not present");
+                    Console.Error.WriteLine("rdfWebDeploy: Error: Required DLL " + dll + " which needs deploying to the web applications bin directory is not present, suggest you use the -dllupdate mode to rectify this");
                     return;
                 }
             }
@@ -119,6 +124,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             Console.Error.Write("rdfWebDeploy: Error: Expected a site name to be specified after the -site option");
                             return false;
                         }
+                        break;
+                    case "-sql":
+                        this._sql = true;
+                        Console.WriteLine("rdfWebDeploy: Will verify Data.Sql DLLs");
+                        break;
+                    case "-virtuoso":
+                        this._virtuoso = true;
+                        Console.WriteLine("rdfWebDeploy: Will verify Data.Virtuoso DLLs");
                         break;
                     default:
                         Console.Error.WriteLine("rdfWebDeploy: Error: " + args[i] + " is not a known option for the -dllverify mode of this tool");

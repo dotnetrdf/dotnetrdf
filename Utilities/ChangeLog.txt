@@ -12,19 +12,31 @@ Change Log
 ----------
 
 This represents a summary of additions, changes and removals for the 0.3.0 release of the dotNetRDF Toolkit
-for Windows/Mono detailed by Tool:
+for Windows/Mono detailed by Tool.
+
+Note: While some tools may have no changes all tools benefit from being upgraded to the latest release of the
+dotNetRDF core library which typically incorporates bug fixes and performance improvements so you should still
+upgrade to these latest versions.
 
 rdfConvert
 - Some corrections to the Usage Summary
 - Allowed -output to be used to specify the full output filename only when there is a single input
 
 rdfEditor (Not available under Mono)
+- Improved speed of syntax validation
+- Recognises the newly proposed file extension for RDF/JSON
+- Added advanced options support for Save With functionality
+- Added graceful upgrade of user settings so your settings from previous versions should move over to new version
  
-rdfOptStats 
+rdfOptStats
    
 rdfQuery
+
+rdfSqlStorage
+- New tool which provides command line management of ADO stores (our new SQL backend)
  
 rdfWebDeploy
+- Added -sql and -virtuoso options which will cause it to include Data.Sql or Data.Virtuoso DLLs as appropriate
 
 soh 
 
@@ -35,3 +47,5 @@ SparqlGUI
 StoreManager
 - Added support for Dydra
 - Added support for connecting to stores in the Root Catalog of an AllegroGraph 4.x server
+- Added support for our new ADO Store (SQL backend) on both Microsoft SQL Server and SQL Azure
+- SPARQL Query Results Viewer now uses prefixes from the query to display results for SELECT queries

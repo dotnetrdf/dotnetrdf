@@ -1,5 +1,5 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-deploy /webDeployTest config.ttl</StartArguments>
+    <StartArguments>-deploy /demos config.ttl</StartArguments>
   </PropertyGroup>
 </Project>

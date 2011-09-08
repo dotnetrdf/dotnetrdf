@@ -92,8 +92,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
             Graph vocab = new Graph();
             try
             {
-                TurtleParser ttlparser = new TurtleParser();
-                ttlparser.Load(vocab, new StreamReader(Assembly.GetAssembly(typeof(IGraph)).GetManifestResourceStream("VDS.RDF.Configuration.configuration.ttl")));
+                vocab.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             }
             catch (Exception ex)
             {

@@ -36,6 +36,7 @@ terms.
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Configuration;
 using VDS.RDF;
@@ -52,6 +53,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private bool _noLocalIIS = false;
         private bool _negotiate = false;
         private String _site = "Default Web Site";
+        private bool _sql = false, _virtuoso = false;
 
         public void RunDeploy(String[] args)
         {
@@ -106,7 +108,10 @@ namespace VDS.RDF.Utilities.Web.Deploy
 
                 //Deploy dotNetRDF and required DLLs to the bin directory of the application
                 String sourceFolder = RdfWebDeployHelper.ExecutablePath;
-                foreach (String dll in RdfWebDeployHelper.RequiredDLLs)
+                IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
+                if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
+                if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
+                foreach (String dll in dlls)
                 {
                     if (File.Exists(Path.Combine(sourceFolder, dll)))
                     {
@@ -285,8 +290,8 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             }
 
                             //Then add the new Module
-                            Admin.ConfigurationElement reg = newHandlers.CreateElement("add");
-                            reg["name"] = "NegotiateByFileExtension";
+                            Admin.ConfigurationElement reg = newModules.CreateElement("add");
+                            reg["name"] = "NegotiateByExtension";
                             reg["type"] = "VDS.RDF.Web.NegotiateByFileExtension";
                             newModules.AddAt(0, reg);
 
@@ -301,11 +306,12 @@ namespace VDS.RDF.Utilities.Web.Deploy
             }
             catch (ConfigurationException configEx)
             {
-                Console.Error.Write("rdfWebDeploy: Configuration Error: " + configEx.Message);
+                Console.Error.WriteLine("rdfWebDeploy: Configuration Error: " + configEx.Message);
             }
             catch (Exception ex)
             {
-                Console.Error.Write("rdfWebDeploy: Error: " + ex.Message);
+                Console.Error.WriteLine("rdfWebDeploy: Error: " + ex.Message);
+                Console.Error.WriteLine(ex.StackTrace);
             }
             finally
             {
@@ -348,6 +354,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             Console.Error.Write("rdfWebDeploy: Error: Expected a site name to be specified after the -site option");
                             return false;
                         }
+                        break;
+                    case "-sql":
+                        this._sql = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
+                        break;
+                    case "-virtuoso":
+                        this._virtuoso = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Virtuoso DLLs");
                         break;
                     default:
                         Console.Error.WriteLine("rdfWebDeploy: Error: " + args[i] + " is not a known option for the -deploy mode of this tool");

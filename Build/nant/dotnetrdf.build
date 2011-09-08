@@ -519,6 +519,7 @@
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
         <include name="../../Acknowlegments.txt" />
+        <include name="ChangeLog.txt" />
       </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
         <include name="*" />

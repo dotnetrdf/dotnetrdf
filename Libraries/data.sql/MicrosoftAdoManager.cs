@@ -49,6 +49,11 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Implementation of the ADO Store against Microsoft SQL Server
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This code cannot communicate with legacy SQL Stores and this is by design, please see <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">this page</a> for details on migrating legacy stores
+    /// </para>
+    /// </remarks>
     public class MicrosoftAdoManager 
         : BaseAdoSqlClientStore
     {

@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web.Configuration;
 using System.IO;
@@ -45,6 +46,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
     {
         private bool _noLocalIIS = false;
         private String _site = "Default Web Site";
+        private bool _sql = false, _virtuoso = false;
 
         public void RunDllUpdate(String[] args)
         {
@@ -87,7 +89,11 @@ namespace VDS.RDF.Utilities.Web.Deploy
 
             //Copy all required DLLs are in the bin directory of the application
             String sourceFolder = RdfWebDeployHelper.ExecutablePath;
-            foreach (String dll in RdfWebDeployHelper.RequiredDLLs)
+            IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
+            if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
+            if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
+
+            foreach (String dll in dlls)
             {
                 if (File.Exists(Path.Combine(sourceFolder, dll)))
                 {
@@ -126,6 +132,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
                             Console.Error.Write("rdfWebDeploy: Error: Expected a site name to be specified after the -site option");
                             return false;
                         }
+                        break;
+                    case "-sql":
+                        this._sql = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Sql DLLs");
+                        break;
+                    case "-virtuoso":
+                        this._virtuoso = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Data.Virtuoso DLLs");
                         break;
                     default:
                         Console.Error.WriteLine("rdfWebDeploy: Error: " + args[i] + " is not a known option for the -dllupdate mode of this tool");

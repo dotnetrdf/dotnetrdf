@@ -62,6 +62,14 @@ namespace VDS.RDF.Storage
     /// <typeparam name="TParameter">Parameter Type</typeparam>
     /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
+    /// <remarks>
+    /// <para>
+    /// The ADO Store is a complete redesign of our SQL backed storage that does everything via stored procedures which provides a much better level of abstraction between the code and the SQL database schema.  This allows the database schemas to be flexible and take adavantage of the features of different SQL backends, we ship with three default ADO Schemas, use the <see cref="AdoSchemaHelper">AdoSchemaHelper</see> class to get information about these.
+    /// </para>
+    /// <para>
+    /// This code cannot communicate with legacy SQL Stores and this is by design, please see <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">this page</a> for details on migrating legacy stores
+    /// </para>
+    /// </remarks>
     public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
         : IUpdateableGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
         where TConn : DbConnection
@@ -317,8 +325,7 @@ namespace VDS.RDF.Storage
                     this.ExecuteScalar("SELECT graphHash FROM GRAPHS WHERE graphID=1");
 
                     //If it executes succesfully then it's a legacy store
-                    //REQ: Add a link to the documentation on upgrading
-                    throw new RdfStorageException("The underlying Database appears to be a legacy SQL Store using the old dotNetRDF Store Format.  You may connect to this for the time being using one of the old ISqlIOManager implementations but should see the documentation at ?? with regards to upgrading your store");
+                    throw new RdfStorageException("The underlying Database appears to be a legacy SQL Store using the old dotNetRDF Store Format.  You may connect to this for the time being using one of the old ISqlIOManager implementations but should see the documentation at http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration with regards to upgrading your store");
                 }
                 catch (TException)
                 {

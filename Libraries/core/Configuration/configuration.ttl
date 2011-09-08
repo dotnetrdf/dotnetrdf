@@ -66,7 +66,7 @@ dnr:SparqlResultsParser a rdfs:Class ;
 						rdfs:label "Class of SPARQL Results Parsers" ;
 						rdfs:comment "A SPARQL Results Parser is a parser that reads a concrete SPARQL Results syntax e.g. SPARQL Results XML.  Parsers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), parsers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 						
-dnr:RdfWriter a rdfs:class ;
+dnr:RdfWriter a rdfs:Class ;
 				rdfs:label "Class of RDF Writers" ;
 				rdfs:comment "A RDF Writer is a writer that writes a concrete RDF syntax e.g. NTriples.  Writers can be automatically loaded by calling ConfigurationLoader.AutoDetectReadersAndWriters(), writers may be associated with specific MIME types and/or file extensions by using the fmt:media_type and fmt:preferred_suffix properties from the W3C Formats namespace." .
 				
