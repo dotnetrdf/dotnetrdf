@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		alexandria.testrunconfig = alexandria.testrunconfig
 		dotNetRDF.Alexandria.vsmdi = dotNetRDF.Alexandria.vsmdi
-		dotNetRDF.Experimental1.vsmdi = dotNetRDF.Experimental1.vsmdi
+		dotNetRDF.Experimental2.vsmdi = dotNetRDF.Experimental2.vsmdi
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Alexandria.MongoDB", "..\..\Trunk\Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj", "{5976AA06-893B-4E0D-BDED-19A8515E809C}"
@@ -66,9 +66,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.Geo", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fulltext-tests", "Testing\fulltext-tests\fulltext-tests.csproj", "{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Sql", "..\..\Trunk\Libraries\data.sql\dotNetRDF.Data.Sql.csproj", "{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso", "..\..\Trunk\Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj", "{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = dotNetRDF.Experimental1.vsmdi
+		CategoryFile = dotNetRDF.Experimental2.vsmdi
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +163,14 @@ Global
 		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -175,6 +187,8 @@ Global
 		{9E89B88B-9F97-4BC7-B658-5AF24E6CBC43} = {2DF4013D-8291-43F4-B9FA-2E7116311002}
 		{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
 		{5976AA06-893B-4E0D-BDED-19A8515E809C} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
+		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
+		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE} = {E021F329-0B14-42DF-BA6A-E7912B9348BB}
 		{7F08E710-7ED8-4135-A5FF-AE6CD20C4D4B} = {622A9AAA-2C61-49E2-9469-0A7F61011EE0}
 		{9B5281F6-C947-4619-9116-ED4DD806FF21} = {622A9AAA-2C61-49E2-9469-0A7F61011EE0}
 		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17} = {622A9AAA-2C61-49E2-9469-0A7F61011EE0}

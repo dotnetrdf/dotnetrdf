@@ -47,6 +47,8 @@
     <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
       <Link>TestTools.cs</Link>
     </Compile>
+    <Compile Include="FullTextOptimiserTests.cs" />
+    <Compile Include="FullTextSparqlTests.cs" />
     <Compile Include="IndexCreationTests.cs" />
     <Compile Include="IndexSearchTests.cs" />
     <Compile Include="LuceneTestHarness.cs" />

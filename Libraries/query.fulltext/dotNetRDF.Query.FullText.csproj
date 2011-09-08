@@ -49,6 +49,7 @@
     <Compile Include="Expressions\FullTextFunctionFactory.cs" />
     <Compile Include="Expressions\Functions\FullTextMatchFunction.cs" />
     <Compile Include="FullTextExtensions.cs" />
+    <Compile Include="FullTextHelper.cs" />
     <Compile Include="FullText\FullTextQueryException.cs" />
     <Compile Include="FullText\Indexing\BaseFullTextIndexer.cs" />
     <Compile Include="FullText\Indexing\BaseSimpleFullTextIndexer.cs" />

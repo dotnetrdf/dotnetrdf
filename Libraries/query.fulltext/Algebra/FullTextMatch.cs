@@ -11,20 +11,27 @@ namespace VDS.RDF.Query.Algebra
     public class FullTextMatch
         : BaseFullTextOperator
     {
-        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, int limit, double scoreThreshold)
-            : base(provider, algebra, matchVar, searchVar, scoreVar, scoreThreshold) { }
 
-        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, int limit)
-            : this(provider, algebra, matchVar, scoreVar, searchVar, limit, Double.NaN) { }
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit, double scoreThreshold)
+            : base(provider, algebra, matchVar, scoreVar, searchTerm, scoreThreshold) { }
 
-        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchVar, int limit)
-            : this(provider, algebra, matchVar, null, searchVar, limit, Double.NaN) { }
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit)
+            : this(provider, algebra, matchVar, scoreVar, searchTerm, limit, Double.NaN) { }
 
-        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, double scoreThreshold)
-            : this(provider, algebra, matchVar, scoreVar, searchVar, -1, scoreThreshold) { }
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchTerm, int limit)
+            : this(provider, algebra, matchVar, null, searchTerm, limit, Double.NaN) { }
 
-        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchVar, double scoreThreshold)
-            : this(provider, algebra, matchVar, null, searchVar, -1, scoreThreshold) { }
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm)
+            : this(provider, algebra, matchVar, null, searchTerm, -1, Double.NaN) { }
+
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, double scoreThreshold)
+            : this(provider, algebra, matchVar, scoreVar, searchTerm, -1, scoreThreshold) { }
+
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchTerm, double scoreThreshold)
+            : this(provider, algebra, matchVar, null, searchTerm, -1, scoreThreshold) { }
+
+        public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchTerm)
+            : this(provider, algebra, matchVar, null, searchTerm, -1, Double.NaN) { }
 
         public override ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {

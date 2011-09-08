@@ -35,6 +35,7 @@ namespace VDS.RDF.Test.Query.FullText
             get
             {
                 if (!_init) Init();
+                if (!_indexDir.isOpen_ForNUnit) Init();
                 return _indexDir;
             }
         }

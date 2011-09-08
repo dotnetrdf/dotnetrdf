@@ -16,6 +16,9 @@ namespace VDS.RDF.Query.FullText.Indexing
             {
                 switch (this.IndexingMode)
                 {
+                    case IndexingMode.Predicates:
+                        this.Index(t.Predicate, ((ILiteralNode)t.Object).Value);
+                        break;
                     case IndexingMode.Objects:
                         this.Index(t.Object, ((ILiteralNode)t.Object).Value);
                         break;
@@ -39,6 +42,9 @@ namespace VDS.RDF.Query.FullText.Indexing
             {
                 switch (this.IndexingMode)
                 {
+                    case IndexingMode.Predicates:
+                        this.Unindex(t.Predicate, ((ILiteralNode)t.Object).Value);
+                        break;
                     case IndexingMode.Objects:
                         this.Unindex(t.Object, ((ILiteralNode)t.Object).Value);
                         break;

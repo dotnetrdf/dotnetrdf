@@ -20,6 +20,10 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// </summary>
         Subjects,
         /// <summary>
+        /// Indicates that the Indexer stores the Predicate (URI) associated with the Literal whose text is indexed
+        /// </summary>
+        Predicates,
+        /// <summary>
         /// Indicates that the Indexer uses some other custom indexing strategy
         /// </summary>
         Custom

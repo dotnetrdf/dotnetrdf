@@ -14,30 +14,30 @@ namespace VDS.RDF.Query.Algebra
         private IFullTextSearchProvider _provider;
         private int _limit = -1;
         private double _scoreThreshold = Double.NaN;
-        private PatternItem _matchVar, _scoreVar, _searchVar;
+        private PatternItem _matchVar, _scoreVar, _searchTerm;
 
-        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, int limit, double scoreThreshold)
+        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit, double scoreThreshold)
         {
             this._provider = provider;
             this.InnerAlgebra = algebra;
             this._matchVar = matchVar;
             this._scoreVar = scoreVar;
-            this._searchVar = searchVar;
+            this._searchTerm = searchTerm;
             this._limit = limit;
             this._scoreThreshold = scoreThreshold;
         }
 
-        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, int limit)
-            : this(provider, algebra, matchVar, scoreVar, searchVar, limit, Double.NaN) { }
+        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit)
+            : this(provider, algebra, matchVar, scoreVar, searchTerm, limit, Double.NaN) { }
 
-        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchVar, int limit)
-            : this(provider, algebra, matchVar, null, searchVar, limit, Double.NaN) { }
+        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchTerm, int limit)
+            : this(provider, algebra, matchVar, null, searchTerm, limit, Double.NaN) { }
 
-        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchVar, double scoreThreshold)
-            : this(provider, algebra, matchVar, scoreVar, searchVar, -1, scoreThreshold) { }
+        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, double scoreThreshold)
+            : this(provider, algebra, matchVar, scoreVar, searchTerm, -1, scoreThreshold) { }
 
-        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchVar, double scoreThreshold)
-            : this(provider, algebra, matchVar, null, searchVar, -1, scoreThreshold) { }
+        public BaseFullTextOperator(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem searchTerm, double scoreThreshold)
+            : this(provider, algebra, matchVar, null, searchTerm, -1, scoreThreshold) { }
 
         public ISparqlAlgebra InnerAlgebra
         {
@@ -81,11 +81,11 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Search Term/Query to use
         /// </summary>
-        public PatternItem SearchItem
+        public PatternItem SearchTerm
         {
             get
             {
-                return this._searchVar;
+                return this._searchTerm;
             }
         }
 
@@ -137,8 +137,8 @@ namespace VDS.RDF.Query.Algebra
             }
 
             //Next ensure that the search text is a node and not a variable
-            if (this._searchVar.VariableName != null) throw new RdfQueryException("Queries using full text search must provide a constant value for the search term");
-            INode searchNode = ((NodeMatchPattern)this._searchVar).Node;
+            if (this._searchTerm.VariableName != null) throw new RdfQueryException("Queries using full text search must provide a constant value for the search term");
+            INode searchNode = ((NodeMatchPattern)this._searchTerm).Node;
             if (searchNode.NodeType != NodeType.Literal) throw new RdfQueryException("Queries using full text search must use a literal value for the search term");
             String search = ((ILiteralNode)searchNode).Value;
 
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
                 List<String> vars = new List<string>();
                 if (this._matchVar.VariableName != null) vars.Add(this._matchVar.VariableName);
                 if (this._scoreVar.VariableName != null) vars.Add(this._scoreVar.VariableName);
-                if (this._searchVar.VariableName != null) vars.Add(this._searchVar.VariableName);
+                if (this._searchTerm.VariableName != null) vars.Add(this._searchTerm.VariableName);
                 vars.AddRange(this.InnerAlgebra.Variables);
 
                 return vars.Distinct();
@@ -206,6 +206,11 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             throw new NotImplementedException();
+        }
+
+        public override string ToString()
+        {
+            return "FullTextMatch(" + this.MatchItem.ToString() + ", " + this.SearchTerm.ToString() + ", " + this.InnerAlgebra.ToString() + ")";
         }
     }
 }

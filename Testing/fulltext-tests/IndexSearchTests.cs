@@ -102,5 +102,45 @@ namespace VDS.RDF.Test.Query.FullText
             }
 
         }
+
+        [TestMethod]
+        public void FullTextIndexSearchLucenePredicates()
+        {
+            IFullTextIndexer indexer = null;
+            IFullTextSearchProvider provider = null;
+            try
+            {
+                indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+                indexer.Index(this.GetTestData());
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Index Creation Error", ex, true);
+            }
+            finally
+            {
+                if (indexer != null) indexer.Dispose();
+            }
+
+            try
+            {
+                provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                NTriplesFormatter formatter = new NTriplesFormatter();
+
+                foreach (IFullTextSearchResult result in provider.Match("http"))
+                {
+                    Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
+                }
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Index Search Error", ex, true);
+            }
+            finally
+            {
+                if (provider != null) provider.Dispose();
+            }
+
+        }
     }
 }

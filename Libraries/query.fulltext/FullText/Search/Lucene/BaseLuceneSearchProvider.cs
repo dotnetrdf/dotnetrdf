@@ -92,8 +92,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             this.DisposeInternal();
 
-            this._searcher.Close();
-            this._indexDir.Close();
+            if (this._searcher != null) this._searcher.Close();
         }
 
         protected virtual void DisposeInternal() { }
