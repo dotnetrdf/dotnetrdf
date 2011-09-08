@@ -98,6 +98,17 @@ namespace VDS.RDF.Storage
         {
             return this._scripts.Where(s => s.ScriptType == type && s.Database == db).Select(d => d.ScriptResource).FirstOrDefault();
         }
+
+        /// <summary>
+        /// Gets the available scripts for this Schema Definition
+        /// </summary>
+        public IEnumerable<AdoSchemaScriptDefinition> ScriptDefinitions
+        {
+            get
+            {
+                return this._scripts;
+            }
+        }
     }
 
     /// <summary>

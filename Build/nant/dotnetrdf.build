@@ -690,5 +690,13 @@
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
+    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+    <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
   </target>
 </project>

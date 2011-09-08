@@ -155,7 +155,7 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
                             if (i < args.Length - 1)
                             {
                                 i++;
-                                switch (args[i])
+                                switch (args[i].ToLower())
                                 {
                                     case "sql":
                                         this._dbtype = "sql";

@@ -81,9 +81,10 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
             Console.WriteLine("Available Modes");
             Console.WriteLine("---------------");
             Console.WriteLine();
+            int length = _modes.Values.Max(m => m.Name.Length);
             foreach (BaseManagementAction action in _modes.Values)
             {
-                Console.WriteLine(action.Name + " -> " + action.Description);
+                Console.WriteLine(action.Name + new String(' ', Math.Max(0, length - action.Name.Length)) + " -> " + action.Description);
             }
             Console.WriteLine();
             Console.WriteLine("To see options for a specific mode type rdfSqlStorage mode -help");

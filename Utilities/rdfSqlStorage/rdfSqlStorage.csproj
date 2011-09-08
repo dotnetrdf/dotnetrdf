@@ -40,10 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseConnectAction.cs" />
+    <Compile Include="ListScripts.cs" />
     <Compile Include="Create.cs" />
     <Compile Include="Drop.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="GetScript.cs" />
     <Compile Include="ListGraphs.cs" />
+    <Compile Include="ListSchemas.cs" />
     <Compile Include="ManagementAction.cs" />
     <Compile Include="Migrate.cs" />
     <Compile Include="Program.cs" />
