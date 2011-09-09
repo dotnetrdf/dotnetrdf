@@ -37,7 +37,7 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight}">
+  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -46,7 +46,7 @@
     </exec>    
   </target>
 
-  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nowindowsphone}">
+  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -61,7 +61,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-silverlight">
+  <target name="projectgen-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -76,7 +76,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-lite" description="Generates the dotNetRDF Lite build project file" depends="compile-buildtools">
+  <target name="projectgen-lite" description="Generates the dotNetRDF Lite build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Lite project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -552,7 +552,7 @@
     </zip>
   </target>
 
-  <target name="dist-nuget" description="Creates the NuGet packages">
+  <target name="dist-nuget" description="Creates the NuGet packages" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net35/">
