@@ -40,7 +40,7 @@ namespace VDS.RDF
     /// Top Level Namespace for the <strong>dotNetRDF Library</strong> which embodies a simple but powerful API for manipulating RDF.   
     /// </para>
     /// <para>
-    /// Specific Namespaces within the Hierarchy provide <see cref="VDS.RDF.Parsing">Parsing</see>, <see cref="VDS.RDF.Writing">Serialization</see> and <see cref="VDS.RDF.Translation">Translation</see> functionality along with a host of related classes to support these functions.
+    /// Specific Namespaces within the Hierarchy provide <see cref="VDS.RDF.Parsing">Parsing</see> and <see cref="VDS.RDF.Writing">Serialization</see> functionality along with a host of related classes to support these functions.
     /// </para>
     /// <para>
     /// Support for querying RDF is provided in the <see cref="VDS.RDF.Query">Query</see> namespace which includes SPARQL Query, limited reasoning support in the <see cref="VDS.RDF.Query.Inference">Query.Inference</see> namespace and a Pellet Server client in the <see cref="VDS.RDF.Query.Inference.Pellet">Query.Inference.Pellet</see> namespace.
@@ -48,6 +48,7 @@ namespace VDS.RDF
     /// <para>
     /// Support for updating RDF based on the SPARQL 1.1 Update and Graph Store HTTP Protocol for RDF Graph Management is provided in the <see cref="VDS.RDF.Update">Update</see> and <see cref="VDS.RDF.Update.Protocol">Update.Protocol</see> namespaces.
     /// </para>
+    /// <h3>Third Party Storage</h3>
     /// <para>For communicating with arbitrary Triple Stores we have a dedicated <see cref="VDS.RDF.Storage">Storage</see> namespace.  As of this release we support the following Triple Stores:
     /// <ul>
     ///     <li>AllegroGraph</li>
@@ -56,35 +57,52 @@ namespace VDS.RDF
     ///     <li>Joseki</li>
     ///     <li>Any Sesame HTTP Protocol compliant store</li>
     ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
+    ///     <li>Stardog</li>
     ///     <li>Talis Platform</li>
     ///     <li>Virtuoso</li>
     /// </ul>
-    /// There is also officially deprecated support for using SQL backed stores (only recommended for small scale testing and development) and a several forms of wrappers for creating Read-Only storages.
     /// </para>
+    /// <h3>SQL Storage</h3>
+    /// <para>
+    /// Prior to the 0.5.0 release we provided an SQL backend henceforth referred to as the Legacy format, this has been officially deprecated for some time and was only ever recommended for small scale prototyping and testing.
+    /// </para>
+    /// <para>
+    /// </para>
+    /// <h3>ASP.Net Integration</h3>
     /// <para>
     /// For those building ASP.Net based websites the <see cref="VDS.RDF.Web">Web</see> namespace is dedicated to providing classes for integrating RDF into ASP.Net applications.  If you've used dotNetRDF for ASP.Net applications prior to Version 0.3.0 please be aware that most of the existing classes were deprecated in favour of new classes which take advantage of the new Configuration API.  From the 0.4.0 release onwards the old handlers are completely removed from the library
     /// </para>
     /// <para>
     /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF which was introduced in the 0.2.2 release
     /// </para>
-    /// <h4>Configuration</h4>
+    /// <h4>Configuration API</h4>
     /// <para>
-    /// As of the 0.3.0 release we introduced a new <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system has been used as part of a complete refresh of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.
+    /// From the 0.3.0 release we provide <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system has been used as part of a complete refresh of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
     /// </para>
-    /// <h4>Notes</h4>
+    /// <h3>Notes</h3>
     /// <para>
-    ///dotNetRDF is now in Beta, this means it should be relatively stable for production scenarios but that the API is subject to changes in subsequent releases should we feel it necessary.  As it is a Beta release users should be aware that the software will not be bug free.  While we continually work to improve the quality of this library and to eliminate bugs as we find them we are at the same time attempting to enhance the library by adding more functionality so it is inevitable that some bugs will persist.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
+    /// dotNetRDF is now in Beta, this means it should be relatively stable for production scenarios but that the API is subject to changes in subsequent releases should we feel it necessary.  As it is a Beta release users should be aware that the software will not be bug free.  While we continually work to improve the quality of this library and to eliminate bugs as we find them we are at the same time attempting to enhance the library by adding more functionality so it is inevitable that some bugs will persist.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
     /// </para>
     /// <para>
     /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
     /// </para>
-    /// <h4>Breaking Changes in 0.4.1</h4>
+    /// <h4>Breaking Changes</h4>
+    /// </para>
+    /// <h4>0.5.x vs 0.4.x API</h4>
+    /// <para>
+    /// The 0.5.x release has limited breaking changes vs the 0.4.x API and these are mostly just in terms of additional methods so only those who have implemented custom implementations of a few interfaces will be affected by this.  The only serious breaking change is a major refactor of the <see cref="VDS.RDF.Query.Describe.ISparqlDescribe">ISparqlDescribe</see> interface but this should affect relatively few users.
+    /// </para>
+    /// <para>
+    /// The other major change from the 0.4.x API is that Virtuoso support is now in a separate library <strong>dotNetRDF.Data.Virtuoso.dll</strong> which helps reduce dependencies in the Core library.  Also our new SQL backend referred to as the ADO Store can be found in a new separate library <strong>dotNetRDF.Data.Sql.dll</strong>
+    /// </para>
+    /// <h4>0.4.1 Release vs 0.4.0 API</h4>
     /// <para>
     /// The 0.4.1 release makes some significant breaking changes to the API though these are mostly fixable with simple find and replace.  Essentially it introduces interfaces for each of the Node Types (e.g. <see cref="IUriNode">IUriNode</see>) are encourages use of these instead of the concrete implementations.  There is a blog post detailing the change and how to adjust your code <a href="http://www.dotnetrdf.org/blogitem.asp?blogID=43">here</a>.
     /// </para>
-    /// <h4>Breaking Changes vs 0.3.x API</h4>
+    /// <h4>0.4.x Releases vs 0.3.x API</h4>
     /// <para>
     /// The 0.4.x release makes some breaking changes vs the 0.3.x API though mostly these are internal changes or exposure of previously private information in the public API:
+    /// </para>
     /// <ul>
     ///     <li>Addition of <see cref="IGraph.Difference">Difference()</see> and <see cref="IGraph.ToDataTable">ToDataTable()</see> methods for <see cref="IGraph">IGraph</see></li>
     ///     <li>Exposure of much more SPARQL Query and Update information publicly via the various interfaces involved</li>
@@ -93,23 +111,27 @@ namespace VDS.RDF
     ///     <li>Complete removal of the pre-0.3.x <see cref="System.Web.IHttpHandler">IHttpHandler</see> implementations</li>
     ///     <li>All SQL based classes are marked as obsolete (though still usable) and will be removed/replaced with alternatives in future releases</li>
     /// </ul>
-    /// </para>
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>
     /// <para>
-    /// As of the 0.4.1 release there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
+    /// From the 0.4.1 release there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
+    /// </para>
+    /// <h5>Client Profile Build</h5>
+    /// <para>
+    /// The Client Profile build omits the reference to <see cref="System.Web">System.Web</see> so lacks the ASP.Net integration and some other features that rely on this dependency but is otherwise a fairly complete build of the library.
     /// </para>
     /// <h5>Silverlight/Windows Phone 7 Build</h5>
     /// <para>
-    /// We provide a Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) which are experimental builds that have been tested by external users but not internally as we don't do any Silverlight/Windows Phone development currently.  This build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:
+    /// The Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) are experimental builds that receive limited internal testing so please be aware that these are not as stable as the standard .Net builds.  These build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:
     /// </para>
     /// <ul>
-    /// <li>Most of the <see cref="VDS.RDF.Storage">Storage</see> namespace and the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
-    /// <li>No String normalization support</li>
-    /// <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
-    /// <li>No multi-threaded support where <see cref="System.Threading.ReaderWriteLockSlim">ReaderWriterLockSlim</see> is used</li>
-    /// <li>Various writers and parsers use streaming rather than DOM based XML parsing</li>
-    /// <li>No support for XSL in TriX files</li>
+    ///     <li>Most of the <see cref="VDS.RDF.Storage">Storage</see> namespace and the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
+    ///     <li>No String normalization support</li>
+    ///     <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
+    ///     <li>No multi-threaded support where <see cref="System.Threading.ReaderWriteLockSlim">ReaderWriterLockSlim</see> is used</li>
+    ///     <li>Various writers and parsers use streaming rather than DOM based XML parsing</li>
+    ///     <li>No support for XSL in TriX files</li>
+    ///     <li>Synchronous HTTP Request Features - For most of these there are asynchronous callback driven versions of these features available from the 0.5.0 release onwards</li>
     /// </ul>
     /// </summary>
     class NamespaceDoc
@@ -511,12 +533,16 @@ namespace VDS.RDF.Storage
     /// Namespace for Storage Classes which provide support for using arbitrary backing Stores
     /// </para>
     /// <para>
-    /// There are two main kinds of Store supported:
-    /// <ol>
-    ///     <li>SQL Database based Stores as backing storage for RDF using classes such as <see cref="VDS.RDF.SqlGraph">SqlGraph</see> with implementations of the <see cref="ISqlIOManager">ISqlIOManager</see> interface.</li>
-    ///     <li>Arbitrary Stores as backing storage using classes such as <see cref="VDS.RDF.StoreGraph">StoreGraph</see> with implementations of the <see cref="IGenericIOManager">IGenericIOManager</see> interface.</li>
-    /// </ol>
+    /// Storage is managed via the <see cref="IGenericIOManager">IGenericIOManager</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
+    /// <h3>Data Provider Libraries</h3>
+    /// <para>
+    /// From the 0.5.0 release onwards any triple store integration that requires additional dependencies are provided with their own library to reduce dependencies in the Core library and allow that functionality to be optional.  The following stores are currently provided in separate libraries:
+    /// </para>
+    /// <ul>
+    ///     <li>Virtuoso - Virtuoso support can be found in the <strong>dotNetRDF.Data.Virtuoso.dll</strong> library and requires one additional dependency.</li>
+    ///     <li>Microsoft SQL Server - Our new SQL backend called the ADO Store can be found in the <strong>dotNetRDF.Data.Sql.dll</strong> library and currently has no additional dependencies.</li>
+    /// </ul>
     /// </summary>
     class NamespaceDoc
     {
@@ -711,6 +737,19 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// <para>
     /// Namespace for Formatter Classes which can be used to format <see cref="VDS.RDF.Triple">Triples</see>, <see cref="VDS.RDF.INode">Nodes</see> and <see cref="System.Uri">URIs</see> among other types.
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Writing.Serialization
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for classes related to .Net serialization integration in the library
     /// </para>
     /// </summary>
     class NamespaceDoc

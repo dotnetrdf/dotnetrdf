@@ -21,13 +21,28 @@ alternative terms
 Usage
 -----
 
-To use this library first unzip to a directory on your computer.  Then Add a Reference and use the Browse tab
-to find the directory where you unzipped the archive and select dotNetRDF.dll
-If you have downloaded the full source for the Project then you can add the Project to your Solution and then 
-use Project references instead.
+To use this library first unzip to a directory on your computer.
 
-dotNetRDF includes intellisense for all classes providing that the dotNetRDF.XML file is located in the 
-same directory as the DLL file.
+Then in Visual Studio select Add a Reference and use the Browse tab to find the directory where you unzipped the archive.
+In this directory you will find a directory named Core which contains several different builds of the library depending
+on your target platform:
+
+- .Net 3.5 and Mono -> Core/net35/dotNetRDF.dll
+- .Net 3.5 Client Profile -> Core/net35/dotNetRDF.ClientProfile.dll
+- Silverlight 4 -> Core/sl4/dotNetRDF.Silverlight.dll
+- Silverlight 4 for Windows Phone 7 -> Core/sl4-wp/dotNetRDF.WindowsPhone.dll
+
+dotNetRDF includes intellisense for all classes providing that the relevant XML documentation file from the appropriate build
+is located in the same directory as the DLL file.
+
+This download also includes two data providers that can be used to access specific storage backends in conjunction
+with the dotNetRDF API.  These are as follows:
+
+- OpenLink Virtuoso -> Data/Virtuoso/dotNetRDF.Data.Virtuoso.dll
+- Microsoft SQL Server and SQL Azure -> Data/Sql/dotNetRDF.Data.Sql.dll
+
+Note: Whichever of these libraries you use you should also include the dependencies of that build to ensure it functions correctly.
+Dependencies for each build can be found in the directory with that build.
 
 To use classes from the library it is generally easiest to import the namespaces you need eg.
 
@@ -53,11 +68,10 @@ The relevant DLLs (HtmlAgilityPack.dll, MySql.Data.dll and Newtonsoft.Json.Net35
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
 
-If you have downloaded the full source code for the Library you can add a Project Reference to your Solution
-instead of referencing the DLL directly.  If you do this Visual Studio should automatically copy the 
-relevant DLLs into your output directory if they are required.
+To use either the Data.Sql or Data.Virtuoso library you must inlude the Core library and its dependencies
 
-If you obtained the library via NuGet then the dependencies will automatically have been included for you
+If you wish to use the optional Data.Virtuoso library that is also included you will need the additional
+OpenLink Virtuoso ADO.Net provider which can be found in the folder with the Data.Virtuoso library
 
 Known Issues
 ------------
@@ -110,7 +124,7 @@ Release History
 
 20/5/2011 - Release of Version 0.4.1 Beta (Build 0.4.1.15669)
 
-10/9/2011 - Release of Version 0.5.0 Beta (Build 0.5.0.?)
+9/9/2011 - Release of Version 0.5.0 Beta (Build 0.5.0.20572)
 
 Acknowledgements
 ----------------

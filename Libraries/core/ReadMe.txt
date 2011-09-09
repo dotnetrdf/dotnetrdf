@@ -9,7 +9,7 @@ This package contains the Core Library for the following four .Net profiles:
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
 
-It also contains the following Data provides for .Net 3.5 only since the other profiles omit the Storage APIs currently:
+It also contains the following Data providers for .Net 3.5 only:
 - Sql - provides our ADO Store backend
 - Virtuoso - provides support for OpenLink Virtuoso
 
