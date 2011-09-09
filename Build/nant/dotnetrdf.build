@@ -358,7 +358,7 @@
     <delete dir="Utilities/bsbm/bin" />
     <delete dir="Utilities/parsergui/bin" />
     <delete dir="Utilities/rdfConvert/bin" />
-    <delete dir="Utilities/rdfEditor/bin" />
+    <delete dir="Utilities/rdfEditor.Wpf/bin" />
     <delete dir="Utilities/rdfMetal/bin" />
     <delete dir="Utilities/rdfQuery/bin" />
     <delete dir="Utilities/rdfWebDeploy/bin" />
@@ -516,7 +516,7 @@
         <exclude name="*.vshost.*" />
         <exclude name="temp.*" />
       </fileset>
-      <fileset basedir="Utilities/rdfEditor/bin/Debug">
+      <fileset basedir="Utilities/rdfEditor.Wpf/bin/Debug">
         <include name="**/*" />
         <exclude name="*.pdb" />
         <exclude name="*.vshost.*" />
