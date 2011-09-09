@@ -461,12 +461,18 @@
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
       <fileset failonempty="true">
         <include name="**/*" />
-        <exclude name="bin/" />
-        <exclude name="obj/" />
-        <exclude name="*.exe" />
+        <exclude name="**/bin/**/*" />
+        <exclude name="**/obj/**/*" />
+	<exclude name="**/*.dll" />
+        <exclude name="**/*.exe" />
+        <exclude name="**/*.pdb" />
         <exclude name="Testing/" />
         <exclude name="TestResults/" />
         <exclude name="Samples/" />
+	<exclude name="*.zip" />
+	<exclude name="Utilities/bsbm/" />
+	<exclude name="Build/ndoc3/doc/" />
+	<exclude name="Build/NuGet/*/lib/**/*" />
       </fileset>
     </zip>
   </target>
@@ -593,7 +599,7 @@
         <include name="*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/net35-lient/">
+    <copy todir="Build/nuget/Core/lib/net35-client/">
       <fileset basedir="../bin/stable/Core/net35-client/">
         <include name="*" />
       </fileset>
@@ -672,14 +678,57 @@
     </ftp>
   </target>
 
-  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget">
+  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-sql,upload-nuget-data-virtuoso">
+
+  </target>
+
+  <target name="upload-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-nuget">
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
+  </target>
+
+  <target name="upload-nuget-data-sql" description="Uploads the Data.Sql Library package to the NuGet Gallery" depends="dist-nuget">
     <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+  </target>
+
+  <target name="upload-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-nuget">
+    <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+  </target>
+
+  <target name="upload-nuget-overwrite" description="Uploads the NuGet Packages overwriting an existing package with the same version to the NuGet Gallery" depends="dist-nuget">
+    <exec program="nuget.exe">
+      <arg value="delete" />
+      <arg value="dotNetRDF" />
+      <arg value="${dotnetrdf.nuspecversion}" />
+      <arg value="-NoPrompt" />
+    </exec>
+    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+    <exec program="nuget.exe">
+      <arg value="delete" />
+      <arg value="dotNetRDF.Data.Sql" />
+      <arg value="${dotnetrdf.nuspecversion}" />
+      <arg value="-NoPrompt" />
+    </exec>
+    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+    <exec program="nuget.exe">
+      <arg value="delete" />
+      <arg value="dotNetRDF.Data.Virtuoso" />
+      <arg value="${dotnetrdf.nuspecversion}" />
+      <arg value="-NoPrompt" />
     </exec>
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="push" />
