@@ -1,9 +1,6 @@
 <project SchemaVersion="1.3">
     <assemblies>
         <assembly location="..\..\Libraries\core\bin\Debug\dotNetRDF.dll" documentation="..\..\Libraries\core\bin\Debug\dotNetRDF.xml" />
-        <assembly location="..\..\Libraries\core.clientprofile\bin\Debug\dotNetRDF.ClientProfile.dll" documentation="..\..\Libraries\core.clientprofile\bin\Debug\dotNetRDF.ClientProfile.xml" />
-        <assembly location="..\..\Libraries\core.silverlight\bin\Debug\dotNetRDF.Silverlight.dll" documentation="..\..\Libraries\core.silverlight\bin\Debug\dotNetRDF.Silverlight.xml" />
-        <assembly location="..\..\Libraries\core.windowsphone\Bin\Debug\dotNetRDF.WindowsPhone.dll" documentation="..\..\Libraries\core.windowsphone\Bin\Debug\dotNetRDF.WindowsPhone.xml" />
         <assembly location="..\..\Libraries\data.sql\bin\Debug\dotNetRDF.Data.Sql.dll" documentation="..\..\Libraries\data.sql\bin\Debug\dotNetRDF.Data.Sql.xml" />
         <assembly location="..\..\Libraries\data.virtuoso\bin\Debug\dotNetRDF.Data.Virtuoso.dll" documentation="..\..\Libraries\data.virtuoso\bin\Debug\dotNetRDF.Data.Virtuoso.xml" />
     </assemblies>

@@ -289,21 +289,11 @@
   <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
     <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/data-sql-nightly" file="Libraries/data.sql/bin/Debug/MySql.Data.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
     <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/MySql.Data.dll" />
     <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
@@ -337,19 +327,9 @@
     <!-- Data.Sql Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/MySql.Data.dll" />
     <!-- Data.Virtuoso Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/MySql.Data.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
   
@@ -628,13 +608,16 @@
     <!-- Then create the Data.Sql package -->
     <copy todir="Build/nuget/Data.Sql/lib/net35/">
       <fileset basedir="../bin/stable/Data/Sql/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.Data.Sql.dll" />
+        <include name="dotNetRDF.Data.Sql.xml" />
       </fileset>
     </copy>
     <!-- Then create the Data.Virtuoso package -->
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="../bin/stable/Data/Virtuoso/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.Data.Virtuoso.dll" />
+        <include name="dotNetRDF.Data.Virtuoso.xml" />
+        <include name="OpenLink.Data.Virtuoso.dll" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on each package -->
