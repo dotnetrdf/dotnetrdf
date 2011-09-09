@@ -87,19 +87,18 @@ namespace VDS.RDF
     /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
     /// </para>
     /// <h4>Breaking Changes</h4>
-    /// </para>
-    /// <h4>0.5.x vs 0.4.x API</h4>
+    /// <h5>0.5.x vs 0.4.x API</h5>
     /// <para>
     /// The 0.5.x release has limited breaking changes vs the 0.4.x API and these are mostly just in terms of additional methods so only those who have implemented custom implementations of a few interfaces will be affected by this.  The only serious breaking change is a major refactor of the <see cref="VDS.RDF.Query.Describe.ISparqlDescribe">ISparqlDescribe</see> interface but this should affect relatively few users.
     /// </para>
     /// <para>
     /// The other major change from the 0.4.x API is that Virtuoso support is now in a separate library <strong>dotNetRDF.Data.Virtuoso.dll</strong> which helps reduce dependencies in the Core library.  Also our new SQL backend referred to as the ADO Store can be found in a new separate library <strong>dotNetRDF.Data.Sql.dll</strong>
     /// </para>
-    /// <h4>0.4.1 Release vs 0.4.0 API</h4>
+    /// <h5>0.4.1 Release vs 0.4.0 API</h5>
     /// <para>
     /// The 0.4.1 release makes some significant breaking changes to the API though these are mostly fixable with simple find and replace.  Essentially it introduces interfaces for each of the Node Types (e.g. <see cref="IUriNode">IUriNode</see>) are encourages use of these instead of the concrete implementations.  There is a blog post detailing the change and how to adjust your code <a href="http://www.dotnetrdf.org/blogitem.asp?blogID=43">here</a>.
     /// </para>
-    /// <h4>0.4.x Releases vs 0.3.x API</h4>
+    /// <h5>0.4.x Releases vs 0.3.x API</h5>
     /// <para>
     /// The 0.4.x release makes some breaking changes vs the 0.3.x API though mostly these are internal changes or exposure of previously private information in the public API:
     /// </para>
