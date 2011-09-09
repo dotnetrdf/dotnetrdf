@@ -209,6 +209,8 @@ namespace VDS.RDF.Configuration
                     manager = new DatasetFileManager(file, async);
                     break;
 
+#if UNFINISHED
+
                 case Dydra:
                     //Get the Account Name and Store
                     String account = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
@@ -228,6 +230,8 @@ namespace VDS.RDF.Configuration
                         manager = new DydraConnector(account, store);
                     }
                     break;
+
+#endif
 
                 case FourStore:
                     //Get the Server and whether Updates are enabled

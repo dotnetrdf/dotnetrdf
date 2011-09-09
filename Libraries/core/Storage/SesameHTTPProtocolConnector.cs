@@ -350,7 +350,7 @@ namespace VDS.RDF.Storage
                 {
                     //if (this._fullContextEncoding)
                     //{
-                    serviceParams.Add("context", "<" + graphUri + ">");
+                        serviceParams.Add("context", "<" + graphUri + ">");
                     //}
                     //else
                     //{
@@ -485,7 +485,8 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 HttpWebResponse response;
                 Dictionary<String, String> serviceParams = new Dictionary<string, string>();
-                NTriplesWriter ntwriter = new NTriplesWriter();
+                //NTriplesWriter ntwriter = new NTriplesWriter();
+                RdfXmlWriter writer = new RdfXmlWriter();
 
                 if (!graphUri.Equals(String.Empty))
                 {
@@ -546,8 +547,10 @@ namespace VDS.RDF.Storage
                         request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                         Graph h = new Graph();
                         h.Assert(additions);
-                        request.ContentType = MimeTypesHelper.NTriples[0];
-                        ntwriter.Save(h, new StreamWriter(request.GetRequestStream()));
+                        //request.ContentType = MimeTypesHelper.NTriples[0];
+                        //ntwriter.Save(h, new StreamWriter(request.GetRequestStream()));
+                        request.ContentType = MimeTypesHelper.RdfXml[0];
+                        writer.Save(h, new StreamWriter(request.GetRequestStream()));
 
 #if DEBUG
                         if (Options.HttpDebugging)

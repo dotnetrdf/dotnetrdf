@@ -43,6 +43,7 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
 
             this.cboStardogReasoning.SelectedIndex = 0;
+            this.tabStores.TabPages.Remove(this.tabDydra);
         }
 
         /// <summary>
@@ -400,6 +401,8 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+#if UNFINISHED
+
         private void btnDydraConnect_Click(object sender, EventArgs e)
         {
             if (this.txtDydraAccount.Text.Equals(String.Empty))
@@ -425,6 +428,8 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.Close();
             }
         }
+
+#endif
 
         private void chkAGraphRootCatalog_CheckedChanged(object sender, EventArgs e)
         {
@@ -493,5 +498,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this.lblAzureUsernameSuffix.Text = "@" + this.txtAzureDatabase.Text;
         }
+
+
     }
 }

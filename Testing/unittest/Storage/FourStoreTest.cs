@@ -83,7 +83,7 @@ namespace VDS.RDF.Test.Storage
 
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
 
-            Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should not have been in the Graph");
+            Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
         }
 
         [TestMethod]

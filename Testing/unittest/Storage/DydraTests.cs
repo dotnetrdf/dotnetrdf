@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if UNFINISHED
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -194,7 +196,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        [TestMethod,ExpectedException(typeof(NotSupportedException))]
+        [TestMethod/*,ExpectedException(typeof(NotSupportedException))*/]
         public void StorageDydraDeleteGraph()
         {
             try
@@ -203,6 +205,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                orig.BaseUri = new Uri("http://example.org/dydra/deleteTest");
 
                 DydraConnector dydra = this.GetConnection();
                 dydra.SaveGraph(orig);
@@ -326,5 +329,67 @@ namespace VDS.RDF.Test.Storage
                 Options.HttpDebugging = false;
             }
         }
+
+        [TestMethod]
+        public void StorageDydraAddTriples()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("http://example.org/dydra/addRemoveTest");
+                dydra.SaveGraph(g);
+
+                List<Triple> ts = new List<Triple>();
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+
+                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", ts, null);
+
+                g = new Graph();
+                dydra.LoadGraph(g, "http://example.org/dydra/addRemoveTest");
+
+                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageFourStoreRemoveTriples()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                DydraConnector dydra = this.GetConnection();
+
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("http://example.org/dydra/addRemoveTest");
+                dydra.SaveGraph(g);
+
+                List<Triple> ts = new List<Triple>();
+                ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
+
+                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", ts, null);
+
+                g = new Graph();
+                dydra.LoadGraph(g, "http://example.org/dydra/addRemoveTest");
+
+                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
     }
 }
+
+#endif

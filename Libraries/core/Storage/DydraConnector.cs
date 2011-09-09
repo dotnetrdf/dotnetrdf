@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 #if !NO_DATA && !NO_STORAGE
 
 using System;
@@ -150,27 +152,27 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return false;
+                return true;
             }
         }
 
-        /// <summary>
-        /// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
-        /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        public override void DeleteGraph(string graphUri)
-        {
-            throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
-        }
+        ///// <summary>
+        ///// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
+        ///// </summary>
+        ///// <param name="graphUri">URI of the Graph to delete</param>
+        //public override void DeleteGraph(string graphUri)
+        //{
+        //    throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
+        //}
 
-        /// <summary>
-        /// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
-        /// </summary>
-        /// <param name="graphUri">URI of the Graph to delete</param>
-        public override void DeleteGraph(Uri graphUri)
-        {
-            throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
-        }
+        ///// <summary>
+        ///// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
+        ///// </summary>
+        ///// <param name="graphUri">URI of the Graph to delete</param>
+        //public override void DeleteGraph(Uri graphUri)
+        //{
+        //    throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
+        //}
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store
@@ -459,5 +461,7 @@ namespace VDS.RDF.Storage
         }
     }
 }
+
+#endif
 
 #endif

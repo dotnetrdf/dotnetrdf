@@ -378,7 +378,6 @@
             this.btnDydraConnect.TabIndex = 6;
             this.btnDydraConnect.Text = "Connect to Dydra";
             this.btnDydraConnect.UseVisualStyleBackColor = true;
-            this.btnDydraConnect.Click += new System.EventHandler(this.btnDydraConnect_Click);
             // 
             // txtDydraApiKey
             // 

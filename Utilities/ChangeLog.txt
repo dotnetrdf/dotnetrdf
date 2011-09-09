@@ -45,7 +45,6 @@ SparqlGUI
 - Added the ability to view query explanations
 
 StoreManager
-- Added support for Dydra
 - Added support for connecting to stores in the Root Catalog of an AllegroGraph 4.x server
 - Added support for our new ADO Store (SQL backend) on both Microsoft SQL Server and SQL Azure
 - SPARQL Query Results Viewer now uses prefixes from the query to display results for SELECT queries
