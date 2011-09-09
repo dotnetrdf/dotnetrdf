@@ -67,6 +67,7 @@ namespace VDS.RDF
     /// Prior to the 0.5.0 release we provided an SQL backend henceforth referred to as the Legacy format, this has been officially deprecated for some time and was only ever recommended for small scale prototyping and testing.
     /// </para>
     /// <para>
+    /// The 0.5.0 release includes a new SQL backend called the ADO Store provided in a separate library <strong>dotNetRDF.Data.Sql.dll</strong> - for information on how to migrate from the old format to the new format please see the <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">Migration guide</a>
     /// </para>
     /// <h3>ASP.Net Integration</h3>
     /// <para>

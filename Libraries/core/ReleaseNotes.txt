@@ -28,7 +28,7 @@ In this directory you will find a directory named Core which contains several di
 on your target platform:
 
 - .Net 3.5 and Mono -> Core/net35/dotNetRDF.dll
-- .Net 3.5 Client Profile -> Core/net35/dotNetRDF.ClientProfile.dll
+- .Net 3.5 Client Profile -> Core/net35-client/dotNetRDF.ClientProfile.dll
 - Silverlight 4 -> Core/sl4/dotNetRDF.Silverlight.dll
 - Silverlight 4 for Windows Phone 7 -> Core/sl4-wp/dotNetRDF.WindowsPhone.dll
 

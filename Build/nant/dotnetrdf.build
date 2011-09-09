@@ -310,10 +310,10 @@
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/MySql.Data.dll" />
     <!-- Core .Net 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35-cp/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
     <!-- Core Silverlight 4.0 Build -->
     <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
@@ -479,7 +479,10 @@
       <fileset basedir="../bin/silverlight-nightly/" prefix="Core/sl4/">
         <include name="*" />
       </fileset>
-      <fileset basedir="../bin/lite-nightly" prefix="Core/net35-cp/">
+      <fileset basedir="../bin/clientprofile-nightly" prefix="Core/net35-client">
+        <include name="*" />
+      </fileset>
+      <fileset basedir="../bin/lite-nightly" prefix="Core/net35-lite/">
         <include name="*" />
       </fileset>
       <fileset basedir="../bin/windowsphone-nightly" prefix="Core/sl4-wp/">
@@ -560,7 +563,7 @@
       </fileset>
     </delete>
     <delete>
-      <fileset basedir="Build/nuget/Core/lib/net35-cp">
+      <fileset basedir="Build/nuget/Core/lib/net35-client/">
         <include name="*" />
       </fileset>
     </delete>
@@ -590,8 +593,8 @@
         <include name="*" />
       </fileset>
     </copy>
-    <copy todir="Build/nuget/Core/lib/net35-cp/">
-      <fileset basedir="../bin/stable/Core/net35-cp/">
+    <copy todir="Build/nuget/Core/lib/net35-lient/">
+      <fileset basedir="../bin/stable/Core/net35-client/">
         <include name="*" />
       </fileset>
     </copy>
