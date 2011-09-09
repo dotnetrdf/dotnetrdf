@@ -423,9 +423,13 @@ namespace VDS.RDF.Storage
                     request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
                 }
 
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-                ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
+                //request.ContentType = MimeTypesHelper.NTriples[0];
+                //NTriplesWriter ntwriter = new NTriplesWriter();
+                //ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
+
+                request.ContentType = MimeTypesHelper.RdfXml[0];
+                RdfXmlWriter writer = new RdfXmlWriter();
+                writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
 #if DEBUG
                 if (Options.HttpDebugging)
