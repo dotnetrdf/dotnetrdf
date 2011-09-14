@@ -65,6 +65,7 @@
     <Compile Include="FullText\Schema\IIndexSchema.cs" />
     <Compile Include="FullText\Search\Lucene\LuceneSearchProvider.cs" />
     <Compile Include="Optimisation\FullTextOptimiser.cs" />
+    <Compile Include="Patterns\FullTextPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

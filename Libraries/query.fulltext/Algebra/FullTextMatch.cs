@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Algebra
     {
 
         public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit, double scoreThreshold)
-            : base(provider, algebra, matchVar, scoreVar, searchTerm, scoreThreshold) { }
+            : base(provider, algebra, matchVar, scoreVar, searchTerm, limit, scoreThreshold) { }
 
         public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, int limit)
             : this(provider, algebra, matchVar, scoreVar, searchTerm, limit, Double.NaN) { }
@@ -22,7 +22,7 @@ namespace VDS.RDF.Query.Algebra
             : this(provider, algebra, matchVar, null, searchTerm, limit, Double.NaN) { }
 
         public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm)
-            : this(provider, algebra, matchVar, null, searchTerm, -1, Double.NaN) { }
+            : this(provider, algebra, matchVar, scoreVar, searchTerm, -1, Double.NaN) { }
 
         public FullTextMatch(IFullTextSearchProvider provider, ISparqlAlgebra algebra, PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm, double scoreThreshold)
             : this(provider, algebra, matchVar, scoreVar, searchTerm, -1, scoreThreshold) { }

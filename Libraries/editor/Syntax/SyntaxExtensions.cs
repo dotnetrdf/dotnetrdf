@@ -58,11 +58,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
 
         internal static String GetSyntaxName(this IRdfReader parser)
         {
-            if (parser is HtmlPlusRdfAParser)
+            /*if (parser is HtmlPlusRdfAParser)
             {
                 return "XHtmlRdfA";
             }
-            else if (parser is Notation3Parser)
+            else*/ if (parser is Notation3Parser)
             {
                 return "Notation3";
             }
@@ -82,10 +82,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             {
                 return "Turtle";
             }
-            else if (parser is XmlPlusRdfAParser)
+            /*else if (parser is XmlPlusRdfAParser)
             {
                 return "XmlRdfA";
-            }
+            }*/
             else
             {
                 return parser.ToString();

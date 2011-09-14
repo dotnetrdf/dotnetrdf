@@ -146,6 +146,8 @@ namespace VDS.RDF.Query.Algebra
             context.OutputMultiset = new Multiset();
             IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? this.GetResults(search, this._limit) : this.GetResults(search);
             int r = 0;
+            String matchVar = this._matchVar.VariableName;
+            String scoreVar = this._scoreVar != null ? this._scoreVar.VariableName : null;
             foreach (IFullTextSearchResult result in results)
             {
                 if (matchConstant != null)
@@ -154,7 +156,7 @@ namespace VDS.RDF.Query.Algebra
                     if (result.Node.Equals(matchConstant))
                     {
                         r++;
-                        context.OutputMultiset.Add(result.ToSet(this._matchVar.VariableName, this._scoreVar.VariableName));
+                        context.OutputMultiset.Add(result.ToSet(matchVar, scoreVar));
                     }
                 }
                 else if (checkExisting)
@@ -163,14 +165,14 @@ namespace VDS.RDF.Query.Algebra
                     if (existing.Contains(result.Node))
                     {
                         r++;
-                        context.OutputMultiset.Add(result.ToSet(this._matchVar.VariableName, this._scoreVar.VariableName));
+                        context.OutputMultiset.Add(result.ToSet(matchVar, scoreVar));
                     }
                 }
                 else
                 {
                     //Otherwise all results are acceptable
                     r++;
-                    context.OutputMultiset.Add(result.ToSet(this._matchVar.VariableName, this._scoreVar.VariableName));
+                    context.OutputMultiset.Add(result.ToSet(matchVar, scoreVar));
                 }
 
                 //Apply the limit locally if necessary
@@ -210,7 +212,14 @@ namespace VDS.RDF.Query.Algebra
 
         public override string ToString()
         {
-            return "FullTextMatch(" + this.MatchItem.ToString() + ", " + this.SearchTerm.ToString() + ", " + this.InnerAlgebra.ToString() + ")";
+            if (this._scoreVar != null)
+            {
+                return "FullTextMatch(" + this.MatchItem.ToString() + ", " + this.SearchTerm.ToString() + ", " + this.ScoreItem.ToString() + ", " + this.InnerAlgebra.ToString() + ")";
+            }
+            else
+            {
+                return "FullTextMatch(" + this.MatchItem.ToString() + ", " + this.SearchTerm.ToString() + ", " + this.InnerAlgebra.ToString() + ")";
+            }
         }
     }
 }

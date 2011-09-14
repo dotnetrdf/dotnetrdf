@@ -60,6 +60,12 @@ namespace VDS.RDF.Test.Query.FullText
         {
             this.TestOptimisation("SELECT * WHERE { ?s pf:textMatch 'value' . FILTER(ISURI(?s)) }");
         }
+
+        [TestMethod]
+        public void FullTextOptimiserSimple4()
+        {
+            this.TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
+        }
     }
 
     class MockSearchProvider
