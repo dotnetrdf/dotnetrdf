@@ -104,6 +104,11 @@ namespace VDS.RDF.Query.Algebra
 
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
+            //The very first thing we must do is evaluate the inner algebra
+            BaseMultiset innerResult = context.Evaluate(this.InnerAlgebra);
+            if (innerResult is NullMultiset) return innerResult; //Can abort evaluation if inner evaluation gives null
+            context.InputMultiset = innerResult;
+
             //First determine whether we can apply the limit when talking to the provider
             //Essentially as long as the Match Variable (the one we'll bind results to) is not already
             //bound AND we are actually using a limit

@@ -88,7 +88,36 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    //TODO: Add some logic here re: whether with only two arguments the 2nd argument is a threshold or a limit
+                    //If there is only 2 arguments for the search term determine whether it should actually be a 
+                    //limit rather than a threshold
+                    //Essentially if it is an integer assume that it was meant as a limit
+                    INode temp = ((NodeMatchPattern)this._thresholdTerm).Node;
+                    if (temp is ILiteralNode)
+                    {
+                        ILiteralNode lit = (ILiteralNode)temp;
+                        if (lit.DataType != null)
+                        {
+                            if (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType) == VDS.RDF.Query.Expressions.SparqlNumericType.Integer)
+                            {
+                                //Is actually a limit
+                                this._limitTerm = this._thresholdTerm;
+                                this._thresholdTerm = null;
+                            }
+                        }
+                        else
+                        {
+                            if (SparqlSpecsHelper.IsDecimal(lit.Value) || SparqlSpecsHelper.IsDouble(lit.Value))
+                            {
+                                //Remains as a Threshold
+                            }
+                            else if (SparqlSpecsHelper.IsInteger(lit.Value))
+                            {
+                                //Is actually a limit
+                                this._limitTerm = this._thresholdTerm;
+                                this._thresholdTerm = null;
+                            }
+                        }
+                    }
                 }
             }
 

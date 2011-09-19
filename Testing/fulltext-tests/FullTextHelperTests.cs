@@ -81,5 +81,11 @@ namespace VDS.RDF.Test.Query.FullText
         {
             this.TextExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 0.75 25) }", 1);
         }
+
+        [TestMethod]
+        public void FullTextHelperExtractPatterns8()
+        {
+            this.TextExtractPatterns("SELECT * WHERE { ?s pf:textMatch ('text' 25) }", 1);
+        }
     }
 }
