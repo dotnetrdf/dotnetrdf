@@ -338,6 +338,9 @@
     <Content Include="resources\bad_srx.srx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\dbpedia-query-time.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

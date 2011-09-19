@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -149,6 +151,50 @@ namespace VDS.RDF.Test.Sparql
             SparqlRemoteEndpoint queryEndpoint = new SparqlRemoteEndpoint(new Uri(TestServerQueryUri));
             IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointSyncVsAsyncTime()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            TestTools.ShowResults(syncResults);
+            Console.WriteLine();
+
+            Console.WriteLine("Sync Query: " + timer.Elapsed);
+            timer.Reset();
+
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
+
+            Assert.AreEqual(syncResults, asyncResults, "Result Sets should be equal");
         }
     }
 }
