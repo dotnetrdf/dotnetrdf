@@ -25,6 +25,14 @@ namespace VDS.RDF.Query
         /// </summary>
         public const String FullTextMatchPredicateUri = FullTextMatchNamespace + "textMatch";
 
+        /// <summary>
+        /// Constant for the Full Text Configuration Namespace which provides extensions to the basic Configuration API specific to Full Text indexing and search
+        /// </summary>
+        /// <remarks>
+        /// This vocabulary can be found as an embedded resource in this library as <strong>VDS.RDF.Query.FullText.ttl</strong>
+        /// </remarks>
+        public const String FullTextConfigurationNamespace = "http://www.dotnetrdf.org/configuration/fulltext#";
+
         internal static List<FullTextPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
         {
             //Do a first pass which simply looks to find any pf:textMatch properties

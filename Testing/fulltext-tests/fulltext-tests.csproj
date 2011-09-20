@@ -50,6 +50,7 @@
     <Compile Include="..\..\Libraries\query.fulltext\FullTextHelper.cs">
       <Link>FullTextHelper.cs</Link>
     </Compile>
+    <Compile Include="FullTextConfigTests.cs" />
     <Compile Include="FullTextHelperTests.cs" />
     <Compile Include="FullTextOptimiserTests.cs" />
     <Compile Include="FullTextSparqlTests.cs" />

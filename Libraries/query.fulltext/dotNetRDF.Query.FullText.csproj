@@ -44,12 +44,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Trunk\Libraries\data.virtuoso\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
     <Compile Include="Algebra\BaseFullTextOperator.cs" />
     <Compile Include="Algebra\FullTextMatch.cs" />
-    <Compile Include="Expressions\FullTextFunctionFactory.cs" />
-    <Compile Include="Expressions\Functions\FullTextMatchFunction.cs" />
+    <None Include="Expressions\FullTextFunctionFactory.cs" />
+    <None Include="Expressions\Functions\FullTextMatchFunction.cs" />
     <Compile Include="FullTextExtensions.cs" />
     <Compile Include="FullTextHelper.cs" />
+    <Compile Include="FullTextObjectFactory.cs" />
     <Compile Include="FullText\FullTextQueryException.cs" />
     <Compile Include="FullText\Indexing\BaseFullTextIndexer.cs" />
     <Compile Include="FullText\Indexing\BaseSimpleFullTextIndexer.cs" />

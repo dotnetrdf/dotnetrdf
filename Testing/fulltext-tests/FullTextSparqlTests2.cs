@@ -158,5 +158,22 @@ namespace VDS.RDF.Test.Query.FullText
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
+
+        //[TestMethod]
+        //public void GenerateQuarters()
+        //{
+        //    foreach (String quarter in GetQuarters(3, 2011, 10))
+        //    {
+        //        Console.WriteLine(quarter);
+        //    }
+        //}
+
+
+        //public IEnumerable<String> GetQuarters(int current, int year, int count)
+        //{
+        //    return (from q in Enumerable.Range(0, count)
+        //            select String.Format("Q{0}-{1}", (current - q) + (((q + 1) / 4) * 4) , year - ((q + 1) / 4)));
+        //}
+
     }
 }
