@@ -7,20 +7,33 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Storage
+namespace VDS.RDF
 {
-    static class DataExtensions
+    /// <summary>
+    /// Represents common extensions that are useful across all Plugin libraries
+    /// </summary>
+    static class PluginExtensions
     {
+        /// <summary>
+        /// Gets either the String form of the Object of the Empty String
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>Result of calling <strong>ToString()</strong> on non-null objects and the empty string for null objects</returns>
         internal static String ToSafeString(this Object obj)
         {
             return (obj != null ? obj.ToString() : String.Empty);
         }
 
+        /// <summary>
+        /// Ensures that a specific Object Factory type is registered in a Configuration Graph
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="factoryType">Factory Type</param>
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            String assm = Assembly.GetCallingAssembly().FullName;
+            String assm = Assembly.GetAssembly(factoryType).FullName;//Assembly.GetCallingAssembly().FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
 
             //Firstly need to ensure our object factory has been referenced
