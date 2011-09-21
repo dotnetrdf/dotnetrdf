@@ -329,5 +329,76 @@ namespace VDS.RDF.Test.Query.FullText
             Assert.IsTrue(temp is LuceneSearchProvider, "Should have returned a LuceneSearchProvider Instance");
             Assert.IsTrue(temp is IFullTextSearchProvider, "Should have returned a IFullTextSearchProvider Instance");
         }
+
+        [TestMethod]
+        public void FullTextConfigSearchProviderLuceneWithBuildIndex()
+        {
+            //Add and test the Index Configuration
+            IGraph g = this.GetBaseGraph();
+            INode indexObj = g.CreateBlankNode();
+            g.Assert(indexObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
+            g.Assert(indexObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Store.RAMDirectory, Lucene.Net"));
+            g.Assert(indexObj, g.CreateUriNode("dnr-ft:ensureIndex"), (true).ToLiteral(g));
+
+            //Add and Test the analyzer Config
+            INode analyzerObj = g.CreateBlankNode();
+            g.Assert(analyzerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Analyzer"));
+            g.Assert(analyzerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("Lucene.Net.Analysis.Standard.StandardAnalyzer, Lucene.Net"));
+
+            //Add and Test the schema config
+            INode schemaObj = g.CreateBlankNode();
+            g.Assert(schemaObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Schema"));
+            g.Assert(schemaObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Schema.DefaultIndexSchema, dotNetRDF.Query.FullText"));
+
+            //Add the Searcher config which ties all the above together
+            INode searcherObj = g.CreateBlankNode();
+            g.Assert(searcherObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Searcher"));
+            g.Assert(searcherObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider, dotNetRDF.Query.FullText"));
+            g.Assert(searcherObj, g.CreateUriNode("dnr-ft:index"), indexObj);
+            g.Assert(searcherObj, g.CreateUriNode("dnr-ft:analyzer"), analyzerObj);
+            g.Assert(searcherObj, g.CreateUriNode("dnr-ft:schema"), schemaObj);
+
+            //Now add the Graph we want to get auto-indexed
+            INode graphObj = g.CreateBlankNode();
+            g.Assert(graphObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr:Graph"));
+            g.Assert(graphObj, g.CreateUriNode("dnr:fromEmbedded"), g.CreateLiteralNode("VDS.RDF.Configuration.configuration.ttl"));
+
+            //Then add the Indexer for use by the auto-indexing  
+            INode indexerObj = g.CreateBlankNode();
+            g.Assert(indexerObj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Indexer"));
+            g.Assert(indexerObj, g.CreateUriNode("dnr:type"), g.CreateLiteralNode("VDS.RDF.Query.FullText.Indexing.Lucene.LuceneSubjectsIndexer, dotNetRDF.Query.FullText"));
+            g.Assert(indexerObj, g.CreateUriNode("dnr-ft:index"), indexObj);
+            g.Assert(indexerObj, g.CreateUriNode("dnr-ft:analyzer"), analyzerObj);
+            g.Assert(indexerObj, g.CreateUriNode("dnr-ft:schema"), schemaObj);
+
+            //Finally add the properties to indicate we want auto-indexing and what to index
+            g.Assert(searcherObj, g.CreateUriNode("dnr-ft:buildIndexFor"), graphObj);
+            g.Assert(searcherObj, g.CreateUriNode("dnr-ft:buildIndexWith"), indexerObj);
+
+            TestTools.ShowGraph(g);
+
+            ConfigurationLoader.AddObjectFactory(this._factory);
+            Object temp = ConfigurationLoader.LoadObject(g, searcherObj);
+            Assert.IsTrue(temp is LuceneSearchProvider, "Should have returned a LuceneSearchProvider Instance");
+            Assert.IsTrue(temp is IFullTextSearchProvider, "Should have returned a IFullTextSearchProvider Instance");
+
+            //Finally check that auto-indexing has worked OK
+            IFullTextSearchProvider provider = (IFullTextSearchProvider)temp;
+            try
+            {
+                int i = 0;
+                foreach (IFullTextSearchResult result in provider.Match("http"))
+                {
+                    Console.WriteLine(result.Node.ToString() + " - " + result.Score.ToString());
+                    i++;
+                }
+
+                Assert.IsTrue(i > 0, "Expected 1 or more result due to the auto-indexed data");
+            }
+            finally
+            {
+                provider.Dispose();
+            }          
+        }
     }
 }

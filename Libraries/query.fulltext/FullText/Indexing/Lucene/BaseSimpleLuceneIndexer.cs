@@ -97,6 +97,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
 
         protected override void DisposeInternal()
         {
+            this._writer.Flush();
             this._searcher.Close();
             if (this._indexDir.isOpen_ForNUnit) this._writer.Close();
         }

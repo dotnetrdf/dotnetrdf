@@ -9,6 +9,7 @@ using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Indexing;
 using VDS.RDF.Query.FullText.Indexing.Lucene;
@@ -122,6 +123,50 @@ namespace VDS.RDF.Configuration
                                         obj = new LuceneSubjectsIndexer((Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
                                         break;
                                     case LuceneSearchProvider:
+                                        //Before the Search Provider has been loaded determine whether we need to carry out auto-indexing
+                                        List<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "buildIndexFor"))).ToList();
+                                        if (sources.Count > 0)
+                                        {
+                                            //If there are sources to index ensure we have an indexer to index with
+                                            INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "buildIndexWith")));
+                                            if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as there were values specified for the dnr-ft:buildIndexFor property but no dnr-ft:buildIndexWith property was found");
+                                            IFullTextIndexer indexer = ConfigurationLoader.LoadObject(g, indexerNode) as IFullTextIndexer;
+                                            if (indexer == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as the value given for the dnr-ft:buildIndexWith property pointed to an Object which could not be loaded as a type that implements the required IFullTextIndexer interface");
+
+                                            try 
+                                            {
+                                                //For Each Source load it and Index it
+                                                foreach (INode sourceNode in sources)
+                                                {
+                                                    Object source = ConfigurationLoader.LoadObject(g, sourceNode);
+                                                    if (source is ISparqlDataset)
+                                                    {
+                                                        indexer.Index((ISparqlDataset)source);
+                                                    }
+                                                    else if (source is ITripleStore)
+                                                    {
+                                                        foreach (IGraph graph in ((ITripleStore)source).Graphs)
+                                                        {
+                                                            indexer.Index(graph);
+                                                        }
+                                                    }
+                                                    else if (source is IGraph)
+                                                    {
+                                                        indexer.Index((IGraph)source);
+                                                    }
+                                                    else
+                                                    {
+                                                        throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as a value given for the dnr-ft:buildIndexFor property ('" + sourceNode.ToString() + "') pointed to an Object which could not be loaded as a type that implements one of the required interfaces: IGraph, ITripleStore or ISparqlDataset");
+                                                    }
+                                                }
+                                            } 
+                                            finally 
+                                            {
+                                                indexer.Dispose();
+                                            }
+                                        }
+
+                                        //Then we actually load the Search Provider
                                         obj = new LuceneSearchProvider(this.GetLuceneVersion(ver), (Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
                                         break;
                                 }

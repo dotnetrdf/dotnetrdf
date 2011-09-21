@@ -66,3 +66,18 @@ dnr-ft:ensureIndex a rdf:Property ;
 				   rdfs:comment "Used to state that the configuration loader should ensure the index is ready for use by creating and destroying an index writer relevant to the index being loaded" ;
 				   rdfs:range xsd:boolean ;
 				   rdfs:domain dnr-ft:Index .
+				   
+dnr-ft:buildIndexFor a rdf:Property ;
+					 rdfs:label "Build Index For" ;
+					 rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources first" ;
+					 rdfs:range [ a owl:Class ; owl:unionOf (dnr:SparqlDataset dnr:TripleStore dnr:Graph) ] ;
+					 rdfs:domain dnr-ft:Searcher .
+					 
+dnr-ft:buildIndexWith a rdf:Property ;
+					  rdfs:label "Build Index With" ;
+					  rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources using the specified Indexer first" ;
+					  rdfs:range dnr-ft:Indexer ;
+					  rdfs:domain dnr-ft:Searcher .
+					 
+				   
+				   
