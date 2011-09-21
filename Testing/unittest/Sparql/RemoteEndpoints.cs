@@ -154,7 +154,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlRemoteEndpointSyncVsAsyncTime()
+        public void SparqlRemoteEndpointSyncVsAsyncTimeDBPedia()
         {
             String query;
             using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
@@ -166,12 +166,20 @@ namespace VDS.RDF.Test.Sparql
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://dbpedia.org/sparql"), "http://dbpedia.org");
             Stopwatch timer = new Stopwatch();
             timer.Start();
-            SparqlResultSet syncResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
             timer.Stop();
-            TestTools.ShowResults(syncResults);
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
             Console.WriteLine();
+            timer.Reset();
 
-            Console.WriteLine("Sync Query: " + timer.Elapsed);
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
             timer.Reset();
 
             ManualResetEvent signal = new ManualResetEvent(false);
@@ -194,7 +202,215 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
             TestTools.ShowResults(asyncResults);
 
-            Assert.AreEqual(syncResults, asyncResults, "Result Sets should be equal");
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeOpenLinkLOD()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://lod.openlinksw.com/sparql"), "http://dbpedia.org");
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout*2);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
+
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeFactforge()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://factforge.net/sparql"));
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
+
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeLocal()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
+
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
+        }
+
+        [TestMethod]
+        public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
+        {
+            String query;
+            using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
+            {
+                query = reader.ReadToEnd();
+                reader.Close();
+            }
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (GET): " + timer.Elapsed);
+            TestTools.ShowResults(syncGetResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            timer.Start();
+            endpoint.HttpMode = "POST";
+            SparqlResultSet syncPostResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;
+            timer.Stop();
+            Console.WriteLine("Sync Query (POST): " + timer.Elapsed);
+            TestTools.ShowResults(syncPostResults);
+            Console.WriteLine();
+            timer.Reset();
+
+            ManualResetEvent signal = new ManualResetEvent(false);
+            SparqlResultSet asyncResults = null;
+            //DateTime start = DateTime.Now;
+            //DateTime end = start;
+            timer.Start();
+            endpoint.QueryWithResultSet(query, (r, s) =>
+            {
+                //end = DateTime.Now;
+                timer.Stop();
+                asyncResults = r;
+                signal.Set();
+                signal.Close();
+            }, null);
+
+            Thread.Sleep(AsyncTimeout);
+            Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
+
+            Console.WriteLine("Async Query: " + timer.Elapsed);//(end - start));
+            TestTools.ShowResults(asyncResults);
+
+            Assert.AreEqual(syncGetResults, asyncResults, "Result Sets should be equal");
         }
     }
 }
