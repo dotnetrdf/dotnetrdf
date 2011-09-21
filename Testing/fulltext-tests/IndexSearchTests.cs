@@ -526,5 +526,6 @@ namespace VDS.RDF.Test.Query.FullText
             }
 
         }
+
     }
 }

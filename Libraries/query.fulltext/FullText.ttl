@@ -60,3 +60,9 @@ dnr-ft:schema a rdf:Property ;
 dnr-ft:version a rdf:Property ;
 				rdfs:label "Version" ;
 				rdfs:comment "Used to state what version the index is and thus what compatibility settings if any apply" .
+				
+dnr-ft:ensureIndex a rdf:Property ;
+				   rdfs:label "Ensure Index" ;
+				   rdfs:comment "Used to state that the configuration loader should ensure the index is ready for use by creating and destroying an index writer relevant to the index being loaded" ;
+				   rdfs:range xsd:boolean ;
+				   rdfs:domain dnr-ft:Index .

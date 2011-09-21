@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using DirInfo = System.IO.DirectoryInfo;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
@@ -44,6 +47,8 @@ namespace VDS.RDF.Configuration
 
             Object tempIndex, tempAnalyzer, tempSchema;
             int ver = 2900;
+            //Always check for the version
+            ver = ConfigurationLoader.GetConfigurationInt32(g, objNode, version, 2900);
 
             switch (targetType.FullName)
             {
@@ -71,9 +76,6 @@ namespace VDS.RDF.Configuration
                 case LuceneSubjectsIndexer:
                 case LuceneSearchProvider:
                     //For any Lucene Indexer/Search Provider need to know the Index, Analyzer and Schema to be used
-
-                    //First of all check the version
-                    ver = ConfigurationLoader.GetConfigurationInt32(g, objNode, version, 2900);
 
                     //Then get the Index
                     tempIndex = ConfigurationLoader.GetConfigurationNode(g, objNode, index);
@@ -157,11 +159,31 @@ namespace VDS.RDF.Configuration
                         String dir = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
                         if (dir != null)
                         {
-                            obj = Activator.CreateInstance(targetType, new Object[] { dir });
+                            try
+                            {
+                                obj = Activator.CreateInstance(targetType, new Object[] { dir });
+                            }
+                            catch
+                            {
+                                MethodInfo method = targetType.GetMethod("Open", new Type[] { typeof(DirInfo) });
+                                if (method != null)
+                                {
+                                    obj = method.Invoke(null, new Object[] { new DirInfo(dir) });
+                                }
+                            }
                         }
                         else
                         {
                             obj = Activator.CreateInstance(targetType);
+                        }
+                        //Ensure the Index if necessary
+                        if (obj != null)
+                        {
+                            if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
+                            {
+                                IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)));
+                                writer.Close();
+                            }
                         }
                     }
                     break;
