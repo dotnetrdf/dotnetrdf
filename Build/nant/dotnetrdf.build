@@ -91,7 +91,7 @@
     <property name="dotnetrdf.nocompile" value="true" />
   </target>
 
-  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono,compile-windowsphone,compile-clientprofile">
+  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono,compile-windowsphone,compile-clientprofile,compile-data-sql,compile-data-virtuoso,compile-query-fulltext">
 
   </target>
 
@@ -219,6 +219,17 @@
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
     </exec>
   </target>
+
+  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
   
   <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
 
@@ -226,7 +237,7 @@
     <property name="dotnetrdf.nobuild" value="true" />
   </target>
   
-  <target name="build" description="Build dotNetRDF (except Release)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono,build-linq,build-clientprofile,build-windowsphone">
+  <target name="build" description="Build dotNetRDF Core and associated library (does not update the stable build in the bin directory, use build-release for that)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono,build-linq,build-clientprofile,build-windowsphone,build-data-sql,build-data-virtuoso,build-query-fulltext">
     
   </target>
   
@@ -297,6 +308,12 @@
     <copy overwrite="true" todir="../bin/data-virtuoso-nightly" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
+  <target name="build-query-fulltext" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext">
+    <copy overwrite="true" todir="../bin/query-fulltext-nightly" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/query-fulltext-nightly" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/query-fulltext-nightly" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
+  </target>
+
   <target name="build-release" description="Copy the stable build to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
     <!-- Documentation -->
     <copy overwrite="true" todir="../bin/stable/" file="../Acknowledgments.txt" />
@@ -331,6 +348,10 @@
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <!-- Query.FullText Build -->
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
   </target>
   
   <!-- Clean Targets for Cleaning the Builds -->
@@ -448,7 +469,7 @@
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
-  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit">
+  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit,dist-nuget">
     
   </target>
 
@@ -463,16 +484,16 @@
         <include name="**/*" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
-	<exclude name="**/*.dll" />
+	      <exclude name="**/*.dll" />
         <exclude name="**/*.exe" />
         <exclude name="**/*.pdb" />
         <exclude name="Testing/" />
         <exclude name="TestResults/" />
         <exclude name="Samples/" />
-	<exclude name="*.zip" />
-	<exclude name="Utilities/bsbm/" />
-	<exclude name="Build/ndoc3/doc/" />
-	<exclude name="Build/NuGet/*/lib/**/*" />
+	      <exclude name="*.zip" />
+	      <exclude name="Utilities/bsbm/" />
+	      <exclude name="Build/ndoc3/doc/" />
+	      <exclude name="Build/NuGet/*/lib/**/*" />
       </fileset>
     </zip>
   </target>
@@ -561,7 +582,10 @@
     </zip>
   </target>
 
-  <target name="dist-nuget" description="Creates the NuGet packages" depends="build-release">
+  <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-sql,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
+  </target>
+
+  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net35/">
@@ -583,17 +607,7 @@
         <include name="*" />
       </fileset>
     </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Data.Sql/lib/net35">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <!-- First create the Core library package -->
+    <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="../bin/stable/Core/net35/">
         <include name="*" />
@@ -614,6 +628,21 @@
         <include name="*" />
       </fileset>
     </copy>
+    <!-- Finally invoke nuget on the package -->
+    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.nuspec" />
+      <arg value="-verbose" />
+    </exec>
+  </target>
+
+  <target name="dist-nuget-data-sql" description="Creates the Data.Sql NuGet package" depends="build-release">
+    <!-- Firstly clean out the relevant directories -->
+    <delete>
+      <fileset basedir="Build/nuget/Data.Sql/lib/net35">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Data.Sql package -->
     <copy todir="Build/nuget/Data.Sql/lib/net35/">
       <fileset basedir="../bin/stable/Data/Sql/net35/">
@@ -621,6 +650,21 @@
         <include name="dotNetRDF.Data.Sql.xml" />
       </fileset>
     </copy>
+    <!-- Invoke nuget on the package -->
+    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.Data.Sql.nuspec" />
+      <arg value="-verbose" />
+    </exec>
+  </target>
+
+  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release">
+    <!-- Firstly clean out the relevant directories -->
+    <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Data.Virtuoso package -->
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="../bin/stable/Data/Virtuoso/net35/">
@@ -629,20 +673,33 @@
         <include name="OpenLink.Data.Virtuoso.dll" />
       </fileset>
     </copy>
-    <!-- Finally invoke nuget on each package -->
-    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.nuspec" />
-      <arg value="-verbose" />
-    </exec>
-    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.Data.Sql.nuspec" />
-      <arg value="-verbose" />
-    </exec>
+    <!-- Invoke nuget on the package -->
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
+      <arg value="-verbose" />
+    </exec>
+  </target>
+
+  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release">
+    <!-- Firstly clean out the relevant directories -->
+    <delete>
+      <fileset basedir="Build/nuget/Query.FullText/lib/net35">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <!-- Then create the Query.FullText package -->
+    <copy todir="Build/nuget/Query.FullText/lib/net35/">
+      <fileset basedir="../bin/stable/Query/FullText/net35/">
+        <include name="dotNetRDF.Query.FullText.dll" />
+        <include name="dotNetRDF.Query.FullText.xml" />
+        <include name="Lucene.Net.dll" />
+      </fileset>
+    </copy>
+    <!-- Invoke nuget on the package -->
+    <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
+      <arg value="pack" />
+      <arg value="dotNetRDF.Query.FullText.nuspec" />
       <arg value="-verbose" />
     </exec>
   </target>
@@ -678,28 +735,35 @@
     </ftp>
   </target>
 
-  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-sql,upload-nuget-data-virtuoso">
+  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-sql,upload-nuget-data-virtuoso,upload-nuget-query-fulltext">
 
   </target>
 
-  <target name="upload-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-nuget">
+  <target name="upload-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-nuget-core">
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
-  <target name="upload-nuget-data-sql" description="Uploads the Data.Sql Library package to the NuGet Gallery" depends="dist-nuget">
+  <target name="upload-nuget-data-sql" description="Uploads the Data.Sql Library package to the NuGet Gallery" depends="dist-nuget-data-sql">
     <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
-  <target name="upload-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-nuget">
+  <target name="upload-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-nuget-data-virtuoso">
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
+    </exec>
+  </target>
+
+  <target name="upload-nuget-query-fulltext" description="Uploads the Query.FullText Library package to the NuGet Gallery" depends="dist-nuget-query-fulltext">
+    <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
+      <arg value="push" />
+      <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
