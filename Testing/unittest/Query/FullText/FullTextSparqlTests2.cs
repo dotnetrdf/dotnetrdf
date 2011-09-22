@@ -159,6 +159,22 @@ namespace VDS.RDF.Test.Query.FullText
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
 
+        [TestMethod]
+        public void FullTextSparqlComplexLuceneSubjects6()
+        {
+            this.EnsureTestData();
+
+            List<INode> expected = (from t in this._dataset.Triples
+                                    where t.Object.NodeType == NodeType.Literal
+                                          && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
+                                    select t.Subject).ToList();
+            NodeFactory factory = new NodeFactory();
+            expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            expected.RemoveAll(n => !this._dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
+
+            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match ?p ?o }", expected);
+        }
+
         //[TestMethod]
         //public void GenerateQuarters()
         //{

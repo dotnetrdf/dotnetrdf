@@ -1,4 +1,5 @@
 ﻿@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+@prefix dnr-ft: <http://www.dotnetrdf.org/configuration/fulltext#> .
 @prefix fmt: <http://www.w3.org/ns/formats/>.
 
 # Customise to use PrettyRdfXmlWriter
@@ -7,6 +8,11 @@
 	dnr:type "VDS.RDF.Writing.PrettyRdfXmlWriter" ;
 	fmt:media_type "application/rdf+xml" ;
 	fmt:preferred_suffix "rdf" .
+	
+# Add the required Object Factories
+
+[] a dnr:ObjectFactory ;
+   dnr:type "VDS.RDF.Configuration.FullTextObjectFactory, dotNetRDF.Query.FullText" .
 
 # HTTP Handlers
 
@@ -17,6 +23,7 @@
 							  dnr:stylesheet "/demos/sparql.css" ;
 							  dnr:defaultQueryFile "~/App_Data/default.rq" ;
 							  dnr:timeout 15000 ;
+							  dnr:algebraOptimiser _:fullTextOpt ;
 							  dnr:compressionLevel 10 ;
 							  dnr:dtdWriting false ;
 							  dnr:importNamespacesFrom [ a dnr:Graph ; dnr:fromFile "~/App_Data/namespaces.ttl" ] .
@@ -136,11 +143,16 @@ _:store a dnr:TripleStore ;
 		
 _:store2 a dnr:TripleStore ;
 		dnr:type "VDS.RDF.WebDemandTripleStore" ;
-		dnr:usingGraph _:graph .
+		dnr:usingGraph _:graph ;
+		dnr:usingGraph _:graph2 .
 		
 _:graph a dnr:Graph ;
 		dnr:type "VDS.RDF.Graph" ;
 		dnr:fromFile "~/App_Data/InferenceTest.ttl" .
+		
+_:graph2 a dnr:Graph ;
+		 dnr:type "VDS.RDF.Graph" ;
+		 dnr:fromEmbedded "VDS.RDF.Configuration.configuration.ttl" .
 		
 _:users a dnr:UserGroup ;
 		dnr:type "VDS.RDF.Configuration.Permissions.UserGroup" ;
@@ -158,7 +170,24 @@ _:config a dnr:Graph ;
 _:monkey a dnr:SparqlExpressionFactory ;
 		 dnr:type "WebDemos.MonkeyExpressionFactory, WebDemos" .
 		 
-		
+_:fullTextOpt a dnr:AlgebraOptimiser ;
+			  dnr:type "VDS.RDF.Query.Optimisation.FullTextOptimiser, dotNetRDF.Query.FullText" ;
+			  dnr-ft:searcher _:luceneSearcher .
+			  
+_:luceneSearcher a dnr-ft:Searcher ;
+				 dnr:type "VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider, dotNetRDF.Query.FullText" ;
+				 dnr-ft:index _:luceneRAMIndex ;
+				 dnr-ft:buildIndexFor _:graph , _:graph2 ;				 
+				 dnr-ft:buildIndexWith _:luceneObjectsIndexer .
+				 
+_:luceneRAMIndex a dnr-ft:Index ;
+				 dnr:type "Lucene.Net.Store.RAMDirectory, Lucene.Net" ;
+				 dnr:ensureIndex true .
+				 
+_:luceneObjectsIndexer a dnr-ft:Indexer ;
+					   dnr:type "VDS.RDF.Query.FullText.Indexing.Lucene.LuceneObjectsIndexer, dotNetRDF.Query.FullText" ;
+					   dnr-ft:index _:luceneRAMIndex .
+		 
 #<dotnetrdf:/demos/koos/*> a dnr:HttpHandler ;
 #       dnr:queryProcessor _:koosQProc ;
 #       dnr:updateProcessor _:koosUProc ;

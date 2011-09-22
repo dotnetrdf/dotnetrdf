@@ -12,7 +12,7 @@ The Leviathan engine supports all of SPARQL 1.0 and SPARQL 1.1 plus a wide varie
 This demonstration endpoint may often be running a development build of dotNetRDF so capabilities and behaviour may differ from the public release versions.  To check this please examine the HTTP Headers on this page and you will see a custom <strong>X-dotNetRDF-Version</strong> Header detailing the deployed version.
 </p>
 <p>
-<strong>Note:</strong> This Demo has an initial data set which is a very small graph (58 triples) which we use for testing and debugging.  You can specify Graphs to query with by either using FROM and FROM NAMED clauses or by entering a URI in the Default Graph Uri box.  Loading Graphs may take a couple of seconds for the first query after which they will be temporarily cached for appoximately 15 minutes.
+<strong>Note:</strong> This Demo has an initial data set which is a couple of small graphs (~500 triples) which we use for testing and debugging.  You can specify Graphs to query from the web by either using FROM and FROM NAMED clauses or by entering a URI in the Default Graph Uri box.  Loading Graphs may take a couple of seconds for the first query after which they will be temporarily cached for appoximately 15 minutes.
 </p>
 <p>
 <strong>Default Graph:</strong> Unless explicitly specified using FROM clauses in the Query or the Default Graph URI field the Default Graph is the union of all Graphs in the Dataset
