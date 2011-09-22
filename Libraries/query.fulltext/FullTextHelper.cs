@@ -33,6 +33,24 @@ namespace VDS.RDF.Query
         /// </remarks>
         public const String FullTextConfigurationNamespace = "http://www.dotnetrdf.org/configuration/fulltext#";
 
+        /// <summary>
+        /// Constants for additional URIs provided by the Full Text Configuration Namespace
+        /// </summary>
+        public const String ClassIndex = FullTextConfigurationNamespace + "Index",
+                            ClassIndexer = FullTextConfigurationNamespace + "Indexer",
+                            ClassAnalyzer = FullTextConfigurationNamespace + "Analyzer",
+                            ClassSchema = FullTextConfigurationNamespace + "Schema",
+                            ClassSearcher = FullTextConfigurationNamespace + "Searcher",
+                            PropertyIndexer = FullTextConfigurationNamespace + "indexer",
+                            PropertyIndex = FullTextConfigurationNamespace + "index",
+                            PropertyAnalyzer = FullTextConfigurationNamespace + "analyzer",
+                            PropertySearcher = FullTextConfigurationNamespace + "searcher",
+                            PropertySchema = FullTextConfigurationNamespace + "schema",
+                            PropertyVersion = FullTextConfigurationNamespace + "version",
+                            PropertyEnsureIndex = FullTextConfigurationNamespace + "ensureIndex",
+                            PropertyBuildIndexFor = FullTextConfigurationNamespace + "buildIndexFor",
+                            PropertyBuildIndexWith = FullTextConfigurationNamespace + "buildIndexWith";
+
         internal static List<FullTextPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
         {
             //Do a first pass which simply looks to find any pf:textMatch properties

@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Reflection;
 using System.Text;
+using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
+using Lucene.Net.Store;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Schema;
@@ -155,6 +160,49 @@ namespace VDS.RDF.Query
             }
 
             return hash.ToString();
+        }
+
+        internal static void SerializeConfiguration(this Directory directory, ConfigurationSerializationContext context)
+        {
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode indexClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassIndex));
+            INode dirObj = context.NextSubject;
+
+            context.Graph.Assert(dirObj, rdfType, indexClass);
+            context.Graph.Assert(dirObj, context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
+            if (directory is RAMDirectory)
+            {
+                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().Name + ", Lucene.Net"));
+            }
+            else if (directory is FSDirectory)
+            {
+                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().Name + ", Lucene.Net"));
+                context.Graph.Assert(dirObj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyFromFile), context.Graph.CreateLiteralNode(((FSDirectory)directory).GetDirectory().FullName));
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("dotNetRDF.Query.FullText only supports automatically serializing configuration for Lucene indexes that use RAMDirectory or FSDirectory currently");
+            }
+        }
+
+        internal static void SerializeConfiguration(this Analyzer analyzer, ConfigurationSerializationContext context)
+        {
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode analyzerClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassAnalyzer));
+            INode analyzerObj = context.NextSubject;
+
+            Type t = analyzer.GetType();
+            if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new Type[] { typeof(Lucene.Net.Util.Version) }) != null)
+            {
+                context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
+                context.Graph.Assert(analyzerClass, dnrType, context.Graph.CreateLiteralNode(t.Name + ", " + t.Assembly.FullName));
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("dotNetRDF.Query.FullText only supports automatically serializing configuration for Lucene analyzers that have an unparameterised constructor or a constructor that takes a Version parameter");
+            }
         }
     }
 }

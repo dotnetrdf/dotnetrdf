@@ -188,48 +188,57 @@ namespace VDS.RDF.Configuration
                     break;
 
                 default:
-                    if (this._luceneAnalyzerType.IsAssignableFrom(targetType))
+                    try
                     {
-                        if (targetType.GetConstructor(new Type[] { typeof(LucVersion) }) != null)
+                        if (this._luceneAnalyzerType.IsAssignableFrom(targetType))
                         {
-                            obj = Activator.CreateInstance(targetType, new Object[] { this.GetLuceneVersion(ver) });
-                        }
-                        else
-                        {
-                            obj = Activator.CreateInstance(targetType);
-                        }
-                    }
-                    else if (this._luceneDirectoryType.IsAssignableFrom(targetType))
-                    {
-                        String dir = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
-                        if (dir != null)
-                        {
-                            try
+                            if (targetType.GetConstructor(new Type[] { typeof(LucVersion) }) != null)
                             {
-                                obj = Activator.CreateInstance(targetType, new Object[] { dir });
+                                obj = Activator.CreateInstance(targetType, new Object[] { this.GetLuceneVersion(ver) });
                             }
-                            catch
+                            else
                             {
-                                MethodInfo method = targetType.GetMethod("Open", new Type[] { typeof(DirInfo) });
-                                if (method != null)
+                                obj = Activator.CreateInstance(targetType);
+                            }
+                        }
+                        else if (this._luceneDirectoryType.IsAssignableFrom(targetType))
+                        {
+                            String dir = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
+                            if (dir != null)
+                            {
+                                try
                                 {
-                                    obj = method.Invoke(null, new Object[] { new DirInfo(dir) });
+                                    obj = Activator.CreateInstance(targetType, new Object[] { dir });
+                                }
+                                catch
+                                {
+                                    MethodInfo method = targetType.GetMethod("Open", new Type[] { typeof(DirInfo) });
+                                    if (method != null)
+                                    {
+                                        obj = method.Invoke(null, new Object[] { new DirInfo(dir) });
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                obj = Activator.CreateInstance(targetType);
+                            }
+                            //Ensure the Index if necessary
+                            if (obj != null)
+                            {
+                                if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
+                                {
+                                    IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)));
+                                    writer.Close();
                                 }
                             }
                         }
-                        else
-                        {
-                            obj = Activator.CreateInstance(targetType);
-                        }
-                        //Ensure the Index if necessary
-                        if (obj != null)
-                        {
-                            if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
-                            {
-                                IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)));
-                                writer.Close();
-                            }
-                        }
+                    }
+                    catch
+                    {
+                        //Since we know we don't allow loading of all analyzers and directories we allow for users to inject other object factories
+                        //which may know how to load those specific instances
+                        obj = null;
                     }
                     break;
             }

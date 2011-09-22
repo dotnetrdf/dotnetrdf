@@ -11,12 +11,14 @@ using Lucene.Net.QueryParsers;
 using LucSearch = Lucene.Net.Search;
 using Lucene.Net.Store;
 using LucUtil = Lucene.Net.Util;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.FullText.Schema;
 
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
     public abstract class BaseLuceneSearchProvider
-        : IFullTextSearchProvider
+        : IFullTextSearchProvider, IConfigurationSerializable
     {
         private Directory _indexDir;
         private LucSearch.IndexSearcher _searcher;
@@ -96,5 +98,47 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         protected virtual void DisposeInternal() { }
+
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
+            INode searcherObj = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode searcherClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassSearcher));
+            INode index = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyIndex));
+            INode schema = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertySchema));
+            INode analyzer = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyAnalyzer));
+
+            //Basic Properties
+            context.Graph.Assert(searcherObj, rdfType, searcherClass);
+            context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().Name + ", dotNetRDF.Query.FullText"));
+
+            //Serialize and link the Index
+            INode indexObj = context.Graph.CreateBlankNode();
+            context.NextSubject = indexObj;
+            this._indexDir.SerializeConfiguration(context);
+            context.Graph.Assert(searcherObj, index, indexObj);
+
+            //Serialize and link the Schema
+            INode schemaObj = context.Graph.CreateBlankNode();
+            context.NextSubject = schemaObj;
+            if (this._schema is IConfigurationSerializable)
+            {
+                ((IConfigurationSerializable)this._schema).SerializeConfiguration(context);
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("Unable to serialize configuration for this Lucene Search Provider as the IFullTextSchema used does not implement the IConfigurationSerializable interface");
+            }
+            context.Graph.Assert(searcherObj, schema, schemaObj);
+
+            //Serialize and link the Analyzer
+            INode analyzerObj = context.Graph.CreateBlankNode();
+            context.NextSubject = analyzerObj;
+            this._analyzer.SerializeConfiguration(context);
+            context.Graph.Assert(searcherObj, index, analyzerObj);
+        }
     }
 }
