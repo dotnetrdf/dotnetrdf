@@ -43,6 +43,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\LinkedDataTools.JenaDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Lucene.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="MySql.Data, Version=6.0.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -110,6 +114,10 @@
       <Project>{21512DB9-2795-4ED0-B3DB-910499A9D8AC}</Project>
       <Name>dotNetRDF.Interop.SemWeb</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\query.fulltext\dotNetRDF.Query.FullText.csproj">
+      <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
+      <Name>dotNetRDF.Query.FullText</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\bad_rdfa.html">
@@ -128,6 +136,15 @@
   <ItemGroup>
     <Compile Include="..\..\Libraries\core\Core\TripleComparers.cs">
       <Link>TripleComparers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\data.virtuoso\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\query.fulltext\FullTextExtensions.cs">
+      <Link>Query\FullText\FullTextExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\query.fulltext\FullTextHelper.cs">
+      <Link>Query\FullText\FullTextHelper.cs</Link>
     </Compile>
     <Compile Include="CompareToTests.cs" />
     <Compile Include="GraphDiffTests.cs" />
@@ -152,6 +169,14 @@
     <Compile Include="Parsing\RdfXmlNamespaces.cs" />
     <Compile Include="Parsing\SpeedTesting.cs" />
     <Compile Include="Parsing\StringReaderEncodingTests.cs" />
+    <Compile Include="Query\FullText\FullTextConfigTests.cs" />
+    <Compile Include="Query\FullText\FullTextHelperTests.cs" />
+    <Compile Include="Query\FullText\FullTextOptimiserTests.cs" />
+    <Compile Include="Query\FullText\FullTextSparqlTests.cs" />
+    <Compile Include="Query\FullText\FullTextSparqlTests2.cs" />
+    <Compile Include="Query\FullText\IndexCreationTests.cs" />
+    <Compile Include="Query\FullText\IndexSearchTests.cs" />
+    <Compile Include="Query\FullText\LuceneTestHarness.cs" />
     <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
     <Compile Include="Sparql\BindingsTests.cs" />
     <Compile Include="Sparql\BlankNodeVariableTests.cs" />
