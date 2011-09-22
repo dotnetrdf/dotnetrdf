@@ -10,7 +10,7 @@ namespace VDS.RDF.Query.FullText.Indexing
     {
         public override void Index(Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(Triple t) method");
+            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {
@@ -27,7 +27,7 @@ namespace VDS.RDF.Query.FullText.Indexing
                         break;
 
                     default:
-                        throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer can only use Objects or Subjects indexing mode");
+                        throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
                 }
             }
         }
@@ -36,7 +36,7 @@ namespace VDS.RDF.Query.FullText.Indexing
 
         public override void Unindex(Triple t)
         {
-            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(Triple t) method");
+            if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(Triple t) method");
 
             if (t.Object.NodeType == NodeType.Literal)
             {
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query.FullText.Indexing
                         break;
 
                     default:
-                        throw new FullTextQueryException("Indexers deriving from BaseSimpleFullTextIndexer can only use Objects or Subjects indexing mode");
+                        throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer can only use Subjects, Predicates or Objects indexing mode");
                 }
             }
         }

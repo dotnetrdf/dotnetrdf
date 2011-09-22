@@ -1,7 +1,41 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Patterns;
 
@@ -51,6 +85,11 @@ namespace VDS.RDF.Query
                             PropertyBuildIndexFor = FullTextConfigurationNamespace + "buildIndexFor",
                             PropertyBuildIndexWith = FullTextConfigurationNamespace + "buildIndexWith";
 
+        /// <summary>
+        /// Used to extract the patterns that make up a <see cref="FullTextPattern">FullTextPattern</see>
+        /// </summary>
+        /// <param name="patterns">Triple Patterns</param>
+        /// <returns></returns>
         internal static List<FullTextPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
         {
             //Do a first pass which simply looks to find any pf:textMatch properties
@@ -96,6 +135,13 @@ namespace VDS.RDF.Query
                     select new FullTextPattern(ftPatterns[key])).ToList();
         }
 
+        /// <summary>
+        /// Used to help extract the patterns that make up a <see cref="FullTextPattern">FullTextPattern</see>
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="subj">Subject</param>
+        /// <param name="ps">Patterns</param>
+        /// <param name="ftPatterns">Discovered Full Text Patterns</param>
         internal static void ExtractRelatedPatterns(PatternItem key, PatternItem subj, List<TriplePattern> ps, Dictionary<PatternItem, List<TriplePattern>> ftPatterns)
         {
             bool recurse = true;
