@@ -186,6 +186,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Result Limit (returns -1 if no limit)
+        /// </summary>
+        public int Limit
+        {
+            get
+            {
+                return this._limit;
+            }
+        }
+
+        /// <summary>
         /// Transforms the Inner Algebra using the given Optimiser
         /// </summary>
         /// <param name="optimiser">Optimiser</param>

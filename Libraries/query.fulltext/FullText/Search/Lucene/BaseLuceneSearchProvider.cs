@@ -1,12 +1,42 @@
-﻿using System;
-using System.Collections;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Lucene.Net;
 using Lucene.Net.Analysis;
-using Lucene.Net.Documents;
-using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using LucSearch = Lucene.Net.Search;
 using Lucene.Net.Store;
@@ -17,6 +47,12 @@ using VDS.RDF.Query.FullText.Schema;
 
 namespace VDS.RDF.Query.FullText.Search.Lucene
 {
+    /// <summary>
+    /// Abstract Base Implementation of a Full Text Search Provider using Lucene.Net
+    /// </summary>
+    /// <remarks>
+    /// Derived Implementations may only need to call the base constructor as the <see cref="LuceneSearchProvider">LuceneSearchProvider</see> does but if you've implemented custom indexing you may need to extend more of this class
+    /// </remarks>
     public abstract class BaseLuceneSearchProvider
         : IFullTextSearchProvider, IConfigurationSerializable
     {
@@ -27,6 +63,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         private Analyzer _analyzer;
         private IFullTextIndexSchema _schema;
 
+        /// <summary>
+        /// Creates a new Base Lucene Search Provider
+        /// </summary>
+        /// <param name="ver">Lucene Version</param>
+        /// <param name="indexDir">Directory</param>
+        /// <param name="analyzer">Analyzer</param>
+        /// <param name="schema">Index Schema</param>
         public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
         {
             this._version = ver;
@@ -35,18 +78,26 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this._schema = schema;
 
             //Create necessary objects
-            this._searcher = new LucSearch.IndexSearcher(this._indexDir);
+            this._searcher = new LucSearch.IndexSearcher(this._indexDir, true);
             this._parser = new QueryParser(this._version, this._schema.IndexField, this._analyzer);
         }
 
+        /// <summary>
+        /// Destructor which ensures that the Search Provider is properly disposed of
+        /// </summary>
         ~BaseLuceneSearchProvider()
         {
             this.Dispose(false);
         }
 
-        #region IFullTextSearchProvider Members
-
-        public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
+        /// <summary>
+        /// Gets results that match the given query with the score threshold and limit applied
+        /// </summary>
+        /// <param name="text">Search Query</param>
+        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="limit">Result Limit</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
         {
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
@@ -55,7 +106,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
                     select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
+        /// <summary>
+        /// Gets results that match the given query with the score threshold applied
+        /// </summary>
+        /// <param name="text">Search Query</param>
+        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
         {
             LucSearch.Query q = this._parser.Parse(text);
             DocCollector collector = new DocCollector(scoreThreshold);
@@ -64,7 +121,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
                     select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(string text, int limit)
+        /// <summary>
+        /// Gets results that match the given query with a limit applied
+        /// </summary>
+        /// <param name="text">Search Query</param>
+        /// <param name="limit">Result Limit</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
         {
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
@@ -72,7 +135,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
                     select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
         }
 
-        public IEnumerable<IFullTextSearchResult> Match(string text)
+        /// <summary>
+        /// Gets results that match the given query
+        /// </summary>
+        /// <param name="text">Search Query</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(string text)
         {
             LucSearch.Query q = this._parser.Parse(text);
             DocCollector collector = new DocCollector();
@@ -81,13 +149,18 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
                     select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
         }
 
-        #endregion
-
+        /// <summary>
+        /// Disposes of the Search Provider
+        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
         }
 
+        /// <summary>
+        /// Disposes of the Search Provider
+        /// </summary>
+        /// <param name="disposing">Whether this was called by the Dispose method</param>
         private void Dispose(bool disposing)
         {
             if (disposing) GC.SuppressFinalize(this);
@@ -97,9 +170,16 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             if (this._searcher != null) this._searcher.Close();
         }
 
+        /// <summary>
+        /// Virtual method that can be overridden to add implementation specific dispose logic
+        /// </summary>
         protected virtual void DisposeInternal() { }
 
-        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        /// <summary>
+        /// Serializes Configuration of this Provider
+        /// </summary>
+        /// <param name="context">Serialization Context</param>
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 

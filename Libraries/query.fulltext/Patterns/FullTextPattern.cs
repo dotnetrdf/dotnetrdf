@@ -1,4 +1,39 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,12 +42,19 @@ using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Patterns
 {
+    /// <summary>
+    /// Specialised Triple Pattern implementation used as a temporary data structure by the <see cref="VDS.RDF.Query.Optimisation.FullTextOptimiser">FullTextOptimiser</see>
+    /// </summary>
     public class FullTextPattern
         : BaseTriplePattern
     {
         private List<TriplePattern> _origPatterns = new List<TriplePattern>();
         private PatternItem _matchVar, _scoreVar, _searchTerm, _thresholdTerm, _limitTerm;
 
+        /// <summary>
+        /// Creates a new Full Text Pattern
+        /// </summary>
+        /// <param name="origPatterns">Original Patterns</param>
         public FullTextPattern(IEnumerable<TriplePattern> origPatterns)
         {
             this._origPatterns.AddRange(origPatterns.OrderBy(tp => tp.Predicate.ToString()));
@@ -126,6 +168,13 @@ namespace VDS.RDF.Query.Patterns
             if (this._searchTerm == null) throw new RdfQueryException("Failed to specify search terms");
         }
 
+#if UNFINISHED
+        /// <summary>
+        /// Creates a new Full Text Pattern
+        /// </summary>
+        /// <param name="matchVar">Match Variable</param>
+        /// <param name="scoreVar">Score Variable</param>
+        /// <param name="searchTerm">Search Term</param>
         public FullTextPattern(PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm)
         {
             this._matchVar = matchVar;
@@ -148,7 +197,11 @@ namespace VDS.RDF.Query.Patterns
                 this._origPatterns.Add(new TriplePattern(this._matchVar, new NodeMatchPattern(factory.CreateUriNode(new Uri(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
             }
         }
+#endif
 
+        /// <summary>
+        /// Gets the Original Triple Patterns
+        /// </summary>
         public IEnumerable<TriplePattern> OriginalPatterns
         {
             get
@@ -157,6 +210,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Match Variable
+        /// </summary>
         public PatternItem MatchVariable
         {
             get
@@ -165,6 +221,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Score Variable
+        /// </summary>
         public PatternItem ScoreVariable
         {
             get
@@ -173,6 +232,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Search Terms
+        /// </summary>
         public PatternItem SearchTerm
         {
             get
@@ -181,6 +243,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Score Threshold
+        /// </summary>
         public double ScoreThreshold
         {
             get
@@ -196,6 +261,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Result Limit
+        /// </summary>
         public int Limit
         {
             get
@@ -211,12 +279,24 @@ namespace VDS.RDF.Query.Patterns
             }
         }
         
+        /// <summary>
+        /// Evaluates the Triple Pattern in the given Context
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <remarks>
+        /// <para>
+        /// Since a <see cref="FullTextPattern">FullTextPattern</see> on its own does not know how to execute itself as it would need a <see cref="VDS.RDF.Query.FullText.Search.IFullTextSearchProvider">IFullTextSearchProvider</see> it simply creates a BGP from the original patterns and they are evaluated as simple triple matches
+        /// </para>
+        /// </remarks>
         public override void Evaluate(SparqlEvaluationContext context)
         {
             Bgp bgp = new Bgp(this._origPatterns);
             context.Evaluate(bgp);
         }
 
+        /// <summary>
+        /// Returns that the pattern does not accept all triples
+        /// </summary>
         public override bool IsAcceptAll
         {
             get 
@@ -225,6 +305,10 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the String representation of the Triple Pattern
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();

@@ -22,6 +22,12 @@ namespace VDS.RDF.Query.FullText
     /// <para>
     /// Those who are familiar will note that this is the same syntax as used by <a href="http://jena.sourceforge.net/ARQ/lucene-arq.html">LARQ</a> and all the syntactic variations from LARQ such as retrieving scores, applying thresholds and limits are also supported by our full text query.
     /// </para>
+    /// <para>
+    /// Search Text can be a simple textual search term or it may be any valid query as supported by the underlying full text query provider:
+    /// </para>
+    /// <ul>
+    ///     <li>Lucene.Net - See the <a href="http://lucene.apache.org/java/2_9_2/queryparsersyntax.html">Lucene 2.9.2 Query Syntax</a> documentation</li>
+    /// </ul>
     /// <h4>Important</h4>
     /// <para>
     /// The <strong>FullText</strong> namespace is provided by the plugin library <strong>dotNetRDF.Query.FullText.dll</strong>
