@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using DirInfo = System.IO.DirectoryInfo;
 using System.Linq;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
 using Lucene.Net.Store;
 using VDS.RDF;
 using VDS.RDF.Configuration;
@@ -16,6 +18,7 @@ using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
+using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Test.Query.FullText
 {
@@ -399,6 +402,156 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 provider.Dispose();
             }          
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeSchemaDefault()
+        {
+            DefaultIndexSchema schema = new DefaultIndexSchema();
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            schema.SerializeConfiguration(context);
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is DefaultIndexSchema, "Should have returned a DefaultIndexSchema instance");
+            Assert.IsTrue(temp is IFullTextIndexSchema, "Should have returned a IFullTextIndexSchema instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeIndexLuceneRAM()
+        {
+            RAMDirectory directory = new RAMDirectory();
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            directory.SerializeConfiguration(context);
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is RAMDirectory, "Should have returned a RAMDirectory instance");
+            Assert.IsTrue(temp is Directory, "Should have returned a Directory instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeIndexLuceneFS()
+        {
+            FSDirectory directory = FSDirectory.Open(new DirInfo("test"));
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            directory.SerializeConfiguration(context);
+            directory.Close();
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is FSDirectory, "Should have returned a FSDirectory instance");
+            Assert.IsTrue(temp is Directory, "Should have returned a Directory instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeAnalyzerLuceneStandard()
+        {
+            StandardAnalyzer analyzer = new StandardAnalyzer();
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            analyzer.SerializeConfiguration(context);
+            
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is StandardAnalyzer, "Should have returned a StandardAnalyzer instance");
+            Assert.IsTrue(temp is Analyzer, "Should have returned a Analyzer instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeIndexerLuceneSubjects()
+        {
+            LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            indexer.SerializeConfiguration(context);
+            indexer.Dispose();
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is LuceneSubjectsIndexer, "Should have returned a LuceneSubjectsIndexer instance");
+            Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeIndexerLuceneObjects()
+        {
+            LuceneObjectsIndexer indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            indexer.SerializeConfiguration(context);
+            indexer.Dispose();
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is LuceneObjectsIndexer, "Should have returned a LuceneObjectsIndexer instance");
+            Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeIndexerLucenePredicates()
+        {
+            LucenePredicatesIndexer indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
+            ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+            INode obj = context.Graph.CreateBlankNode();
+            context.NextSubject = obj;
+            indexer.SerializeConfiguration(context);
+            indexer.Dispose();
+
+            TestTools.ShowGraph(context.Graph);
+
+            ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+            Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+            Assert.IsTrue(temp is LucenePredicatesIndexer, "Should have returned a LucenePredicatesIndexer instance");
+            Assert.IsTrue(temp is IFullTextIndexer, "Should have returned a IFullTextIndexer instance");
+        }
+
+        [TestMethod]
+        public void FullTextConfigSerializeFullTextOptimiser()
+        {
+            try
+            {
+                IndexWriter writer = new IndexWriter(LuceneTestHarness.Index, LuceneTestHarness.Analyzer);
+                writer.Close();
+
+                FullTextOptimiser optimiser = new FullTextOptimiser(new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index, LuceneTestHarness.Schema));
+                ConfigurationSerializationContext context = new ConfigurationSerializationContext();
+                INode obj = context.Graph.CreateBlankNode();
+                context.NextSubject = obj;
+                optimiser.SerializeConfiguration(context);
+
+                TestTools.ShowGraph(context.Graph);
+
+                ConfigurationLoader.AutoDetectObjectFactories(context.Graph);
+                Object temp = ConfigurationLoader.LoadObject(context.Graph, obj);
+                Assert.IsTrue(temp is FullTextOptimiser, "Should have returned a LucenePredicatesIndexer instance");
+                Assert.IsTrue(temp is IAlgebraOptimiser, "Should have returned a IFullTextIndexer instance");
+            }
+            finally
+            {
+                LuceneTestHarness.Index.Close();
+            }
         }
     }
 }

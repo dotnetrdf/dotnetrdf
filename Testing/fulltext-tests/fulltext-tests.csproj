@@ -44,8 +44,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\..\Trunk\Libraries\data.virtuoso\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
       <Link>TestTools.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\query.fulltext\FullTextExtensions.cs">
+      <Link>FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Libraries\query.fulltext\FullTextHelper.cs">
       <Link>FullTextHelper.cs</Link>

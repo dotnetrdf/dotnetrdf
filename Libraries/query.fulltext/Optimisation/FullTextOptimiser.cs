@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
@@ -10,7 +12,7 @@ using VDS.RDF.Query.FullText.Search;
 namespace VDS.RDF.Query.Optimisation
 {
     public class FullTextOptimiser
-        : IAlgebraOptimiser
+        : IAlgebraOptimiser, IConfigurationSerializable
     {
         private IFullTextSearchProvider _provider;
 
@@ -160,6 +162,28 @@ namespace VDS.RDF.Query.Optimisation
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;
+        }
+
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
+            INode optObj = context.NextSubject;
+
+            context.Graph.Assert(optObj, context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassAlgebraOptimiser));
+            context.Graph.Assert(optObj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType), context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
+
+            if (this._provider is IConfigurationSerializable)
+            {
+                INode searcherObj = context.Graph.CreateBlankNode();
+                context.NextSubject = searcherObj;
+                ((IConfigurationSerializable)this._provider).SerializeConfiguration(context);
+                context.Graph.Assert(optObj, context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertySearcher)), searcherObj);
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("Unable to serialize configuration for this Full Text Optimiser as the Search Provider used does not implement the required IConfigurationSerializable interface");
+            }
         }
     }
 }

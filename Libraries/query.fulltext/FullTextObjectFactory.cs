@@ -215,7 +215,7 @@ namespace VDS.RDF.Configuration
                                     MethodInfo method = targetType.GetMethod("Open", new Type[] { typeof(DirInfo) });
                                     if (method != null)
                                     {
-                                        obj = method.Invoke(null, new Object[] { new DirInfo(dir) });
+                                        obj = method.Invoke(null, new Object[] { new DirInfo(ConfigurationLoader.ResolvePath(dir)) });
                                     }
                                 }
                             }

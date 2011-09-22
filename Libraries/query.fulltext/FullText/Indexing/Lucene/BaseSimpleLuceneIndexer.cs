@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
 
             //Basic Properties
             context.Graph.Assert(indexerObj, rdfType, indexerClass);
-            context.Graph.Assert(indexerObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().Name + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(indexerObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             //Serialize and link the Index
             INode indexObj = context.Graph.CreateBlankNode();

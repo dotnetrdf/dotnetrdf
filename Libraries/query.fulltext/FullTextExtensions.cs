@@ -164,6 +164,8 @@ namespace VDS.RDF.Query
 
         internal static void SerializeConfiguration(this Directory directory, ConfigurationSerializationContext context)
         {
+            context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode indexClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassIndex));
@@ -173,11 +175,11 @@ namespace VDS.RDF.Query
             context.Graph.Assert(dirObj, context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
             if (directory is RAMDirectory)
             {
-                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().Name + ", Lucene.Net"));
+                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().FullName + ", Lucene.Net"));
             }
             else if (directory is FSDirectory)
             {
-                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().Name + ", Lucene.Net"));
+                context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(typeof(FSDirectory).FullName + ", Lucene.Net"));
                 context.Graph.Assert(dirObj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyFromFile), context.Graph.CreateLiteralNode(((FSDirectory)directory).GetDirectory().FullName));
             }
             else
@@ -188,6 +190,8 @@ namespace VDS.RDF.Query
 
         internal static void SerializeConfiguration(this Analyzer analyzer, ConfigurationSerializationContext context)
         {
+            context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode analyzerClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassAnalyzer));
@@ -197,7 +201,7 @@ namespace VDS.RDF.Query
             if (t.GetConstructor(Type.EmptyTypes) != null || t.GetConstructor(new Type[] { typeof(Lucene.Net.Util.Version) }) != null)
             {
                 context.Graph.Assert(analyzerObj, rdfType, analyzerClass);
-                context.Graph.Assert(analyzerClass, dnrType, context.Graph.CreateLiteralNode(t.Name + ", " + t.Assembly.FullName));
+                context.Graph.Assert(analyzerObj, dnrType, context.Graph.CreateLiteralNode(t.FullName + ", Lucene.Net"));
             }
             else
             {

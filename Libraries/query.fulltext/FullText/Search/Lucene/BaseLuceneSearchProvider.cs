@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             //Basic Properties
             context.Graph.Assert(searcherObj, rdfType, searcherClass);
-            context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().Name + ", dotNetRDF.Query.FullText"));
+            context.Graph.Assert(searcherObj, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             //Serialize and link the Index
             INode indexObj = context.Graph.CreateBlankNode();
