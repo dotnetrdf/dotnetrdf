@@ -42,7 +42,8 @@ namespace VDS.RDF.Configuration
     /// <summary>
     /// An Object Factory that can generate SPARQL Query and Algebra Optimisers
     /// </summary>
-    public class OptimiserFactory : IObjectFactory
+    public class OptimiserFactory
+        : IObjectFactory
     {
         private const String QueryOptimiserDefault = "VDS.RDF.Query.Optimisation.DefaultOptimiser";
         private const String QueryOptimiserNoReorder = "VDS.RDF.Query.Optimisation.NoReorderOptimiser";
