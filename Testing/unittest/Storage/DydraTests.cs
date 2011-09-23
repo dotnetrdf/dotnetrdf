@@ -275,7 +275,7 @@ namespace VDS.RDF.Test.Storage
                 //Options.HttpFullDebugging = true;
 
                 DydraConnector dydra = this.GetConnection();
-                Object results = dydra.Query("SELECT * WHERE { ?s a ?type }");
+                Object results = dydra.Query("SELECT * WHERE { { ?s a ?type } UNION { GRAPH ?g { ?s a ?type } } }");
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
@@ -308,7 +308,7 @@ namespace VDS.RDF.Test.Storage
                 //Options.HttpFullDebugging = true;
 
                 DydraConnector dydra = this.GetConnection();
-                Object results = dydra.Query("CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
+                Object results = dydra.Query("CONSTRUCT { ?s a ?type } WHERE { { ?s a ?type } UNION { GRAPH ?g { ?s a ?type } } }");
                 if (results is IGraph)
                 {
                     IGraph g = (IGraph)results;
@@ -363,7 +363,7 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageFourStoreRemoveTriples()
+        public void StorageDydraRemoveTriples()
         {
             try
             {
@@ -379,12 +379,12 @@ namespace VDS.RDF.Test.Storage
                 List<Triple> ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", ts, null);
+                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", null, ts);
 
                 g = new Graph();
                 dydra.LoadGraph(g, "http://example.org/dydra/addRemoveTest");
 
-                Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
+                Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should be in the Graph");
             }
             finally
             {

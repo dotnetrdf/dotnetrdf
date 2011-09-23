@@ -38,6 +38,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 #if !NO_WEB
@@ -67,6 +68,7 @@ namespace VDS.RDF.Storage
         private String _baseUri;
         private bool _hasCredentials = false;
         private SparqlQueryParser _parser = new SparqlQueryParser();
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new connection to Dydra
@@ -271,12 +273,56 @@ namespace VDS.RDF.Storage
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
         public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            throw new NotImplementedException();
+            StringBuilder sparqlUpdate = new StringBuilder();
+
+            //Build the SPARQL Update Commands
+            if (removals != null && removals.Any())
+            {
+                sparqlUpdate.AppendLine("DELETE DATA");
+                sparqlUpdate.AppendLine("{");
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                }
+                foreach (Triple t in removals)
+                {
+                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                }
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("}");
+                }
+                sparqlUpdate.AppendLine("}");
+            }
+            if (additions != null && additions.Any())
+            {
+                sparqlUpdate.AppendLine("INSERT DATA");
+                sparqlUpdate.AppendLine("{");
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                }
+                foreach (Triple t in additions)
+                {
+                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                }
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("}");
+                }
+                sparqlUpdate.AppendLine("}");
+            }
+
+            //Send them to Dydra for processing
+            if (sparqlUpdate.Length > 0)
+            {
+                this.Update(sparqlUpdate.ToString());
+            }
         }
 
         /// <summary>
@@ -295,7 +341,14 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(string graphUri)
         {
-            throw new NotImplementedException();
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
+            }
+            else
+            {
+                this.Update("DROP DEFAULT");
+            }
         }
 
         /// <summary>
@@ -303,7 +356,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
         {
-            throw new NotImplementedException();
+            this.DeleteGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
@@ -449,7 +502,32 @@ namespace VDS.RDF.Storage
 
         public void Update(String sparqlUpdates)
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = this.CreateRequest("/sparql", MimeTypesHelper.HttpSparqlAcceptHeader, "POST", null);
+
+            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            {
+                writer.Write("query=");
+                writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
+                writer.Close();
+            }
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
+                //If we get here then it completed OK
+                response.Close();
+            }
         }
 
         /// <summary>
@@ -458,9 +536,9 @@ namespace VDS.RDF.Storage
         /// <param name="servicePath">Path to the Service requested</param>
         /// <param name="accept">Acceptable Content Types</param>
         /// <param name="method">HTTP Method</param>
-        /// <param name="queryParams">Querystring Parameters</param>
+        /// <param name="requestParams">Querystring Parameters</param>
         /// <returns></returns>
-        protected HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        protected HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
         {
             //Modify the Accept header appropriately to remove any mention of HTML
             //HACK: Have to do this otherwise Dydra won't HTTP authenticate nicely
@@ -491,21 +569,24 @@ namespace VDS.RDF.Storage
             //{
             //    requestUri += "?auth_token=" + Uri.EscapeDataString(this._apiKey);
             //}
-            if (queryParams.Count > 0)
+            if (requestParams != null)
             {
-                if (requestUri.Contains("?"))
+                if (requestParams.Count > 0)
                 {
-                    if (!requestUri.EndsWith("&")) requestUri += "&";
+                    if (requestUri.Contains("?"))
+                    {
+                        if (!requestUri.EndsWith("&")) requestUri += "&";
+                    }
+                    else
+                    {
+                        requestUri += "?";
+                    }
+                    foreach (String p in requestParams.Keys)
+                    {
+                        requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
+                    }
+                    requestUri = requestUri.Substring(0, requestUri.Length - 1);
                 }
-                else
-                {
-                    requestUri += "?";
-                }
-                foreach (String p in queryParams.Keys)
-                {
-                    requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
-                }
-                requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }
 
             //Create our Request
