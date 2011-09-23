@@ -1,6 +1,4 @@
-﻿#if UNFINISHED
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,7 +17,8 @@ namespace VDS.RDF.Test.Storage
 
         public const String DydraAccount = "rvesse",
                             DydraRepository = "test",
-                            DydraApiKeyFile = "dydra-api-key.txt";
+                            DydraApiKeyFile = "dydra-api-key.txt",
+                            DydraTestGraphUri = "http://example.org/dydraTest";
 
         private DydraConnector GetConnection()
         {
@@ -89,6 +88,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                orig.BaseUri = new Uri(DydraTestGraphUri);
 
                 DydraConnector dydra = this.GetConnection();
                 dydra.SaveGraph(orig);
@@ -153,9 +153,11 @@ namespace VDS.RDF.Test.Storage
 
                 DydraConnector dydra = this.GetConnection();
                 Graph g = new Graph();
-                dydra.LoadGraph(g, new Uri("http://www.dotnetrdf.org/configuration#"));
+                dydra.LoadGraph(g, new Uri(DydraTestGraphUri));
 
                 TestTools.ShowGraph(g);
+
+                Assert.IsTrue(g.Triples.Count > 0, "Should be 1 or more triples returned");
             }
             catch (Exception ex)
             {
@@ -392,4 +394,3 @@ namespace VDS.RDF.Test.Storage
     }
 }
 
-#endif

@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if UNFINISHED
-
 #if !NO_DATA && !NO_STORAGE
 
 using System;
@@ -42,10 +40,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
@@ -56,11 +59,13 @@ namespace VDS.RDF.Storage
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
     public class DydraConnector
-        : SesameHttpProtocolConnector
+        : IUpdateableGenericIOManager
     {
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
-        private String _account, _apiKey;
+        private String _account, _repo, _apiKey, _username, _pwd;
+        private String _baseUri;
+        private bool _hasCredentials = false;
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         /// <summary>
@@ -69,13 +74,10 @@ namespace VDS.RDF.Storage
         /// <param name="accountID">Account ID</param>
         /// <param name="repositoryID">Repository ID</param>
         public DydraConnector(String accountID, String repositoryID)
-            : base(DydraBaseUri + accountID + "/", repositoryID)
         {
             this._account = accountID;
-            this._repositoriesPrefix = String.Empty;
-            this._queryPath = "/sparql";
-            //this._fullContextEncoding = false;
-            //this._postAllQueries = true;
+            this._repo = repositoryID;
+            this._baseUri = DydraBaseUri + accountID + "/" + repositoryID;
         }
 
         /// <summary>
@@ -101,17 +103,131 @@ namespace VDS.RDF.Storage
         //    this._hasCredentials = true;
         //}
 
+        public bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public void SaveGraph(IGraph g)
+        {
+            HttpWebRequest request;
+            Dictionary<String, String> requestParams = new Dictionary<string, string>();
+            if (g.BaseUri != null)
+            {
+                requestParams.Add("context", g.BaseUri.ToString());
+                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
+            }
+            else
+            {
+                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "POST", requestParams);
+            }
+
+            IRdfWriter rdfWriter = new RdfXmlWriter();
+            request.ContentType = MimeTypesHelper.RdfXml[0];
+            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+            {
+                rdfWriter.Save(g, writer);
+                writer.Close();
+            }
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
+                //If we get here then operation completed OK
+                response.Close();
+            }
+        }
+
+        public void LoadGraph(IGraph g, Uri graphUri)
+        {
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IGraph g, String graphUri)
+        {
+            this.LoadGraph(new GraphHandler(g), graphUri);
+        }
+
+        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString());
+        }
+
+        public void LoadGraph(IRdfHandler handler, String graphUri)
+        {
+            Dictionary<String, String> requestParams = new Dictionary<string, string>();
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                requestParams.Add("context", "<" + graphUri + ">");
+            }
+
+            HttpWebRequest request = this.CreateRequest("/statements", MimeTypesHelper.HttpAcceptHeader, "GET", requestParams);
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
+
+                //If we get here try and parse the response
+                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                response.Close();
+            }
+        }
+
+        public bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         /// <summary>
         /// Lists the Graphs from the Repository
         /// </summary>
         /// <returns></returns>
-        public override IEnumerable<Uri> ListGraphs()
+        public IEnumerable<Uri> ListGraphs()
         {
             try
             {
                 //Use the /contexts method to get the Graph URIs
                 //HACK: Have to use SPARQL JSON as currently Dydra's SPARQL XML Results are malformed
-                HttpWebRequest request = this.CreateRequest(this._store + "/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlJson), "GET", new Dictionary<string, string>());
+                HttpWebRequest request = this.CreateRequest("/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlJson), "GET", new Dictionary<string, string>());
                 SparqlResultSet results = new SparqlResultSet();
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
@@ -145,10 +261,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Gets that deleting Graphs is not supported
-        /// </summary>
-        public override bool DeleteSupported
+        public bool UpdateSupported
         {
             get
             {
@@ -156,23 +269,42 @@ namespace VDS.RDF.Storage
             }
         }
 
-        ///// <summary>
-        ///// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
-        ///// </summary>
-        ///// <param name="graphUri">URI of the Graph to delete</param>
-        //public override void DeleteGraph(string graphUri)
-        //{
-        //    throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
-        //}
+        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new NotImplementedException();
+        }
 
-        ///// <summary>
-        ///// Throws a <see cref="NotSupportedException">NotSupportedException</see> as bugs with Dydra mean deleting graphs is not currently supportable
-        ///// </summary>
-        ///// <param name="graphUri">URI of the Graph to delete</param>
-        //public override void DeleteGraph(Uri graphUri)
-        //{
-        //    throw new NotSupportedException("Dydra does not yet properly support deleting graphs via HTTP");
-        //}
+        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets that deleting Graphs is not supported
+        /// </summary>
+        public bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        public void DeleteGraph(string graphUri)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        public void DeleteGraph(Uri graphUri)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store
@@ -181,7 +313,7 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">SPARQL Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public override void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery)
         {
             try
             {
@@ -206,21 +338,21 @@ namespace VDS.RDF.Storage
                 //Create the Request
                 HttpWebRequest request;
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
+                if (sparqlQuery.Length < 2048)
                 {
-                    queryParams.Add("query", EscapeQuery(sparqlQuery));
+                    queryParams.Add("query", sparqlQuery);
 
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
+                    request = this.CreateRequest("/sparql", accept, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
+                    request = this.CreateRequest("/sparql", accept, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
-                    postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
+                    postData.Append(HttpUtility.UrlEncode(sparqlQuery));
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
@@ -299,7 +431,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
-        public override object Query(string sparqlQuery)
+        public object Query(string sparqlQuery)
         {
             Graph g = new Graph();
             SparqlResultSet results = new SparqlResultSet();
@@ -315,6 +447,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void Update(String sparqlUpdates)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
@@ -323,7 +460,7 @@ namespace VDS.RDF.Storage
         /// <param name="method">HTTP Method</param>
         /// <param name="queryParams">Querystring Parameters</param>
         /// <returns></returns>
-        protected override HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        protected HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
         {
             //Modify the Accept header appropriately to remove any mention of HTML
             //HACK: Have to do this otherwise Dydra won't HTTP authenticate nicely
@@ -386,16 +523,6 @@ namespace VDS.RDF.Storage
             return request;
         }
 
-        /// <summary>
-        /// Escapes queries
-        /// </summary>
-        /// <param name="query">Query</param>
-        /// <returns></returns>
-        protected override string EscapeQuery(string query)
-        {
-            return query;
-        }
-
         private String GetCredentialedUri()
         {
             if (this._hasCredentials)
@@ -419,7 +546,7 @@ namespace VDS.RDF.Storage
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -433,7 +560,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._account)));
-            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._store)));
+            context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._repo)));
 
             if (this._apiKey != null || (this._username != null && this._pwd != null))
             {
@@ -451,17 +578,20 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public void Dispose()
+        {
+            //No Dispose actions needed
+        }
+
         /// <summary>
         /// Gets a String representation of the Connection
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "[Dydra] Repository '" + this._store + "' on Account '" + this._account + "'";
+            return "[Dydra] Repository '" + this._repo + "' on Account '" + this._account + "'";
         }
     }
 }
-
-#endif
 
 #endif
