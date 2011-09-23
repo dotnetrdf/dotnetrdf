@@ -3,6 +3,7 @@
         <assembly location="..\..\Libraries\core\bin\Debug\dotNetRDF.dll" documentation="..\..\Libraries\core\bin\Debug\dotNetRDF.xml" />
         <assembly location="..\..\Libraries\data.sql\bin\Debug\dotNetRDF.Data.Sql.dll" documentation="..\..\Libraries\data.sql\bin\Debug\dotNetRDF.Data.Sql.xml" />
         <assembly location="..\..\Libraries\data.virtuoso\bin\Debug\dotNetRDF.Data.Virtuoso.dll" documentation="..\..\Libraries\data.virtuoso\bin\Debug\dotNetRDF.Data.Virtuoso.xml" />
+        <assembly location="..\..\Libraries\query.fulltext\bin\Debug\dotNetRDF.Query.FullText.dll" documentation="..\..\Libraries\query.fulltext\bin\Debug\dotNetRDF.Query.FullText.xml" />
     </assemblies>
     <documenters>
         <documenter name="MSDN">

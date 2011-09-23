@@ -182,7 +182,7 @@ _:luceneSearcher a dnr-ft:Searcher ;
 				 
 _:luceneRAMIndex a dnr-ft:Index ;
 				 dnr:type "Lucene.Net.Store.RAMDirectory, Lucene.Net" ;
-				 dnr:ensureIndex true .
+				 dnr-ft:ensureIndex true .
 				 
 _:luceneObjectsIndexer a dnr-ft:Indexer ;
 					   dnr:type "VDS.RDF.Query.FullText.Indexing.Lucene.LuceneObjectsIndexer, dotNetRDF.Query.FullText" ;

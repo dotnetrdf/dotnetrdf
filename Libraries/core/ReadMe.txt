@@ -13,6 +13,9 @@ It also contains the following Data providers for .Net 3.5 only:
 - Sql - provides our ADO Store backend
 - Virtuoso - provides support for OpenLink Virtuoso
 
+And it contains the following Query plugins for .Net 3.5 only:
+- FullText - provides full text SPARQL query support
+
 Please see the Release Notes for usage details and Known Issues
 
 Robert Vesse 2009-11
@@ -31,8 +34,9 @@ alternative terms
 Security
 --------
 
-This Project creates a Strong Name signed assembly.  The Key file for this requires a Password which is as follows:
-VDSOpenSource2009
+This Project creates a Strong Name signed assembly for the Core Library only.
+
+The Key file for this requires a Password which is as follows: VDSOpenSource2009
 
 For security conscious deployment scenarios we suggest that you build the project from source and use your own key file
 

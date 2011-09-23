@@ -51,7 +51,8 @@ namespace VDS.RDF.Web
     /// Configured exactly in the same way as <see cref="GraphHandler">GraphHandler</see> - only difference in functionality is that if the requested Content Type (based on the Accept: header) is HTML then the <see cref="HtmlSchemaWriter">HtmlSchemaWriter</see> will be used to provide a human readable schema document rather than the standard <see cref="HtmlWriter">HtmlWriter</see> which justs creates a table of Triples.  Remember though that this means that the HTML output will not contain embedded RDFa as the <see cref="HtmlSchemaWriter">HtmlSchemaWriter</see> does not embed any as opposed to the standard <see cref="HtmlWriter">HtmlWriter</see> which does.
     /// </para>
     /// </remarks>
-    public class SchemaGraphHandler : GraphHandler
+    public class SchemaGraphHandler 
+        : GraphHandler
     {
         private Type _htmlWriter = typeof(HtmlWriter);
 
