@@ -857,7 +857,7 @@ namespace VDS.RDF.Configuration
         {
             IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
             INode declaredType = ConfigurationLoader.GetConfigurationNode(g, objNode, rdfType);
-            //BUG: declaredType might be null here so check for that
+            if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)
             {
                 String typeUri = declaredType.ToString();

@@ -27,7 +27,6 @@
 							  dnr:compressionLevel 10 ;
 							  dnr:dtdWriting false ;
 							  dnr:importNamespacesFrom [ a dnr:Graph ; dnr:fromFile "~/App_Data/namespaces.ttl" ] .
-							  #dnr:expressionFactory _:monkey .
 							  
 <dotnetrdf:/demos/secure/> a dnr:HttpHandler ;
 						   dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -60,6 +59,11 @@
 						   dnr:queryProcessor _:pellet .
 						   
 <dotnetrdf:/demos/sampleConfig> a dnr:HttpHandler ;
+							    dnr:type "VDS.RDF.Web.GraphHandler" ;
+							    dnr:stylesheet "/demos/sparql.css" ;
+							    dnr:usingGraph _:config .
+							    
+<dotnetrdf:/demos/sampleConfig/nested/> a dnr:HttpHandler ;
 							    dnr:type "VDS.RDF.Web.GraphHandler" ;
 							    dnr:stylesheet "/demos/sparql.css" ;
 							    dnr:usingGraph _:config .

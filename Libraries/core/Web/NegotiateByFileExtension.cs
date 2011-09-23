@@ -40,13 +40,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Web
 {
     /// <summary>
     /// A HTTP Module that attempts to allow content negotiation by file extension wherever applicable
     /// </summary>
-    public class NegotiateByFileExtension : IHttpModule
+    public class NegotiateByFileExtension 
+        : IHttpModule
     {
         /// <summary>
         /// Disposes of the Module
@@ -79,7 +81,7 @@ namespace VDS.RDF.Web
 
             if (context.Request.Url.AbsolutePath.Contains("."))
             {
-                String actualPath = context.Request.MapPath(context.Request.FilePath);
+                String actualPath = context.Request.MapPath(context.Request.Path);
                 if (!File.Exists(actualPath))
                 {
                     //Get the File Extension and see if it is for an RDF format
@@ -95,18 +97,25 @@ namespace VDS.RDF.Web
                             return;
                     }
 
-                    List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).ToList();
-                    if (defs.Count == 0) return;
-
-                    context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());
-                    String filePath = Path.GetFileNameWithoutExtension(actualPath);
-                    if (filePath == null || filePath.Equals(String.Empty))
+                    try
                     {
-                        if (context.Request.Url.AbsolutePath.EndsWith(ext)) filePath = context.Request.Url.AbsolutePath.Substring(0, context.Request.Url.AbsolutePath.Length - ext.Length);
+                        List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).ToList();
+                        if (defs.Count == 0) return;
+
+                        context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());
+                        String filePath = Path.GetFileNameWithoutExtension(actualPath);
+                        if (filePath == null || filePath.Equals(String.Empty))
+                        {
+                            if (context.Request.Url.AbsolutePath.EndsWith(ext)) filePath = context.Request.Url.AbsolutePath.Substring(0, context.Request.Url.AbsolutePath.Length - ext.Length);
+                        }
+                        String query = context.Request.Url.Query;
+                        if (query.StartsWith("?")) query = query.Substring(1);
+                        context.RewritePath(filePath, String.Empty, query, true);
                     }
-                    String query = context.Request.Url.Query;
-                    if (query.StartsWith("?")) query = query.Substring(1);
-                    context.RewritePath(filePath, context.Request.PathInfo, query, true);
+                    catch (RdfParserSelectionException)
+                    {
+                        //If we get a RdfParserSelectionException we shouldn't do anything, this fixes bug CORE-94
+                    }
                 }
             }
         }
