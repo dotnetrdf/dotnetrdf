@@ -1,17 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{523B69BC-2B7D-4F80-A740-D59039796D46}</ProjectGuid>
+    <ProjectGuid>{3CFDD06E-5B34-4F42-BFAA-A284BE03331D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VDS.RDF.LinkedData</RootNamespace>
-    <AssemblyName>dotNetRDF.LinkedData.Kasabi</AssemblyName>
+    <RootNamespace>VDS.RDF.Test.LinkedData.Kasabi</RootNamespace>
+    <AssemblyName>kasabi-tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json.Net35, Version=4.0.2.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Trunk\Dependencies\Newtonsoft.Json.Net35.dll</HintPath>
@@ -39,31 +40,33 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Xml.Linq">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Kasabi\Apis\AttributionApi.cs" />
-    <Compile Include="Kasabi\Apis\LookupApi.cs" />
-    <Compile Include="Kasabi\Apis\SparqlApi.cs" />
-    <Compile Include="Kasabi\KasabiApi.cs" />
-    <Compile Include="Kasabi\KasabiClient.cs" />
-    <Compile Include="Kasabi\KasabiException.cs" />
+    <Compile Include="..\..\..\..\Trunk\Testing\unittest\TestTools.cs">
+      <Link>TestTools.cs</Link>
+    </Compile>
+    <Compile Include="BaseKasabiTests.cs" />
+    <Compile Include="NasaKasabiTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
+    <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\linkeddata.kasabi\dotNetRDF.LinkedData.Kasabi.csproj">
+      <Project>{523B69BC-2B7D-4F80-A740-D59039796D46}</Project>
+      <Name>dotNetRDF.LinkedData.Kasabi</Name>
+    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Content Include="resources\kasabi-api-key.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -18,6 +18,7 @@ namespace VDS.RDF.LinkedData.Kasabi
         public const String KasabiBaseApiUri = "http://api.kasabi.com/dataset/";
 
         public const String KasabiParamOutputFormat = "output";
+        public const String KasabiParamApiKey = "apikey";
 
         private String _authKey;
         private String _datasetID, _apiName;
@@ -35,6 +36,7 @@ namespace VDS.RDF.LinkedData.Kasabi
         public KasabiApi(String datasetID, String apiName, String authKey, bool requireAuth)
             : base(new Uri(KasabiBaseApiUri + datasetID + "/apis/" + apiName))
         {
+            if (authKey == null && requireAuth) throw new ArgumentNullException("authKey", "API Key is required for the " + apiName + " API");
             this._datasetID = datasetID;
             this._apiName = apiName;
             this._authKey = authKey;
@@ -93,8 +95,15 @@ namespace VDS.RDF.LinkedData.Kasabi
             //Include API Key if required
             if (this._requireKasabiAuth && !String.IsNullOrEmpty(this._authKey))
             {
-                if (!requestUri.EndsWith("&")) requestUri += "&";
-                requestUri += "apikey=" + Uri.EscapeDataString(this._authKey);
+                if (apiParams.Count == 0)
+                {
+                    requestUri += "?";
+                }
+                else if (!requestUri.EndsWith("&"))
+                {
+                    requestUri += "&";
+                }
+                requestUri += KasabiParamApiKey + "=" + Uri.EscapeDataString(this._authKey);
             }
 
             //Now create the request
@@ -103,6 +112,7 @@ namespace VDS.RDF.LinkedData.Kasabi
             request.Timeout = this.Timeout;
             request.Credentials = this.Credentials;
             request.Proxy = this.Proxy;
+            request.UserAgent = "dotNetRDF Kasabi Client (rvesse@dotnetrdf.org)";
 
             //Check whether we want to use conneg or not?
             if (apiParams.ContainsKey(KasabiParamOutputFormat))
@@ -117,7 +127,7 @@ namespace VDS.RDF.LinkedData.Kasabi
             }
 
             //Add in POST data if necessary
-            if (postParams.Count > 0 && this.HttpMode.Equals("POST"))
+            if ((postParams.Count > 0 || this._requireKasabiAuth) && this.HttpMode.Equals("POST"))
             {
                 using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                 {
@@ -131,9 +141,17 @@ namespace VDS.RDF.LinkedData.Kasabi
                         }
                         i++;
                     }
+
+                    //if (this._requireKasabiAuth && !String.IsNullOrEmpty(this._authKey))
+                    //{
+                    //    if (postParams.Count > 0) writer.Write("&");
+                    //    writer.Write(KasabiParamApiKey + "=" + Uri.EscapeDataString(this._authKey));
+                    //}
+
                     writer.Close();
                 }
             }
+
 
 #if DEBUG
             if (Options.HttpDebugging)
@@ -168,6 +186,12 @@ namespace VDS.RDF.LinkedData.Kasabi
             {
                 if (webEx.Response != null)
                 {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
                     switch (((HttpWebResponse)webEx.Response).StatusCode)
                     {
                         case HttpStatusCode.BadRequest:

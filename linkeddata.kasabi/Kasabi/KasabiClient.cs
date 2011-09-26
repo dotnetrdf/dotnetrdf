@@ -26,5 +26,15 @@ namespace VDS.RDF.LinkedData.Kasabi
         {
             return new AttributionApi(datasetID);
         }
+
+        public static SparqlApi GetSparqlApi(String datasetID)
+        {
+            return new SparqlApi(datasetID, KasabiClient.AuthenticationKey);
+        }
+
+        public static LookupApi GetLookupApi(String datasetID)
+        {
+            return new LookupApi(datasetID, KasabiClient.AuthenticationKey);
+        }
     }
 }

@@ -9,9 +9,23 @@ namespace VDS.RDF.LinkedData.Kasabi.Apis
     public class SparqlApi
         : KasabiApi
     {
-
         public SparqlApi(String datasetID, String authKey)
             : base(datasetID, "sparql", authKey) { }
+
+        public override string HttpMode
+        {
+            get
+            {
+                return "POST";
+            }
+            set
+            {
+                if (value != "POST")
+                {
+                    throw new KasabiException("Only POST Mode is supported for SPARQL API");
+                }
+            }
+        }
 
         public IGraph QueryWithResultGraph(String query)
         {

@@ -3,7 +3,7 @@
   <Description>This is a default test run configuration for a local test run.</Description>
   <Deployment>
     <DeploymentItem filename="Testing\alexandria-tests\Resources\" />
-    <DeploymentItem filename="Libraries\adostore\resources\" />
+    <DeploymentItem filename="Testing\kasabi-tests\resources\" />
   </Deployment>
   <TestTypeSpecific />
 </TestRunConfiguration>

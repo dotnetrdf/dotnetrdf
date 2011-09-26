@@ -12,19 +12,19 @@ namespace VDS.RDF.LinkedData.Kasabi.Apis
         public AttributionApi(String datasetID)
             : base(new Uri(KasabiApi.KasabiBaseApiUri + datasetID + "/attribution"), datasetID, "attribution", null, false) { }
 
-        public String GetHtmlAttribution()
+        public String GetJavascript()
         {
             return this.GetStringResponse(KasabiClient.EmptyParams);
         }
 
-        public String GetRawJsonAttribution()
+        public String GetRawJson()
         {
             Dictionary<String, String> apiParams = new Dictionary<string,string>();
             apiParams.Add(KasabiParamOutputFormat, "json");
             return this.GetStringResponse(apiParams);
         }
 
-        public JToken GetJsonAttribution()
+        public JToken GetJson()
         {
             Dictionary<String, String> apiParams = new Dictionary<string,string>();
             apiParams.Add(KasabiParamOutputFormat, "json");
