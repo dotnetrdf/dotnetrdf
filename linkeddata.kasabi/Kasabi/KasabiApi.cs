@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Query;
 
 namespace VDS.RDF.LinkedData.Kasabi
 {
@@ -20,8 +23,17 @@ namespace VDS.RDF.LinkedData.Kasabi
         private String _datasetID, _apiName;
         private bool _requireKasabiAuth = true;
 
+        public KasabiApi(Uri customUri, String datasetID, String apiName, String authKey, bool requireAuth)
+            : base(customUri)
+        {
+            this._datasetID = datasetID;
+            this._apiName = apiName;
+            this._authKey = authKey;
+            this._requireKasabiAuth = requireAuth;
+        }
+
         public KasabiApi(String datasetID, String apiName, String authKey, bool requireAuth)
-            : base(new Uri(KasabiBaseApiUri + datasetID + "/" + apiName))
+            : base(new Uri(KasabiBaseApiUri + datasetID + "/apis/" + apiName))
         {
             this._datasetID = datasetID;
             this._apiName = apiName;
@@ -63,7 +75,9 @@ namespace VDS.RDF.LinkedData.Kasabi
             }
         }
 
-        protected HttpWebRequest CreateRequest(Dictionary<String, String> apiParams)
+        #region HTTP Request and Response Related Methods
+
+        protected HttpWebRequest CreateRequest(Dictionary<String, String> apiParams, Dictionary<String,String> postParams)
         {
             //Build up the Request URI
             String requestUri = this.Uri.ToString();
@@ -102,6 +116,25 @@ namespace VDS.RDF.LinkedData.Kasabi
                 request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
             }
 
+            //Add in POST data if necessary
+            if (postParams.Count > 0 && this.HttpMode.Equals("POST"))
+            {
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    int i = 1;
+                    foreach (String param in postParams.Keys)
+                    {
+                        writer.Write(param + "=" + Uri.EscapeDataString(postParams[param]));
+                        if (i > postParams.Count)
+                        {
+                            writer.Write("&");
+                        }
+                        i++;
+                    }
+                    writer.Close();
+                }
+            }
+
 #if DEBUG
             if (Options.HttpDebugging)
             {
@@ -112,9 +145,14 @@ namespace VDS.RDF.LinkedData.Kasabi
             return request;
         }
 
-        public HttpWebResponse GetRawResponse(Dictionary<String, String> apiParams)
+        protected HttpWebRequest CreateRequest(Dictionary<String, String> apiParams)
         {
-            HttpWebRequest request = this.CreateRequest(apiParams);
+            return this.CreateRequest(apiParams, KasabiClient.EmptyParams);
+        }
+
+        public HttpWebResponse GetRawResponse(Dictionary<String, String> apiParams, Dictionary<String,String> postParams)
+        {
+            HttpWebRequest request = this.CreateRequest(apiParams, postParams);
             try
             {
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -153,9 +191,16 @@ namespace VDS.RDF.LinkedData.Kasabi
             }
         }
 
-        protected void GetGraphResponse(Dictionary<String, String> apiParams, IRdfHandler handler)
+        public HttpWebResponse GetRawResponse(Dictionary<String, String> apiParams)
         {
-            using (HttpWebResponse response = this.GetRawResponse(apiParams))
+            return this.GetRawResponse(apiParams, KasabiClient.EmptyParams);
+        }
+
+        #region Specific Data Format Response Methods
+
+        protected void GetGraphResponse(Dictionary<String, String> apiParams, Dictionary<String, String> postParams, IRdfHandler handler)
+        {
+            using (HttpWebResponse response = this.GetRawResponse(apiParams, postParams))
             {
                 try
                 {
@@ -184,12 +229,115 @@ namespace VDS.RDF.LinkedData.Kasabi
             }
         }
 
-        protected IGraph GetGraphResponse(Dictionary<String, String> apiParams)
+        protected void GetGraphResponse(Dictionary<String, String> apiParams, IRdfHandler handler)
+        {
+            this.GetGraphResponse(apiParams, KasabiClient.EmptyParams, handler);
+        }
+
+        protected IGraph GetGraphResponse(Dictionary<String, String> apiParams, Dictionary<String,String> postParams)
         {
             Graph g = new Graph();
             GraphHandler handler = new GraphHandler(g);
-            this.GetGraphResponse(apiParams, handler);
+            this.GetGraphResponse(apiParams, postParams, handler);
             return g;
         }
+
+        protected IGraph GetGraphResponse(Dictionary<String, String> apiParams)
+        {
+            return this.GetGraphResponse(apiParams, KasabiClient.EmptyParams);
+        }
+
+        protected void GetSparqlResultsResponse(Dictionary<String, String> apiParams, Dictionary<String, String> postParams, ISparqlResultsHandler handler)
+        {
+            using (HttpWebResponse response = this.GetRawResponse(apiParams, postParams))
+            {
+                try
+                {
+                    //Select a Parser and Parse the Response
+                    ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                }
+                catch (KasabiException)
+                {
+                    throw;
+                }
+                catch (RdfParserSelectionException selEx)
+                {
+                    throw new KasabiException("Unable to parse the response from Kasabi as a SPARQL Result Set as the API returned an unsupported format, please see inner exception for details", selEx);
+                }
+                catch (RdfParseException parseEx)
+                {
+                    throw new KasabiException("Unable to parse the response from Kasabi due to a parsing error, please see the inner exception for details", parseEx);
+                }
+                catch (RdfException rdfEx)
+                {
+                    throw new KasabiException("Unable to parse the response from Kasabi due to a RDF error, please see the inner exception for details", rdfEx);
+                }
+
+                response.Close();
+            }
+        }
+
+        protected void GetSparqlResultsResponse(Dictionary<String, String> apiParams, ISparqlResultsHandler handler)
+        {
+            this.GetSparqlResultsResponse(apiParams, KasabiClient.EmptyParams, handler);
+        }
+
+        protected SparqlResultSet GetSparqlResultsResponse(Dictionary<String, String> apiParams, Dictionary<String, String> postParams)
+        {
+            SparqlResultSet results = new SparqlResultSet();
+            this.GetSparqlResultsResponse(apiParams, postParams, new ResultSetHandler(results));
+            return results;
+        }
+
+        protected SparqlResultSet GetSparqlResultsResponse(Dictionary<String, String> apiParams)
+        {
+            return this.GetSparqlResultsResponse(apiParams, KasabiClient.EmptyParams);
+        }
+
+        protected String GetStringResponse(Dictionary<String, String> apiParams, Dictionary<String, String> postParams)
+        {
+            String result;
+            using (HttpWebResponse response = this.GetRawResponse(apiParams, postParams))
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    result = reader.ReadToEnd();
+                    reader.Close();
+                }
+
+                response.Close();
+            }
+            return result;
+        }
+
+        protected String GetStringResponse(Dictionary<String, String> apiParams)
+        {
+            return this.GetStringResponse(apiParams, KasabiClient.EmptyParams);
+        }
+
+        protected JToken GetJsonResponse(Dictionary<String, String> apiParams, Dictionary<String, String> postParams)
+        {
+            String data = String.Empty;
+            using (HttpWebResponse response = this.GetRawResponse(apiParams, postParams))
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    data = reader.ReadToEnd();
+                    reader.Close();
+                }
+                response.Close();
+            }
+            return JToken.Parse(data);
+        }
+
+        protected JToken GetJsonResponse(Dictionary<String, String> apiParams)
+        {
+            return this.GetJsonResponse(apiParams, KasabiClient.EmptyParams);
+        }
+
+        #endregion
+
+        #endregion
     }
 }
