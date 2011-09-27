@@ -503,7 +503,7 @@ namespace VDS.RDF
 
             //Output the Request Headers
             Console.Error.WriteLine("# HTTP DEBUGGING #");
-            Console.Error.WriteLine("HTTP Request to " + httpRequest.RequestUri);
+            Console.Error.WriteLine("HTTP Request to " + httpRequest.RequestUri.AbsoluteUri);
             Console.Error.WriteLine();
             Console.Error.WriteLine(httpRequest.Method);
             foreach (String header in httpRequest.Headers.AllKeys)
@@ -524,7 +524,7 @@ namespace VDS.RDF
 
             //Output the Response Uri and Headers
             Console.Error.WriteLine();
-            Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri);
+            Console.Error.WriteLine("HTTP Response from " + httpResponse.ResponseUri.AbsoluteUri);
 #if SILVERLIGHT
             Console.Error.WriteLine("HTTP " + (int)httpResponse.StatusCode + " " + httpResponse.StatusDescription);
 #else

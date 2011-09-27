@@ -54,6 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDBConnection.cs" />
+    <Compile Include="Connections\AllegroGraphConnection.cs" />
+    <Compile Include="Connections\BaseServerConnection.cs" />
+    <Compile Include="Connections\ConnectionAttribute.cs" />
+    <Compile Include="Connections\IConnectionDefinition.cs" />
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
     </Compile>

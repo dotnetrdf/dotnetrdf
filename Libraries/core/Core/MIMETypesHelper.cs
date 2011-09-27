@@ -474,7 +474,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for RDF/XML
         /// </summary>
-        internal static string[] RdfXml = { "application/rdf+xml", "text/xml" };
+        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
 
         /// <summary>
         /// MIME Types for Notation 3

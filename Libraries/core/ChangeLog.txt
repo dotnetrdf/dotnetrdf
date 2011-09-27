@@ -9,83 +9,20 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.5.0 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.5.1 release of dotNetRDF
 
 Added
-- Core API
- - Added .Net serialization support to INode, IGraph, SparqlResultSet and SparqlResult
-  - Support for both IXmlSerializable and ISerializable
- - Added callback delegates and various async alternatives to synchronous HTTP to various features throughout
-   the API to fix an issue with Silverlight/WP7 but also to provide easier async calls to users on all
-   platforms
- - Added a PersistentTripleStore which is a propery in-memory view onto a persistent store where changes to the 
-   in-memory state can be persisted/discarded as desired
-- Configuration API
- - Added a bunch of new properties which can be attached to HTTP Handler definitions to define writer behaviour
- - Added new classes that can be used to define Parsers and Writers, ASP.Net configuration auto-detects these
-- Parsing
- - Added more IRdfHandler and ISparqlResultsHandler implementations
-  - ResultsWriteThroughHandler for serializing SPARQL Results directly
-  - MergingResultSetHandler for loading multiple result sets into a single SparqlResultSet object
-- Query
- - Added a ExplainQueryProcessor which can be used to execute queries and show explanations of their evaluation
- - Additional Algebra Operators
-  - Added parallelised Join and Union operators that can be used as desired
-  - Added explicit operators for things like BIND, Subqueries and property paths which can be used as desired
- - Optimisation support to SPARQL Update commands wherever possible
- - Additional Optimisers
-  - Added a StrictAlgebraOptimiser which transforms to the strict algebra form of the algebra
-  - Added a ParallelEvaluationOptimiser which transforms the algebra into a parallel executable form where possible
-  - Added an IdentityFilterOptimiser which applies Identity Filter optimisations
 - Storage
- - Added revised SQL backend in seperate dotNetRDF.Data.Sql.dll library
- - Added ListGraphs() support for Fuseki
-- Writing
- - Added additional interfaces to Formatting namespace
- - Added formatters for RDF/XML and SPARQL XML Results
+ - Added Dydra Support
 
 Changed
-- Dependency Changes
- - OpenLink.Data.Virtuoso.dll removed as dependency - Virtuoso support now in seperate dotNetRDF.Data.Virtuoso.dll library
- - Updated to latest Json.Net release - now using Newtonsoft.Json.Net35.dll as the standard build of Json.Net has moved to .Net 4.0
 - Bug Fixes
- - SPARQL Tokeniser allows more than one ORDER BY keyword
- - Turtle Parser now permits nested collections i.e. ( "item" ( "subcollection" ) )
- - Fixes to AllegroGraphConnector to support 4.x HTTP protocol changes based on bug reports from Sascha Dech
- - Fixed a configuration bug with BaseDatasetHandlerConfiguration
- - Fixed a bug where NegotiateByFileExtension module could cause special ASP.Net extensions like .axd to not be respected properly
- - Fixed a bug where attempts to use synchronous HTTP on Silverlight/WP7 would hang applications
- - Fixed a bug where temporary namespace generation for properties would fail in PrettyRdfXmlWriter
- - Fixed a bug where IF evaluation deviated from latest SPARQL 1.1 Query working drafts
-- Query
- - Further refactored the Leviathan engine to make it even easier to extend
-  - The majority of methods on the engine can now be overridden
-  - Abstracted Set to an interface
- - RDF and Results Handler may now be used to process query results in all places where an IGraph or SparqlResultSet can be returned
-   i.e. new overloads for all relevant query related methods
- - Describe API Changes
-  - Breaking changes to the Describe API to allow for use of RDF Handlers for streaming processing of the returned results
- - Optimisation Improvements
-  - Improvements to internal data structures for faster evaluation
-  - Subqueries now get the parent queries Algebra Optimisers applied to them
-- Storage
- - Improved support for AllegroGraph 4x including support for root catalog
- - Additions to the IGenericIOManager interface
-  - Added more overloads for LoadGraph() which load using an IRdfHandler
+ - Fixed a Bug where NegotiateByFileExtension would cause a HTTP 500 error rather than failing silently
+ - Fixed a Bug with NegotiateByFileExtension and nested handler paths
+
 
 Removed
-- Marked various things as obsolete but usable
- - All ISqlIOManager related classes
- - GenericReader, GenericWriter and GenericStoreWriter
- - TalisTripleStore and VirtuosoTripleStore
- - SparqlQuery.Evaluate() methods
-- Marked some classes previously marked obsolete as unusable
- - BackgroundPersistedGraph
- - BlockingStreamReader
- - Old form of ToCache() method on IUriLoader interface
- - Old form of GraphPattern.Optimise() method
- - QueryText property of SparqlParameterizedString
- - Old form of WriterHelper.FindCollections() method
+
 
    
 
