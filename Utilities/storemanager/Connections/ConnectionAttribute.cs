@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -30,12 +31,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             set;
         }
 
+        [DefaultValue(false)]
         public bool IsRequired
         {
             get;
             set;
         }
 
+        [DefaultValue(false)]
         public bool AllowEmptyString
         {
             get;
@@ -48,18 +51,13 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             set;
         }
 
-        public String Default
-        {
-            get;
-            set;
-        }
-
         public String NotRequiredIf
         {
             get;
             set;
         }
 
+        [DefaultValue(false)]
         public bool IsValueRestricted
         {
             get;

@@ -625,5 +625,11 @@ namespace VDS.RDF.Utilities.StoreManager
             fclsAbout about = new fclsAbout();
             about.ShowDialog();
         }
+
+        private void mnuNewConnection_Click(object sender, EventArgs e)
+        {
+            NewConnectionForm newConn = new NewConnectionForm();
+            newConn.Show();
+        }
     }
 }

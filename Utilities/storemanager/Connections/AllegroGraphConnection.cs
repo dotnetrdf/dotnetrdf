@@ -5,9 +5,12 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
 {
-    public class AllegroGraphConnection
+    public class AllegroGraphConnectionDefinition
         : BaseServerConnectionDefinition
     {
+        public AllegroGraphConnectionDefinition()
+            : base("Allegro Graph", "Connect to Franz AllegroGraph, Version 3.x and 4.x are supported") { }
+
         [Connection(DisplayName="Catalog ID", AllowEmptyString=true, IsRequired=true, Type=ConnectionSettingType.String, NotRequiredIf="UseRootCatalog")]
         public String CatalogID
         {
@@ -41,6 +44,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get;
             set;
+        }
+
+        protected override VDS.RDF.Storage.IGenericIOManager OpenConnectionInternal()
+        {
+            throw new NotImplementedException();
         }
     }
 }

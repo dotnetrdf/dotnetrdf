@@ -59,6 +59,7 @@
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
+            this.mnuNewConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -83,6 +84,7 @@
             this.mnuNewSQLStoreManager,
             this.mnuNewGenericStoreManager,
             this.mnuSeparator1,
+            this.mnuNewConnection,
             this.mnuSaveConnection,
             this.mnuAddFavourite,
             this.mnuOpenConnection,
@@ -271,7 +273,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -292,6 +294,13 @@
             // ofdConnection
             // 
             this.ofdConnection.Title = "Open Connection";
+            // 
+            // mnuNewConnection
+            // 
+            this.mnuNewConnection.Name = "mnuNewConnection";
+            this.mnuNewConnection.Size = new System.Drawing.Size(232, 22);
+            this.mnuNewConnection.Text = "New Connection";
+            this.mnuNewConnection.Click += new System.EventHandler(this.mnuNewConnection_Click);
             // 
             // fclsManager
             // 
@@ -347,6 +356,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuUseUtf8Bom;
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mnuNewConnection;
     }
 }
 

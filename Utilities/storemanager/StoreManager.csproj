@@ -57,6 +57,7 @@
     <Compile Include="Connections\AllegroGraphConnection.cs" />
     <Compile Include="Connections\BaseServerConnection.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
+    <Compile Include="Connections\ConnectionDefinitionManager.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
@@ -130,6 +131,12 @@
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="MicrosoftSQLServerConnection.cs" />
     <Compile Include="MySQLServerConnection.cs" />
+    <Compile Include="NewConnectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewConnectionForm.Designer.cs">
+      <DependentUpon>NewConnectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="fclsAddTriples.resx">
@@ -228,6 +235,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="fclsTaskInformation.resx">
       <DependentUpon>fclsTaskInformation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewConnectionForm.resx">
+      <DependentUpon>NewConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sparql.css" />
     <Content Include="database_gear.ico" />

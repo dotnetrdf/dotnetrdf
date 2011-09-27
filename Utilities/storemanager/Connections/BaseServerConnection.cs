@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -20,6 +21,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             //Discover decorated properties
             Type t = this.GetType();
             Type target = typeof(ConnectionAttribute);
+            Type def = typeof(DefaultValueAttribute);
             foreach (PropertyInfo property in t.GetProperties())
             {
                 foreach (ConnectionAttribute attr in property.GetCustomAttributes(target, true).OfType<ConnectionAttribute>())
@@ -27,9 +29,11 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     this._properties.Add(property, attr);
                     break;
                 }
+                foreach (DefaultValueAttribute attr in property.GetCustomAttributes(target, true).OfType<DefaultValueAttribute>())
+                {
+                    property.SetValue(this, attr.Value, null);
+                }
             }
-
-            //TODO: Apply Defaults
         }
 
         public string StoreName
@@ -59,13 +63,16 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
                     case ConnectionSettingType.Integer:
                         int i = (int)property.GetValue(this, null);
-                        if (i < attr.MinValue)
+                        if (attr.IsValueRestricted)
                         {
-                            throw new Exception(attr.DisplayName + " must be an Integer above " + attr.MinValue);
-                        }
-                        else if (i > attr.MaxValue)
-                        {
-                            throw new Exception(attr.DisplayName + " must be an Integer below " + attr.MaxValue);
+                            if (i < attr.MinValue)
+                            {
+                                throw new Exception(attr.DisplayName + " must be an Integer above " + attr.MinValue);
+                            }
+                            else if (i > attr.MaxValue)
+                            {
+                                throw new Exception(attr.DisplayName + " must be an Integer below " + attr.MaxValue);
+                            }
                         }
                         break;
 
@@ -100,6 +107,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                             {
                                 throw new Exception(attr.DisplayName + " must be at least " + attr.MinValue + " characters long");
                             }
+                            else if (s.Length > attr.MaxValue)
+                            {
+                                throw new Exception(attr.DisplayName + " must be no more than " + attr.MaxValue + " characters long");
+                            }
                         }
                         break;
 
@@ -107,10 +118,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                         throw new Exception("Not a valid Connection Setting Type");
                 }
             }
-            throw new NotImplementedException();
+            return this.OpenConnectionInternal();
         }
 
         protected abstract IGenericIOManager OpenConnectionInternal();
+
+        public IEnumerator<KeyValuePair<PropertyInfo, ConnectionAttribute>> GetEnumerator()
+        {
+            return this._properties.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
     }
 
     public abstract class BaseServerConnectionDefinition
@@ -119,7 +140,8 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public BaseServerConnectionDefinition(String storeName, String storeDescrip)
             : base(storeName, storeDescrip) { }
 
-        [Connection(DisplayName="Server", IsRequired=true, Type = ConnectionSettingType.String, Default="localhost")]
+        [Connection(DisplayName="Server", IsRequired=true, Type = ConnectionSettingType.String),
+        DefaultValue("localhost")]
         public virtual String Server
         {
             get;
