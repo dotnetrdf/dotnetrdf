@@ -123,7 +123,11 @@ namespace VDS.RDF.LinkedData.Kasabi
             else
             {
                 //If no output parameter do conneg so include RDF/SPARQL Results header
-                request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                //Make sure to exclude HTML
+                request.Accept = MimeTypesHelper.CustomHttpAcceptHeader(from def in MimeTypesHelper.Definitions
+                                                                        where !def.SyntaxName.Equals("HTML") && (def.CanParseRdf || def.CanParseSparqlResults)
+                                                                        from t in def.MimeTypes
+                                                                        select t);
             }
 
             //Add in POST data if necessary

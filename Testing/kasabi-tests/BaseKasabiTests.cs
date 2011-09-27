@@ -23,7 +23,7 @@ namespace VDS.RDF.Test.LinkedData.Kasabi
 
             if (File.Exists("kasabi-api-key.txt"))
             {
-                this._apiKey = new StreamReader("kasabi-api-key.txt").ReadToEnd();
+                this._apiKey = new StreamReader("kasabi-api-key.txt").ReadToEnd().Trim();
                 return this._apiKey;
             }
             else
