@@ -265,12 +265,12 @@ namespace VDS.RDF
         /// <br />
         /// The default behaviour is for Synchronous loading which means calling code must wait for the Triple Store to load before it can proceeed.
         /// </remarks>
-        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, int threads, bool async) 
+        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, int threads, bool isAsync) 
             : base() 
         {
             this._manager = manager;
             this._loadThreads = threads;
-            this._async = async;
+            this._async = isAsync;
 
             if (this._async)
             {
@@ -286,7 +286,8 @@ namespace VDS.RDF
         /// <param name="manager">An <see cref="IThreadedSqlIOManager">IThreadedSqlIOManager</see> for your chosen backing SQL Store</param>
         /// <param name="async">Whether loading should be done asynchronously</param>
         /// <remarks>Uses the Default 8 Threads for Loading</remarks>
-        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, bool async) : this(manager, 8, async) { }
+        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, bool isAsync)
+            : this(manager, 8, isAsync) { }
 
         /// <summary>
         /// Opens a SQL Triple Store using the provided Store Manager, automatically loads all data contained in that Store
@@ -294,7 +295,8 @@ namespace VDS.RDF
         /// <param name="manager">An <see cref="IThreadedSqlIOManager">IThreadedSqlIOManager</see> for your chosen backing SQL Store</param>
         /// <param name="threads">The Number of Threads to use for Loading (Default is 8)</param>
         /// <remarks>Uses Synchronous Loading</remarks>
-        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, int threads) : this(manager, threads, false) { }
+        public ThreadedSqlTripleStore(IThreadedSqlIOManager manager, int threads) 
+            : this(manager, threads, false) { }
 
         /// <summary>
         /// Opens a SQL Triple Store using the provided Store Manager, automatically loads all data contained in that Store

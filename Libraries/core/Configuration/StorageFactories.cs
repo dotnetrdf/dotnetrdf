@@ -166,7 +166,7 @@ namespace VDS.RDF.Configuration
             obj = null;
 
             String server, user, pwd, store;
-            bool async;
+            bool isAsync;
 
             Object temp;
             INode storeObj;
@@ -205,11 +205,9 @@ namespace VDS.RDF.Configuration
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
                     if (file == null) return false;
                     file = ConfigurationLoader.ResolvePath(file);
-                    async = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
-                    manager = new DatasetFileManager(file, async);
+                    isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
+                    manager = new DatasetFileManager(file, isAsync);
                     break;
-
-#if UNFINISHED
 
                 case Dydra:
                     //Get the Account Name and Store
@@ -230,8 +228,6 @@ namespace VDS.RDF.Configuration
                         manager = new DydraConnector(account, store);
                     }
                     break;
-
-#endif
 
                 case FourStore:
                     //Get the Server and whether Updates are enabled

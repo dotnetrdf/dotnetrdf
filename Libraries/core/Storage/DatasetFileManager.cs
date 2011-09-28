@@ -65,12 +65,12 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="filename">File to load from</param>
         /// <param name="async">Whether to load asynchronously</param>
-        public DatasetFileManager(String filename, bool async)
+        public DatasetFileManager(String filename, bool isAsync)
         {
             if (!File.Exists(filename)) throw new RdfStorageException("Cannot connect to a Dataset File that doesn't exist");
             this._filename = filename;
 
-            if (async)
+            if (isAsync)
             {
                 Thread asyncLoader = new Thread(new ThreadStart(delegate { this.Initialise(filename); }));
                 asyncLoader.IsBackground = true;

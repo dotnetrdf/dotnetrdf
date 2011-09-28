@@ -308,7 +308,8 @@ namespace VDS.RDF.Configuration
     /// <summary>
     /// Factory class for producing Triple Stores from Configuration Graphs
     /// </summary>
-    public class StoreFactory : IObjectFactory
+    public class StoreFactory 
+        : IObjectFactory
     {
         private const String TripleStore = "VDS.RDF.TripleStore",
                              SqlTripleStore = "VDS.RDF.SqlTripleStore",
@@ -335,13 +336,13 @@ namespace VDS.RDF.Configuration
 
             ITripleStore store = null;
             INode subObj;
-            bool async;
+            bool isAsync;
             Object temp;
 
             //Get Property Nodes we need
-            INode propSqlManager = ConfigurationLoader.CreateConfigurationNode(g, "dnr:sqlManager"),
-                  propGenericManager = ConfigurationLoader.CreateConfigurationNode(g, "dnr:genericManager"),
-                  propAsync = ConfigurationLoader.CreateConfigurationNode(g, "dnr:async");
+            INode propSqlManager = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertySqlManager),
+                  propGenericManager = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager),
+                  propAsync = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAsync);
 
             //Instantiate the Store Class
             switch (targetType.FullName)
@@ -377,8 +378,8 @@ namespace VDS.RDF.Configuration
                         }
                         else if (temp is IThreadedSqlIOManager)
                         {
-                            async = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
-                            store = new ThreadedSqlTripleStore((IThreadedSqlIOManager)temp, async);
+                            isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
+                            store = new ThreadedSqlTripleStore((IThreadedSqlIOManager)temp, isAsync);
                         }
                         else
                         {
