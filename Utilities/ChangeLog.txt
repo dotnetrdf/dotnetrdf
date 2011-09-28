@@ -34,5 +34,8 @@ soh
 
 SparqlGUI
 
-
 StoreManager
+- Added a new Start Page
+- Completely revised the New Connection dialogue to make it more user friendly
+- Added Dydra support
+- Added the ability for users to use Store Manager with custom store types simply by dropping a DLL into the plugins folder

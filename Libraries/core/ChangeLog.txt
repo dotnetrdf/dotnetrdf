@@ -19,6 +19,7 @@ Changed
 - Bug Fixes
  - Fixed a Bug where NegotiateByFileExtension would cause a HTTP 500 error rather than failing silently
  - Fixed a Bug with NegotiateByFileExtension and nested handler paths
+ - Fixed a rare corner case Bug related to round-trip serialization of literals containing backslashes
 
 
 Removed
