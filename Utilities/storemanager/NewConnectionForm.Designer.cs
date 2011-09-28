@@ -33,8 +33,11 @@
             this.lstStoreTypes = new System.Windows.Forms.ListBox();
             this.lblDescrip = new System.Windows.Forms.Label();
             this.grpConnectionSettings = new System.Windows.Forms.GroupBox();
+            this.tblSettings = new System.Windows.Forms.TableLayoutPanel();
+            this.btnConnect = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.grpConnectionSettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -83,12 +86,42 @@
             // 
             // grpConnectionSettings
             // 
+            this.grpConnectionSettings.Controls.Add(this.btnConnect);
+            this.grpConnectionSettings.Controls.Add(this.tblSettings);
             this.grpConnectionSettings.Location = new System.Drawing.Point(145, 56);
             this.grpConnectionSettings.Name = "grpConnectionSettings";
             this.grpConnectionSettings.Size = new System.Drawing.Size(395, 203);
             this.grpConnectionSettings.TabIndex = 2;
             this.grpConnectionSettings.TabStop = false;
             this.grpConnectionSettings.Text = "Connection Settings";
+            // 
+            // tblSettings
+            // 
+            this.tblSettings.ColumnCount = 2;
+            this.tblSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30.8094F));
+            this.tblSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 69.1906F));
+            this.tblSettings.Location = new System.Drawing.Point(6, 19);
+            this.tblSettings.Name = "tblSettings";
+            this.tblSettings.RowCount = 7;
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblSettings.Size = new System.Drawing.Size(383, 160);
+            this.tblSettings.TabIndex = 0;
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(314, 180);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(75, 23);
+            this.btnConnect.TabIndex = 1;
+            this.btnConnect.Text = "&Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
             // 
             // NewConnectionForm
             // 
@@ -102,6 +135,7 @@
             this.Text = "New Connection";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.grpConnectionSettings.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -113,5 +147,7 @@
         private System.Windows.Forms.ListBox lstStoreTypes;
         private System.Windows.Forms.Label lblDescrip;
         private System.Windows.Forms.GroupBox grpConnectionSettings;
+        private System.Windows.Forms.TableLayoutPanel tblSettings;
+        private System.Windows.Forms.Button btnConnect;
     }
 }

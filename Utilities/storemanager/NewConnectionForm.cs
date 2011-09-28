@@ -31,13 +31,17 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.lblDescrip.Text = def.StoreDescription;
 
-                FlowLayoutPanel panel = new FlowLayoutPanel();
-                panel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
+                int i = 0;
+                tblSettings.Controls.Clear();
                 foreach (KeyValuePair<PropertyInfo, ConnectionAttribute> setting in def)
                 {
-                    Label label = new Label();
-                    label.Text = setting.Value.DisplayName;
-                    panel.Controls.Add(label);
+                    if (setting.Value.Type != ConnectionSettingType.Boolean)
+                    {
+                        Label label = new Label();
+                        label.Text = setting.Value.DisplayName + ":";
+                        label.TextAlign = ContentAlignment.MiddleLeft;
+                        tblSettings.Controls.Add(label, 0, i);
+                    }
 
                     switch (setting.Value.Type)
                     {
@@ -46,13 +50,44 @@ namespace VDS.RDF.Utilities.StoreManager
                             TextBox box = new TextBox();
                             String s = (String)setting.Key.GetValue(def, null);
                             box.Text = (s != null) ? s : String.Empty;
-                            panel.Controls.Add(box);
+                            box.Width = 200;
+                            if (setting.Value.Type == ConnectionSettingType.Password) box.PasswordChar = '*';
+                            //TODO: Add support for DisplaySuffix
+                            tblSettings.Controls.Add(box, 1, i);
+                            break;
+
+                        case ConnectionSettingType.Boolean:
+                            CheckBox check = new CheckBox();
+                            check.AutoSize = true;
+                            check.TextAlign = ContentAlignment.MiddleLeft;
+                            check.CheckAlign = ContentAlignment.MiddleLeft;
+                            check.Checked = (bool)setting.Key.GetValue(def, null);
+                            check.Text = setting.Value.DisplayName;
+                            this.tblSettings.SetColumnSpan(check, 2);
+                            this.tblSettings.Controls.Add(check, 0, i);
+                            break;
+
+                        case ConnectionSettingType.Integer:
+                            NumericUpDown num = new NumericUpDown();
+                            int val = (int)setting.Key.GetValue(def, null);
+                            if (setting.Value.IsValueRestricted)
+                            {
+                                num.Value = val;
+                                num.Minimum = setting.Value.MinValue;
+                                num.Maximum = setting.Value.MaxValue;
+                            }
+                            else
+                            {
+                                num.Minimum = Int32.MinValue;
+                                num.Maximum = Int32.MaxValue;
+                                num.Value = val;
+                            }
+                            tblSettings.Controls.Add(num, 1, i);
                             break;
                     }
-                }
 
-                this.grpConnectionSettings.Controls.Clear();
-                this.grpConnectionSettings.Controls.Add(panel);
+                    i++;
+                }
             }
         }
     }

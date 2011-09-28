@@ -54,8 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDBConnection.cs" />
-    <Compile Include="Connections\AllegroGraphConnection.cs" />
+    <Compile Include="Connections\BuiltIn\AllegroGraphConnection.cs" />
     <Compile Include="Connections\BaseServerConnection.cs" />
+    <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />
