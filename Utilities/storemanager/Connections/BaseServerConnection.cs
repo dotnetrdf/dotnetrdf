@@ -29,14 +29,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public BaseCredentialsRequiredServerConnectionDefinition(String storeName, String storeDescrip)
             : base(storeName, storeDescrip) { }
 
-        [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = true, AllowEmptyString=false, Type = ConnectionSettingType.String)]
+        [Connection(DisplayName="Username", DisplayOrder=10, IsRequired=true, AllowEmptyString=false, Type=ConnectionSettingType.String)]
         public String Username
         {
             get;
             set;
         }
 
-        [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = true, AllowEmptyString=true, Type = ConnectionSettingType.Password)]
+        [Connection(DisplayName="Password", DisplayOrder=11, IsRequired=true, AllowEmptyString=true, Type=ConnectionSettingType.Password)]
         public String Password
         {
             get;
@@ -50,14 +50,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         public BaseCredentialsOptionalServerConnectionDefinition(String storeName, String storeDescrip)
             : base(storeName, storeDescrip) { }
 
-        [Connection(DisplayName = "Username", DisplayOrder = 10, IsRequired = false, AllowEmptyString=true, Type = ConnectionSettingType.String)]
+        [Connection(DisplayName="Username", DisplayOrder=10, IsRequired=false, AllowEmptyString=true, Type=ConnectionSettingType.String)]
         public String Username
         {
             get;
             set;
         }
 
-        [Connection(DisplayName = "Password", DisplayOrder = 11, IsRequired = false, AllowEmptyString=true, Type = ConnectionSettingType.Password)]
+        [Connection(DisplayName="Password", DisplayOrder=11, IsRequired=false, AllowEmptyString=true, Type=ConnectionSettingType.Password)]
         public String Password
         {
             get;

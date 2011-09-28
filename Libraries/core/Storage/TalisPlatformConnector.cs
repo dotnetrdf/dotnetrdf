@@ -116,6 +116,7 @@ namespace VDS.RDF.Storage
             this._storename = storeName;
             this._username = username;
             this._password = password;
+            this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
 
             this._baseuri = TalisAPIBaseURI + this._storename + "/";
         }

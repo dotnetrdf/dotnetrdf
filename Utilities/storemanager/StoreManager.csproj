@@ -53,15 +53,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseDBConnection.cs" />
     <Compile Include="Connections\BaseConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\AllegroGraphConnection.cs" />
     <Compile Include="Connections\BaseServerConnection.cs" />
+    <Compile Include="Connections\BuiltIn\DatasetFileConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\DydraConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\FourStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\FusekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\InMemoryConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\JosekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\MicrosoftAdoConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\SesameConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\SparqlGraphStoreConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\SparqlQueryConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\StardogConnectionDefinition.cs" />
+    <Compile Include="Connections\BuiltIn\TalisConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
@@ -75,53 +81,17 @@
     <Compile Include="fclsAbout.Designer.cs">
       <DependentUpon>fclsAbout.cs</DependentUpon>
     </Compile>
-    <Compile Include="fclsAddTriples.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsAddTriples.Designer.cs">
-      <DependentUpon>fclsAddTriples.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsCreateTriple.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsCreateTriple.Designer.cs">
-      <DependentUpon>fclsCreateTriple.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsGenericStoreConnection.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsGenericStoreConnection.Designer.cs">
-      <DependentUpon>fclsGenericStoreConnection.cs</DependentUpon>
-    </Compile>
     <Compile Include="fclsGenericStoreManager.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="fclsGenericStoreManager.Designer.cs">
       <DependentUpon>fclsGenericStoreManager.cs</DependentUpon>
     </Compile>
-    <Compile Include="fclsPleaseWait.cs">
+    <Compile Include="ManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsPleaseWait.Designer.cs">
-      <DependentUpon>fclsPleaseWait.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsSQLGraphManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsSQLGraphManager.Designer.cs">
-      <DependentUpon>fclsSQLGraphManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsManager.Designer.cs">
-      <DependentUpon>fclsManager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="fclsSQLStoreManager.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="fclsSQLStoreManager.Designer.cs">
-      <DependentUpon>fclsSQLStoreManager.cs</DependentUpon>
+    <Compile Include="ManagerForm.Designer.cs">
+      <DependentUpon>ManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="fclsTaskErrorTrace.cs">
       <SubType>Form</SubType>
@@ -136,8 +106,6 @@
       <DependentUpon>fclsTaskInformation.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewColumnSorter.cs" />
-    <Compile Include="MicrosoftSQLServerConnection.cs" />
-    <Compile Include="MySQLServerConnection.cs" />
     <Compile Include="NewConnectionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,32 +114,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="fclsAddTriples.resx">
-      <DependentUpon>fclsAddTriples.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsCreateTriple.resx">
-      <DependentUpon>fclsCreateTriple.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsGenericStoreConnection.resx">
-      <DependentUpon>fclsGenericStoreConnection.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="fclsGenericStoreManager.resx">
       <DependentUpon>fclsGenericStoreManager.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="fclsSQLGraphManager.resx">
-      <DependentUpon>fclsSQLGraphManager.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsManager.resx">
-      <DependentUpon>fclsManager.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="fclsSQLStoreManager.resx">
-      <DependentUpon>fclsSQLStoreManager.cs</DependentUpon>
+    <EmbeddedResource Include="ManagerForm.resx">
+      <DependentUpon>ManagerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -195,8 +143,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="QuickConnect.cs" />
-    <Compile Include="StoreCompacter.cs" />
-    <Compile Include="StoreUpgrader.cs" />
+    <Compile Include="StartPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="StartPage.Designer.cs">
+      <DependentUpon>StartPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tasks\BaseImportTask.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
     <Compile Include="Tasks\CountTriplesTask.cs" />
@@ -233,10 +185,6 @@
     <EmbeddedResource Include="fclsAbout.resx">
       <DependentUpon>fclsAbout.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fclsPleaseWait.resx">
-      <DependentUpon>fclsPleaseWait.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="fclsTaskErrorTrace.resx">
       <DependentUpon>fclsTaskErrorTrace.cs</DependentUpon>
     </EmbeddedResource>
@@ -247,9 +195,16 @@
       <DependentUpon>NewConnectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="sparql.css" />
+    <EmbeddedResource Include="StartPage.resx">
+      <DependentUpon>StartPage.cs</DependentUpon>
+    </EmbeddedResource>
     <Content Include="database_gear.ico" />
     <Content Include="file-manager.ico" />
-    <Content Include="StoreNotes.txt" />
+    <Content Include="folder_explore.png" />
+    <Content Include="folder_star.png" />
+    <Content Include="plugins\Store Manager Plugins.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

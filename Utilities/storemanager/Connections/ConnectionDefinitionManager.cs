@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -18,16 +19,45 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             {
                 //First find all types in this assembly
                 Assembly assm = Assembly.GetExecutingAssembly();
-                Type conDefType = typeof(IConnectionDefinition);
-                foreach (Type t in assm.GetTypes())
+                ConnectionDefinitionManager.DiscoverTypes(assm);
+
+                //Then find types in Plugin assemblies
+                if (Directory.Exists("plugins"))
                 {
-                    if (conDefType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                    foreach (String file in Directory.GetFiles("plugins"))
                     {
-                        _connectionDefTypes.Add(t);
+                        switch (Path.GetExtension(file))
+                        {
+                            case ".dll":
+                                try
+                                {
+                                    assm = Assembly.LoadFrom(file);
+                                    ConnectionDefinitionManager.DiscoverTypes(assm);
+                                }
+                                catch
+                                {
+                                    //Ignore errors in loading assemblies
+                                }
+                                break;
+                            default:
+                                continue;
+                        }
                     }
                 }
 
                 _init = true;
+            }
+        }
+
+        private static void DiscoverTypes(Assembly assm)
+        {
+            Type conDefType = typeof(IConnectionDefinition);
+            foreach (Type t in assm.GetTypes())
+            {
+                if (conDefType.IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                {
+                    _connectionDefTypes.Add(t);
+                }
             }
         }
 
@@ -47,6 +77,16 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     //Ignore Errors
                 }
                 if (def != null) yield return def;
+            }
+        }
+
+        public static IEnumerable<Type> DefinitionTypes
+        {
+            get
+            {
+                if (!_init) Init();
+
+                return _connectionDefTypes;
             }
         }
     }

@@ -94,7 +94,7 @@ namespace VDS.RDF.Storage
             this._apiKey = apiKey;
             this._username = this._apiKey;
             this._pwd = DydraApiKeyPassword;
-            this._hasCredentials = true;
+            this._hasCredentials = !String.IsNullOrEmpty(apiKey);
         }
 
         //public DydraConnector(String accountID, String repositoryID, String username, String password)

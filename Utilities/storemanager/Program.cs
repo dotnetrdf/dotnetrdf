@@ -35,6 +35,8 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     static class Program
     {
+        private static ManagerForm _main;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -43,7 +45,16 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new fclsManager());
+            _main = new ManagerForm();
+            Application.Run(_main);
+        }
+
+        public static ManagerForm MainForm
+        {
+            get
+            {
+                return _main;
+            }
         }
     }
 }

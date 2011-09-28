@@ -28,13 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NewConnectionForm));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lstStoreTypes = new System.Windows.Forms.ListBox();
             this.lblDescrip = new System.Windows.Forms.Label();
             this.grpConnectionSettings = new System.Windows.Forms.GroupBox();
+            this.chkForceReadOnly = new System.Windows.Forms.CheckBox();
             this.btnConnect = new System.Windows.Forms.Button();
             this.tblSettings = new System.Windows.Forms.TableLayoutPanel();
+            this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.grpConnectionSettings.SuspendLayout();
@@ -62,7 +65,7 @@
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 2);
-            this.panel1.Size = new System.Drawing.Size(148, 261);
+            this.panel1.Size = new System.Drawing.Size(147, 261);
             this.panel1.TabIndex = 0;
             // 
             // lstStoreTypes
@@ -71,12 +74,12 @@
             this.lstStoreTypes.Location = new System.Drawing.Point(3, 9);
             this.lstStoreTypes.Name = "lstStoreTypes";
             this.lstStoreTypes.Size = new System.Drawing.Size(142, 251);
-            this.lstStoreTypes.TabIndex = 1;
+            this.lstStoreTypes.TabIndex = 0;
             this.lstStoreTypes.SelectedIndexChanged += new System.EventHandler(this.lstStoreTypes_SelectedIndexChanged);
             // 
             // lblDescrip
             // 
-            this.lblDescrip.Location = new System.Drawing.Point(157, 10);
+            this.lblDescrip.Location = new System.Drawing.Point(156, 10);
             this.lblDescrip.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
             this.lblDescrip.Name = "lblDescrip";
             this.lblDescrip.Size = new System.Drawing.Size(543, 30);
@@ -86,21 +89,32 @@
             // 
             // grpConnectionSettings
             // 
+            this.grpConnectionSettings.Controls.Add(this.chkForceReadOnly);
             this.grpConnectionSettings.Controls.Add(this.btnConnect);
             this.grpConnectionSettings.Controls.Add(this.tblSettings);
-            this.grpConnectionSettings.Location = new System.Drawing.Point(157, 45);
+            this.grpConnectionSettings.Location = new System.Drawing.Point(156, 45);
             this.grpConnectionSettings.Name = "grpConnectionSettings";
             this.grpConnectionSettings.Size = new System.Drawing.Size(550, 218);
             this.grpConnectionSettings.TabIndex = 2;
             this.grpConnectionSettings.TabStop = false;
             this.grpConnectionSettings.Text = "Connection Settings";
             // 
+            // chkForceReadOnly
+            // 
+            this.chkForceReadOnly.AutoSize = true;
+            this.chkForceReadOnly.Location = new System.Drawing.Point(6, 198);
+            this.chkForceReadOnly.Name = "chkForceReadOnly";
+            this.chkForceReadOnly.Size = new System.Drawing.Size(189, 17);
+            this.chkForceReadOnly.TabIndex = 1;
+            this.chkForceReadOnly.Text = "Force Connection to be read-only?";
+            this.chkForceReadOnly.UseVisualStyleBackColor = true;
+            // 
             // btnConnect
             // 
             this.btnConnect.Location = new System.Drawing.Point(469, 191);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
-            this.btnConnect.TabIndex = 1;
+            this.btnConnect.TabIndex = 2;
             this.btnConnect.Text = "&Connect";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
@@ -126,10 +140,12 @@
             // 
             // NewConnectionForm
             // 
+            this.AcceptButton = this.btnConnect;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(712, 271);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NewConnectionForm";
@@ -137,6 +153,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.grpConnectionSettings.ResumeLayout(false);
+            this.grpConnectionSettings.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -150,5 +167,7 @@
         private System.Windows.Forms.GroupBox grpConnectionSettings;
         private System.Windows.Forms.TableLayoutPanel tblSettings;
         private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.CheckBox chkForceReadOnly;
+        private System.Windows.Forms.OpenFileDialog ofdBrowse;
     }
 }

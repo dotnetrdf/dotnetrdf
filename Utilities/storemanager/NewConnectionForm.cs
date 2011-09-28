@@ -141,6 +141,67 @@ namespace VDS.RDF.Utilities.StoreManager
 
                             tblSettings.Controls.Add(num, 1, i);
                             break;
+
+                        case ConnectionSettingType.Enum:
+                            //Enum so show a ComboBox in DropDownList Mode
+                            ComboBox ebox = new ComboBox();
+                            ebox.DropDownStyle = ComboBoxStyle.DropDownList;
+                            ebox.DataSource = Enum.GetValues(setting.Key.PropertyType);
+                            ebox.SelectedItem = setting.Key.GetValue(def, null);
+                            ebox.Tag = setting.Key;
+                            
+                            //Add the Event Handler which updates the Definition as the selection changes
+                            ebox.SelectedIndexChanged += new EventHandler((_sender, args) =>
+                                {
+                                    (ebox.Tag as PropertyInfo).SetValue(def, (Enum)ebox.SelectedItem, null);
+                                });
+
+                            tblSettings.Controls.Add(ebox, 1, i);
+                            break;
+
+                        case ConnectionSettingType.File:
+                            //File so show a TextBox and a Browse Button
+                            String file = (String)setting.Key.GetValue(def, null);
+                            FlowLayoutPanel fileFlow = new FlowLayoutPanel();
+                            fileFlow.Margin = new Padding(0);
+                            fileFlow.WrapContents = false;
+                            fileFlow.AutoSize = true;
+                            fileFlow.AutoScroll = false;
+
+                            TextBox fileBox = new TextBox();
+                            fileBox.Width = 225;
+                            fileBox.Text = (file != null) ? file : String.Empty;
+                            fileBox.Width = 225;
+                            fileBox.Tag = setting.Key;
+                            fileFlow.Controls.Add(fileBox);
+
+                            Button browse = new Button();
+                            browse.Text = "Browse";
+                            browse.Tag = setting.Value;
+                            fileFlow.Controls.Add(browse);
+
+                            //Add the Event Handler which updates the Definition as the user types
+                            fileBox.TextChanged += new EventHandler((_sender, args) =>
+                                {
+                                    (fileBox.Tag as PropertyInfo).SetValue(def, fileBox.Text, null);
+                                });
+
+                            //Add the Event Handler for the Browse Button
+                            browse.Click += new EventHandler((_sender, args) =>
+                                {
+                                    ConnectionAttribute attr = browse.Tag as ConnectionAttribute;
+                                    if (attr == null) return;
+                                    this.ofdBrowse.Title = "Browse for " + attr.DisplayName;
+                                    this.ofdBrowse.Filter = (String.IsNullOrEmpty(attr.FileFilter) ? "All Files|*.*" : attr.FileFilter);
+                                    if (this.ofdBrowse.ShowDialog() == DialogResult.OK)
+                                    {
+                                        fileBox.Text = this.ofdBrowse.FileName;
+                                    }
+                                });
+
+                            tblSettings.Controls.Add(fileFlow, 1, i);
+
+                            break;
                     }
 
                     i++;
@@ -155,6 +216,18 @@ namespace VDS.RDF.Utilities.StoreManager
             try
             {
                 this._connection = def.OpenConnection();
+                if (this.chkForceReadOnly.Checked)
+                {
+                    if (this._connection is IQueryableGenericIOManager)
+                    {
+                        this._connection = new QueryableReadOnlyConnector((IQueryableGenericIOManager)this._connection);
+                    }
+                    else
+                    {
+                        this._connection = new ReadOnlyConnector(this._connection);
+                    }
+                }
+
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

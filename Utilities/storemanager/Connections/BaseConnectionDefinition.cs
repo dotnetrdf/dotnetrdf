@@ -78,6 +78,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
                     case ConnectionSettingType.Password:
                     case ConnectionSettingType.String:
+                    case ConnectionSettingType.File:
                         String s = (String)property.GetValue(this, null);
                         if (attr.IsRequired)
                         {
@@ -116,6 +117,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                                 throw new Exception(attr.DisplayName + " must be no more than " + attr.MaxValue + " characters long");
                             }
                         }
+                        break;
+
+                    case ConnectionSettingType.Enum:
+                        Enum e = (Enum)property.GetValue(this, null);
                         break;
 
                     default:

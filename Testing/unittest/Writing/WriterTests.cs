@@ -14,6 +14,7 @@ namespace VDS.RDF.Test.Writing
     {
         private List<String> samples = new List<string>()
             {
+                @":backslashes :string ""This example has some backslashes: C:\Program Files\somewhere"".",
                 ":no-escapes :string \"a piece of text with no escapes\".",
                 ":quote-escapes :string \"a piece of text containing \\\"quotes\\\"\".",
                 ":long-literal :string \"\"\"a piece of text containing \"quotes\\\"\"\"\".",
@@ -257,6 +258,60 @@ namespace VDS.RDF.Test.Writing
             {
                 Console.WriteLine("Input: " + inputs[i] + " - Expected Output: " + outputs[i] + " - Actual Output: " + WriterHelper.EncodeForXml(inputs[i]));
                 Assert.AreEqual(WriterHelper.EncodeForXml(inputs[i]), outputs[i], "Ampersands should have been encoded correctly");
+            }
+        }
+
+        [TestMethod]
+        public void WritingBackslashEscaping()
+        {
+            Graph g = new Graph();
+            INode subj = g.CreateBlankNode();
+            INode pred = g.CreateUriNode(new Uri("ex:string"));
+            INode obj = g.CreateLiteralNode(@"C:\Program Files\some\path\\to\file.txt");
+            g.Assert(subj, pred, obj);
+            obj = g.CreateLiteralNode(@"\");
+            g.Assert(subj, pred, obj);
+            obj = g.CreateLiteralNode(@"C:\\new\\real\\ugly\\Under has all the possible escape character interactions");
+            g.Assert(subj, pred, obj);
+
+            List<IRdfWriter> writers = new List<IRdfWriter>()
+            {
+                new NTriplesWriter(),
+                new TurtleWriter(),
+                new CompressingTurtleWriter(WriterCompressionLevel.High),
+                new Notation3Writer()
+            };
+
+            List<IRdfReader> parsers = new List<IRdfReader>()
+            {
+                new NTriplesParser(),
+                new TurtleParser(),
+                new TurtleParser(),
+                new Notation3Parser()
+            };
+
+            Console.WriteLine("Original Graph");
+            TestTools.ShowGraph(g);
+            Console.WriteLine();
+
+            for (int i = 0; i < writers.Count; i++)
+            {
+                IRdfWriter writer = writers[i];
+                Console.WriteLine("Testing Writer " + writer.GetType().Name);
+
+                System.IO.StringWriter strWriter = new System.IO.StringWriter();
+                writer.Save(g, strWriter);
+
+                Console.WriteLine("Written as:");
+                Console.WriteLine(strWriter.ToString());
+                Console.WriteLine();
+
+                Graph h = new Graph();
+                StringParser.Parse(h, strWriter.ToString(), parsers[i]);
+                Console.WriteLine("Parsed Graph");
+                TestTools.ShowGraph(h);
+                Console.WriteLine();
+                Assert.AreEqual(g, h, "Graphs should be equal");
             }
         }
     }

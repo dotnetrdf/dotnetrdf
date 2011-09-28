@@ -12,7 +12,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         String = 0,
         Password = 1,
         Integer = 2,
-        Boolean = 3
+        Boolean = 3,
+        Enum = 4,
+        File = 5
     }
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
@@ -77,6 +79,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         public int MaxValue
+        {
+            get;
+            set;
+        }
+
+        public String FileFilter
         {
             get;
             set;

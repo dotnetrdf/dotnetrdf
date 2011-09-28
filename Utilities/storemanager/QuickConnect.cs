@@ -29,6 +29,12 @@ namespace VDS.RDF.Utilities.StoreManager
             this._objNode = objNode;
         }
 
+        public QuickConnect(IGraph g, INode objNode, String label)
+            : this(g, objNode)
+        {
+            this.Label = label;
+        }
+
         /// <summary>
         /// Attempts to load the Connection
         /// </summary>
@@ -54,6 +60,24 @@ namespace VDS.RDF.Utilities.StoreManager
             get
             {
                 return this._objNode;
+            }
+        }
+
+        public String Label
+        {
+            get;
+            private set;
+        }
+
+        public override string ToString()
+        {
+            if (this.Label != null)
+            {
+                return this.Label;
+            }
+            else
+            {
+                return this.ObjectNode.ToString();
             }
         }
     }

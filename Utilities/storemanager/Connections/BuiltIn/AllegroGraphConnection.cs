@@ -13,7 +13,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         public AllegroGraphConnectionDefinition()
             : base("Allegro Graph", "Connect to Franz AllegroGraph, Version 3.x and 4.x are supported") { }
 
-        [Connection(DisplayName = "Server URI", IsRequired = true, Type = ConnectionSettingType.String, DisplayOrder = -1),
+        [Connection(DisplayName="Server URI", IsRequired=true, DisplayOrder=-1),
          DefaultValue("http://localhost:9875/")]
         public override String Server
         {

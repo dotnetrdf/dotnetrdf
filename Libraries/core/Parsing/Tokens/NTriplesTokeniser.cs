@@ -44,7 +44,8 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// Tokeniser for NTriples RDF Syntax
     /// </summary>
-    public class NTriplesTokeniser : BaseTokeniser
+    public class NTriplesTokeniser
+        : BaseTokeniser
     {
         private BlockingTextReader _in;
         private bool _nquadsMode = false;

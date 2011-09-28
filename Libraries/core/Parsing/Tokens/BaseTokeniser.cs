@@ -485,6 +485,22 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //Consume this one Backslash
                         this.ConsumeCharacter();
+
+                        //If this was a backslash escape i.e. \\
+                        //Then need to check whether the subsequent character could be confused with a valid escape
+                        //in the tokenised output and if so insert another backslash into the output
+                        next = this.Peek();
+                        switch (next)
+                        {
+                            case 't':
+                            case 'n':
+                            case 'r':
+                            case 'u':
+                            case 'U':
+                                this._output.Append("\\");
+                                break;
+                        }
+
                         return;
                     }
                     else
