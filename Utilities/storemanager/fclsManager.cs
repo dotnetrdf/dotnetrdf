@@ -629,7 +629,17 @@ namespace VDS.RDF.Utilities.StoreManager
         private void mnuNewConnection_Click(object sender, EventArgs e)
         {
             NewConnectionForm newConn = new NewConnectionForm();
-            newConn.Show();
+            newConn.StartPosition = FormStartPosition.CenterParent;
+            if (newConn.ShowDialog() == DialogResult.OK)
+            {
+                IGenericIOManager manager = newConn.Connection;
+                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
+                storeManager.MdiParent = this;
+                storeManager.Show();
+
+                //Add to Recent Connections
+                this.AddRecentConnection(manager);
+            }
         }
     }
 }

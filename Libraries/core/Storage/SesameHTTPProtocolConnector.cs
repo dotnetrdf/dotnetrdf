@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage
         {
             this._username = username;
             this._pwd = password;
-            this._hasCredentials = true;
+            this._hasCredentials = (username != null && password != null);
         }
 
         /// <summary>

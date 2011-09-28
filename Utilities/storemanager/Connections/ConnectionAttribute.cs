@@ -15,7 +15,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         Boolean = 3
     }
 
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple=false, Inherited=true)]
     public class ConnectionAttribute
         : Attribute
     {
@@ -26,6 +26,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         public String DisplaySuffix
+        {
+            get;
+            set;
+        }
+
+        public int DisplayOrder
         {
             get;
             set;

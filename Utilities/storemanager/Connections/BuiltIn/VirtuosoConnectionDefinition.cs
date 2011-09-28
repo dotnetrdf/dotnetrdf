@@ -8,12 +8,12 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class VirtuosoConnectionDefinition
-        : BaseServerConnectionDefinition
+        : BaseCredentialsRequiredServerConnectionDefinition
     {
         public VirtuosoConnectionDefinition()
             : base("Virtuoso", "Connect to a Virtuoso Universal Server Quad Store") { }
 
-        [Connection(DisplayName="Port", MinValue=1, MaxValue=65535, IsValueRestricted=true, Type=ConnectionSettingType.Integer, IsRequired=true),
+        [Connection(DisplayName="Port", DisplayOrder=1, MinValue=1, MaxValue=65535, IsValueRestricted=true, Type=ConnectionSettingType.Integer, IsRequired=true),
          DefaultValue(VirtuosoManager.DefaultPort)]
         public int Port
         {
@@ -21,7 +21,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        [Connection(DisplayName="Database", IsRequired=true, AllowEmptyString=false),
+        [Connection(DisplayName="Database", DisplayOrder=2, IsRequired=true, AllowEmptyString=false),
          DefaultValue("DB")]
         public String Database
         {
@@ -29,23 +29,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        [Connection(DisplayName = "Username", IsRequired = false, Type = ConnectionSettingType.String)]
-        public String Username
-        {
-            get;
-            set;
-        }
-
-        [Connection(DisplayName = "Password", IsRequired = false, Type = ConnectionSettingType.Password)]
-        public String Password
-        {
-            get;
-            set;
-        }
-
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            throw new NotImplementedException();
+            return new VirtuosoManager(this.Server, this.Port, this.Database, this.Username, this.Password);
         }
     }
 }
