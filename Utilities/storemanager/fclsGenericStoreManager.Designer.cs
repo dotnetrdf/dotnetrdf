@@ -39,6 +39,7 @@
             this.mnuGraphs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuViewGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPreviewGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCountTriples = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDeleteGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
@@ -99,7 +100,12 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-            this.mnuCountTriples = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyGraphTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuMoveGraphTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRenameGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -195,9 +201,11 @@
             this.mnuPreviewGraph,
             this.mnuCountTriples,
             this.toolStripMenuItem1,
-            this.mnuDeleteGraph});
+            this.mnuDeleteGraph,
+            this.mnuCopyGraphTo,
+            this.mnuMoveGraphTo});
             this.mnuGraphs.Name = "mnuGraphs";
-            this.mnuGraphs.Size = new System.Drawing.Size(194, 120);
+            this.mnuGraphs.Size = new System.Drawing.Size(194, 164);
             this.mnuGraphs.Opening += new System.ComponentModel.CancelEventHandler(this.mnuGraphs_Opening);
             // 
             // mnuViewGraph
@@ -213,6 +221,13 @@
             this.mnuPreviewGraph.Size = new System.Drawing.Size(193, 22);
             this.mnuPreviewGraph.Text = "Preview first {0} Triples";
             this.mnuPreviewGraph.Click += new System.EventHandler(this.mnuPreviewGraph_Click);
+            // 
+            // mnuCountTriples
+            // 
+            this.mnuCountTriples.Name = "mnuCountTriples";
+            this.mnuCountTriples.Size = new System.Drawing.Size(193, 22);
+            this.mnuCountTriples.Text = "Count Triples";
+            this.mnuCountTriples.Click += new System.EventHandler(this.mnuCountTriples_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -796,12 +811,45 @@
             // 
             this.sfdExport.Title = "Export Store As...";
             // 
-            // mnuCountTriples
+            // mnuCopyGraphTo
             // 
-            this.mnuCountTriples.Name = "mnuCountTriples";
-            this.mnuCountTriples.Size = new System.Drawing.Size(193, 22);
-            this.mnuCountTriples.Text = "Count Triples";
-            this.mnuCountTriples.Click += new System.EventHandler(this.mnuCountTriples_Click);
+            this.mnuCopyGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuCopyGraph,
+            this.toolStripMenuItem2});
+            this.mnuCopyGraphTo.Name = "mnuCopyGraphTo";
+            this.mnuCopyGraphTo.Size = new System.Drawing.Size(193, 22);
+            this.mnuCopyGraphTo.Text = "Copy Graph To";
+            // 
+            // mnuMoveGraphTo
+            // 
+            this.mnuMoveGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuRenameGraph,
+            this.toolStripMenuItem3});
+            this.mnuMoveGraphTo.Name = "mnuMoveGraphTo";
+            this.mnuMoveGraphTo.Size = new System.Drawing.Size(193, 22);
+            this.mnuMoveGraphTo.Text = "Move Graph To";
+            // 
+            // mnuRenameGraph
+            // 
+            this.mnuRenameGraph.Name = "mnuRenameGraph";
+            this.mnuRenameGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuRenameGraph.Text = "Self (Rename)";
+            // 
+            // mnuCopyGraph
+            // 
+            this.mnuCopyGraph.Name = "mnuCopyGraph";
+            this.mnuCopyGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuCopyGraph.Text = "Self (Copy)";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
             // fclsGenericStoreManager
             // 
@@ -917,5 +965,11 @@
         private System.Windows.Forms.CheckBox chkPageQuery;
         private System.Windows.Forms.ToolStripMenuItem mnuPreviewGraph;
         private System.Windows.Forms.ToolStripMenuItem mnuCountTriples;
+        private System.Windows.Forms.ToolStripMenuItem mnuCopyGraphTo;
+        private System.Windows.Forms.ToolStripMenuItem mnuCopyGraph;
+        private System.Windows.Forms.ToolStripMenuItem mnuMoveGraphTo;
+        private System.Windows.Forms.ToolStripMenuItem mnuRenameGraph;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
     }
 }

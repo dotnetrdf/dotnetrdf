@@ -29,7 +29,10 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -54,6 +57,22 @@ namespace VDS.RDF.Utilities.StoreManager
             get
             {
                 return _main;
+            }
+        }
+
+        public static IEnumerable<IGenericIOManager> ActiveConnections
+        {
+            get
+            {
+                if (_main != null)
+                {
+                    return (from managerForm in _main.MdiChildren.OfType<fclsGenericStoreManager>()
+                            select managerForm.Manager);
+                }
+                else
+                {
+                    return Enumerable.Empty<IGenericIOManager>();
+                }
             }
         }
     }

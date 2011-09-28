@@ -370,6 +370,36 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.mnuDeleteGraph.Enabled = this._manager.DeleteSupported;
                 this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Properties.Settings.Default.PreviewSize);
+                this.mnuMoveGraphTo.Enabled = this._manager.DeleteSupported;
+                this.mnuCopyGraph.Enabled = !this._manager.IsReadOnly;
+                this.mnuRenameGraph.Enabled = !this._manager.IsReadOnly;
+
+                //Fill Copy To and Move To menus
+                while (this.mnuCopyGraphTo.DropDownItems.Count > 2)
+                {
+                    this.mnuCopyGraphTo.DropDownItems.RemoveAt(2);
+                }
+                while (this.mnuMoveGraphTo.DropDownItems.Count > 2)
+                {
+                    this.mnuMoveGraphTo.DropDownItems.RemoveAt(2);
+                }
+                foreach (IGenericIOManager manager in Program.ActiveConnections)
+                {
+                    if (!ReferenceEquals(manager, this._manager) && !manager.IsReadOnly)
+                    {
+                        ToolStripMenuItem item = new ToolStripMenuItem(manager.ToString());
+                        item.Tag = manager;
+                        //TODO: Add Click Handler
+                        this.mnuCopyGraphTo.DropDownItems.Add(item);
+                        item = new ToolStripMenuItem(manager.ToString());
+                        item.Tag = manager;
+                        this.mnuMoveGraphTo.DropDownItems.Add(item);
+                    }
+                }
+                if (mnuCopyGraphTo.DropDownItems.Count == 2 && this._manager.IsReadOnly)
+                {
+                    this.mnuCopyGraphTo.Enabled = false;
+                }
             }
             else
             {
@@ -387,7 +417,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.ViewGraph(graphUri);
             }
         }
-
 
         private void mnuDeleteGraph_Click(object sender, EventArgs e)
         {

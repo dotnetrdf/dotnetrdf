@@ -28,5 +28,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     return "Unknown";
             }
         }
+
+        internal static String ToSafeString(this Object obj)
+        {
+            return (obj != null ? obj.ToString() : String.Empty);
+        }
     }
 }
