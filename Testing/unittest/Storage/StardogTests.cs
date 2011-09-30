@@ -149,6 +149,7 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 //Options.UseBomForUtf8 = false;
+                Options.HttpDebugging = true;
 
                 StardogConnector stardog = this.GetConnection();
                 Graph g = new Graph();
@@ -174,6 +175,7 @@ namespace VDS.RDF.Test.Storage
             }
             finally
             {
+                Options.HttpDebugging = false;
                 //Options.UseBomForUtf8 = true;
             }
         }
@@ -340,6 +342,24 @@ namespace VDS.RDF.Test.Storage
             finally
             {
                 //Options.UseBomForUtf8 = true;
+            }
+        }
+
+        [TestMethod]
+        public void StorageStardogTransactionTest()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                StardogConnector stardog = this.GetConnection();
+                stardog.Begin();
+                stardog.Commit();
+                stardog.Dispose();
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
             }
         }
     }

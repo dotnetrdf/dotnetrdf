@@ -42,6 +42,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -876,19 +877,38 @@ namespace VDS.RDF.Storage
         {
             String tID = null;
 
-            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/begin", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/begin", "text/plain"/*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+#if DEBUG
+                if (Options.HttpDebugging)
                 {
-                    tID = reader.ReadToEnd();
-                    reader.Close();
+                    Tools.HttpDebugRequest(request);
                 }
-                response.Close();
+#endif
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        tID = reader.ReadToEnd();
+                        reader.Close();
+                    }
+                    response.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new RdfStorageException("Stardog failed to begin a Transaction, see inner exception for details", ex);
             }
 
-            if (tID.Equals(String.Empty))
+            if (String.IsNullOrEmpty(tID))
             {
                 throw new RdfStorageException("Stardog failed to begin a Transaction");
             }
@@ -897,10 +917,22 @@ namespace VDS.RDF.Storage
 
         private void CommitTransaction(String tID)
         {
-            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + tID, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+            HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + tID, "text/plain"/* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
             using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
             {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugResponse(response);
+                }
+#endif
                 response.Close();
             }
 
@@ -935,13 +967,18 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Begin()
         {
-            lock (this._activeTrans)
+            try
             {
+                Monitor.Enter(this);
                 if (this._activeTrans != null)
                 {
                     throw new RdfStorageException("Cannot start a new Transaction as there is already an active Transaction");
                 }
                 this._activeTrans = this.BeginTransaction();
+            }
+            finally
+            {
+                Monitor.Exit(this);
             }
         }
 
@@ -954,13 +991,18 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Commit()
         {
-            lock (this._activeTrans)
+            try
             {
+                Monitor.Enter(this);
                 if (this._activeTrans == null)
                 {
                     throw new RdfStorageException("Cannot commit a Transaction as there is currently no active Transaction");
                 }
                 this.CommitTransaction(this._activeTrans);
+            }
+            finally
+            {
+                Monitor.Exit(this);
             }
         }
 
@@ -973,13 +1015,18 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void Rollback()
         {
-            lock (this._activeTrans)
+            try
             {
+                Monitor.Enter(this);
                 if (this._activeTrans == null)
                 {
                     throw new RdfStorageException("Cannot rollback a Transaction on the as there is currently no active Transaction");
                 }
                 this.RollbackTransaction(this._activeTrans);
+            }
+            finally
+            {
+                Monitor.Exit(this);
             }
         }
 
