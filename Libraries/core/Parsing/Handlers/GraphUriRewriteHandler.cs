@@ -26,6 +26,18 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        protected override void StartRdfInternal()
+        {
+            base.StartRdfInternal();
+            this._handler.StartRdf();
+        }
+
+        protected override void EndRdfInternal(bool ok)
+        {
+            this._handler.EndRdf(ok);
+            base.EndRdfInternal(ok);
+        }
+
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
             return this._handler.HandleBaseUri(baseUri);

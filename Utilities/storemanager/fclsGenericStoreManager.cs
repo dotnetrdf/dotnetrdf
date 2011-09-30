@@ -53,6 +53,7 @@ namespace VDS.RDF.Utilities.StoreManager
     {
         private IGenericIOManager _manager;
         private int _taskID = 0;
+        private EventHandler _copyGraphHandler, _moveGraphHandler;
 
         public fclsGenericStoreManager(IGenericIOManager manager)
         {
@@ -61,6 +62,8 @@ namespace VDS.RDF.Utilities.StoreManager
             this._manager = manager;
             this.Text = this._manager.ToString();
             this.lvwTasks.ListViewItemSorter = new SortTasksByID();
+            this._copyGraphHandler = this.CopyGraphClick;
+            this._moveGraphHandler = this.MoveGraphClick;
         }
 
         public IGenericIOManager Manager
@@ -260,6 +263,55 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.ExportCallback);
         }
 
+        private void CopyGraph(String graphUri, IGenericIOManager target)
+        {
+            if (target == null) return;
+
+            Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
+            if (ReferenceEquals(this._manager, target))
+            {
+                CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Copy");
+
+                if (rename.ShowDialog() == DialogResult.OK)
+                {
+                    CopyMoveTask task = new CopyMoveTask(this._manager, target, source, rename.Uri, ReferenceEquals(this._manager, target));
+                    this.AddTask(task, this.CopyMoveRenameCallback);
+                }
+            }
+            else
+            {
+                CopyMoveTask task = new CopyMoveTask(this._manager, target, source, source, true);
+                this.AddTask(task, this.CopyMoveRenameCallback);
+            }
+        }
+
+        private void RenameGraph(String graphUri)
+        {
+            CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Rename");
+            Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
+            if (rename.ShowDialog() == DialogResult.OK)
+            {
+                CopyMoveTask task = new CopyMoveTask(this._manager, this._manager, source, rename.Uri, false);
+                this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
+            }
+        }
+
+        private void MoveGraph(String graphUri, IGenericIOManager target)
+        {
+            if (target == null) return;
+
+            if (ReferenceEquals(this._manager, target))
+            {
+                this.RenameGraph(graphUri);
+            }
+            else
+            {
+                Uri source = graphUri.Equals("Default Graph") ? null : new Uri(graphUri);
+                CopyMoveTask task = new CopyMoveTask(this._manager, target, source, source, false);
+                this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
+            }
+        }
+
         #endregion
 
         #region Control Event Handlers
@@ -372,7 +424,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.mnuPreviewGraph.Text = String.Format("Preview first {0} Triples", Properties.Settings.Default.PreviewSize);
                 this.mnuMoveGraphTo.Enabled = this._manager.DeleteSupported;
                 this.mnuCopyGraph.Enabled = !this._manager.IsReadOnly;
-                this.mnuRenameGraph.Enabled = !this._manager.IsReadOnly;
+                this.mnuRenameGraph.Enabled = !this._manager.IsReadOnly && this._manager.DeleteSupported;
 
                 //Fill Copy To and Move To menus
                 while (this.mnuCopyGraphTo.DropDownItems.Count > 2)
@@ -387,12 +439,16 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     if (!ReferenceEquals(manager, this._manager) && !manager.IsReadOnly)
                     {
+                        //Copy To entry
                         ToolStripMenuItem item = new ToolStripMenuItem(manager.ToString());
                         item.Tag = manager;
-                        //TODO: Add Click Handler
+                        item.Click += this._copyGraphHandler;
                         this.mnuCopyGraphTo.DropDownItems.Add(item);
+
+                        //Move To entry
                         item = new ToolStripMenuItem(manager.ToString());
                         item.Tag = manager;
+                        item.Click += this._moveGraphHandler;
                         this.mnuMoveGraphTo.DropDownItems.Add(item);
                     }
                 }
@@ -426,6 +482,74 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (graphUri.Equals("Default Graph")) graphUri = null;
 
                 this.DeleteGraph(graphUri);
+            }
+        }
+
+        private void mnuPreviewGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.Items.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.PreviewGraph(graphUri);
+            }
+        }
+
+        private void mnuCountTriples_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.Items.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                if (graphUri.Equals("Default Graph")) graphUri = null;
+
+                this.CountTriples(graphUri);
+            }
+        }
+
+        private void mnuCopyGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                this.CopyGraph(graphUri, this._manager);
+            }
+        }
+
+        private void mnuRenameGraph_Click(object sender, EventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                this.RenameGraph(graphUri);
+            }
+        }
+
+        private void CopyGraphClick(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item == null) return;
+            if (item.Tag is IGenericIOManager)
+            {
+                if (this.lvwGraphs.SelectedItems.Count > 0)
+                {
+                    String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                    this.CopyGraph(graphUri, item.Tag as IGenericIOManager);
+                }
+            }
+        }
+
+        private void MoveGraphClick(object sender, EventArgs e)
+        {
+            ToolStripMenuItem item = sender as ToolStripMenuItem;
+            if (item == null) return;
+            if (item.Tag is IGenericIOManager)
+            {
+                if (this.lvwGraphs.SelectedItems.Count > 0)
+                {
+                    String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                    this.CopyGraph(graphUri, item.Tag as IGenericIOManager);
+                }
             }
         }
 
@@ -978,6 +1102,26 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void CopyMoveRenameCallback(ITask<TaskResult> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage(task.Name + " Completed OK - " + task.Information, task.Name + " Completed", MessageBoxIcon.Information);
+                this.ListGraphs();
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage(task.Name + " Failed due to the following error: " + task.Error.Message, task.Name + " Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage(task.Name + " Failed due to an unknown error", task.Name + " Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
         #endregion
 
         protected override void OnClosed(EventArgs e)
@@ -985,27 +1129,6 @@ namespace VDS.RDF.Utilities.StoreManager
             this._manager.Dispose();
         }
 
-        private void mnuPreviewGraph_Click(object sender, EventArgs e)
-        {
-            if (this.lvwGraphs.Items.Count > 0)
-            {
-                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                if (graphUri.Equals("Default Graph")) graphUri = null;
-
-                this.PreviewGraph(graphUri);
-            }
-        }
-
-        private void mnuCountTriples_Click(object sender, EventArgs e)
-        {
-            if (this.lvwGraphs.Items.Count > 0)
-            {
-                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                if (graphUri.Equals("Default Graph")) graphUri = null;
-
-                this.CountTriples(graphUri);
-            }
-        }
     }
 
     class SortTasksByID : IComparer, IComparer<ListViewItem>

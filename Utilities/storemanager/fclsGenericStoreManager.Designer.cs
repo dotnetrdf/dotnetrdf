@@ -42,6 +42,12 @@
             this.mnuCountTriples = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuDeleteGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyGraphTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuCopyGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuMoveGraphTo = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuRenameGraph = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.tabSparqlQuery = new System.Windows.Forms.TabPage();
             this.numPageSize = new System.Windows.Forms.NumericUpDown();
             this.chkPageQuery = new System.Windows.Forms.CheckBox();
@@ -100,12 +106,6 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-            this.mnuCopyGraphTo = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuMoveGraphTo = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuRenameGraph = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuCopyGraph = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -240,6 +240,48 @@
             this.mnuDeleteGraph.Size = new System.Drawing.Size(193, 22);
             this.mnuDeleteGraph.Text = "Delete Graph";
             this.mnuDeleteGraph.Click += new System.EventHandler(this.mnuDeleteGraph_Click);
+            // 
+            // mnuCopyGraphTo
+            // 
+            this.mnuCopyGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuCopyGraph,
+            this.toolStripMenuItem2});
+            this.mnuCopyGraphTo.Name = "mnuCopyGraphTo";
+            this.mnuCopyGraphTo.Size = new System.Drawing.Size(193, 22);
+            this.mnuCopyGraphTo.Text = "Copy Graph To";
+            // 
+            // mnuCopyGraph
+            // 
+            this.mnuCopyGraph.Name = "mnuCopyGraph";
+            this.mnuCopyGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuCopyGraph.Text = "Self (Copy)";
+            this.mnuCopyGraph.Click += new System.EventHandler(this.mnuCopyGraph_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+            // 
+            // mnuMoveGraphTo
+            // 
+            this.mnuMoveGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuRenameGraph,
+            this.toolStripMenuItem3});
+            this.mnuMoveGraphTo.Name = "mnuMoveGraphTo";
+            this.mnuMoveGraphTo.Size = new System.Drawing.Size(193, 22);
+            this.mnuMoveGraphTo.Text = "Move Graph To";
+            // 
+            // mnuRenameGraph
+            // 
+            this.mnuRenameGraph.Name = "mnuRenameGraph";
+            this.mnuRenameGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuRenameGraph.Text = "Self (Rename)";
+            this.mnuRenameGraph.Click += new System.EventHandler(this.mnuRenameGraph_Click);
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
             // tabSparqlQuery
             // 
@@ -810,46 +852,6 @@
             // sfdExport
             // 
             this.sfdExport.Title = "Export Store As...";
-            // 
-            // mnuCopyGraphTo
-            // 
-            this.mnuCopyGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuCopyGraph,
-            this.toolStripMenuItem2});
-            this.mnuCopyGraphTo.Name = "mnuCopyGraphTo";
-            this.mnuCopyGraphTo.Size = new System.Drawing.Size(193, 22);
-            this.mnuCopyGraphTo.Text = "Copy Graph To";
-            // 
-            // mnuMoveGraphTo
-            // 
-            this.mnuMoveGraphTo.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.mnuRenameGraph,
-            this.toolStripMenuItem3});
-            this.mnuMoveGraphTo.Name = "mnuMoveGraphTo";
-            this.mnuMoveGraphTo.Size = new System.Drawing.Size(193, 22);
-            this.mnuMoveGraphTo.Text = "Move Graph To";
-            // 
-            // mnuRenameGraph
-            // 
-            this.mnuRenameGraph.Name = "mnuRenameGraph";
-            this.mnuRenameGraph.Size = new System.Drawing.Size(152, 22);
-            this.mnuRenameGraph.Text = "Self (Rename)";
-            // 
-            // mnuCopyGraph
-            // 
-            this.mnuCopyGraph.Name = "mnuCopyGraph";
-            this.mnuCopyGraph.Size = new System.Drawing.Size(152, 22);
-            this.mnuCopyGraph.Text = "Self (Copy)";
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
             // 
             // fclsGenericStoreManager
             // 

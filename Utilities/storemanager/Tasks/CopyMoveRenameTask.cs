@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         this.Information = "Issuing a MOVE command to renamed Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
                         SparqlParameterizedString update = new SparqlParameterizedString();
                         update.CommandText = "MOVE";
-                        if (this._sourceUri != null)
+                        if (this._sourceUri == null)
                         {
                             update.CommandText += " DEFAULT TO";
                         }
@@ -68,7 +68,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.CommandText += " GRAPH @source TO";
                             update.SetUri("source", this._sourceUri);
                         }
-                        if (this._targetUri != null)
+                        if (this._targetUri == null)
                         {
                             update.CommandText += " DEFAULT";
                         }
@@ -135,7 +135,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         this.Information = "Issuing a COPY command to copy Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
                         SparqlParameterizedString update = new SparqlParameterizedString();
                         update.CommandText = "COPY";
-                        if (this._sourceUri != null)
+                        if (this._sourceUri == null)
                         {
                             update.CommandText += " DEFAULT TO";
                         }
@@ -144,7 +144,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.CommandText += " GRAPH @source TO";
                             update.SetUri("source", this._sourceUri);
                         }
-                        if (this._targetUri != null)
+                        if (this._targetUri == null)
                         {
                             update.CommandText += " DEFAULT";
                         }

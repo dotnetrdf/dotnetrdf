@@ -97,6 +97,7 @@ namespace VDS.RDF.Update.Commands
                     {
                         dest = new Graph();
                         dest.BaseUri = this._destUri;
+                        context.Data.AddGraph(dest);
                     }
 
                     //Move data from the Source into the Destination

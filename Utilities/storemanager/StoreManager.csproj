@@ -72,6 +72,12 @@
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />
+    <Compile Include="CopyMoveRenameGraphForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CopyMoveRenameGraphForm.Designer.cs">
+      <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -183,6 +189,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CopyMoveRenameGraphForm.resx">
+      <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="fclsAbout.resx">
       <DependentUpon>fclsAbout.cs</DependentUpon>
     </EmbeddedResource>
