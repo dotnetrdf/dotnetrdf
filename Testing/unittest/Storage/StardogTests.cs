@@ -302,6 +302,7 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 //Options.UseBomForUtf8 = false;
+                Options.HttpDebugging = true;
 
                 StardogConnector stardog = this.GetConnection();
 
@@ -342,6 +343,7 @@ namespace VDS.RDF.Test.Storage
             finally
             {
                 //Options.UseBomForUtf8 = true;
+                Options.HttpDebugging = false;
             }
         }
 

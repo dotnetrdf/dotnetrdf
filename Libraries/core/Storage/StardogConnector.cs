@@ -215,17 +215,20 @@ namespace VDS.RDF.Storage
 
                 String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
 
+                //String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                String accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlXml.Concat(MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
+
                 //Create the Request
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
                 if (sparqlQuery.Length < 2048)
                 {
                     queryParams.Add("query", sparqlQuery);
 
-                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "GET", queryParams);
+                    request = this.CreateRequest(this._kb + tID + "/query", accept, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._kb + tID + "/query", MimeTypesHelper.Any, "POST", queryParams);
+                    request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
@@ -842,6 +845,7 @@ namespace VDS.RDF.Storage
 
             //Create our Request
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            //if (accept.EndsWith("*/*;q=0.5")) accept = accept.Substring(0, accept.LastIndexOf(","));
             request.Accept = accept;
             request.Method = method;
 
