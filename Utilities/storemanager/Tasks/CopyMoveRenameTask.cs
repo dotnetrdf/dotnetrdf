@@ -65,6 +65,8 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         protected override TaskResult RunTaskInternal()
         {
+            if (this._target.IsReadOnly) throw new RdfStorageException("Cannot Copy/Move a Graph when the Target is a read-only Store!");
+
             switch (this.Name)
             {
                 case "Move":

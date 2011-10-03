@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="Tasks\BaseImportTask.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\CopyMoveDragInfo.cs" />
     <Compile Include="Tasks\CopyMoveRenameTask.cs" />
     <Compile Include="Tasks\CountTriplesTask.cs" />
     <Compile Include="Tasks\PreviewGraphTask.cs" />

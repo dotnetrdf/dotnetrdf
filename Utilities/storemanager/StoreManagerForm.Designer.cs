@@ -176,12 +176,15 @@
             // 
             // lvwGraphs
             // 
+            this.lvwGraphs.AllowDrop = true;
             this.lvwGraphs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colGraphURI});
             this.lvwGraphs.ContextMenuStrip = this.mnuGraphs;
             this.lvwGraphs.FullRowSelect = true;
             this.lvwGraphs.GridLines = true;
+            this.lvwGraphs.HideSelection = false;
             this.lvwGraphs.Location = new System.Drawing.Point(6, 6);
+            this.lvwGraphs.MultiSelect = false;
             this.lvwGraphs.Name = "lvwGraphs";
             this.lvwGraphs.Size = new System.Drawing.Size(502, 267);
             this.lvwGraphs.TabIndex = 4;
@@ -205,7 +208,7 @@
             this.mnuCopyGraphTo,
             this.mnuMoveGraphTo});
             this.mnuGraphs.Name = "mnuGraphs";
-            this.mnuGraphs.Size = new System.Drawing.Size(194, 164);
+            this.mnuGraphs.Size = new System.Drawing.Size(194, 142);
             this.mnuGraphs.Opening += new System.ComponentModel.CancelEventHandler(this.mnuGraphs_Opening);
             // 
             // mnuViewGraph
@@ -253,14 +256,14 @@
             // mnuCopyGraph
             // 
             this.mnuCopyGraph.Name = "mnuCopyGraph";
-            this.mnuCopyGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuCopyGraph.Size = new System.Drawing.Size(132, 22);
             this.mnuCopyGraph.Text = "Self (Copy)";
             this.mnuCopyGraph.Click += new System.EventHandler(this.mnuCopyGraph_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(129, 6);
             // 
             // mnuMoveGraphTo
             // 
@@ -274,14 +277,14 @@
             // mnuRenameGraph
             // 
             this.mnuRenameGraph.Name = "mnuRenameGraph";
-            this.mnuRenameGraph.Size = new System.Drawing.Size(152, 22);
+            this.mnuRenameGraph.Size = new System.Drawing.Size(147, 22);
             this.mnuRenameGraph.Text = "Self (Rename)";
             this.mnuRenameGraph.Click += new System.EventHandler(this.mnuRenameGraph_Click);
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(144, 6);
             // 
             // tabSparqlQuery
             // 
@@ -853,7 +856,7 @@
             // 
             this.sfdExport.Title = "Export Store As...";
             // 
-            // fclsGenericStoreManager
+            // StoreManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -863,7 +866,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "fclsGenericStoreManager";
+            this.Name = "StoreManagerForm";
             this.Text = "fclsGenericStoreManager";
             this.Load += new System.EventHandler(this.fclsGenericStoreManager_Load);
             this.tabFunctions.ResumeLayout(false);

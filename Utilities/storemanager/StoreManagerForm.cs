@@ -61,9 +61,17 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             InitializeComponent();
 
+            //Configure Form
             this._manager = manager;
             this.Text = this._manager.ToString();
+
+            //Configure Tasks List
             this.lvwTasks.ListViewItemSorter = new SortTasksByID();
+
+            //Configure Graphs List
+            this.lvwGraphs.ItemDrag += new ItemDragEventHandler(lvwGraphs_ItemDrag);
+            this.lvwGraphs.DragEnter += new DragEventHandler(lvwGraphs_DragEnter);
+            this.lvwGraphs.DragDrop += new DragEventHandler(lvwGraphs_DragDrop);
             this._copyGraphHandler = this.CopyGraphClick;
             this._moveGraphHandler = this.MoveGraphClick;
         }
@@ -265,7 +273,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.ExportCallback);
         }
 
-        private void CopyGraph(String graphUri, IGenericIOManager target)
+        public void CopyGraph(String graphUri, IGenericIOManager target)
         {
             if (target == null) return;
 
@@ -298,7 +306,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private void MoveGraph(String graphUri, IGenericIOManager target)
+        public void MoveGraph(String graphUri, IGenericIOManager target)
         {
             if (target == null) return;
 
@@ -355,6 +363,72 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (graphUri.Equals("Default Graph")) graphUri = null;
 
                 this.ViewGraph(graphUri);
+            }
+        }
+
+        void lvwGraphs_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            if (this.lvwGraphs.SelectedItems.Count > 0)
+            {
+                String graphUri = this.lvwGraphs.SelectedItems[0].Text;
+                CopyMoveDragInfo info = new CopyMoveDragInfo(this, graphUri);
+                DragDropEffects effects = DragDropEffects.Copy;
+                if (this._manager.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if this manager supports DeleteGraph()
+
+                this.lvwGraphs.DoDragDrop(info, effects);
+            }
+        }
+
+        void lvwGraphs_DragEnter(object sender, DragEventArgs e)
+        {
+            if ((e.AllowedEffect & DragDropEffects.Copy) != 0 || (e.AllowedEffect & DragDropEffects.Move) != 0)
+            {
+                if (e.Data.GetDataPresent(typeof(CopyMoveDragInfo)))
+                {
+                    //Cannot Copy/Move if a read-only manager is the target
+                    if (this._manager.IsReadOnly) return;
+
+                    CopyMoveDragInfo info = e.Data.GetData(typeof(CopyMoveDragInfo)) as CopyMoveDragInfo;
+                    if (info == null) return;
+
+                    DragDropEffects effects = DragDropEffects.Copy;
+                    if (info.Source.DeleteSupported) effects = effects | DragDropEffects.Move; //Move only possible if the source manager supports DeleteGraph()
+                    e.Effect = effects;
+                }
+            }
+        }
+
+        void lvwGraphs_DragDrop(object sender, DragEventArgs e)
+        {
+            if ((e.AllowedEffect & DragDropEffects.Copy) != 0 || (e.AllowedEffect & DragDropEffects.Move) != 0)
+            {
+                if (e.Data.GetDataPresent(typeof(CopyMoveDragInfo)))
+                {
+                    CopyMoveDragInfo info = e.Data.GetData(typeof(CopyMoveDragInfo)) as CopyMoveDragInfo;
+                    if (info == null) return;
+
+                    //Check whether Move is permitted?
+                    if ((e.Effect & DragDropEffects.Move) != 0)
+                    {
+                        DialogResult result = MessageBox.Show("Would you like to Move the Graph '" + info.SourceUri + "' from " + info.Source.ToString() + " to " + this._manager.ToString() + "?\n\nClick Yes to Move, No to Copy or Cancel to do nothing...", "Confirm Move/Copy Graph", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        switch (result)
+                        {
+                            case DialogResult.Yes:
+                                info.Form.MoveGraph(info.SourceUri, this._manager);
+                                break;
+                            case DialogResult.No:
+                                info.Form.CopyGraph(info.SourceUri, this._manager);
+                                break;
+                            default:
+                                return;
+                        }
+                    }
+                    else
+                    {
+                        //Just do a Copy
+                        info.Form.CopyGraph(info.SourceUri, this._manager);
+                    }
+                }
             }
         }
 
