@@ -24,14 +24,16 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
-using VDS.RDF.Utilities.Editor.Syntax;
+using VDS.RDF.Utilities.Editor;
+using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for EditorWindow.xaml
     /// </summary>
-    public partial class EditorWindow : Window
+    public partial class EditorWindow
+        : Window
     {
         //TODO: Generate these programmatically using MimeTypesHelper
         private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.rj;*.json;*.owl;*.html;*.xhtml;*.htm;*.shtml|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.rj;*.json|(X)HTML+RDFa Files|*.html;*.xhtml;*.htm;*.shtml";
@@ -41,7 +43,7 @@ namespace VDS.RDF.Utilities.Editor
 
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
-        private EditorManager _manager;
+        private Editor<TextEditor> _editor;
         private bool _saveWindowSize = false;
         private FindReplace _findReplace;
 
@@ -49,25 +51,34 @@ namespace VDS.RDF.Utilities.Editor
         {
             InitializeComponent();
 
+            //Initialise Highlighting
+            WpfHighlightingManager.Initialise(Properties.Settings.Default.UseCustomisedXshdFiles);
+
             //Create the Editor Manager
-            this._manager = new EditorManager(this.textEditor, this.mnuCurrentHighlighter, this.stsCurrSyntax, this.stsSyntaxValidation, this.mnuSymbolBoundaries);
+            this._editor = new Editor<TextEditor>(new WpfEditorFactory());
+            this._editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditor>(this.SaveChangesCallback);
+            this._editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditor>(this.SaveAsCallback);
+
+            //Add an initial document for editing
+            this.AddTextEditor();
+            this.tabDocuments.TabIndex = 0;
           
             //Set up the Editor Options
-            TextEditorOptions options = new TextEditorOptions();
-            options.EnableEmailHyperlinks = Properties.Settings.Default.EnableClickableUris;
-            options.EnableHyperlinks = Properties.Settings.Default.EnableClickableUris;
-            options.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
-            options.ShowSpaces = Properties.Settings.Default.ShowSpaces;
-            options.ShowTabs = Properties.Settings.Default.ShowTabs;
-            textEditor.Options = options;
-            textEditor.ShowLineNumbers = true;
-            if (Properties.Settings.Default.EditorFontFace != null)
-            {
-                textEditor.FontFamily = Properties.Settings.Default.EditorFontFace;
-            }
-            textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
-            textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
-            textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
+            //TextEditorOptions options = new TextEditorOptions();
+            //options.EnableEmailHyperlinks = Properties.Settings.Default.EnableClickableUris;
+            //options.EnableHyperlinks = Properties.Settings.Default.EnableClickableUris;
+            //options.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
+            //options.ShowSpaces = Properties.Settings.Default.ShowSpaces;
+            //options.ShowTabs = Properties.Settings.Default.ShowTabs;
+            //textEditor.Options = options;
+            //textEditor.ShowLineNumbers = true;
+            //if (Properties.Settings.Default.EditorFontFace != null)
+            //{
+            //    textEditor.FontFamily = Properties.Settings.Default.EditorFontFace;
+            //}
+            //textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
+            //textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
+            //textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
             
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.UseUtf8Bom)
@@ -81,37 +92,37 @@ namespace VDS.RDF.Utilities.Editor
             }
             if (!Properties.Settings.Default.EnableSymbolSelection)
             {
-                this._manager.IsSymbolSelectionEnabled = false;
+                //this._manager.IsSymbolSelectionEnabled = false;
                 this.mnuSymbolSelectEnabled.IsChecked = false;
             }
             if (!Properties.Settings.Default.IncludeSymbolBoundaries)
             {
-                this._manager.IncludeBoundaryInSymbolSelection = false;
+                //this._manager.IncludeBoundaryInSymbolSelection = false;
                 this.mnuSymbolSelectIncludeBoundary.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
-                this._manager.IsAutoCompleteEnabled = false;
+                //this._manager.IsAutoCompleteEnabled = false;
                 this.mnuAutoComplete.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableHighlighting)
             {
-                this._manager.IsHighlightingEnabled = false;
+                //this._manager.IsHighlightingEnabled = false;
                 this.mnuEnableHighlighting.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableValidateAsYouType)
             {
-                this._manager.IsValidateAsYouType = false;
+                //this._manager.IsValidateAsYouType = false;
                 this.mnuValidateAsYouType.IsChecked = false;
             }
             if (!Properties.Settings.Default.ShowLineNumbers)
             {
-                textEditor.ShowLineNumbers = false;
+                //textEditor.ShowLineNumbers = false;
                 this.mnuShowLineNumbers.IsChecked = false;
             }
             if (Properties.Settings.Default.WordWrap)
             {
-                textEditor.WordWrap = true;
+                //textEditor.WordWrap = true;
                 this.mnuWordWrap.IsChecked = true;
             }
             if (Properties.Settings.Default.EnableClickableUris)
@@ -130,11 +141,11 @@ namespace VDS.RDF.Utilities.Editor
             {
                 this.mnuShowSpecialTabs.IsChecked = true;
             }
-            this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
+            //this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
 
             //Enable/Disable state dependent menu options
-            this.mnuUndo.IsEnabled = textEditor.CanUndo;
-            this.mnuRedo.IsEnabled = textEditor.CanRedo;
+            //this.mnuUndo.IsEnabled = textEditor.CanUndo;
+            //this.mnuRedo.IsEnabled = textEditor.CanRedo;
 
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
@@ -145,381 +156,439 @@ namespace VDS.RDF.Utilities.Editor
             _sfd.Filter = _ofd.Filter;
 
             //Setup dropping of files
-            textEditor.AllowDrop = true;
-            textEditor.Drop += new DragEventHandler(textEditor_Drop);
+            //textEditor.AllowDrop = true;
+            //textEditor.Drop += new DragEventHandler(textEditor_Drop);
         }
 
-        void textEditor_Drop(object sender, DragEventArgs e)
+        //void textEditor_Drop(object sender, DragEventArgs e)
+        //{
+        //    //Is the data FileDrop data?
+        //    String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
+        //    if (droppedFilePaths == null) return;
+
+        //    e.Handled = true;
+
+        //    if (droppedFilePaths.Length > 0)
+        //    {
+        //        //Open the 1st File in the Current Window
+        //        String file = droppedFilePaths[0];
+        //        mnuClose_Click(sender, e);
+
+        //        try
+        //        {
+        //            if (!PreOpenCheck(file)) return;
+        //            using (StreamReader reader = new StreamReader(file))
+        //            {
+        //                String text = reader.ReadToEnd();
+        //                textEditor.Text = String.Empty;
+        //                textEditor.Text = text;
+        //                this._manager.AutoDetectSyntax(file);
+        //            }
+        //            this._manager.CurrentFile = file;
+        //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+        //            this._manager.HasChanged = false;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+        //        }
+
+        //        for (int i = 1; i < droppedFilePaths.Length; i++)
+        //        {
+        //            try
+        //            {
+        //                ProcessStartInfo info = new ProcessStartInfo();
+        //                info.FileName = Assembly.GetExecutingAssembly().Location;
+        //                info.Arguments = "\"" + droppedFilePaths[i] + "\"";
+        //                Process.Start(info);
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
+        //            }
+        //        }
+        //    } 
+        //}
+
+        #region Text Editor Management
+
+        private void AddTextEditor()
         {
-            //Is the data FileDrop data?
-            String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
-            if (droppedFilePaths == null) return;
-
-            e.Handled = true;
-
-            if (droppedFilePaths.Length > 0)
-            {
-                //Open the 1st File in the Current Window
-                String file = droppedFilePaths[0];
-                mnuClose_Click(sender, e);
-
-                try
-                {
-                    if (!PreOpenCheck(file)) return;
-                    using (StreamReader reader = new StreamReader(file))
-                    {
-                        String text = reader.ReadToEnd();
-                        textEditor.Text = String.Empty;
-                        textEditor.Text = text;
-                        this._manager.AutoDetectSyntax(file);
-                    }
-                    this._manager.CurrentFile = file;
-                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                    this._manager.HasChanged = false;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                }
-
-                for (int i = 1; i < droppedFilePaths.Length; i++)
-                {
-                    try
-                    {
-                        ProcessStartInfo info = new ProcessStartInfo();
-                        info.FileName = Assembly.GetExecutingAssembly().Location;
-                        info.Arguments = "\"" + droppedFilePaths[i] + "\"";
-                        Process.Start(info);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
-                    }
-                }
-            } 
+            this.AddTextEditor(new TabItem());
         }
+
+        private void AddTextEditor(TabItem tab)
+        {
+            Document<TextEditor> doc = this._editor.DocumentManager.New();
+            this.AddTextEditor(tab, doc);
+        }
+
+        private void AddTextEditor(TabItem tab, Document<TextEditor> doc)
+        {
+            //Register for relevant events on the document
+            doc.FilenameChanged +=
+                new DocumentChangedHandler<TextEditor>((sender, e) =>
+                {
+                    if (e.Document.Filename != null && !e.Document.Filename.Equals(String.Empty))
+                    {
+                        tab.Header = System.IO.Path.GetFileName(e.Document.Filename);
+                    }
+                });
+            doc.TitleChanged += new DocumentChangedHandler<TextEditor>((sender, e) =>
+            {
+                if (e.Document.Title != null && !e.Document.Title.Equals(String.Empty))
+                {
+                    tab.Header = e.Document.Title;
+                }
+            });
+            doc.SyntaxChanged += new DocumentChangedHandler<TextEditor>((sender, e) =>
+            {
+                if (ReferenceEquals(this._editor.DocumentManager.ActiveDocument, e.Document))
+                {
+                    this.stsCurrSyntax.Content = "Syntax: " + e.Document.Syntax;
+                }
+            });
+            doc.Validated += new DocumentValidatedHandler<TextEditor>(this.HandleValidation);
+            doc.ValidatorChanged += new DocumentChangedHandler<TextEditor>(this.HandleValidatorChanged);
+            doc.TextChanged += new DocumentChangedHandler<TextEditor>(this.HandleTextChanged);
+
+            //Set Tab title where appropriate
+            if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
+            {
+                tab.Header = System.IO.Path.GetFileName(doc.Filename);
+            }
+            else if (doc.Title != null && !doc.Title.Equals(String.Empty))
+            {
+                tab.Header = doc.Title;
+            }
+
+            //Add to Tabs
+            this.tabDocuments.Items.Add(tab);
+            tab.Content = doc.TextEditor.Control;
+
+            //Add appropriate event handlers on tabs
+            //tab.Enter +=
+            //    new EventHandler((sender, e) =>
+            //    {
+            //        var page = ((TabPage)sender);
+            //        if (page.Controls.Count > 0)
+            //        {
+            //            page.BeginInvoke(new Action<TabPage>(p => p.Controls[0].Focus()), page);
+            //        }
+            //    });
+        }
+
+        #endregion
 
         #region File Menu
 
         private void mnuNew_Click(object sender, RoutedEventArgs e)
         {
-            mnuClose_Click(sender, e);
+            this.AddTextEditor();
+            this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
+            this.tabDocuments.TabIndex = this.tabDocuments.Items.Count - 1;
         }
 
         private void mnuOpen_Click(object sender, RoutedEventArgs e)
         {
-            if (_ofd.ShowDialog() == true)
+            try
             {
-                try
+                if (this._ofd.ShowDialog() == true)
                 {
-                    if (!PreOpenCheck(_ofd.FileName)) return;
-                    using (StreamReader reader = new StreamReader(_ofd.FileName))
+                    if (this._ofd.FileNames.Length == 1)
                     {
-                        String text = reader.ReadToEnd();
-                        textEditor.Text = String.Empty;
-                        textEditor.Text = text;
-                        this._manager.AutoDetectSyntax(_ofd.FileName);
+                        Document<TextEditor> doc, active;
+                        active = this._editor.DocumentManager.ActiveDocument;
+                        if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                        {
+                            doc = active;
+                            doc.Filename = this._ofd.FileName;
+                        }
+                        else
+                        {
+                            doc = this._editor.DocumentManager.New(System.IO.Path.GetFileName(this._ofd.FileName), true);
+                        }
+
+                        //Open the file and display in new tab if necessary
+                        doc.Open(this._ofd.FileName);
+                        if (!ReferenceEquals(active, doc))
+                        {
+                            this.AddTextEditor(new TabItem(), doc);
+                            this.tabDocuments.TabIndex = this.tabDocuments.Items.Count - 1;
+                        }
                     }
-                    this._manager.CurrentFile = _ofd.FileName;
-                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                    this._manager.HasChanged = false;
-                    this.UpdateMruList(_ofd.FileName);
+                    else
+                    {
+                        foreach (String filename in this._ofd.FileNames)
+                        {
+                            Document<TextEditor> doc = this._editor.DocumentManager.New(System.IO.Path.GetFileName(filename), false);
+                            doc.Open(filename);
+                            this.AddTextEditor(new TabItem(), doc);
+                        }
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("An error occurred while opening the selected file(s): " + ex.Message, "Open File(s) Failed", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void mnuOpenUri_Click(object sender, RoutedEventArgs e)
         {
-            if (this._manager.HasChanged)
-            {
-                MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening a URI?", "Save Changes?", MessageBoxButton.YesNoCancel);
-                if (res == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                else if (res == MessageBoxResult.Yes)
-                {
-                    mnuSave_Click(sender, e);
-                }
-                this._manager.HasChanged = false;
-            }
-            mnuClose_Click(sender, e);
+            //if (this._manager.HasChanged)
+            //{
+            //    MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening a URI?", "Save Changes?", MessageBoxButton.YesNoCancel);
+            //    if (res == MessageBoxResult.Cancel)
+            //    {
+            //        return;
+            //    }
+            //    else if (res == MessageBoxResult.Yes)
+            //    {
+            //        mnuSave_Click(sender, e);
+            //    }
+            //    this._manager.HasChanged = false;
+            //}
+            //mnuClose_Click(sender, e);
 
-            OpenUri diag = new OpenUri();
-            if (diag.ShowDialog() == true)
-            {
-                textEditor.Text = diag.RetrievedData;
-                this._manager.HasChanged = true;
-                if (diag.Parser != null)
-                {
-                    this._manager.SetHighlighter(diag.Parser);
-                }
-                else
-                {
-                    this._manager.AutoDetectSyntax();
-                }
-            }
+            //OpenUri diag = new OpenUri();
+            //if (diag.ShowDialog() == true)
+            //{
+            //    textEditor.Text = diag.RetrievedData;
+            //    this._manager.HasChanged = true;
+            //    if (diag.Parser != null)
+            //    {
+            //        this._manager.SetHighlighter(diag.Parser);
+            //    }
+            //    else
+            //    {
+            //        this._manager.AutoDetectSyntax();
+            //    }
+            //}
         }
 
         private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
-            String queryText = String.Empty;
-            if (this._manager.CurrentSyntax.StartsWith("SparqlQuery"))
-            {
-                queryText = this.textEditor.Text;
-            }
+            //String queryText = String.Empty;
+            //if (this._manager.CurrentSyntax.StartsWith("SparqlQuery"))
+            //{
+            //    queryText = this.textEditor.Text;
+            //}
 
-            if (this._manager.HasChanged)
-            {
-                MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening Query Results?", "Save Changes?", MessageBoxButton.YesNoCancel);
-                if (res == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                else if (res == MessageBoxResult.Yes)
-                {
-                    mnuSave_Click(sender, e);
-                }
-                this._manager.HasChanged = false;
-            }
-            mnuClose_Click(sender, e);
+            //if (this._manager.HasChanged)
+            //{
+            //    MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening Query Results?", "Save Changes?", MessageBoxButton.YesNoCancel);
+            //    if (res == MessageBoxResult.Cancel)
+            //    {
+            //        return;
+            //    }
+            //    else if (res == MessageBoxResult.Yes)
+            //    {
+            //        mnuSave_Click(sender, e);
+            //    }
+            //    this._manager.HasChanged = false;
+            //}
+            //mnuClose_Click(sender, e);
 
-            OpenQueryResults diag = new OpenQueryResults();
-            if (!queryText.Equals(String.Empty)) diag.Query = queryText;
-            if (diag.ShowDialog() == true)
-            {
-                textEditor.Text = diag.RetrievedData;
-                this._manager.HasChanged = true;
-                this._manager.SetHighlighter(diag.Parser);
-            }
+            //OpenQueryResults diag = new OpenQueryResults();
+            //if (!queryText.Equals(String.Empty)) diag.Query = queryText;
+            //if (diag.ShowDialog() == true)
+            //{
+            //    textEditor.Text = diag.RetrievedData;
+            //    this._manager.HasChanged = true;
+            //    this._manager.SetHighlighter(diag.Parser);
+            //}
         }
 
         private bool PreOpenCheck(String file)
         {
-            if (this._manager.HasChanged)
-            {
-                //Prompt user to save
-                MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before opening another file?", "Save Changes", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Cancel)
-                {
-                    return false;
-                }
-                else if (result == MessageBoxResult.Yes)
-                {
-                    mnuSave_Click(null, new RoutedEventArgs());
-                }
-            }
+            //if (this._manager.HasChanged)
+            //{
+            //    //Prompt user to save
+            //    MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before opening another file?", "Save Changes", MessageBoxButton.YesNoCancel);
+            //    if (result == MessageBoxResult.Cancel)
+            //    {
+            //        return false;
+            //    }
+            //    else if (result == MessageBoxResult.Yes)
+            //    {
+            //        mnuSave_Click(null, new RoutedEventArgs());
+            //    }
+            //}
 
-            FileInfo info = new FileInfo(file);
-            long sizeInMB = info.Length / 1024 / 1024;
+            //FileInfo info = new FileInfo(file);
+            //long sizeInMB = info.Length / 1024 / 1024;
 
-            if (sizeInMB >= 10)
-            {
-                if (MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size.  You can cancel opening this file if you wish by clicking Cancel", "Large File Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
-                {
-                    //Disable features if user proceeds
-                    if (this.mnuEnableHighlighting.IsChecked)
-                    {
-                        mnuEnableHighlighting.IsChecked = false;
-                        mnuEnableHighlighting_Click(null, new RoutedEventArgs());
-                    }
-                    if (this.mnuValidateAsYouType.IsChecked)
-                    {
-                        mnuValidateAsYouType.IsChecked = false;
-                        mnuValidateAsYouType_Click(null, new RoutedEventArgs());
-                    }
-                    if (this.mnuHighlightErrors.IsChecked)
-                    {
-                        mnuHighlightErrors.IsChecked = false;
-                        mnuHighlightErrors_Click(null, new RoutedEventArgs());
-                    }
-                    if (this.mnuAutoComplete.IsChecked)
-                    {
-                        mnuAutoComplete.IsChecked = false;
-                        mnuAutoComplete_Click(null, new RoutedEventArgs());
-                    }
+            //if (sizeInMB >= 10)
+            //{
+            //    if (MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size.  You can cancel opening this file if you wish by clicking Cancel", "Large File Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
+            //    {
+            //        //Disable features if user proceeds
+            //        if (this.mnuEnableHighlighting.IsChecked)
+            //        {
+            //            mnuEnableHighlighting.IsChecked = false;
+            //            mnuEnableHighlighting_Click(null, new RoutedEventArgs());
+            //        }
+            //        if (this.mnuValidateAsYouType.IsChecked)
+            //        {
+            //            mnuValidateAsYouType.IsChecked = false;
+            //            mnuValidateAsYouType_Click(null, new RoutedEventArgs());
+            //        }
+            //        if (this.mnuHighlightErrors.IsChecked)
+            //        {
+            //            mnuHighlightErrors.IsChecked = false;
+            //            mnuHighlightErrors_Click(null, new RoutedEventArgs());
+            //        }
+            //        if (this.mnuAutoComplete.IsChecked)
+            //        {
+            //            mnuAutoComplete.IsChecked = false;
+            //            mnuAutoComplete_Click(null, new RoutedEventArgs());
+            //        }
 
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return true;
-            }
+            //        return true;
+            //    }
+            //    else
+            //    {
+            //        return false;
+            //    }
+            //}
+            //else
+            //{
+            //    return true;
+            //}
+            return true;
         }
 
         private void mnuSave_Click(object sender, RoutedEventArgs e)
         {
-            if (this._manager.CurrentFile != null)
+            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            if (doc != null)
             {
-                this.UpdateMruList(this._manager.CurrentFile);
-
-                StreamWriter fileWriter;
-                try
+                if (doc.Filename == null || doc.Filename.Equals(String.Empty))
                 {
-                    IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(System.IO.Path.GetExtension(this._manager.CurrentFile)));
-
-                    //Use ASCII for NTriples and UTF-8 otherwise
-                    if (writer is NTriplesWriter)
-                    {
-                        fileWriter = new StreamWriter(this._manager.CurrentFile, false, Encoding.ASCII);
-                    }
-                    else
-                    {
-                        fileWriter = new StreamWriter(this._manager.CurrentFile, false, new UTF8Encoding(Options.UseBomForUtf8));
-                    }
+                    mnuSaveAs_Click(sender, e);
                 }
-                catch
+                else
                 {
-                    //Ignore and just create a UTF-8 Stream
-                    fileWriter = new StreamWriter(this._manager.CurrentFile, false, new UTF8Encoding(Options.UseBomForUtf8));
+                    doc.Save();
                 }
-
-                try
-                {
-                    fileWriter.Write(textEditor.Text);
-                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                    fileWriter.Close();
-                    this._manager.HasChanged = false;
-                }
-                catch (Exception ex)
-                {
-                    fileWriter.Close();
-                    MessageBox.Show("An error occurred while saving: " + ex.Message, "Save Failed");
-                }
-            }
-            else
-            {
-                mnuSaveAs_Click(sender, e);
             }
         }
 
         private void mnuSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            if (this._sfd.ShowDialog() == true)
+            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            if (doc != null)
             {
-                if (!this._sfd.FileName.Equals(this._manager.CurrentFile))
+                String filename = this.SaveAsCallback(doc);
+                if (filename != null)
                 {
-                    this._manager.CurrentFile = this._sfd.FileName;
-                    mnuSave_Click(sender, e);
-                    this._manager.AutoDetectSyntax(this._manager.CurrentFile);
-                }
-                else
-                {
-                    mnuSave_Click(sender, e);
+                    doc.SaveAs(_sfd.FileName);
                 }
             }
         }
 
         private void SaveWith(IRdfWriter writer)
         {
-            IRdfReader parser = this._manager.GetParser();
-            Graph g = new Graph();
-            try
-            {
-                StringParser.Parse(g, textEditor.Text, parser);
-            }
-            catch
-            {
-                MessageBox.Show("Unable to Save With an RDF Writer as the current file is not a valid RDF document when parsed with the " + parser.GetType().Name + ".  If you believe this is a valid RDF document please select the correct Syntax Highlighting from the Options Menu and retry", "Save With Failed");
-                return;
-            }
+            //IRdfReader parser = this._manager.GetParser();
+            //Graph g = new Graph();
+            //try
+            //{
+            //    StringParser.Parse(g, textEditor.Text, parser);
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("Unable to Save With an RDF Writer as the current file is not a valid RDF document when parsed with the " + parser.GetType().Name + ".  If you believe this is a valid RDF document please select the correct Syntax Highlighting from the Options Menu and retry", "Save With Failed");
+            //    return;
+            //}
 
-            bool filenameRequired = (this._manager.CurrentFile == null);
-            if (!filenameRequired)
-            {
-                MessageBoxResult res = MessageBox.Show("Are you sure you wish to overwrite your existing file with the output of the " + writer.GetType().Name + "?  Click Yes to proceed, No to select a different Filename or Cancel to abort this operation", "Overwrite File",MessageBoxButton.YesNoCancel);
-                if (res == MessageBoxResult.Cancel)
-                {
-                    return;
-                }
-                else if (res == MessageBoxResult.No)
-                {
-                    filenameRequired = true;
-                }
-                else if (res == MessageBoxResult.None)
-                {
-                    return;
-                }
-            }
+            //bool filenameRequired = (this._manager.CurrentFile == null);
+            //if (!filenameRequired)
+            //{
+            //    MessageBoxResult res = MessageBox.Show("Are you sure you wish to overwrite your existing file with the output of the " + writer.GetType().Name + "?  Click Yes to proceed, No to select a different Filename or Cancel to abort this operation", "Overwrite File",MessageBoxButton.YesNoCancel);
+            //    if (res == MessageBoxResult.Cancel)
+            //    {
+            //        return;
+            //    }
+            //    else if (res == MessageBoxResult.No)
+            //    {
+            //        filenameRequired = true;
+            //    }
+            //    else if (res == MessageBoxResult.None)
+            //    {
+            //        return;
+            //    }
+            //}
 
-            //Get a Filename to Save to
-            String origFilename = this._manager.CurrentFile;
-            if (filenameRequired)
-            {
-                if (_sfd.ShowDialog() == true)
-                {
-                    try
-                    {
-                        this.UpdateMruList(this._sfd.FileName);
-                    }
-                    catch
-                    {
-                        //Ignore Errors here
-                    }
-                    this._manager.CurrentFile = _sfd.FileName;
-                }
-                else
-                {
-                    return;
-                }
-            }
+            ////Get a Filename to Save to
+            //String origFilename = this._manager.CurrentFile;
+            //if (filenameRequired)
+            //{
+            //    if (_sfd.ShowDialog() == true)
+            //    {
+            //        try
+            //        {
+            //            this.UpdateMruList(this._sfd.FileName);
+            //        }
+            //        catch
+            //        {
+            //            //Ignore Errors here
+            //        }
+            //        this._manager.CurrentFile = _sfd.FileName;
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }
+            //}
 
 
-            try
-            {
-                //Check whether the User wants to set advanced options?
-                if (Properties.Settings.Default.SaveWithOptionsPrompt)
-                {
-                    RdfWriterOptionsWindow optPrompt = new RdfWriterOptionsWindow(writer);
-                    optPrompt.Owner = this;
-                    if (optPrompt.ShowDialog() != true) return;
-                }
+            //try
+            //{
+            //    //Check whether the User wants to set advanced options?
+            //    if (Properties.Settings.Default.SaveWithOptionsPrompt)
+            //    {
+            //        RdfWriterOptionsWindow optPrompt = new RdfWriterOptionsWindow(writer);
+            //        optPrompt.Owner = this;
+            //        if (optPrompt.ShowDialog() != true) return;
+            //    }
 
-                //Do the actual save
-                writer.Save(g, this._manager.CurrentFile);
+            //    //Do the actual save
+            //    writer.Save(g, this._manager.CurrentFile);
 
-                //Give the user the option of switching to this new file
-                MessageBoxResult res = MessageBox.Show("Would you like to switch editing to the newly created file?", "Switch Editing", MessageBoxButton.YesNo);
-                if (res == MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        using (StreamReader reader = new StreamReader(this._manager.CurrentFile))
-                        {
-                            String text = reader.ReadToEnd();
-                            textEditor.Text = String.Empty;
-                            textEditor.Text = text;
-                            this._manager.AutoDetectSyntax(this._manager.CurrentFile);
-                        }
-                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                        this._manager.HasChanged = false;
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                    }
-                }
-                else
-                {
-                    if (origFilename != null)
-                    {
-                        this._manager.CurrentFile = origFilename;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while saving: " + ex.Message, "Save With Failed");
-            }
+            //    //Give the user the option of switching to this new file
+            //    MessageBoxResult res = MessageBox.Show("Would you like to switch editing to the newly created file?", "Switch Editing", MessageBoxButton.YesNo);
+            //    if (res == MessageBoxResult.Yes)
+            //    {
+            //        try
+            //        {
+            //            using (StreamReader reader = new StreamReader(this._manager.CurrentFile))
+            //            {
+            //                String text = reader.ReadToEnd();
+            //                textEditor.Text = String.Empty;
+            //                textEditor.Text = text;
+            //                this._manager.AutoDetectSyntax(this._manager.CurrentFile);
+            //            }
+            //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+            //            this._manager.HasChanged = false;
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        if (origFilename != null)
+            //        {
+            //            this._manager.CurrentFile = origFilename;
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("An error occurred while saving: " + ex.Message, "Save With Failed");
+            //}
         }
 
         private void mnuSaveWithNTriples_Click(object sender, RoutedEventArgs e)
@@ -559,50 +628,48 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuPageSetup_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PageSetupDialog();
+            //this.textEditor.PageSetupDialog();
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PrintPreviewDialog(this._manager.CurrentFile);
+            //this.textEditor.PrintPreviewDialog(this._manager.CurrentFile);
         }
 
         private void mnuPrintPreviewNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PrintPreviewDialog(this._manager.CurrentFile, false);
+            //this.textEditor.PrintPreviewDialog(this._manager.CurrentFile, false);
         }
 
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PrintDialog(this._manager.CurrentFile, true);
+            //this.textEditor.PrintDialog(this._manager.CurrentFile, true);
         }
 
         private void mnuPrintNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            this.textEditor.PrintDialog(this._manager.CurrentFile, false);
+            //this.textEditor.PrintDialog(this._manager.CurrentFile, false);
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)
         {
-            if (this._manager.HasChanged)
+            if (this._editor.DocumentManager.ActiveDocument != null)
             {
-                //Prompt user to save
-                MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before closing it?", "Save Changes", MessageBoxButton.YesNoCancel);
-                if (result == MessageBoxResult.Cancel)
+                if (this._editor.DocumentManager.Close())
                 {
-                    return;
-                }
-                else if (result == MessageBoxResult.Yes)
-                {
-                    mnuSave_Click(sender, e);
+                    int index = this._editor.DocumentManager.ActiveDocumentIndex;
+                    try
+                    {
+                        this.tabDocuments.Items.RemoveAt(this.tabDocuments.TabIndex);
+                        this.tabDocuments.TabIndex = index;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        //Ignore as may be possible to get into this state without intending
+                        //to
+                    }
                 }
             }
-
-            textEditor.Text = String.Empty;
-            this._manager.HasChanged = false;
-            this._manager.CurrentFile = null;
-            this.Title = "rdfEditor";
-            this._manager.SetNoHighlighting();
         }
 
         private void mnuExit_Click(object sender, RoutedEventArgs e)
@@ -618,196 +685,208 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuUndo_Click(object sender, RoutedEventArgs e)
         {
-            if (textEditor.CanUndo)
+            if (this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo)
             {
-                textEditor.Undo();
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Undo();
             }
         }
 
         private void mnuRedo_Click(object sender, RoutedEventArgs e)
         {
-            if (textEditor.CanRedo)
+            if (this._editor.DocumentManager.ActiveDocument != null)
             {
-                textEditor.Redo();
+                if (this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo)
+                {
+                    this._editor.DocumentManager.ActiveDocument.TextEditor.Redo();
+                }
             }
         }
 
         private void mnuCut_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Cut();
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Cut();
+            }
         }
 
         private void mnuCopy_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Copy();
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Copy();
+            }
         }
 
         private void mnuPaste_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Paste();
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Paste();
+            }
         }
 
         private void mnuFind_Click(object sender, RoutedEventArgs e)
         {
-            if (this._findReplace == null)
-            {
-                this._findReplace = new FindReplace();
-            }
-            if (this._findReplace.Visibility != Visibility.Visible)
-            {
-                this._findReplace.Mode = FindReplaceMode.Find;
-                this._findReplace.Editor = this.textEditor;
-                this._findReplace.Show();
-            }
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
+            //if (this._findReplace == null)
+            //{
+            //    this._findReplace = new FindReplace();
+            //}
+            //if (this._findReplace.Visibility != Visibility.Visible)
+            //{
+            //    this._findReplace.Mode = FindReplaceMode.Find;
+            //    this._findReplace.Editor = this.textEditor;
+            //    this._findReplace.Show();
+            //}
+            //this._findReplace.BringIntoView();
+            //this._findReplace.Focus();
         }
 
         private void mnuFindNext_Click(object sender, RoutedEventArgs e)
         {
-            if (this._findReplace == null)
-            {
-                this.mnuFind_Click(sender, e);
-            }
-            else
-            {
-                this._findReplace.Find(this.textEditor);
-            }
+            //if (this._findReplace == null)
+            //{
+            //    this.mnuFind_Click(sender, e);
+            //}
+            //else
+            //{
+            //    this._findReplace.Find(this.textEditor);
+            //}
         }
 
         private void mnuReplace_Click(object sender, RoutedEventArgs e)
         {
-            if (this._findReplace == null)
-            {
-                this._findReplace = new FindReplace();
-            }
-            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
-            this._findReplace.Editor = this.textEditor;
-            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
-            this._findReplace.BringIntoView();
-            this._findReplace.Focus();
+            //if (this._findReplace == null)
+            //{
+            //    this._findReplace = new FindReplace();
+            //}
+            //this._findReplace.Mode = FindReplaceMode.FindAndReplace;
+            //this._findReplace.Editor = this.textEditor;
+            //if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
+            //this._findReplace.BringIntoView();
+            //this._findReplace.Focus();
         }
 
         private void mnuGoToLine_Click(object sender, RoutedEventArgs e)
         {
-            GoToLine gotoLine = new GoToLine(this.textEditor);
-            gotoLine.Owner = this;
-            if (gotoLine.ShowDialog() == true)
-            {
-                this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
-                this.textEditor.ScrollToLine(gotoLine.Line);
-            }
+            //GoToLine gotoLine = new GoToLine(this.textEditor);
+            //gotoLine.Owner = this;
+            //if (gotoLine.ShowDialog() == true)
+            //{
+            //    this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
+            //    this.textEditor.ScrollToLine(gotoLine.Line);
+            //}
         }
 
         private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (textEditor.SelectionLength == 0) return;
+            //if (textEditor.SelectionLength == 0) return;
 
-            String syntax = this._manager.CurrentSyntax;
-            SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
-            if (def != null)
-            {
-                if (def.CanComment)
-                {
-                    String selection = textEditor.SelectedText;
-                    int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
-                    int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
+            //String syntax = this._manager.CurrentSyntax;
+            //SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
+            //if (def != null)
+            //{
+            //    if (def.CanComment)
+            //    {
+            //        String selection = textEditor.SelectedText;
+            //        int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
+            //        int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
 
-                    if (startLine == endLine && def.SingleLineComment != null)
-                    {
-                        //Single Line Comment
-                        textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.SingleLineComment + selection);
-                    }
-                    else
-                    {
-                        //Multi Line Comment
-                        if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
-                        {
-                            textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.MultiLineCommentStart + selection + def.MultiLineCommentEnd);
-                        }
-                        else
-                        {
-                            //Multi-Line Comment but only supports single line comments
-                            textEditor.BeginChange();
-                            for (int i = startLine; i <= endLine; i++)
-                            {
-                                DocumentLine line = textEditor.Document.GetLineByNumber(i);
-                                int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
-                                textEditor.Document.Insert(startOffset, def.SingleLineComment);
-                            }
-                            textEditor.EndChange();
-                            if (textEditor.SelectionStart > 0) textEditor.SelectionStart--;
-                            if (textEditor.SelectionStart + textEditor.SelectionLength < textEditor.Text.Length) textEditor.SelectionLength++;
-                        }
-                    }
-                }
-            }
+            //        if (startLine == endLine && def.SingleLineComment != null)
+            //        {
+            //            //Single Line Comment
+            //            textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.SingleLineComment + selection);
+            //        }
+            //        else
+            //        {
+            //            //Multi Line Comment
+            //            if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
+            //            {
+            //                textEditor.Document.Replace(textEditor.SelectionStart, textEditor.SelectionLength, def.MultiLineCommentStart + selection + def.MultiLineCommentEnd);
+            //            }
+            //            else
+            //            {
+            //                //Multi-Line Comment but only supports single line comments
+            //                textEditor.BeginChange();
+            //                for (int i = startLine; i <= endLine; i++)
+            //                {
+            //                    DocumentLine line = textEditor.Document.GetLineByNumber(i);
+            //                    int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
+            //                    textEditor.Document.Insert(startOffset, def.SingleLineComment);
+            //                }
+            //                textEditor.EndChange();
+            //                if (textEditor.SelectionStart > 0) textEditor.SelectionStart--;
+            //                if (textEditor.SelectionStart + textEditor.SelectionLength < textEditor.Text.Length) textEditor.SelectionLength++;
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private void mnuUncommentSelection_Click(object sender, RoutedEventArgs e)
         {
-            if (textEditor.SelectionLength == 0) return;
+            //if (textEditor.SelectionLength == 0) return;
 
-            String syntax = this._manager.CurrentSyntax;
-            SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
-            if (def != null)
-            {
-                if (def.CanComment)
-                {
-                    String selection = textEditor.SelectedText;
-                    int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
-                    int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
+            //String syntax = this._manager.CurrentSyntax;
+            //SyntaxDefinition def = SyntaxManager.GetDefinition(syntax);
+            //if (def != null)
+            //{
+            //    if (def.CanComment)
+            //    {
+            //        String selection = textEditor.SelectedText;
+            //        int startLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart).LineNumber;
+            //        int endLine = textEditor.Document.GetLineByOffset(textEditor.SelectionStart + textEditor.SelectionLength).LineNumber;
 
-                    if (startLine == endLine && def.SingleLineComment != null)
-                    {
-                        //Single Line Comment
-                        int index = selection.IndexOf(def.SingleLineComment);
-                        if (index > -1)
-                        {
-                            textEditor.Document.Remove(textEditor.SelectionStart + index, def.SingleLineComment.Length);
-                        }
-                    }
-                    else
-                    {
-                        //Multi Line Comment
-                        if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
-                        {
-                            int startIndex = selection.IndexOf(def.MultiLineCommentStart);
-                            int endIndex = selection.LastIndexOf(def.MultiLineCommentEnd);
-                            textEditor.BeginChange();
-                            textEditor.Document.Remove(textEditor.SelectionStart + startIndex, def.MultiLineCommentStart.Length);
-                            textEditor.Document.Remove(textEditor.SelectionStart + endIndex - def.MultiLineCommentStart.Length, def.MultiLineCommentEnd.Length);
-                            textEditor.EndChange();
-                        }
-                        else
-                        {
-                            textEditor.BeginChange();
-                            for (int i = startLine; i <= endLine; i++)
-                            {
-                                DocumentLine line = textEditor.Document.GetLineByNumber(i);
-                                int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
-                                int endOffset = Math.Min(textEditor.SelectionStart + textEditor.SelectionLength, line.EndOffset);
-                                String lineText = textEditor.Document.GetText(startOffset, endOffset - startOffset);
-                                int index = lineText.IndexOf(def.SingleLineComment);
-                                textEditor.Document.Remove(startOffset + index, def.SingleLineComment.Length);
-                            }
-                            textEditor.EndChange();
-                        }
-                    }
-                }
-            }
+            //        if (startLine == endLine && def.SingleLineComment != null)
+            //        {
+            //            //Single Line Comment
+            //            int index = selection.IndexOf(def.SingleLineComment);
+            //            if (index > -1)
+            //            {
+            //                textEditor.Document.Remove(textEditor.SelectionStart + index, def.SingleLineComment.Length);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            //Multi Line Comment
+            //            if (def.MultiLineCommentStart != null && def.MultiLineCommentEnd != null)
+            //            {
+            //                int startIndex = selection.IndexOf(def.MultiLineCommentStart);
+            //                int endIndex = selection.LastIndexOf(def.MultiLineCommentEnd);
+            //                textEditor.BeginChange();
+            //                textEditor.Document.Remove(textEditor.SelectionStart + startIndex, def.MultiLineCommentStart.Length);
+            //                textEditor.Document.Remove(textEditor.SelectionStart + endIndex - def.MultiLineCommentStart.Length, def.MultiLineCommentEnd.Length);
+            //                textEditor.EndChange();
+            //            }
+            //            else
+            //            {
+            //                textEditor.BeginChange();
+            //                for (int i = startLine; i <= endLine; i++)
+            //                {
+            //                    DocumentLine line = textEditor.Document.GetLineByNumber(i);
+            //                    int startOffset = Math.Max(textEditor.SelectionStart, line.Offset);
+            //                    int endOffset = Math.Min(textEditor.SelectionStart + textEditor.SelectionLength, line.EndOffset);
+            //                    String lineText = textEditor.Document.GetText(startOffset, endOffset - startOffset);
+            //                    int index = lineText.IndexOf(def.SingleLineComment);
+            //                    textEditor.Document.Remove(startOffset + index, def.SingleLineComment.Length);
+            //                }
+            //                textEditor.EndChange();
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private void mnuSymbolSelectEnabled_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
+            //this._manager.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
             Properties.Settings.Default.EnableSymbolSelection = this.mnuSymbolSelectEnabled.IsChecked;
             Properties.Settings.Default.Save();
         }
 
         private void mnuSymbolSelectIncludeBoundary_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            //this._manager.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
             Properties.Settings.Default.IncludeSymbolBoundaries = this.mnuSymbolSelectIncludeBoundary.IsChecked;
             Properties.Settings.Default.Save();
         }
@@ -818,55 +897,55 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuShowLineNumbers_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
-            Properties.Settings.Default.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
-            Properties.Settings.Default.Save();
+            //textEditor.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
+            //Properties.Settings.Default.ShowLineNumbers = this.mnuShowLineNumbers.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuWordWrap_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.WordWrap = this.mnuWordWrap.IsChecked;
-            Properties.Settings.Default.WordWrap = this.mnuWordWrap.IsChecked;
-            Properties.Settings.Default.Save();
+            //textEditor.WordWrap = this.mnuWordWrap.IsChecked;
+            //Properties.Settings.Default.WordWrap = this.mnuWordWrap.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuClickableUris_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Options.EnableEmailHyperlinks = this.mnuClickableUris.IsChecked;
-            textEditor.Options.EnableHyperlinks = this.mnuClickableUris.IsChecked;
-            Properties.Settings.Default.EnableClickableUris = this.mnuClickableUris.IsChecked;
-            Properties.Settings.Default.Save();
+            //textEditor.Options.EnableEmailHyperlinks = this.mnuClickableUris.IsChecked;
+            //textEditor.Options.EnableHyperlinks = this.mnuClickableUris.IsChecked;
+            //Properties.Settings.Default.EnableClickableUris = this.mnuClickableUris.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialAll_Click(object sender, RoutedEventArgs e)
         {
-            this.mnuShowSpecialEOL.IsChecked = true;
-            this.mnuShowSpecialSpaces.IsChecked = true;
-            this.mnuShowSpecialTabs.IsChecked = true;
-            mnuShowSpecialEOL_Click(sender, e);
-            mnuShowSpecialSpaces_Click(sender, e);
-            mnuShowSpecialTabs_Click(sender, e);
+            //this.mnuShowSpecialEOL.IsChecked = true;
+            //this.mnuShowSpecialSpaces.IsChecked = true;
+            //this.mnuShowSpecialTabs.IsChecked = true;
+            //mnuShowSpecialEOL_Click(sender, e);
+            //mnuShowSpecialSpaces_Click(sender, e);
+            //mnuShowSpecialTabs_Click(sender, e);
         }
 
         private void mnuShowSpecialEOL_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Options.ShowEndOfLine = this.mnuShowSpecialEOL.IsChecked;
-            Properties.Settings.Default.ShowEndOfLine = textEditor.Options.ShowEndOfLine;
-            Properties.Settings.Default.Save();
+            //textEditor.Options.ShowEndOfLine = this.mnuShowSpecialEOL.IsChecked;
+            //Properties.Settings.Default.ShowEndOfLine = textEditor.Options.ShowEndOfLine;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialSpaces_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Options.ShowSpaces = this.mnuShowSpecialSpaces.IsChecked;
-            Properties.Settings.Default.ShowSpaces = textEditor.Options.ShowSpaces;
-            Properties.Settings.Default.Save();
+            //textEditor.Options.ShowSpaces = this.mnuShowSpecialSpaces.IsChecked;
+            //Properties.Settings.Default.ShowSpaces = textEditor.Options.ShowSpaces;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuShowSpecialTabs_Click(object sender, RoutedEventArgs e)
         {
-            textEditor.Options.ShowTabs = this.mnuShowSpecialTabs.IsChecked;
-            Properties.Settings.Default.ShowTabs = textEditor.Options.ShowTabs;
-            Properties.Settings.Default.Save();
+            //textEditor.Options.ShowTabs = this.mnuShowSpecialTabs.IsChecked;
+            //Properties.Settings.Default.ShowTabs = textEditor.Options.ShowTabs;
+            //Properties.Settings.Default.Save();
         }
 
         #endregion
@@ -875,66 +954,66 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuEnableHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IsHighlightingEnabled = mnuEnableHighlighting.IsChecked;
-            Properties.Settings.Default.EnableHighlighting = this.mnuEnableHighlighting.IsChecked;
-            Properties.Settings.Default.Save();
+            //this._manager.IsHighlightingEnabled = mnuEnableHighlighting.IsChecked;
+            //Properties.Settings.Default.EnableHighlighting = this.mnuEnableHighlighting.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuSetDefaultHighlighter_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.DefaultHighlighter = (this._manager.CurrentHighlighter != null) ? this._manager.CurrentHighlighter.Name : "None";
-            if (!Properties.Settings.Default.DefaultHighlighter.Equals("None"))
-            {
-                foreach (MenuItem item in mnuCurrentHighlighter.Items.OfType<MenuItem>())
-                {
-                    if (item.Tag != null)
-                    {
-                        String syntax = (String)item.Tag;
-                        if (syntax.Equals(Properties.Settings.Default.DefaultHighlighter))
-                        {
-                            if (!((String)item.Header).EndsWith(" (Default)"))
-                            {
-                                item.Header += " (Default)";
-                            }
-                        }
-                        else if (((String)item.Header).EndsWith(" (Default)"))
-                        {
-                            item.Header = ((String)item.Header).Substring(0, ((String)item.Header).Length - 10);
-                        }
-                    }
-                }
-            }
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.DefaultHighlighter = (this._manager.CurrentHighlighter != null) ? this._manager.CurrentHighlighter.Name : "None";
+            //if (!Properties.Settings.Default.DefaultHighlighter.Equals("None"))
+            //{
+            //    foreach (MenuItem item in mnuCurrentHighlighter.Items.OfType<MenuItem>())
+            //    {
+            //        if (item.Tag != null)
+            //        {
+            //            String syntax = (String)item.Tag;
+            //            if (syntax.Equals(Properties.Settings.Default.DefaultHighlighter))
+            //            {
+            //                if (!((String)item.Header).EndsWith(" (Default)"))
+            //                {
+            //                    item.Header += " (Default)";
+            //                }
+            //            }
+            //            else if (((String)item.Header).EndsWith(" (Default)"))
+            //            {
+            //                item.Header = ((String)item.Header).Substring(0, ((String)item.Header).Length - 10);
+            //            }
+            //        }
+            //    }
+            //}
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuValidateAsYouType_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IsValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
-            Properties.Settings.Default.EnableValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
-            Properties.Settings.Default.Save();
-            if (this._manager.IsValidateAsYouType)
-            {
-                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
-                this._manager.DoValidation();
-            }
-            else
-            {
-                this.stsSyntaxValidation.Content = "Validate Syntax as you Type Disabled";
-            }
+            //this._manager.IsValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
+            //Properties.Settings.Default.EnableValidateAsYouType = this.mnuValidateAsYouType.IsChecked;
+            //Properties.Settings.Default.Save();
+            //if (this._manager.IsValidateAsYouType)
+            //{
+            //    this.stsSyntaxValidation.Content = "Validate Syntax as you Type Enabled";
+            //    this._manager.DoValidation();
+            //}
+            //else
+            //{
+            //    this.stsSyntaxValidation.Content = "Validate Syntax as you Type Disabled";
+            //}
         }
 
         private void mnuHighlightErrors_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IsHighlightErrorsEnabled = this.mnuHighlightErrors.IsChecked;
-            Properties.Settings.Default.EnableErrorHighlighting = this.mnuHighlightErrors.IsChecked;
-            Properties.Settings.Default.Save();
+            //this._manager.IsHighlightErrorsEnabled = this.mnuHighlightErrors.IsChecked;
+            //Properties.Settings.Default.EnableErrorHighlighting = this.mnuHighlightErrors.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
         {
-            this._manager.IsAutoCompleteEnabled = this.mnuAutoComplete.IsChecked;
-            Properties.Settings.Default.EnableAutoComplete = this.mnuAutoComplete.IsChecked;
-            Properties.Settings.Default.Save();
+            //this._manager.IsAutoCompleteEnabled = this.mnuAutoComplete.IsChecked;
+            //Properties.Settings.Default.EnableAutoComplete = this.mnuAutoComplete.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
         private void mnuCustomiseFileAssociations_Click(object sender, RoutedEventArgs e)
@@ -945,18 +1024,18 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuCustomiseAppearance_Click(object sender, RoutedEventArgs e)
         {
-            AppearanceSettings settings = new AppearanceSettings(textEditor);
-            settings.Owner = this;
-            if (settings.ShowDialog() == true)
-            {
-                if (Properties.Settings.Default.EditorFontFace != null)
-                {
-                    textEditor.FontFamily = Properties.Settings.Default.EditorFontFace;
-                }
-                textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
-                textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
-                textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
-            }
+            //AppearanceSettings settings = new AppearanceSettings(textEditor);
+            //settings.Owner = this;
+            //if (settings.ShowDialog() == true)
+            //{
+            //    if (Properties.Settings.Default.EditorFontFace != null)
+            //    {
+            //        textEditor.FontFamily = Properties.Settings.Default.EditorFontFace;
+            //    }
+            //    textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
+            //    textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
+            //    textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
+            //}
         }
 
         #endregion
@@ -965,88 +1044,88 @@ namespace VDS.RDF.Utilities.Editor
 
         private void mnuValidateSyntax_Click(object sender, RoutedEventArgs e)
         {
-            ISyntaxValidator validator = this._manager.CurrentValidator;
-            if (validator != null)
-            {
-                ISyntaxValidationResults results = validator.Validate(textEditor.Text);
-                String caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
-                MessageBox.Show(results.Message, caption);
-                if (!this._manager.IsValidateAsYouType && this._manager.IsHighlightErrorsEnabled)
-                {
-                    this._manager.LastValidationError = results.Error;
-                    textEditor.TextArea.InvalidateVisual();
-                }
-            }
-            else
-            {
-                MessageBox.Show("Validation is not possible as there is no Syntax Validator registered for your currently selected Syntax Highlighting", "Validation Unavailable");
-            }
+            //ISyntaxValidator validator = this._manager.CurrentValidator;
+            //if (validator != null)
+            //{
+            //    ISyntaxValidationResults results = validator.Validate(textEditor.Text);
+            //    String caption = results.IsValid ? "Valid Syntax" : "Invalid Syntax";
+            //    MessageBox.Show(results.Message, caption);
+            //    if (!this._manager.IsValidateAsYouType && this._manager.IsHighlightErrorsEnabled)
+            //    {
+            //        this._manager.LastValidationError = results.Error;
+            //        textEditor.TextArea.InvalidateVisual();
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Validation is not possible as there is no Syntax Validator registered for your currently selected Syntax Highlighting", "Validation Unavailable");
+            //}
         }
 
 
         private void mnuStructureView_Click(object sender, RoutedEventArgs e)
         {
-            ISyntaxValidator validator = this._manager.CurrentValidator;
-            if (validator != null)
-            {
-                ISyntaxValidationResults results = validator.Validate(textEditor.Text);
-                if (results.IsValid)
-                {
-                    if (!this._manager.CurrentSyntax.Equals("None"))
-                    {
-                        try 
-                        {
-                            SyntaxDefinition def = SyntaxManager.GetDefinition(this._manager.CurrentSyntax);
-                            if (def.DefaultParser != null)
-                            {
-                                NonIndexedGraph g = new NonIndexedGraph();
-                                def.DefaultParser.Load(g, new StringReader(textEditor.Text));
-                                TriplesWindow window = new TriplesWindow(g);
-                                window.ShowDialog();
-                            }
-                            //else if (def.Validator is RdfDatasetSyntaxValidator)
-                            //{
-                            //    TripleStore store = new TripleStore();
-                            //    StringParser.ParseDataset(store, textEditor.Text);
-                            //}
-                            else if (def.Validator is SparqlResultsValidator)
-                            {
-                                SparqlResultSet sparqlResults = new SparqlResultSet();
-                                StringParser.ParseResultSet(sparqlResults, textEditor.Text);
-                                if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
-                                {
-                                    ResultSetWindow window = new ResultSetWindow(sparqlResults);
-                                    window.ShowDialog();
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
-                                }
-                            }
-                            else
-                            {
-                                MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
-                            }
-                        } 
-                        catch
-                        {
-                            MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Cannot open Structured View as the Syntax is not valid");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Cannot open Structured View as you have not selected a Syntax");
-            }
+            //ISyntaxValidator validator = this._manager.CurrentValidator;
+            //if (validator != null)
+            //{
+            //    ISyntaxValidationResults results = validator.Validate(textEditor.Text);
+            //    if (results.IsValid)
+            //    {
+            //        if (!this._manager.CurrentSyntax.Equals("None"))
+            //        {
+            //            try 
+            //            {
+            //                SyntaxDefinition def = SyntaxManager.GetDefinition(this._manager.CurrentSyntax);
+            //                if (def.DefaultParser != null)
+            //                {
+            //                    NonIndexedGraph g = new NonIndexedGraph();
+            //                    def.DefaultParser.Load(g, new StringReader(textEditor.Text));
+            //                    TriplesWindow window = new TriplesWindow(g);
+            //                    window.ShowDialog();
+            //                }
+            //                //else if (def.Validator is RdfDatasetSyntaxValidator)
+            //                //{
+            //                //    TripleStore store = new TripleStore();
+            //                //    StringParser.ParseDataset(store, textEditor.Text);
+            //                //}
+            //                else if (def.Validator is SparqlResultsValidator)
+            //                {
+            //                    SparqlResultSet sparqlResults = new SparqlResultSet();
+            //                    StringParser.ParseResultSet(sparqlResults, textEditor.Text);
+            //                    if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+            //                    {
+            //                        ResultSetWindow window = new ResultSetWindow(sparqlResults);
+            //                        window.ShowDialog();
+            //                    }
+            //                    else
+            //                    {
+            //                        MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
+            //                    }
+            //                }
+            //                else
+            //                {
+            //                    MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
+            //                }
+            //            } 
+            //            catch
+            //            {
+            //                MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
+            //            }
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Cannot open Structured View as the Syntax is not valid");
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Cannot open Structured View as you have not selected a Syntax");
+            //}
         }
 
         #endregion
@@ -1193,47 +1272,47 @@ namespace VDS.RDF.Utilities.Editor
 
         private void IncreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.textEditor.FontSize = Math.Round(this.textEditor.FontSize + 1.0, 0);
-            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
-            Properties.Settings.Default.Save();
+            //this.textEditor.FontSize = Math.Round(this.textEditor.FontSize + 1.0, 0);
+            //Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            //Properties.Settings.Default.Save();
         }
 
         private void DecreaseTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.textEditor.FontSize = Math.Round(this.textEditor.FontSize - 1.0, 0);
-            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
-            Properties.Settings.Default.Save();
+            //this.textEditor.FontSize = Math.Round(this.textEditor.FontSize - 1.0, 0);
+            //Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            //Properties.Settings.Default.Save();
         }
 
         private void ResetTextSizeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.textEditor.FontSize = 13.0d;
-            Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
-            Properties.Settings.Default.Save();
+            //this.textEditor.FontSize = 13.0d;
+            //Properties.Settings.Default.EditorFontSize = this.textEditor.FontSize;
+            //Properties.Settings.Default.Save();
         }
 
         private void ToggleHighlightingExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuEnableHighlighting.IsChecked = !this.mnuEnableHighlighting.IsChecked;
-            mnuEnableHighlighting_Click(sender, e);
+            //this.mnuEnableHighlighting.IsChecked = !this.mnuEnableHighlighting.IsChecked;
+            //mnuEnableHighlighting_Click(sender, e);
         }
 
         private void ToggleValidateAsYouTypeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuValidateAsYouType.IsChecked = !this.mnuValidateAsYouType.IsChecked;
-            mnuValidateAsYouType_Click(sender, e);
+            //this.mnuValidateAsYouType.IsChecked = !this.mnuValidateAsYouType.IsChecked;
+            //mnuValidateAsYouType_Click(sender, e);
         }
 
         private void ToggleValidationErrorHighlighting(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuHighlightErrors.IsChecked = !this.mnuHighlightErrors.IsChecked;
-            mnuHighlightErrors_Click(sender, e);
+            //this.mnuHighlightErrors.IsChecked = !this.mnuHighlightErrors.IsChecked;
+            //mnuHighlightErrors_Click(sender, e);
         }
 
         private void ToggleAutoCompletionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            this.mnuAutoComplete.IsChecked = !this.mnuAutoComplete.IsChecked;
-            mnuAutoComplete_Click(sender, e);
+            //this.mnuAutoComplete.IsChecked = !this.mnuAutoComplete.IsChecked;
+            //mnuAutoComplete_Click(sender, e);
         }
 
         private void ValidateSyntaxExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1243,42 +1322,101 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
-        #region Misc Event Handlers
+        #region Other Event Handlers
 
-        private void textEditor_TextChanged(object sender, EventArgs e)
+        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TextEditor> args)
         {
-            this.mnuUndo.IsEnabled = textEditor.CanUndo;
-            this.mnuRedo.IsEnabled = textEditor.CanRedo;
+            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            {
+                if (args.Document.SyntaxValidator == null)
+                {
+                    this.stsSyntaxValidation.Content = "No Syntax Validator available for the currently selected syntax";
+                }
+                else
+                {
+                    this.stsSyntaxValidation.Content = "Syntax Validation available, enable Validate as you Type or select Tools > Validate to validate";
+                }
+            }
+        }
+
+        private void HandleValidation(Object sender, DocumentValidatedEventArgs<TextEditor> args)
+        {
+            if (ReferenceEquals(args.Document, this._editor.DocumentManager.ActiveDocument))
+            {
+                this.stsSyntaxValidation.ToolTip = String.Empty;
+                if (args.ValidationResults != null)
+                {
+                    this.stsSyntaxValidation.Content = args.ValidationResults.Message;
+                    //TODO: Should build a TextBlock with wrapping for the ToolTip
+                    this.stsSyntaxValidation.ToolTip = args.ValidationResults.Message;
+                    if (args.ValidationResults.Warnings.Any())
+                    {
+                        this.stsSyntaxValidation.ToolTip += "\n" + String.Join("\n", args.ValidationResults.Warnings.ToArray());
+                    }
+                }
+                else
+                {
+                    this.stsSyntaxValidation.Content = "Syntax Validation unavailable";
+                }
+            }
+        }
+
+        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<TextEditor> args)
+        {
+            this.mnuUndo.IsEnabled = this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanUndo;
+            this.mnuRedo.IsEnabled = this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextEditor.Control.CanRedo;
+        }
+
+        private void tabDocuments_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.tabDocuments.TabIndex >= 0 && this.tabDocuments.Items.Count > 0)
+            {
+                if (this.tabDocuments.TabIndex == this._editor.DocumentManager.ActiveDocumentIndex) return;
+                try
+                {
+                    this._editor.DocumentManager.SwitchTo(this.tabDocuments.TabIndex);
+                    this.stsSyntaxValidation.Content = String.Empty;
+                    this.stsSyntaxValidation.ToolTip = String.Empty;
+                    this._editor.DocumentManager.ActiveDocument.Validate();
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    //Ignore this since we may get this because of events firing after objects have already
+                    //been thrown away
+                }
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //Open a File if we've been asked to do so
-            String[] args = Environment.GetCommandLineArgs();
-            if (args.Length >= 2)
-            {
-                if (File.Exists(args[1]))
-                {
-                    try
-                    {
-                        using (StreamReader reader = new StreamReader(args[1]))
-                        {
-                            String text = reader.ReadToEnd();
-                            textEditor.Text = String.Empty;
-                            textEditor.Text = text;
-                            this._manager.AutoDetectSyntax(args[1]);
-                        }
-                        this._manager.CurrentFile = args[1];
-                        this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                        this._manager.HasChanged = false;
-                        this.UpdateMruList(args[1]);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                    }
-                }
-            }
+            System.Windows.MessageBox.Show("This is the Experimental Branch version of rdfEditor - it is currently undergoing major refactoring and is not in a usable state, please use the most recent released version found in Trunk");
+
+            ////Open a File if we've been asked to do so
+            //String[] args = Environment.GetCommandLineArgs();
+            //if (args.Length >= 2)
+            //{
+            //    if (File.Exists(args[1]))
+            //    {
+            //        try
+            //        {
+            //            using (StreamReader reader = new StreamReader(args[1]))
+            //            {
+            //                String text = reader.ReadToEnd();
+            //                textEditor.Text = String.Empty;
+            //                textEditor.Text = text;
+            //                this._manager.AutoDetectSyntax(args[1]);
+            //            }
+            //            this._manager.CurrentFile = args[1];
+            //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+            //            this._manager.HasChanged = false;
+            //            this.UpdateMruList(args[1]);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+            //        }
+            //    }
+            //}
 
             //Check File Associations
             if (Properties.Settings.Default.AlwaysCheckFileAssociations)
@@ -1294,7 +1432,7 @@ namespace VDS.RDF.Utilities.Editor
                 if (!diag.AllAssociated) diag.ShowDialog(); //Don't show if all associations are already set
             }
 
-            textEditor.Focus();
+            //textEditor.Focus();
 
             //Set Window size
             if (Properties.Settings.Default.WindowHeight > 0 && Properties.Settings.Default.WindowWidth > 0)
@@ -1331,11 +1469,54 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
+        #region Callbacks
+
+        private SaveChangesMode SaveChangesCallback(Document<TextEditor> doc)
+        {
+            MessageBoxResult result = System.Windows.MessageBox.Show(doc.Title + " has unsaved changes, do you wish to save these changes before closing the document?", "Save Changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            switch (result)
+            {
+                case MessageBoxResult.Yes:
+                    return SaveChangesMode.Save;
+                case MessageBoxResult.Cancel:
+                    return SaveChangesMode.Cancel;
+                case MessageBoxResult.No:
+                default:
+                    return SaveChangesMode.Discard;
+            }
+        }
+
+        private String SaveAsCallback(Document<TextEditor> doc)
+        {
+            _sfd.Filter = this.FileFilterAll;
+            if (doc.Filename == null || doc.Filename.Equals(String.Empty))
+            {
+                _sfd.Title = "Save " + doc.Title + " As...";
+            }
+            else
+            {
+                _sfd.Title = "Save " + System.IO.Path.GetFileName(doc.Filename) + " As...";
+                _sfd.InitialDirectory = System.IO.Path.GetDirectoryName(doc.Filename);
+                _sfd.FileName = doc.Filename;
+            }
+
+            if (this._sfd.ShowDialog() == true)
+            {
+                return this._sfd.FileName;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        #endregion
+
         #region MRU List
 
         private void ShowMruList()
         {
-            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
             {
                 while (this.mnuRecentFiles.Items.Count > 2)
                 {
@@ -1343,7 +1524,7 @@ namespace VDS.RDF.Utilities.Editor
                 }
 
                 int i = 0;
-                foreach (String file in VDS.RDF.Utilities.Editor.App.RecentFiles.Files)
+                foreach (String file in VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Files)
                 {
                     i++;
                     MenuItem item = new MenuItem();
@@ -1357,68 +1538,68 @@ namespace VDS.RDF.Utilities.Editor
 
         private void UpdateMruList(String file)
         {
-            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
             {
-                VDS.RDF.Utilities.Editor.App.RecentFiles.Add(file);
+                VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Add(file);
                 this.ShowMruList();
             }
         }
 
         private void MruListFileClicked(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuItem)
-            {
-                MenuItem item = (MenuItem)sender;
-                if (item.Tag != null)
-                {
-                    String file = item.Tag as String;
-                    if (file != null)
-                    {
-                        if (File.Exists(file))
-                        {
-                            try
-                            {
-                                if (!PreOpenCheck(file)) return;
-                                using (StreamReader reader = new StreamReader(file))
-                                {
-                                    String text = reader.ReadToEnd();
-                                    textEditor.Text = String.Empty;
-                                    textEditor.Text = text;
-                                    this._manager.AutoDetectSyntax(file);
-                                }
-                                this._manager.CurrentFile = file;
-                                this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-                                this._manager.HasChanged = false;
-                                this.UpdateMruList(file);
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-                            }
-                        }
-                        else
-                        {
-                            System.Windows.MessageBox.Show("Cannot Open the Recent File '" + file + "' as it no longer exists!", "Unable to Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
-                    }
-                }
-            }
+            //if (sender is MenuItem)
+            //{
+            //    MenuItem item = (MenuItem)sender;
+            //    if (item.Tag != null)
+            //    {
+            //        String file = item.Tag as String;
+            //        if (file != null)
+            //        {
+            //            if (File.Exists(file))
+            //            {
+            //                try
+            //                {
+            //                    if (!PreOpenCheck(file)) return;
+            //                    using (StreamReader reader = new StreamReader(file))
+            //                    {
+            //                        String text = reader.ReadToEnd();
+            //                        textEditor.Text = String.Empty;
+            //                        textEditor.Text = text;
+            //                        this._manager.AutoDetectSyntax(file);
+            //                    }
+            //                    this._manager.CurrentFile = file;
+            //                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
+            //                    this._manager.HasChanged = false;
+            //                    this.UpdateMruList(file);
+            //                }
+            //                catch (Exception ex)
+            //                {
+            //                    MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+            //                }
+            //            }
+            //            else
+            //            {
+            //                System.Windows.MessageBox.Show("Cannot Open the Recent File '" + file + "' as it no longer exists!", "Unable to Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         #endregion
 
         private void mnuClearRecentFiles_Click(object sender, RoutedEventArgs e)
         {
-            if (VDS.RDF.Utilities.Editor.App.RecentFiles != null)
+            if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
             {
-                VDS.RDF.Utilities.Editor.App.RecentFiles.Clear();
+                VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles.Clear();
             }
         }
 
         private void mnuSaveWithPromptOptions_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
-            Properties.Settings.Default.Save();
+            //Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
+            //Properties.Settings.Default.Save();
         }
 
     }

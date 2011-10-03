@@ -1,4 +1,4 @@
-﻿<Window x:Class="VDS.RDF.Utilities.Editor.RdfWriterOptionsWindow"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.Wpf.RdfWriterOptionsWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Configure RDF Writer Options" Height="288" Width="406"

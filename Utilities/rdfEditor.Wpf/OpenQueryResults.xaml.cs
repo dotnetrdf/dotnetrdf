@@ -15,18 +15,17 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Utilities.Editor.Syntax;
-using VDS.RDF.Utilities.Editor.AutoComplete;
+using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 using VDS.RDF.Utilities.Editor.Selection;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for OpenQueryResults.xaml
     /// </summary>
     public partial class OpenQueryResults : Window
     {
-        private EditorManager _manager;
+        //private EditorManager _manager;
         private String _data;
         private ISparqlResultsReader _parser;
 
@@ -34,10 +33,10 @@ namespace VDS.RDF.Utilities.Editor
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(queryEditor);
-            this._manager.SetHighlighter("SparqlQuery11");
-            this._manager.SetAutoCompleter("SparqlQuery11");
-            this._manager.SetSymbolSelector(new WhiteSpaceSelector());
+            //this._manager = new EditorManager(queryEditor);
+            //this._manager.SetHighlighter("SparqlQuery11");
+            //this._manager.SetAutoCompleter("SparqlQuery11");
+            //this._manager.SetSymbolSelector(new WhiteSpaceSelector());
         }
 
         private void btnOpenQueryResults_Click(object sender, RoutedEventArgs e)

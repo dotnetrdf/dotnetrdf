@@ -1,7 +1,7 @@
-﻿<Window x:Class="VDS.RDF.Utilities.Editor.EditorWindow"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.Wpf.EditorWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor.Wpf"
     Title="rdfEditor" Height="629" Width="880" 
     Loaded="Window_Loaded" Closing="Window_Closing" SizeChanged="Window_SizeChanged">
     
@@ -226,13 +226,9 @@
             </MenuItem>
         </Menu>
         
-        <avalonEdit:TextEditor
-            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="textEditor"
-            FontFamily="Consolas"
-            FontSize="10pt" 
-            Grid.Row="1" TextChanged="textEditor_TextChanged"
-            />
+        <TabControl Name="tabDocuments" TabStripPlacement="Top" Grid.Row="1" SelectionChanged="tabDocuments_SelectionChanged">
+            
+        </TabControl>
         
         <StatusBar Name="stsBar" DockPanel.Dock="Bottom" Grid.Row="2" Grid.Column="0">
             <StatusBarItem Name="stsCurrSyntax">Syntax: None</StatusBarItem>

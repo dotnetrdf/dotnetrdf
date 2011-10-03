@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for GoToLine.xaml

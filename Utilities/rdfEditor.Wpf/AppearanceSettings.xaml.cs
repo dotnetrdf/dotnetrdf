@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
-using VDS.RDF.Utilities.Editor.Syntax;
+using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for AppearanceSettings.xaml
@@ -217,7 +217,7 @@ namespace VDS.RDF.Utilities.Editor
                 Properties.Settings.Default.Save();
 
                 //Force the Syntax Manager to update colours appropriately
-                SyntaxManager.UpdateHighlightingColours();
+                //SyntaxManager.UpdateHighlightingColours();
 
                 this.DialogResult = true;
                 this.Close();
@@ -290,7 +290,7 @@ namespace VDS.RDF.Utilities.Editor
                 //Can't reset settings
             }
             this.ShowSettings();
-            SyntaxManager.UpdateHighlightingColours();
+            //SyntaxManager.UpdateHighlightingColours();
         }
 
         private void btnAbandon_Click(object sender, RoutedEventArgs e)

@@ -7,7 +7,7 @@ using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
 
-namespace VDS.RDF.Utilities.Editor.Syntax
+namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
     class FakeTextRunContext : ITextRunConstructionContext
     {

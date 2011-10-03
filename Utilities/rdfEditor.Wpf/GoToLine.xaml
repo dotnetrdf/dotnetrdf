@@ -1,4 +1,4 @@
-﻿<Window x:Class="VDS.RDF.Utilities.Editor.GoToLine"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.Wpf.GoToLine"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Go To Line" Height="109" Width="242" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">

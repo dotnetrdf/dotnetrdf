@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 
-namespace VDS.RDF.Utilities.Editor.Syntax
+namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
     public class CustomColourBrush : HighlightingBrush
     {
