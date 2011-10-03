@@ -14,7 +14,8 @@ namespace VDS.RDF.Utilities.Editor.WinForms
     /// <summary>
     /// An text editor adaptor which uses <strong>ICSharpCode.TextEditor</strong> from the <a href="http://www.sharpdevelop.com">SharpDevelop</a> project to provide a Windows Forms editor
     /// </summary>
-    public class WinFormsEditorAdaptor : BaseTextEditorAdaptor<TextEditorControl>
+    public class WinFormsEditorAdaptor 
+        : BaseTextEditorAdaptor<TextEditorControl>
     {
         private List<TextMarker> _markers = new List<TextMarker>();
         private CodeCompletionWindow _c;

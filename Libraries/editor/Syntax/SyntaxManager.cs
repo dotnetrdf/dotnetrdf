@@ -65,6 +65,15 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             SetXmlFormat("TriX");
         }
 
+        public static IEnumerable<SyntaxDefinition> Definitions
+        {
+            get
+            {
+                if (!_init) Initialise();
+                return _builtinDefs;
+            }
+        }
+
         public static ISyntaxValidator GetValidator(String name)
         {
             foreach (SyntaxDefinition def in _builtinDefs)

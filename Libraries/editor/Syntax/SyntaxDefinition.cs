@@ -21,52 +21,6 @@ namespace VDS.RDF.Utilities.Editor.Syntax
         private String _singleLineComment, _multiLineCommentStart, _multiLineCommentEnd;
         private bool _isXml = false;
 
-        #region Constructors which take an explicit Highlighting Definition
-
-        public SyntaxDefinition(String name, String[] fileExtensions)
-        {
-            this._name = name;
-            this._extensions = fileExtensions;
-        }
-
-        public SyntaxDefinition(String name, String[] fileExtensions, IRdfReader defaultParser)
-            : this(name, fileExtensions)
-        {
-            this._parser = defaultParser;
-        }
-
-        public SyntaxDefinition(String name, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter)
-            : this(name, fileExtensions, defaultParser)
-        {
-            this._writer = defaultWriter;
-        }
-
-        public SyntaxDefinition(String name, String[] fileExtensions, IRdfWriter defaultWriter)
-            : this(name,  fileExtensions)
-        {
-            this._writer = defaultWriter;
-        }
-
-        public SyntaxDefinition(String name, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter, ISyntaxValidator validator)
-            : this(name,fileExtensions, defaultParser, defaultWriter)
-        {
-            this._validator = validator;
-        }
-
-        public SyntaxDefinition(String name,  String[] fileExtensions, IRdfWriter defaultWriter, ISyntaxValidator validator)
-            : this(name, fileExtensions, defaultWriter)
-        {
-            this._validator = validator;
-        }
-
-        public SyntaxDefinition(String name, String[] fileExtensions, ISyntaxValidator validator)
-            : this(name, fileExtensions)
-        {
-            this._validator = validator;
-        }
-
-        #endregion
-
         #region Constructors which lazily load the Highlighting Definition
 
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions)
@@ -122,6 +76,17 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             get
             {
                 return this._name;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Filename of the file that defines how to highlight this syntax
+        /// </summary>
+        public String DefinitionFile
+        {
+            get
+            {
+                return this._defFile;
             }
         }
 
