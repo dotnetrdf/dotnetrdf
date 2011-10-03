@@ -33,6 +33,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -105,7 +106,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #region Store Operations
 
-        private void ListGraphs()
+        public void ListGraphs()
         {
             ListGraphsTask task = new ListGraphsTask(this._manager);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
@@ -548,7 +549,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (this.lvwGraphs.SelectedItems.Count > 0)
                 {
                     String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                    this.CopyGraph(graphUri, item.Tag as IGenericIOManager);
+                    this.MoveGraph(graphUri, item.Tag as IGenericIOManager);
                 }
             }
         }
@@ -1108,6 +1109,22 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 CrossThreadMessage(task.Name + " Completed OK - " + task.Information, task.Name + " Completed", MessageBoxIcon.Information);
                 this.ListGraphs();
+
+                if (task is CopyMoveTask)
+                {
+                    CopyMoveTask cmTask = (CopyMoveTask)task;
+                    if (!ReferenceEquals(this._manager, cmTask.Target))
+                    {
+                        foreach (fclsGenericStoreManager managerForm in Program.MainForm.MdiChildren.OfType<fclsGenericStoreManager>())
+                        {
+                            if (!ReferenceEquals(this, managerForm) && ReferenceEquals(cmTask.Target, managerForm.Manager))
+                            {
+                                managerForm.ListGraphs();
+                                break;
+                            }
+                        }
+                    }
+                }
             }
             else
             {

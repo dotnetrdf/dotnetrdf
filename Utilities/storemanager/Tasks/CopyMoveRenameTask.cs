@@ -24,6 +24,22 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._targetUri = targetUri;
         }
 
+        public IGenericIOManager Source
+        {
+            get
+            {
+                return this._source;
+            }
+        }
+
+        public IGenericIOManager Target
+        {
+            get
+            {
+                return this._target;
+            }
+        }
+
         private static String GetName(IGenericIOManager source, IGenericIOManager target, Uri sourceUri, Uri targetUri, bool forceCopy)
         {
             if (ReferenceEquals(source, target) && !forceCopy)
@@ -34,7 +50,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             else
             {
                 //Different Source and Target store so a Copy/Move
-                if (forceCopy || EqualityHelper.AreUrisEqual(sourceUri, targetUri))
+                if (forceCopy)
                 {
                     //Source and Target URI are equal so a Copy
                     return "Copy";
