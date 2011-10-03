@@ -1,0 +1,246 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.AppearanceSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="Customise Appearance Settings" Height="342" Width="610"
+    WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <DockPanel LastChildFill="True">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" DockPanel.Dock="Bottom">
+            <Button Name="btnOK" Click="btnOK_Click" Width="150" Height="30" Margin="0,0,5,0">Save Changes</Button>
+            <Button Name="btnAbandon" Click="btnAbandon_Click" Width="150" Height="30">Abandon Changes</Button>
+            <Button Name="btnResetAll" Click="btnResetAll_Click" Height="30" Width="150" Margin="5,0,0,0">Reset All to Defaults</Button>
+        </StackPanel>
+        <TabControl>
+            <TabControl.Resources>
+                <!-- Resources for Colour Picker -->
+                <ObjectDataProvider MethodName="GetType" 
+    ObjectType="{x:Type sys:Type}" x:Key="coloursTypeOdp">
+                    <ObjectDataProvider.MethodParameters>
+                        <sys:String>System.Windows.Media.Colors, PresentationCore,
+            Version=3.0.0.0, Culture=neutral, 
+            PublicKeyToken=31bf3856ad364e35</sys:String>
+                    </ObjectDataProvider.MethodParameters>
+                </ObjectDataProvider>
+                <ObjectDataProvider ObjectInstance="{StaticResource coloursTypeOdp}"  
+    MethodName="GetProperties" x:Key="colourPropertiesOdp">
+                </ObjectDataProvider>
+
+                <DataTemplate x:Key="colourTemplate" DataType="System.Windows.Media.Color">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Rectangle Width="40" Height="20" Fill="{Binding Name}" Stroke="#ff000000" />
+                        <TextBlock Text="{Binding Name}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+
+                <!-- Resources for Font Pickers -->
+                <DataTemplate x:Key="fontFamilyData">
+                    <TextBlock Text="{Binding Path=Source}"/>
+                </DataTemplate>
+                <DataTemplate DataType="{x:Type FamilyTypeface}">
+                    <WrapPanel>
+                        <TextBlock Text="{Binding Path=Style}"/>
+                        <TextBlock Text=" "/>
+                        <TextBlock Text="{Binding Path=Weight}" />
+                        <TextBlock Text=" "/>
+                        <TextBlock Text="{Binding Path=Stretch}" />
+                    </WrapPanel>
+                </DataTemplate>
+                <CollectionViewSource Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" x:Key="familyCollection"/>
+
+                <!-- Resources for Decoration Pickers -->
+                <CollectionViewSource Source="{Binding Path=Decorations}" x:Key="decorationCollection" />
+            </TabControl.Resources>
+
+            <TabItem Header="Editor Appearance">
+                <StackPanel>
+                    <Label>The following settings control the basic appearance of Text in the Editor:</Label>
+                    <Grid Width="580" Height="131" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="175*"></ColumnDefinition>
+                            <ColumnDefinition Width="200*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="30"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0">Editor Font:</Label>
+                        <ComboBox DataContext="{StaticResource familyCollection}" Name="cboFont" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding}" ItemTemplate="{StaticResource fontFamilyData}"></ComboBox>
+
+                        <Label Grid.Column="0" Grid.Row="1">Editor Font Size:</Label>
+                        <DockPanel Opacity="0.9" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left">
+                            <Slider Name="fontSizeSlider" DockPanel.Dock="Right" Maximum="72" Minimum="6" Value="12"
+                SmallChange="1" LargeChange="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="150" Margin="5,0,5,0" IsSnapToTickEnabled="True" />
+                            <TextBlock Text="px" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="5"/>
+                            <TextBlock Text="{Binding ElementName=fontSizeSlider, Path=Value}" DockPanel.Dock="Right" VerticalAlignment="Bottom" HorizontalAlignment="Right" TextAlignment="Right" Width="35" TextTrimming="CharacterEllipsis" Padding="5"/>
+                        </DockPanel>
+
+                        <Label Grid.Column="0" Grid.Row="2">Editor Font Colour:</Label>
+                        <ComboBox Name="cboEditorForeground" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                        <Label Grid.Column="0" Grid.Row="3">Editor Background Colour:</Label>
+                        <ComboBox Name="cboEditorBackground" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                        <Button Name="btnReset" Click="btnReset_Click" Grid.Row="4" Grid.ColumnSpan="2" Width="150" Height="30">Reset to Defaults</Button>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Syntax Highlighting">
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap">
+                    These settings control the colours used for Syntax Highlighting.  Highlighting Colours are divided into two groups - XML Formats (e.g. RDF/XML) and non-XML Formats (e.g. Turtle).  If you wish to customise individual syntax highlighting schemes then please see the <Hyperlink NavigateUri="http://www.dotnetrdf.org/content.asp?pageID=rdfEditor%20Advanced%20Settings" Name="lnkAdvancedSettings" Click="lnkAdvancedSettings_Click">Advanced Settings</Hyperlink> documentation.
+                    </TextBlock>
+
+                    <TabControl TabStripPlacement="Left" Height="165">
+                        <TabItem Header="XML Formats">
+                            <ScrollViewer>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label>Comments:</Label>
+                                    <ComboBox Name="cboColourXmlComments" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="1">CDATA Blocks:</Label>
+                                    <ComboBox Name="cboColourXmlCData" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="2">DOCTYPE Declaration:</Label>
+                                    <ComboBox Name="cboColourXmlDocType" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="3">XML Tags:</Label>
+                                    <ComboBox Name="cboColourXmlTags" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="4">Attribute Names:</Label>
+                                    <ComboBox Name="cboColourXmlAttrName" Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="5">Attribute Value:</Label>
+                                    <ComboBox Name="cboColourXmlAttrValue" Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="6">Entities:</Label>
+                                    <ComboBox Name="cboColourXmlEntities" Grid.Row="6" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="7">Broken Entities:</Label>
+                                    <ComboBox Name="cboColourXmlBrokenEntities" Grid.Row="7" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+                                </Grid>
+                            </ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Non-XML Formats">
+                            <ScrollViewer>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                        <RowDefinition Height="27"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Label>Comments:</Label>
+                                    <ComboBox Name="cboColourComments" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="2">Keywords:</Label>
+                                    <ComboBox Name="cboColourKeywords" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="1">Punctuation</Label>
+                                    <ComboBox Name="cboColourPunctuation" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="3">URIs:</Label>
+                                    <ComboBox Name="cboColourURIs" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="4">QNames:</Label>
+                                    <ComboBox Name="cboColourQNames" Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="5">String Literals:</Label>
+                                    <ComboBox Name="cboColourStrings" Grid.Row="5" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="6">Numeric Literals:</Label>
+                                    <ComboBox Name="cboColourNumbers" Grid.Row="6" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="7">Language Specifiers:</Label>
+                                    <ComboBox Name="cboColourLangSpec" Grid.Row="7" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="8">Blank Nodes:</Label>
+                                    <ComboBox Name="cboColourBNode" Grid.Row="8" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="9">Variables:</Label>
+                                    <ComboBox Name="cboColourVariable" Grid.Row="9" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                                    <Label Grid.Row="10">Escaped Characters:</Label>
+                                    <ComboBox Name="cboColourEscapedChars" Grid.Row="10" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+                                </Grid>
+                            </ScrollViewer>
+                        </TabItem>
+                    </TabControl>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Name="btnResetSyntaxChanges" Click="btnResetSyntaxChanges_Click" Width="150" Height="27" Margin="5,0,0,0">Reset to Defaults</Button>
+                    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Error Highlighting">
+                <StackPanel>
+                    <Label>The following settings control the basic appearance of Error Highlighting in the Editor:</Label>
+                    <Grid Width="580" Height="131" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="175*"></ColumnDefinition>
+                            <ColumnDefinition Width="200*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27*"></RowDefinition>
+                            <RowDefinition Height="27"></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0">Error Highlight Font:</Label>
+                        <ComboBox DataContext="{StaticResource familyCollection}" Name="cboErrorFont" Grid.Column="1" Grid.Row="0" ItemsSource="{Binding}" ItemTemplate="{StaticResource fontFamilyData}"></ComboBox>
+
+                        <Label Grid.Column="0" Grid.Row="1">Error Highlight Decoration:</Label>
+                        <ComboBox Name="cboErrorDecoration" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Decorations}" />
+
+                        <Label Grid.Column="0" Grid.Row="2">Error Highlight Font Colour:</Label>
+                        <ComboBox Name="cboColourErrorFont" Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                        <Label Grid.Column="0" Grid.Row="3">Error Highlight Background Colour:</Label>
+                        <ComboBox Name="cboColourErrorBackground" Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource colourPropertiesOdp}}" ItemTemplate="{DynamicResource colourTemplate}" />
+
+                        <Button Name="btnErrorReset" Click="btnErrorReset_Click" Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Width="150" Margin="5,0,0,0">Reset to Defaults</Button>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+   </DockPanel>
+</Window>

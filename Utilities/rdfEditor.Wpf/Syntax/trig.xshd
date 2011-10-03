@@ -1,0 +1,45 @@
+﻿<SyntaxDefinition name="TriG" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="EscapedChar" foreground="Teal" />
+	
+	<RuleSet>
+	
+		<!-- Keywords -->
+			
+		<Keywords color="Keyword" fontWeight="bold">
+			<Word>@prefix</Word>
+			<Word>@base</Word>
+			<Word>a</Word>
+		</Keywords>
+
+    <Import ruleSet="Turtle/Literals" />
+
+    <Import ruleSet="Turtle/Resources" />
+    		
+    <Import ruleSet="Turtle/BNodes" />
+
+    <Import ruleSet="Turtle/LangSpecifiers" />
+		
+    <Import ruleSet="Turtle/PlainLiterals" />
+    
+		<!-- Punctuation Characters -->
+		
+		<Rule color="Punctuation">
+			[.;,{}=]|\^\^
+		</Rule>
+		
+		<!-- Comments -->
+		
+		<Span color="Comment">
+			<Begin>\#</Begin>
+		</Span>
+	</RuleSet>
+</SyntaxDefinition>

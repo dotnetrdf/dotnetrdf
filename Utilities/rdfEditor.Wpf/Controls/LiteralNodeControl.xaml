@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="VDS.RDF.Utilities.Editor.Controls.LiteralNodeControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel LastChildFill="False">
+        <Label Name="txtValue" DockPanel.Dock="Left" Padding="2"></Label>
+        <Label Name="txtModifier" DockPanel.Dock="Left" Padding="2" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+            <Hyperlink Click="Hyperlink_Click">
+                <Run Name="lnkDatatypeUri" />
+            </Hyperlink>
+        </Label>
+    </DockPanel>
+</UserControl>

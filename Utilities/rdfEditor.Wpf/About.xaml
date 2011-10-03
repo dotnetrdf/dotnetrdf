@@ -1,0 +1,28 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.About"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="About rdfEditor" Height="232" Width="390" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="178*"></ColumnDefinition>
+            <ColumnDefinition Width="100*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="27"></RowDefinition>
+            <RowDefinition Height="27"></RowDefinition>
+            <RowDefinition Height="50*"></RowDefinition>
+            <RowDefinition Height="75*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Label Grid.Column="0" Grid.Row="0">rdfEditor Version:</Label>
+        <Label Grid.Column="1" Grid.Row="0" Name="lblEditorVersion">0.0.0.0</Label>
+
+        <Label Grid.Column="0" Grid.Row="1">dotNetRDF Version:</Label>
+        <Label Grid.Column="1" Grid.Row="1" Name="lblRdfVersion">0.0.0.0</Label>
+        
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is based upon the free and open source AvalonEdit component which was developed by Daniel Grunwald as part of the SharpDevelop project</TextBlock>
+        
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" TextWrapping="Wrap" Padding="4">rdfEditor is currently Alpha so please be aware this software may be buggy - please report all bugs to <Hyperlink>dotnetrdf-bugreports@lists.sourceforge.net</Hyperlink></TextBlock>
+    </Grid>
+</Window>

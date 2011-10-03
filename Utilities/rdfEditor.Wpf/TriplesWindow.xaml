@@ -1,0 +1,45 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.TriplesWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor.Controls"
+    Title="Triples View" Height="392" Width="877" ResizeMode="NoResize">
+    <StackPanel>
+        <DockPanel LastChildFill="False">
+            <Label>Render Triples using the following Formatter:</Label>
+            <ComboBox Name="cboFormatter" Width="214" SelectionChanged="ComboBox_SelectionChanged">
+                <ComboBoxItem Selector.IsSelected="True">NTriples</ComboBoxItem>
+                <ComboBoxItem>Turtle</ComboBoxItem>
+                <ComboBoxItem>Uncompressed Turtle</ComboBoxItem>
+                <ComboBoxItem>Notation 3</ComboBoxItem>
+                <ComboBoxItem>Uncompressed Notation 3</ComboBoxItem>
+                <ComboBoxItem>CSV</ComboBoxItem>
+                <ComboBoxItem>TSV</ComboBoxItem>
+            </ComboBox>
+        </DockPanel>
+        
+        <ScrollViewer Name="scroll" ScrollViewer.CanContentScroll="True" Height="325">
+                       
+            <Grid ScrollViewer.CanContentScroll="True" Name="gridTriples">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="286*"></ColumnDefinition>
+                    <ColumnDefinition Width="1"></ColumnDefinition>
+                    <ColumnDefinition Width="286*"></ColumnDefinition>
+                    <ColumnDefinition Width="1"></ColumnDefinition>
+                    <ColumnDefinition Width="286*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="27"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label Background="LightGray" HorizontalContentAlignment="Center" Grid.Column="0">Subject</Label>
+                <GridSplitter Name="split1" Background="Black" Foreground="Black" Grid.Column="1" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Width="1" />
+                <Label Background="LightGray" HorizontalContentAlignment="Center" Grid.Column="2">Predicate</Label>
+                <GridSplitter Name="split2" Background="Black" Foreground="Black" Grid.Column="3" ResizeDirection="Columns" ResizeBehavior="PreviousAndNext" Width="1" ></GridSplitter>
+                <Label Background="LightGray" HorizontalContentAlignment="Center" Grid.Column="4">Object</Label>
+
+            </Grid>
+        </ScrollViewer>
+    </StackPanel>
+
+</Window>

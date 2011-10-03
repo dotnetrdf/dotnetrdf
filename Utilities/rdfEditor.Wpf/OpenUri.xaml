@@ -1,0 +1,20 @@
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.OpenUri"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Open URI" Height="91" Width="424" ResizeMode="NoResize" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="39*"></ColumnDefinition>
+            <ColumnDefinition Width="363*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <Label Grid.Column="0" Grid.Row="0">URI:</Label>
+        <TextBox Name="txtUri" MaxLines="1" Grid.Row="0" Grid.Column="1">http://</TextBox>
+        <Button Name="btnOpen" Grid.Row="1" Grid.Column="1" Click="btnOpen_Click">Open URI</Button>
+    </Grid>
+</Window>

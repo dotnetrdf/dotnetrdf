@@ -1,0 +1,126 @@
+﻿<SyntaxDefinition name="Turtle" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="EscapedChar" foreground="Teal" />
+	
+	<RuleSet>
+	
+		<!-- Keywords -->
+			
+		<Keywords color="Keyword" fontWeight="bold">
+			<Word>@prefix</Word>
+			<Word>@base</Word>
+			<Word>a</Word>
+		</Keywords>
+
+    <Import ruleSet="Literals" />
+
+    <Import ruleSet="Resources" />
+    		
+    <Import ruleSet="BNodes" />
+
+    <Import ruleSet="LangSpecifiers" />
+		
+    <Import ruleSet="PlainLiterals" />
+    
+		<!-- Punctuation Characters -->
+		
+		<Rule color="Punctuation">
+			[.;,]|\^\^
+		</Rule>
+		
+		<!-- Comments -->
+		
+		<Span color="Comment">
+			<Begin>\#</Begin>
+		</Span>
+	</RuleSet>
+
+  <RuleSet name="Literals">
+    <!-- Literals -->
+
+    <Span color="String" multiline="true" ruleSet="StringEscapes">
+      <Begin>"""</Begin>
+      <End>"""</End>
+    </Span>
+
+    <Span color="String" ruleSet="StringEscapes">
+      <Begin>"</Begin>
+      <End>"(?&lt;!\\)</End>
+    </Span>
+
+  </RuleSet>
+
+  <RuleSet name="Resources">
+    <!-- URIs and QNames -->
+
+    <Span color="URI" ruleSet="UriEscapes">
+      <Begin>&lt;</Begin>
+      <End>&gt;(?&lt;!\\)</End>
+    </Span>
+
+    <Rule color="QName">
+      (\p{L}(\p{L}|\p{N}|-|_)*)?:\p{L}(\p{L}|\p{N}|-|_)*
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="BNodes">
+    <!-- Blank Nodes -->
+
+    <Rule color="BNode">
+      _:\p{L}(\p{L}|\p{N}|-|_)*
+    </Rule>
+
+    <Rule color="BNode">
+      \[|\]|\(|\)
+    </Rule>    
+  </RuleSet>
+
+  <RuleSet name="LangSpecifiers">
+    <!-- Language Specifiers -->
+
+    <Rule color="LangSpec">
+      @[A-Za-z]{2}(-[A-Za-z]+)*
+    </Rule>
+  </RuleSet>
+  
+  <RuleSet name="PlainLiterals">
+    <!-- Plain Literals -->
+
+    <Keywords color="Keyword">
+      <Word>true</Word>
+      <Word>false</Word>
+    </Keywords>
+
+    <Rule color="Numbers">
+      [\-+](\d+\.\d*[eE][\-+]?\d+|\.\d+[eE][\-+]?\d+|\d+[eE]?[\-+]\d+)
+    </Rule>
+
+    <Rule color="Numbers">
+      [\-+]?(\d+\.\d*|\.\d+)
+    </Rule>
+
+    <Rule color="Numbers">
+      [\-+]?\d+
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="StringEscapes">
+    <Rule color="EscapedChar">
+      \\([trn"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="UriEscapes">
+    <Rule color="EscapedChar">
+      \\([trn&gt;\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+    </Rule>
+  </RuleSet>
+</SyntaxDefinition>
