@@ -81,17 +81,17 @@
     <Compile Include="CrossThreadForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsAbout.cs">
+    <Compile Include="AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsAbout.Designer.cs">
-      <DependentUpon>fclsAbout.cs</DependentUpon>
+    <Compile Include="AboutForm.Designer.cs">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="fclsGenericStoreManager.cs">
+    <Compile Include="StoreManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsGenericStoreManager.Designer.cs">
-      <DependentUpon>fclsGenericStoreManager.cs</DependentUpon>
+    <Compile Include="StoreManagerForm.Designer.cs">
+      <DependentUpon>StoreManagerForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ManagerForm.cs">
       <SubType>Form</SubType>
@@ -99,17 +99,17 @@
     <Compile Include="ManagerForm.Designer.cs">
       <DependentUpon>ManagerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="fclsTaskErrorTrace.cs">
+    <Compile Include="TaskErrorTraceForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsTaskErrorTrace.Designer.cs">
-      <DependentUpon>fclsTaskErrorTrace.cs</DependentUpon>
+    <Compile Include="TaskErrorTraceForm.Designer.cs">
+      <DependentUpon>TaskErrorTraceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="fclsTaskInformation.cs">
+    <Compile Include="TaskInformationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fclsTaskInformation.Designer.cs">
-      <DependentUpon>fclsTaskInformation.cs</DependentUpon>
+    <Compile Include="TaskInformationForm.Designer.cs">
+      <DependentUpon>TaskInformationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewColumnSorter.cs" />
     <Compile Include="NewConnectionForm.cs">
@@ -120,8 +120,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="fclsGenericStoreManager.resx">
-      <DependentUpon>fclsGenericStoreManager.cs</DependentUpon>
+    <EmbeddedResource Include="StoreManagerForm.resx">
+      <DependentUpon>StoreManagerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ManagerForm.resx">
@@ -192,14 +192,14 @@
     <EmbeddedResource Include="CopyMoveRenameGraphForm.resx">
       <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fclsAbout.resx">
-      <DependentUpon>fclsAbout.cs</DependentUpon>
+    <EmbeddedResource Include="AboutForm.resx">
+      <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fclsTaskErrorTrace.resx">
-      <DependentUpon>fclsTaskErrorTrace.cs</DependentUpon>
+    <EmbeddedResource Include="TaskErrorTraceForm.resx">
+      <DependentUpon>TaskErrorTraceForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="fclsTaskInformation.resx">
-      <DependentUpon>fclsTaskInformation.cs</DependentUpon>
+    <EmbeddedResource Include="TaskInformationForm.resx">
+      <DependentUpon>TaskInformationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewConnectionForm.resx">
       <DependentUpon>NewConnectionForm.cs</DependentUpon>

@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.Utilities.StoreManager
 {
-    partial class fclsGenericStoreManager
+    partial class StoreManagerForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fclsGenericStoreManager));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StoreManagerForm));
             this.tabFunctions = new System.Windows.Forms.TabControl();
             this.tabGraphs = new System.Windows.Forms.TabPage();
             this.lblGraphListUnavailable = new System.Windows.Forms.Label();

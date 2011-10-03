@@ -121,7 +121,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.ActivateMdiChild(null);
                 this.ActivateMdiChild(activeChild);
 
-                if (this.ActiveMdiChild is fclsGenericStoreManager)
+                if (this.ActiveMdiChild is StoreManagerForm)
                 {
                     this.mnuSaveConnection.Enabled = true;
                     this.mnuAddFavourite.Enabled = true;
@@ -180,12 +180,12 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this.ActiveMdiChild != null)
             {
-                if (this.ActiveMdiChild is fclsGenericStoreManager)
+                if (this.ActiveMdiChild is StoreManagerForm)
                 {
                     Object manager;
-                    if (this.ActiveMdiChild is fclsGenericStoreManager)
+                    if (this.ActiveMdiChild is StoreManagerForm)
                     {
-                        manager = ((fclsGenericStoreManager)this.ActiveMdiChild).Manager;
+                        manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
                     }
                     else
                     {
@@ -267,7 +267,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
                         IGenericIOManager manager = openConnections.Connection;
-                        fclsGenericStoreManager genManagerForm = new fclsGenericStoreManager(manager);
+                        StoreManagerForm genManagerForm = new StoreManagerForm(manager);
                         genManagerForm.MdiParent = this;
                         genManagerForm.Show();
 
@@ -404,7 +404,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     try
                     {
                         IGenericIOManager manager = qc.GetConnection();
-                        fclsGenericStoreManager genManager = new fclsGenericStoreManager(manager);
+                        StoreManagerForm genManager = new StoreManagerForm(manager);
                         genManager.MdiParent = this;
                         genManager.Show();
                     }
@@ -574,9 +574,9 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             if (this.ActiveMdiChild != null)
             {
-                if (this.ActiveMdiChild is fclsGenericStoreManager)
+                if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IGenericIOManager manager = ((fclsGenericStoreManager)this.ActiveMdiChild).Manager;
+                    IGenericIOManager manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
                     this.AddFavouriteConnection(manager);
                 }
                 else
@@ -595,7 +595,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuAbout_Click(object sender, EventArgs e)
         {
-            fclsAbout about = new fclsAbout();
+            AboutForm about = new AboutForm();
             about.ShowDialog();
         }
 
@@ -606,7 +606,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (newConn.ShowDialog() == DialogResult.OK)
             {
                 IGenericIOManager manager = newConn.Connection;
-                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
+                StoreManagerForm storeManager = new StoreManagerForm(manager);
                 storeManager.MdiParent = this;
                 storeManager.Show();
 

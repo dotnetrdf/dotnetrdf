@@ -66,7 +66,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (_main != null)
                 {
-                    return (from managerForm in _main.MdiChildren.OfType<fclsGenericStoreManager>()
+                    return (from managerForm in _main.MdiChildren.OfType<StoreManagerForm>()
                             select managerForm.Manager);
                 }
                 else

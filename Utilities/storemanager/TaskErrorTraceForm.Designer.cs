@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.Utilities.StoreManager
 {
-    partial class fclsTaskErrorTrace<T>
+    partial class TaskErrorTraceForm<T>
         where T : class
     {
         /// <summary>

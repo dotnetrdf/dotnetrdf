@@ -11,9 +11,10 @@ using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public partial class fclsAbout : Form
+    public partial class AboutForm
+        : Form
     {
-        public fclsAbout()
+        public AboutForm()
         {
             InitializeComponent();
             this.lblAppVersionActual.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();

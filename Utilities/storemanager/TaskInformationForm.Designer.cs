@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.Utilities.StoreManager
 {
-    partial class fclsTaskInformation<T> where T : class
+    partial class TaskInformationForm<T> where T : class
     {
         /// <summary>
         /// Required designer variable.

@@ -50,13 +50,14 @@ using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public partial class fclsGenericStoreManager : CrossThreadForm
+    public partial class StoreManagerForm
+        : CrossThreadForm
     {
         private IGenericIOManager _manager;
         private int _taskID = 0;
         private EventHandler _copyGraphHandler, _moveGraphHandler;
 
-        public fclsGenericStoreManager(IGenericIOManager manager)
+        public StoreManagerForm(IGenericIOManager manager)
         {
             InitializeComponent();
 
@@ -647,37 +648,37 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (tag is QueryTask)
                 {
-                    fclsTaskInformation<Object> queryInfo = new fclsTaskInformation<object>((QueryTask)tag, this._manager.ToString());
+                    TaskInformationForm<Object> queryInfo = new TaskInformationForm<object>((QueryTask)tag, this._manager.ToString());
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is UpdateTask)
                 {
-                    fclsTaskInformation<TaskResult> updateInfo = new fclsTaskInformation<TaskResult>((UpdateTask)tag, this._manager.ToString());
+                    TaskInformationForm<TaskResult> updateInfo = new TaskInformationForm<TaskResult>((UpdateTask)tag, this._manager.ToString());
                     updateInfo.MdiParent = this.MdiParent;
                     updateInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    fclsTaskInformation<IEnumerable<Uri>> listInfo = new fclsTaskInformation<IEnumerable<Uri>>((ListGraphsTask)tag, this._manager.ToString());
+                    TaskInformationForm<IEnumerable<Uri>> listInfo = new TaskInformationForm<IEnumerable<Uri>>((ListGraphsTask)tag, this._manager.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is CountTriplesTask)
                 {
-                    fclsTaskInformation<TaskValueResult<int>> countInfo = new fclsTaskInformation<TaskValueResult<int>>((CountTriplesTask)tag, this._manager.ToString());
+                    TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask)tag, this._manager.ToString());
                     countInfo.MdiParent = this.MdiParent;
                     countInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
-                    fclsTaskInformation<IGraph> graphInfo = new fclsTaskInformation<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
+                    TaskInformationForm<IGraph> graphInfo = new TaskInformationForm<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    fclsTaskInformation<TaskResult> simpleInfo = new fclsTaskInformation<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
+                    TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
@@ -697,25 +698,25 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 if (tag is QueryTask)
                 {
-                    fclsTaskErrorTrace<Object> queryInfo = new fclsTaskErrorTrace<object>((ITask<Object>)tag, this._manager.ToString());
+                    TaskErrorTraceForm<Object> queryInfo = new TaskErrorTraceForm<object>((ITask<Object>)tag, this._manager.ToString());
                     queryInfo.MdiParent = this.MdiParent;
                     queryInfo.Show();
                 }
                 else if (tag is ListGraphsTask)
                 {
-                    fclsTaskErrorTrace<IEnumerable<Uri>> listInfo = new fclsTaskErrorTrace<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>)tag, this._manager.ToString());
+                    TaskErrorTraceForm<IEnumerable<Uri>> listInfo = new TaskErrorTraceForm<IEnumerable<Uri>>((ITask<IEnumerable<Uri>>)tag, this._manager.ToString());
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
                 else if (tag is ITask<IGraph>)
                 {
-                    fclsTaskErrorTrace<IGraph> graphInfo = new fclsTaskErrorTrace<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
+                    TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
                     graphInfo.MdiParent = this.MdiParent;
                     graphInfo.Show();
                 }
                 else if (tag is ITask<TaskResult>)
                 {
-                    fclsTaskErrorTrace<TaskResult> simpleInfo = new fclsTaskErrorTrace<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
+                    TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
                 }
@@ -1115,7 +1116,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     CopyMoveTask cmTask = (CopyMoveTask)task;
                     if (!ReferenceEquals(this._manager, cmTask.Target))
                     {
-                        foreach (fclsGenericStoreManager managerForm in Program.MainForm.MdiChildren.OfType<fclsGenericStoreManager>())
+                        foreach (StoreManagerForm managerForm in Program.MainForm.MdiChildren.OfType<StoreManagerForm>())
                         {
                             if (!ReferenceEquals(this, managerForm) && ReferenceEquals(cmTask.Target, managerForm.Manager))
                             {

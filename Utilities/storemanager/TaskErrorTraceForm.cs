@@ -11,10 +11,10 @@ using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public partial class fclsTaskErrorTrace<T> 
+    public partial class TaskErrorTraceForm<T> 
         : CrossThreadForm where T : class
     {
-        public fclsTaskErrorTrace(ITask<T> task, String subtitle)
+        public TaskErrorTraceForm(ITask<T> task, String subtitle)
         {
             InitializeComponent();
 

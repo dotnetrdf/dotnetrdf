@@ -62,7 +62,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         try
                         {
                             IGenericIOManager manager = connect.GetConnection();
-                            fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
+                            StoreManagerForm storeManager = new StoreManagerForm(manager);
                             storeManager.MdiParent = Program.MainForm;
                             storeManager.Show();
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Utilities.StoreManager
             if (newConn.ShowDialog() == DialogResult.OK)
             {
                 IGenericIOManager manager = newConn.Connection;
-                fclsGenericStoreManager storeManager = new fclsGenericStoreManager(manager);
+                StoreManagerForm storeManager = new StoreManagerForm(manager);
                 storeManager.MdiParent = Program.MainForm;
                 storeManager.Show();
 

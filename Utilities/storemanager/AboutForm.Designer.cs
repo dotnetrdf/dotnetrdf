@@ -1,6 +1,6 @@
 ﻿namespace VDS.RDF.Utilities.StoreManager
 {
-    partial class fclsAbout
+    partial class AboutForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(fclsAbout));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.tlpAbout = new System.Windows.Forms.TableLayoutPanel();
             this.lblApiVersionActual = new System.Windows.Forms.Label();
             this.lblAppVersionActual = new System.Windows.Forms.Label();

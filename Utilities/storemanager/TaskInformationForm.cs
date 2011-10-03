@@ -14,20 +14,21 @@ using VDS.RDF.GUI.WinForms;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public partial class fclsTaskInformation<T> : CrossThreadForm where T : class
+    public partial class TaskInformationForm<T> 
+        : CrossThreadForm where T : class
     {
-        public fclsTaskInformation()
+        public TaskInformationForm()
         {
             InitializeComponent();
         }
 
-        public fclsTaskInformation(ITask<T> task, String subtitle)
+        public TaskInformationForm(ITask<T> task, String subtitle)
             : this()
         {
             this.Text = task.Name + " on " + subtitle;
             this.btnErrorTrace.Click += new EventHandler(delegate(Object sender, EventArgs e)
                 {
-                    fclsTaskErrorTrace<T> errorTrace = new fclsTaskErrorTrace<T>(task, subtitle);
+                    TaskErrorTraceForm<T> errorTrace = new TaskErrorTraceForm<T>(task, subtitle);
                     errorTrace.MdiParent = this.MdiParent;
                     errorTrace.Show();
                 });
@@ -47,7 +48,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public fclsTaskInformation(QueryTask task, String subtitle)
+        public TaskInformationForm(QueryTask task, String subtitle)
             : this((ITask<T>)task, subtitle)
         {
             this.ShowQueryInformation(task);
@@ -87,7 +88,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 });
         }
 
-        public fclsTaskInformation(UpdateTask task, String subtitle)
+        public TaskInformationForm(UpdateTask task, String subtitle)
             : this((ITask<T>)task, subtitle)
         {
             this.ShowUpdateInformation(task);
@@ -100,13 +101,13 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public fclsTaskInformation(ListGraphsTask task, String subtitle)
+        public TaskInformationForm(ListGraphsTask task, String subtitle)
             : this((ITask<T>)task, subtitle)
         {
 
         }
 
-        public fclsTaskInformation(ITask<IGraph> task, String subtitle)
+        public TaskInformationForm(ITask<IGraph> task, String subtitle)
             : this((ITask<T>)task, subtitle)
         {
             this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
