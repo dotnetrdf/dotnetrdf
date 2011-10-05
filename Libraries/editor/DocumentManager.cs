@@ -184,6 +184,9 @@ namespace VDS.RDF.Utilities.Editor
             doc.Opened += new DocumentChangedHandler<T>(this.HandleTextChanged);
             doc.TextChanged += new DocumentChangedHandler<T>(this.HandleTextChanged);
 
+            //Apply relevant global options to the Document
+            doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+
             //Switch to the new document if required
             if (switchTo)
             {
@@ -238,6 +241,11 @@ namespace VDS.RDF.Utilities.Editor
             {
                 return false;
             }
+        }
+
+        public bool Close(int index)
+        {
+            return this.Close(index, this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
         public bool Close(int index, SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
@@ -381,7 +389,7 @@ namespace VDS.RDF.Utilities.Editor
             if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
             {
                 ISyntaxValidationResults results = args.Document.Validate();
-                if (results != null)
+                if (results != null && this._options.IsHighlightErrorsEnabled)
                 {
                     if (results.Error != null && !results.IsValid)
                     {
@@ -393,6 +401,10 @@ namespace VDS.RDF.Utilities.Editor
                         args.Document.TextEditor.ClearErrorHighlights();
                     }
                 }
+                else
+                {
+                    args.Document.TextEditor.ClearErrorHighlights();
+                }
             }
         }
 
@@ -402,7 +414,7 @@ namespace VDS.RDF.Utilities.Editor
             if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
             {
                 ISyntaxValidationResults results = args.Document.Validate();
-                if (results != null)
+                if (results != null && this._options.IsHighlightErrorsEnabled)
                 {
                     if (results.Error != null && !results.IsValid)
                     {
@@ -413,6 +425,10 @@ namespace VDS.RDF.Utilities.Editor
                     {
                         args.Document.TextEditor.ClearErrorHighlights();
                     }
+                }
+                else
+                {
+                    args.Document.TextEditor.ClearErrorHighlights();
                 }
             }
         }

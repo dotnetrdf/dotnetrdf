@@ -55,7 +55,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             WpfHighlightingManager.Initialise(Properties.Settings.Default.UseCustomisedXshdFiles);
 
             //Create the Editor Manager
-            this._editor = new Editor<TextEditor>(new WpfEditorFactory());
+            WpfEditorFactory factory = new WpfEditorFactory();
+            this._editor = new Editor<TextEditor>(factory);
             this._editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditor>(this.SaveChangesCallback);
             this._editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditor>(this.SaveAsCallback);
 
@@ -64,27 +65,26 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.tabDocuments.TabIndex = 0;
           
             //Set up the Editor Options
-            //TextEditorOptions options = new TextEditorOptions();
-            //options.EnableEmailHyperlinks = Properties.Settings.Default.EnableClickableUris;
-            //options.EnableHyperlinks = Properties.Settings.Default.EnableClickableUris;
-            //options.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
-            //options.ShowSpaces = Properties.Settings.Default.ShowSpaces;
-            //options.ShowTabs = Properties.Settings.Default.ShowTabs;
-            //textEditor.Options = options;
-            //textEditor.ShowLineNumbers = true;
-            //if (Properties.Settings.Default.EditorFontFace != null)
-            //{
-            //    textEditor.FontFamily = Properties.Settings.Default.EditorFontFace;
-            //}
-            //textEditor.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
-            //textEditor.Foreground = new SolidColorBrush(Properties.Settings.Default.EditorForeground);
-            //textEditor.Background = new SolidColorBrush(Properties.Settings.Default.EditorBackground);
+            factory.VisualOptions = new WpfVisualOptions();
+            factory.VisualOptions.EnableClickableUris = Properties.Settings.Default.EnableClickableUris;
+            factory.VisualOptions.ShowEndOfLine = Properties.Settings.Default.ShowEndOfLine;
+            factory.VisualOptions.ShowLineNumbers = Properties.Settings.Default.ShowLineNumbers;
+            factory.VisualOptions.ShowSpaces = Properties.Settings.Default.ShowSpaces;
+            factory.VisualOptions.ShowTabs = Properties.Settings.Default.ShowTabs;
+            if (Properties.Settings.Default.EditorFontFace != null)
+            {
+                factory.VisualOptions.FontFace = Properties.Settings.Default.EditorFontFace;
+            }
+            factory.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
+            factory.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
+            factory.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
             
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.UseUtf8Bom)
             {
                 this.mnuUseBomForUtf8.IsChecked = false;
                 Options.UseBomForUtf8 = false;
+                GlobalOptions.UseBomForUtf8 = false;
             }
             if (Properties.Settings.Default.SaveWithOptionsPrompt)
             {
@@ -92,27 +92,27 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
             if (!Properties.Settings.Default.EnableSymbolSelection)
             {
-                //this._manager.IsSymbolSelectionEnabled = false;
+                this._editor.DocumentManager.Options.IsSymbolSelectionEnabled = false;
                 this.mnuSymbolSelectEnabled.IsChecked = false;
             }
             if (!Properties.Settings.Default.IncludeSymbolBoundaries)
             {
-                //this._manager.IncludeBoundaryInSymbolSelection = false;
+                this._editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = false;
                 this.mnuSymbolSelectIncludeBoundary.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
-                //this._manager.IsAutoCompleteEnabled = false;
+                this._editor.DocumentManager.Options.IsAutoCompletionEnabled = false;
                 this.mnuAutoComplete.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableHighlighting)
             {
-                //this._manager.IsHighlightingEnabled = false;
+                this._editor.DocumentManager.Options.IsSyntaxHighlightingEnabled = false;
                 this.mnuEnableHighlighting.IsChecked = false;
             }
             if (!Properties.Settings.Default.EnableValidateAsYouType)
             {
-                //this._manager.IsValidateAsYouType = false;
+                this._editor.DocumentManager.Options.IsValidateAsYouTypeEnabled = false;
                 this.mnuValidateAsYouType.IsChecked = false;
             }
             if (!Properties.Settings.Default.ShowLineNumbers)
@@ -143,72 +143,20 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
             //this._manager.SetHighlighter(Properties.Settings.Default.DefaultHighlighter);
 
-            //Enable/Disable state dependent menu options
-            //this.mnuUndo.IsEnabled = textEditor.CanUndo;
-            //this.mnuRedo.IsEnabled = textEditor.CanRedo;
-
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
             _ofd.DefaultExt = ".rdf";
             _ofd.Filter = FileFilterAll;
+            _ofd.Multiselect = true;
             _sfd.Title = "Save RDF/SPARQL File";
             _sfd.DefaultExt = ".rdf";
             _sfd.Filter = _ofd.Filter;
 
             //Setup dropping of files
             //textEditor.AllowDrop = true;
-            //textEditor.Drop += new DragEventHandler(textEditor_Drop);
+            this.AllowDrop = true;
+            this.Drop += new DragEventHandler(EditorWindow_Drop);
         }
-
-        //void textEditor_Drop(object sender, DragEventArgs e)
-        //{
-        //    //Is the data FileDrop data?
-        //    String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
-        //    if (droppedFilePaths == null) return;
-
-        //    e.Handled = true;
-
-        //    if (droppedFilePaths.Length > 0)
-        //    {
-        //        //Open the 1st File in the Current Window
-        //        String file = droppedFilePaths[0];
-        //        mnuClose_Click(sender, e);
-
-        //        try
-        //        {
-        //            if (!PreOpenCheck(file)) return;
-        //            using (StreamReader reader = new StreamReader(file))
-        //            {
-        //                String text = reader.ReadToEnd();
-        //                textEditor.Text = String.Empty;
-        //                textEditor.Text = text;
-        //                this._manager.AutoDetectSyntax(file);
-        //            }
-        //            this._manager.CurrentFile = file;
-        //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-        //            this._manager.HasChanged = false;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-        //        }
-
-        //        for (int i = 1; i < droppedFilePaths.Length; i++)
-        //        {
-        //            try
-        //            {
-        //                ProcessStartInfo info = new ProcessStartInfo();
-        //                info.FileName = Assembly.GetExecutingAssembly().Location;
-        //                info.Arguments = "\"" + droppedFilePaths[i] + "\"";
-        //                Process.Start(info);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show("Unable to open " + droppedFilePaths[i] + " due to the following error: " + ex.Message, "Unable to Open File");
-        //            }
-        //        }
-        //    } 
-        //}
 
         #region Text Editor Management
 
@@ -357,8 +305,16 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                         foreach (String filename in this._ofd.FileNames)
                         {
                             Document<TextEditor> doc = this._editor.DocumentManager.New(System.IO.Path.GetFileName(filename), false);
-                            doc.Open(filename);
-                            this.AddTextEditor(new TabItem(), doc);
+                            try
+                            {
+                                doc.Open(filename);
+                                this.AddTextEditor(new TabItem(), doc);
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Windows.MessageBox.Show("An error occurred while opening the selected file(s): " + ex.Message, "Open File Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                                this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                            }
                         }
                     }
                 }
@@ -670,6 +626,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void mnuUseBomForUtf8_Click(object sender, RoutedEventArgs e)
         {
             Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
+            GlobalOptions.UseBomForUtf8 = Options.UseBomForUtf8;
             Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
             Properties.Settings.Default.Save();
         }
@@ -1485,32 +1442,25 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             System.Windows.MessageBox.Show("This is the Experimental Branch version of rdfEditor - it is currently undergoing major refactoring and is not in a usable state, please use the most recent released version found in Trunk");
 
-            ////Open a File if we've been asked to do so
-            //String[] args = Environment.GetCommandLineArgs();
-            //if (args.Length >= 2)
-            //{
-            //    if (File.Exists(args[1]))
-            //    {
-            //        try
-            //        {
-            //            using (StreamReader reader = new StreamReader(args[1]))
-            //            {
-            //                String text = reader.ReadToEnd();
-            //                textEditor.Text = String.Empty;
-            //                textEditor.Text = text;
-            //                this._manager.AutoDetectSyntax(args[1]);
-            //            }
-            //            this._manager.CurrentFile = args[1];
-            //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-            //            this._manager.HasChanged = false;
-            //            this.UpdateMruList(args[1]);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-            //        }
-            //    }
-            //}
+            //Open a File if we've been asked to do so
+            String[] args = Environment.GetCommandLineArgs();
+            if (args.Length >= 2)
+            {
+                if (File.Exists(args[1]))
+                {
+                    Document<TextEditor> doc = this._editor.DocumentManager.New();
+                    try
+                    {
+                        doc.Open(args[1]);
+                        this.AddTextEditor(new TabItem(), doc);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
+                        this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                    }
+                }
+            }
 
             //Check File Associations
             if (Properties.Settings.Default.AlwaysCheckFileAssociations)
@@ -1525,8 +1475,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 FileAssociations diag = new FileAssociations();
                 if (!diag.AllAssociated) diag.ShowDialog(); //Don't show if all associations are already set
             }
-
-            //textEditor.Focus();
 
             //Set Window size
             if (Properties.Settings.Default.WindowHeight > 0 && Properties.Settings.Default.WindowWidth > 0)
@@ -1544,7 +1492,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown )
             {
-                mnuClose_Click(sender, new RoutedEventArgs());
+                this._editor.DocumentManager.CloseAll();
                 Application.Current.Shutdown();
             }
         }
@@ -1558,6 +1506,30 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 Properties.Settings.Default.WindowHeight = this.Height;
                 Properties.Settings.Default.WindowWidth = this.Width;
                 Properties.Settings.Default.Save();
+            }
+        }
+
+        void EditorWindow_Drop(object sender, DragEventArgs e)
+        {
+            //Is the data FileDrop data?
+            String[] droppedFilePaths = e.Data.GetData(DataFormats.FileDrop, false) as string[];
+            if (droppedFilePaths == null) return;
+
+            e.Handled = true;
+
+            foreach (String file in droppedFilePaths)
+            {
+                Document<TextEditor> doc = this._editor.DocumentManager.New();
+                try
+                {
+                    doc.Open(file);
+                    this.AddTextEditor(new TabItem(), doc);
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("The dropped file '" + file + "' could not be opened due to an error: " + ex.Message, "Open File Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                    this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                }
             }
         }
 
@@ -1641,43 +1613,38 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void MruListFileClicked(object sender, RoutedEventArgs e)
         {
-            //if (sender is MenuItem)
-            //{
-            //    MenuItem item = (MenuItem)sender;
-            //    if (item.Tag != null)
-            //    {
-            //        String file = item.Tag as String;
-            //        if (file != null)
-            //        {
-            //            if (File.Exists(file))
-            //            {
-            //                try
-            //                {
-            //                    if (!PreOpenCheck(file)) return;
-            //                    using (StreamReader reader = new StreamReader(file))
-            //                    {
-            //                        String text = reader.ReadToEnd();
-            //                        textEditor.Text = String.Empty;
-            //                        textEditor.Text = text;
-            //                        this._manager.AutoDetectSyntax(file);
-            //                    }
-            //                    this._manager.CurrentFile = file;
-            //                    this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-            //                    this._manager.HasChanged = false;
-            //                    this.UpdateMruList(file);
-            //                }
-            //                catch (Exception ex)
-            //                {
-            //                    MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-            //                }
-            //            }
-            //            else
-            //            {
-            //                System.Windows.MessageBox.Show("Cannot Open the Recent File '" + file + "' as it no longer exists!", "Unable to Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //            }
-            //        }
-            //    }
-            //}
+            if (sender is MenuItem)
+            {
+                MenuItem item = (MenuItem)sender;
+                if (item.Tag != null)
+                {
+                    String file = item.Tag as String;
+                    if (file != null)
+                    {
+                        if (File.Exists(file))
+                        {
+                            Document<TextEditor> doc = this._editor.DocumentManager.New();
+                            try
+                            {
+                                doc.Open(file);
+                                this.AddTextEditor(new TabItem(), doc);
+                                this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
+                                this.tabDocuments.TabIndex = this.tabDocuments.Items.Count - 1;
+                                this.tabDocuments.SelectedItem = this.tabDocuments.Items[this.tabDocuments.Items.Count - 1];
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Open File Failed");
+                                this._editor.DocumentManager.Close(this._editor.DocumentManager.Count - 1);
+                            }
+                        }
+                        else
+                        {
+                            System.Windows.MessageBox.Show("Cannot Open the Recent File '" + file + "' as it no longer exists!", "Unable to Open File", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                    }
+                }
+            }
         }
 
         private void mnuClearRecentFiles_Click(object sender, RoutedEventArgs e)

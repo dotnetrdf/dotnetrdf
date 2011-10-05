@@ -62,6 +62,7 @@
     <Compile Include="WpfEditorAdaptor.cs" />
     <Compile Include="WpfEditorFactory.cs" />
     <Compile Include="WpfHighlightingManager.cs" />
+    <Compile Include="WpfVisualOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">

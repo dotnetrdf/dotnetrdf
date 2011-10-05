@@ -9,9 +9,17 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public class WpfEditorFactory
         : ITextEditorAdaptorFactory<TextEditor>
     {
+        public WpfVisualOptions VisualOptions
+        {
+            get;
+            set;
+        }
+
         public ITextEditorAdaptor<TextEditor> CreateAdaptor()
         {
-            return new WpfEditorAdaptor();
+            WpfEditorAdaptor adaptor = new WpfEditorAdaptor();
+            if (this.VisualOptions != null) adaptor.Apply(this.VisualOptions);
+            return adaptor;
         }
     }
 }

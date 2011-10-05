@@ -11,7 +11,8 @@ namespace VDS.RDF.Utilities.Editor
     /// Abstract Base class for text editor adaptor implementations
     /// </summary>
     /// <typeparam name="T">Text Editor Control type</typeparam>
-    public abstract class BaseTextEditorAdaptor<T> : ITextEditorAdaptor<T>
+    public abstract class BaseTextEditorAdaptor<T>
+        : ITextEditorAdaptor<T>
     {
         private T _control;
         private IAutoCompleter<T> _completer;

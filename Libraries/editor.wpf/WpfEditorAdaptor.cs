@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using VDS.RDF.Utilities.Editor.Syntax;
@@ -17,6 +18,26 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             : base(new TextEditor())
         {
             this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
+            this.Control.FontFamily = new FontFamily("Consolas");
+        }
+
+        public void Apply(VisualOptions<FontFamily, Color> options)
+        {
+            this.Control.Options.EnableEmailHyperlinks = options.EnableClickableUris;
+            this.Control.Options.EnableHyperlinks = options.EnableClickableUris;
+
+            if (options.FontFace != null)
+            {
+                this.Control.FontFamily = options.FontFace;
+            }
+            this.Control.FontSize = options.FontSize;
+            this.Control.Foreground = new SolidColorBrush(options.Foreground);
+            this.Control.Background = new SolidColorBrush(options.Background);
+
+            this.ShowLineNumbers = options.ShowLineNumbers;
+            this.ShowSpaces = options.ShowSpaces;
+            this.ShowTabs = options.ShowTabs;
+            this.ShowEndOfLine = options.ShowEndOfLine;
         }
 
         #region State

@@ -25,6 +25,9 @@ namespace VDS.RDF.Utilities.Editor
 
     public class ManagerOptions<T>
     {
+        //Syntax Highlighting
+        private bool _syntaxHighlightingEnabled = true;
+
         //Selection
         private bool _symbolSelectEnabled = true;
         private ISymbolSelector<T> _selector = new DefaultSelector<T>();
@@ -33,6 +36,25 @@ namespace VDS.RDF.Utilities.Editor
         //Validation
         private bool _validateAsYouType = true;
         private bool _highlightErrors = true;
+
+        //Auto-Complete
+        private bool _autoCompleteEnabled = true;
+
+        #region Syntax Highlighting
+
+        public bool IsSyntaxHighlightingEnabled
+        {
+            get
+            {
+                return this._syntaxHighlightingEnabled;
+            }
+            set
+            {
+                this._syntaxHighlightingEnabled = value;
+            }
+        }
+
+        #endregion
 
         #region Selection
 
@@ -119,6 +141,25 @@ namespace VDS.RDF.Utilities.Editor
             set
             {
                 this._highlightErrors = value;
+            }
+        }
+
+        #endregion
+
+        #region Auto-Completion
+
+        /// <summary>
+        /// Gets/Sets whether Auto-Completion is enabled
+        /// </summary>
+        public bool IsAutoCompletionEnabled
+        {
+            get
+            {
+                return this._autoCompleteEnabled;
+            }
+            set
+            {
+                this._autoCompleteEnabled = value;
             }
         }
 

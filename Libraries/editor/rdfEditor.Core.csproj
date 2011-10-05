@@ -82,6 +82,7 @@
     <Compile Include="Syntax\SyntaxExtensions.cs" />
     <Compile Include="Syntax\SyntaxManager.cs" />
     <Compile Include="TextEditorEvents.cs" />
+    <Compile Include="VisualOptions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
