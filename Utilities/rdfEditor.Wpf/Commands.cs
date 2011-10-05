@@ -11,12 +11,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     /// </summary>
     public static class Commands
     {
+        public static readonly ICommand NewFromActive = new RoutedCommand();
+        public static readonly ICommand SaveAll = new RoutedCommand();
         public static readonly ICommand SaveWithNTriples = new RoutedCommand();
         public static readonly ICommand SaveWithTurtle = new RoutedCommand();
         public static readonly ICommand SaveWithN3 = new RoutedCommand();
         public static readonly ICommand SaveWithRdfXml = new RoutedCommand();
         public static readonly ICommand SaveWithRdfJson = new RoutedCommand();
         public static readonly ICommand SaveWithXHtmlRdfA = new RoutedCommand();
+        public static readonly ICommand CloseAll = new RoutedCommand();
 
         public static readonly ICommand ConvertToNTriples = new RoutedCommand();
         public static readonly ICommand ConvertToTurtle = new RoutedCommand();

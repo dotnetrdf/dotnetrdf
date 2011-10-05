@@ -282,11 +282,46 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region File Menu
 
+        private void mnuFile_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            bool hasDoc = this._editor.DocumentManager.ActiveDocument != null;
+            this.mnuNewFromActive.IsEnabled = hasDoc;
+            this.mnuSave.IsEnabled = hasDoc;
+            this.mnuSaveAs.IsEnabled = hasDoc;
+            this.mnuSaveAll.IsEnabled = hasDoc;
+            this.mnuSaveWith.IsEnabled = hasDoc;
+            this.mnuPageSetup.IsEnabled = hasDoc;
+            this.mnuPrint.IsEnabled = hasDoc;
+            this.mnuPrintNoHighlighting.IsEnabled = hasDoc;
+            this.mnuPrintPreview.IsEnabled = hasDoc;
+            this.mnuPrintPreviewNoHighlighting.IsEnabled = hasDoc;
+            this.mnuClose.IsEnabled = hasDoc;
+            this.mnuCloseAll.IsEnabled = hasDoc;
+        }
+
         private void mnuNew_Click(object sender, RoutedEventArgs e)
         {
             this.AddTextEditor();
             this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
             this.tabDocuments.TabIndex = this.tabDocuments.Items.Count - 1;
+        }
+
+        private void mnuNewFromActive_Click(object sender, RoutedEventArgs e)
+        {
+            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            if (doc != null)
+            {
+                Document<TextEditor> newDoc = this._editor.DocumentManager.NewFromActive(true);
+
+                TabItem tab = new TabItem();
+                tab.Header = newDoc.Title;
+                this.AddTextEditor(tab, newDoc);
+                this.tabDocuments.TabIndex = this.tabDocuments.Items.Count - 1;
+            }
+            else
+            {
+                this.AddTextEditor();
+            }
         }
 
         private void mnuOpen_Click(object sender, RoutedEventArgs e)
@@ -488,6 +523,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        private void mnuSaveAll_Click(object sender, RoutedEventArgs e)
+        {
+            this._editor.DocumentManager.SaveAll();
+        }
+
         private void SaveWith(IRdfWriter writer)
         {
             //IRdfReader parser = this._manager.GetParser();
@@ -621,34 +661,57 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.SaveWith(new HtmlWriter());
         }
 
+        private void mnuSaveWithPromptOptions_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
         private void mnuUseBomForUtf8_Click(object sender, RoutedEventArgs e)
         {
             Options.UseBomForUtf8 = this.mnuUseBomForUtf8.IsChecked;
+            Properties.Settings.Default.UseUtf8Bom = Options.UseBomForUtf8;
+            Properties.Settings.Default.Save();
         }
 
         private void mnuPageSetup_Click(object sender, RoutedEventArgs e)
         {
-            //this.textEditor.PageSetupDialog();
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PageSetupDialog();
+            }
         }
 
         private void mnuPrintPreview_Click(object sender, RoutedEventArgs e)
         {
-            //this.textEditor.PrintPreviewDialog(this._manager.CurrentFile);
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(this._editor.DocumentManager.ActiveDocument.Title);
+            }
         }
 
         private void mnuPrintPreviewNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            //this.textEditor.PrintPreviewDialog(this._manager.CurrentFile, false);
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintPreviewDialog(this._editor.DocumentManager.ActiveDocument.Title, false);
+            }
         }
 
         private void mnuPrint_Click(object sender, RoutedEventArgs e)
         {
-            //this.textEditor.PrintDialog(this._manager.CurrentFile, true);
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(this._editor.DocumentManager.ActiveDocument.Title);
+            }
         }
 
         private void mnuPrintNoHighlighting_Click(object sender, RoutedEventArgs e)
         {
-            //this.textEditor.PrintDialog(this._manager.CurrentFile, false);
+            if (this._editor.DocumentManager.ActiveDocument != null)
+            {
+                this._editor.DocumentManager.ActiveDocument.TextEditor.Control.PrintDialog(this._editor.DocumentManager.ActiveDocument.Title, false);
+            }
         }
 
         private void mnuClose_Click(object sender, RoutedEventArgs e)
@@ -672,11 +735,27 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        private void mnuCloseAll_Click(object sender, RoutedEventArgs e)
+        {
+            this._editor.DocumentManager.CloseAll();
+            this.tabDocuments.Items.Clear();
+
+            //Recreate new Tabs for any Documents that were not closed
+            foreach (Document<TextEditor> doc in this._editor.DocumentManager.Documents)
+            {
+                this.AddTextEditor(new TabItem(), doc);
+            }
+            this.tabDocuments.TabIndex = 0;
+        }
+
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
-            mnuClose_Click(sender, e);
-            Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            Application.Current.Shutdown();
+            mnuCloseAll_Click(sender, e);
+            if (this.tabDocuments.Items.Count == 0)
+            {
+                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                Application.Current.Shutdown();
+            }
         }
 
         #endregion
@@ -1147,6 +1226,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             mnuNew_Click(sender, e);
         }
 
+        private void NewFromActiveCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuNewFromActive_Click(sender, e);
+        }
+
         private void OpenCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuOpen_Click(sender, e);
@@ -1160,6 +1244,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void SaveAsCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuSaveAs_Click(sender, e);
+        }
+
+        private void SaveAllCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuSaveAll_Click(sender, e);
         }
 
         private void SaveWithNTriplesExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1195,6 +1284,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void CloseCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             mnuClose_Click(sender, e);
+        }
+
+        private void CloseAllCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            mnuCloseAll_Click(sender, e);
         }
 
         private void UndoCommandExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1586,8 +1680,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             //}
         }
 
-        #endregion
-
         private void mnuClearRecentFiles_Click(object sender, RoutedEventArgs e)
         {
             if (VDS.RDF.Utilities.Editor.Wpf.App.RecentFiles != null)
@@ -1596,11 +1688,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
-        private void mnuSaveWithPromptOptions_Click(object sender, RoutedEventArgs e)
-        {
-            //Properties.Settings.Default.SaveWithOptionsPrompt = this.mnuSaveWithPromptOptions.IsChecked;
-            //Properties.Settings.Default.Save();
-        }
-
+        #endregion
     }
 }
