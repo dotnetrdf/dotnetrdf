@@ -216,5 +216,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
             this.Close();
         }
+
+        private void btnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
+            this.Close();
+        }
     }
 }

@@ -141,6 +141,8 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="line">Line</param>
         public abstract void ScrollToLine(int line);
 
+        public virtual void Refresh() { }
+
         #endregion
 
         #region Text Manipulation

@@ -36,6 +36,7 @@ namespace VDS.RDF.Utilities.Editor
 
             //Wire Up Events
             this._options.HighlightingToggled += this.HandleHighlightingToggled;
+            this._options.HighlightErrorsToggled += this.HandleHighlightErrorsToggled;
             if (this._visualOptions != null)
             {
                 this._visualOptions.Changed += this.HandleVisualOptionsChanged;
@@ -208,6 +209,11 @@ namespace VDS.RDF.Utilities.Editor
             return this.New(this._defaultTitle + (++this._nextID));
         }
 
+        public Document<TControl> New(bool switchTo)
+        {
+            return this.New(this._defaultTitle + (++this._nextID), switchTo);
+        }
+
         public Document<TControl> New(String title)
         {
             return this.New(title, false);
@@ -220,6 +226,7 @@ namespace VDS.RDF.Utilities.Editor
             //Add the document to the collection of documents
             //Register for appropriate events on the document
             this._documents.Add(doc);
+            this.RaiseDocumentCreated(doc);
             doc.ValidatorChanged += new DocumentChangedHandler<TControl>(this.HandleValidatorChanged);
             doc.Opened += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
             doc.TextChanged += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
@@ -455,22 +462,14 @@ namespace VDS.RDF.Utilities.Editor
             //Update Syntax Validation if appropriate
             if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
             {
+                args.Document.TextEditor.ClearErrorHighlights();
                 ISyntaxValidationResults results = args.Document.Validate();
                 if (results != null && this._options.IsHighlightErrorsEnabled)
                 {
                     if (results.Error != null && !results.IsValid)
                     {
-                        args.Document.TextEditor.ClearErrorHighlights();
                         args.Document.TextEditor.AddErrorHighlight(results.Error);
                     }
-                    else
-                    {
-                        args.Document.TextEditor.ClearErrorHighlights();
-                    }
-                }
-                else
-                {
-                    args.Document.TextEditor.ClearErrorHighlights();
                 }
             }
         }
@@ -480,6 +479,14 @@ namespace VDS.RDF.Utilities.Editor
             foreach (Document<TControl> doc in this._documents)
             {
                 doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+            }
+        }
+
+        private void HandleHighlightErrorsToggled()
+        {
+            foreach (Document<TControl> doc in this._documents)
+            {
+                doc.TextEditor.Refresh();
             }
         }
 
@@ -507,7 +514,18 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        private void RaiseDocumentCreated(Document<TControl> doc)
+        {
+            DocumentChangedHandler<TControl> d = this.DocumentCreated;
+            if (d != null)
+            {
+                d(this, new DocumentChangedEventArgs<TControl>(doc));
+            }
+        }
+
         public event DocumentChangedHandler<TControl> ActiveDocumentChanged;
+
+        public event DocumentChangedHandler<TControl> DocumentCreated;
 
         #endregion
     }

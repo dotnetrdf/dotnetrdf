@@ -59,6 +59,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Syntax\CustomColourBrush.cs" />
+    <Compile Include="Syntax\CustomHighlightingBrush.cs" />
+    <Compile Include="Syntax\FakeTextRunContext.cs" />
+    <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />
+    <Compile Include="Syntax\ValidationErrorLineText.cs" />
     <Compile Include="WpfEditorAdaptor.cs" />
     <Compile Include="WpfEditorFactory.cs" />
     <Compile Include="WpfHighlightingManager.cs" />

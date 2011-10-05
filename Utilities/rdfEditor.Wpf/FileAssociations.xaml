@@ -30,6 +30,9 @@
         
         <CheckBox Margin="5" Grid.Row="2" Name="chkAlwaysCheckFileAssociations">Always perform this check when starting rdfEditor?</CheckBox>
         
-        <Button Grid.Row="3" Name="btnContinue" Click="btnContinue_Click">Save Changes and Continue</Button>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" HorizontalAlignment="Center">
+            <Button Name="btnContinue" Click="btnContinue_Click" Width="200" Margin="0,0,5,0" IsDefault="True">Save Changes and Continue</Button>
+            <Button Name="btnSkip" Click="btnSkip_Click" Width="200" Margin="5,0,0,0" IsCancel="True" >Skip</Button>
+        </StackPanel>
     </Grid>
 </Window>

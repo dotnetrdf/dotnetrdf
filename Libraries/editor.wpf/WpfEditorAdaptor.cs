@@ -9,7 +9,7 @@ using VDS.RDF.Utilities.Editor.Syntax;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
-    class WpfEditorAdaptor
+    public class WpfEditorAdaptor
         : BaseTextEditorAdaptor<TextEditor>
     {
         private Exception _currError;
@@ -178,6 +178,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.Control.ScrollToLine(line);
         }
 
+        public override void Refresh()
+        {
+            this.Control.TextArea.InvalidateVisual();
+        }
+
         #endregion
 
         #region Text Manipulation
@@ -230,6 +235,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         #endregion
 
         #region Highlighting
+
+        public Exception ErrorToHighlight
+        {
+            get
+            {
+                return this._currError;
+            }
+        }
 
         public override void SetHighlighter(string name)
         {

@@ -25,6 +25,7 @@ using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Utilities.Editor;
+using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
@@ -59,11 +60,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this._editor = new Editor<TextEditor, FontFamily, Color>(factory);
             this._editor.DocumentManager.DefaultSaveChangesCallback = new SaveChangesCallback<TextEditor>(this.SaveChangesCallback);
             this._editor.DocumentManager.DefaultSaveAsCallback = new SaveAsCallback<TextEditor>(this.SaveAsCallback);
-
-            //Add an initial document for editing
-            this.AddTextEditor();
-            this.tabDocuments.SelectedIndex = 0;
-            this._editor.DocumentManager.ActiveDocument.TextEditor.Control.Focus();
+            this._editor.DocumentManager.DocumentCreated += new DocumentChangedHandler<TextEditor>(HandleDocumentCreated);
           
             //Set up the Editor Options
             if (this._editor.DocumentManager.VisualOptions == null) this._editor.DocumentManager.VisualOptions = new WpfVisualOptions();
@@ -79,6 +76,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
             this._editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
             this._editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
+            this._editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
+            this._editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
+            this._editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
+            this._editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
             
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.UseUtf8Bom)
@@ -147,6 +148,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 this.mnuShowSpecialTabs.IsChecked = true;
             }
             this._editor.DocumentManager.DefaultSyntax = Properties.Settings.Default.DefaultHighlighter;
+
+            //Add an initial document for editing
+            this.AddTextEditor();
+            this.tabDocuments.SelectedIndex = 0;
+            this._editor.DocumentManager.ActiveDocument.TextEditor.Control.Focus();
 
             //Create our Dialogs
             _ofd.Title = "Open RDF/SPARQL File";
@@ -331,39 +337,45 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuOpenUri_Click(object sender, RoutedEventArgs e)
         {
-            //if (this._manager.HasChanged)
-            //{
-            //    MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening a URI?", "Save Changes?", MessageBoxButton.YesNoCancel);
-            //    if (res == MessageBoxResult.Cancel)
-            //    {
-            //        return;
-            //    }
-            //    else if (res == MessageBoxResult.Yes)
-            //    {
-            //        mnuSave_Click(sender, e);
-            //    }
-            //    this._manager.HasChanged = false;
-            //}
-            //mnuClose_Click(sender, e);
+            Document<TextEditor> doc, active;
+            active = this._editor.DocumentManager.ActiveDocument;
+            if (active != null)
+            {
+                if (active.TextLength == 0 && (active.Filename == null || active.Filename.Equals(String.Empty)))
+                {
+                    doc = active;
+                }
+                else
+                {
+                    doc = this._editor.DocumentManager.New(true);
+                    this.AddTextEditor(new TabItem(), doc);
+                }
+            }
+            else
+            {
+                doc = this._editor.DocumentManager.New(true);
+                this.AddTextEditor(new TabItem(), doc);
+            }
 
-            //OpenUri diag = new OpenUri();
-            //if (diag.ShowDialog() == true)
-            //{
-            //    textEditor.Text = diag.RetrievedData;
-            //    this._manager.HasChanged = true;
-            //    if (diag.Parser != null)
-            //    {
-            //        this._manager.SetHighlighter(diag.Parser);
-            //    }
-            //    else
-            //    {
-            //        this._manager.AutoDetectSyntax();
-            //    }
-            //}
+            OpenUri diag = new OpenUri();
+            if (diag.ShowDialog() == true)
+            {
+                doc.Text = diag.RetrievedData;
+                if (diag.Parser != null)
+                {
+                    //TODO: Should use the known parser to set syntax here
+                    doc.AutoDetectSyntax();
+                }
+                else
+                {
+                    doc.AutoDetectSyntax();
+                }
+            }
         }
 
         private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
+            System.Windows.MessageBox.Show("Open Query Results not available in this build currently");
             //String queryText = String.Empty;
             //if (this._manager.CurrentSyntax.StartsWith("SparqlQuery"))
             //{
@@ -393,65 +405,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             //    this._manager.HasChanged = true;
             //    this._manager.SetHighlighter(diag.Parser);
             //}
-        }
-
-        private bool PreOpenCheck(String file)
-        {
-            //if (this._manager.HasChanged)
-            //{
-            //    //Prompt user to save
-            //    MessageBoxResult result = MessageBox.Show("Do you wish to save changes to the current file before opening another file?", "Save Changes", MessageBoxButton.YesNoCancel);
-            //    if (result == MessageBoxResult.Cancel)
-            //    {
-            //        return false;
-            //    }
-            //    else if (result == MessageBoxResult.Yes)
-            //    {
-            //        mnuSave_Click(null, new RoutedEventArgs());
-            //    }
-            //}
-
-            //FileInfo info = new FileInfo(file);
-            //long sizeInMB = info.Length / 1024 / 1024;
-
-            //if (sizeInMB >= 10)
-            //{
-            //    if (MessageBox.Show("The file that you are opening is considered large (>= 10MB) by this editor and so Syntax Highlighting, Validate as you Type, Highlight Validation Errors and Auto-Completion have been temporarily disabled.  You may re-enable these features if you wish but they may significantly degrade performance on a file of this size.  You can cancel opening this file if you wish by clicking Cancel", "Large File Warning", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
-            //    {
-            //        //Disable features if user proceeds
-            //        if (this.mnuEnableHighlighting.IsChecked)
-            //        {
-            //            mnuEnableHighlighting.IsChecked = false;
-            //            mnuEnableHighlighting_Click(null, new RoutedEventArgs());
-            //        }
-            //        if (this.mnuValidateAsYouType.IsChecked)
-            //        {
-            //            mnuValidateAsYouType.IsChecked = false;
-            //            mnuValidateAsYouType_Click(null, new RoutedEventArgs());
-            //        }
-            //        if (this.mnuHighlightErrors.IsChecked)
-            //        {
-            //            mnuHighlightErrors.IsChecked = false;
-            //            mnuHighlightErrors_Click(null, new RoutedEventArgs());
-            //        }
-            //        if (this.mnuAutoComplete.IsChecked)
-            //        {
-            //            mnuAutoComplete.IsChecked = false;
-            //            mnuAutoComplete_Click(null, new RoutedEventArgs());
-            //        }
-
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        return false;
-            //    }
-            //}
-            //else
-            //{
-            //    return true;
-            //}
-            return true;
         }
 
         private void mnuSave_Click(object sender, RoutedEventArgs e)
@@ -490,6 +443,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void SaveWith(IRdfWriter writer)
         {
+            System.Windows.MessageBox.Show("Save With is not currently available in this build");
             //IRdfReader parser = this._manager.GetParser();
             //Graph g = new Graph();
             //try
@@ -1131,67 +1085,68 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuStructureView_Click(object sender, RoutedEventArgs e)
         {
-            //ISyntaxValidator validator = this._manager.CurrentValidator;
-            //if (validator != null)
-            //{
-            //    ISyntaxValidationResults results = validator.Validate(textEditor.Text);
-            //    if (results.IsValid)
-            //    {
-            //        if (!this._manager.CurrentSyntax.Equals("None"))
-            //        {
-            //            try 
-            //            {
-            //                SyntaxDefinition def = SyntaxManager.GetDefinition(this._manager.CurrentSyntax);
-            //                if (def.DefaultParser != null)
-            //                {
-            //                    NonIndexedGraph g = new NonIndexedGraph();
-            //                    def.DefaultParser.Load(g, new StringReader(textEditor.Text));
-            //                    TriplesWindow window = new TriplesWindow(g);
-            //                    window.ShowDialog();
-            //                }
-            //                //else if (def.Validator is RdfDatasetSyntaxValidator)
-            //                //{
-            //                //    TripleStore store = new TripleStore();
-            //                //    StringParser.ParseDataset(store, textEditor.Text);
-            //                //}
-            //                else if (def.Validator is SparqlResultsValidator)
-            //                {
-            //                    SparqlResultSet sparqlResults = new SparqlResultSet();
-            //                    StringParser.ParseResultSet(sparqlResults, textEditor.Text);
-            //                    if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
-            //                    {
-            //                        ResultSetWindow window = new ResultSetWindow(sparqlResults);
-            //                        window.ShowDialog();
-            //                    }
-            //                    else
-            //                    {
-            //                        MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
-            //                    }
-            //                }
-            //                else
-            //                {
-            //                    MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
-            //                }
-            //            } 
-            //            catch
-            //            {
-            //                MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
-            //            }
-            //        }
-            //        else
-            //        {
-            //            MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Cannot open Structured View as the Syntax is not valid");
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Cannot open Structured View as you have not selected a Syntax");
-            //}
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            ISyntaxValidator validator = this._editor.DocumentManager.ActiveDocument.SyntaxValidator;
+            if (validator != null)
+            {
+                ISyntaxValidationResults results = validator.Validate(this._editor.DocumentManager.ActiveDocument.Text);
+                if (results.IsValid)
+                {
+                    if (!this._editor.DocumentManager.ActiveDocument.Syntax.Equals("None"))
+                    {
+                        try
+                        {
+                            SyntaxDefinition def = SyntaxManager.GetDefinition(this._editor.DocumentManager.ActiveDocument.Syntax);
+                            if (def.DefaultParser != null)
+                            {
+                                NonIndexedGraph g = new NonIndexedGraph();
+                                def.DefaultParser.Load(g, new StringReader(this._editor.DocumentManager.ActiveDocument.Text));
+                                TriplesWindow window = new TriplesWindow(g);
+                                window.ShowDialog();
+                            }
+                            //else if (def.Validator is RdfDatasetSyntaxValidator)
+                            //{
+                            //    TripleStore store = new TripleStore();
+                            //    StringParser.ParseDataset(store, textEditor.Text);
+                            //}
+                            else if (def.Validator is SparqlResultsValidator)
+                            {
+                                SparqlResultSet sparqlResults = new SparqlResultSet();
+                                StringParser.ParseResultSet(sparqlResults, this._editor.DocumentManager.ActiveDocument.Text);
+                                if (sparqlResults.ResultsType == SparqlResultsType.VariableBindings)
+                                {
+                                    ResultSetWindow window = new ResultSetWindow(sparqlResults);
+                                    window.ShowDialog();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Cannot open Structured View since this form of SPARQL Results is not structured");
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
+                            }
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Unable to open Structured View as could not parse the Syntax successfully for structured display");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Cannot open Structured View since this is not a syntax for which Structure view is available");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Cannot open Structured View as the Syntax is not valid");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Cannot open Structured View as you have not selected a Syntax");
+            }
         }
 
         #endregion
@@ -1407,6 +1362,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         #endregion
 
         #region Other Event Handlers
+
+        void HandleDocumentCreated(object sender, DocumentChangedEventArgs<TextEditor> args)
+        {
+            args.Document.TextEditor.Control.TextArea.TextView.ElementGenerators.Add(new ValidationErrorElementGenerator(args.Document.TextEditor as WpfEditorAdaptor, this._editor.DocumentManager.VisualOptions));
+        }
 
         private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TextEditor> args)
         {

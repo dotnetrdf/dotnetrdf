@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor.Wpf

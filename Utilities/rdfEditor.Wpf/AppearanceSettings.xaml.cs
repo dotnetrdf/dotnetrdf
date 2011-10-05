@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
-using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {

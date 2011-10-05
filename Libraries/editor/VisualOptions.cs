@@ -15,10 +15,14 @@ namespace VDS.RDF.Utilities.Editor
                      _showTabs = false,
                      _showEndOfLine = false,
                      _wordWrap = false;
-        private TFont _fontFace = null;
+        private TFont _fontFace = null,
+                      _errorFontFace = null;
         private double _fontSize = 13.0d;
         private TColor? _foreground = null,
-                        _background = null;
+                        _background = null,
+                        _errorForeground = null,
+                        _errorBackground = null;
+        private String _errorDecoration = null;
 
         public bool EnableClickableUris
         {
@@ -148,6 +152,38 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        public TFont ErrorFontFace
+        {
+            get
+            {
+                return this._errorFontFace;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    if (this._errorFontFace != null)
+                    {
+                        this._errorFontFace = null;
+                        this.RaiseChanged();
+                    }
+                }
+                else
+                {
+                    if (this._errorFontFace == null)
+                    {
+                        this._errorFontFace = value;
+                        this.RaiseChanged();
+                    }
+                    else if (!this._errorFontFace.Equals(value))
+                    {
+                        this._errorFontFace = value;
+                        this.RaiseChanged();
+                    }
+                }
+            }
+        }
+
         public double FontSize
         {
             get
@@ -222,6 +258,84 @@ namespace VDS.RDF.Utilities.Editor
                         this._background = value;
                         this.RaiseChanged();
                     }
+                }
+            }
+        }
+
+        public TColor ErrorForeground
+        {
+            get
+            {
+                if (this._errorForeground != null)
+                {
+                    return this._errorForeground.Value;
+                }
+                else
+                {
+                    return default(TColor);
+                }
+            }
+            set
+            {
+                if (this._errorForeground != null)
+                {
+                    this._errorForeground = value;
+                    this.RaiseChanged();
+                }
+                else
+                {
+                    if (!this._errorForeground.Equals(value))
+                    {
+                        this._errorForeground = value;
+                        this.RaiseChanged();
+                    }
+                }
+            }
+        }
+
+        public TColor ErrorBackground
+        {
+            get
+            {
+                if (this._errorBackground != null)
+                {
+                    return this._errorBackground.Value;
+                }
+                else
+                {
+                    return default(TColor);
+                }
+            }
+            set
+            {
+                if (this._errorBackground != null)
+                {
+                    this._errorBackground = value;
+                    this.RaiseChanged();
+                }
+                else
+                {
+                    if (!this._errorBackground.Equals(value))
+                    {
+                        this._errorBackground = value;
+                        this.RaiseChanged();
+                    }
+                }
+            }
+        }
+
+        public String ErrorDecoration
+        {
+            get
+            {
+                return this._errorDecoration;
+            }
+            set
+            {
+                if (value != this._errorDecoration)
+                {
+                    this._errorDecoration = value;
+                    this.RaiseChanged();
                 }
             }
         }

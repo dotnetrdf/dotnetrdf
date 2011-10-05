@@ -149,6 +149,11 @@ namespace VDS.RDF.Utilities.Editor
         void ScrollToLine(int line);
 
         /// <summary>
+        /// Indicates that the Text Editor should refresh its visual display
+        /// </summary>
+        void Refresh();
+
+        /// <summary>
         /// Cuts the current selection
         /// </summary>
         void Cut();

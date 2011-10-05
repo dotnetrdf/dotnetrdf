@@ -139,11 +139,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Syntax\CustomColourBrush.cs" />
-    <Compile Include="Syntax\CustomHighlightingBrush.cs" />
-    <Compile Include="Syntax\FakeTextRunContext.cs" />
-    <None Include="Syntax\ValidationErrorElementGenerator.cs" />
-    <None Include="Syntax\ValidationErrorLineText.cs" />
     <Compile Include="TriplesWindow.xaml.cs">
       <DependentUpon>TriplesWindow.xaml</DependentUpon>
     </Compile>

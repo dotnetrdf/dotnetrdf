@@ -144,7 +144,11 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._highlightErrors = value;
+                if (value != this._highlightErrors)
+                {
+                    this._highlightErrors = value;
+                    this.RaiseEvent(this.HighlightErrorsToggled);
+                }
             }
         }
 
@@ -170,6 +174,8 @@ namespace VDS.RDF.Utilities.Editor
         #endregion
 
         public event OptionsChanged HighlightingToggled;
+
+        public event OptionsChanged HighlightErrorsToggled;
 
         private void RaiseEvent(OptionsChanged evt)
         {
