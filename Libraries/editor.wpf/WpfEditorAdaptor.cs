@@ -21,8 +21,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.Control.FontFamily = new FontFamily("Consolas");
         }
 
+        public override void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
+        {
+            try
+            {
+                this.Apply(options as VisualOptions<FontFamily, Color>);
+            }
+            catch
+            {
+                throw new ArgumentException("Type Arguments for the Visual Options for a WpfEditorAdaptor are invalid!");
+            }
+        }
+
         public void Apply(VisualOptions<FontFamily, Color> options)
         {
+            if (options == null) return;
+
             this.Control.Options.EnableEmailHyperlinks = options.EnableClickableUris;
             this.Control.Options.EnableHyperlinks = options.EnableClickableUris;
 
@@ -38,6 +52,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.ShowSpaces = options.ShowSpaces;
             this.ShowTabs = options.ShowTabs;
             this.ShowEndOfLine = options.ShowEndOfLine;
+            this.WordWrap = options.WordWrap;
         }
 
         #region State
@@ -126,7 +141,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
             set
             {
-                this.Control.Options.ShowEndOfLine = true;
+                this.Control.Options.ShowEndOfLine = value;
             }
         }
 
@@ -218,7 +233,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         public override void SetHighlighter(string name)
         {
-            this.Control.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
+            if (name == null || name.Equals(String.Empty) || name.Equals("None"))
+            {
+                this.Control.SyntaxHighlighting = null;
+            }
+            else
+            {
+                this.Control.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition(name);
+            }
         }
 
         public override void AddErrorHighlight(Exception ex)

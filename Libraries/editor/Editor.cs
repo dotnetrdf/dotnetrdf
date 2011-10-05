@@ -5,19 +5,21 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class Editor<T>
+    public class Editor<TControl, TFont, TColor>
+        where TFont : class
+        where TColor : struct
     {
-        private DocumentManager<T> _docManager;
-        private ITextEditorAdaptorFactory<T> _factory;
+        private DocumentManager<TControl, TFont, TColor> _docManager;
+        private ITextEditorAdaptorFactory<TControl> _factory;
 
-        public Editor(ITextEditorAdaptorFactory<T> factory)
+        public Editor(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
             this._factory = factory;
-            this._docManager = new DocumentManager<T>(this._factory);
+            this._docManager = new DocumentManager<TControl, TFont, TColor>(this._factory);
         }
 
-        public DocumentManager<T> DocumentManager
+        public DocumentManager<TControl, TFont, TColor> DocumentManager
         {
             get
             {
@@ -25,7 +27,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public ITextEditorAdaptorFactory<T> TextEditorFactory
+        public ITextEditorAdaptorFactory<TControl> TextEditorFactory
         {
             get
             {

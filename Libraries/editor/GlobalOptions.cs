@@ -50,7 +50,11 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._syntaxHighlightingEnabled = value;
+                if (value != this._syntaxHighlightingEnabled)
+                {
+                    this._syntaxHighlightingEnabled = value;
+                    this.RaiseEvent(this.HighlightingToggled);
+                }
             }
         }
 
@@ -164,5 +168,12 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         #endregion
+
+        public event OptionsChanged HighlightingToggled;
+
+        private void RaiseEvent(OptionsChanged evt)
+        {
+            if (evt != null) evt();
+        }
     }
 }

@@ -290,7 +290,18 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._enableHighlighting = value;
+                if (value != this._enableHighlighting)
+                {
+                    this._enableHighlighting = value;
+                    if (value)
+                    {
+                        this.TextEditor.SetHighlighter(this.Syntax);
+                    }
+                    else
+                    {
+                        this.TextEditor.SetHighlighter(null);
+                    }
+                }
             }
         }
 

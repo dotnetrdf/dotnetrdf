@@ -194,28 +194,28 @@
             </MenuItem>
             <MenuItem Header="_Options">
                     <MenuItem Header="Enable Syntax Highlighting" Name="mnuEnableHighlighting" IsCheckable="True" IsChecked="True" Click="mnuEnableHighlighting_Click" InputGestureText="Ctrl+E,H" />
-                    <MenuItem Header="Syntax" Name="mnuCurrentHighlighter">
-                    <MenuItem Header="Set Current Syntax as Default for Startup" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
-                    <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
+                    <MenuItem Header="Syntax" Name="mnuCurrentHighlighter" SubmenuOpened="mnuCurrentHighlighter_SubmenuOpened">
+                        <MenuItem Header="Set Current Syntax as Default for New Documents" IsCheckable="False" Name="mnuSetDefaultHighlighter" Click="mnuSetDefaultHighlighter_Click" />
+                        <MenuItem Header="None" IsCheckable="True" IsChecked="True" Tag="None" />
                         <Separator />
-                        <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" />
-                        <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" />
-                        <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" />
-                        <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" />
-                        <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3"/>
-                        <MenuItem Header="(X)HTML+RDFa" IsCheckable="True" Tag="XHtmlRdfA" />
+                        <MenuItem Header="RDF/XML" IsCheckable="True" Tag="RdfXml" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="RDF/JSON" IsCheckable="True" Tag="RdfJson" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="NTriples" IsCheckable="True" Tag="NTriples" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="Turtle" IsCheckable="True" Tag="Turtle" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="Notation 3" IsCheckable="True" Tag="Notation3" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="(X)HTML+RDFa" IsCheckable="True" Tag="XHtmlRdfA" Click="mnuSetHighlighter_Click" />
                         <Separator />
-                        <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" />
-                        <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" />
+                        <MenuItem Header="SPARQL Query 1.0" IsCheckable="True" Tag="SparqlQuery10" Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="SPARQL Query 1.1" IsCheckable="True" Tag="SparqlQuery11" Click="mnuSetHighlighter_Click" />
                         <Separator />
-                        <MenuItem Header="SPARQL Update 1.1" IsCheckable="True" Tag="SparqlUpdate11" />
+                        <MenuItem Header="SPARQL Update 1.1" IsCheckable="True" Tag="SparqlUpdate11" Click="mnuSetHighlighter_Click" />
                         <Separator />
-                        <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml"/>
-                        <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson" />
+                        <MenuItem Header="SPARQL Results Format XML" IsCheckable="True" Tag="SparqlResultsXml" Click="mnuSetHighlighter_Click"/>
+                        <MenuItem Header="SPARQL Results Format JSON" IsCheckable="True" Tag="SparqlResultsJson"  Click="mnuSetHighlighter_Click" />
                         <Separator />
-                        <MenuItem Header="NQuads" IsCheckable="True" Tag="NQuads" />
-                        <MenuItem Header="TriG" IsCheckable="True" Tag="TriG" />
-                        <MenuItem Header="TriX" IsCheckable="True" Tag="TriX" />
+                        <MenuItem Header="NQuads" IsCheckable="True" Tag="NQuads"  Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="TriG" IsCheckable="True" Tag="TriG"  Click="mnuSetHighlighter_Click" />
+                        <MenuItem Header="TriX" IsCheckable="True" Tag="TriX"  Click="mnuSetHighlighter_Click" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Validate Syntax as you Type" Name="mnuValidateAsYouType" IsCheckable="True" IsChecked="True" Click="mnuValidateAsYouType_Click" InputGestureText="Ctrl+E,V" />
@@ -226,7 +226,7 @@
                 <MenuItem Header="Customise Appearance Settings" Name="mnuCustomiseAppearance" Click="mnuCustomiseAppearance_Click" />
                 <MenuItem Header="Customise File Associations" Name="mnuCustomiseFileAssociations" Click="mnuCustomiseFileAssociations_Click" />
             </MenuItem>
-            <MenuItem Header="_Tools">
+            <MenuItem Header="_Tools" Name="mnuTools" SubmenuOpened="mnuTools_SubmenuOpened">
                 <MenuItem Header="Validate Syntax" Name="mnuValidateSyntax" Click="mnuValidateSyntax_Click" InputGestureText="Ctrl+T,V" />
                 <MenuItem Header="Show Structured View" Name="mnuStructureView" Click="mnuStructureView_Click" />
             </MenuItem>

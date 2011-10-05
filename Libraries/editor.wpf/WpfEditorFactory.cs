@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
     public class WpfEditorFactory
-        : ITextEditorAdaptorFactory<TextEditor>
+        : IVisualTextEditorAdaptorFactory<TextEditor, FontFamily, Color>
     {
-        public WpfVisualOptions VisualOptions
-        {
-            get;
-            set;
-        }
-
         public ITextEditorAdaptor<TextEditor> CreateAdaptor()
         {
-            WpfEditorAdaptor adaptor = new WpfEditorAdaptor();
-            if (this.VisualOptions != null) adaptor.Apply(this.VisualOptions);
-            return adaptor;
+            return new WpfEditorAdaptor();
+        }
+
+        public VisualOptions<FontFamily, Color> GetDefaultVisualOptions()
+        {
+            return new WpfVisualOptions();
         }
     }
 }

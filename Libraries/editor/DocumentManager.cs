@@ -6,24 +6,40 @@ using VDS.RDF.Parsing.Validation;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class DocumentManager<T>
+    public class DocumentManager<TControl, TFont, TColor>
+        where TFont : class
+        where TColor : struct
     {
         //General State
-        private ITextEditorAdaptorFactory<T> _factory;
-        private List<Document<T>> _documents = new List<Document<T>>();
+        private ITextEditorAdaptorFactory<TControl> _factory;
+        private List<Document<TControl>> _documents = new List<Document<TControl>>();
         private int _current = 0;
-        private ManagerOptions<T> _options = new ManagerOptions<T>();
+        private ManagerOptions<TControl> _options = new ManagerOptions<TControl>();
+        private VisualOptions<TFont, TColor> _visualOptions;
         private String _defaultTitle = "Untitled";
+        private String _defaultSyntax = "None";
         private int _nextID = 0;
 
         //Default Callbacks
-        private SaveChangesCallback<T> _defaultSaveChangesCallback = new SaveChangesCallback<T>(d => SaveChangesMode.Discard);
-        private SaveAsCallback<T> _defaultSaveAsCallback = new SaveAsCallback<T>(d => null);
+        private SaveChangesCallback<TControl> _defaultSaveChangesCallback = new SaveChangesCallback<TControl>(d => SaveChangesMode.Discard);
+        private SaveAsCallback<TControl> _defaultSaveAsCallback = new SaveAsCallback<TControl>(d => null);
 
-        public DocumentManager(ITextEditorAdaptorFactory<T> factory)
+        public DocumentManager(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
             this._factory = factory;
+
+            if (this._factory is IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)
+            {
+                this._visualOptions = ((IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>)this._factory).GetDefaultVisualOptions();
+            }
+
+            //Wire Up Events
+            this._options.HighlightingToggled += this.HandleHighlightingToggled;
+            if (this._visualOptions != null)
+            {
+                this._visualOptions.Changed += this.HandleVisualOptionsChanged;
+            }
         }
 
         #region General State
@@ -40,7 +56,19 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public ManagerOptions<T> Options
+        public String DefaultSyntax
+        {
+            get
+            {
+                return this._defaultSyntax;
+            }
+            set
+            {
+                this._defaultSyntax = value;
+            }
+        }
+
+        public ManagerOptions<TControl> Options
         {
             get
             {
@@ -48,7 +76,19 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document<T> ActiveDocument
+        public VisualOptions<TFont, TColor> VisualOptions
+        {
+            get
+            {
+                return this._visualOptions;
+            }
+            set
+            {
+                this._visualOptions = value;
+            }
+        }
+
+        public Document<TControl> ActiveDocument
         {
             get
             {
@@ -78,7 +118,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document<T> this[int index]
+        public Document<TControl> this[int index]
         {
             get
             {
@@ -93,7 +133,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public IEnumerable<Document<T>> Documents
+        public IEnumerable<Document<TControl>> Documents
         {
             get
             {
@@ -113,7 +153,7 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Default Callbacks
 
-        public SaveChangesCallback<T> DefaultSaveChangesCallback
+        public SaveChangesCallback<TControl> DefaultSaveChangesCallback
         {
             get
             {
@@ -128,7 +168,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public SaveAsCallback<T> DefaultSaveAsCallback
+        public SaveAsCallback<TControl> DefaultSaveAsCallback
         {
             get
             {
@@ -163,29 +203,31 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public Document<T> New()
+        public Document<TControl> New()
         {
             return this.New(this._defaultTitle + (++this._nextID));
         }
 
-        public Document<T> New(String title)
+        public Document<TControl> New(String title)
         {
             return this.New(title, false);
         }
 
-        public Document<T> New(String title, bool switchTo)
+        public Document<TControl> New(String title, bool switchTo)
         {
-            Document<T> doc = new Document<T>(this._factory.CreateAdaptor(), null, title);
+            Document<TControl> doc = new Document<TControl>(this._factory.CreateAdaptor(), null, title);
 
             //Add the document to the collection of documents
             //Register for appropriate events on the document
             this._documents.Add(doc);
-            doc.ValidatorChanged += new DocumentChangedHandler<T>(this.HandleValidatorChanged);
-            doc.Opened += new DocumentChangedHandler<T>(this.HandleTextChanged);
-            doc.TextChanged += new DocumentChangedHandler<T>(this.HandleTextChanged);
+            doc.ValidatorChanged += new DocumentChangedHandler<TControl>(this.HandleValidatorChanged);
+            doc.Opened += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
+            doc.TextChanged += new DocumentChangedHandler<TControl>(this.HandleTextChanged);
 
             //Apply relevant global options to the Document
+            doc.Syntax = this._defaultSyntax;
             doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+            if (this._visualOptions != null) doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
 
             //Switch to the new document if required
             if (switchTo)
@@ -196,24 +238,24 @@ namespace VDS.RDF.Utilities.Editor
             return doc;
         }
 
-        public Document<T> NewFromActive()
+        public Document<TControl> NewFromActive()
         {
             return this.NewFromExisting(this.ActiveDocument, false);
         }
 
-        public Document<T> NewFromActive(bool switchTo)
+        public Document<TControl> NewFromActive(bool switchTo)
         {
             return this.NewFromExisting(this.ActiveDocument, switchTo);
         }
 
-        public Document<T> NewFromExisting(Document<T> doc)
+        public Document<TControl> NewFromExisting(Document<TControl> doc)
         {
             return this.NewFromExisting(doc, false);
         }
 
-        public Document<T> NewFromExisting(Document<T> doc, bool switchTo)
+        public Document<TControl> NewFromExisting(Document<TControl> doc, bool switchTo)
         {
-            Document<T> clonedDoc = this.New();
+            Document<TControl> clonedDoc = this.New();
             clonedDoc.Text = doc.Text;
             if (switchTo)
             {
@@ -228,7 +270,7 @@ namespace VDS.RDF.Utilities.Editor
             return this.Close(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public bool Close(SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        public bool Close(SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
         {
             if (this._documents.Count > 0)
             {
@@ -248,11 +290,11 @@ namespace VDS.RDF.Utilities.Editor
             return this.Close(index, this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public bool Close(int index, SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        public bool Close(int index, SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
         {
             if (index >= 0 && index < this._documents.Count)
             {
-                Document<T> doc = this._documents[index];
+                Document<TControl> doc = this._documents[index];
                 if (!this.Close(doc, callback, saveAs)) return false;
                 this._documents.RemoveAt(index);
                 this.CorrectIndex();
@@ -264,7 +306,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        private bool Close(Document<T> doc, SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        private bool Close(Document<TControl> doc, SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
         {
             //Get Confirmation to save/discard changes - allows application to cancel close
             if (doc.HasChanged)
@@ -305,12 +347,12 @@ namespace VDS.RDF.Utilities.Editor
             this.CloseAll(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public void CloseAll(SaveChangesCallback<T> callback, SaveAsCallback<T> saveAs)
+        public void CloseAll(SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
         {
             while (this._documents.Count > 0)
             {
                 //Get Confirmation to save/discard changes - allows application to cancel close
-                Document<T> doc = this._documents[0];
+                Document<TControl> doc = this._documents[0];
                 if (!this.Close(doc, callback, saveAs)) return;
                 this._documents.RemoveAt(0);
             }
@@ -326,9 +368,9 @@ namespace VDS.RDF.Utilities.Editor
             this.SaveAll(this._defaultSaveAsCallback);
         }
 
-        public void SaveAll(SaveAsCallback<T> saveAs)
+        public void SaveAll(SaveAsCallback<TControl> saveAs)
         {
-            foreach (Document<T> doc in this._documents)
+            foreach (Document<TControl> doc in this._documents)
             {
                 if (doc.Filename != null && !doc.Filename.Equals(String.Empty))
                 {
@@ -381,9 +423,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
-        #region Handling of Document Events
+        #region Event Handling
 
-        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<T> args)
+        private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
             if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
@@ -408,7 +450,7 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<T> args)
+        private void HandleTextChanged(Object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
             if (args.Document.SyntaxValidator != null && this._options.IsValidateAsYouTypeEnabled)
@@ -429,6 +471,25 @@ namespace VDS.RDF.Utilities.Editor
                 else
                 {
                     args.Document.TextEditor.ClearErrorHighlights();
+                }
+            }
+        }
+
+        private void HandleHighlightingToggled()
+        {
+            foreach (Document<TControl> doc in this._documents)
+            {
+                doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+            }
+        }
+
+        private void HandleVisualOptionsChanged()
+        {
+            if (this._visualOptions != null)
+            {
+                foreach (Document<TControl> doc in this._documents)
+                {
+                    doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
                 }
             }
         }
@@ -437,16 +498,16 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Events
 
-        private void RaiseActiveDocumentChanged(Document<T> doc)
+        private void RaiseActiveDocumentChanged(Document<TControl> doc)
         {
-            DocumentChangedHandler<T> d = this.ActiveDocumentChanged;
+            DocumentChangedHandler<TControl> d = this.ActiveDocumentChanged;
             if (d != null)
             {
-                d(this, new DocumentChangedEventArgs<T>(doc));
+                d(this, new DocumentChangedEventArgs<TControl>(doc));
             }
         }
 
-        public event DocumentChangedHandler<T> ActiveDocumentChanged;
+        public event DocumentChangedHandler<TControl> ActiveDocumentChanged;
 
         #endregion
     }

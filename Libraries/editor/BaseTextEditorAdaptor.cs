@@ -37,6 +37,10 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        public abstract void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
+            where TFont : class
+            where TColor : struct;
+
         #region State
 
         /// <summary>

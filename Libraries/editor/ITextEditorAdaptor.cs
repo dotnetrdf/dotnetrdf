@@ -21,6 +21,10 @@ namespace VDS.RDF.Utilities.Editor
             get;
         }
 
+        void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
+            where TFont : class
+            where TColor : struct;
+
         /// <summary>
         /// Gets/Sets the Text in the editor
         /// </summary>
@@ -224,4 +228,5 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         event TextEditorChangedHandler<T> TextChanged;
     }
+
 }

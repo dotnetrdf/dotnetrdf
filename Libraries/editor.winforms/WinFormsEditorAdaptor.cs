@@ -30,6 +30,11 @@ namespace VDS.RDF.Utilities.Editor.WinForms
             this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
         }
 
+        public override void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
+        {
+            throw new NotImplementedException();
+        }
+
         #region State
 
         public override string Text
