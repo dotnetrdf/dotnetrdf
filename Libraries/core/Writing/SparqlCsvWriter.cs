@@ -47,7 +47,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for saving SPARQL Result Sets to CSV format (not a standardised format)
     /// </summary>
-    public class SparqlCsvWriter : ISparqlResultsWriter
+    public class SparqlCsvWriter
+        : ISparqlResultsWriter
     {
         private CsvFormatter _formatter = new CsvFormatter();
 

@@ -248,6 +248,8 @@
     <Compile Include="Ontology\ReasonerGraph.cs" />
     <Compile Include="Parsing\Handlers\AnyHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
+    <Compile Include="Parsing\SparqlTsvParser.cs" />
+    <Compile Include="Parsing\Tokens\TsvTokeniser.cs" />
     <Compile Include="Parsing\UriLoaderAsync.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />

@@ -244,6 +244,7 @@
     <Compile Include="Writing\Serialization\NodeSerializationTests.cs" />
     <Compile Include="Writing\Serialization\ResultSerializationTests.cs" />
     <Compile Include="Writing\Serialization\TripleSerializationTests.cs" />
+    <Compile Include="Writing\SparqlTsvTests.cs" />
     <Compile Include="Writing\SparqlXmlTests.cs" />
     <Compile Include="Writing\StringEscapingTest.cs" />
     <Compile Include="Writing\TriGWriterTests.cs" />

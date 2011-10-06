@@ -44,7 +44,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Abstract Base Class for formatters where things are formatted as lines of plain text deliminated by specific characters
     /// </summary>
-    public abstract class DeliminatedLineFormatter : BaseFormatter
+    public abstract class DeliminatedLineFormatter 
+        : BaseFormatter
     {
         private Nullable<char> _uriStartChar, _uriEndChar, _literalWrapperChar, _longLiteralWrapperChar, _lineEndChar;
         private char _deliminatorChar = ' ';

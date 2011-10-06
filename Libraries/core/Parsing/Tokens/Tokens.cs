@@ -72,6 +72,14 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the End of a Line
+    /// </summary>
+    public class EOLToken : BaseToken
+    {
+        public EOLToken(int line, int pos) : base(Token.EOL, String.Empty, line, line, pos, pos+1) { }
+    }
+
+    /// <summary>
     /// Token which represents the @ Character
     /// </summary>
     public class ATToken : BaseToken
@@ -121,6 +129,11 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line at which the , occurs</param>
         /// <param name="pos">Column at which the , occurs</param>
         public CommaToken(int line, int pos) : base(Token.COMMA, ",", line, line, pos, pos+1) { }
+    }
+
+    public class TabToken : BaseToken
+    {
+        public TabToken(int line, int pos) : base(Token.TAB, "\t", line, line, pos, pos + 1) { }
     }
 
     /// <summary>

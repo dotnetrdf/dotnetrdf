@@ -43,12 +43,31 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for generating CSV
     /// </summary>
-    public class CsvFormatter : DeliminatedLineFormatter
+    public class CsvFormatter 
+        : BaseFormatter
     {
         /// <summary>
         /// Creates a new CSV Formatter
         /// </summary>
         public CsvFormatter()
-            : base("CSV", ',', '\\', null, null, null, '"', null, false) { }
+            : base("CSV") { }
+
+        protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
+        {
+            return this.FormatUri(u.Uri);
+        }
+
+        protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
+        {
+            String value = l.Value;
+            if (value.Contains('"') || value.Contains(',') || value.Contains('\n') || value.Contains('\r'))
+            {
+                return '"' + value.Replace("\"", "\"\"") + '"';
+            }
+            else
+            {
+                return value;
+            }
+        }
     }
 }

@@ -91,6 +91,8 @@ namespace VDS.RDF.Parsing.Tokens
                           ASSIGNMENT = 65,
                           QUESTION = 66,
                           PATH = 67,
+                          TAB = 68,
+                          EOL = 69,
 
                           KEYWORDA = 70,
                           KEYWORDIS = 71,

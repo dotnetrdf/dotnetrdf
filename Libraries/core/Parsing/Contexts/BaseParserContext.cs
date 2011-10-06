@@ -41,7 +41,8 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Base Class for Parser Contexts
     /// </summary>
-    public abstract class BaseParserContext : IParserContext
+    public abstract class BaseParserContext
+        : IParserContext
     {
         /// <summary>
         /// RDF Handler used to handle the generated RDF
@@ -147,7 +148,8 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Class for Parser Contexts for Tokeniser based Parsing
     /// </summary>
-    public class TokenisingParserContext : BaseParserContext, ITokenisingParserContext
+    public class TokenisingParserContext
+        : BaseParserContext, ITokenisingParserContext
     {
         /// <summary>
         /// Tokeniser

@@ -45,7 +45,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter which formats Turtle without any compression
     /// </summary>
-    public class UncompressedTurtleFormatter : NTriplesFormatter
+    public class UncompressedTurtleFormatter
+        : NTriplesFormatter
     {
         /// <summary>
         /// Creates a new Uncompressed Turtle Formatter

@@ -43,7 +43,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as TSV
     /// </summary>
-    public class TsvFormatter : DeliminatedLineFormatter
+    public class TsvFormatter 
+        : DeliminatedLineFormatter
     {
         /// <summary>
         /// Creates a new TSV Formatter
