@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Datasets
         protected sealed override bool HasGraphInternal(Uri graphUri)
         {
             int id = this._manager.GetGraphID(graphUri);
-            return id == 1;
+            return id > 0;
         }
 
         /// <summary>

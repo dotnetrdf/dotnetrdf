@@ -142,8 +142,6 @@ namespace VDS.RDF.Query
             {
                 currLock.EnterReadLock();
 #endif
-                //return query.Evaluate(this._dataset);
-
                 //Reset Query Timers
                 query.QueryExecutionTime = null;
                 query.QueryTime = -1;
