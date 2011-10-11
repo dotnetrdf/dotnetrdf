@@ -142,6 +142,10 @@ namespace VDS.RDF.Query.Algebra
                 //For sets to be compatible for every joinable variable they must either have a null for the
                 //variable in one of the sets or if they have values the values must be equal
 
+                ////This first check is to try speed things up, it looks whether there are solutions that may match
+                ////without needing to do a full table scan of the RHS results as the subsequent LINQ call will do
+                ////if (!joinVars.All(v => x[v] == null || other.ContainsValue(v, x[v]) || other.ContainsValue(v, null))) continue;
+
                 IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
                 //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
 

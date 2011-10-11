@@ -74,8 +74,14 @@ namespace dotNetRDFTest
                     "functions/notin01.rq",
                     "negation/temporalProximity02.rq",
                     //The following is a BINDINGS test which myself and Andy Seaborne believe to be incorrect
-                    "bindings/bindings07.rq"
-                    
+                    "bindings/bindings07.rq",
+                    //The following are the SERVICE tests which we are not yet set up to handle properly
+                    "service/service01.rq",
+                    "service/service02.rq",
+                    "service/service03.rq",
+                    "service/service04.rq",
+                    "service/service05.rq",
+                    "service/service06.rq"                    
                 };
 
                 if (Directory.Exists("sparql11_tests"))
