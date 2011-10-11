@@ -441,7 +441,7 @@ namespace VDS.RDF.Storage
                     else
                     {
                         bnodeCmd.ExecuteNonQuery();
-                        s.ID = (int)bnodeCmd.Parameters["RC"].Value;
+                        p.ID = (int)bnodeCmd.Parameters["RC"].Value;
                     }
                     cache.AddNodeID(p);
                 }
@@ -457,7 +457,7 @@ namespace VDS.RDF.Storage
                     else
                     {
                         bnodeCmd.ExecuteNonQuery();
-                        s.ID = (int)bnodeCmd.Parameters["RC"].Value;
+                        o.ID = (int)bnodeCmd.Parameters["RC"].Value;
                     }
                     cache.AddNodeID(o);
                 }

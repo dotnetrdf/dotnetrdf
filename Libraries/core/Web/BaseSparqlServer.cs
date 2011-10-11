@@ -306,7 +306,7 @@ namespace VDS.RDF.Web
             }
             catch (RdfQueryException queryEx)
             {
-                HandleQueryErrors(context, "Update Error", queryText, queryEx);
+                HandleQueryErrors(context, "Query Error", queryText, queryEx);
             }
             catch (RdfWriterSelectionException writerSelEx)
             {
