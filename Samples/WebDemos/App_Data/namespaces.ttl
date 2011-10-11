@@ -12,3 +12,5 @@
 @prefix skos: <http://www.w3.org/2004/02/skos/core#>.
 @prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
 @prefix ex: <http://example.org/vehicles/> .
+@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+@prefix dnr-ft: <http://www.dotnetrdf.org/configuration/fulltext#> .

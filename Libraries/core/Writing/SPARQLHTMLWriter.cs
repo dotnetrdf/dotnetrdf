@@ -49,9 +49,26 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for saving SPARQL Result Sets to a HTML Table format (this is not a standardised format)
     /// </summary>
-    public class SparqlHtmlWriter : BaseHtmlWriter, ISparqlResultsWriter
+    public class SparqlHtmlWriter 
+        : BaseHtmlWriter, ISparqlResultsWriter, INamespaceWriter
     {
         private HtmlFormatter _formatter = new HtmlFormatter();
+        private INamespaceMapper _namespaces = new NamespaceMapper();
+
+        /// <summary>
+        /// Gets/Sets the Default Namespaces used to pretty print URIs in the output
+        /// </summary>
+        public INamespaceMapper DefaultNamespaces
+        {
+            get
+            {
+                return this._namespaces;
+            }
+            set
+            {
+                this._namespaces = value;
+            }
+        }
 
         /// <summary>
         /// Saves the Result Set to the given File as a HTML Table
@@ -98,6 +115,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(SparqlResultSet results, TextWriter output)
         {
             HtmlTextWriter writer = new HtmlTextWriter(output);
+            QNameOutputMapper qnameMapper = new QNameOutputMapper(this._namespaces != null ? this._namespaces : new NamespaceMapper(true));
 
             //Page Header
             writer.Write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -214,7 +232,16 @@ namespace VDS.RDF.Writing
                                         writer.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                                         writer.AddAttribute(HtmlTextWriterAttribute.Href, this._formatter.FormatUri(this.UriPrefix + value.ToString()));
                                         writer.RenderBeginTag(HtmlTextWriterTag.A);
-                                        writer.WriteEncodedText(value.ToString());
+
+                                        String qname;
+                                        if (qnameMapper.ReduceToQName(value.ToString(), out qname))
+                                        {
+                                            writer.WriteEncodedText(qname);
+                                        }
+                                        else
+                                        {
+                                            writer.WriteEncodedText(value.ToString());
+                                        }
                                         writer.RenderEndTag();
                                         break;
 
