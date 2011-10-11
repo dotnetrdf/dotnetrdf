@@ -35,6 +35,8 @@ terms.
 
 using System;
 using System.Diagnostics;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF.Update
@@ -58,10 +60,33 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="commands">Command Set</param>
         /// <param name="data">SPARQL Dataset</param>
+        /// <param name="processor">Query Processor for WHERE clauses</param>
+        public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
+            : this(commands, data)
+        {
+            this.QueryProcessor = processor;
+        }
+
+        /// <summary>
+        /// Creates a new SPARQL Update Evaluation Context
+        /// </summary>
+        /// <param name="commands">Command Set</param>
+        /// <param name="data">SPARQL Dataset</param>
         public SparqlUpdateEvaluationContext(SparqlUpdateCommandSet commands, ISparqlDataset data)
             : this(data)
         {
             this._commands = commands;
+        }
+
+        /// <summary>
+        /// Creates a new SPARQL Update Evaluation Context
+        /// </summary>
+        /// <param name="data">SPARQL Dataset</param>
+        /// <param name="processor">Query Processor for WHERE clauses</param>
+        public SparqlUpdateEvaluationContext(ISparqlDataset data, ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> processor)
+            : this(data)
+        {
+            this.QueryProcessor = processor;
         }
 
         /// <summary>
@@ -93,6 +118,15 @@ namespace VDS.RDF.Update
             {
                 return this._data;
             }
+        }
+
+        /// <summary>
+        /// Gets the Query Processor used to process the WHERE clauses of DELETE or INSERT commands
+        /// </summary>
+        public ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> QueryProcessor
+        {
+            get;
+            private set;
         }
 
         /// <summary>

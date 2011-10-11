@@ -538,6 +538,7 @@
     <Compile Include="Update\Commands\LoadCommand.cs" />
     <Compile Include="Update\Commands\ModifyCommand.cs" />
     <Compile Include="Update\Commands\MoveCommand.cs" />
+    <Compile Include="Update\ExplainUpdateProcessor.cs" />
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />
     <Compile Include="Update\LeviathanUpdateProcessor.cs" />

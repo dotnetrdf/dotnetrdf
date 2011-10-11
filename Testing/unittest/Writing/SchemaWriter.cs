@@ -22,8 +22,24 @@ namespace VDS.RDF.Test.Writing
             parser.Load(g, new StreamReader(Assembly.GetAssembly(typeof(IGraph)).GetManifestResourceStream("VDS.RDF.Configuration.configuration.ttl"), Encoding.UTF8));
 
             //Now generate the HTML file
-            VDS.RDF.Writing.HtmlSchemaWriter writer = new HtmlSchemaWriter();
+            HtmlSchemaWriter writer = new HtmlSchemaWriter();
             writer.Save(g, "configSchema.html");
+        }
+
+        [TestMethod]
+        public void WritingHtmlSchemaWriterAnonClasses()
+        {
+            //Create an example Graph
+            Graph g = new Graph();
+            g.Assert(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode("rdfs:class"));
+
+            HtmlSchemaWriter writer = new HtmlSchemaWriter();
+            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+
+            Console.WriteLine(strWriter.ToString());
+
+            Assert.IsFalse(strWriter.ToString().Contains("type"), "Should not have documented any classes");
         }
     }
 }

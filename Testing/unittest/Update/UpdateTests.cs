@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
@@ -129,6 +130,23 @@ namespace VDS.RDF.Test
             store.ExecuteUpdate(cmds);
 
             Assert.AreEqual(0, store.GetTriplesWithPredicate(rdfType).Count(), "Store should contain no rdf:type Triples after DELETE command executes");
+        }
+
+        [TestMethod]
+        public void SparqlUpdateWithCustomQueryProcessor()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.BaseUri = null;
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            InMemoryDataset dataset = new InMemoryDataset(store);
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString("DELETE { ?s a ?type } WHERE { ?s a ?type }");
+
+            ExplainUpdateProcessor processor = new ExplainUpdateProcessor(dataset, ExplanationLevel.Full);
+            processor.ProcessCommandSet(cmds);
         }
     }
 }

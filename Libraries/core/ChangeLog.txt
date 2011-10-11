@@ -12,8 +12,12 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.5.1 release of dotNetRDF
 
 Added
+- Parsing
+ - Support for registering arbitrary parsers via MimeTypesHelper
+ - Added a SPARQL TSV Parser
 - Storage
  - Added Dydra Support
+
 
 Changed
 - Bug Fixes
@@ -21,6 +25,14 @@ Changed
  - Fixed a Bug with NegotiateByFileExtension and nested handler paths
  - Fixed a rare corner case Bug related to round-trip serialization of literals containing backslashes
  - Fixed a bug with some COPY/MOVE commands when processed with Leviathan
+ - Fixed a bug related to data loading of Blank Node heavy data into the new ADO Store
+ - Fixed a bug with the BaseAdoDataset reporting incorrectly for HasGraph()
+ - Fixed a bug with HtmlSchemaWriter documenting anonymous classes
+ - Fixed some bugs with Stardog connectivity due to changes in their HTTP server code
+ - Fixed a bug with CSV output
+- Update
+ - Made LeviathanUpdateProcessor more extensible
+  - Now supports a custom query processor used to evaluate WHERE clauses
 
 
 Removed

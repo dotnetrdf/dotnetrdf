@@ -36,6 +36,8 @@ terms.
 using System;
 using System.Diagnostics;
 using System.Threading;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update.Commands;
 
@@ -52,7 +54,7 @@ namespace VDS.RDF.Update
     public class LeviathanUpdateProcessor 
         : ISparqlUpdateProcessor
     {
-        private ISparqlDataset _dataset;
+        protected ISparqlDataset _dataset;
 #if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 #endif
@@ -113,13 +115,35 @@ namespace VDS.RDF.Update
             this._canCommit = true;
         }
 
+        protected SparqlUpdateEvaluationContext GetContext(SparqlUpdateCommandSet cmds)
+        {
+            return new SparqlUpdateEvaluationContext(cmds, this._dataset, this.GetQueryProcessor());
+        }
+
+        protected SparqlUpdateEvaluationContext GetContext()
+        {
+            return new SparqlUpdateEvaluationContext(this._dataset, this.GetQueryProcessor());
+        }
+
+        /// <summary>
+        /// Gets the Query Processor to be used
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// By default <strong>null</strong> is returned which indicates that the default query processing behaviour is used, to use a specific processor extend this class and override this method.  If you do so you will have access to the dataset in use so generally you will want to use a query processor that accepts a <see cref="ISparqlDataset">ISparqlDataset</see> instance
+        /// </remarks>
+        protected virtual ISparqlQueryAlgebraProcessor<BaseMultiset, SparqlEvaluationContext> GetQueryProcessor()
+        {
+            return null;
+        }
+
         /// <summary>
         /// Processes an ADD command
         /// </summary>
         /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
-            this.ProcessAddCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessAddCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -138,7 +162,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Clear Command</param>
         public void ProcessClearCommand(ClearCommand cmd)
         {
-            this.ProcessClearCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessClearCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -157,7 +181,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
-            this.ProcessCopyCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessCopyCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -176,7 +200,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Create Command</param>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
-            this.ProcessCreateCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessCreateCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -195,7 +219,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command</param>
         public void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            this.ProcessCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -318,7 +342,7 @@ namespace VDS.RDF.Update
             bool autoCommit = this._autoCommit;
 
             //Then create an Evaluation Context
-            SparqlUpdateEvaluationContext context = new SparqlUpdateEvaluationContext(commands, this._dataset);
+            SparqlUpdateEvaluationContext context = this.GetContext(commands);
 
             //Remember to handle the Thread Safety
             //If the Dataset is Thread Safe use its own lock otherwise use our local lock
@@ -401,7 +425,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Delete Command</param>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            this.ProcessDeleteCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessDeleteCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -420,7 +444,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            this.ProcessDeleteDataCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessDeleteDataCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -439,7 +463,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Drop Command</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
-            this.ProcessDropCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessDropCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -458,7 +482,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Command</param>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            this.ProcessInsertCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessInsertCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -477,7 +501,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            this.ProcessInsertDataCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessInsertDataCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -496,7 +520,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            this.ProcessLoadCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessLoadCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -515,7 +539,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            this.ProcessModifyCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessModifyCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>
@@ -534,7 +558,7 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
-            this.ProcessMoveCommandInternal(cmd, new SparqlUpdateEvaluationContext(this._dataset));
+            this.ProcessMoveCommandInternal(cmd, this.GetContext());
         }
 
         /// <summary>

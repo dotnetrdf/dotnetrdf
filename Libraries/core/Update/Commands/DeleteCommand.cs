@@ -240,14 +240,14 @@ namespace VDS.RDF.Update.Commands
                 {
                     query.AddNamedGraph(u);
                 }
-                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data);
+                SparqlEvaluationContext queryContext = new SparqlEvaluationContext(query, context.Data, context.QueryProcessor);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs set the Active Graph to be formed of the Graphs with those URIs
                     context.Data.SetActiveGraph(this._usingUris);
                     datasetOk = true;
                 }
-                BaseMultiset results = where.Evaluate(queryContext);
+                BaseMultiset results = queryContext.Evaluate(where);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards
