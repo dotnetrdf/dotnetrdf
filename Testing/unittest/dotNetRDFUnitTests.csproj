@@ -166,6 +166,7 @@
     <Compile Include="Parsing\Handlers\StoreHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandlerTests.cs" />
     <Compile Include="Parsing\Handlers\WriteToStoreHandlerTests.cs" />
+    <Compile Include="Parsing\ObjectParserTests.cs" />
     <Compile Include="Parsing\RdfXmlNamespaces.cs" />
     <Compile Include="Parsing\SpeedTesting.cs" />
     <Compile Include="Parsing\StringReaderEncodingTests.cs" />

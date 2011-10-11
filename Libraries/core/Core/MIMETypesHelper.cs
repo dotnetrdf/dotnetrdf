@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF
@@ -111,9 +113,6 @@ namespace VDS.RDF
                 //Define SPARQL Results JSON
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
 
-                //Define SPARQL Results TSV
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results TSV", SparqlTsv, new String[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), null, null, typeof(SparqlTsvWriter)));
-
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
@@ -122,7 +121,7 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, null, typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
 
                 //Define TSV
-                _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, null, typeof(TsvWriter), typeof(TsvStoreWriter), null));
+                _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
 
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
@@ -130,7 +129,15 @@ namespace VDS.RDF
                 //Define GraphViz DOT
                 _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
 
-                //Q: Define SPARQL Query?
+                //Define SPARQL Query
+                MimeTypeDefinition qDef = new MimeTypeDefinition("SPARQL Query", new String[] { "application/sparql-query" }, new String[] { ".rq" });
+                qDef.SetObjectParserType<SparqlQuery>(typeof(SparqlQueryParser));
+                _mimeTypes.Add(qDef);
+
+                //Define SPARQL Update
+                MimeTypeDefinition uDef = new MimeTypeDefinition("SPARQL Update", new String[] { "application/sparql-update" }, new String[] { ".ru" });
+                uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof(SparqlUpdateParser));
+                _mimeTypes.Add(uDef);
 
                 _init = true;
             }
@@ -523,11 +530,6 @@ namespace VDS.RDF
         /// Mime Types for SPARQL Results JSON
         /// </summary>
         internal static string[] SparqlJson = { "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results TSV
-        /// </summary>
-        internal static string[] SparqlTsv = { "application/sparql-results+tsv", "text/tab-separated-values" };
 
         /// <summary>
         /// MIME Types for CSV

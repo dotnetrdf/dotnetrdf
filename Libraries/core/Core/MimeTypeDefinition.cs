@@ -55,6 +55,7 @@ namespace VDS.RDF
         private List<String> _fileExtensions = new List<string>();
         private Type _rdfParserType, _rdfDatasetParserType, _sparqlResultsParserType;
         private Type _rdfWriterType, _rdfDatasetWriterType, _sparqlResultsWriterType;
+        private Dictionary<Type, Type> _objectParserTypes = new Dictionary<Type, Type>();
 
         /// <summary>
         /// Creates a new MIME Type Definition
@@ -132,7 +133,6 @@ namespace VDS.RDF
         {
             this._formatUri = formatUri;
         }
-
 
         /// <summary>
         /// Gets the name of the Syntax to which this MIME Type Definition relates
@@ -352,6 +352,27 @@ namespace VDS.RDF
             {
                 return true;
             }
+        }
+
+        private bool EnsureObjectParserInterface(Type t, Type obj)
+        {
+            bool ok = false;
+            foreach (Type i in t.GetInterfaces())
+            {
+                if (i.IsGenericType)
+                {
+                    if (i.GetGenericArguments().First().Equals(obj))
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+            }
+            if (!ok)
+            {
+                throw new RdfException("Cannot use Type " + t.FullName + " as an Object Parser for the Type " + obj.FullName + " as it does not implement the required interface IObjectParser<" + obj.Name + ">");
+            }
+            return ok;
         }
 
         /// <summary>
@@ -671,6 +692,72 @@ namespace VDS.RDF
             else
             {
                 throw new RdfWriterSelectionException("There is no SPARQL Results Writer available for the Syntax " + this._name);
+            }
+        }
+
+        public bool CanParseObject<T>()
+        {
+            return this._objectParserTypes.ContainsKey(typeof(T));
+        }
+
+        public Type GetObjectParserType<T>()
+        {
+            Type t = typeof(T);
+            Type result;
+            if (this._objectParserTypes.TryGetValue(t, out result))
+            {
+                return result;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public void SetObjectParserType<T>(Type parserType)
+        {
+            Type t = typeof(T);
+            if (this._objectParserTypes.ContainsKey(t))
+            {
+                if (parserType == null)
+                {
+                    this._objectParserTypes.Remove(t);
+                }
+                else
+                {
+                    if (this.EnsureObjectParserInterface(parserType, t))
+                    {
+                        this._objectParserTypes[t] = parserType;
+                    }
+                }
+            }
+            else if (parserType != null)
+            {
+                if (this.EnsureObjectParserInterface(parserType, t))
+                {
+                    this._objectParserTypes.Add(t, parserType);
+                }
+            }
+        }
+
+        public IObjectParser<T> GetObjectParser<T>()
+        {
+            if (this._objectParserTypes.ContainsKey(typeof(T)))
+            {
+                Type parserType = this._objectParserTypes[typeof(T)];
+                return (IObjectParser<T>)Activator.CreateInstance(parserType);
+            }
+            else
+            {
+                throw new RdfParserSelectionException("There is no Object Parser available for the Type " + typeof(T).FullName);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Type, Type>> ObjectParserTypes
+        {
+            get
+            {
+                return this._objectParserTypes;
             }
         }
 

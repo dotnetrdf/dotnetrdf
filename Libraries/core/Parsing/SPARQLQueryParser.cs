@@ -86,7 +86,8 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for parsing SPARQL Queries into <see cref="SparqlQuery">SparqlQuery</see> objects that can be used to query a Graph or Triple Store
     /// </summary>
-    public class SparqlQueryParser : ITraceableTokeniser
+    public class SparqlQueryParser
+        : ITraceableTokeniser, IObjectParser<SparqlQuery>
     {
         private TokenQueueMode _queuemode = TokenQueueMode.QueueAllBeforeParsing;
         private bool _tracetokeniser = false;

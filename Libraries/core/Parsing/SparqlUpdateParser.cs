@@ -52,7 +52,8 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for parsing SPARQL Update commands into <see cref="SparqlUpdateCommandSet">SparqlUpdateCommandSet</see> objects that can be used to modify a Triple Store
     /// </summary>
-    public class SparqlUpdateParser : ITraceableTokeniser
+    public class SparqlUpdateParser
+        : ITraceableTokeniser, IObjectParser<SparqlUpdateCommandSet>
     {
         private bool _traceTokeniser = false;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
