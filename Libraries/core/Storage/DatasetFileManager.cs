@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -79,6 +80,18 @@ namespace VDS.RDF.Storage
             else
             {
                 this.Initialise(filename);
+            }
+        }
+
+        /// <summary>
+        /// Gets the Source File this manager represents a read-only view of
+        /// </summary>
+        [Description("The Source File from which the dataset originates")]
+        public String SourceFile
+        {
+            get
+            {
+                return this._filename;
             }
         }
 

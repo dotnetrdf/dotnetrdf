@@ -71,6 +71,7 @@
     <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
+    <Compile Include="Connections\ConnectionInfo.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />
     <Compile Include="CopyMoveRenameGraphForm.cs">
       <SubType>Form</SubType>

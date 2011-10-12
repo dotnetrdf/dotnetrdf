@@ -201,6 +201,14 @@ namespace VDS.RDF.Storage
             return ps;
         }
 
+        public override string DatabaseType
+        {
+            get
+            {
+                return "Microsoft SQL Server";
+            }
+        }
+
         /// <summary>
         /// Creates the connection to Microsoft SQL Server
         /// </summary>

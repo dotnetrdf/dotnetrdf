@@ -111,6 +111,9 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.tabFunctions.TabPages.Remove(this.tabImport);
             }
+
+            //Show Connection Information
+            this.propInfo.SelectedObject = new Connections.ConnectionInfo(this._manager);
         }
 
         #region Store Operations

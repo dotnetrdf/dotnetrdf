@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -78,6 +79,8 @@ namespace VDS.RDF.Storage
         where TAdaptor : DbDataAdapter
         where TException : DbException
     {
+        private int _version = 1;
+        private String _schema = "Hash";
         private TConn _connection;
         private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
         private NodeFactory _factory = new NodeFactory();
@@ -100,8 +103,9 @@ namespace VDS.RDF.Storage
             this._connection = this.CreateConnection(parameters);
             this._connection.Open();
 
-            //Do a Version Check
-            this.CheckVersion();
+            //Do a Version and Schema Check
+            this._version = this.CheckVersion();
+            this._schema = this.CheckSchema();
         }
 
         /// <summary>
@@ -354,6 +358,36 @@ namespace VDS.RDF.Storage
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Connection = this._connection;
             return (String)cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Gets the Version as detected when this instance was created, use <see cref="CheckVersion()">CheckVersion()</see> to directly query the store for its version
+        /// </summary>
+        [Description("Shows the version of the ADO Store used.  This is distinct from the Schema and indicates the exact set of standardised stored procedure that the store will support regardless of the actual database schema used to store the data.")]
+        public int Version
+        {
+            get
+            {
+                return this._version;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Schema as detected when this instance was created, use <see cref="CheckSchema()">CheckSchema()</see> to directly query the store for its schema
+        /// </summary>
+        [Description("Shows the schema that this ADO Store uses.")]
+        public String Schema
+        {
+            get
+            {
+                return this._schema;
+            }
+        }
+
+        [Description("Shows the underlying database for this ADO Store")]
+        public abstract String DatabaseType
+        {
+            get;
         }
 
         /// <summary>

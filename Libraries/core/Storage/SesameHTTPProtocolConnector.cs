@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -133,11 +134,21 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Base URI to the repository
         /// </summary>
+        [Description("The Base URI for requests made to the store.")]
         public String BaseUri
         {
             get
             {
                 return this._baseUri;
+            }
+        }
+
+        [Description("The Repository to which this is a connection.")]
+        public String RepositoryName
+        {
+            get
+            {
+                return this._store;
             }
         }
 

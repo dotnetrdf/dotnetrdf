@@ -106,6 +106,9 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
+            this.tabInfo = new System.Windows.Forms.TabPage();
+            this.lblInfo = new System.Windows.Forms.Label();
+            this.propInfo = new System.Windows.Forms.PropertyGrid();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -122,6 +125,7 @@
             this.tabTasks.SuspendLayout();
             this.mnuTasks.SuspendLayout();
             this.stsStatus.SuspendLayout();
+            this.tabInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabFunctions
@@ -131,6 +135,7 @@
             this.tabFunctions.Controls.Add(this.tabSparqlUpdate);
             this.tabFunctions.Controls.Add(this.tabImport);
             this.tabFunctions.Controls.Add(this.tabExport);
+            this.tabFunctions.Controls.Add(this.tabInfo);
             this.tabFunctions.Controls.Add(this.tabTasks);
             this.tabFunctions.Location = new System.Drawing.Point(12, 12);
             this.tabFunctions.Name = "tabFunctions";
@@ -856,6 +861,33 @@
             // 
             this.sfdExport.Title = "Export Store As...";
             // 
+            // tabInfo
+            // 
+            this.tabInfo.Controls.Add(this.propInfo);
+            this.tabInfo.Controls.Add(this.lblInfo);
+            this.tabInfo.Location = new System.Drawing.Point(4, 22);
+            this.tabInfo.Name = "tabInfo";
+            this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInfo.Size = new System.Drawing.Size(514, 308);
+            this.tabInfo.TabIndex = 6;
+            this.tabInfo.Text = "Information";
+            this.tabInfo.UseVisualStyleBackColor = true;
+            // 
+            // lblInfo
+            // 
+            this.lblInfo.Location = new System.Drawing.Point(3, 12);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(505, 52);
+            this.lblInfo.TabIndex = 1;
+            this.lblInfo.Text = resources.GetString("lblInfo.Text");
+            // 
+            // propInfo
+            // 
+            this.propInfo.Location = new System.Drawing.Point(6, 57);
+            this.propInfo.Name = "propInfo";
+            this.propInfo.Size = new System.Drawing.Size(502, 245);
+            this.propInfo.TabIndex = 2;
+            // 
             // StoreManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -893,6 +925,7 @@
             this.mnuTasks.ResumeLayout(false);
             this.stsStatus.ResumeLayout(false);
             this.stsStatus.PerformLayout();
+            this.tabInfo.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -976,5 +1009,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuRenameGraph;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.TabPage tabInfo;
+        private System.Windows.Forms.PropertyGrid propInfo;
+        private System.Windows.Forms.Label lblInfo;
     }
 }

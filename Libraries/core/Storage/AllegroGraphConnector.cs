@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -122,6 +123,15 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password for connecting to the Store</param>
         public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
             : this(baseUri, null, storeID, username, password) { }
+
+        [Description("The Catalog under which the repository is located.  If using the Root Catalog on AllegroGrah 4+ <ROOT> will be displayed.")]
+        public String Catalog
+        {
+            get
+            {
+                return (this._catalog != null ? this._catalog : "<ROOT>");
+            }
+        }
 
         /// <summary>
         /// Creates a new Store (if it doesn't exist) and switches the connector to use that Store

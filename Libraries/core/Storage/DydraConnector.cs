@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -104,6 +105,24 @@ namespace VDS.RDF.Storage
         //    this._pwd = password;
         //    this._hasCredentials = true;
         //}
+
+        [Description("The Account Name under which the repository is located.")]
+        public String AccountName
+        {
+            get
+            {
+                return this._account;
+            }
+        }
+
+        [Description("The Dydra Repository to which this is a connection.")]
+        public String RepositoryName
+        {
+            get
+            {
+                return this._repo;
+            }
+        }
 
         public bool IsReady
         {

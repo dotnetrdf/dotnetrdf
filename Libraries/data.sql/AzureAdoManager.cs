@@ -69,6 +69,14 @@ namespace VDS.RDF.Storage
             this._azureUser = username;
         }
 
+        public override string DatabaseType
+        {
+            get
+            {
+                return "Microsoft SQL Azure";
+            }
+        }
+
         /// <summary>
         /// Serializes the connection's configuration
         /// </summary>

@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -167,6 +168,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets/Sets the reasoning mode to use for queries
         /// </summary>
+        [Description("What reasoning mode (if any) is currently in use for SPARQL Queries?")]
         public StardogReasoningMode Reasoning
         {
             get

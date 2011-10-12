@@ -37,6 +37,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -120,6 +121,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If the endpoint you are connecting to provides extensions to SPARQL syntax which are not permitted by the libraries parser then you may wish to enable this option as otherwise you will not be able to execute such queries
         /// </remarks>
+        [Description("Determines whether queries are parsed locally before being sent to the remote endpoint.  Should be disabled if the remote endpoint supports non-standard extensions that won't parse locally.")]
         public bool SkipLocalParsing
         {
             get
@@ -151,6 +153,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the underlying <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> which this class is a wrapper around
         /// </summary>
+        [Description("The Remote Endpoint to which queries are sent using HTTP."),TypeConverter(typeof(ExpandableObjectConverter))]
         public SparqlRemoteEndpoint Endpoint 
         {
             get 

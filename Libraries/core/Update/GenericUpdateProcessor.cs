@@ -60,7 +60,8 @@ namespace VDS.RDF.Update
     /// The performance of this processor is somewhat dependent on the underlying <see cref="IGenericIOManager">IGenericIOManager</see>.  If the underlying manager supports triple level updates as indicated by the <see cref="IGenericIOManager.UpdateSupported">UpdateSupported</see> property then operations can be performed quite efficiently, if this is not the case then any operation which modifies a Graph will need to load the existing Graph from the store, make the modifications locally in-memory and then save the resulting Graph back to the Store
     /// </para>
     /// </remarks>
-    public class GenericUpdateProcessor : ISparqlUpdateProcessor
+    public class GenericUpdateProcessor 
+        : ISparqlUpdateProcessor
     {
         private IGenericIOManager _manager;
 
@@ -104,6 +105,15 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    ////Firstly check that appropriate IO Behaviour is provided
+                    //if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    //{
+                    //    if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                    //}
+                    //IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    //if ((this._manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
+
+                    //Load Source Graph
                     Graph source = new Graph();
                     this._manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
@@ -141,27 +151,62 @@ namespace VDS.RDF.Update
             {
                 try
                 {
-                    Graph g;
+                    IGraph g;
 
                     switch (cmd.Mode)
                     {
                         case ClearMode.Default:
                         case ClearMode.Graph:
-                            g = new Graph();
-                            g.BaseUri = cmd.TargetUri;
-                            this._manager.SaveGraph(g);
+                            if (cmd.TargetUri == null && (this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("Unable to clear the default graph as the underlying store does not support an explicit default graph");
+                            if (cmd.TargetUri != null && (this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("Unable to clear a named graph as the underlying store does not support named graphs");
+
+                            if ((cmd.TargetUri == null && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetUri != null && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                            {
+                                //Can approximate by saving an empty Graph over the existing Graph
+                                g = new Graph();
+                                g.BaseUri = cmd.TargetUri;
+                                this._manager.SaveGraph(g);
+                            }
+                            else if (this._manager.UpdateSupported && (this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
+                            {
+                                //Can approximate by loading the Graph and then deleting all Triples from it
+                                g = new NonIndexedGraph();
+                                this._manager.LoadGraph(g, cmd.TargetUri);
+                                this._manager.UpdateGraph(cmd.TargetUri, null, g.Triples);
+                            }
+                            else
+                            {
+                                throw new SparqlUpdateException("Unable to evaluate a CLEAR command as the underlying store does not provide appropriate IO Behaviour to approximate this command");
+                            }
                             break;
 
                         case ClearMode.Named:
                         case ClearMode.All:
+                            if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("Unable to clear named graphs as the underlying store does not support named graphs");
+
                             if (this._manager.ListGraphsSupported)
                             {
                                 List<Uri> graphs = this._manager.ListGraphs().ToList();
                                 foreach (Uri u in graphs)
                                 {
-                                    g = new Graph();
-                                    g.BaseUri = u;
-                                    this._manager.SaveGraph(g);
+                                    if ((u == null && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                                    {
+                                        //Can approximate by saving an empty Graph over the existing Graph
+                                        g = new Graph();
+                                        g.BaseUri = u;
+                                        this._manager.SaveGraph(g);
+                                    }
+                                    else if (this._manager.UpdateSupported && (this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
+                                    {
+                                        //Can approximate by loading the Graph and then deleting all Triples from it
+                                        g = new NonIndexedGraph();
+                                        this._manager.LoadGraph(g, u);
+                                        this._manager.UpdateGraph(u, null, g.Triples);
+                                    }
+                                    else
+                                    {
+                                        throw new SparqlUpdateException("Unable to evaluate a CLEAR command as the underlying store does not provide appropriate IO Behaviour to approximate this command");
+                                    }
                                 }
                             }
                             else
@@ -641,9 +686,29 @@ namespace VDS.RDF.Update
                     {
                         case ClearMode.Graph:
                         case ClearMode.Default:
-                            g = new Graph();
-                            g.BaseUri = cmd.TargetUri;
-                            this._manager.SaveGraph(g);
+                            if (this._manager.DeleteSupported)
+                            {
+                                //If available use DeleteGraph()
+                                this._manager.DeleteGraph(cmd.TargetUri);
+                            }
+                            else if ((cmd.TargetUri == null && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (cmd.TargetUri != null && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                            {
+                                //Can approximate by saving an empty Graph over the existing Graph
+                                g = new Graph();
+                                g.BaseUri = cmd.TargetUri;
+                                this._manager.SaveGraph(g);
+                            }
+                            else if (this._manager.UpdateSupported && (this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
+                            {
+                                //Can approximate by loading the Graph and then deleting all Triples from it
+                                g = new NonIndexedGraph();
+                                this._manager.LoadGraph(g, cmd.TargetUri);
+                                this._manager.UpdateGraph(cmd.TargetUri, null, g.Triples);
+                            }
+                            else
+                            {
+                                throw new SparqlUpdateException("Unable to evaluate a DROP command as the underlying store does not provide appropriate IO Behaviour to approximate this command");
+                            }
                             break;
 
                         case ClearMode.All:
@@ -653,9 +718,29 @@ namespace VDS.RDF.Update
                                 List<Uri> graphs = this._manager.ListGraphs().ToList();
                                 foreach (Uri u in graphs)
                                 {
-                                    g = new Graph();
-                                    g.BaseUri = u;
-                                    this._manager.SaveGraph(g);
+                                    if (this._manager.DeleteSupported)
+                                    {
+                                        //If available use DeleteGraph()
+                                        this._manager.DeleteGraph(u);
+                                    }
+                                    else if ((u == null && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) != 0) || (u != null && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) != 0))
+                                    {
+                                        //Can approximate by saving an empty Graph over the existing Graph
+                                        g = new Graph();
+                                        g.BaseUri = u;
+                                        this._manager.SaveGraph(g);
+                                    }
+                                    else if (this._manager.UpdateSupported && (this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) != 0)
+                                    {
+                                        //Can approximate by loading the Graph and then deleting all Triples from it
+                                        g = new NonIndexedGraph();
+                                        this._manager.LoadGraph(g, u);
+                                        this._manager.UpdateGraph(u, null, g.Triples);
+                                    }
+                                    else
+                                    {
+                                        throw new SparqlUpdateException("Unable to evaluate a DROP command as the underlying store does not provide appropriate IO Behaviour to approximate this command");
+                                    }
                                 }
                             }
                             else
