@@ -385,7 +385,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.Input.Name.Equals("uri"))
             {
-                return context.Handler.CreateUriNode(new Uri(context.Input.ReadInnerXml()));
+                return context.Handler.CreateUriNode(new Uri(context.Input.ReadElementContentAsString()));
             }
             else if (context.Input.Name.Equals("literal"))
             {
@@ -402,14 +402,14 @@ namespace VDS.RDF.Parsing
                         //Language is specified
                         String lang = context.Input.Value;
                         context.Input.MoveToContent();
-                        return context.Handler.CreateLiteralNode(context.Input.ReadInnerXml(), lang);
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), lang);
                     }
                     else if (context.Input.Name.Equals("datatype"))
                     {
                         //Data Type is specified
                         String dt = context.Input.Value;
                         context.Input.MoveToContent();
-                        return context.Handler.CreateLiteralNode(context.Input.ReadInnerXml(), new Uri(dt));
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), new Uri(dt));
                     }
                     else
                     {
@@ -423,7 +423,7 @@ namespace VDS.RDF.Parsing
             }
             else if (context.Input.Name.Equals("bnode"))
             {
-                String bnodeID = context.Input.ReadInnerXml();
+                String bnodeID = context.Input.ReadElementContentAsString();
                 if (bnodeID.StartsWith("_:"))
                 {
                     return context.Handler.CreateBlankNode(bnodeID.Substring(2));
