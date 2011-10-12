@@ -39,6 +39,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -48,7 +51,8 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Parser for SPARQL Results XML Format
     /// </summary>
-    public class SparqlXmlParser : ISparqlResultsReader
+    public class SparqlXmlParser 
+        : ISparqlResultsReader
     {
         /// <summary>
         /// Loads a Result Set from an Input
@@ -392,7 +396,7 @@ namespace VDS.RDF.Parsing
                 if (context.Input.AttributeCount == 0)
                 {
                     //Literal with no Data Type/Language Specifier
-                    return context.Handler.CreateLiteralNode(context.Input.ReadInnerXml());
+                    return context.Handler.CreateLiteralNode(HttpUtility.HtmlDecode(context.Input.ReadInnerXml()));
                 }
                 else if (context.Input.AttributeCount == 1)
                 {
