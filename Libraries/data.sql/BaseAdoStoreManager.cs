@@ -979,6 +979,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of an ADO Store
+        /// </summary>
+        public virtual IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph in the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update</param>

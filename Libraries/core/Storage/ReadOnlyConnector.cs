@@ -119,6 +119,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of the read-only connection taking into account the IO Behaviour of the underlying store
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return (this._manager.IOBehaviour | IOBehaviour.IsReadOnly) & (IOBehaviour.HasDefaultGraph | IOBehaviour.HasDefaultGraph | IOBehaviour.IsQuadStore | IOBehaviour.IsTripleStore | IOBehaviour.IsReadOnly);
+            }
+        }
+
+        /// <summary>
         /// Throws an exception since you cannot update a Graph using a read-only connection
         /// </summary>
         /// <param name="graphUri">URI of the Graph</param>

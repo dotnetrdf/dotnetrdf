@@ -46,7 +46,8 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    public interface IGenericIOManager : IDisposable
+    public interface IGenericIOManager 
+        : IDisposable
     {
         /// <summary>
         /// Loads a Graph from the Store
@@ -112,6 +113,14 @@ namespace VDS.RDF.Storage
         /// Behaviour of this method with regards to whether it overwrites/updates/merges with existing Graphs of the same Uri is up to the implementor and may be dependent on the underlying store.  Implementors <strong>should</strong> state in the XML comments for their implementations what behaviour is implemented.
         /// </remarks>
         void SaveGraph(IGraph g);
+
+        /// <summary>
+        /// Gets the Save Behaviour the Store uses
+        /// </summary>
+        IOBehaviour IOBehaviour
+        {
+            get;
+        }
 
         /// <summary>
         /// Updates a Graph in the Store

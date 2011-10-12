@@ -8,7 +8,8 @@ using VDS.Alexandria.Indexing;
 
 namespace VDS.Alexandria
 {
-    public abstract class BaseAlexandriaManager : IQueryableGenericIOManager
+    public abstract class BaseAlexandriaManager 
+        : IQueryableGenericIOManager
     {
         protected internal abstract IIndexManager IndexManager
         {
@@ -24,6 +25,14 @@ namespace VDS.Alexandria
         public abstract void LoadGraph(IRdfHandler handler, String graphUri);
 
         public abstract void SaveGraph(IGraph g);
+
+        public virtual IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
 
         public abstract void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals);
 

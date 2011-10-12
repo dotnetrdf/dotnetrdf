@@ -163,6 +163,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);

@@ -58,7 +58,8 @@ namespace VDS.RDF.Storage
     /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
     /// </para>
     /// </remarks>
-    public class SparqlHttpProtocolConnector : IGenericIOManager, IConfigurationSerializable
+    public class SparqlHttpProtocolConnector 
+        : IGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// URI of the Protocol Server
@@ -303,6 +304,17 @@ namespace VDS.RDF.Storage
                 }
 #endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
+            }
+        }
+
+        /// <summary>
+        /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores
+        /// </summary>
+        public virtual IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateAddTriples;
             }
         }
 

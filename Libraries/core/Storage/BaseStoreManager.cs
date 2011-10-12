@@ -54,7 +54,8 @@ namespace VDS.RDF.Storage
     /// Provides a Background Buffer Thread which does writing when Transactions are enabled, when transactions are disabled it assumes that this has been done to allow multi-threaded writing and so all writes are done synchronously.  Benchmarking shows this is about 3 times as fast as using the single buffer Thread when doing a large multi-threaded write.
     /// </remarks>
     [Obsolete("The legacy SQL store format and related classes are officially deprecated - please see http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration for details on upgrading to the new ADO store format", false)]
-    public abstract class BaseStoreManager : ISqlIOManager, IThreadedSqlIOManager, IGenericIOManager, IConfigurationSerializable
+    public abstract class BaseStoreManager 
+        : ISqlIOManager, IThreadedSqlIOManager, IGenericIOManager, IConfigurationSerializable
     {
         #region Protected Member Variables for use by derived classes
 
@@ -864,6 +865,14 @@ namespace VDS.RDF.Storage
             {
                 this.Close(true, true);
                 throw;
+            }
+        }
+
+        public virtual IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples;
             }
         }
 

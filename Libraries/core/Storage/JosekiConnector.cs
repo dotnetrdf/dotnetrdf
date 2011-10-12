@@ -247,6 +247,24 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of Joseki based stores
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                if (this._updateService == null)
+                {
+                    return IOBehaviour.ReadOnlyGraphStore;
+                }
+                else
+                {
+                    return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.AppendToDefault | IOBehaviour.AppendToNamed | IOBehaviour.CanUpdateTriples;
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph in the Joseki store
         /// </summary>
         /// <param name="graphUri">Graph Uri</param>

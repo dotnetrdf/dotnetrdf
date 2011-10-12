@@ -8,7 +8,8 @@ using VDS.RDF.Storage;
 
 namespace dotNetRDFTest
 {
-    class MockGenericManager : IGenericIOManager
+    class MockGenericManager 
+        : IGenericIOManager
     {
         #region IGenericIOManager Members
 
@@ -41,6 +42,14 @@ namespace dotNetRDFTest
         public void SaveGraph(IGraph g)
         {
             Thread.Sleep(2000);
+        }
+
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
         }
 
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)

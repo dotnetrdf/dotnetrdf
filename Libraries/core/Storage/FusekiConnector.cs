@@ -58,7 +58,8 @@ namespace VDS.RDF.Storage
     /// Uses all three Services provided by a Fuseki instance - Query, Update and HTTP Update
     /// </para>
     /// </remarks>
-    public class FusekiConnector : SparqlHttpProtocolConnector, IUpdateableGenericIOManager, IConfigurationSerializable
+    public class FusekiConnector 
+        : SparqlHttpProtocolConnector, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
         private String _updateUri;
@@ -134,6 +135,14 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("An error occurred while trying to list graphs, see inner exception for details", ex);
+            }
+        }
+
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return base.IOBehaviour | IOBehaviour.CanUpdateDeleteTriples;
             }
         }
 

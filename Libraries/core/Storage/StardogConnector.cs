@@ -516,6 +516,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of Stardog
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph in the Stardog Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>

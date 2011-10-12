@@ -462,6 +462,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the Save Behaviour of Stores that use the Sesame HTTP Protocol
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>

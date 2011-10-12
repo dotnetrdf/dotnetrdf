@@ -211,6 +211,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the Save Behaviour of the Store
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.ReadOnlyGraphStore;
+            }
+        }
+
+        /// <summary>
         /// Throws an error since this Manager is read-only
         /// </summary>
         /// <param name="graphUri">Graph URI</param>

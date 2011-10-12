@@ -56,7 +56,8 @@ namespace VDS.RDF.Storage
     /// Useful if you want to test out some code using temporary in-memory data before you run the code against a real store or if you are using some code that requires an <see cref="IGenericIOManager">IGenericIOManager</see> interface but you need the results of that code to be available directly in-memory.
     /// </para>
     /// </remarks>
-    public class InMemoryManager : IUpdateableGenericIOManager, IConfigurationSerializable
+    public class InMemoryManager 
+        : IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;
@@ -159,6 +160,17 @@ namespace VDS.RDF.Storage
             }
             this._dataset.AddGraph(g);
             this._dataset.Flush();
+        }
+
+        /// <summary>
+        /// Gets the IO Behaviour for In-Memory stores
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
         }
 
         /// <summary>

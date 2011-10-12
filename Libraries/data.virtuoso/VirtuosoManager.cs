@@ -453,6 +453,17 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of the store
+        /// </summary>
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
         /// Updates a Graph in the Quad Store
         /// </summary>
         /// <param name="graphUri">Graph Uri of the Graph to update</param>
