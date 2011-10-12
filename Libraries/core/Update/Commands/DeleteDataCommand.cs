@@ -246,9 +246,10 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.AppendLine("DELETE DATA {");
+            output.AppendLine("DELETE DATA");
+            if (this._pattern.IsGraph) output.AppendLine("{");
             output.AppendLine(this._pattern.ToString());
-            output.AppendLine("}");
+            if (this._pattern.IsGraph) output.AppendLine("}");
             return output.ToString();
         }
     }

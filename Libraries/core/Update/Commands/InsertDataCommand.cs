@@ -217,9 +217,10 @@ namespace VDS.RDF.Update.Commands
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.AppendLine("INSERT DATA {");
+            output.AppendLine("INSERT DATA");
+            if (this._pattern.IsGraph) output.AppendLine("{");
             output.AppendLine(this._pattern.ToString());
-            output.AppendLine("}");
+            if (this._pattern.IsGraph) output.AppendLine("}");
             return output.ToString();
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Update;
@@ -258,7 +259,6 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        //[TestMethod, ExpectedException(typeof(NotSupportedException))]
         [TestMethod]
         public void StorageStardogDeleteNamedGraph()
         {
@@ -358,6 +358,56 @@ namespace VDS.RDF.Test.Storage
                 stardog.Begin();
                 stardog.Commit();
                 stardog.Dispose();
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageStardogAmpersandsInDataTest()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                StardogConnector stardog = this.GetConnection();
+
+                //Save the Graph
+                Graph g = new Graph();
+                String fragment = "@prefix : <http://example.org/> . [] :string \"This has & ampersands in it\" .";
+                g.LoadFromString(fragment);
+                g.BaseUri = new Uri("http://example.org/ampersandGraph");
+
+                Console.WriteLine("Original Graph:");
+                TestTools.ShowGraph(g);
+
+                stardog.SaveGraph(g);
+
+                //Retrieve and check it round trips
+                Graph h = new Graph();
+                stardog.LoadGraph(h, g.BaseUri);
+
+                Console.WriteLine("Graph as retrieved from Stardog:");
+                TestTools.ShowGraph(h);
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+                
+                //Now try to delete the data from this Graph
+                GenericUpdateProcessor processor = new GenericUpdateProcessor(stardog);
+                SparqlUpdateParser parser = new SparqlUpdateParser();
+                processor.ProcessCommandSet(parser.ParseFromString("WITH <http://example.org/ampersandGraph> DELETE WHERE { ?s ?p ?o }"));
+
+                Graph i = new Graph();
+                stardog.LoadGraph(i, g.BaseUri);
+
+                Console.WriteLine("Graph as retrieved after the DELETE WHERE:");
+                TestTools.ShowGraph(i);
+
+                Assert.AreNotEqual(g, i, "Graphs should not be equal");
+                Assert.AreNotEqual(h, i, "Graphs should not be equal");
+
             }
             finally
             {
