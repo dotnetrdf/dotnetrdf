@@ -30,6 +30,7 @@ Changed
  - Fixed a bug with HtmlSchemaWriter documenting anonymous classes
  - Fixed some bugs with Stardog connectivity due to changes in their HTTP server code
  - Fixed a bug with CSV output
+ - Fixed a bug with SPARQL XML Parser not always decoding XML entities
 - Update
  - Made LeviathanUpdateProcessor more extensible
   - Now supports a custom query processor used to evaluate WHERE clauses
