@@ -73,6 +73,12 @@
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />
     <Compile Include="Connections\ConnectionInfo.cs" />
     <Compile Include="Connections\IConnectionDefinition.cs" />
+    <Compile Include="CopyMoveDialogue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CopyMoveDialogue.Designer.cs">
+      <DependentUpon>CopyMoveDialogue.cs</DependentUpon>
+    </Compile>
     <Compile Include="CopyMoveRenameGraphForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,6 +197,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CopyMoveDialogue.resx">
+      <DependentUpon>CopyMoveDialogue.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CopyMoveRenameGraphForm.resx">
       <DependentUpon>CopyMoveRenameGraphForm.cs</DependentUpon>
     </EmbeddedResource>

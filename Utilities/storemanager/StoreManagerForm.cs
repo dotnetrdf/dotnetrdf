@@ -413,17 +413,17 @@ namespace VDS.RDF.Utilities.StoreManager
                     //Check whether Move is permitted?
                     if ((e.Effect & DragDropEffects.Move) != 0)
                     {
-                        DialogResult result = MessageBox.Show("Would you like to Move the Graph '" + info.SourceUri + "' from " + info.Source.ToString() + " to " + this._manager.ToString() + "?\n\nClick Yes to Move, No to Copy or Cancel to do nothing...", "Confirm Move/Copy Graph", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                        switch (result)
+                        CopyMoveDialogue copyMoveConfirm = new CopyMoveDialogue(info, this._manager);
+                        if (copyMoveConfirm.ShowDialog() == DialogResult.OK)
                         {
-                            case DialogResult.Yes:
+                            if (copyMoveConfirm.IsMove)
+                            {
                                 info.Form.MoveGraph(info.SourceUri, this._manager);
-                                break;
-                            case DialogResult.No:
+                            }
+                            else if (copyMoveConfirm.IsCopy)
+                            {
                                 info.Form.CopyGraph(info.SourceUri, this._manager);
-                                break;
-                            default:
-                                return;
+                            }
                         }
                     }
                     else
