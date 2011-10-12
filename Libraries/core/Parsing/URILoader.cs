@@ -473,10 +473,12 @@ namespace VDS.RDF.Parsing
             }
             catch (WebException webEx)
             {
+#if DEBUG
                 if (webEx.Response != null && Options.HttpDebugging)
                 {
                     Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
+#endif
 
 #if !NO_URICACHE
                 if (webEx.Response != null)
