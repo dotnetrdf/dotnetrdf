@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
 {
     public class Test
     {
-        private const String UnknownVocabularyTermsTest = "SELECT DISTINCT ?term WHERE { {{[] a ?term} UNION {[] ?term []} FILTER (IsUri(?term) && fn:starts-with(STR(?term), \"http://www.dotnetrdf.org/configuration#\")) } MINUS {GRAPH <http://www.dotnetrdf.org/configuration#> { {?term a rdfs:Class} UNION {?term a rdf:Property} } } }";
+        private const String UnknownVocabularyTermsTest = "SELECT DISTINCT ?term WHERE { {{[] a ?term} UNION {[] ?term []} FILTER (IsUri(?term) && fn:starts-with(STR(?term), \"http://www.dotnetrdf.org/configuration\")) } MINUS {GRAPH <http://www.dotnetrdf.org/configuration#> { {?term a rdfs:Class} UNION {?term a rdf:Property} } } }";
         private const String MissingConfigurationTypeTest = "SELECT DISTINCT * WHERE { ?s a ?type . MINUS { ?s dnr:type ?dotnetType } FILTER (?type != dnr:User && ?type != dnr:Proxy) }";
         private const String InvalidTypePropertyTest = "SELECT DISTINCT * WHERE { ?s dnr:type ?type . FILTER(!IsLiteral(?type)) }";
         private const String MultipleTypeTest = "SELECT DISTINCT ?s WHERE {?s dnr:type ?type} GROUP BY ?s HAVING (COUNT(?type) > 1)";
@@ -56,9 +56,9 @@ namespace VDS.RDF.Utilities.Web.Deploy
         private const String BadHandlerUriTest = "SELECT DISTINCT * WHERE {?s a dnr:HttpHandler . FILTER(!IsUri(?s) || !fn:starts-with(STR(?s), \"dotnetrdf\")) }";
         private const String MissingHandlerTypeTest = "SELECT DISTINCT * WHERE { ?s a dnr:HttpHandler . MINUS { ?s dnr:type ?dotnetType } }";
         private const String InvalidHandlerTypeTest = "SELECT DISTINCT * WHERE { ?s a dnr:HttpHandler ; dnr:type ?type . FILTER(IsLiteral(?type) && fn:starts-with(?type, \"VDS.RDF\")) }";
-        private const String InvalidRangeTest = "SELECT DISTINCT * WHERE { ?property a rdf:Property ; rdfs:range ?range . ?s ?property ?obj . OPTIONAL { ?obj a ?type }. FILTER (?range != ?type && !(IsLiteral(?obj) && DATATYPE(?obj) = ?range)) }";
+        private const String InvalidRangeTest = "SELECT DISTINCT * WHERE { ?property a rdf:Property ; rdfs:range ?range . ?s ?property ?obj . OPTIONAL { ?obj a ?type }. FILTER (ISURI(?range) && ?range != ?type && !(IsLiteral(?obj) && DATATYPE(?obj) = ?range)) }";
         private const String ValidRangeTest = "ASK WHERE { @property a rdf:Property ; rdfs:range ?range . @s @property ?obj . OPTIONAL { ?obj a ?type }. FILTER (?range = ?type || (IsLiteral(?obj) && DATATYPE(?obj) = ?range)) }";
-        private const String InvalidDomainTest = "SELECT DISTINCT * WHERE { ?property a rdf:Property ; rdfs:domain ?domain . ?s ?property ?obj ; a ?type FILTER(?domain != ?type) }";
+        private const String InvalidDomainTest = "SELECT DISTINCT * WHERE { ?property a rdf:Property ; rdfs:domain ?domain . ?s ?property ?obj ; a ?type FILTER(ISURI(?domain) && ?domain != ?type) }";
         private const String ValidDomainTest = "ASK WHERE { @property a rdf:Property ; rdfs:domain ?domain . @s @property ?obj ; a ?type FILTER(?domain = ?type) }";
         private const String ClearTextPasswordTest = "SELECT DISTINCT ?s WHERE {?s dnr:password ?password . FILTER(ISLITERAL(?password)) }";
 
@@ -93,6 +93,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
             try
             {
                 vocab.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                vocab.LoadFromEmbeddedResource("VDS.RDF.Query.FullText.ttl, dotNetRDF.Query.FullText");
             }
             catch (Exception ex)
             {
@@ -173,19 +174,50 @@ namespace VDS.RDF.Utilities.Web.Deploy
             Console.WriteLine();
 
             //Unknown Library Types test
-            Console.WriteLine("rdfWebDeploy: Testing that values given for dnr:type property in the VDS.RDF namespace are valid");
+            Console.WriteLine("rdfWebDeploy: Testing that values given for dnr:type property are valid");
             results = g.ExecuteQuery(RdfWebDeployHelper.NamespacePrefixes + LibraryTypesTest);
             if (results is SparqlResultSet)
             {
                 rset = (SparqlResultSet)results;
                 Assembly dotnetrdf = Assembly.GetAssembly(typeof(IGraph));
+
                 foreach (SparqlResult r in rset)
                 {
-                    Type t = dotnetrdf.GetType(((ILiteralNode)r["type"]).Value);
+                    String typeName = ((ILiteralNode)r["type"]).Value;
+                    Type t = typeName.Contains(",") ? Type.GetType(typeName) : dotnetrdf.GetType(typeName);
+
                     if (t == null)
                     {
-                        Console.Error.WriteLine("rdfWebDeploy: Error: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which does not appear to be a valid type in dotNetRDF");
+                        Console.Error.WriteLine("rdfWebDeploy: Error: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which does not appear to be a valid type in an available DLL");
                         errors++;
+                    }
+                    else
+                    {
+                        if (typeName.Contains(","))
+                        {
+                            String assm = typeName.Substring(typeName.IndexOf(",") + 1);
+                            assm = assm.Trim();
+
+                            switch (assm)
+                            {
+                                case "dotNetRDF.Data.Sql":
+                                    Console.Error.WriteLine("rdfWebDeploy: Warning: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which is in the dotNetRDF.Data.Sql library, please ensure you use the -sql option when deploying or if deploying manually include the Data.Sql library and its dependencies");
+                                    warnings++;
+                                    break;
+                                case "dotNetRDF.Data.Virtuoso":
+                                    Console.Error.WriteLine("rdfWebDeploy: Warning: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which is in the dotNetRDF.Data.Virtuoso library, please ensure you use the -virtuoso option when deploying or if deploying manually include the Data.Virtuoso library and its dependencies");
+                                    warnings++;
+                                    break;
+                                case "dotNetRDF.Query.FullText":
+                                    Console.Error.WriteLine("rdfWebDeploy: Warning: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which is in the dotNetRDF.Query.FullText library, please ensure you use the -fulltext option when deploying or if deploying manually include the Query.FullText library and its dependencies");
+                                    warnings++;
+                                    break;
+                                default:
+                                    Console.Error.WriteLine("rdfWebDeploy: Warning: The node '" + r["s"].ToString() + "' has a dnr:type of '" + r["type"].ToString() + "' which is in the " + assm + " library, please ensure that when deploying you manually include this library and any dependencies");
+                                    warnings++;
+                                    break;
+                            }
+                        }
                     }
                 }
             }

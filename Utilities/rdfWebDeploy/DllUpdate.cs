@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
     {
         private bool _noLocalIIS = false;
         private String _site = "Default Web Site";
-        private bool _sql = false, _virtuoso = false;
+        private bool _sql = false, _virtuoso = false, _fulltext = false;
 
         public void RunDllUpdate(String[] args)
         {
@@ -92,6 +92,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
             IEnumerable<String> dlls = RdfWebDeployHelper.RequiredDLLs;
             if (this._sql) dlls = dlls.Concat(RdfWebDeployHelper.RequiredSqlDLLs);
             if (this._virtuoso) dlls = dlls.Concat(RdfWebDeployHelper.RequiredVirtuosoDLLs);
+            if (this._fulltext) dlls = dlls.Concat(RdfWebDeployHelper.RequiredFullTextDLLs);
 
             foreach (String dll in dlls)
             {
@@ -140,6 +141,10 @@ namespace VDS.RDF.Utilities.Web.Deploy
                     case "-virtuoso":
                         this._virtuoso = true;
                         Console.WriteLine("rdfWebDeploy: Will include Data.Virtuoso DLLs");
+                        break;
+                    case "-fulltext":
+                        this._fulltext = true;
+                        Console.WriteLine("rdfWebDeploy: Will include Query.FullText DLLs");
                         break;
                     default:
                         Console.Error.WriteLine("rdfWebDeploy: Error: " + args[i] + " is not a known option for the -dllupdate mode of this tool");

@@ -72,6 +72,12 @@ namespace VDS.RDF.Utilities.Web.Deploy
             "OpenLink.Data.Virtuoso.dll"
         };
 
+        private static List<String> _fulltextDLLs = new List<string>()
+        {
+            "dotNetRDF.Query.FullText.dll",
+            "Lucene.Net.dll"
+        };
+
         public static IEnumerable<String> RequiredDLLs
         {
             get
@@ -93,6 +99,14 @@ namespace VDS.RDF.Utilities.Web.Deploy
             get
             {
                 return _virtuosoDLLs;
+            }
+        }
+
+        public static IEnumerable<String> RequiredFullTextDLLs
+        {
+            get
+            {
+                return _fulltextDLLs;
             }
         }
 
@@ -209,9 +223,12 @@ namespace VDS.RDF.Utilities.Web.Deploy
             Console.WriteLine("Supported Options");
             Console.WriteLine("-----------------");
             Console.WriteLine();
+            Console.WriteLine("-fulltext");
+            Console.WriteLine("Includes Query.FullText related DLLs.  Supported by any more that deploys DLLs");
             Console.WriteLine();
             Console.WriteLine("-negotiate");
             Console.WriteLine("If specificied then the Negotiate by File Extension Module will be registered. Used by -deploy and -xmldeploy");
+            Console.WriteLine();
             Console.WriteLine("-nointreg");
             Console.WriteLine("If specified then Handlers and Modules will not be registered for IIS Integrated Mode.  Used by -deploy and -xmldeploy");
             Console.WriteLine();

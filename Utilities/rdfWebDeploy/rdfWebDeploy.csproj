@@ -36,6 +36,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\Lucene.Net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\Microsoft.Web.Administration.dll</HintPath>
@@ -88,6 +92,10 @@
     <ProjectReference Include="..\..\Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj">
       <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
       <Name>dotNetRDF.Data.Virtuoso</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\query.fulltext\dotNetRDF.Query.FullText.csproj">
+      <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
+      <Name>dotNetRDF.Query.FullText</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
