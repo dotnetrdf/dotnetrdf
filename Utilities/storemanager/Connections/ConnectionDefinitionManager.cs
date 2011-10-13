@@ -34,7 +34,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                                     assm = Assembly.LoadFrom(file);
                                     ConnectionDefinitionManager.DiscoverTypes(assm);
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
                                     //Ignore errors in loading assemblies
                                 }

@@ -74,14 +74,14 @@ namespace VDS.Alexandria
                     if (g.IsEmpty)
                     {
                         //If Graph is Empty load directly into that Graph
-                        if (g.BaseUri == null && !graphUri.Equals(String.Empty)) g.BaseUri = new Uri(graphUri);
+                        if (g.BaseUri == null && !String.IsNullOrEmpty(graphUri)) g.BaseUri = new Uri(graphUri);
                         this._docManager.DataAdaptor.ToGraph(g, doc);
                     }
                     else
                     {
                         //If Graph is not Empty load into another Graph then merge
                         Graph h = new Graph();
-                        if (!graphUri.Equals(String.Empty)) h.BaseUri = new Uri(graphUri);
+                        if (!String.IsNullOrEmpty(graphUri)) h.BaseUri = new Uri(graphUri);
                         this._docManager.DataAdaptor.ToGraph(h, doc);
                         g.Merge(h);
                     }
@@ -202,7 +202,7 @@ namespace VDS.Alexandria
                 //by first asserting the additions and then retracting the removals
                 //If that results in a non-empty Graph then SaveGraph() will be invoked
                 Graph g = new Graph();
-                if (graphUri != null && !graphUri.Equals(String.Empty))
+                if (String.IsNullOrEmpty(graphUri))
                 {
                     g.BaseUri = new Uri(graphUri);
                 }
@@ -278,8 +278,7 @@ namespace VDS.Alexandria
         public override IEnumerable<Uri> ListGraphs()
         {
             return (from u in this._docManager.GraphRegistry.GraphUris
-                    where u != null
-                    select new Uri(u));
+                    select (String.IsNullOrEmpty(u) ? null : new Uri(u)));
         }
 
         public override bool ListGraphsSupported

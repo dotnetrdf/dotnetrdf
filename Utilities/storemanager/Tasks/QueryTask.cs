@@ -105,10 +105,6 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         try
                         {
                             handler.StartResults();
-                            foreach (SparqlVariable v in this._q.Variables)
-                            {
-                                if (v.IsResultVariable) handler.HandleVariable(v.Name);
-                            }
 
                             do
                             {
@@ -122,6 +118,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
                                 if (!(result is SparqlResultSet)) throw new RdfQueryException("SPARQL Query did not return a SPARQL Result Set as expected");
                                 SparqlResultSet rset = (SparqlResultSet)result;
+                                foreach (String var in rset.Variables)
+                                {
+                                    handler.HandleVariable(var);
+                                }
 
                                 //If no further results can halt
                                 if (rset.Count == 0) break;
