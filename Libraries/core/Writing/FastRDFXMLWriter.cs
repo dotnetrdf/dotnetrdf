@@ -86,7 +86,6 @@ namespace VDS.RDF.Writing
             this._compressionLevel = compressionLevel;
         }
 
-        
         /// <summary>
         /// Creates a new RDF/XML Writer
         /// </summary>
@@ -241,7 +240,7 @@ namespace VDS.RDF.Writing
             if (context.Graph.BaseUri != null)
             {
                 XmlAttribute baseUri = doc.CreateAttribute("xml:base");
-                baseUri.Value = context.Graph.BaseUri.ToString();
+                baseUri.Value = Uri.EscapeUriString(context.Graph.BaseUri.ToString());
                 rdf.Attributes.Append(baseUri);
             }
 
@@ -255,12 +254,12 @@ namespace VDS.RDF.Writing
                 {
                     entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
                     ns = doc.CreateAttribute("xmlns:" + prefix);
-                    ns.Value = uri.Replace("'", "&apos;");
+                    ns.Value = Uri.EscapeUriString(uri.Replace("'", "&apos;"));
                 }
                 else
                 {
                     ns = doc.CreateAttribute("xmlns");
-                    ns.Value = uri;
+                    ns.Value = Uri.EscapeUriString(uri);
                 }
                 rdf.Attributes.Append(ns);
             }
@@ -679,7 +678,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     XmlAttribute dt = doc.CreateAttribute("rdf:datatype");
-                    dt.Value = lit.DataType.ToString();//WriterHelper.EncodeForXml(lit.DataType.ToString());
+                    dt.Value = Uri.EscapeUriString(lit.DataType.ToString());
                     pred.Attributes.Append(dt);
                 }
             }
@@ -692,7 +691,7 @@ namespace VDS.RDF.Writing
             //Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;
             String uriref = this.GenerateUriRef(context, u, UriRefType.UriRef, tempNamespaceIDs, out rtype);
-            attr.InnerXml = WriterHelper.EncodeForXml(uriref);
+            attr.InnerXml = Uri.EscapeUriString(WriterHelper.EncodeForXml(uriref));
             //Append the attribute
             node.Attributes.Append(attr);
         }
@@ -777,7 +776,7 @@ namespace VDS.RDF.Writing
 
             //Add to XML Document Element
             XmlAttribute ns = doc.CreateAttribute("xmlns:" + prefix, "http://www.w3.org/2000/xmlns/");
-            ns.Value = nsUri;
+            ns.Value = Uri.EscapeUriString(nsUri);
             doc.DocumentElement.Attributes.Append(ns);
 
             this.RaiseWarning("Created a Temporary Namespace '" + prefix + "' with URI '" + nsUri + "'");

@@ -276,7 +276,7 @@ namespace VDS.RDF.Writing
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
             if (context.Graph.BaseUri != null)
             {
-                context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.ToString());
+                context.Writer.WriteAttributeString("xml", "base", null, Uri.EscapeUriString(context.Graph.BaseUri.ToString()));
             }
 
             //Add all the existing Namespace Definitions here
@@ -288,13 +288,13 @@ namespace VDS.RDF.Writing
                 if (!prefix.Equals(String.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).ToString());
+                    context.Writer.WriteString(Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
                     context.Writer.WriteEndAttribute();
                 }
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).ToString());
+                    context.Writer.WriteString(Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -435,7 +435,7 @@ namespace VDS.RDF.Writing
                     }
 
                     //Remember to define the temporary namespace on the current element
-                    context.Writer.WriteAttributeString("xmlns", tempPrefix, null, tempUri);
+                    context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
                 }
                 else
                 {
@@ -473,7 +473,7 @@ namespace VDS.RDF.Writing
             //Always remember to add rdf:about or rdf:nodeID as appropriate
             if (subj.NodeType == NodeType.Uri)
             {
-                context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, subj.ToString());
+                context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, Uri.EscapeUriString(subj.ToString()));
             }
             else
             {
@@ -540,7 +540,7 @@ namespace VDS.RDF.Writing
                     //Need to generate a temporary namespace
                     String tempPrefix, tempUri;
                     this.GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
-                    context.Writer.WriteAttributeString("xmlns", tempPrefix, null, tempUri);
+                    context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
                     uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
                     if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
                 }
@@ -603,7 +603,7 @@ namespace VDS.RDF.Writing
             }
             if (tempPrefix != null && tempUri != null)
             {
-                context.Writer.WriteAttributeString("xmlns", tempPrefix, null, tempUri);
+                context.Writer.WriteAttributeString("xmlns", tempPrefix, null, Uri.EscapeUriString(tempUri));
             }
 
             //Then generate the Object Output
@@ -648,7 +648,7 @@ namespace VDS.RDF.Writing
                         else
                         {
                             //Datatyped Literal
-                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, lit.DataType.ToString());
+                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, Uri.EscapeUriString(lit.DataType.ToString()));
                             context.Writer.WriteString(lit.Value);
                         }
                     }
@@ -668,7 +668,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Uri:
                     //Simple rdf:resource
                     //TODO: Compress this into UriRef where possible
-                    context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, t.Object.ToString());
+                    context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, Uri.EscapeUriString(t.Object.ToString()));
                     break;
 
                 case NodeType.Variable:

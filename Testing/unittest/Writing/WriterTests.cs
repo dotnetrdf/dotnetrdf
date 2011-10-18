@@ -321,6 +321,8 @@ namespace VDS.RDF.Test.Writing
         public void WritingUriEscaping()
         {
             Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/space in/base");
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/space in/namespace"));
             IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
             IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
             IUriNode obj = g.CreateUriNode(new Uri("http://example.org/with%20uri%20escapes"));
@@ -372,7 +374,7 @@ namespace VDS.RDF.Test.Writing
                 Console.WriteLine();
 
                 IRdfReader parser = parsers[i];
-                Graph h = new Graph();
+                Graph h = new Graph(true);
                 parser.Load(h, new StringReader(strWriter.ToString()));
                 Console.WriteLine("Parsed Data:");
                 foreach (Triple t in h.Triples)
@@ -382,6 +384,14 @@ namespace VDS.RDF.Test.Writing
                 Console.WriteLine();
 
                 Assert.AreEqual(g, h, "Graphs should be equal");
+                if (h.NamespaceMap.HasNamespace("ex"))
+                {
+                    Assert.AreEqual(g.NamespaceMap.GetNamespaceUri("ex"), h.NamespaceMap.GetNamespaceUri("ex"), "Namespaces ex should have equivalent URIs");
+                }
+                if (h.BaseUri != null)
+                {
+                    Assert.AreEqual(g.BaseUri, h.BaseUri, "Base URIs should be equal");
+                }
             }
         }
     }

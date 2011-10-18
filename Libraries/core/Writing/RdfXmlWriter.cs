@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
             if (context.Graph.BaseUri != null)
             {
-                context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.ToString());
+                context.Writer.WriteAttributeString("xml", "base", null, Uri.EscapeUriString(context.Graph.BaseUri.ToString()));
             }
             context.NamespaceMap.IncrementNesting();
             foreach (String prefix in context.NamespaceMap.Prefixes)
@@ -259,13 +259,13 @@ namespace VDS.RDF.Writing
                     //String nsRef = "&" + prefix + ";";
                     //context.Writer.WriteRaw(nsRef);
                     //context.Writer.WriteEntityRef(prefix);
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
+                    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString())));
                     context.Writer.WriteEndAttribute();
                 }
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
+                    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(context.NamespaceMap.GetNamespaceUri(prefix).ToString())));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -629,7 +629,7 @@ namespace VDS.RDF.Writing
                     if (prefix != null && uri != null)
                     {
                         context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                        context.Writer.WriteRaw(WriterHelper.EncodeForXml(uri));
+                        context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
                         context.Writer.WriteEndAttribute();
                     }
 
@@ -661,7 +661,7 @@ namespace VDS.RDF.Writing
                     String dtUri = this.GenerateUriRef(context, lit.DataType, UriRefType.UriRef, out refType);
                     if (refType == UriRefType.Uri)
                     {
-                        context.Writer.WriteAttributeString("rdf", "datatype", null, lit.DataType.ToString());
+                        context.Writer.WriteAttributeString("rdf", "datatype", null, Uri.EscapeUriString(lit.DataType.ToString()));
                     }
                     else if (refType == UriRefType.UriRef)
                     {
@@ -690,11 +690,11 @@ namespace VDS.RDF.Writing
                 context.Writer.WriteStartAttribute(attribute.Substring(0, attribute.IndexOf(':')), attribute.Substring(attribute.IndexOf(':') + 1), NamespaceMapper.RDF);
                 if (rtype == UriRefType.UriRef)
                 {
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(uriref));
+                    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uriref)));
                 }
                 else
                 {
-                    context.Writer.WriteString(uriref);
+                    context.Writer.WriteString(Uri.EscapeUriString(uriref));
                 }
                 context.Writer.WriteEndAttribute();
             } 
@@ -703,11 +703,11 @@ namespace VDS.RDF.Writing
                 context.Writer.WriteStartAttribute(attribute);
                 if (rtype == UriRefType.UriRef)
                 {
-                    context.Writer.WriteRaw(WriterHelper.EncodeForXml(uriref));
+                    context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uriref)));
                 }
                 else
                 {
-                    context.Writer.WriteString(uriref);
+                    context.Writer.WriteString(Uri.EscapeUriString(uriref));
                 }
                 context.Writer.WriteEndAttribute();
             }
@@ -848,7 +848,7 @@ namespace VDS.RDF.Writing
 
                         //Add to current XML Element
                         context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                        context.Writer.WriteRaw(WriterHelper.EncodeForXml(uri));
+                        context.Writer.WriteRaw(Uri.EscapeUriString(WriterHelper.EncodeForXml(uri)));
                         context.Writer.WriteEndAttribute();
 
                         typeref = this.GenerateUriRef(context, ((IUriNode)t.Object).Uri, UriRefType.QName, out rtype);
