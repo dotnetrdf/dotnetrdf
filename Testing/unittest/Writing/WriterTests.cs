@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Writing
 {
@@ -95,7 +97,7 @@ namespace VDS.RDF.Test.Writing
                     }
                     Console.WriteLine();
 
-                    String serialized = StringWriter.Write(g, writer);
+                    String serialized = VDS.RDF.Writing.StringWriter.Write(g, writer);
                     Console.WriteLine("Serialized RDF Fragment");
                     Console.WriteLine(serialized);
 
@@ -139,7 +141,7 @@ namespace VDS.RDF.Test.Writing
                 }
                 Console.WriteLine();
 
-                String serialized = StringWriter.Write(g, ntwriter);
+                String serialized = VDS.RDF.Writing.StringWriter.Write(g, ntwriter);
                 Console.WriteLine("Serialized RDF Fragment");
                 Console.WriteLine(serialized);
 
@@ -175,7 +177,7 @@ namespace VDS.RDF.Test.Writing
             Console.WriteLine();               
 
             TurtleWriter ttlwriter = new TurtleWriter();
-            String serialized = StringWriter.Write(g, ttlwriter);
+            String serialized = VDS.RDF.Writing.StringWriter.Write(g, ttlwriter);
 
             Graph h = new Graph();
             StringParser.Parse(h, serialized);
@@ -197,7 +199,7 @@ namespace VDS.RDF.Test.Writing
             FileLoader.Load(g, "InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
-            String data = StringWriter.Write(g, writer);
+            String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
 
             Console.WriteLine("Serialized as XHTML+RDFa");
             Console.WriteLine(data);
@@ -225,7 +227,7 @@ namespace VDS.RDF.Test.Writing
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
-            Console.WriteLine(StringWriter.Write(g, ttlwriter));
+            ttlwriter.Save(g, Console.Out);
         }
 
         [TestMethod]
@@ -311,6 +313,74 @@ namespace VDS.RDF.Test.Writing
                 Console.WriteLine("Parsed Graph");
                 TestTools.ShowGraph(h);
                 Console.WriteLine();
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+        }
+
+        [TestMethod]
+        public void WritingUriEscaping()
+        {
+            Graph g = new Graph();
+            IUriNode subj = g.CreateUriNode(new Uri("http://example.org/subject"));
+            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+            IUriNode obj = g.CreateUriNode(new Uri("http://example.org/with%20uri%20escapes"));
+            IUriNode obj2 = g.CreateUriNode(new Uri("http://example.org/needs escapes"));
+
+            g.Assert(subj, pred, obj);
+            g.Assert(subj, pred, obj2);
+
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            List<IRdfWriter> writers = new List<IRdfWriter>()
+            {
+                new CompressingTurtleWriter(),
+                new FastRdfXmlWriter(),
+                new HtmlWriter(),
+                new Notation3Writer(),
+                new NTriplesWriter(),
+                new PrettyRdfXmlWriter(),
+                new RdfJsonWriter(),
+                new RdfXmlWriter(),
+                new TurtleWriter()
+            };
+            List<IRdfReader> parsers = new List<IRdfReader>()
+            {
+                new TurtleParser(),
+                new RdfXmlParser(),
+                new RdfAParser(),
+                new Notation3Parser(),
+                new NTriplesParser(),
+                new RdfXmlParser(),
+                new RdfJsonParser(),
+                new RdfXmlParser(),
+                new TurtleParser()
+            };
+
+            Console.WriteLine("Input Data:");
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
+            Console.WriteLine();
+
+            for (int i = 0; i < writers.Count; i++)
+            {
+                IRdfWriter writer = writers[i];
+                Console.WriteLine("Using " + writer.ToString());
+                System.IO.StringWriter strWriter = new System.IO.StringWriter();
+                writer.Save(g, strWriter);
+                Console.WriteLine(strWriter.ToString());
+                Console.WriteLine();
+
+                IRdfReader parser = parsers[i];
+                Graph h = new Graph();
+                parser.Load(h, new StringReader(strWriter.ToString()));
+                Console.WriteLine("Parsed Data:");
+                foreach (Triple t in h.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Console.WriteLine();
+
                 Assert.AreEqual(g, h, "Graphs should be equal");
             }
         }
