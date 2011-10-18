@@ -290,6 +290,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public override void Update(string sparqlUpdate)
+        {
+            base.Update(sparqlUpdate);
+        }
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>

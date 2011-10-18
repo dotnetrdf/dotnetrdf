@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SesameHttpProtocolConnector 
-        : IQueryableGenericIOManager, IConfigurationSerializable
+        : IQueryableGenericIOManager, IConfigurationSerializable, IUpdateableGenericIOManager
     {
         /// <summary>
         /// Base Uri for the Store
@@ -92,6 +92,10 @@ namespace VDS.RDF.Storage
         /// Query Path Prefix
         /// </summary>
         protected String _queryPath = String.Empty;
+        /// <summary>
+        /// Update Path Prefix
+        /// </summary>
+        protected String _updatePath = "/statements";
         /// <summary>
         /// Whether to do full encoding of contexts
         /// </summary>
@@ -304,6 +308,80 @@ namespace VDS.RDF.Storage
                 }
             }
             return output.ToString();
+        }
+
+        public virtual void Update(string sparqlUpdate)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String,String>());
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("update=");
+                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(postData);
+                    writer.Close();
+                }
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get here it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            throw new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx);
+                        }
+                        catch
+                        {
+                            throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                }
+            }
         }
 
         /// <summary>
