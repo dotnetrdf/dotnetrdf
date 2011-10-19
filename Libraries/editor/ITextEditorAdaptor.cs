@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Utilities.Editor.AutoComplete;
 using VDS.RDF.Utilities.Editor.AutoComplete.Data;
+using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor
 {
@@ -185,6 +186,12 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         void Redo();
 
+        ISymbolSelector<T> SymbolSelector
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Sets the Highlighter to be used (if supported)
         /// </summary>
@@ -238,7 +245,9 @@ namespace VDS.RDF.Utilities.Editor
         /// <summary>
         /// Event which is raised when the text in the editor changes
         /// </summary>
-        event TextEditorChangedHandler<T> TextChanged;
+        event TextEditorEventHandler<T> TextChanged;
+
+        event TextEditorEventHandler<T> DoubleClick;
     }
 
 }

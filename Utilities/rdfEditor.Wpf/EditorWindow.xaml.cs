@@ -13,6 +13,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.Utilities.Editor.Selection;
 using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
@@ -91,6 +92,25 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 this._editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = false;
                 this.mnuSymbolSelectIncludeBoundary.IsChecked = false;
+            }
+            switch (Properties.Settings.Default.SymbolSelectionMode)
+            {
+                case "Punctuation":
+                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
+                    this.mnuBoundariesPunctuation.IsChecked = true;
+                    break;
+                case "WhiteSpace":
+                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
+                    this.mnuBoundariesWhiteSpace.IsChecked = true;
+                    break;
+                case "All":
+                    this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
+                    this.mnuBoundariesAll.IsChecked = true;
+                    break;
+                case "Default":
+                default:
+                    this.mnuBoundariesDefault.IsChecked = true;
+                    break;
             }
             if (!Properties.Settings.Default.EnableAutoComplete) 
             {
@@ -286,6 +306,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                         {
                             doc = active;
                             doc.Filename = this._ofd.FileName;
+                            this.UpdateMruList(doc.Filename);
                         }
                         else
                         {
@@ -309,6 +330,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                             {
                                 doc.Open(filename);
                                 this.AddTextEditor(new TabItem(), doc);
+                                this.UpdateMruList(doc.Filename);
                             }
                             catch (Exception ex)
                             {
@@ -619,6 +641,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.mnuGoToLine.IsEnabled = hasDoc;
             this.mnuCommentSelection.IsEnabled = hasDoc;
             this.mnuUncommentSelection.IsEnabled = hasDoc;
+            this.mnuSymbolBoundaries.IsEnabled = this._editor.DocumentManager.Options.IsSymbolSelectionEnabled;
         }
 
         private void mnuUndo_Click(object sender, RoutedEventArgs e)
@@ -830,15 +853,72 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuSymbolSelectEnabled_Click(object sender, RoutedEventArgs e)
         {
-            //this._manager.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
+            this._editor.DocumentManager.Options.IsSymbolSelectionEnabled = this.mnuSymbolSelectEnabled.IsChecked;
             Properties.Settings.Default.EnableSymbolSelection = this.mnuSymbolSelectEnabled.IsChecked;
             Properties.Settings.Default.Save();
         }
 
         private void mnuSymbolSelectIncludeBoundary_Click(object sender, RoutedEventArgs e)
         {
-            //this._manager.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            this._editor.DocumentManager.Options.IncludeBoundaryInSymbolSelection = this.mnuSymbolSelectIncludeBoundary.IsChecked;
             Properties.Settings.Default.IncludeSymbolBoundaries = this.mnuSymbolSelectIncludeBoundary.IsChecked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void SymbolSelectorMode_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem selected = sender as MenuItem;
+            if (selected == null) return;
+            String tag = (String)selected.Tag;
+            if (selected.IsChecked == false) tag = "Default";
+
+            foreach (MenuItem item in this.mnuSymbolBoundaries.Items.OfType<MenuItem>())
+            {
+                if (tag.Equals((String)item.Tag))
+                {
+                    item.IsChecked = true;
+                }
+                else
+                {
+                    item.IsChecked = false;
+                }
+            }
+
+            ISymbolSelector<TextEditor> current = this._editor.DocumentManager.Options.CurrentSymbolSelector;
+            switch (tag)
+            {
+                case "Punctuation":
+                    if (!(current is PunctuationSelector<TextEditor>))
+                    {
+                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new PunctuationSelector<TextEditor>();
+                        Properties.Settings.Default.SymbolSelectionMode = tag;
+                        Properties.Settings.Default.Save();
+                    }
+                    break;
+                case "WhiteSpace":
+                    if (!(current is WhiteSpaceSelector<TextEditor>))
+                    {
+                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceSelector<TextEditor>();
+                    }
+                    break;
+                case "All":
+                    if (!(current is WhiteSpaceOrPunctuationSelection<TextEditor>))
+                    {
+                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new WhiteSpaceOrPunctuationSelection<TextEditor>();
+                    }
+                    break;
+                case "Default":
+                default:
+                    tag = "Default";
+                    if (!(current is DefaultSelector<TextEditor>))
+                    {
+                        this._editor.DocumentManager.Options.CurrentSymbolSelector = new DefaultSelector<TextEditor>();
+                    }
+                    break;
+            }
+
+            //Update default Symbol Selection Mode
+            Properties.Settings.Default.SymbolSelectionMode = tag;
             Properties.Settings.Default.Save();
         }
 
@@ -1391,7 +1471,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("This is the Experimental Branch version of rdfEditor - it is currently undergoing major refactoring and is not in a usable state, please use the most recent released version found in Trunk");
+            System.Windows.MessageBox.Show("This is the Experimental Branch version of rdfEditor - it is currently undergoing major refactoring and so some features like Auto-Completion are currently unavailable, please use the most recent released version found in Trunk");
 
             //Open a File if we've been asked to do so
             String[] args = Environment.GetCommandLineArgs();
@@ -1620,7 +1700,5 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         }
 
         #endregion
-
-
     }
 }

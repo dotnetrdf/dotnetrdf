@@ -23,5 +23,5 @@ namespace VDS.RDF.Utilities.Editor
         }
     }
 
-    public delegate void TextEditorChangedHandler<T>(Object sender, TextEditorEventArgs<T> args);
+    public delegate void TextEditorEventHandler<T>(Object sender, TextEditorEventArgs<T> args);
 }

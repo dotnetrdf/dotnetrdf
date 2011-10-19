@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
 using VDS.RDF.Utilities.Editor.Syntax;
+using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
@@ -18,6 +20,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             : base(new TextEditor())
         {
             this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
+            this.Control.TextArea.MouseDoubleClick += this.HandleDoubleClick;
             this.Control.FontFamily = new FontFamily("Consolas");
         }
 
@@ -298,6 +301,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void HandleTextChanged(Object sender, EventArgs args)
         {
             this.RaiseTextChanged(sender);
+        }
+
+        private void HandleDoubleClick(Object sender, MouseButtonEventArgs args)
+        {
+            this.RaiseDoubleClick(sender);
+            args.Handled = (this.SymbolSelector != null);
         }
 
         #endregion

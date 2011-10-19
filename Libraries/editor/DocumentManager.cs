@@ -37,6 +37,7 @@ namespace VDS.RDF.Utilities.Editor
             //Wire Up Events
             this._options.HighlightingToggled += this.HandleHighlightingToggled;
             this._options.HighlightErrorsToggled += this.HandleHighlightErrorsToggled;
+            this._options.SymbolSelectorChanged += this.HandleSymbolSelectorChanged;
             if (this._visualOptions != null)
             {
                 this._visualOptions.Changed += this.HandleVisualOptionsChanged;
@@ -235,6 +236,7 @@ namespace VDS.RDF.Utilities.Editor
             doc.Syntax = this._defaultSyntax;
             doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
             if (this._visualOptions != null) doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
+            doc.TextEditor.SymbolSelector = this._options.CurrentSymbolSelector;
 
             //Switch to the new document if required
             if (switchTo)
@@ -487,6 +489,22 @@ namespace VDS.RDF.Utilities.Editor
             foreach (Document<TControl> doc in this._documents)
             {
                 doc.TextEditor.Refresh();
+            }
+        }
+
+        private void HandleSymbolSelectionToggled()
+        {
+            foreach (Document<TControl> doc in this._documents)
+            {
+                doc.TextEditor.SymbolSelector = (this.Options.IsSymbolSelectionEnabled ? this.Options.CurrentSymbolSelector : null);
+            }
+        }
+
+        private void HandleSymbolSelectorChanged()
+        {
+            foreach (Document<TControl> doc in this._documents)
+            {
+                doc.TextEditor.SymbolSelector = (this.Options.IsSymbolSelectionEnabled ? this.Options.CurrentSymbolSelector : null);
             }
         }
 

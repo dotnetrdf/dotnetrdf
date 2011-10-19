@@ -167,10 +167,10 @@
                 <Separator />
                 <MenuItem Header="Select Symbol on Double Click" Name="mnuSymbolSelectEnabled" Click="mnuSymbolSelectEnabled_Click" IsCheckable="True" IsChecked="True" />
                 <MenuItem Header="Symbol Boundaries" Name="mnuSymbolBoundaries">
-                    <MenuItem Header="[Default] URI/XML Element boundaries (&lt; and &gt;), Literal/XML Attribute boundaries (&quot;) and New Lines" Tag="Default" IsCheckable="True" IsChecked="True" />
-                    <MenuItem Header="Default plus Punctuation" Tag="Punctuation" IsCheckable="True" IsChecked="False" />
-                    <MenuItem Header="Default plus Whitespace" Tag="WhiteSpace" IsCheckable="True" IsChecked="False" />
-                    <MenuItem Header="Default plus Punctuation and Whitespace" Tag="All" IsCheckable="True" IsChecked="False" />
+                    <MenuItem Header="[Default] URI/XML Element boundaries (&lt; and &gt;), Literal/XML Attribute boundaries (&quot;) and New Lines" Name="mnuBoundariesDefault" Tag="Default" IsCheckable="True" Click="SymbolSelectorMode_Click" />
+                    <MenuItem Header="Default plus Punctuation" Name="mnuBoundariesPunctuation" Tag="Punctuation" IsCheckable="True" IsChecked="False" Click="SymbolSelectorMode_Click" />
+                    <MenuItem Header="Default plus Whitespace" Name="mnuBoundariesWhiteSpace" Tag="WhiteSpace" IsCheckable="True" IsChecked="False" Click="SymbolSelectorMode_Click" />
+                    <MenuItem Header="Default plus Punctuation and Whitespace" Name="mnuBoundariesAll" Tag="All" IsCheckable="True" IsChecked="False" Click="SymbolSelectorMode_Click" />
                 </MenuItem>
                 <MenuItem Header="Include Boundary Character in Selected Symbols" Name="mnuSymbolSelectIncludeBoundary" Click="mnuSymbolSelectIncludeBoundary_Click" IsCheckable="True" IsChecked="False" />
             </MenuItem>

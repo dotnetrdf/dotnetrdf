@@ -73,7 +73,11 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._symbolSelectEnabled = value;
+                if (this._symbolSelectEnabled != value)
+                {
+                    this._symbolSelectEnabled = value;
+                    this.RaiseEvent(this.SymbolSelectionToggled);
+                }
             }
         }
 
@@ -111,6 +115,15 @@ namespace VDS.RDF.Utilities.Editor
             get
             {
                 return this._selector;
+            }
+            set
+            {
+                if (!ReferenceEquals(this._selector, value))
+                {
+                    this._selector = value;
+                    this._selector.IncludeDeliminator = this.IncludeBoundaryInSymbolSelection;
+                    this.RaiseEvent(this.SymbolSelectorChanged);
+                }
             }
         }
 
@@ -176,6 +189,10 @@ namespace VDS.RDF.Utilities.Editor
         public event OptionsChanged HighlightingToggled;
 
         public event OptionsChanged HighlightErrorsToggled;
+
+        public event OptionsChanged SymbolSelectionToggled;
+
+        public event OptionsChanged SymbolSelectorChanged;
 
         private void RaiseEvent(OptionsChanged evt)
         {

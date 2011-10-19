@@ -37,7 +37,8 @@ namespace VDS.RDF.Utilities.Editor
             this._title = title;
 
             //Subscribe to relevant events on the Editor
-            this._editor.TextChanged += new TextEditorChangedHandler<T>(this.HandleTextChanged);
+            this._editor.TextChanged += new TextEditorEventHandler<T>(this.HandleTextChanged);
+            this._editor.DoubleClick += new TextEditorEventHandler<T>(this.HandleDoubleClick);
         }
 
         #region General State
@@ -140,7 +141,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                throw new NotImplementedException();
+                return this._editor.SelectionStart;
             }
         }
 
@@ -148,7 +149,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                throw new NotImplementedException();
+                return this._editor.SelectionLength;
             }
         }
 
@@ -372,6 +373,14 @@ namespace VDS.RDF.Utilities.Editor
         {
             this.HasChanged = true;
             this.RaiseEvent(sender, this.TextChanged);
+        }
+
+        private void HandleDoubleClick(Object sender, TextEditorEventArgs<T> args)
+        {
+            if (this._editor.SymbolSelector != null)
+            {
+                this._editor.SymbolSelector.SelectSymbol(this);
+            }
         }
 
         #endregion
