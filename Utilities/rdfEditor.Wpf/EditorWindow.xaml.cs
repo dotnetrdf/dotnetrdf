@@ -23,7 +23,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     public partial class EditorWindow
         : Window
     {
-        //TODO: Generate these programmatically using MimeTypesHelper
         private readonly String FileFilterRdf, FileFilterSparql, FileFilterRdfDataset, FileFilterAll;
 
         private OpenFileDialog _ofd = new OpenFileDialog();
@@ -365,36 +364,22 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuOpenQueryResults_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("Open Query Results not available in this build currently");
-            //String queryText = String.Empty;
-            //if (this._manager.CurrentSyntax.StartsWith("SparqlQuery"))
-            //{
-            //    queryText = this.textEditor.Text;
-            //}
+            String queryText = String.Empty;
+            if (this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.Syntax.StartsWith("SparqlQuery"))
+            {
+                queryText = this._editor.DocumentManager.ActiveDocument.Text;
+            }
 
-            //if (this._manager.HasChanged)
-            //{
-            //    MessageBoxResult res = MessageBox.Show("Would you like to save changes to the current file before opening Query Results?", "Save Changes?", MessageBoxButton.YesNoCancel);
-            //    if (res == MessageBoxResult.Cancel)
-            //    {
-            //        return;
-            //    }
-            //    else if (res == MessageBoxResult.Yes)
-            //    {
-            //        mnuSave_Click(sender, e);
-            //    }
-            //    this._manager.HasChanged = false;
-            //}
-            //mnuClose_Click(sender, e);
-
-            //OpenQueryResults diag = new OpenQueryResults();
-            //if (!queryText.Equals(String.Empty)) diag.Query = queryText;
-            //if (diag.ShowDialog() == true)
-            //{
-            //    textEditor.Text = diag.RetrievedData;
-            //    this._manager.HasChanged = true;
-            //    this._manager.SetHighlighter(diag.Parser);
-            //}
+            OpenQueryResults diag = new OpenQueryResults(this._editor.DocumentManager.VisualOptions);
+            if (!queryText.Equals(String.Empty)) diag.Query = queryText;
+            if (diag.ShowDialog() == true)
+            {
+                Document<TextEditor> doc = this._editor.DocumentManager.New(true);
+                this.AddTextEditor(new TabItem(), doc);
+                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                doc.Text = diag.RetrievedData;
+                doc.AutoDetectSyntax();
+            }
         }
 
         private void mnuSave_Click(object sender, RoutedEventArgs e)
