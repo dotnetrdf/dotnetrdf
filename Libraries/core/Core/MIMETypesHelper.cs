@@ -898,6 +898,45 @@ namespace VDS.RDF
 
         #endregion
 
+        #region File Filters
+
+        public static String GetFilenameFilter()
+        {
+            return MimeTypesHelper.GetFilenameFilter(true, true, true, true, true, true);
+        }
+
+        public static String GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
+        {
+            if (!_init) Init();
+
+            String filter = String.Empty;
+            List<String> exts = new List<string>();
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
+            {
+                if ((rdf && (def.CanParseRdf || def.CanWriteRdf)) 
+                    || (rdfDatasets && (def.CanParseRdfDatasets || def.CanWriteRdfDatasets)) 
+                    || (sparqlResults && (def.CanParseSparqlResults || def.CanWriteSparqlResults)) 
+                    || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
+                    || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
+                {
+                    filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
+                }
+            }
+            if (allFiles)
+            {
+                filter += "All Files|*.*";
+            }
+            else
+            {
+                filter = filter.Substring(0, filter.Length - 1);
+            }
+
+            return filter;
+        }
+
+        #endregion
+
         #region Reader and Writer Selection
 
         /// <summary>

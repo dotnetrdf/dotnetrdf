@@ -166,7 +166,7 @@ namespace VDS.RDF.GUI.WinForms
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            this.sfdExport.Filter = Constants.RdfFilter + "|" + Constants.NonStandardFilter;
+            this.sfdExport.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
             if (this.sfdExport.ShowDialog() == DialogResult.OK)
             {
                 this.txtFile.Text = this.sfdExport.FileName;

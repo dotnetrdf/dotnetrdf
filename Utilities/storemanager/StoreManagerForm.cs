@@ -341,7 +341,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            this.ofdImport.Filter = Constants.RdfOrDatasetFilter;
+            this.ofdImport.Filter = MimeTypesHelper.GetFilenameFilter(true, true, false, false, false, false);
             if (this.ofdImport.ShowDialog() == DialogResult.OK)
             {
                 this.txtImportFile.Text = this.ofdImport.FileName;
@@ -447,7 +447,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnSaveQuery_Click(object sender, EventArgs e)
         {
-            this.sfdQuery.Filter = Constants.SparqlQueryFilter;
+            this.sfdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
             if (this.sfdQuery.ShowDialog() == DialogResult.OK)
             {
                 using (StreamWriter writer = new StreamWriter(this.sfdQuery.FileName))
@@ -459,7 +459,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnLoadQuery_Click(object sender, EventArgs e)
         {
-            this.ofdQuery.Filter = Constants.SparqlQueryFilter;
+            this.ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
             if (this.ofdQuery.ShowDialog() == DialogResult.OK)
             {
                 using (StreamReader reader = new StreamReader(this.ofdQuery.FileName))
@@ -481,7 +481,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnBrowseExport_Click(object sender, EventArgs e)
         {
-            this.sfdExport.Filter = Constants.RdfDatasetFilter;
+            this.sfdExport.Filter = MimeTypesHelper.GetFilenameFilter(false, true, false, false, false, false);
             if (this.sfdExport.ShowDialog() == DialogResult.OK)
             {
                 this.txtExportFile.Text = this.sfdExport.FileName;

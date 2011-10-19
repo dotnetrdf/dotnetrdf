@@ -849,7 +849,7 @@
             // 
             this.ofdQuery.DefaultExt = "rq";
             this.ofdQuery.FileName = "ofdQuery";
-            this.ofdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
+            this.ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
             this.ofdQuery.Title = "Open SPARQL Query";
             // 
             // sfdQuery

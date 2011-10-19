@@ -193,7 +193,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     }
                     if (manager is IConfigurationSerializable)
                     {
-                        this.sfdConnection.Filter = Constants.RdfFilter;
+                        this.sfdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
                         if (this.sfdConnection.ShowDialog() == DialogResult.OK)
                         {
                             //Append to existing configuration file or overwrite?
@@ -254,7 +254,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuOpenConnection_Click(object sender, EventArgs e)
         {
-            this.ofdConnection.Filter = Constants.RdfFilter;
+            this.ofdConnection.Filter = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, false);
             if (this.ofdConnection.ShowDialog() == DialogResult.OK)
             {
                 try

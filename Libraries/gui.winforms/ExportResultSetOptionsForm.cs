@@ -125,7 +125,7 @@ namespace VDS.RDF.GUI.WinForms
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            this.sfdExport.Filter = Constants.SparqlResultsFilter + "|" + Constants.NonStandardFilter;
+            this.sfdExport.Filter = MimeTypesHelper.GetFilenameFilter(false, false, true, false, false, false);
             if (this.sfdExport.ShowDialog() == DialogResult.OK)
             {
                 this.txtFile.Text = this.sfdExport.FileName;
