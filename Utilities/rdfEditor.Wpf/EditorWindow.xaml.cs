@@ -1,30 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Xml;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using Microsoft.Win32;
-using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
-using VDS.RDF.Utilities.Editor;
 using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
@@ -37,10 +24,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         : Window
     {
         //TODO: Generate these programmatically using MimeTypesHelper
-        private const String FileFilterRdf = "All Supported RDF Files|*.rdf;*.ttl;*.n3;*.nt;*.rj;*.json;*.owl;*.html;*.xhtml;*.htm;*.shtml|RDF/XML Files|*.rdf,*.owl|NTriples Files|*.nt|Turtle Files|*.ttl|Notation 3 Files|*.n3|RDF/JSON Files|*.rj;*.json|(X)HTML+RDFa Files|*.html;*.xhtml;*.htm;*.shtml";
-        private const String FileFilterSparql = "All Supported SPARQL Files|*.rq;*.sparql;*.srx;*.srj|SPARQL Query Files|*.rq;*.sparql|SPARQL Results Files|*.srx;*.srj;*.json";
-        private const String FileFilterRdfDataset = "All Supported RDF Dataset Files|*.nq;*.trig;*.xml|NQuads Files|*.nq|TriG Files|*.trig|TriX Files|*.xml";
-        private readonly String FileFilterAll = "All Supported RDF and SPARQL Files|*.rdf;*.ttl;*.n3;*.nt;*.rj;*.json;*.owl;*.html;*.xhtml;*.htm;*.shtml;*.rq;*.sparql;*.srx;*.srj;*.nq;*.trig;*.xml|" + FileFilterRdf + "|" + FileFilterSparql + "|" + FileFilterRdfDataset;
+        private readonly String FileFilterRdf, FileFilterSparql, FileFilterRdfDataset, FileFilterAll;
 
         private OpenFileDialog _ofd = new OpenFileDialog();
         private SaveFileDialog _sfd = new SaveFileDialog();
@@ -51,6 +35,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public EditorWindow()
         {
             InitializeComponent();
+
+            //Generate Filename Filters
+            FileFilterRdf = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, true);
+            FileFilterSparql = MimeTypesHelper.GetFilenameFilter(false, false, true, false, false, true);
+            FileFilterRdfDataset = MimeTypesHelper.GetFilenameFilter(false, true, false, false, false, true);
+            FileFilterAll = MimeTypesHelper.GetFilenameFilter();
 
             //Initialise Highlighting
             WpfHighlightingManager.Initialise(Properties.Settings.Default.UseCustomisedXshdFiles);
