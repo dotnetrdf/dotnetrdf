@@ -66,6 +66,7 @@ namespace VDS.RDF.Utilities.Editor
         public abstract int CaretOffset
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -143,6 +144,10 @@ namespace VDS.RDF.Utilities.Editor
 
         public virtual void Refresh() { }
 
+        public virtual void BeginUpdate() { }
+
+        public virtual void EndUpdate() { }
+
         #endregion
 
         #region Text Manipulation
@@ -184,6 +189,18 @@ namespace VDS.RDF.Utilities.Editor
         {
             this.SelectionStart = offset;
             this.SelectionLength = length;
+        }
+
+        /// <summary>
+        /// Replaces a portion of text
+        /// </summary>
+        /// <param name="offset">Offset</param>
+        /// <param name="length">Length</param>
+        /// <param name="text">Replacement Text</param>
+        public virtual void Replace(int offset, int length, String text)
+        {
+            String currText = this.Text;
+            this.Text = currText.Substring(0, offset - 1) + text + currText.Substring(offset + length);
         }
 
         /// <summary>

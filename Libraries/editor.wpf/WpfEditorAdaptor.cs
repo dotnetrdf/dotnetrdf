@@ -83,6 +83,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 return this.Control.CaretOffset;
             }
+            set
+            {
+                this.Control.CaretOffset = value;
+            }
         }
 
         public override int SelectionStart
@@ -183,6 +187,16 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.Control.TextArea.InvalidateVisual();
         }
 
+        public override void BeginUpdate()
+        {
+            this.Control.Document.BeginUpdate();
+        }
+
+        public override void EndUpdate()
+        {
+            this.Control.Document.EndUpdate();
+        }
+
         #endregion
 
         #region Text Manipulation
@@ -205,6 +219,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         public override void Select(int offset, int length)
         {
             this.Control.Select(offset, length);
+        }
+
+        public override void Replace(int offset, int length, string text)
+        {
+            this.Control.Document.Replace(offset, length, text);
         }
 
         public override void Cut()

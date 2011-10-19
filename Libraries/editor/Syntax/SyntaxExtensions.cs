@@ -30,6 +30,12 @@ namespace VDS.RDF.Utilities.Editor.Syntax
                 case "SPARQL Results JSON":
                     return "SparqlResultsJson";
 
+                case "SPARQL Query":
+                    return "SparqlQuery11";
+
+                case "SPARQL Update":
+                    return "SparqlUpdate11";
+
                 case "NTriples":
                 case "NQuads":
                 case "Turtle":

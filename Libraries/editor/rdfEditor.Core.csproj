@@ -69,6 +69,7 @@
     <Compile Include="DocumentManager.cs" />
     <None Include="EditorManager.cs" />
     <Compile Include="Editor.cs" />
+    <Compile Include="FindAndReplace.cs" />
     <Compile Include="GlobalOptions.cs" />
     <Compile Include="ITextEditorAdaptor.cs" />
     <Compile Include="ITextEditorAdaptorFactory.cs" />

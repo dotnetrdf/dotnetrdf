@@ -66,6 +66,7 @@
     <Compile Include="Syntax\ValidationErrorLineText.cs" />
     <Compile Include="WpfEditorAdaptor.cs" />
     <Compile Include="WpfEditorFactory.cs" />
+    <Compile Include="WpfFindAndReplace.cs" />
     <Compile Include="WpfHighlightingManager.cs" />
     <Compile Include="WpfVisualOptions.cs" />
   </ItemGroup>

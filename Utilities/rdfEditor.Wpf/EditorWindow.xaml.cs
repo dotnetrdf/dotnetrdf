@@ -579,7 +579,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 this.AddTextEditor(new TabItem(), doc);
             }
-            this.tabDocuments.SelectedIndex = 0;
+            try
+            {
+                this._editor.DocumentManager.SwitchTo(0);
+                this.tabDocuments.SelectedIndex = 0;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                //Ignore as if there are no documents left this may be thrown
+            }
         }
 
         private void mnuExit_Click(object sender, RoutedEventArgs e)
@@ -641,54 +649,59 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuFind_Click(object sender, RoutedEventArgs e)
         {
-            //if (this._findReplace == null)
-            //{
-            //    this._findReplace = new FindReplace();
-            //}
-            //if (this._findReplace.Visibility != Visibility.Visible)
-            //{
-            //    this._findReplace.Mode = FindReplaceMode.Find;
-            //    this._findReplace.Editor = this.textEditor;
-            //    this._findReplace.Show();
-            //}
-            //this._findReplace.BringIntoView();
-            //this._findReplace.Focus();
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
+            if (this._findReplace.Visibility != Visibility.Visible)
+            {
+                this._findReplace.Mode = FindReplaceMode.Find;
+                this._findReplace.Show();
+            }
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
         }
 
         private void mnuFindNext_Click(object sender, RoutedEventArgs e)
         {
-            //if (this._findReplace == null)
-            //{
-            //    this.mnuFind_Click(sender, e);
-            //}
-            //else
-            //{
-            //    this._findReplace.Find(this.textEditor);
-            //}
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (this._findReplace == null)
+            {
+                this.mnuFind_Click(sender, e);
+            }
+            else
+            {
+                this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
+                this._findReplace.FindNext();
+            }
         }
 
         private void mnuReplace_Click(object sender, RoutedEventArgs e)
         {
-            //if (this._findReplace == null)
-            //{
-            //    this._findReplace = new FindReplace();
-            //}
-            //this._findReplace.Mode = FindReplaceMode.FindAndReplace;
-            //this._findReplace.Editor = this.textEditor;
-            //if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
-            //this._findReplace.BringIntoView();
-            //this._findReplace.Focus();
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            if (this._findReplace == null)
+            {
+                this._findReplace = new FindReplace();
+            }
+            this._findReplace.Mode = FindReplaceMode.FindAndReplace;
+            this._findReplace.Editor = this._editor.DocumentManager.ActiveDocument.TextEditor;
+            if (this._findReplace.Visibility != Visibility.Visible) this._findReplace.Show();
+            this._findReplace.BringIntoView();
+            this._findReplace.Focus();
         }
 
         private void mnuGoToLine_Click(object sender, RoutedEventArgs e)
         {
-            //GoToLine gotoLine = new GoToLine(this.textEditor);
-            //gotoLine.Owner = this;
-            //if (gotoLine.ShowDialog() == true)
-            //{
-            //    this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
-            //    this.textEditor.ScrollToLine(gotoLine.Line);
-            //}
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
+            GoToLine gotoLine = new GoToLine(this.textEditor);
+            gotoLine.Owner = this;
+            if (gotoLine.ShowDialog() == true)
+            {
+                this.textEditor.CaretOffset = this.textEditor.Document.GetOffset(gotoLine.Line, 1);
+                this.textEditor.ScrollToLine(gotoLine.Line);
+            }
         }
 
         private void mnuCommentSelection_Click(object sender, RoutedEventArgs e)
@@ -1536,14 +1549,27 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     {
                         if (File.Exists(file))
                         {
-                            Document<TextEditor> doc = this._editor.DocumentManager.New();
+                            Document<TextEditor> doc;
+                            bool add = false;
+                            if (this._editor.DocumentManager.ActiveDocument != null && this._editor.DocumentManager.ActiveDocument.TextLength == 0 && String.IsNullOrEmpty(this._editor.DocumentManager.ActiveDocument.Filename))
+                            {
+                                doc = this._editor.DocumentManager.ActiveDocument;
+                            } 
+                            else 
+                            {
+                                doc = this._editor.DocumentManager.New();
+                                add = true;
+                            }
                             try
                             {
                                 doc.Open(file);
-                                this.AddTextEditor(new TabItem(), doc);
-                                this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
-                                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
-                                this.tabDocuments.SelectedItem = this.tabDocuments.Items[this.tabDocuments.Items.Count - 1];
+                                if (add)
+                                {
+                                    this.AddTextEditor(new TabItem(), doc);
+                                    this._editor.DocumentManager.SwitchTo(this._editor.DocumentManager.Count - 1);
+                                    this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+                                    this.tabDocuments.SelectedItem = this.tabDocuments.Items[this.tabDocuments.Items.Count - 1];
+                                }
                             }
                             catch (Exception ex)
                             {

@@ -43,11 +43,12 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         /// <summary>
-        /// Gets the caret offset
+        /// Gets/Sets the caret offset
         /// </summary>
         int CaretOffset
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -135,6 +136,8 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="length">Length</param>
         void Select(int offset, int length);
 
+        void Replace(int offset, int length, String text);
+
         /// <summary>
         /// Gets the line number based on the offset
         /// </summary>
@@ -147,6 +150,10 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         /// <param name="line">Line</param>
         void ScrollToLine(int line);
+
+        void BeginUpdate();
+
+        void EndUpdate();
 
         /// <summary>
         /// Indicates that the Text Editor should refresh its visual display
