@@ -920,9 +920,13 @@ namespace VDS.RDF
                     || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
                     || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
                 {
+                    exts.AddRange(def.FileExtensions);
                     filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
                 }
             }
+            //Add an All Supported Formats option as first option
+            filter = "All Supported Files|*." + String.Join(";*.", exts.ToArray()) + "|" + filter;
+
             if (allFiles)
             {
                 filter += "All Files|*.*";
