@@ -164,5 +164,61 @@ namespace VDS.RDF.Test.Storage
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        [TestMethod]
+        public void StorageSesameSparqlUpdate1()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                sesame.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
+
+                Graph orig = new Graph();
+                orig.LoadFromUri(new Uri("http://dbpedia.org/resource/Ilkeston"));
+
+                Graph actual = new Graph();
+                sesame.LoadGraph(actual, "http://example.org/sparqlUpdateLoad");
+
+                GraphDiffReport diff = orig.Difference(actual);
+                if (!diff.AreEqual)
+                {
+                    TestTools.ShowDifferences(diff);
+                }
+
+                Assert.AreEqual(orig, actual, "Graphs should be equal");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
+
+        [TestMethod]
+        public void StorageSesameSparqlUpdate2()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+
+                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                Graph g = new Graph();
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("http://example.org/sparqlUpdateDeleteWhere");
+                sesame.SaveGraph(g);
+
+                sesame.Update("WITH <http://example.org/sparqlUpdateDeleteWhere> DELETE { ?s a ?type } WHERE { ?s a ?type }");
+
+                Graph h = new Graph();
+                sesame.LoadGraph(h, "http://example.org/sparqlUpdateDeleteWhere");
+                INode rdfType = h.CreateUriNode("rdf:type");
+                Assert.IsFalse(h.GetTriplesWithPredicate(rdfType).Any(), "Should not be any rdf:type triples after SPARQL Update operation");
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
+        }
     }
 }
