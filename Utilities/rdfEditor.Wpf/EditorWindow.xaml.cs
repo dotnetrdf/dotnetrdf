@@ -418,106 +418,50 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void SaveWith(IRdfWriter writer)
         {
-            System.Windows.MessageBox.Show("Save With is not currently available in this build");
-            //IRdfReader parser = this._manager.GetParser();
-            //Graph g = new Graph();
-            //try
-            //{
-            //    StringParser.Parse(g, textEditor.Text, parser);
-            //}
-            //catch
-            //{
-            //    MessageBox.Show("Unable to Save With an RDF Writer as the current file is not a valid RDF document when parsed with the " + parser.GetType().Name + ".  If you believe this is a valid RDF document please select the correct Syntax Highlighting from the Options Menu and retry", "Save With Failed");
-            //    return;
-            //}
+            if (this._editor.DocumentManager.ActiveDocument == null) return;
 
-            //bool filenameRequired = (this._manager.CurrentFile == null);
-            //if (!filenameRequired)
-            //{
-            //    MessageBoxResult res = MessageBox.Show("Are you sure you wish to overwrite your existing file with the output of the " + writer.GetType().Name + "?  Click Yes to proceed, No to select a different Filename or Cancel to abort this operation", "Overwrite File",MessageBoxButton.YesNoCancel);
-            //    if (res == MessageBoxResult.Cancel)
-            //    {
-            //        return;
-            //    }
-            //    else if (res == MessageBoxResult.No)
-            //    {
-            //        filenameRequired = true;
-            //    }
-            //    else if (res == MessageBoxResult.None)
-            //    {
-            //        return;
-            //    }
-            //}
+            Document<TextEditor> doc = this._editor.DocumentManager.ActiveDocument;
+            IRdfReader parser = SyntaxManager.GetParser(doc.Syntax);
+            if (parser == null)
+            {
+                MessageBox.Show("To use Save With the source document must be in a RDF Graph Syntax.  If the document is in a RDF Graph Syntax please change the syntax setting to the relevant format under Options > Syntax", "Save With Unavailable");
+                return;
+            }
 
-            ////Get a Filename to Save to
-            //String origFilename = this._manager.CurrentFile;
-            //if (filenameRequired)
-            //{
-            //    if (_sfd.ShowDialog() == true)
-            //    {
-            //        try
-            //        {
-            //            this.UpdateMruList(this._sfd.FileName);
-            //        }
-            //        catch
-            //        {
-            //            //Ignore Errors here
-            //        }
-            //        this._manager.CurrentFile = _sfd.FileName;
-            //    }
-            //    else
-            //    {
-            //        return;
-            //    }
-            //}
+            Graph g = new Graph();
+            try
+            {
+                StringParser.Parse(g, doc.Text, parser);
+            }
+            catch
+            {
+                MessageBox.Show("Unable to Save With an RDF Writer as the current document is not a valid RDF document when parsed with the " + parser.GetType().Name + ".  If you believe this is a valid RDF document please select the correct Syntax Highlighting from the Options Menu and retry", "Save With Failed");
+                return;
+            }
 
+            try
+            {
+                //Check whether the User wants to set advanced options?
+                if (Properties.Settings.Default.SaveWithOptionsPrompt)
+                {
+                    RdfWriterOptionsWindow optPrompt = new RdfWriterOptionsWindow(writer);
+                    optPrompt.Owner = this;
+                    if (optPrompt.ShowDialog() != true) return;
+                }
 
-            //try
-            //{
-            //    //Check whether the User wants to set advanced options?
-            //    if (Properties.Settings.Default.SaveWithOptionsPrompt)
-            //    {
-            //        RdfWriterOptionsWindow optPrompt = new RdfWriterOptionsWindow(writer);
-            //        optPrompt.Owner = this;
-            //        if (optPrompt.ShowDialog() != true) return;
-            //    }
-
-            //    //Do the actual save
-            //    writer.Save(g, this._manager.CurrentFile);
-
-            //    //Give the user the option of switching to this new file
-            //    MessageBoxResult res = MessageBox.Show("Would you like to switch editing to the newly created file?", "Switch Editing", MessageBoxButton.YesNo);
-            //    if (res == MessageBoxResult.Yes)
-            //    {
-            //        try
-            //        {
-            //            using (StreamReader reader = new StreamReader(this._manager.CurrentFile))
-            //            {
-            //                String text = reader.ReadToEnd();
-            //                textEditor.Text = String.Empty;
-            //                textEditor.Text = text;
-            //                this._manager.AutoDetectSyntax(this._manager.CurrentFile);
-            //            }
-            //            this.Title = "rdfEditor - " + System.IO.Path.GetFileName(this._manager.CurrentFile);
-            //            this._manager.HasChanged = false;
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            MessageBox.Show("An error occurred while opening the selected file: " + ex.Message, "Unable to Open File");
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (origFilename != null)
-            //        {
-            //            this._manager.CurrentFile = origFilename;
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("An error occurred while saving: " + ex.Message, "Save With Failed");
-            //}
+                //Do the actual save
+                System.IO.StringWriter strWriter = new System.IO.StringWriter();
+                writer.Save(g, strWriter);
+                Document<TextEditor> newDoc = this._editor.DocumentManager.New(true);
+                newDoc.Text = strWriter.ToString();
+                newDoc.AutoDetectSyntax();
+                this.AddTextEditor(new TabItem(), newDoc);
+                this.tabDocuments.SelectedIndex = this.tabDocuments.Items.Count - 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while saving: " + ex.Message, "Save With Failed");
+            }
         }
 
         private void mnuSaveWithNTriples_Click(object sender, RoutedEventArgs e)
