@@ -149,7 +149,7 @@
                 <Separator />
                 <MenuItem Header="Exit" Name="mnuExit" Click="mnuExit_Click" />
             </MenuItem>
-            <MenuItem Header="_Edit">
+            <MenuItem Header="_Edit" Name="mnuEdit" SubmenuOpened="mnuEdit_SubmenuOpened">
                 <MenuItem Header="Undo" Name="mnuUndo" Click="mnuUndo_Click" InputGestureText="Ctrl+Z" />
                 <MenuItem Header="Redo" Name="mnuRedo" Click="mnuRedo_Click" InputGestureText="Ctrl+Y" />
                 <Separator />

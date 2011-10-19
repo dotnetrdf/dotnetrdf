@@ -21,12 +21,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
     {
         private int _line, _maxLine;
 
-        public GoToLine(TextEditor editor)
+        public GoToLine(ITextEditorAdaptor<TextEditor> editor)
         {
             InitializeComponent();
 
-            this._line = editor.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
-            this._maxLine = editor.Document.LineCount;
+            this._line = editor.Control.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
+            this._maxLine = editor.Control.Document.LineCount;
             this.txtLineNumber.Text = this._line.ToString();
             this.lblLineNumber.Content = String.Format((String)this.lblLineNumber.Content, this._maxLine);
 
