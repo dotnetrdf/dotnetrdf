@@ -416,7 +416,7 @@ namespace VDS.RDF.Parsing
         {
             if (data == null) throw new RdfParserSelectionException("Cannot select a Result Set parser from a null string");
 
-            if (data.Contains("<?xml") || data.Contains("<sparql"))
+            if ((data.Contains("<?xml") && !data.Contains("rdf:RDF")) || data.Contains("<sparql"))
             {
                 //Probably XML
                 return new SparqlXmlParser();
