@@ -61,6 +61,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._keywords.Sort();
         }
 
+        protected override bool CanDeclareNewTerms
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         protected override void DetectStateInternal()
         {
             base.DetectStateInternal();

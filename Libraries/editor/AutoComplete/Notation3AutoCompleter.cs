@@ -6,8 +6,12 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
-    public class Notation3AutoCompleter : TurtleAutoCompleter
+    public class Notation3AutoCompleter<T>
+        : TurtleAutoCompleter<T>
     {
+        public Notation3AutoCompleter(ITextEditorAdaptor<T> editor)
+            : base(editor) { }
+
         public override bool IsValidPartialQName(string value)
         {
             String ns, localname;
@@ -91,11 +95,6 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
             //If we reach here then it's all valid
             return true;
-        }
-
-        public override object Clone()
-        {
-            return new Notation3AutoCompleter();
         }
     }
 }

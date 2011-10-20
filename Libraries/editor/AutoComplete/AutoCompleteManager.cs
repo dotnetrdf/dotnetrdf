@@ -46,21 +46,22 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             new VocabularyDefinition("afn", ArqFunctionFactory.ArqFunctionsNamespace, "ARQ Functions Namespace used to refer to functions by URI in SPARQL queries"),
 
             //Other dotNetRDF Prefixes
-            new VocabularyDefinition("dnr", ConfigurationLoader.ConfigurationNamespace, "dotNetRDF Configuration Namespace for specifying configuration files")
+            new VocabularyDefinition("dnr", ConfigurationLoader.ConfigurationNamespace, "dotNetRDF Configuration Namespace for specifying configuration files"),
+            new VocabularyDefinition("dnr-ft", ConfigurationLoader.ConfigurationNamespace, "dotNetRDF Configuration Namespace for Query.FullText extensions")
         };
 
         private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
         {
             new AutoCompleteDefinition("NTriples", typeof(NTriplesAutoCompleter<>)),
             new AutoCompleteDefinition("Turtle", typeof(TurtleAutoCompleter<>)),
-            //new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
+            new AutoCompleteDefinition("Notation3", typeof(Notation3AutoCompleter<>)),
 
             new AutoCompleteDefinition("SparqlQuery10", typeof(Sparql10AutoCompleter<>)),
             new AutoCompleteDefinition("SparqlQuery11", typeof(Sparql11AutoCompleter<>)),
 
-            /*new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter()),
+            new AutoCompleteDefinition("SparqlUpdate11", typeof(SparqlUpdateAutoCompleter<>)),
 
-            new AutoCompleteDefinition("TriG", new TurtleAutoCompleter())*/
+            //new AutoCompleteDefinition("TriG", new TurtleAutoCompleter())
 
         };
 

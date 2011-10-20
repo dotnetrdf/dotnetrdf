@@ -68,6 +68,20 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     //Ignore
                 }
             }
+
+            //TODO: Add auto-detection of declared classes and properties
+            if (this.CanDeclareNewTerms)
+            {
+                //TODO: Need to get the relevant parser and then invoke it on this text using TermDetectionHandler
+            }
+        }
+
+        protected virtual bool CanDeclareNewTerms
+        {
+            get
+            {
+                return true;
+            }
         }
 
         protected virtual void DetectBlankNodes()

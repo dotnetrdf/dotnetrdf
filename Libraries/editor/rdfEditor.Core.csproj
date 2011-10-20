@@ -57,10 +57,11 @@
     <Compile Include="AutoComplete\Data\VariableData.cs" />
     <Compile Include="AutoComplete\IAutoCompleter.cs" />
     <Compile Include="AutoComplete\NamespaceTerm.cs" />
-    <None Include="AutoComplete\Notation3AutoCompleter.cs" />
+    <Compile Include="AutoComplete\Notation3AutoCompleter.cs" />
     <Compile Include="AutoComplete\NTriplesAutoCompleter.cs" />
     <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
-    <None Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
+    <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
+    <Compile Include="AutoComplete\TermDetectionHandler.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="AutoComplete\Vocabularies\VocabularyDefinition.cs" />
     <Compile Include="BaseTextEditorAdaptor.cs" />

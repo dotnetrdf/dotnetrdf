@@ -328,6 +328,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                         if (args.Key == Key.Space && args.KeyboardDevice.Modifiers == ModifierKeys.Control)
                         {
                             this._c.CompletionList.RequestInsertion(args);
+                            this.Control.Document.Insert(this.CaretOffset, " ");
                             args.Handled = true;
                         }
                         else if (this.AutoCompleter.State == AutoCompleteState.Keyword || this.AutoCompleter.State == AutoCompleteState.KeywordOrQName)
