@@ -51,7 +51,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
         {
-            //new AutoCompleteDefinition("NTriples", new NTriplesAutoCompleter()),
+            new AutoCompleteDefinition("NTriples", typeof(NTriplesAutoCompleter<>)),
             new AutoCompleteDefinition("Turtle", typeof(TurtleAutoCompleter<>)),
             //new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
 
@@ -139,6 +139,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 try
                 {
                     UriLoader.Load(g, new Uri(namespaceUri));
+                    if (g.Triples.Count == 0) throw new Exception("Did not appear to receive an RDF Format from Namespace URI " + namespaceUri);
                 }
                 catch
                 {
@@ -146,7 +147,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     String prefix = GetDefaultPrefix(namespaceUri);
                     if (!prefix.Equals(String.Empty))
                     {
-                        Stream localCopy = Assembly.GetExecutingAssembly().GetManifestResourceStream("rdfEditor.AutoComplete.Vocabularies." + prefix + ".ttl");
+                        Stream localCopy = Assembly.GetExecutingAssembly().GetManifestResourceStream("VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies." + prefix + ".ttl");
                         if (localCopy != null)
                         {
                             TurtleParser ttlparser = new TurtleParser();
@@ -165,7 +166,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 IUriNode rdfsDatatype = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Datatype"));
 
                 SparqlParameterizedString queryString = new SparqlParameterizedString();
-                queryString.CommandText = "SELECT ?term STR(?label) AS ?RawLabel STR(?comment) AS ?RawComment WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
+                queryString.CommandText = "SELECT ?term (STR(?label) AS ?RawLabel) (STR(?comment) AS ?RawComment) WHERE { {{?term a @class} UNION {?term a @property} UNION {?term a @datatype}} OPTIONAL {?term @label ?label} OPTIONAL {?term @comment ?comment} }";
                 queryString.SetParameter("class", rdfsClass);
                 queryString.SetParameter("property", rdfProperty);
                 queryString.SetParameter("datatype", rdfsDatatype);
@@ -212,7 +213,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     _terms.AddRange(terms.Distinct());
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 //Ignore Exceptions - just means we won't have those namespace terms available
             }

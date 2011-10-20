@@ -58,7 +58,7 @@
     <Compile Include="AutoComplete\IAutoCompleter.cs" />
     <Compile Include="AutoComplete\NamespaceTerm.cs" />
     <None Include="AutoComplete\Notation3AutoCompleter.cs" />
-    <None Include="AutoComplete\NTriplesAutoCompleter.cs" />
+    <Compile Include="AutoComplete\NTriplesAutoCompleter.cs" />
     <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
     <None Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
     <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
@@ -95,8 +95,25 @@
     <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AutoComplete\Vocabularies\rdf.ttl" />
-    <Content Include="AutoComplete\Vocabularies\rdfs.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\dc.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\dcterms.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\owl.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\rdf.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\rdfs.ttl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AutoComplete\Vocabularies\dnr-ft.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\dnr.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\doap.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\foaf.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\geo.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\gr.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\lfn.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\sioc.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\skos.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\vann.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\vcard.ttl" />
+    <EmbeddedResource Include="AutoComplete\Vocabularies\vs.ttl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

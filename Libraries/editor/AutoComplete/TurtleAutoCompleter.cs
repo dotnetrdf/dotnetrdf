@@ -177,6 +177,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             data.Add(new TurtleStyleBaseDeclarationData());
 
             //Add New Namespace Declarations
+            data.Add(new TurtleStyleDefaultPrefixDeclarationData());
             String nextPrefix = "ns0";
             int nextPrefixID = 0;
             while (this._nsmap.HasNamespace(nextPrefix))
@@ -185,7 +186,6 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 nextPrefix = "ns" + nextPrefixID;
             }
             data.Add(new TurtleStylePrefixDeclarationData(nextPrefix, "Enter new Namespace URI here"));
-            data.Add(new TurtleStyleDefaultPrefixDeclarationData());
 
             //Add Existing Namespace Declarations
             foreach (VocabularyDefinition vocab in AutoCompleteManager.Vocabularies)

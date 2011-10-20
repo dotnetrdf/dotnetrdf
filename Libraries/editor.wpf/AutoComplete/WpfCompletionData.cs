@@ -30,7 +30,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.InsertionText; 
+                return this._data.DisplayText; 
             }
         }
 
@@ -62,7 +62,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
         {
             get 
             {
-                return this._data.DisplayText; 
+                return this._data.InsertionText; 
             }
         }
     }

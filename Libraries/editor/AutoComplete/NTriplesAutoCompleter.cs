@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -15,37 +10,30 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
-    public class NTriplesAutoCompleter : BaseAutoCompleter
+    public class NTriplesAutoCompleter<T>
+        : BaseAutoCompleter<T>
     {
         protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
 
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
         private BlankNodeMapper _bnodemap = new BlankNodeMapper();
 
-        public override void Initialise(TextEditor editor)
-        {
-            //Initialise States
-            this.State = AutoCompleteState.None;
-            this.LastCompletion = AutoCompleteState.None;
-            this.TemporaryState = AutoCompleteState.None;
-
-            //Try to detect the state
-            this.DetectState(editor);
-        }
+        public NTriplesAutoCompleter(ITextEditorAdaptor<T> editor)
+            : base(editor) { }
 
         #region State Detection
 
-        protected override void DetectStateInternal(TextEditor editor)
+        protected override void DetectStateInternal()
         {
             //Look for Blank Nodes
-            this.DetectBlankNodes(editor);
+            this.DetectBlankNodes();
         }
 
-        protected virtual void DetectBlankNodes(TextEditor editor)
+        protected virtual void DetectBlankNodes()
         {
             this._bnodes.Clear();
 
-            foreach (Match m in Regex.Matches(editor.Text, BlankNodePattern))
+            foreach (Match m in Regex.Matches(this._editor.Text, BlankNodePattern))
             {
                 String id = m.Value;
                 if (this._bnodes.Add(new BlankNodeData(id)))
@@ -59,48 +47,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Start Auto-completion
 
-        protected virtual void StartAutoComplete(TextEditor editor, TextCompositionEventArgs e)
-        {
-            //Only do something if auto-complete not active
-            if (this.State != AutoCompleteState.None) return;
-
-            this._editor = editor;
-
-            if (e.Text.Length == 1)
-            {
-                char c = e.Text[0];
-                if (c == '_')
-                {
-                    StartBNodeCompletion(editor, e);
-                }
-                else if (c == '<')
-                {
-                    StartUriCompletion(editor, e);
-                }
-                else if (c == '#')
-                {
-                    StartCommentCompletion(editor, e);
-                }
-                else if (c == '"')
-                {
-                    StartLiteralCompletion(editor, e);
-                }
-                else if (c == '.' || c == ',' || c == ';')
-                {
-                    this.State = AutoCompleteState.None;
-                }
-            }
-
-            if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
-
-            //If no completion window in use have to manually set the Start Offset and Length
-            if (this._c == null)
-            {
-                this.StartOffset = editor.CaretOffset - 1;
-            }
-        }
-
-        protected virtual void StartLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartLiteralCompletion(String newText)
         {
             if (this.TemporaryState == AutoCompleteState.Literal || this.TemporaryState == AutoCompleteState.LongLiteral)
             {
@@ -113,105 +60,119 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
-        protected virtual void StartCommentCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartCommentCompletion(String newText)
         {
             this.State = AutoCompleteState.Comment;
         }
 
-        protected virtual void StartUriCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartUriCompletion(String newText)
         {
             this.State = AutoCompleteState.Uri;
         }
 
-        protected virtual void StartBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartBNodeCompletion(String newText)
         {
             this.State = AutoCompleteState.BNode;
-
-            this.SetupCompletionWindow(editor.TextArea);
-            this.AddCompletionData(new NewBlankNodeData(this._bnodemap.GetNextID()));
-            this.AddCompletionData(this._bnodes);
-            this._c.StartOffset--;
-            this.StartOffset = this._c.StartOffset;
-
-            this._c.CompletionList.SelectItem(this.CurrentText);
-
-            this._c.Show();
+            this._editor.Suggest(new NewBlankNodeData(this._bnodemap.GetNextID()).AsEnumerable<ICompletionData>().Concat(this._bnodes));
         }
 
         #endregion
 
         #region Auto-completion
 
-        public override void TryAutoComplete(TextEditor editor, TextCompositionEventArgs e)
+        public override void TryAutoComplete(String newText)
         {
             //Don't do anything if auto-complete not currently active
             if (this.State == AutoCompleteState.Disabled || this.State == AutoCompleteState.Inserted) return;
 
-            try
+            if (this.State == AutoCompleteState.None)
             {
-
-                //If not currently auto-completing see if we can start a completion
-                if (this.State == AutoCompleteState.None)
+                if (newText.Length == 1)
                 {
-                    this.StartAutoComplete(editor, e);
-                    return;
-                }
-
-                //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
-                if (this.Length < 0)
-                {
-                    this.AbortAutoComplete();
-                    //TODO: Should probably call DetectState() here once it's properly implemented
-                    this.StartAutoComplete(editor, e);
-                    return;
-                }
-
-                //Length should never be 1 when we get here
-                if (this._c == null && this.Length == 1)
-                {
-                    this.State = AutoCompleteState.None;
-                    this.StartAutoComplete(editor, e);
-                    return;
-                }
-
-                if (e.Text.Length > 0)
-                {
-                    switch (this.State)
+                    char c = newText[0];
+                    if (c == '_')
                     {
-                        case AutoCompleteState.BNode:
-                            TryBNodeCompletion(editor, e);
-                            break;
-
-                        case AutoCompleteState.Uri:
-                            TryUriCompletion(editor, e);
-                            break;
-
-                        case AutoCompleteState.Literal:
-                            TryLiteralCompletion(editor, e);
-                            break;
-
-                        case AutoCompleteState.Comment:
-                            TryCommentCompletion(editor, e);
-                            break;
-
-                        default:
-                            //Nothing to do as no other auto-completion is implemented yet
-                            break;
+                        StartBNodeCompletion(newText);
+                    }
+                    else if (c == '<')
+                    {
+                        StartUriCompletion(newText);
+                    }
+                    else if (c == '#')
+                    {
+                        StartCommentCompletion(newText);
+                    }
+                    else if (c == '"')
+                    {
+                        StartLiteralCompletion(newText);
+                    }
+                    else if (c == '.' || c == ',' || c == ';')
+                    {
+                        this.State = AutoCompleteState.None;
                     }
                 }
+
+                if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
             }
-            catch
+            else
             {
-                //If any kind of error occurs abort auto-completion
-                this.AbortAutoComplete();
+
+                try
+                {
+
+                    //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
+                    if (this.Length < 0)
+                    {
+                        this._editor.EndSuggestion();
+                        this.State = AutoCompleteState.None;
+                        this.TryAutoComplete(newText);
+                        return;
+                    }
+
+                    if (newText.Length > 0)
+                    {
+                        switch (this.State)
+                        {
+                            case AutoCompleteState.BNode:
+                                TryBNodeCompletion(newText);
+                                break;
+
+                            case AutoCompleteState.Uri:
+                                TryUriCompletion(newText);
+                                break;
+
+                            case AutoCompleteState.Literal:
+                                TryLiteralCompletion(newText);
+                                break;
+
+                            case AutoCompleteState.Comment:
+                                TryCommentCompletion(newText);
+                                break;
+
+                            default:
+                                //Nothing to do as no other auto-completion is implemented yet
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    //If any kind of error occurs abort auto-completion
+                    this.State = AutoCompleteState.None;
+                    this._editor.EndSuggestion();
+                }
             }
         }
 
-        protected virtual void TryLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryLiteralCompletion(String newText)
         {
-            if (this.IsNewLine(e.Text)) this.AbortAutoComplete();
+            if (this.IsNewLine(newText))
+            {
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+            }
 
-            if (e.Text == "\"")
+            if (newText == "\"")
             {
                 if (this.CurrentText.Length == 2)
                 {
@@ -223,7 +184,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\\""))
                     {
                         //Not escaped so terminates the literal
-                        this.FinishAutoComplete(true, false);
+                        this.LastCompletion = AutoCompleteState.Literal;
+                        this._editor.EndSuggestion();
                     }
                 }
             }
@@ -232,71 +194,58 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 char last = this.CurrentText[this.CurrentText.Length - 1];
                 if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
                 {
-                    this.FinishAutoComplete(true, true);
+                    this.LastCompletion = AutoCompleteState.Literal;
+                    this._editor.EndSuggestion();
                 }
             }
         }
 
-        protected virtual void TryUriCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryUriCompletion(String newText)
         {
-            if (e.Text == ">")
+            if (newText == ">")
             {
                 if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\>"))
                 {
                     //End of a URI so exit auto-complete
-                    this.FinishAutoComplete(true, false);
+                    this.LastCompletion = AutoCompleteState.Uri;
+                    this._editor.EndSuggestion();
                 }
             }
         }
 
-        protected virtual void TryBNodeCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryBNodeCompletion(String newText)
         {
-            if (this.IsNewLine(e.Text)) this.FinishAutoComplete(true, false);
+            if (this.IsNewLine(newText))
+            {
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+            }
 
-            char c = e.Text[0];
+            char c = newText[0];
             if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-' && c != ':'))
             {
-                this.AbortAutoComplete();
-                this.DetectBlankNodes(editor);
+                this.LastCompletion = AutoCompleteState.BNode;
+                this.DetectBlankNodes();
+                this._editor.EndSuggestion();
                 return;
             }
 
             if (!this.IsValidPartialBlankNodeID(this.CurrentText.ToString()))
             {
                 //Not a BNode ID so close the window
-                this.AbortAutoComplete();
-                this.DetectBlankNodes(editor);
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+                this.DetectBlankNodes();
             }
         }
 
-        protected virtual void TryCommentCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryCommentCompletion(String newText)
         {
-            if (this.IsNewLine(e.Text))
+            if (this.IsNewLine(newText))
             {
-                this.FinishAutoComplete();
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
             }
-        }
-
-        public override void EndAutoComplete(TextEditor editor)
-        {
-            if (this.State != AutoCompleteState.Inserted) return;
-            this.State = AutoCompleteState.None;
-
-            if (editor != null)
-            {
-
-                //Take State Specific Post insertion actions
-                int offset = editor.SelectionStart + editor.SelectionLength;
-                switch (this.LastCompletion)
-                {
-                    case AutoCompleteState.BNode:
-                        this.DetectBlankNodes(editor);
-                        break;
-                }
-            }
-
-            this.LastCompletion = AutoCompleteState.None;
-            //this._temp = AutoCompleteState.None;
         }
 
         #endregion
@@ -341,10 +290,5 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         }
 
         #endregion
-
-        public override object Clone()
-        {
-            return new NTriplesAutoCompleter();
-        }
     }
 }

@@ -314,6 +314,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             if (this._c == null)
             {
                 this._c = new AvComplete.CompletionWindow(this.Control.TextArea);
+                this._c.SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
                 this._c.StartOffset = this.CaretOffset - 1;
                 this._c.CloseAutomatically = true;
                 this._c.CloseWhenCaretAtBeginning = true;
