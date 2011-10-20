@@ -180,7 +180,11 @@ namespace VDS.RDF.Utilities.Editor
             }
             set
             {
-                this._autoCompleteEnabled = value;
+                if (this._autoCompleteEnabled != value)
+                {
+                    this._autoCompleteEnabled = value;
+                    this.RaiseEvent(this.AutoCompleteToggled);
+                }
             }
         }
 
@@ -189,6 +193,8 @@ namespace VDS.RDF.Utilities.Editor
         public event OptionsChanged HighlightingToggled;
 
         public event OptionsChanged HighlightErrorsToggled;
+
+        public event OptionsChanged AutoCompleteToggled;
 
         public event OptionsChanged SymbolSelectionToggled;
 

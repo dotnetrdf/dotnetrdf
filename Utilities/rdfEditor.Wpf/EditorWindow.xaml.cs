@@ -13,6 +13,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
+using VDS.RDF.Utilities.Editor.AutoComplete;
 using VDS.RDF.Utilities.Editor.Selection;
 using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF.Utilities.Editor.Wpf.Syntax;
@@ -43,8 +44,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             FileFilterRdfDataset = MimeTypesHelper.GetFilenameFilter(false, true, false, false, false, true);
             FileFilterAll = MimeTypesHelper.GetFilenameFilter();
 
-            //Initialise Highlighting
+            //Initialise Highlighting and Auto-Completion
             WpfHighlightingManager.Initialise(Properties.Settings.Default.UseCustomisedXshdFiles);
+            AutoCompleteManager.Initialise();
 
             //Create the Editor Manager
             WpfEditorFactory factory = new WpfEditorFactory();
@@ -1065,9 +1067,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void mnuAutoComplete_Click(object sender, RoutedEventArgs e)
         {
-            //this._manager.IsAutoCompleteEnabled = this.mnuAutoComplete.IsChecked;
-            //Properties.Settings.Default.EnableAutoComplete = this.mnuAutoComplete.IsChecked;
-            //Properties.Settings.Default.Save();
+            this._editor.DocumentManager.Options.IsAutoCompletionEnabled = this.mnuAutoComplete.IsChecked;
+            Properties.Settings.Default.EnableAutoComplete = this._editor.DocumentManager.Options.IsAutoCompletionEnabled;
+            Properties.Settings.Default.Save();
         }
 
         private void mnuCustomiseFileAssociations_Click(object sender, RoutedEventArgs e)

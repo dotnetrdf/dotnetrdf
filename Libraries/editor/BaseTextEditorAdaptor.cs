@@ -287,14 +287,10 @@ namespace VDS.RDF.Utilities.Editor
                     {
                         //End Suggestion on the existing completer
                         this.EndSuggestion();
-                        //Attach the new completer
-                        this._completer = value;
-                        this.AttachAutoCompleter();
                     }
-                    else
-                    {
-                        this._completer = null;
-                    }
+                    //Attach the New Completer
+                    this._completer = value;
+                    if (this._completer != null) this.AttachAutoCompleter();
                 }
             }
         }

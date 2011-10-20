@@ -8,7 +8,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
     /// <summary>
     /// Interface for completion data
     /// </summary>
-    public interface ICompletionData : IComparable, IComparable<ICompletionData>, IEquatable<ICompletionData>
+    public interface ICompletionData 
+        : IComparable, IComparable<ICompletionData>, IEquatable<ICompletionData>
     {
         /// <summary>
         /// Gets the description that should be displayed as a tool tip (if available)

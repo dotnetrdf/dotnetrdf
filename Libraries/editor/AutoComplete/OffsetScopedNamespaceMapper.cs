@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF;
 
-namespace VDS.RDF.Utilities.Editor.Wpf
+namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
     public class OffsetScopedNamespaceMapper 
         : INamespaceMapper

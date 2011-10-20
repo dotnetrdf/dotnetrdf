@@ -5,9 +5,13 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
+using AvComplete = ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
+using VDS.RDF.Utilities.Editor.AutoComplete;
+using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 using VDS.RDF.Utilities.Editor.Syntax;
 using VDS.RDF.Utilities.Editor.Selection;
+using VDS.RDF.Utilities.Editor.Wpf.AutoComplete;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
@@ -15,12 +19,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         : BaseTextEditorAdaptor<TextEditor>
     {
         private Exception _currError;
+        private AvComplete.CompletionWindow _c;
 
         public WpfEditorAdaptor()
             : base(new TextEditor())
         {
             this.Control.TextChanged += new EventHandler(this.HandleTextChanged);
             this.Control.TextArea.MouseDoubleClick += this.HandleDoubleClick;
+            this.Control.TextArea.TextEntered += this.HandleTextEntered;
             this.Control.FontFamily = new FontFamily("Consolas");
         }
 
@@ -294,6 +300,50 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         //TODO: Refactor auto-completion appropriately
 
+        public override bool CanAutoComplete
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override void Suggest(IEnumerable<ICompletionData> suggestions)
+        {
+            bool mustShow = false;
+            if (this._c == null)
+            {
+                this._c = new AvComplete.CompletionWindow(this.Control.TextArea);
+                this._c.StartOffset = this.CaretOffset - 1;
+                this._c.CloseAutomatically = true;
+                this._c.CloseWhenCaretAtBeginning = true;
+                this._c.Closed += (sender, args) =>
+                {
+                    this.EndSuggestion();
+                    this.AutoCompleter.DetectState();
+                };
+                mustShow = true;
+            }
+            foreach (ICompletionData data in suggestions)
+            {
+                this._c.CompletionList.CompletionData.Add(new WpfCompletionData(data));
+            }
+            if (mustShow) this._c.Show();
+        }
+
+        public override void EndSuggestion()
+        {
+            if (this._c != null)
+            {
+                this._c.Close();
+                this._c = null;
+            }
+            if (this.AutoCompleter != null)
+            {
+                this.AutoCompleter.State = AutoCompleteState.None;
+            }
+        }
+
         #endregion
 
         #region Event Handling
@@ -301,6 +351,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void HandleTextChanged(Object sender, EventArgs args)
         {
             this.RaiseTextChanged(sender);
+        }
+
+        private void HandleTextEntered(Object sender, TextCompositionEventArgs args)
+        {
+            if (this.CanAutoComplete && this.AutoCompleter != null)
+            {
+                this.AutoCompleter.TryAutoComplete(args.Text);
+            }
         }
 
         private void HandleDoubleClick(Object sender, MouseButtonEventArgs args)

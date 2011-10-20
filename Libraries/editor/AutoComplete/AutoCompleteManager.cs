@@ -51,9 +51,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         private static List<AutoCompleteDefinition> _builtinCompleters = new List<AutoCompleteDefinition>()
         {
-            /*new AutoCompleteDefinition("NTriples", new NTriplesAutoCompleter()),
-            new AutoCompleteDefinition("Turtle", new TurtleAutoCompleter()),
-            new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
+            //new AutoCompleteDefinition("NTriples", new NTriplesAutoCompleter()),
+            new AutoCompleteDefinition("Turtle", typeof(TurtleAutoCompleter<>)),
+            /*new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
 
             new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0)),
             new AutoCompleteDefinition("SparqlQuery11", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_1)),
@@ -96,7 +96,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                         IAutoCompleter<T> completer = (IAutoCompleter<T>)Activator.CreateInstance(target, new Object[] { editor });
                         return completer;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         //Ignore errors as we'll try further definitions (if applicable)
                         //or return null at the end

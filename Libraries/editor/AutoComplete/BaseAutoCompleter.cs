@@ -7,7 +7,8 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
-    public abstract class BaseAutoCompleter<T> : IAutoCompleter<T>
+    public abstract class BaseAutoCompleter<T> 
+        : IAutoCompleter<T>
     {
         private AutoCompleteState _state = AutoCompleteState.None;
         private AutoCompleteState _lastCompletion = AutoCompleteState.None;

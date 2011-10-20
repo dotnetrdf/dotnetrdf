@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Validation;
+using VDS.RDF.Utilities.Editor.AutoComplete;
 using VDS.RDF.Utilities.Editor.Syntax;
 
 namespace VDS.RDF.Utilities.Editor
@@ -13,7 +14,7 @@ namespace VDS.RDF.Utilities.Editor
     {
         //General State
         private bool _changed = false;
-        private bool _enableHighlighting = true;
+        private bool _enableHighlighting = true, _enableAutoCompletion = true;
         private String _filename, _title;
         private String _syntax = "None";
         private ITextEditorAdaptor<T> _editor;
@@ -234,6 +235,17 @@ namespace VDS.RDF.Utilities.Editor
                 this._editor.SetHighlighter(syntax);
             }
             this.SyntaxValidator = SyntaxManager.GetValidator(syntax);
+            if (this._editor.CanAutoComplete)
+            {
+                if (this.IsAutoCompleteEnabled)
+                {
+                    this.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(this.Syntax, this.TextEditor);
+                }
+                else
+                {
+                    this.TextEditor.AutoCompleter = null;
+                }
+            }
 
             this.RaiseEvent(this.SyntaxChanged);
         }
@@ -301,6 +313,29 @@ namespace VDS.RDF.Utilities.Editor
                     else
                     {
                         this.TextEditor.SetHighlighter(null);
+                    }
+                }
+            }
+        }
+
+        public bool IsAutoCompleteEnabled
+        {
+            get
+            {
+                return this._enableAutoCompletion;
+            }
+            set
+            {
+                if (value != this._enableAutoCompletion)
+                {
+                    this._enableAutoCompletion = value;
+                    if (value)
+                    {
+                        this.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<T>(this.Syntax, this.TextEditor);
+                    }
+                    else
+                    {
+                        this.TextEditor.AutoCompleter = null;
                     }
                 }
             }

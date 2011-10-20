@@ -61,7 +61,7 @@
     <None Include="AutoComplete\NTriplesAutoCompleter.cs" />
     <None Include="AutoComplete\SparqlAutoCompleter.cs" />
     <None Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
-    <None Include="AutoComplete\TurtleAutoCompleter.cs" />
+    <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
     <Compile Include="AutoComplete\Vocabularies\VocabularyDefinition.cs" />
     <Compile Include="BaseTextEditorAdaptor.cs" />
     <Compile Include="Document.cs" />
@@ -93,6 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AutoComplete\Vocabularies\rdf.ttl" />
+    <Content Include="AutoComplete\Vocabularies\rdfs.ttl" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

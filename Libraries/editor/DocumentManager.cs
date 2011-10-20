@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing.Validation;
+using VDS.RDF.Utilities.Editor.AutoComplete;
 
 namespace VDS.RDF.Utilities.Editor
 {
@@ -37,6 +38,7 @@ namespace VDS.RDF.Utilities.Editor
             //Wire Up Events
             this._options.HighlightingToggled += this.HandleHighlightingToggled;
             this._options.HighlightErrorsToggled += this.HandleHighlightErrorsToggled;
+            this._options.AutoCompleteToggled += this.HandleAutoCompleteToggled;
             this._options.SymbolSelectorChanged += this.HandleSymbolSelectorChanged;
             if (this._visualOptions != null)
             {
@@ -235,6 +237,15 @@ namespace VDS.RDF.Utilities.Editor
             //Apply relevant global options to the Document
             doc.Syntax = this._defaultSyntax;
             doc.IsHighlightingEnabled = this._options.IsSyntaxHighlightingEnabled;
+            doc.IsAutoCompleteEnabled = this._options.IsAutoCompletionEnabled;
+            if (doc.IsAutoCompleteEnabled && doc.TextEditor.CanAutoComplete)
+            {
+                doc.TextEditor.AutoCompleter = AutoCompleteManager.GetAutoCompleter<TControl>(doc.Syntax, doc.TextEditor);
+            }
+            else
+            {
+                doc.TextEditor.AutoCompleter = null;
+            }
             if (this._visualOptions != null) doc.TextEditor.Apply<TFont, TColor>(this._visualOptions);
             doc.TextEditor.SymbolSelector = this._options.CurrentSymbolSelector;
 
@@ -489,6 +500,14 @@ namespace VDS.RDF.Utilities.Editor
             foreach (Document<TControl> doc in this._documents)
             {
                 doc.TextEditor.Refresh();
+            }
+        }
+
+        private void HandleAutoCompleteToggled()
+        {
+            foreach (Document<TControl> doc in this._documents)
+            {
+                doc.IsAutoCompleteEnabled = this._options.IsAutoCompletionEnabled;
             }
         }
 
