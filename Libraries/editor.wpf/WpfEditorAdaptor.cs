@@ -318,10 +318,37 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 this._c.CloseAutomatically = true;
                 this._c.CloseWhenCaretAtBeginning = true;
                 this._c.Closed += (sender, args) =>
-                {
-                    this.EndSuggestion();
-                    this.AutoCompleter.DetectState();
-                };
+                    {
+                        this.EndSuggestion();
+                        this.AutoCompleter.DetectState();
+                    };
+                this._c.KeyDown += (sender, args) =>
+                    {
+                        if (args.Key == Key.Space && args.KeyboardDevice.Modifiers == ModifierKeys.Control)
+                        {
+                            this._c.CompletionList.RequestInsertion(args);
+                            args.Handled = true;
+                        }
+                        else if (this.AutoCompleter.State == AutoCompleteState.Keyword || this.AutoCompleter.State == AutoCompleteState.KeywordOrQName)
+                        {
+                            if (args.Key == Key.D9 && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
+                            {
+                                this._c.CompletionList.RequestInsertion(args);
+                            }
+                            else if (args.Key == Key.OemOpenBrackets && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
+                            {
+                                this._c.CompletionList.RequestInsertion(args);
+                                this.Control.Document.Insert(this.CaretOffset, " ");
+                            }
+                        }
+                        else if (this.AutoCompleter.State == AutoCompleteState.Variable || this.AutoCompleter.State == AutoCompleteState.BNode)
+                        {
+                            if (args.Key == Key.D0 && args.KeyboardDevice.Modifiers == ModifierKeys.Shift)
+                            {
+                                this._c.CompletionList.RequestInsertion(args);
+                            }
+                        }
+                    };
                 mustShow = true;
             }
             foreach (ICompletionData data in suggestions)

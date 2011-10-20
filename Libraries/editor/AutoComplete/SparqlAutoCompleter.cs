@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.CodeCompletion;
-using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Editing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Utilities.Editor.AutoComplete.Data;
+using VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
-    public class SparqlAutoCompleter : TurtleAutoCompleter
+    public abstract class SparqlAutoCompleter<T>
+        : TurtleAutoCompleter<T>
     {
         private SparqlQuerySyntax _syntax;
         private HashSet<ICompletionData> _vars = new HashSet<ICompletionData>();
         protected String VariableRegexPattern = @"[?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*";
 
-        public SparqlAutoCompleter()
-            : this(SparqlQuerySyntax.Sparql_1_1) { }
+        public SparqlAutoCompleter(ITextEditorAdaptor<T> editor)
+            : this(editor, SparqlQuerySyntax.Sparql_1_1) { }
 
-        public SparqlAutoCompleter(SparqlQuerySyntax? syntax)
+        public SparqlAutoCompleter(ITextEditorAdaptor<T> editor, SparqlQuerySyntax? syntax)
+            : base(editor)
         {
             //Alter the Regex patterns
             this.PrefixRegexPattern = this.PrefixRegexPattern.Substring(1, this.PrefixRegexPattern.Length-6);
             this.BlankNodePattern = @"_:(\p{L}|\d)(\p{L}|\p{N}|-|_)*";
 
             //Add Prefix Definitions to Keywords
-            this._keywords.AddRange(AutoCompleteManager.PrefixData);
+            this._keywords.Add(new SparqlStyleBaseDeclarationData());
+            this._keywords.Add(new SparqlStyleDefaultPrefixDeclarationData());
+            foreach (VocabularyDefinition vocab in AutoCompleteManager.Vocabularies)
+            {
+                this._keywords.Add(new SparqlStylePrefixDeclarationData(vocab.Prefix, vocab.NamespaceUri));
+            }
 
             //If not Query Syntax don't add any Query Keywords
             if (syntax == null) return;
@@ -58,111 +61,28 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._keywords.Sort();
         }
 
-        protected override void DetectStateInternal(TextEditor editor)
+        protected override void DetectStateInternal()
         {
-            base.DetectStateInternal(editor);
-            this.DetectVariables(editor);
+            base.DetectStateInternal();
+            this.DetectVariables();
         }
 
-        protected virtual void DetectVariables(TextEditor editor)
+        protected virtual void DetectVariables()
         {
             this._vars.Clear();
-            foreach (Match m in Regex.Matches(editor.Text, VariableRegexPattern))
+            foreach (Match m in Regex.Matches(this._editor.Text, VariableRegexPattern))
             {
                 this._vars.Add(new VariableData(m.Value));
             }
         }
 
-        protected override void CompletionWindowKeyDown(object sender, KeyEventArgs e)
-        {
-            base.CompletionWindowKeyDown(sender, e);
-            if (e.Handled) return;
-
-            if (this.State == AutoCompleteState.Keyword || this.State == AutoCompleteState.KeywordOrQName)
-            {
-                if (e.Key == Key.D9 && e.KeyboardDevice.Modifiers == ModifierKeys.Shift)
-                {
-                    this._c.CompletionList.RequestInsertion(e);
-                }
-                else if (e.Key == Key.OemOpenBrackets && e.KeyboardDevice.Modifiers == ModifierKeys.Shift)
-                {
-                    this._c.CompletionList.RequestInsertion(e);
-                }
-            }
-            else if (this.State == AutoCompleteState.Variable || this.State == AutoCompleteState.BNode)
-            {
-                if (e.Key == Key.D0 && e.KeyboardDevice.Modifiers == ModifierKeys.Shift)
-                {
-                    this._c.CompletionList.RequestInsertion(e);
-                }
-            }
-        }
-
-        protected override void StartAutoComplete(TextEditor editor, TextCompositionEventArgs e)
-        {
-            //Only do something if auto-complete not active
-            if (this.State != AutoCompleteState.None) return;
-
-            this._editor = editor;
-
-            if (e.Text.Length == 1)
-            {
-                char c = e.Text[0];
-                if (Char.IsLetter(c))
-                {
-                    StartKeywordOrQNameCompletion(editor, e);
-                }
-                else 
-                {
-                    switch (c)
-                    {
-                        case '_':
-                            StartBNodeCompletion(editor, e);
-                            break;
-                        case ':':
-                            StartQNameCompletion(editor, e);
-                            break;
-                        case '<':
-                            StartUriCompletion(editor, e);
-                            break;
-                        case '#':
-                            StartCommentCompletion(editor, e);
-                            break;
-                        case '"':
-                            StartLiteralCompletion(editor, e);
-                            break;
-                        case '\'':
-                            StartAlternateLiteralCompletion(editor, e);
-                            break;
-                        case '?':
-                        case '$':
-                            StartVariableCompletion(editor, e);
-                            break;
-                        case '.':
-                        case ',':
-                        case ';':
-                            this.State = AutoCompleteState.None;
-                            break;
-                    }
-                }
-            }
-
-            if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
-
-            //If no completion window in use have to manually set the Start Offset and Length
-            if (this._c == null)
-            {
-                this.StartOffset = editor.CaretOffset - 1;
-            }
-        }
-
-        protected override void StartDeclarationCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected override void StartDeclarationCompletion(String newText)
         {
             //We don't start declarations like Turtle does so don't do anything here
             return;
         }
 
-        protected virtual void StartAlternateLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartAlternateLiteralCompletion(String newText)
         {
             if (this.TemporaryState == AutoCompleteState.AlternateLiteral || this.TemporaryState == AutoCompleteState.AlternateLongLiteral)
             {
@@ -175,56 +95,95 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
-        protected virtual void StartVariableCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void StartVariableCompletion(String newText)
         {
             this.State = AutoCompleteState.Variable;
-
-            this.SetupCompletionWindow(editor.TextArea, this._vars);
-            this._c.StartOffset--;
-            this.StartOffset = this._c.StartOffset;
-
-            this._c.CompletionList.SelectItem(this.CurrentText);
-
-            this._c.Show();
+            this._editor.Suggest(this._vars);
         }
 
-        public override void TryAutoComplete(TextEditor editor, TextCompositionEventArgs e)
+        public override void TryAutoComplete(String newText)
         {
-            base.TryAutoComplete(editor, e);
+            base.TryAutoComplete(newText);
 
             //Don't do anything if auto-complete not currently active
             if (this.State == AutoCompleteState.Disabled || this.State == AutoCompleteState.Inserted) return;
 
-            //If not currently auto-completing then do nothing - note that the call to base.TryAutoComplete() may
-            //already have caused us to try a StartAutoComplete() call which will have called our override so
-            //if we aren't in a completion State then we can't do anything
+            if (this.State == AutoCompleteState.None)
+            {
+                if (newText.Length == 1)
+                {
+                    char c = newText[0];
+                    if (Char.IsLetter(c))
+                    {
+                        StartKeywordOrQNameCompletion(newText);
+                    }
+                    else
+                    {
+                        switch (c)
+                        {
+                            case '_':
+                                StartBNodeCompletion(newText);
+                                break;
+                            case ':':
+                                StartQNameCompletion(newText);
+                                break;
+                            case '<':
+                                StartUriCompletion(newText);
+                                break;
+                            case '#':
+                                StartCommentCompletion(newText);
+                                break;
+                            case '"':
+                                StartLiteralCompletion(newText);
+                                break;
+                            case '\'':
+                                StartAlternateLiteralCompletion(newText);
+                                break;
+                            case '?':
+                            case '$':
+                                StartVariableCompletion(newText);
+                                break;
+                            case '.':
+                            case ',':
+                            case ';':
+                                this.State = AutoCompleteState.None;
+                                break;
+                        }
+                    }
+                }
+
+                if (this.State == AutoCompleteState.None || this.State == AutoCompleteState.Disabled) return;
+            } 
+
+            //If not currently auto-completing then do nothing - if the call to base.TryAutoComplete() couldn't
+            //do anything and our start code didn't do anything we aren't doing auto-completion
             if (this.State == AutoCompleteState.None) return;
 
             try
             {
 
-                //Length should never be 1 when we get here
-                if (this._c == null && this.Length == 1)
+                //If Length is less than zero then user has moved the caret so we'll abort our completion and start a new one
+                if (this.Length < 0)
                 {
-                    this.State = AutoCompleteState.None;
-                    this.StartAutoComplete(editor, e);
+                    this._editor.EndSuggestion();
+                    this.TryAutoComplete(newText);
                     return;
                 }
 
-                if (e.Text.Length > 0)
+                if (newText.Length > 0)
                 {
                     switch (this.State)
                     {
                         case AutoCompleteState.AlternateLiteral:
-                            this.TryAlternateLiteralCompletion(editor, e);
+                            this.TryAlternateLiteralCompletion(newText);
                             break;
 
                         case AutoCompleteState.AlternateLongLiteral:
-                            this.TryAlternateLongLiteralCompletion(editor, e);
+                            this.TryAlternateLongLiteralCompletion(newText);
                             break;
 
                         case AutoCompleteState.Variable:
-                            this.TryVariableCompletion(editor, e);
+                            this.TryVariableCompletion(newText);
                             break;
 
                         default:
@@ -235,14 +194,15 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
             catch
             {
-                //If any kind of error occurs then abort auto-completion
-                this.AbortAutoComplete();
+                //If any kind of error occurs just abort auto-completion
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
             }
         }
 
-        protected virtual void TryAlternateLongLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryAlternateLongLiteralCompletion(String newText)
         {
-            if (e.Text == "'")
+            if (newText == "'")
             {
                 //Is this an escaped '?
                 if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
@@ -250,17 +210,22 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     //Not escaped so terminate the literal if the buffer ends in 3 ' and the length is >= 6
                     if (this.CurrentText.Length >= 6 && this.CurrentText.Substring(this.CurrentText.Length - 3, 3).Equals("'''"))
                     {
-                        this.FinishAutoComplete(true, false);
+                        this.LastCompletion = AutoCompleteState.LongLiteral;
+                        this._editor.EndSuggestion();
                     }
                 }
             }
         }
 
-        protected virtual void TryAlternateLiteralCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryAlternateLiteralCompletion(String newText)
         {
-            if (this.IsNewLine(e.Text)) this.AbortAutoComplete();
+            if (this.IsNewLine(newText))
+            {
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+            }
 
-            if (e.Text == "'")
+            if (newText == "'")
             {
                 if (this.CurrentText.Length == 2)
                 {
@@ -277,12 +242,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     else if (Char.IsWhiteSpace(last) || Char.IsPunctuation(last))
                     {
                         //White Space/Punctuation means we've left the empty literal
-                        this.FinishAutoComplete(true, true);
+                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
+                        this._editor.EndSuggestion();
                     }
                     else if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
                     {
                         //Not an escape so ends the literal
-                        this.FinishAutoComplete(true, false);
+                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
+                        this._editor.EndSuggestion();
                     }
                 }
                 else
@@ -291,23 +258,29 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     if (!this.CurrentText.Substring(this.CurrentText.Length - 2, 2).Equals("\\'"))
                     {
                         //Not escaped so terminates the literal
-                        this.FinishAutoComplete(true, false);
+                        this.LastCompletion = AutoCompleteState.AlternateLiteral;
+                        this._editor.EndSuggestion();
                     }
                 }
             }
         }
 
-        protected virtual void TryVariableCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected virtual void TryVariableCompletion(String newText)
         {
-            if (this.IsNewLine(e.Text)) this.FinishAutoComplete(true, false);
+            if (this.IsNewLine(newText))
+            {
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+            }
 
-            char c = e.Text[0];
+            char c = newText[0];
             if (this.Length > 1)
             {
                 if (Char.IsWhiteSpace(c) || (Char.IsPunctuation(c) && c != '_' && c != '-'))
                 {
-                    this.AbortAutoComplete();
-                    this.DetectVariables(editor);
+                    this.LastCompletion = AutoCompleteState.Variable;
+                    this._editor.EndSuggestion();
+                    this.DetectVariables();
                     return;
                 }
             }
@@ -315,18 +288,19 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (!this.IsValidPartialVariableName(this.CurrentText.ToString()))
             {
                 //Not a Variable so close the window
-                this.AbortAutoComplete();
-                this.DetectVariables(editor);
+                this.State = AutoCompleteState.None;
+                this._editor.EndSuggestion();
+                this.DetectVariables();
             }
         }
 
-        protected override void TryDeclarationCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected override void TryDeclarationCompletion(String newText)
         {
             //We don't do declarations like Turtle does so don't do anything here
             return;
         }
 
-        protected override void TryPrefixCompletion(TextEditor editor, TextCompositionEventArgs e)
+        protected override void TryPrefixCompletion(String newText)
         {
             //We don't do Prefix declarations like Turtle does so don't do anything here
             return;
@@ -455,22 +429,21 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                 return false;
             }
         }
-
-        public override void EndAutoComplete(TextEditor editor)
-        {
-            if (this.State != AutoCompleteState.Inserted) return;
-
-            if (this.LastCompletion == AutoCompleteState.Keyword || this.LastCompletion == AutoCompleteState.KeywordOrQName)
-            {
-                this.DetectNamespaces(editor);
-            }
-
-            base.EndAutoComplete(editor);
-        }
-
-        public override object Clone()
-        {
-            return new SparqlAutoCompleter(this._syntax);
-        }
     }
+
+    public class Sparql11AutoCompleter<T>
+        : SparqlAutoCompleter<T>
+    {
+        public Sparql11AutoCompleter(ITextEditorAdaptor<T> editor)
+            : base(editor, SparqlQuerySyntax.Sparql_1_1) { }
+    }
+
+    public class Sparql10AutoCompleter<T>
+        : SparqlAutoCompleter<T>
+    {
+        public Sparql10AutoCompleter(ITextEditorAdaptor<T> editor)
+            : base(editor, SparqlQuerySyntax.Sparql_1_0) { }
+    }
+
+
 }

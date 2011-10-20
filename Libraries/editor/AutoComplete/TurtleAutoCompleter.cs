@@ -308,7 +308,8 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                                 break;
 
                             default:
-                                //Nothing to do as no other auto-completion is implemented yet
+                                //Nothing to do as no other auto-completion is implemented by this completer
+                                //Derived implementations may call us first and then add in their extra cases if we don't hit anything
                                 break;
                         }
                     }
@@ -344,7 +345,6 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (this.IsNewLine(newText))
             {
                 this.State = AutoCompleteState.None;
-                this._editor.EndSuggestion();
             }
 
             if (newText == "\"")
@@ -364,6 +364,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     {
                         //Not an escape so ends the literal
                         this.LastCompletion = AutoCompleteState.Literal;
+                        this._editor.EndSuggestion();
                     }
                 }
                 else
@@ -433,7 +434,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             {
                 //Can switch back to Keyword/QName mode if user backtracks
                 this.State = AutoCompleteState.KeywordOrQName;
-                this._editor.Suggest(this._keywords);
+                this._editor.Suggest(this._keywords.Where(d => d is KeywordData));
                 this.TryKeywordOrQNameCompletion(newText);
                 return;
             }
@@ -506,6 +507,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (this.IsNewLine(newText))
             {
                 this.LastCompletion = AutoCompleteState.Prefix;
+                this._editor.EndSuggestion();
                 this.DetectNamespaces();
             }
 
@@ -556,6 +558,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             if (this.IsNewLine(newText))
             {
                 this.LastCompletion = AutoCompleteState.Comment;
+                this._editor.EndSuggestion();
             }
         }
 

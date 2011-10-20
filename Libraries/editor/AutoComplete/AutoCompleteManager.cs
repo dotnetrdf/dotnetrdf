@@ -53,12 +53,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         {
             //new AutoCompleteDefinition("NTriples", new NTriplesAutoCompleter()),
             new AutoCompleteDefinition("Turtle", typeof(TurtleAutoCompleter<>)),
-            /*new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
+            //new AutoCompleteDefinition("Notation3", new Notation3AutoCompleter()),
 
-            new AutoCompleteDefinition("SparqlQuery10", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_0)),
-            new AutoCompleteDefinition("SparqlQuery11", new SparqlAutoCompleter(SparqlQuerySyntax.Sparql_1_1)),
+            new AutoCompleteDefinition("SparqlQuery10", typeof(Sparql10AutoCompleter<>)),
+            new AutoCompleteDefinition("SparqlQuery11", typeof(Sparql11AutoCompleter<>)),
 
-            new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter()),
+            /*new AutoCompleteDefinition("SparqlUpdate11", new SparqlUpdateAutoCompleter()),
 
             new AutoCompleteDefinition("TriG", new TurtleAutoCompleter())*/
 
