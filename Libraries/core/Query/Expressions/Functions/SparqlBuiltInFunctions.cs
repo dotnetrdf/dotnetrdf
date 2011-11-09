@@ -1462,7 +1462,7 @@ namespace VDS.RDF.Query.Expressions.Functions
     {
         private String _pattern = null;
         private RegexOptions _options = RegexOptions.None;
-        private bool _fixedPattern = false;
+        private bool _fixedPattern = false, _fixedOptions = false;
         //private bool _useInStr = false;
         private Regex _regex;
         private ISparqlExpression _textExpr = null;
@@ -1516,14 +1516,12 @@ namespace VDS.RDF.Query.Expressions.Functions
             //Get the Options
             if (options != null)
             {
+                this._optionExpr = options;
                 if (options is NodeExpressionTerm)
                 {
                     this.ConfigureOptions(options.Value(null, 0), false);
+                    this._fixedOptions = true;
                     if (this._fixedPattern) this._regex = new Regex(this._pattern, this._options);
-                }
-                else
-                {
-                    this._optionExpr = options;
                 }
             }
             else
@@ -1610,7 +1608,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             //Configure Options
-            if (this._optionExpr != null)
+            if (this._optionExpr != null && !this._fixedOptions)
             {
                 this.ConfigureOptions(this._optionExpr.Value(context, bindingID), true);
             }

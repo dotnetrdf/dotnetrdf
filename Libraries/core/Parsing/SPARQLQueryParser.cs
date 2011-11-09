@@ -524,9 +524,10 @@ namespace VDS.RDF.Parsing
                             {
                                 if (context.Query.GroupBy != null)
                                 {
-                                    if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
+                                    //if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
+                                    if (!this.IsProjectableExpression(context, var.Projection, projectedSoFar))
                                     {
-                                        throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY or projected earlier in the SELECT");
+                                        throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY, projected earlier in the SELECT or within an aggregate");
                                     }
                                 }
                             }
@@ -3616,6 +3617,19 @@ namespace VDS.RDF.Parsing
         private Uri ResolveQName(SparqlQueryParserContext context, String qname)
         {
             return new Uri(Tools.ResolveQName(qname, context.Query.NamespaceMap, context.Query.BaseUri));
+        }
+
+        private bool IsProjectableExpression(SparqlQueryParserContext context, ISparqlExpression expr, List<String> projectedSoFar)
+        {
+            if (expr.Type == SparqlExpressionType.Aggregate) return true;
+            if (expr.Type == SparqlExpressionType.Primary)
+            {
+                return expr.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v));
+            }
+            else
+            {
+                return expr.Arguments.All(arg => this.IsProjectableExpression(context, arg, projectedSoFar));
+            }
         }
 
         #endregion

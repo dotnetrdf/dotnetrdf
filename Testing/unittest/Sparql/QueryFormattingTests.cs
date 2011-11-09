@@ -16,17 +16,43 @@ namespace VDS.RDF.Test.Sparql
         private SparqlFormatter _formatter = new SparqlFormatter();
 
         [TestMethod]
-        public void SparqlFormattingFilter()
+        public void SparqlFormattingFilter1()
         {
             String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(ISURI(?o)) }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
             Console.WriteLine("ToString() form:");
-            Console.WriteLine(q.ToString());
+            String toString = q.ToString();
+            Console.WriteLine(toString);
             Console.WriteLine();
             Console.WriteLine("Format() form:");
-            Console.WriteLine(this._formatter.Format(q));
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("FILTER"), "ToString() form should contain FILTER");
+            Assert.IsTrue(formatted.Contains("FILTER"), "Format() form should contain FILTER");
+        }
+
+        [TestMethod]
+        public void SparqlFormattingFilter2()
+        {
+            String query = "SELECT * WHERE { { ?s ?p ?o } FILTER(REGEX(?o, 'search', 'i')) }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine("ToString() form:");
+            String toString = q.ToString();
+            Console.WriteLine(toString);
+            Console.WriteLine();
+            Console.WriteLine("Format() form:");
+            String formatted = this._formatter.Format(q);
+            Console.WriteLine(formatted);
+
+            Assert.IsTrue(toString.Contains("FILTER"), "ToString() form should contain FILTER");
+            Assert.IsTrue(toString.Contains("i"), "ToString() form should contain i option");
+            Assert.IsTrue(formatted.Contains("FILTER"), "Format() form should contain FILTER");
+            Assert.IsTrue(toString.Contains("i"), "Format() form should contain i option");
         }
     }
 }

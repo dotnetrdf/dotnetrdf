@@ -803,6 +803,12 @@ namespace VDS.RDF.Query.Patterns
                 output.Append(this._filter.ToString());
                 if (linebreaks) output.AppendLine();
             }
+            foreach (ISparqlFilter filter in this._unplacedFilters)
+            {
+                output.Append(indent);
+                output.Append(filter.ToString());
+                if (linebreaks) output.AppendLine();
+            }
             output.Append("}");
 
             return output.ToString();
