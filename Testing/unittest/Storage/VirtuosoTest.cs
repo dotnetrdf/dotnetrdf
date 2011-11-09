@@ -675,6 +675,43 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
+        [TestMethod]
+        public void StorageVirtuosoQueryRegex()
+        {
+            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+
+            //Create the Test Graph
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/VirtuosoRegexTest");
+            INode subj1 = g.CreateUriNode(new Uri("http://example.org/one"));
+            INode subj2 = g.CreateUriNode(new Uri("http://example.org/two"));
+            INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+            INode obj1 = g.CreateLiteralNode("search term");
+            INode obj2 = g.CreateLiteralNode("no term");
+            g.Assert(subj1, pred, obj1);
+            g.Assert(subj2, pred, obj2);
+            manager.SaveGraph(g);
+
+            Graph h = new Graph();
+            manager.LoadGraph(h, g.BaseUri);
+            Assert.AreEqual(g, h, "Graphs should be equal");
+
+            String query = "SELECT * FROM <" + g.BaseUri.ToString() + "> WHERE { ?s ?p ?o . FILTER(REGEX(STR(?o), 'search', 'i')) }";
+            SparqlResultSet results = manager.Query(query) as SparqlResultSet;
+            if (results == null) Assert.Fail("Did not get a Result Set as expected");
+            Console.WriteLine("Results obtained via VirtuosoManager.Query()");
+            TestTools.ShowResults(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
+            SparqlResultSet results2 = endpoint.QueryWithResultSet(query);
+            Console.WriteLine("Results obtained via SparqlRemoteEndpoint.QueryWithResultSet()");
+            TestTools.ShowResults(results2);
+            Assert.AreEqual(1, results2.Count);
+
+            manager.Dispose();
+        }
+
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
             NTriplesFormatter formatter = new NTriplesFormatter();

@@ -153,6 +153,7 @@ namespace VDS.RDF.Parsing
                 try
                 {
                     parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(Path.GetExtension(filename)));
+                    RaiseWarning("Selected Parser " + parser.ToString() + " based on file extension, if this is incorrect consider specifying the parser explicitly");
                 }
                 catch (RdfParserSelectionException)
                 {
@@ -165,6 +166,7 @@ namespace VDS.RDF.Parsing
             {
                 //Unable to determine format from File Extension
                 //Read file in locally and use the StringParser to select a parser
+                RaiseWarning("Attempting to select parser based on analysis of the data file, this requires loading the file into memory");
                 StreamReader reader = new StreamReader(filename);
                 String data = reader.ReadToEnd();
                 reader.Close();

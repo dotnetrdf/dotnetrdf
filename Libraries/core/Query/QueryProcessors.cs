@@ -36,6 +36,7 @@ terms.
 using System;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Storage;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
 {
@@ -46,6 +47,7 @@ namespace VDS.RDF.Query
         : ISparqlQueryProcessor
     {
         private INativelyQueryableStore _store;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new Simple Query Processor
@@ -69,7 +71,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                Object temp = this._store.ExecuteQuery(query.ToString());
+                Object temp = this._store.ExecuteQuery(this._formatter.Format(query));
                 return temp;
             }
             finally
@@ -95,7 +97,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                this._store.ExecuteQuery(rdfHandler, resultsHandler, query.ToString());
+                this._store.ExecuteQuery(rdfHandler, resultsHandler, this._formatter.Format(query));
             }
             finally
             {
@@ -116,6 +118,7 @@ namespace VDS.RDF.Query
         : ISparqlQueryProcessor
     {
         private IQueryableGenericIOManager _manager;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new Generic Query Processor
@@ -139,7 +142,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                Object temp = this._manager.Query(query.ToString());
+                Object temp = this._manager.Query(this._formatter.Format(query));
                 return temp;
             }
             finally
@@ -165,7 +168,7 @@ namespace VDS.RDF.Query
             DateTime start = DateTime.Now;
             try
             {
-                this._manager.Query(rdfHandler, resultsHandler, query.ToString());
+                this._manager.Query(rdfHandler, resultsHandler, this._formatter.Format(query));
             }
             finally
             {
@@ -188,6 +191,7 @@ namespace VDS.RDF.Query
         : ISparqlQueryProcessor
     {
         private SparqlRemoteEndpoint _endpoint;
+        private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new Remote Query Processor
@@ -221,12 +225,12 @@ namespace VDS.RDF.Query
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectDistinct:
                     case SparqlQueryType.SelectReduced:
-                        temp = this._endpoint.QueryWithResultSet(query.ToString());
+                        temp = this._endpoint.QueryWithResultSet(this._formatter.Format(query));
                         break;
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
-                        temp = this._endpoint.QueryWithResultGraph(query.ToString());
+                        temp = this._endpoint.QueryWithResultGraph(this._formatter.Format(query));
                         break;
                     default:
                         throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
@@ -265,12 +269,12 @@ namespace VDS.RDF.Query
                     case SparqlQueryType.SelectAllReduced:
                     case SparqlQueryType.SelectDistinct:
                     case SparqlQueryType.SelectReduced:
-                        this._endpoint.QueryWithResultSet(resultsHandler, query.ToString());
+                        this._endpoint.QueryWithResultSet(resultsHandler, this._formatter.Format(query));
                         break;
                     case SparqlQueryType.Construct:
                     case SparqlQueryType.Describe:
                     case SparqlQueryType.DescribeAll:
-                        this._endpoint.QueryWithResultGraph(rdfHandler, query.ToString());
+                        this._endpoint.QueryWithResultGraph(rdfHandler, this._formatter.Format(query));
                         break;
                     default:
                         throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");

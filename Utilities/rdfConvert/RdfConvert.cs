@@ -53,6 +53,7 @@ namespace VDS.RDF.Utilities.Convert
         private bool _debug = false;
         private bool _warnings = false;
         private bool _best = false;
+        private bool _verbose = false;
  
         //Output Variables
         private String _outputFilename = String.Empty;
@@ -112,6 +113,7 @@ namespace VDS.RDF.Utilities.Convert
                     //If -best always use SaveOnCompletionHandler
                     if (this._best)
                     {
+                        if (this._verbose) Console.WriteLine("rdfConvert: Using Best Quality data conversion subject to user specified compression options");
                         input.ConversionHandler = new SaveOnCompletionHandler(writer, new StreamWriter(outFile, false, graphDef.Encoding));
                     }
                     else
@@ -120,26 +122,32 @@ namespace VDS.RDF.Utilities.Convert
                         if (writer is RdfJsonWriter || writer is RdfXmlWriter || writer is FastRdfXmlWriter || writer is PrettyRdfXmlWriter)
                         {
                             //Can't use it in this case
+                            if (this._verbose) Console.WriteLine("rdfConvert: Warning: Target Format not suitable for streaming conversion, input data will be loaded into memory prior to conversion");
                             input.ConversionHandler = new SaveOnCompletionHandler(writer, new StreamWriter(outFile, false, graphDef.Encoding));
                         } 
                         else if (writer is CompressingTurtleWriter || writer is TurtleWriter)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to Turtle");
                             input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TurtleFormatter));
                         }
                         else if (writer is CsvWriter)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to CSV");
                             input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(CsvFormatter));
                         }
                         else if (writer is Notation3Writer)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to Notation 3");
                             input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(Notation3Formatter));
                         }
                         else if (writer is NTriplesWriter)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to NTriples");
                             input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NTriplesFormatter));
                         }
                         else if (writer is TsvWriter)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to TSV");
                             input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TsvFormatter));
                         }
                         else
@@ -171,6 +179,7 @@ namespace VDS.RDF.Utilities.Convert
                         //If -best always use SaveOnCompletionHandler
                         if (this._best)
                         {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Best Quality  data conversion subject to user specified compression options");
                             input.ConversionHandler = new SaveStoreOnCompletionHandler(writer, new StreamWriter(outFile, false, storeDef.Encoding));
                         }
                         else
@@ -178,10 +187,12 @@ namespace VDS.RDF.Utilities.Convert
                             //Use the fast WriteThroughHandler where possible
                             if (writer is NQuadsWriter)
                             {
+                                if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to NQuads");
                                 input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NQuadsFormatter));
                             }
                             else
                             {
+                                if (this._verbose) Console.WriteLine("rdfConvert: Warning: Target Format not suitable for streaming conversion, input data will be loaded into memory prior to conversion");
                                 input.ConversionHandler = new SaveStoreOnCompletionHandler(writer, new StreamWriter(outFile, false, storeDef.Encoding));
                             }
                         }
@@ -197,6 +208,7 @@ namespace VDS.RDF.Utilities.Convert
                 Console.WriteLine("rdfConvert: Converting Input " + input.ToString() + " to '" + outFile + "'...");
                 try
                 {
+                    if (this._verbose) Console.WriteLine("rdfConvert: Debug: Conversion Handler is " + input.ConversionHandler.GetType().FullName);
                     input.Convert();
                     Console.WriteLine("rdfConvert: Converted Input " + input.ToString() + " to '" + outFile + "' OK");
                 }
@@ -267,7 +279,7 @@ namespace VDS.RDF.Utilities.Convert
                     }
                     else
                     {
-                      this._options.Add(new PrettyPrintingOption(true));
+                        this._options.Add(new PrettyPrintingOption(true));
                     }
                 }
                 else if (arg.StartsWith("-c"))
@@ -356,6 +368,10 @@ namespace VDS.RDF.Utilities.Convert
                 else if (arg.Equals("-best"))
                 {
                     this._best = true;
+                }
+                else if (arg.Equals("-verbose"))
+                {
+                    this._verbose = true;
                 }
                 else if (arg.Equals("-warnings"))
                 {
