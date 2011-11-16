@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Datasets
         where TCommand : DbCommand
         where TParameter : DbParameter
         where TAdaptor : DbDataAdapter
-        where TException : DbException
+        where TException : Exception
     {
         private BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> _manager;
         private TCommand _cmd;
@@ -55,7 +55,7 @@ namespace VDS.RDF.Query.Datasets
         where TCommand : DbCommand
         where TParameter : DbParameter
         where TAdaptor : DbDataAdapter
-        where TException : DbException
+        where TException : Exception
     {
         private BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> _manager;
         private GraphFactory _factory;

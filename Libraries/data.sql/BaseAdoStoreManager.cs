@@ -77,7 +77,7 @@ namespace VDS.RDF.Storage
         where TCommand : DbCommand
         where TParameter : DbParameter
         where TAdaptor : DbDataAdapter
-        where TException : DbException
+        where TException : Exception
     {
         private int _version = 1;
         private String _schema = "Hash";

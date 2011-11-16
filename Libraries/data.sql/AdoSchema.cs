@@ -134,7 +134,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Microsoft SQL Server (and SQL Azure)
         /// </summary>
-        MicrosoftSqlServer
+        MicrosoftSqlServer,
+        /// <summary>
+        /// SQL Server CE
+        /// </summary>
+        SqlServerCe
     }
 
     /// <summary>
@@ -218,7 +222,9 @@ namespace VDS.RDF.Storage
                     new AdoSchemaScriptDefinition[]
                     {
                         new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.CreateMicrosoftAdoSimpleStore.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoSimpleStore.sql")
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoSimpleStore.sql"),
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.CreateSqlServerCeAdoSimpleStore.sql"),
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.DropSqlServerCeAdoSimpleStore.sql")
                     }));
                 _defs.Add(new AdoSchemaDefinition("Simple 2000", "A variant of the Simple schema that should work on pre-2005 SQL Server instances",
                     new AdoSchemaScriptDefinition[]
@@ -284,6 +290,16 @@ namespace VDS.RDF.Storage
         {
             if (!_init) Init();
             _defs.Remove(def);
+        }
+
+        /// <summary>
+        /// Gets the Schema with the given name or null if it does not exist
+        /// </summary>
+        /// <param name="name">Schema Name</param>
+        /// <returns></returns>
+        public static AdoSchemaDefinition GetSchema(String name)
+        {
+            return AdoSchemaHelper.SchemaDefinitions.FirstOrDefault(d => d.Name.Equals(name));
         }
     }
 }
