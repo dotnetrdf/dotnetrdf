@@ -66,7 +66,15 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// OWL-QL Reasoning
         /// </summary>
-        QL
+        QL,
+        /// <summary>
+        /// OWL-EL Reasoning
+        /// </summary>
+        EL,
+        /// <summary>
+        /// OWL-RL Reasoning
+        /// </summary>
+        RL
     }
 
     /// <summary>
@@ -168,7 +176,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets/Sets the reasoning mode to use for queries
         /// </summary>
-        [Description("What reasoning mode (if any) is currently in use for SPARQL Queries?")]
+        [Description("What reasoning mode (if any) is currently in use for SPARQL Queries")]
         public StardogReasoningMode Reasoning
         {
             get
@@ -882,6 +890,10 @@ namespace VDS.RDF.Storage
             {
                 case StardogReasoningMode.QL:
                     return ";reasoning=QL";
+                case StardogReasoningMode.EL:
+                    return ";reasoning=EL";
+                case StardogReasoningMode.RL:
+                    return ";reasoning=RL";
                 case StardogReasoningMode.None:
                 default:
                     return String.Empty;
@@ -1069,6 +1081,12 @@ namespace VDS.RDF.Storage
                 case StardogReasoningMode.QL:
                     mode = " (OWL QL Reasoning)";
                     break;
+                case StardogReasoningMode.EL:
+                    mode = " (OWL EL Reasoning)";
+                    break;
+                case StardogReasoningMode.RL:
+                    mode = " (OWL RL Reasoning)";
+                    break;
             }
             return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'" + mode;
         }
@@ -1100,6 +1118,12 @@ namespace VDS.RDF.Storage
             {
                 case StardogReasoningMode.QL:
                     context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("QL")));
+                    break;
+                case StardogReasoningMode.EL:
+                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("EL")));
+                    break;
+                case StardogReasoningMode.RL:
+                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("RL")));
                     break;
             }
 
