@@ -60,7 +60,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : SesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
+        : BaseSesameHttpProtocolConnector, IConfigurationSerializable, IMultiStoreGenericIOManager
     {
         private String _catalog;
 
@@ -288,11 +288,6 @@ namespace VDS.RDF.Storage
 #endif
                 throw new RdfStorageException("A HTTP Error occurred while attempting to delete a Store", webEx);
             }
-        }
-
-        public override void Update(string sparqlUpdate)
-        {
-            base.Update(sparqlUpdate);
         }
 
         /// <summary>

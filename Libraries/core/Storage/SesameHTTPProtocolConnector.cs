@@ -53,15 +53,15 @@ using VDS.RDF.Writing.Formatting;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Class for connecting to any Store that supports the Sesame 2.0 HTTP Communication protocol
+    /// Abstract Base Class for connecting to any Store that supports the Sesame 2.0 HTTP Communication protocol
     /// </summary>
     /// <remarks>
     /// <para>
-    /// See <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">here</a> for the protocol specification
+    /// See <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">here</a> for the protocol specification, this base class supports Version 5 of the protocol which does not include SPARQL Update support
     /// </para>
     /// </remarks>
-    public class SesameHttpProtocolConnector 
-        : IQueryableGenericIOManager, IConfigurationSerializable, IUpdateableGenericIOManager
+    public abstract class BaseSesameHttpProtocolConnector 
+        : IQueryableGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// Base Uri for the Store
@@ -113,7 +113,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store</param>
         /// <param name="storeID">Store ID</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID)
+        public BaseSesameHttpProtocolConnector(String baseUri, String storeID)
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
@@ -127,7 +127,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <param name="username">Username to use for requests that require authentication</param>
         /// <param name="password">Password to use for requests that require authentication</param>
-        public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
+        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
             : this(baseUri, storeID)
         {
             this._username = username;
@@ -147,6 +147,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Repository Name that is in use
+        /// </summary>
         [Description("The Repository to which this is a connection.")]
         public String RepositoryName
         {
@@ -310,87 +313,13 @@ namespace VDS.RDF.Storage
             return output.ToString();
         }
 
-        public virtual void Update(string sparqlUpdate)
-        {
-            try
-            {
-                HttpWebRequest request;
-
-                //Create the Request
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String,String>());
-
-                //Build the Post Data and add to the Request Body
-                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                StringBuilder postData = new StringBuilder();
-                postData.Append("update=");
-                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
-                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
-                {
-                    writer.Write(postData);
-                    writer.Close();
-                }
-
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
-#endif
-
-                //Get the Response and process based on the Content Type
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse(response);
-                    }
-#endif
-                    //If we get here it completed OK
-                    response.Close();
-                }
-            }
-            catch (WebException webEx)
-            {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        try
-                        {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            throw new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx);
-                        }
-                        catch
-                        {
-                            throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                }
-            }
-        }
-
         /// <summary>
         /// Loads a Graph from the Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public virtual void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(g, graphUri.ToSafeString());
         }
@@ -401,7 +330,7 @@ namespace VDS.RDF.Storage
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <remarks>If a Null Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
         }
@@ -412,7 +341,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
-        public void LoadGraph(IGraph g, String graphUri)
+        public virtual void LoadGraph(IGraph g, String graphUri)
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
@@ -427,7 +356,7 @@ namespace VDS.RDF.Storage
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">Uri of the Graph to load</param>
         /// <remarks>If a Null/Empty Uri is specified then the default graph (statements with no context in Sesame parlance) will be loaded</remarks>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public virtual void LoadGraph(IRdfHandler handler, String graphUri)
         {
             try
             {
@@ -488,7 +417,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// If the Graph has no URI then the contents will be appended to the Store, if the Graph has a URI then existing data associated with that URI will be replaced
         /// </remarks>
-        public void SaveGraph(IGraph g)
+        public virtual void SaveGraph(IGraph g)
         {
             try
             {
@@ -553,7 +482,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Save Behaviour of Stores that use the Sesame HTTP Protocol
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public virtual IOBehaviour IOBehaviour
         {
             get
             {
@@ -819,7 +748,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>
-        public bool IsReady
+        public virtual bool IsReady
         {
             get
             {
@@ -830,7 +759,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is not read-only
         /// </summary>
-        public bool IsReadOnly
+        public virtual bool IsReadOnly
         {
             get
             {
@@ -878,7 +807,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Connector
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             //No Dispose actions
         }
@@ -921,6 +850,164 @@ namespace VDS.RDF.Storage
             }
         }
     }
+
+    /// <summary>
+    /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication protocol
+    /// </summary>
+    /// <remarks>
+    /// Acts as a synonym for whatever the latest version of the Sesame HTTP Protocol that is supported by dotNetRDF might be.  Currently this is Version 6 which includes SPARQL Update support (Sesame 2.4+ required)
+    /// </remarks>
+    public class SesameHttpProtocolConnector
+        : SesameHttpProtocolVersion6Connector
+    {
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        public SesameHttpProtocolConnector(String baseUri, String storeID)
+            : base(baseUri, storeID) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
+            : base(baseUri, storeID, username, password) { }
+
+    }
+
+    /// <summary>
+    /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 5 (i.e. no SPARQL Update support)
+    /// </summary>
+    public class SesameHttpProtocolVersion5Connector
+        : BaseSesameHttpProtocolConnector
+    {
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID)
+            : base(baseUri, storeID) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, String username, String password)
+            : base(baseUri, storeID, username, password) { }
+    }
+
+    /// <summary>
+    /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 6 (i.e. includes SPARQL Update support)
+    /// </summary>
+    public class SesameHttpProtocolVersion6Connector
+        : SesameHttpProtocolVersion5Connector, IUpdateableGenericIOManager
+    {
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID)
+            : base(baseUri, storeID) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password)
+            : base(baseUri, storeID, username, password) { }
+
+        /// <summary>
+        /// Makes a SPARQL Update request to the Sesame server
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        public virtual void Update(string sparqlUpdate)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("update=");
+                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(postData);
+                    writer.Close();
+                }
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get here it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            throw new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx);
+                        }
+                        catch
+                        {
+                            throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
+                }
+            }
+        }
+    }
+
 }
 
 #endif

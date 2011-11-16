@@ -146,6 +146,8 @@ namespace VDS.RDF.Configuration
                              ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
                              ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
+                             SesameV5 = "VDS.RDF.Storage.SesameHttpProtocolVersion5Connector",
+                             SesameV6 = "VDS.RDF.Storage.SesameHttpProtocolVersion6Connector",
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
@@ -329,6 +331,8 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case Sesame:
+                case SesameV5:
+                case SesameV6:
                     //Get the Server and Store ID
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
@@ -337,11 +341,11 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-                        manager = new SesameHttpProtocolConnector(server, store, user, pwd);
+                        manager = (IGenericIOManager)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
                     }
                     else
                     {
-                        manager = new SesameHttpProtocolConnector(server, store);
+                        manager = (IGenericIOManager)Activator.CreateInstance(targetType, new Object[] { server, store });
                     }
                     break;
 
@@ -481,6 +485,8 @@ namespace VDS.RDF.Configuration
                 case InMemory:
                 case Joseki:
                 case Sesame:
+                case SesameV5:
+                case SesameV6:
                 case ReadOnly:
                 case ReadOnlyQueryable:
                 case Sparql:
