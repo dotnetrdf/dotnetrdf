@@ -471,5 +471,41 @@ namespace VDS.RDF.Test.Sparql
                 Assert.Fail("Did not get a SPARQL Result Set as expected");
             }
         }
+
+        [TestMethod]
+        public void SparqlGraphClause5()
+        {
+            String query = "SELECT * FROM <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            InMemoryDataset dataset = new InMemoryDataset();
+            IGraph ex = new Graph();
+            FileLoader.Load(ex, "InferenceTest.ttl");
+            ex.BaseUri = new Uri("http://example.org/named");
+            dataset.AddGraph(ex);
+            IGraph ex2 = new Graph();
+            ex2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            ex2.BaseUri = new Uri("http://example.org/other");
+            dataset.AddGraph(ex2);
+
+            IGraph def = new Graph();
+            dataset.AddGraph(def);
+
+            dataset.SetDefaultGraph(def);
+
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            Object results = processor.ProcessQuery(q);
+            if (results is SparqlResultSet)
+            {
+                SparqlResultSet rset = (SparqlResultSet)results;
+                TestTools.ShowResults(rset);
+                Assert.AreEqual(0, rset.Count, "Should be no results because GRAPH <> specified a Graph not in the dataset");
+            }
+            else
+            {
+                Assert.Fail("Did not get a SPARQL Result Set as expected");
+            }
+        }
     }
 }
