@@ -123,7 +123,7 @@ namespace VDS.RDF.Writing.Formatting
                                 output.Append("<literal");
                                 if (lit.DataType != null)
                                 {
-                                    output.Append(" datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.ToString()) + "\">" + lit.Value + "</literal>");
+                                    output.Append(" datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.ToString()) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</literal>");
                                 }
                                 else if (!lit.Language.Equals(String.Empty))
                                 {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Writing.Formatting
                                 }
                                 else
                                 {
-                                    output.Append(">" + lit.Value + "</literal>");
+                                    output.Append(">" + WriterHelper.EncodeForXml(lit.Value) + "</literal>");
                                 }
                                 break;
                             case NodeType.Uri:

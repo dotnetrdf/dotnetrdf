@@ -336,7 +336,7 @@ namespace VDS.RDF.Writing
                                     }
 
                                     //Write the Value and the </literal>
-                                    writer.WriteRaw(l.Value);
+                                    writer.WriteRaw(WriterHelper.EncodeForXml(l.Value));
                                     writer.WriteEndElement();
                                     break;
 
