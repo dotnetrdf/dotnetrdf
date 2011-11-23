@@ -56,12 +56,27 @@ using VDS.RDF.Writing;
 namespace VDS.RDF.Storage
 {
     /// <summary>
+    /// Possible modes of operation for accessing an ADO Store
+    /// </summary>
+    public enum AdoAccessMode
+    {
+        /// <summary>
+        /// Streaming is the default mode based upon <see cref="DbDataReader">DbDataReader</see> usage, uses the least memory but performs poorly when the network distance between the client and server is large
+        /// </summary>
+        Streaming,
+        /// <summary>
+        /// Batched is the alternative mode based upon <see cref="DbDataAdapter">DbDataAdapter</see> usage, this uses more memory but performs much better when the network distance between the client and server is large
+        /// </summary>
+        Batched
+    }
+
+    /// <summary>
     /// Abstract Base implementation of the ADO Store
     /// </summary>
     /// <typeparam name="TConn">Connection Type</typeparam>
     /// <typeparam name="TCommand">Command Type</typeparam>
     /// <typeparam name="TParameter">Parameter Type</typeparam>
-    /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
+    /// <typeparam name="TAdapter">Adapter Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
     /// <remarks>
     /// <para>
@@ -71,15 +86,16 @@ namespace VDS.RDF.Storage
     /// This code cannot communicate with legacy SQL Stores and this is by design, please see <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">this page</a> for details on migrating legacy stores
     /// </para>
     /// </remarks>
-    public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdaptor,TException> 
+    public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdapter,TException> 
         : IUpdateableGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
-        where TAdaptor : DbDataAdapter
+        where TAdapter : DbDataAdapter
         where TException : Exception
     {
         private int _version = 1;
+        private AdoAccessMode _accessMode = AdoAccessMode.Streaming;
         private String _schema = "Hash";
         private TConn _connection;
         private SimpleVirtualNodeCache<int> _cache = new SimpleVirtualNodeCache<int>();
@@ -144,7 +160,7 @@ namespace VDS.RDF.Storage
         /// Gets an Adaptor for converting results from SQL queries on the underlying Database into a DataTable
         /// </summary>
         /// <returns></returns>
-        protected internal abstract TAdaptor GetAdapter();
+        protected internal abstract TAdapter GetAdapter();
 
         /// <summary>
         /// Ensures that the Database is setup and returns the Version of the Database Schema
@@ -872,21 +888,43 @@ namespace VDS.RDF.Storage
                     cmd.Parameters["graphID"].DbType = DbType.Int32;
                     cmd.Parameters["graphID"].Value = id;
 
-                    using (DbDataReader reader = cmd.ExecuteReader())
+                    switch (this._accessMode)
                     {
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
+                        case AdoAccessMode.Batched:
+                            DataTable table = new DataTable();
+                            using (DbDataAdapter adapter = this.GetAdapter())
                             {
-                                INode s = this.DecodeNode(handler, (byte)reader["subjectType"], (String)reader["subjectValue"], this.DecodeMeta(reader["subjectMeta"]));
-                                INode p = this.DecodeNode(handler, (byte)reader["predicateType"], (String)reader["predicateValue"], this.DecodeMeta(reader["predicateMeta"]));
-                                INode o = this.DecodeNode(handler, (byte)reader["objectType"], (String)reader["objectValue"], this.DecodeMeta(reader["objectMeta"]));
+                                adapter.SelectCommand = cmd;
+                                adapter.Fill(table);
+                                foreach (DataRow row in table.Rows)
+                                {
+                                    INode s = this.DecodeNode(handler, (byte)row["subjectType"], (String)row["subjectValue"], this.DecodeMeta(row["subjectMeta"]));
+                                    INode p = this.DecodeNode(handler, (byte)row["predicateType"], (String)row["predicateValue"], this.DecodeMeta(row["predicateMeta"]));
+                                    INode o = this.DecodeNode(handler, (byte)row["objectType"], (String)row["objectValue"], this.DecodeMeta(row["objectMeta"]));
 
-                                if (!handler.HandleTriple(new Triple(s, p, o))) ParserHelper.Stop();
+                                    if (!handler.HandleTriple(new Triple(s, p, o))) ParserHelper.Stop();
+                                }
+                                table.Dispose();
+                                adapter.Dispose();
                             }
-                        }
-                        reader.Close();
-                        reader.Dispose();
+                            break;
+
+                        case AdoAccessMode.Streaming:
+                        default:
+                            using (DbDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    INode s = this.DecodeNode(handler, (byte)reader["subjectType"], (String)reader["subjectValue"], this.DecodeMeta(reader["subjectMeta"]));
+                                    INode p = this.DecodeNode(handler, (byte)reader["predicateType"], (String)reader["predicateValue"], this.DecodeMeta(reader["predicateMeta"]));
+                                    INode o = this.DecodeNode(handler, (byte)reader["objectType"], (String)reader["objectValue"], this.DecodeMeta(reader["objectMeta"]));
+
+                                    if (!handler.HandleTriple(new Triple(s, p, o))) ParserHelper.Stop();
+                                }
+                                reader.Close();
+                                reader.Dispose();
+                            }
+                            break;
                     }
                 }
 
@@ -1185,32 +1223,53 @@ namespace VDS.RDF.Storage
             cmd.CommandText = "GetGraphUris";
             cmd.Connection = this._connection;
 
-            using (DbDataReader reader = cmd.ExecuteReader())
+            List<Uri> uris = new List<Uri>();
+            switch (this._accessMode)
             {
-                if (reader.HasRows)
-                {
-                    List<Uri> uris = new List<Uri>();
-                    while (reader.Read())
+                case AdoAccessMode.Batched:
+                    using (DbDataAdapter adapter = this.GetAdapter())
                     {
-                        String u = this.DecodeMeta(reader["graphUri"]);
-                        if (u == null)
+                        adapter.SelectCommand = cmd;
+                        DataTable table = new DataTable();
+                        adapter.Fill(table);
+                        foreach (DataRow row in table.Rows)
                         {
-                            uris.Add((Uri)null);
+                            String u = this.DecodeMeta(row["graphUri"]);
+                            if (u == null)
+                            {
+                                uris.Add((Uri)null);
+                            }
+                            else
+                            {
+                                uris.Add(new Uri(u));
+                            }
                         }
-                        else
-                        {
-                            uris.Add(new Uri(u));
-                        }
+                        table.Dispose();
+                        adapter.Dispose();
                     }
-                    reader.Close();
+                    break;
 
-                    return uris;
-                }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
+                case AdoAccessMode.Streaming:
+                default:
+                    using (DbDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            String u = this.DecodeMeta(reader["graphUri"]);
+                            if (u == null)
+                            {
+                                uris.Add((Uri)null);
+                            }
+                            else
+                            {
+                                uris.Add(new Uri(u));
+                            }
+                        }
+                        reader.Close();
+                    }
+                    break;
             }
+            return uris;
         }
 
         /// <summary>
@@ -1648,21 +1707,44 @@ namespace VDS.RDF.Storage
                 cmd.Parameters["graphID"].DbType = DbType.Int32;
                 cmd.Parameters["graphID"].Value = id;
 
-                using (DbDataReader reader = cmd.ExecuteReader())
+                switch (this._accessMode)
                 {
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
+                    case AdoAccessMode.Batched:
+                        using (DbDataAdapter adapter = this.GetAdapter())
                         {
-                            INode s = this.DecodeVirtualNode(target, (byte)reader["subjectType"], (int)reader["subjectID"]);
-                            INode p = this.DecodeVirtualNode(target, (byte)reader["predicateType"], (int)reader["predicateID"]);
-                            INode o = this.DecodeVirtualNode(target, (byte)reader["objectType"], (int)reader["objectID"]);
+                            adapter.SelectCommand = cmd;
+                            DataTable table = new DataTable();
+                            adapter.Fill(table);
 
-                            target.Assert(new Triple(s, p, o));
+                            foreach (DataRow row in table.Rows)
+                            {
+                                INode s = this.DecodeVirtualNode(target, (byte)row["subjectType"], (int)row["subjectID"]);
+                                INode p = this.DecodeVirtualNode(target, (byte)row["predicateType"], (int)row["predicateID"]);
+                                INode o = this.DecodeVirtualNode(target, (byte)row["objectType"], (int)row["objectID"]);
+
+                                target.Assert(new Triple(s, p, o));
+                            }
+
+                            table.Dispose();
+                            adapter.Dispose();
                         }
-                    }
-                    reader.Close();
-                    reader.Dispose();
+                        break;
+                    case AdoAccessMode.Streaming:
+                    default:
+                        using (DbDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                INode s = this.DecodeVirtualNode(target, (byte)reader["subjectType"], (int)reader["subjectID"]);
+                                INode p = this.DecodeVirtualNode(target, (byte)reader["predicateType"], (int)reader["predicateID"]);
+                                INode o = this.DecodeVirtualNode(target, (byte)reader["objectType"], (int)reader["objectID"]);
+
+                                target.Assert(new Triple(s, p, o));
+                            }
+                            reader.Close();
+                            reader.Dispose();
+                        }
+                        break;
                 }
 
                 if (!ReferenceEquals(target, g))
