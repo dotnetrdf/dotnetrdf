@@ -94,6 +94,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void btnReplace_Click(object sender, RoutedEventArgs e)
         {
             if (this._mode == FindReplaceMode.Find) return;
+            this._engine.FindText = this.cboFind.Text;
             this._engine.ReplaceText = this.cboReplace.Text;
             this._engine.Replace(this.Editor);
         }
@@ -101,6 +102,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void btnReplaceAll_Click(object sender, RoutedEventArgs e)
         {
             if (this._mode == FindReplaceMode.Find) return;
+            this._engine.FindText = this.cboFind.Text;
             this._engine.ReplaceText = this.cboReplace.Text;
             this._engine.ReplaceAll(this.Editor);
         }
