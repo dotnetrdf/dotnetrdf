@@ -45,6 +45,10 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 21.69014F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 78.30986F));
@@ -61,6 +65,9 @@
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.panel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel1.Controls.Add(this.lstStoreTypes);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
@@ -70,6 +77,8 @@
             // 
             // lstStoreTypes
             // 
+            this.lstStoreTypes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.lstStoreTypes.FormattingEnabled = true;
             this.lstStoreTypes.Location = new System.Drawing.Point(3, 9);
             this.lstStoreTypes.Name = "lstStoreTypes";
@@ -79,28 +88,34 @@
             // 
             // lblDescrip
             // 
+            this.lblDescrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDescrip.Location = new System.Drawing.Point(156, 10);
             this.lblDescrip.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
             this.lblDescrip.Name = "lblDescrip";
-            this.lblDescrip.Size = new System.Drawing.Size(543, 30);
+            this.lblDescrip.Size = new System.Drawing.Size(551, 30);
             this.lblDescrip.TabIndex = 1;
             this.lblDescrip.Text = "To create a New Connection please select a Store Type from the list on the left h" +
                 "and side.";
             // 
             // grpConnectionSettings
             // 
+            this.grpConnectionSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.grpConnectionSettings.Controls.Add(this.chkForceReadOnly);
             this.grpConnectionSettings.Controls.Add(this.btnConnect);
             this.grpConnectionSettings.Controls.Add(this.tblSettings);
             this.grpConnectionSettings.Location = new System.Drawing.Point(156, 45);
             this.grpConnectionSettings.Name = "grpConnectionSettings";
-            this.grpConnectionSettings.Size = new System.Drawing.Size(550, 218);
+            this.grpConnectionSettings.Size = new System.Drawing.Size(551, 219);
             this.grpConnectionSettings.TabIndex = 2;
             this.grpConnectionSettings.TabStop = false;
             this.grpConnectionSettings.Text = "Connection Settings";
             // 
             // chkForceReadOnly
             // 
+            this.chkForceReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkForceReadOnly.AutoSize = true;
             this.chkForceReadOnly.Location = new System.Drawing.Point(6, 198);
             this.chkForceReadOnly.Name = "chkForceReadOnly";
@@ -111,7 +126,8 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(469, 191);
+            this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConnect.Location = new System.Drawing.Point(470, 192);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 2;
@@ -121,6 +137,9 @@
             // 
             // tblSettings
             // 
+            this.tblSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tblSettings.ColumnCount = 2;
             this.tblSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 19.88848F));
             this.tblSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80.11152F));
@@ -135,7 +154,7 @@
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tblSettings.Size = new System.Drawing.Size(538, 178);
+            this.tblSettings.Size = new System.Drawing.Size(539, 179);
             this.tblSettings.TabIndex = 0;
             // 
             // NewConnectionForm
