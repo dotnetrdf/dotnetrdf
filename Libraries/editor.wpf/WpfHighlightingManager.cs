@@ -33,7 +33,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     {
                         try
                         {
-                            HighlightingManager.Instance.RegisterHighlighting(def.Name, def.FileExtensions, WpfHighlightingManager.LoadHighlighting(def.DefinitionFile));
+                            HighlightingManager.Instance.RegisterHighlighting(def.Name, def.FileExtensions, WpfHighlightingManager.LoadHighlighting(def.DefinitionFile, true));
                         }
                         catch (Exception ex)
                         {

@@ -377,8 +377,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 doc.Text = diag.RetrievedData;
                 if (diag.Parser != null)
                 {
-                    //TODO: Should use the known parser to set syntax here
-                    doc.AutoDetectSyntax();
+                    doc.Syntax = diag.Parser.GetSyntaxName();
                 }
                 else
                 {
@@ -1431,8 +1430,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 if (args.ValidationResults != null)
                 {
                     this.stsSyntaxValidation.Content = args.ValidationResults.Message;
-                    //TODO: Should build a TextBlock with wrapping for the ToolTip
-                    this.stsSyntaxValidation.ToolTip = args.ValidationResults.Message;
+                    //Build a TextBlock with wrapping for the ToolTip
+                    TextBlock block = new TextBlock();
+                    block.TextWrapping = TextWrapping.Wrap;
+                    block.Width = 800;
+                    block.Text = args.ValidationResults.Message;
+                    this.stsSyntaxValidation.ToolTip = block;
                     if (args.ValidationResults.Warnings.Any())
                     {
                         this.stsSyntaxValidation.ToolTip += "\n" + String.Join("\n", args.ValidationResults.Warnings.ToArray());
@@ -1473,8 +1476,6 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            System.Windows.MessageBox.Show("This is the Experimental Branch version of rdfEditor - it is currently undergoing major refactoring and so some features like Auto-Completion are currently unavailable, please use the most recent released version found in Trunk");
-
             //Open a File if we've been asked to do so
             String[] args = Environment.GetCommandLineArgs();
             if (args.Length >= 2)
@@ -1486,6 +1487,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                     {
                         doc.Open(args[1]);
                         this.AddTextEditor(new TabItem(), doc);
+                        this._editor.DocumentManager.Close(0);
+                        this.tabDocuments.Items.RemoveAt(0);
                     }
                     catch (Exception ex)
                     {

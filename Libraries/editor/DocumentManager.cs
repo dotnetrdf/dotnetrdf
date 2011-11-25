@@ -277,6 +277,7 @@ namespace VDS.RDF.Utilities.Editor
         {
             Document<TControl> clonedDoc = this.New();
             clonedDoc.Text = doc.Text;
+            clonedDoc.Syntax = doc.Syntax;
             if (switchTo)
             {
                 this._current = this._documents.Count - 1;

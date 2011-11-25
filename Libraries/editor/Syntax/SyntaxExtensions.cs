@@ -6,9 +6,9 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.Syntax
 {
-    static class SyntaxExtensions
+    public static class SyntaxExtensions
     {
-        internal static String GetSyntaxName(this String name)
+        public static String GetSyntaxName(this String name)
         {
             switch (name)
             {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
-        internal static String GetSyntaxName(this ISparqlResultsReader parser)
+        public static String GetSyntaxName(this ISparqlResultsReader parser)
         {
             if (parser is SparqlJsonParser)
             {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
-        internal static String GetSyntaxName(this IRdfReader parser)
+        public static String GetSyntaxName(this IRdfReader parser)
         {
             /*if (parser is HtmlPlusRdfAParser)
             {
@@ -98,7 +98,7 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
-        internal static String GetSyntaxName(this IStoreReader parser)
+        public static String GetSyntaxName(this IStoreReader parser)
         {
             if (parser is NQuadsParser)
             {
