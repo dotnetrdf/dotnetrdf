@@ -107,22 +107,25 @@ namespace VDS.RDF.Configuration
 
                     bool encrypt = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEncryptConnection), false);
 
+                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+                    AdoAccessMode accessMode = (mode != null ? (AdoAccessMode)Enum.Parse(typeof(AdoAccessMode), mode) : AdoAccessMode.Streaming);
+
                     //Create the Manager
                     if (user != null && pwd != null)
                     {
                         if (targetType.FullName.Equals(MicrosoftAdoManager))
                         {
-                            obj = new MicrosoftAdoManager(server, db, user, pwd, encrypt);
+                            obj = new MicrosoftAdoManager(server, db, user, pwd, encrypt, accessMode);
                         }
                         else
                         {
-                            obj = new AzureAdoManager(server, db, user, pwd);
+                            obj = new AzureAdoManager(server, db, user, pwd, accessMode);
                         }
                     }
                     else
                     {
                         if (targetType.FullName.Equals(AzureAdoManager)) throw new DotNetRdfConfigurationException("Unable to load the object identified by the Node '" + objNode.ToString() + "' as an AzureAdoManager as the required dnr:user and dnr:password properties were missing");
-                        obj = new MicrosoftAdoManager(server, db, encrypt);
+                        obj = new MicrosoftAdoManager(server, db, encrypt, accessMode);
                     }
                     break;
 

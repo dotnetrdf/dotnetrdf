@@ -510,6 +510,8 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
 
+            //TODO: Serialize Load Mode here
+
             if (this._endpoint is IConfigurationSerializable)
             {
                 //Use the indirect serialization method

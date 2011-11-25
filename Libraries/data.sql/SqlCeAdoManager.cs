@@ -16,10 +16,10 @@ namespace VDS.RDF.Storage
         : BaseAdoStore<SqlCeConnection, SqlCeCommand, SqlCeParameter, SqlCeDataAdapter, SqlCeException>
     {
         public SqlCeAdoManager()
-            : base(new Dictionary<string, string>()) { }
+            : base(new Dictionary<string, string>(), AdoAccessMode.Streaming) { }
 
         public SqlCeAdoManager(String filename)
-            : base(SqlCeAdoManager.CreateConnectionParameters(filename)) { }
+            : base(SqlCeAdoManager.CreateConnectionParameters(filename), AdoAccessMode.Streaming) { }
 
         private static Dictionary<String,String> CreateConnectionParameters(String filename)
         {

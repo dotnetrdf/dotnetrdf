@@ -43,6 +43,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -106,6 +107,7 @@ namespace VDS.RDF.Storage
         private SparqlUpdateParser _updateParser;
         private LeviathanUpdateProcessor _updateProcessor;
         private Dictionary<String, String> _parameters;
+        private Dictionary<int, Uri> _graphUris = new Dictionary<int, Uri>();
 
         #region Constructor and Destructor
 
@@ -113,11 +115,12 @@ namespace VDS.RDF.Storage
         /// Creates a new ADO Store
         /// </summary>
         /// <param name="parameters">Parameters for the connection</param>
-        public BaseAdoStore(Dictionary<String,String> parameters)
+        public BaseAdoStore(Dictionary<String,String> parameters, AdoAccessMode accessMode)
         {
             this._parameters = parameters;
             this._connection = this.CreateConnection(parameters);
             this._connection.Open();
+            this._accessMode = accessMode;
 
             //Do a Version and Schema Check
             this._version = this.CheckVersion();
@@ -374,6 +377,22 @@ namespace VDS.RDF.Storage
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Connection = this._connection;
             return (String)cmd.ExecuteScalar();
+        }
+
+        /// <summary>
+        /// Gets/Sets what mode is used to retrieve data from the ADO Store
+        /// </summary>
+        [Description("Gets/Sets what mode is used to retrieve data from the ADO Store")]
+        public AdoAccessMode AccessMode
+        {
+            get
+            {
+                return this._accessMode;
+            }
+            set
+            {
+                this._accessMode = value;
+            }
         }
 
         /// <summary>
@@ -1457,22 +1476,40 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public Uri GetGraphUri(int graphID)
         {
-            TCommand cmd = this.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "GetGraphUri";
-            cmd.Connection = this._connection;
-            cmd.Parameters.Add(this.GetParameter("graphID"));
-            cmd.Parameters["graphID"].DbType = DbType.Int32;
-            cmd.Parameters["graphID"].Value = graphID;
-
-            Object res = cmd.ExecuteScalar();
-            if (Convert.IsDBNull(res))
+            if (this._graphUris.ContainsKey(graphID))
             {
-                return null;
+                return this._graphUris[graphID];
             }
             else
             {
-                return new Uri((String)res);
+                TCommand cmd = this.GetCommand();
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "GetGraphUri";
+                cmd.Connection = this._connection;
+                cmd.Parameters.Add(this.GetParameter("graphID"));
+                cmd.Parameters["graphID"].DbType = DbType.Int32;
+                cmd.Parameters["graphID"].Value = graphID;
+
+                Object res = cmd.ExecuteScalar();
+                try
+                {
+                    Monitor.Enter(this._graphUris);
+                    if (Convert.IsDBNull(res))
+                    {
+                        this._graphUris.Add(graphID, null);
+                        return null;
+                    }
+                    else
+                    {
+                        Uri u = new Uri((String)res);
+                        this._graphUris.Add(graphID, u);
+                        return u;
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(this._graphUris);
+                }
             }
         }
 
@@ -1783,7 +1820,10 @@ namespace VDS.RDF.Storage
         /// Creates a new SQL Client based ADO Store
         /// </summary>
         /// <param name="parameters">Connection Parameters</param>
-        public BaseAdoSqlClientStore(Dictionary<String,String> parameters)
-            : base(parameters) { }
+        public BaseAdoSqlClientStore(Dictionary<String,String> parameters, AdoAccessMode mode)
+            : base(parameters, mode) { }
+
+        public BaseAdoSqlClientStore(Dictionary<String, String> paramters)
+            : this(paramters, AdoAccessMode.Streaming) { }
     }
 }

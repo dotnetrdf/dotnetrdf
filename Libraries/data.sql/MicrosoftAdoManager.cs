@@ -81,8 +81,8 @@ namespace VDS.RDF.Storage
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
         /// <param name="encrypt">Whether to encrypt the connection</param>
-        public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt)
-            : base(CreateConnectionParameters(server, db, user, password, encrypt))
+        public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt, AdoAccessMode mode)
+            : base(CreateConnectionParameters(server, db, user, password, encrypt), mode)
         {
             this._connString = CreateConnectionString(server, db, user, password, encrypt);
             this._server = server;
@@ -99,8 +99,22 @@ namespace VDS.RDF.Storage
         /// <param name="db">Database</param>
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt)
+            : this(server, db, user, password, encrypt, AdoAccessMode.Streaming) { }
+
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        public MicrosoftAdoManager(String server, String db, String user, String password, AdoAccessMode mode)
+            : this(server, db, user, password, false, mode) { }
+
         public MicrosoftAdoManager(String server, String db, String user, String password)
-            : this(server, db, user, password, false) { }
+            : this(server, db, user, password, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -112,8 +126,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server
         /// </remarks>
+        public MicrosoftAdoManager(String db, String user, String password, bool encrypt, AdoAccessMode mode)
+            : this(DefaultServer, db, user, password, encrypt, mode) { }
+
         public MicrosoftAdoManager(String db, String user, String password, bool encrypt)
-            : this(DefaultServer, db, user, password, encrypt) { }
+            : this(DefaultServer, db, user, password, encrypt, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -124,8 +141,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server
         /// </remarks>
+        public MicrosoftAdoManager(String db, String user, String password, AdoAccessMode mode)
+            : this(db, user, password, false, mode) { }
+
         public MicrosoftAdoManager(String db, String user, String password)
-            : this(db, user, password, false) { }
+            : this(db, user, password, false, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -136,8 +156,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
+        public MicrosoftAdoManager(String server, String db, bool encrypt, AdoAccessMode mode)
+            : this(server, db, null, null, encrypt, mode) { }
+
         public MicrosoftAdoManager(String server, String db, bool encrypt)
-            : this(server, db, null, null, encrypt) { }
+            : this(server, db, null, null, encrypt, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -147,8 +170,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
+        public MicrosoftAdoManager(String server, String db, AdoAccessMode mode)
+            : this(server, db, false, mode) { }
+
         public MicrosoftAdoManager(String server, String db)
-            : this(server, db, false) { }
+            : this(server, db, false, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -158,8 +184,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
+        public MicrosoftAdoManager(String db, bool encrypt, AdoAccessMode mode)
+            : this(DefaultServer, db, encrypt, mode) { }
+
         public MicrosoftAdoManager(String db, bool encrypt)
-            : this(DefaultServer, db, encrypt) { }
+            : this(DefaultServer, db, encrypt, AdoAccessMode.Streaming) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -168,8 +197,11 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
+        public MicrosoftAdoManager(String db, AdoAccessMode mode)
+            : this(db, false, mode) { }
+
         public MicrosoftAdoManager(String db)
-            : this(db, false) { }
+            : this(db, false, AdoAccessMode.Streaming) { }
 
         private static String CreateConnectionString(String server, String db, String user, String password, bool encrypt)
         {
@@ -392,6 +424,11 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._server)));
             context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(this._db)));
             if (this._encrypt) context.Graph.Assert(new Triple(manager, encrypt, this._encrypt.ToLiteral(context.Graph)));
+            if (this.AccessMode != AdoAccessMode.Streaming)
+            {
+                INode loadMode = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyLoadMode);
+                context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(this.AccessMode.ToString())));
+            }
 
             if (this._user != null && this._password != null)
             {

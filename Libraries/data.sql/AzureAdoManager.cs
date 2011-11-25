@@ -62,12 +62,15 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// SQL Azure connections are always encrypted
         /// </remarks>
-        public AzureAdoManager(String server, String db, String username, String password)
-            : base(server + AzureServerSuffix, db, username + "@" + server, password, true)
+        public AzureAdoManager(String server, String db, String username, String password, AdoAccessMode mode)
+            : base(server + AzureServerSuffix, db, username + "@" + server, password, true, mode)
         {
             this._azureServer = server;
             this._azureUser = username;
         }
+
+        public AzureAdoManager(String server, String db, String username, String password)
+            : this(server, db, username, password, AdoAccessMode.Streaming) { }
 
         public override string DatabaseType
         {

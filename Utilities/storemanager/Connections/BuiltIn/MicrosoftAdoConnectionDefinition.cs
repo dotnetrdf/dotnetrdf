@@ -28,9 +28,17 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
+        [Connection(DisplayName="Access Mode", DisplayOrder=3, Type=ConnectionSettingType.Enum),
+         DefaultValue(AdoAccessMode.Streaming)]
+        public AdoAccessMode AccessMode
+        {
+            get;
+            set;
+        }
+
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new MicrosoftAdoManager(this.Server, this.Database, this.Username, this.Password, this.EncryptConnection);
+            return new MicrosoftAdoManager(this.Server, this.Database, this.Username, this.Password, this.EncryptConnection, this.AccessMode);
         }
     }
 
