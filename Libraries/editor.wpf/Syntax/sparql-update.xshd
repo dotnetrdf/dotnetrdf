@@ -1,0 +1,78 @@
+﻿<SyntaxDefinition name="SparqlUpdate11" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="Variables" foreground="DarkOrange" />
+  <Color name="EscapedChar" foreground="Teal" />
+
+  <!-- SPARQL Update 1.1 Specification -->
+
+  <RuleSet>
+
+    <Import ruleSet="Keywords" />
+
+    <Keywords color="Keyword">
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>a</Word>
+    </Keywords>
+    
+    <Import ruleSet="Turtle/Literals" />
+
+    <Import ruleSet="SparqlQuery10/Literals" />
+
+    <Import ruleSet="Turtle/Resources" />
+
+    <Import ruleSet="Turtle/BNodes" />
+
+    <Import ruleSet="SparqlQuery10/BNodes" />
+
+    <Import ruleSet="SparqlQuery10/Variables" />
+
+    <Import ruleSet="Turtle/LangSpecifiers" />
+
+    <Import ruleSet="Turtle/PlainLiterals" />
+
+    <!-- Punctuation Characters -->
+
+    <Rule color="Punctuation">
+      [.;,{}*=&gt;&lt;]|&gt;=|&lt;=|!=|\^\^
+    </Rule>
+
+    <!-- Comments -->
+
+    <Span color="Comment">
+      <Begin>\#</Begin>
+    </Span>
+    
+  </RuleSet>
+
+  <RuleSet name="Keywords" ignoreCase="true">
+    <!-- Case insensitive Keywords -->
+    <Keywords color="Keyword">
+      <Word>BASE</Word>
+      <Word>CLEAR</Word>
+      <Word>CREATE</Word>
+      <Word>DATA</Word>
+      <Word>DEFAULT</Word>
+      <Word>DELETE</Word>
+      <Word>DROP</Word>
+      <Word>GRAPH</Word>
+      <Word>INSERT</Word>
+      <Word>INTO</Word>
+      <Word>LOAD</Word>
+      <Word>PREFIX</Word>
+      <Word>SILENT</Word>
+      <Word>USING</Word>
+      <Word>WHERE</Word>
+      <Word>WITH</Word>
+    </Keywords>
+  </RuleSet>
+  
+</SyntaxDefinition>

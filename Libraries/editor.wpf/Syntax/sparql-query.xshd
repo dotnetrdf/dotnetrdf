@@ -1,0 +1,143 @@
+﻿<SyntaxDefinition name="SparqlQuery10" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="Numbers" foreground="DarkBlue" />
+  <Color name="Variables" foreground="DarkOrange" />
+  <Color name="EscapedChar" foreground="Teal" />
+
+  <!-- SPARQL Query 1.0 Specification -->
+
+  <RuleSet>
+
+    <Import ruleSet="Keywords" />
+
+    <Keywords color="Keyword">
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>a</Word>
+    </Keywords>
+    
+    <Import ruleSet="Turtle/Literals" />
+
+    <Import ruleSet="Literals" />
+
+    <Import ruleSet="Resources" />
+
+    <Import ruleSet="Turtle/BNodes" />
+
+    <Import ruleSet="BNodes" />
+
+    <Import ruleSet="Variables" />
+
+    <Import ruleSet="Turtle/LangSpecifiers" />
+
+    <Import ruleSet="Turtle/PlainLiterals" />
+
+    <!-- Punctuation Characters -->
+
+    <Rule color="Punctuation">
+      [.;,{}*=&gt;&lt;]|&gt;=|&lt;=|!=|\^\^
+    </Rule>
+
+    <!-- Comments -->
+
+    <Span color="Comment">
+      <Begin>\#</Begin>
+    </Span>
+    
+  </RuleSet>
+
+  <RuleSet name="Keywords" ignoreCase="true">
+    <!-- Case insensitive Keywords -->
+    <Keywords color="Keyword">
+      <Word>BASE</Word>
+      <Word>PREFIX</Word>
+      <Word>SELECT</Word>
+      <Word>CONSTRUCT</Word>
+      <Word>ASK</Word>
+      <Word>DESCRIBE</Word>
+      <Word>ORDER BY</Word>
+      <Word>LIMIT</Word>
+      <Word>OFFSET</Word>
+      <Word>DISTINCT</Word>
+      <Word>REDUCED</Word>
+      <Word>FROM</Word>
+      <Word>FROM NAMED</Word>
+      <Word>WHERE</Word>
+      <Word>GRAPH</Word>
+      <Word>OPTIONAL</Word>
+      <Word>UNION</Word>
+      <Word>FILTER</Word>
+      <Word>STR</Word>
+      <Word>LANG</Word>
+      <Word>LANGMATCHES</Word>
+      <Word>DATATYPE</Word>
+      <Word>BOUND</Word>
+      <Word>SAMETERM</Word>
+      <Word>ISURI</Word>
+      <Word>ISIRI</Word>
+      <Word>ISLITERAL</Word>
+      <Word>ISBLANK</Word>
+      <Word>REGEX</Word>
+    </Keywords>
+  </RuleSet>
+
+  <RuleSet name="Resources">
+    <!-- URIs and QNames -->
+
+    <Span color="URI" ruleSet="Turtle/UriEscapes">
+      <Begin>&lt;(?![ =])</Begin>
+      <End>&gt;(?&lt;!\\)</End>
+    </Span>
+
+    <Rule color="QName">
+      (\p{L}(\p{L}|\p{N}|-|_)*)?:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
+    </Rule>
+  </RuleSet>
+
+  <RuleSet name="BNodes">
+    <!-- Blank Nodes -->
+
+    <Rule color="BNode">
+      _:(\p{L}|\d)(\p{L}|\p{N}|-|_)*
+    </Rule>
+
+  </RuleSet>
+
+  <RuleSet name="Variables">
+    <!-- Variables -->
+
+    <Rule color="Variables">
+      [?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*
+    </Rule>
+    
+  </RuleSet>
+
+  <RuleSet name="Literals">
+    <!-- Literals -->
+
+    <Span color="String" multiline="true" ruleSet="StringEscapes">
+      <Begin>'''</Begin>
+      <End>'''</End>
+    </Span>
+
+    <Span color="String" ruleSet="StringEscapes">
+      <Begin>'</Begin>
+      <End>'(?&lt;!\\)</End>
+    </Span>
+
+  </RuleSet>
+
+  <RuleSet name="StringEscapes">
+    <Rule color="EscapedChar">
+      \\([trn'"\\]|u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8})
+    </Rule>
+  </RuleSet>
+  
+</SyntaxDefinition>

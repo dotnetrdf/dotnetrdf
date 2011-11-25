@@ -1,0 +1,58 @@
+﻿<SyntaxDefinition name="NTriples" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+	<Color name="Comment" foreground="Green" />
+	<Color name="Keyword" foreground="Red" />
+	<Color name="String" foreground="Blue" />
+	<Color name="QName" foreground="DarkMagenta" />
+	<Color name="URI" foreground="DarkMagenta" />
+	<Color name="Punctuation" foreground="DarkGreen" />
+	<Color name="BNode" foreground="SteelBlue" />
+	<Color name="LangSpec" foreground="DarkGreen" />
+  <Color name="EscapedChar" foreground="Teal" />
+	
+	<RuleSet>
+	
+		<!-- Literals -->
+		
+		<Span color="String" ruleSet="Turtle/StringEscapes">
+			<Begin>"</Begin>
+			<End>"(?&lt;!\\)</End>
+		</Span>
+		
+		<!-- URIs -->
+		
+		<Span color="URI" ruleSet="Turtle/UriEscapes">
+			<Begin>&lt;</Begin>
+			<End>&gt;(?&lt;!\\)</End>
+		</Span>
+		
+		<!-- Blank Nodes -->
+		
+		<Rule color="BNode">
+			_:([a-zA-Z]|\\u[a-fA-F0-9]{4}|\\U[a-fA-F0-9]{8})\w*
+		</Rule>
+		
+		<Rule color="BNode">
+			\[\]
+		</Rule>
+		
+		<!-- Language Specifiers -->
+		
+		<Rule color="LangSpec">
+			@[A-Za-z]{2}(-[A-Za-z]+)*
+		</Rule>
+		
+		<!-- Punctuation Characters -->
+		
+		<Rule color="Punctuation">
+			[.]|\^\^
+		</Rule>
+		
+		<!-- Comments -->
+		
+		<Span color="Comment">
+			<Begin>\#</Begin>
+		</Span>
+	
+	</RuleSet>
+	
+</SyntaxDefinition>
