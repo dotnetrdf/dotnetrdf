@@ -1,0 +1,418 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix : <http://www.w3.org/2006/vcard/ns#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix vcard: <http://www.w3.org/2006/vcard/>.
+
+_:autos15 rdf:first :Address;
+          rdf:rest _:autos16.
+_:autos16 rdf:first :Label;
+          rdf:rest rdf:nil.
+_:autos18 rdf:first :Address;
+          rdf:rest _:autos19.
+_:autos19 rdf:first :Label;
+          rdf:rest _:autos20.
+_:autos2 rdf:first xsd:date;
+         rdf:rest _:autos3.
+_:autos20 rdf:first :Tel;
+          rdf:rest rdf:nil.
+_:autos22 rdf:first :Address;
+          rdf:rest _:autos23.
+_:autos23 rdf:first :Label;
+          rdf:rest rdf:nil.
+_:autos3 rdf:first xsd:dateTime;
+         rdf:rest rdf:nil.
+_:autos34 rdf:first :Address;
+          rdf:rest _:autos35.
+_:autos35 rdf:first :Label;
+          rdf:rest rdf:nil.
+_:autos37 rdf:first :Address;
+          rdf:rest _:autos38.
+_:autos38 rdf:first :Label;
+          rdf:rest rdf:nil.
+_:autos40 rdf:first :Address;
+          rdf:rest _:autos41.
+_:autos41 rdf:first :Email;
+          rdf:rest _:autos42.
+_:autos42 rdf:first :Label;
+          rdf:rest _:autos43.
+_:autos43 rdf:first :Tel;
+          rdf:rest rdf:nil.
+_:autos45 rdf:first :Address;
+          rdf:rest _:autos46.
+_:autos46 rdf:first :Email;
+          rdf:rest _:autos47.
+_:autos47 rdf:first :Label;
+          rdf:rest _:autos48.
+_:autos48 rdf:first :Tel;
+          rdf:rest rdf:nil.
+_:autos5 rdf:first xsd:date;
+         rdf:rest _:autos6.
+_:autos6 rdf:first xsd:dateTime;
+         rdf:rest rdf:nil.
+dc:contributor a owl:AnnotationProperty.
+dc:creator a owl:AnnotationProperty.
+dc:date a owl:AnnotationProperty.
+dc:description a owl:AnnotationProperty.
+dc:title a owl:AnnotationProperty.
+vcard:ns dc:creator "Brian Suda",
+                    "Harry Halpin",
+                    "Norman Walsh",
+                    "Renato Iannella";
+         dc:date "2010-01-20";
+         dc:description "This ontology models and represents vCards in RDF using current best practices.";
+         dc:title "An Ontology for vCards";
+         a owl:Ontology;
+         rdfs:seeAlso "http://tools.ietf.org/html/rfc2426",
+                      "http://www.w3.org/Submission/vcard-rdf/".
+:Address a owl:Class;
+         rdfs:comment "Resources that are vCard Addresses";
+         rdfs:label "vCard Address Class";
+         rdfs:subClassOf [a owl:Restriction ; 
+                          owl:onProperty :post-office-box ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :region ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :postal-code ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :street-address ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :extended-address ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :locality ; 
+                          owl:someValuesFrom rdfs:Literal],
+                         [a owl:Restriction ; 
+                          owl:onProperty :country-name ; 
+                          owl:someValuesFrom rdfs:Literal];
+         owl:disjointWith :Email,
+                          :Label,
+                          :Tel.
+:BBS a owl:Class;
+     rdfs:comment "Bulletin Board System Communications";
+     rdfs:label "Bulletin Board System";
+     rdfs:subClassOf :Tel.
+:Car a owl:Class;
+     rdfs:comment "Car Telephone";
+     rdfs:label "Car Phone";
+     rdfs:subClassOf :Tel.
+:Cell a owl:Class;
+      rdfs:comment "Cellular or Mobile Telephone";
+      rdfs:label "Cellular Telephone";
+      rdfs:subClassOf :Tel.
+:Dom a owl:Class;
+     rdfs:comment "Information related to a Domestic Address or Label";
+     rdfs:label "Domestic";
+     rdfs:subClassOf [a owl:Class ; 
+                      owl:unionOf _:autos15].
+:Email a owl:Class;
+       rdfs:comment "Resources that are vCard Email Addresses";
+       rdfs:label "Email";
+       owl:disjointWith :Label,
+                        :Tel.
+:Fax a owl:Class;
+     rdfs:comment "Fax Communications";
+     rdfs:label "Fax";
+     rdfs:subClassOf :Tel.
+:Home a owl:Class;
+      rdfs:comment "Information related to a Home Address, Label, or Telephone";
+      rdfs:label "Home";
+      rdfs:subClassOf [a owl:Class ; 
+                       owl:unionOf _:autos18].
+:ISDN a owl:Class;
+      rdfs:comment "ISDN Communications";
+      rdfs:label "ISDN";
+      rdfs:subClassOf :Tel.
+:Internet a owl:Class;
+          rdfs:comment "Internet Email";
+          rdfs:label "Internet";
+          rdfs:subClassOf :Email.
+:Intl a owl:Class;
+      rdfs:comment "Information related to an International Address or Label";
+      rdfs:label "International";
+      rdfs:subClassOf [a owl:Class ; 
+                       owl:unionOf _:autos22].
+:Label a owl:Class;
+       rdfs:comment "Resources that are vCard Labels";
+       rdfs:label "Label";
+       owl:disjointWith :Tel.
+:Location a owl:Class;
+          rdfs:comment "Resources that are vCard geographic locations";
+          rdfs:label "vCard Geographic Location Class";
+          rdfs:subClassOf [a owl:Restriction ; 
+                           owl:onProperty :latitude ; 
+                           owl:someValuesFrom rdfs:Literal],
+                          [a owl:Restriction ; 
+                           owl:onProperty :longitude ; 
+                           owl:someValuesFrom rdfs:Literal].
+:Modem a owl:Class;
+       rdfs:comment "Modem Communications";
+       rdfs:label "Modem";
+       rdfs:subClassOf :Tel.
+:Msg a owl:Class;
+     rdfs:comment "Voice Message Communications";
+     rdfs:label "Voice Messenger";
+     rdfs:subClassOf :Tel.
+:Name a owl:Class;
+      rdfs:comment "Resources that are vCard personal names";
+      rdfs:label "vCard Name Class";
+      rdfs:subClassOf [a owl:Restriction ; 
+                       owl:onProperty :family-name ; 
+                       owl:someValuesFrom rdfs:Literal],
+                      [a owl:Restriction ; 
+                       owl:onProperty :given-name ; 
+                       owl:someValuesFrom rdfs:Literal],
+                      [a owl:Restriction ; 
+                       owl:onProperty :additional-name ; 
+                       owl:someValuesFrom rdfs:Literal],
+                      [a owl:Restriction ; 
+                       owl:onProperty :honorific-suffix ; 
+                       owl:someValuesFrom rdfs:Literal],
+                      [a owl:Restriction ; 
+                       owl:onProperty :honorific-prefix ; 
+                       owl:someValuesFrom rdfs:Literal].
+:Organization a owl:Class;
+              rdfs:comment "Resources that are vCard organizations";
+              rdfs:label "vCard Organization Class";
+              rdfs:subClassOf [a owl:Restriction ; 
+                               owl:onProperty :organization-unit ; 
+                               owl:someValuesFrom rdfs:Literal],
+                              [a owl:Restriction ; 
+                               owl:onProperty :organization-name ; 
+                               owl:someValuesFrom rdfs:Literal].
+:PCS a owl:Class;
+     rdfs:comment "Personal Communications Service";
+     rdfs:label "Personal Communications Service";
+     rdfs:subClassOf :Tel.
+:Pager a owl:Class;
+       rdfs:comment "Pager Communications";
+       rdfs:label "Pager Device";
+       rdfs:subClassOf :Tel.
+:Parcel a owl:Class;
+        rdfs:comment "Information related to a Parcel Address or Label";
+        rdfs:label "Parcel";
+        rdfs:subClassOf [a owl:Class ; 
+                         owl:unionOf _:autos34].
+:Postal a owl:Class;
+        rdfs:comment "Information related to a Postal Address or Label";
+        rdfs:label "Postal";
+        rdfs:subClassOf [a owl:Class ; 
+                         owl:unionOf _:autos37].
+:Pref a owl:Class;
+      rdfs:comment "Information related to a Preferred Address, Email, Label, or Telephone";
+      rdfs:label "Preferred";
+      rdfs:subClassOf [a owl:Class ; 
+                       owl:unionOf _:autos40].
+:Tel a owl:Class;
+     rdfs:comment "Resources that are vCard Telephony communication mechanisms",
+                  "Telephone".
+:VCard a owl:Class;
+       rdfs:comment "Resources that are vCards and the URIs that denote these vCards can also be the same URIs that denote people/orgs";
+       rdfs:label "vCard Class".
+:Video a owl:Class;
+       rdfs:comment "Video Communications";
+       rdfs:label "Video";
+       rdfs:subClassOf :Tel.
+:Voice a owl:Class;
+       rdfs:comment "Voice Communications";
+       rdfs:label "Voice";
+       rdfs:subClassOf :Tel.
+:Work a owl:Class;
+      rdfs:comment "Information related to a Work Address, Label, or Telephone";
+      rdfs:label "Work";
+      rdfs:subClassOf [a owl:Class ; 
+                       owl:unionOf _:autos45].
+:X400 a owl:Class;
+      rdfs:comment "X.400 Email";
+      rdfs:label "X.400";
+      rdfs:subClassOf :Email.
+:additional-name a owl:DatatypeProperty;
+                 rdfs:comment "An additional part of a person's name";
+                 rdfs:domain :Name;
+                 rdfs:label "additional name".
+:adr a owl:ObjectProperty;
+     rdfs:comment "A postal or street address of a person";
+     rdfs:domain :VCard;
+     rdfs:label "address";
+     rdfs:range :Address.
+:agent a owl:ObjectProperty;
+       rdfs:comment "A person that acts as one's agent";
+       rdfs:domain :VCard;
+       rdfs:label "agent";
+       rdfs:range :VCard.
+:bday a owl:DatatypeProperty;
+      rdfs:comment "The birthday of a person";
+      rdfs:domain :VCard;
+      rdfs:label "birthday";
+      rdfs:range [a rdfs:Datatype ; 
+                  owl:unionOf _:autos2].
+:category a owl:DatatypeProperty;
+          rdfs:comment "A category of a vCard";
+          rdfs:domain :VCard;
+          rdfs:label "category".
+:class a owl:DatatypeProperty;
+       rdfs:comment "A class (e.g., public, private, etc.) of a vCard";
+       rdfs:domain :VCard;
+       rdfs:label "class".
+:country-name a owl:DatatypeProperty;
+              rdfs:comment "The country of a postal address";
+              rdfs:domain :Address;
+              rdfs:label "country".
+:email a owl:ObjectProperty;
+       rdfs:comment "An email address";
+       rdfs:domain :VCard;
+       rdfs:label "email".
+:extended-address a owl:DatatypeProperty;
+                  rdfs:comment "The extended address of a postal address";
+                  rdfs:domain :Address;
+                  rdfs:label "extended".
+:family-name a owl:DatatypeProperty;
+             rdfs:comment "A family name part of a person's name";
+             rdfs:domain :Name;
+             rdfs:label "family name".
+:fn a owl:DatatypeProperty;
+    rdfs:comment "A formatted name of a person";
+    rdfs:domain :VCard;
+    rdfs:label "formatted name".
+:geo a owl:ObjectProperty;
+     rdfs:comment "A geographic location associated with a person";
+     rdfs:domain :VCard;
+     rdfs:label "geographic location";
+     rdfs:range :Location.
+:given-name a owl:DatatypeProperty;
+            rdfs:comment "A given name part of a person's name";
+            rdfs:domain :Name;
+            rdfs:label "given name".
+:honorific-prefix a owl:DatatypeProperty;
+                  rdfs:comment "An honorific prefix part of a person's name";
+                  rdfs:domain :Name;
+                  rdfs:label "honorific prefix".
+:honorific-suffix a owl:DatatypeProperty;
+                  rdfs:comment "An honorific suffix part of a person's name";
+                  rdfs:domain :Name;
+                  rdfs:label "honorific suffix".
+:key a owl:ObjectProperty;
+     rdfs:comment "A key (e.g, PKI key) of a person";
+     rdfs:domain :VCard;
+     rdfs:label "key".
+:label a owl:DatatypeProperty;
+       rdfs:comment "The formatted version of a postal address (a string with embedded line breaks, punctuation, etc.)";
+       rdfs:domain :Address;
+       rdfs:label "address label".
+:latitude a owl:DatatypeProperty;
+          rdfs:comment "The latitude of the location of the vCard object";
+          rdfs:domain :Location;
+          rdfs:label "geographic latitude";
+          rdfs:range xsd:float.
+:locality a owl:DatatypeProperty;
+          rdfs:comment "The locality (e.g., city) of a postal address";
+          rdfs:domain :Address;
+          rdfs:label "locality".
+:logo a owl:ObjectProperty;
+      rdfs:comment "A logo associated with a person or their organization";
+      rdfs:domain :VCard;
+      rdfs:label "logo".
+:longitude a owl:DatatypeProperty;
+           rdfs:comment "The longitude of the location of the vCard object";
+           rdfs:domain :Location;
+           rdfs:label "geographic longitude";
+           rdfs:range xsd:float.
+:mailer a owl:DatatypeProperty;
+        rdfs:comment "A mailer associated with a vCard";
+        rdfs:domain :VCard;
+        rdfs:label "mailer".
+:n a owl:ObjectProperty;
+   rdfs:comment "The components of the name of a person";
+   rdfs:domain :VCard;
+   rdfs:label "name";
+   rdfs:range :Name.
+:nickname a owl:DatatypeProperty;
+          rdfs:comment "The nickname of a person";
+          rdfs:domain :VCard;
+          rdfs:label "nickname".
+:note a owl:DatatypeProperty;
+      rdfs:comment "Notes about a person on a vCard";
+      rdfs:domain :VCard;
+      rdfs:label "notes".
+:org a owl:ObjectProperty;
+     rdfs:comment "An organization associated with a person";
+     rdfs:domain :VCard;
+     rdfs:label "organization";
+     rdfs:range :Organization.
+:organization-name a owl:DatatypeProperty;
+                   rdfs:comment "The name of an organization";
+                   rdfs:domain :Organization;
+                   rdfs:label "name".
+:organization-unit a owl:DatatypeProperty;
+                   rdfs:comment "The name of a unit within an organization";
+                   rdfs:domain :Organization;
+                   rdfs:label "unit".
+:photo a owl:ObjectProperty;
+       rdfs:comment "A photograph of a person";
+       rdfs:domain :VCard;
+       rdfs:label "photo".
+:post-office-box a owl:DatatypeProperty;
+                 rdfs:comment "The post office box of a postal address";
+                 rdfs:domain :Address;
+                 rdfs:label "P.O. Box".
+:postal-code a owl:DatatypeProperty;
+             rdfs:comment "The postal code (e.g., U.S. ZIP code) of a postal address";
+             rdfs:domain :Address;
+             rdfs:label "postal code".
+:prodid a owl:DatatypeProperty;
+        rdfs:comment "The Identifier for the product that created the vCard object";
+        rdfs:domain :VCard;
+        rdfs:label "prodid".
+:region a owl:DatatypeProperty;
+        rdfs:comment "The region (e.g., state or province) of a postal address";
+        rdfs:domain :Address;
+        rdfs:label "region".
+:rev a owl:DatatypeProperty;
+     rdfs:comment "The timestamp of a revision of a vCard";
+     rdfs:domain :VCard;
+     rdfs:label "revision";
+     rdfs:range [a rdfs:Datatype ; 
+                 owl:unionOf _:autos5].
+:role a owl:DatatypeProperty;
+      rdfs:comment "A role a person plays within an organization";
+      rdfs:domain :VCard;
+      rdfs:label "role".
+:sort-string a owl:DatatypeProperty;
+             rdfs:comment "A version of a person's name suitable for collation";
+             rdfs:domain :VCard;
+             rdfs:label "sort".
+:sound a owl:ObjectProperty;
+       rdfs:comment "A sound (e.g., a greeting or pronounciation) of a person";
+       rdfs:domain :VCard;
+       rdfs:label "sound".
+:street-address a owl:DatatypeProperty;
+                rdfs:comment "The street address of a postal address";
+                rdfs:domain :Address;
+                rdfs:label "street".
+:tel a owl:ObjectProperty;
+     rdfs:comment "A telephone number of a person";
+     rdfs:domain :VCard;
+     rdfs:label "phone".
+:title a owl:DatatypeProperty;
+       rdfs:comment "A person's title";
+       rdfs:domain :VCard;
+       rdfs:label "title".
+:tz a owl:DatatypeProperty;
+    rdfs:comment "A timezone associated with a person";
+    rdfs:domain :VCard;
+    rdfs:label "timezone".
+:uid a owl:DatatypeProperty;
+     rdfs:comment "A UID of a person's vCard";
+     rdfs:domain :VCard;
+     rdfs:label "uid".
+:url a owl:ObjectProperty;
+     rdfs:comment "A URL associated with a person";
+     rdfs:domain :VCard;
+     rdfs:label "url".

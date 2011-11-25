@@ -1,0 +1,25 @@
+﻿@base <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+@prefix vs: <http://www.w3.org/2003/06/sw-vocab-status/ns#>.
+
+vs: dc:description "An RDF vocabulary for relating SW vocabulary terms to their status.";
+    dc:title "SemWeb Vocab Status ontology";
+    a owl:Ontology.
+vs:moreinfo a rdf:Property;
+            rdfs:comment "more information about the status etc of a term, typically human oriented";
+            rdfs:label "more info";
+            vs:term_status "unstable".
+vs:term_status a rdf:Property;
+               rdfs:comment "the status of a vocabulary term, expressed as a short symbolic string; known values include 'unstable','testing', 'stable' and 'archaic'";
+               rdfs:label "term status";
+               vs:term_status "unstable".
+vs:userdocs a rdf:Property;
+            rdfs:comment "human-oriented documentation, examples etc for use of this term";
+            rdfs:label "user docs";
+            vs:term_status "unstable".

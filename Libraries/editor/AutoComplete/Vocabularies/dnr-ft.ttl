@@ -1,0 +1,89 @@
+﻿@base <http://www.dotnetrdf.org/configuration/fulltext#>.
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix vann: <http://purl.org/vocab/vann/>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#>.
+@prefix dnr-ft: <http://www.dotnetrdf.org/configuration/fulltext#>.
+
+_:autos11 rdf:first dnr:SparqlDataset;
+          rdf:rest _:autos12.
+_:autos12 rdf:first dnr:TripleStore;
+          rdf:rest _:autos13.
+_:autos13 rdf:first dnr:Graph;
+          rdf:rest rdf:nil.
+_:autos2 rdf:first dnr-ft:Indexer;
+         rdf:rest _:autos3.
+_:autos3 rdf:first dnr-ft:Searcher;
+         rdf:rest rdf:nil.
+_:autos5 rdf:first dnr-ft:Indexer;
+         rdf:rest _:autos6.
+_:autos6 rdf:first dnr-ft:Searcher;
+         rdf:rest rdf:nil.
+_:autos8 rdf:first dnr-ft:Indexer;
+         rdf:rest _:autos9.
+_:autos9 rdf:first dnr-ft:Searcher;
+         rdf:rest rdf:nil.
+dnr-ft:Analyzer a rdfs:Class;
+                rdfs:comment "An Analyzer is used to determine the actual terms from the data to be indexed";
+                rdfs:label "Class of Analyzers".
+dnr-ft:Index a rdfs:Class;
+             rdfs:comment "An Index represents an index of data";
+             rdfs:label "Class of Index".
+dnr-ft:Indexer a rdfs:Class;
+               rdfs:comment "An Indexer is an object that can perform the indexing of RDF Data";
+               rdfs:label "Class of Indexers".
+dnr-ft:Schema a rdfs:Class;
+              rdfs:comment "A Schema controls how the Query.FullText library reads and writes documents in the Index";
+              rdfs:label "Class of Schemas".
+dnr-ft:Searcher a rdfs:Class;
+                rdfs:comment "A Search Provider allows full text search and provides results in terms of RDF Terms and scores";
+                rdfs:label "Class of Search Providers".
+dnr-ft:analyzer a rdf:Property;
+                rdfs:comment "Relates an object to an Analyzer";
+                rdfs:domain [a owl:Class ; 
+                             owl:UnionOf _:autos2];
+                rdfs:label "Analyzer";
+                rdfs:range dnr-ft:Analyzer.
+dnr-ft:buildIndexFor a rdf:Property;
+                     rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources first";
+                     rdfs:domain dnr-ft:Searcher;
+                     rdfs:label "Build Index For";
+                     rdfs:range [a owl:Class ; 
+                                 owl:unionOf _:autos11].
+dnr-ft:buildIndexWith a rdf:Property;
+                      rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources using the specified Indexer first";
+                      rdfs:domain dnr-ft:Searcher;
+                      rdfs:label "Build Index With";
+                      rdfs:range dnr-ft:Indexer.
+dnr-ft:ensureIndex a rdf:Property;
+                   rdfs:comment "Used to state that the configuration loader should ensure the index is ready for use by creating and destroying an index writer relevant to the index being loaded";
+                   rdfs:domain dnr-ft:Index;
+                   rdfs:label "Ensure Index";
+                   rdfs:range xsd:boolean.
+dnr-ft:index a rdf:Property;
+             rdfs:comment "Relates an object to an Index";
+             rdfs:domain [a owl:Class ; 
+                          owl:unionOf _:autos5];
+             rdfs:label "Index";
+             rdfs:range dnr-ft:Index.
+dnr-ft:indexer a rdf:Property;
+               rdfs:comment "Relates an object to an Indexer";
+               rdfs:label "Indexer";
+               rdfs:range dnr-ft:Indexer.
+dnr-ft:schema a rdf:Property;
+              rdfs:comment "Relates an object to an Index Schema";
+              rdfs:domain [a owl:Class ; 
+                           owl:unionOf _:autos8];
+              rdfs:label "Schema";
+              rdfs:range dnr-ft:Schema.
+dnr-ft:searcher a rdf:Property;
+                rdfs:comment "Relates an object to a Index Searcher";
+                rdfs:label "Searcher";
+                rdfs:range dnr-ft:Searcher.
+dnr-ft:version a rdf:Property;
+               rdfs:comment "Used to state what version the index is and thus what compatibility settings if any apply";
+               rdfs:label "Version".
