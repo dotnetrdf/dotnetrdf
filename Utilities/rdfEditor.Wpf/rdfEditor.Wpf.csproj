@@ -8,7 +8,7 @@
     <ProjectGuid>{F8006AE8-6107-4297-9E19-C2E55303FCC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VDS.RDF.Utilities.Editor</RootNamespace>
+    <RootNamespace>VDS.RDF.Utilities.Editor.Wpf</RootNamespace>
     <AssemblyName>rdfEditor</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -36,11 +36,11 @@
   <ItemGroup>
     <Reference Include="FileAssociation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\FileAssociation.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\FileAssociation.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.0.0.6361, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\ICSharpCode.AvalonEdit.dll</HintPath>
+      <HintPath>..\..\..\..\Trunk\Dependencies\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
     <Reference Include="ReachFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -89,28 +89,6 @@
     <Compile Include="AppearanceSettings.xaml.cs">
       <DependentUpon>AppearanceSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AutoComplete\AutoCompleteDefinition.cs" />
-    <Compile Include="AutoComplete\AutoCompleteManager.cs" />
-    <Compile Include="AutoComplete\AutoCompleteState.cs" />
-    <Compile Include="AutoComplete\BaseAutoCompleter.cs" />
-    <Compile Include="AutoComplete\NTriplesAutoCompleter.cs" />
-    <Compile Include="AutoComplete\Data\BaseCompletionData.cs" />
-    <Compile Include="AutoComplete\Data\BlankNodeCompletionData.cs" />
-    <Compile Include="AutoComplete\Data\NewBlankNode.cs" />
-    <Compile Include="AutoComplete\Data\NewDefaultPrefixDeclaration.cs" />
-    <Compile Include="AutoComplete\Data\NewPrefixDeclaration.cs" />
-    <Compile Include="AutoComplete\IAutoCompleter.cs" />
-    <Compile Include="AutoComplete\Data\KeywordCompletionData.cs" />
-    <Compile Include="AutoComplete\NamespaceTerm.cs" />
-    <Compile Include="AutoComplete\Data\NewBaseDeclaration.cs" />
-    <Compile Include="AutoComplete\Notation3AutoCompleter.cs" />
-    <Compile Include="AutoComplete\Data\PrefixCompletionData.cs" />
-    <Compile Include="AutoComplete\Data\QNameCompletionData.cs" />
-    <Compile Include="AutoComplete\SparqlAutoCompleter.cs" />
-    <Compile Include="AutoComplete\SparqlUpdateAutoCompleter.cs" />
-    <Compile Include="AutoComplete\TurtleAutoCompleter.cs" />
-    <Compile Include="AutoComplete\Data\VariableCompletionData.cs" />
-    <EmbeddedResource Include="AutoComplete\Vocabularies\xsd.ttl" />
     <Compile Include="Commands.cs" />
     <Compile Include="ComplexInputBinding.cs" />
     <Compile Include="ComplexInputGesture.cs" />
@@ -142,7 +120,6 @@
     <Compile Include="FileAssociations.xaml.cs">
       <DependentUpon>FileAssociations.xaml</DependentUpon>
     </Compile>
-    <Compile Include="OffsetScopedNamespaceMapper.cs" />
     <Compile Include="OpenQueryResults.xaml.cs">
       <DependentUpon>OpenQueryResults.xaml</DependentUpon>
     </Compile>
@@ -157,23 +134,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="EditorManager.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Selection\BaseSelector.cs" />
-    <Compile Include="Selection\DefaultSelector.cs" />
-    <Compile Include="Selection\ISymbolSelector.cs" />
-    <Compile Include="Selection\WhiteSpaceSelector.cs" />
-    <Compile Include="Syntax\CustomColourBrush.cs" />
-    <Compile Include="Syntax\CustomHighlightingBrush.cs" />
-    <Compile Include="Syntax\FakeTextRunContext.cs" />
-    <Compile Include="Syntax\SyntaxDefinition.cs" />
-    <Compile Include="Syntax\SyntaxManager.cs" />
-    <Compile Include="Syntax\ValidationErrorElementGenerator.cs" />
-    <Compile Include="Syntax\ValidationErrorLineText.cs" />
     <Compile Include="TriplesWindow.xaml.cs">
       <DependentUpon>TriplesWindow.xaml</DependentUpon>
     </Compile>
@@ -185,59 +150,25 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\n3.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\ntriples.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\sparql-query-11.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <EmbeddedResource Include="Syntax\trix.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\trig.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\nquads.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\xhtml-rdfa.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\sparql-update.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\sparql-results-json.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\sparql-results-xml.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\rdfxml.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\rdfjson.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\sparql-query.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Syntax\turtle.xshd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\editor.wpf\rdfEditor.Core.Wpf.csproj">
+      <Project>{C06AF971-A922-4070-A335-1C5D6A16A6CE}</Project>
+      <Name>rdfEditor.Core.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\editor\rdfEditor.Core.csproj">
+      <Project>{D381CE62-3B23-4BFE-847B-912F7992075B}</Project>
+      <Name>rdfEditor.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

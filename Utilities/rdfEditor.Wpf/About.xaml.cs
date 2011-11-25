@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VDS.RDF;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for About.xaml
@@ -25,6 +25,8 @@ namespace VDS.RDF.Utilities.Editor
             InitializeComponent();
 
             this.lblEditorVersion.Content = Assembly.GetExecutingAssembly().GetName().Version;
+            this.lblEditorCoreVersion.Content = Assembly.GetAssembly(typeof(GlobalOptions)).GetName().Version;
+            this.lblEditorCoreWpfVersion.Content = Assembly.GetAssembly(typeof(WpfEditorAdaptor)).GetName().Version;
             this.lblRdfVersion.Content = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
         }
     }

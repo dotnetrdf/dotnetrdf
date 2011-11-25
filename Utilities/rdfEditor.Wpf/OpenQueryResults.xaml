@@ -1,8 +1,8 @@
-﻿<Window x:Class="VDS.RDF.Utilities.Editor.OpenQueryResults"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.Wpf.OpenQueryResults"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Open Query Results" Height="220" Width="623" ResizeMode="NoResize" Loaded="Window_Loaded">
-    <Grid>
+    <Grid Name="gridContent">
         <Grid.RowDefinitions>
             <RowDefinition Height="29*"></RowDefinition>
             <RowDefinition Height="29*"></RowDefinition>
@@ -21,14 +21,6 @@
         <TextBox Grid.Row="1" Grid.Column="1" Name="txtDefaultGraph">http://dbpedia.org</TextBox>
         
         <Label Grid.Row="2" Grid.Column="0">Query:</Label>
-        <avalonEdit:TextEditor
-            xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-            Name="queryEditor"
-            FontFamily="Consolas"
-            FontSize="10pt" Margin="0,0,0,0" 
-            Grid.Row="2"
-            Grid.Column="1"
-            />
         
         <Button Name="btnOpenQueryResults" Grid.Row="3" Grid.Column="1" Click="btnOpenQueryResults_Click">Open Query Results</Button>
     </Grid>

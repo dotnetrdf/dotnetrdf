@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="VDS.RDF.Utilities.Editor.Controls.LiteralNodeControl"
+﻿<UserControl x:Class="VDS.RDF.Utilities.Editor.Wpf.Controls.LiteralNodeControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel LastChildFill="False">

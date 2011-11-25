@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using BrendanGrant.Helpers.FileAssociation;
 using VDS.RDF;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for FileAssociations.xaml
@@ -214,6 +214,12 @@ namespace VDS.RDF.Utilities.Editor
                 //TODO: Ensure we are in the OpenWith List
             }
 
+            this.Close();
+        }
+
+        private void btnSkip_Click(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = false;
             this.Close();
         }
     }

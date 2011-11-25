@@ -12,22 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
-using VDS.RDF.Utilities.Editor.Syntax;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for AppearanceSettings.xaml
     /// </summary>
-    public partial class AppearanceSettings : Window
+    public partial class AppearanceSettings
+        : Window
     {
         private List<String> _colours = new List<String>();
-        private TextEditor _editor;
+        private VisualOptions<FontFamily, Color> _options;
 
         private List<String> _decorations;
 
-        public AppearanceSettings(TextEditor editor)
+        public AppearanceSettings(VisualOptions<FontFamily, Color> options)
         {
+            this._options = options;
+
             this._decorations = new List<string>()
             {
                 "None",
@@ -37,8 +39,6 @@ namespace VDS.RDF.Utilities.Editor
                 "Underline"
             };
             InitializeComponent();
-
-            this._editor = editor;
 
             //Prepare a list of colours as we need this to select the relevant colours later
             Type t = typeof(Colors);
@@ -76,7 +76,7 @@ namespace VDS.RDF.Utilities.Editor
         private void ShowSettings()
         {
             //Show Editor Settings
-            FontFamily font = (Properties.Settings.Default.EditorFontFace == null) ? this._editor.FontFamily : Properties.Settings.Default.EditorFontFace;
+            FontFamily font = (Properties.Settings.Default.EditorFontFace == null) ? this._options.FontFace : Properties.Settings.Default.EditorFontFace;
             this.cboFont.SelectedItem = font;
             this.fontSizeSlider.Value = Math.Round(Properties.Settings.Default.EditorFontSize);
             this.ShowColour(this.cboEditorForeground, Properties.Settings.Default.EditorForeground);
@@ -105,7 +105,7 @@ namespace VDS.RDF.Utilities.Editor
             this.ShowColour(this.cboColourVariable, Properties.Settings.Default.SyntaxColourVariables);
 
             //Show Error Highlighting Settings
-            font = (Properties.Settings.Default.EditorFontFace == null) ? this._editor.FontFamily : Properties.Settings.Default.ErrorHighlightFontFamily;
+            font = (Properties.Settings.Default.EditorFontFace == null) ? this._options.FontFace : Properties.Settings.Default.ErrorHighlightFontFamily;
             this.cboErrorFont.SelectedItem = font;
             this.ShowDecoration(this.cboErrorDecoration, Properties.Settings.Default.ErrorHighlightDecoration);
             this.ShowColour(this.cboColourErrorFont, Properties.Settings.Default.ErrorHighlightForeground);
@@ -217,7 +217,7 @@ namespace VDS.RDF.Utilities.Editor
                 Properties.Settings.Default.Save();
 
                 //Force the Syntax Manager to update colours appropriately
-                SyntaxManager.UpdateHighlightingColours();
+                //SyntaxManager.UpdateHighlightingColours();
 
                 this.DialogResult = true;
                 this.Close();
@@ -290,7 +290,7 @@ namespace VDS.RDF.Utilities.Editor
                 //Can't reset settings
             }
             this.ShowSettings();
-            SyntaxManager.UpdateHighlightingColours();
+            //SyntaxManager.UpdateHighlightingColours();
         }
 
         private void btnAbandon_Click(object sender, RoutedEventArgs e)

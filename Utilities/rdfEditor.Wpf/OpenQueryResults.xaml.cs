@@ -1,43 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using VDS.RDF;
+using ICSharpCode.AvalonEdit;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Utilities.Editor.Syntax;
-using VDS.RDF.Utilities.Editor.AutoComplete;
-using VDS.RDF.Utilities.Editor.Selection;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for OpenQueryResults.xaml
     /// </summary>
     public partial class OpenQueryResults : Window
     {
-        private EditorManager _manager;
+        private Editor<TextEditor, FontFamily, Color> _editor;
         private String _data;
         private ISparqlResultsReader _parser;
 
-        public OpenQueryResults()
+        public OpenQueryResults(VisualOptions<FontFamily, Color> options)
         {
             InitializeComponent();
 
-            this._manager = new EditorManager(queryEditor);
-            this._manager.SetHighlighter("SparqlQuery11");
-            this._manager.SetAutoCompleter("SparqlQuery11");
-            this._manager.SetSymbolSelector(new WhiteSpaceSelector());
+            this._editor = new Editor<TextEditor, FontFamily, Color>(new WpfEditorFactory());
+            this._editor.DocumentManager.VisualOptions = options;
+            Document<TextEditor> doc = this._editor.DocumentManager.New(true);
+            doc.Syntax = "SparqlQuery11";
+            Grid.SetRow(doc.TextEditor.Control, 2);
+            Grid.SetColumn(doc.TextEditor.Control, 1);
+            this.gridContent.Children.Add(doc.TextEditor.Control);
+
+            doc.TextEditor.Control.TabIndex = 3;
+            this.btnOpenQueryResults.TabIndex = 4;
         }
 
         private void btnOpenQueryResults_Click(object sender, RoutedEventArgs e)
@@ -57,7 +52,7 @@ namespace VDS.RDF.Utilities.Editor
                 }
 
                 String data;
-                using (HttpWebResponse response = endpoint.QueryRaw(queryEditor.Text))
+                using (HttpWebResponse response = endpoint.QueryRaw(this._editor.DocumentManager.ActiveDocument.Text))
                 {
                     data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                     try
@@ -105,11 +100,11 @@ namespace VDS.RDF.Utilities.Editor
         {
             get
             {
-                return this.queryEditor.Text;
+                return this._editor.DocumentManager.ActiveDocument.Text;
             }
             set
             {
-                this.queryEditor.Text = value;
+                this._editor.DocumentManager.ActiveDocument.Text = value;
             }
         }
 

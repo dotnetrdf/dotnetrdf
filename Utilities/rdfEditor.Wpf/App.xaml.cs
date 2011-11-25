@@ -4,9 +4,9 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using VDS.RDF.Utilities.Editor.Properties;
+using VDS.RDF.Utilities.Editor.Wpf.Properties;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for App.xaml

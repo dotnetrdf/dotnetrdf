@@ -1,7 +1,7 @@
-﻿<Window x:Class="VDS.RDF.Utilities.Editor.TriplesWindow"
+﻿<Window x:Class="VDS.RDF.Utilities.Editor.Wpf.TriplesWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor.Controls"
+    xmlns:rdfEditor="clr-namespace:VDS.RDF.Utilities.Editor.Wpf.Controls"
     Title="Triples View" Height="392" Width="877" ResizeMode="NoResize">
     <StackPanel>
         <DockPanel LastChildFill="False">

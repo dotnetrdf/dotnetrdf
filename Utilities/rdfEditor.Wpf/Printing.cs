@@ -9,54 +9,38 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Document;
 using PrintEngine;
 
-
 namespace ICSharpCode.AvalonEdit
 {
     /// <summary>
-    /// 
+    /// Provides Printing Support for AvalonEdit Text Editors
     /// </summary>
     /// <remarks>
-    /// This code by Vdue from an AvalonEdit related <a href="http://community.sharpdevelop.net/forums/p/12012/32756.aspx#32756">forum post</a>.  Minor adaptions and code style changes made by Rob Vesse
+    /// Based upon code by Vdue from an AvalonEdit related <a href="http://community.sharpdevelop.net/forums/p/12012/32756.aspx#32756">forum post</a>.  Heavily refactored to support printing in multi-document editors by Rob Vesse
     /// </remarks>
     public static class Printing
     {
-        private static PageSettings m_PageSettings;
-        private static PrintQueue m_PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
-        private static PrintTicket m_PrintTicket = m_PrintQueue.DefaultPrintTicket;
-        private static string m_DocumentTitle;
-
         /// <summary>
         /// Invokes a Windows.Forms.PrintPreviewDialog.
         /// </summary>
         public static void PageSetupDialog(this TextEditor textEditor)
         {
-            PageSetupDialog();
-        }
-
-        /// <summary>
-        /// Invokes a Windows.Forms.PrintPreviewDialog.
-        /// </summary>
-        public static void PageSetupDialog()
-        {
-            InitPageSettings();
-
-            if (m_PrintTicket.PageOrientation == PageOrientation.Landscape)
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
             {
-                m_PageSettings.Landscape = true;
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
             }
-            else
-            {
-                m_PageSettings.Landscape = false;
-            }
+
+            settings.PageSettings.Landscape = (settings.PrintTicket.PageOrientation == PageOrientation.Landscape);
 
             PageSetupDialog setup = new PageSetupDialog();
             setup.EnableMetric = true;
-            setup.PageSettings = m_PageSettings;
+            setup.PageSettings = settings.PageSettings;
             if (setup.ShowDialog() == DialogResult.OK)
             {
-                m_PageSettings = setup.PageSettings;
-                m_PrintTicket.PageOrientation = (m_PageSettings.Landscape ? PageOrientation.Landscape : PageOrientation.Portrait);
-                m_PrintTicket.PageMediaSize = ConvertPaperSizeToMediaSize(m_PageSettings.PaperSize);
+                settings.PageSettings = setup.PageSettings;
+                settings.PrintTicket.PageOrientation = (settings.PageSettings.Landscape ? PageOrientation.Landscape : PageOrientation.Portrait);
+                settings.PrintTicket.PageMediaSize = ConvertPaperSizeToMediaSize(settings.PageSettings.PaperSize);
             }
         }
 
@@ -81,19 +65,25 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintPreviewDialog(this TextEditor textEditor, string title, bool withHighlighting)
         {
-            m_DocumentTitle = (title != null) ? title : String.Empty;
-            InitPageSettings();
-            PrintEngine.PrintPreviewDialog printPreview = new PrintEngine.PrintPreviewDialog();
-            printPreview.DocumentViewer.FitToMaxPagesAcross(1);
-            printPreview.DocumentViewer.PrintQueue = m_PrintQueue;
-
-            if (m_PageSettings.Landscape)
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
             {
-                m_PrintTicket.PageOrientation = PageOrientation.Landscape;
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
             }
 
-            printPreview.DocumentViewer.PrintTicket = m_PrintTicket;
-            printPreview.DocumentViewer.PrintQueue.DefaultPrintTicket.PageOrientation = m_PrintTicket.PageOrientation;
+            settings.DocumentTitle = (title != null) ? title : String.Empty;
+            PrintEngine.PrintPreviewDialog printPreview = new PrintEngine.PrintPreviewDialog();
+            printPreview.DocumentViewer.FitToMaxPagesAcross(1);
+            printPreview.DocumentViewer.PrintQueue = settings.PrintQueue;
+
+            if (settings.PageSettings.Landscape)
+            {
+                settings.PrintTicket.PageOrientation = PageOrientation.Landscape;
+            }
+
+            printPreview.DocumentViewer.PrintTicket = settings.PrintTicket;
+            printPreview.DocumentViewer.PrintQueue.DefaultPrintTicket.PageOrientation = settings.PrintTicket.PageOrientation;
             printPreview.LoadDocument(CreateDocumentPaginatorToPrint(textEditor, withHighlighting));
             
             // this is stupid, but must be done to view a whole page:
@@ -102,8 +92,8 @@ namespace ICSharpCode.AvalonEdit
             // we never get a return code 'true', since we keep the DocumentViewer open, until user closes the window
             printPreview.ShowDialog();
 
-            m_PrintQueue = printPreview.DocumentViewer.PrintQueue;
-            m_PrintTicket = printPreview.DocumentViewer.PrintTicket;
+            settings.PrintQueue = printPreview.DocumentViewer.PrintQueue;
+            settings.PrintTicket = printPreview.DocumentViewer.PrintTicket;
         }
 
         /// <summary>
@@ -127,22 +117,28 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintDialog(this TextEditor textEditor, string title, bool withHighlighting)
         {
-            m_DocumentTitle = (title != null) ? title : String.Empty;
-            InitPageSettings();
-            System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
-            printDialog.PrintQueue = m_PrintQueue;
-
-            if (m_PageSettings.Landscape)
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
             {
-                m_PrintTicket.PageOrientation = PageOrientation.Landscape;
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
             }
 
-            printDialog.PrintTicket = m_PrintTicket;
-            printDialog.PrintQueue.DefaultPrintTicket.PageOrientation = m_PrintTicket.PageOrientation;
+            settings.DocumentTitle = (title != null) ? title : String.Empty;
+            System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
+            printDialog.PrintQueue = settings.PrintQueue;
+
+            if (settings.PageSettings.Landscape)
+            {
+                settings.PrintTicket.PageOrientation = PageOrientation.Landscape;
+            }
+
+            printDialog.PrintTicket = settings.PrintTicket;
+            printDialog.PrintQueue.DefaultPrintTicket.PageOrientation = settings.PrintTicket.PageOrientation;
             if (printDialog.ShowDialog() == true)
             {
-                m_PrintQueue = printDialog.PrintQueue;
-                m_PrintTicket = printDialog.PrintTicket;
+                settings.PrintQueue = printDialog.PrintQueue;
+                settings.PrintTicket = printDialog.PrintTicket;
                 printDialog.PrintDocument(CreateDocumentPaginatorToPrint(textEditor, withHighlighting), "PrintJob");
             }
         }
@@ -168,31 +164,25 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         public static void PrintDirect(this TextEditor textEditor, string title, bool withHighlighting)
         {
-            m_DocumentTitle = (title != null) ? title : String.Empty;
-            InitPageSettings();
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
+            {
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
+            }
+
+            settings.DocumentTitle = (title != null) ? title : String.Empty;
             System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
-            printDialog.PrintQueue = m_PrintQueue;
+            printDialog.PrintQueue = settings.PrintQueue;
 
-            if (m_PageSettings.Landscape)
+            if (settings.PageSettings.Landscape)
             {
-                m_PrintTicket.PageOrientation = PageOrientation.Landscape;
+                settings.PrintTicket.PageOrientation = PageOrientation.Landscape;
             }
 
-            printDialog.PrintTicket = m_PrintTicket;
-            printDialog.PrintQueue.DefaultPrintTicket.PageOrientation = m_PrintTicket.PageOrientation;
+            printDialog.PrintTicket = settings.PrintTicket;
+            printDialog.PrintQueue.DefaultPrintTicket.PageOrientation = settings.PrintTicket.PageOrientation;
             printDialog.PrintDocument(CreateDocumentPaginatorToPrint(textEditor, withHighlighting), "PrintDirectJob");
-        }
-
-        /// <summary>
-        /// If not initialized, initialize a new instance of the PageSettings and sets the default margins.
-        /// </summary>
-        static void InitPageSettings()
-        {
-            if (m_PageSettings == null)
-            {
-                m_PageSettings = new PageSettings();
-                m_PageSettings.Margins = new Margins(40, 40, 40, 40);
-            }
         }
 
         /// <summary>
@@ -200,10 +190,17 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         static DocumentPaginatorWrapper CreateDocumentPaginatorToPrint(TextEditor textEditor, bool withHighlighting)
         {
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
+            {
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
+            }
+
             // this baby adds headers and footers
             IDocumentPaginatorSource dps = CreateFlowDocumentToPrint(textEditor, withHighlighting);
-            DocumentPaginatorWrapper dpw = new DocumentPaginatorWrapper(dps.DocumentPaginator, m_PageSettings, m_PrintTicket, textEditor.FontFamily);
-            dpw.Title = m_DocumentTitle;
+            DocumentPaginatorWrapper dpw = new DocumentPaginatorWrapper(dps.DocumentPaginator, settings.PageSettings, settings.PrintTicket, textEditor.FontFamily);
+            dpw.Title = settings.DocumentTitle;
             return dpw;
         }
 
@@ -212,13 +209,20 @@ namespace ICSharpCode.AvalonEdit
         /// </summary>
         static FlowDocument CreateFlowDocumentToPrint(TextEditor textEditor, bool withHighlighting)
         {
+            PrintSettings settings = textEditor.Tag as PrintSettings;
+            if (settings == null)
+            {
+                settings = new PrintSettings();
+                textEditor.Tag = settings;
+            }
+
             // this baby has all settings to be printed or previewed in the PrintEngine.PrintPreviewDialog
             FlowDocument doc = CreateFlowDocumentForEditor(textEditor, withHighlighting);
             
-            doc.ColumnWidth = m_PageSettings.PrintableArea.Width;
-            doc.PageHeight = (m_PageSettings.Landscape ? (int)m_PrintTicket.PageMediaSize.Width : (int)m_PrintTicket.PageMediaSize.Height);
-            doc.PageWidth = (m_PageSettings.Landscape ? (int)m_PrintTicket.PageMediaSize.Height : (int)m_PrintTicket.PageMediaSize.Width);
-            doc.PagePadding = ConvertPageMarginsToThickness(m_PageSettings.Margins);
+            doc.ColumnWidth = settings.PageSettings.PrintableArea.Width;
+            doc.PageHeight = (settings.PageSettings.Landscape ? (int)settings.PrintTicket.PageMediaSize.Width : (int)settings.PrintTicket.PageMediaSize.Height);
+            doc.PageWidth = (settings.PageSettings.Landscape ? (int)settings.PrintTicket.PageMediaSize.Height : (int)settings.PrintTicket.PageMediaSize.Width);
+            doc.PagePadding = ConvertPageMarginsToThickness(settings.PageSettings.Margins);
             doc.FontFamily = textEditor.FontFamily;
             doc.FontSize = textEditor.FontSize;
             
@@ -297,6 +301,44 @@ namespace ICSharpCode.AvalonEdit
         static double ConvertToPx(double inch)
         {
             return inch * 0.96;
+        }
+    }
+
+    /// <summary>
+    /// Represents Print Settings
+    /// </summary>
+    class PrintSettings
+    {
+        public PrintSettings()
+        {
+            this.PrintQueue = LocalPrintServer.GetDefaultPrintQueue();
+            this.PrintTicket = this.PrintQueue.DefaultPrintTicket;
+            this.PageSettings = new PageSettings();
+            this.PageSettings.Margins = new Margins(40, 40, 40, 40);
+        }
+
+        public PageSettings PageSettings
+        {
+            get;
+            set;
+        }
+
+        public PrintQueue PrintQueue
+        {
+            get;
+            set;
+        }
+
+        public PrintTicket PrintTicket
+        {
+            get;
+            set;
+        }
+
+        public String DocumentTitle
+        {
+            get;
+            set;
         }
     }
 }

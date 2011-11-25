@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
 
-namespace VDS.RDF.Utilities.Editor
+namespace VDS.RDF.Utilities.Editor.Wpf
 {
     /// <summary>
     /// Interaction logic for GoToLine.xaml
@@ -21,12 +21,12 @@ namespace VDS.RDF.Utilities.Editor
     {
         private int _line, _maxLine;
 
-        public GoToLine(TextEditor editor)
+        public GoToLine(ITextEditorAdaptor<TextEditor> editor)
         {
             InitializeComponent();
 
-            this._line = editor.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
-            this._maxLine = editor.Document.LineCount;
+            this._line = editor.Control.Document.GetLineByOffset(editor.CaretOffset).LineNumber;
+            this._maxLine = editor.Control.Document.LineCount;
             this.txtLineNumber.Text = this._line.ToString();
             this.lblLineNumber.Content = String.Format((String)this.lblLineNumber.Content, this._maxLine);
 
