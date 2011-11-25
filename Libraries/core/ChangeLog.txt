@@ -18,7 +18,6 @@ Added
 - Storage
  - Added Dydra Support
 
-
 Changed
 - Bug Fixes
  - Fixed a Bug where NegotiateByFileExtension would cause a HTTP 500 error rather than failing silently
@@ -31,9 +30,13 @@ Changed
  - Fixed some bugs with Stardog connectivity due to changes in their HTTP server code
  - Fixed a bug with CSV output
  - Fixed a bug with SPARQL XML Parser not always decoding XML entities
+ - Fixed a performance bug with new SQL backend that occurs primarily when the database server is not local
+   on the network i.e. when database server is remote
 - Update
  - Made LeviathanUpdateProcessor more extensible
-  - Now supports a custom query processor used to evaluate WHERE clauses
+  - Now supports a custom query processor used in evaluating WHERE clauses
+- Writing
+ - Updated SPARQL CSV/TSV output to match SPARQL 1.1 specification
 
 
 Removed

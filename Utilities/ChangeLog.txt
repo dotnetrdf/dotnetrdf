@@ -42,5 +42,5 @@ StoreManager
 - Completely revised the New Connection dialogue to make it more user friendly
 - Added Dydra support
 - Added the ability for users to use Store Manager with custom store types simply by dropping a DLL into the plugins folder
-- Added Copy/Move/Renamed functionality for Graphs including Drag/Drop between open stores
+- Added Copy/Move/Rename functionality for Graphs including Drag/Drop between open stores
 - Bug Fix to missing variables in SPARQL Results View for some kinds of queries
