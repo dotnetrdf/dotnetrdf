@@ -210,6 +210,7 @@
     <Compile Include="Storage\Sql\AdoDatasetTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreAzureTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreBasic.cs" />
+    <Compile Include="Storage\Sql\AdoStoreCeTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreVirtualRdf.cs" />
     <Compile Include="Storage\Sql\AdoTransactionalUpdateTests.cs" />
     <Compile Include="Storage\StardogTests.cs" />

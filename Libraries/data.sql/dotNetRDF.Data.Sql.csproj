@@ -54,7 +54,7 @@
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SqlCeAdoManager.cs" />
+    <None Include="SqlCeAdoManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\dotNetRDF.csproj">

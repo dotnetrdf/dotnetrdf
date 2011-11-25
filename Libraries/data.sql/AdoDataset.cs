@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.Linq;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
@@ -50,19 +51,19 @@ namespace VDS.RDF.Query.Datasets
     /// <typeparam name="TConn">Connection Type</typeparam>
     /// <typeparam name="TCommand">Command Type</typeparam>
     /// <typeparam name="TParameter">Parameter Type</typeparam>
-    /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
+    /// <typeparam name="TAdapter">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
-    public abstract class BaseAdoDataset<TConn, TCommand, TParameter, TAdaptor, TException> 
+    public abstract class BaseAdoDataset<TConn, TCommand, TParameter, TAdapter, TException> 
         : BaseTransactionalDataset
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
-        where TAdaptor : DbDataAdapter
+        where TAdapter : DbDataAdapter
         where TException : Exception
     {
         #region Member Variables
 
-        private BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> _manager;
+        private BaseAdoStore<TConn, TCommand, TParameter, TAdapter, TException> _manager;
         private GraphFactory _factory = new GraphFactory();
 
         #endregion
@@ -71,7 +72,7 @@ namespace VDS.RDF.Query.Datasets
         /// Creates a new Base ADO Dataset
         /// </summary>
         /// <param name="manager">ADO Store Manager</param>
-        public BaseAdoDataset(BaseAdoStore<TConn, TCommand, TParameter, TAdaptor, TException> manager)
+        public BaseAdoDataset(BaseAdoStore<TConn, TCommand, TParameter, TAdapter, TException> manager)
         {
             this._manager = manager;
         }
@@ -204,7 +205,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandText = "GetQuadsVirtual";
             cmd.Connection = this._manager.Connection;
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd);
         }
 
         /// <summary>
@@ -225,7 +226,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["subjectID"].DbType = DbType.Int32;
             cmd.Parameters["subjectID"].Value = s;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, null, null);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, subj, null, null);
         }
 
         /// <summary>
@@ -246,7 +247,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["predicateID"].DbType = DbType.Int32;
             cmd.Parameters["predicateID"].Value = p;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, pred, null);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, null, pred, null);
         }
 
         /// <summary>
@@ -267,7 +268,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["objectID"].DbType = DbType.Int32;
             cmd.Parameters["objectID"].Value = o;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, null, obj);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, null, null, obj);
         }
 
         /// <summary>
@@ -293,7 +294,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["predicateID"].DbType = DbType.Int32;
             cmd.Parameters["predicateID"].Value = p;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, pred, null);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, subj, pred, null);
         }
 
         /// <summary>
@@ -319,7 +320,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["objectID"].DbType = DbType.Int32;
             cmd.Parameters["objectID"].Value = o;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, subj, null, obj);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, subj, null, obj);
         }
 
         /// <summary>
@@ -345,7 +346,7 @@ namespace VDS.RDF.Query.Datasets
             cmd.Parameters["objectID"].DbType = DbType.Int32;
             cmd.Parameters["objectID"].Value = o;
 
-            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdaptor, TException>(this._manager, this._factory, cmd, null, pred, obj);
+            return new AdoTripleEnumerable<TConn, TCommand, TParameter, TAdapter, TException>(this._manager, this._factory, cmd, null, pred, obj);
         }
 
         /// <summary>
@@ -392,4 +393,11 @@ namespace VDS.RDF.Query.Datasets
         public MicrosoftAdoDataset(MicrosoftAdoManager manager)
             : base(manager) { }
     }
+
+    //public class SqlCeAdoDataset
+    //    : BaseAdoDataset<SqlCeConnection, SqlCeCommand, SqlCeParameter, SqlCeDataAdapter, SqlCeException>
+    //{
+    //    public SqlCeAdoDataset(SqlCeAdoManager manager)
+    //        : base(manager) { }
+    //}
 }

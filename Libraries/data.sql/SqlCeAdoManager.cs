@@ -15,6 +15,8 @@ namespace VDS.RDF.Storage
     public class SqlCeAdoManager
         : BaseAdoStore<SqlCeConnection, SqlCeCommand, SqlCeParameter, SqlCeDataAdapter, SqlCeException>
     {
+        private String _filename;
+
         public SqlCeAdoManager()
             : base(new Dictionary<string, string>(), AdoAccessMode.Streaming) { }
 
@@ -32,7 +34,13 @@ namespace VDS.RDF.Storage
         {
             if (parameters.ContainsKey("filename"))
             {
-                return new SqlCeConnection("Data Source=" + parameters["filename"] + ";");
+                this._filename = parameters["filename"];
+                if (!File.Exists(this._filename))
+                {
+                    SqlCeEngine engine = new SqlCeEngine("Data Source=" + this._filename + ";");
+                    engine.CreateDatabase();
+                }
+                return new SqlCeConnection("Data Source=" + this._filename + ";");
             }
             else
             {
@@ -159,7 +167,7 @@ namespace VDS.RDF.Storage
 
         protected override VDS.RDF.Query.Datasets.ISparqlDataset GetDataset()
         {
-            throw new NotImplementedException();
+            return new SqlCeAdoDataset(this);
         }
 
         public override void SerializeConfiguration(VDS.RDF.Configuration.ConfigurationSerializationContext context)
@@ -169,7 +177,7 @@ namespace VDS.RDF.Storage
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return "[ADO Store (SQL CE)] " + this._filename;
         }
     }
 }
