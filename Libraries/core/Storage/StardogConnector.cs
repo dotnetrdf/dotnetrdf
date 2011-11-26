@@ -74,7 +74,15 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// OWL-RL Reasoning
         /// </summary>
-        RL
+        RL,
+        /// <summary>
+        /// OWL-DL Reasoning
+        /// </summary>
+        DL,
+        /// <summary>
+        /// RDFS Reasoning
+        /// </summary>
+        RDFS
     }
 
     /// <summary>
@@ -894,6 +902,10 @@ namespace VDS.RDF.Storage
                     return ";reasoning=EL";
                 case StardogReasoningMode.RL:
                     return ";reasoning=RL";
+                case StardogReasoningMode.DL:
+                    return ";reasoning=DL";
+                case StardogReasoningMode.RDFS:
+                    return ";reasoning=RDFS";
                 case StardogReasoningMode.None:
                 default:
                     return String.Empty;
@@ -1087,6 +1099,12 @@ namespace VDS.RDF.Storage
                 case StardogReasoningMode.RL:
                     mode = " (OWL RL Reasoning)";
                     break;
+                case StardogReasoningMode.DL:
+                    mode = " (OWL DL Reasoning)";
+                    break;
+                case StardogReasoningMode.RDFS:
+                    mode = " (RDFS Reasoning)";
+                    break;
             }
             return "[Stardog] Knowledge Base '" + this._kb + "' on Server '" + this._baseUri + "'" + mode;
         }
@@ -1114,18 +1132,7 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, store, context.Graph.CreateLiteralNode(this._kb)));
 
             //Add reasoning mode
-            switch (this._reasoning)
-            {
-                case StardogReasoningMode.QL:
-                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("QL")));
-                    break;
-                case StardogReasoningMode.EL:
-                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("EL")));
-                    break;
-                case StardogReasoningMode.RL:
-                    context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode("RL")));
-                    break;
-            }
+            if (this._reasoning != StardogReasoningMode.None) context.Graph.Assert(new Triple(manager, loadMode, context.Graph.CreateLiteralNode(this._reasoning.ToString())));
 
             //Add User Credentials
             if (this._username != null && this._pwd != null)

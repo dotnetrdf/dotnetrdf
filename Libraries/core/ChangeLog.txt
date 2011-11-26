@@ -32,6 +32,11 @@ Changed
  - Fixed a bug with SPARQL XML Parser not always decoding XML entities
  - Fixed a performance bug with new SQL backend that occurs primarily when the database server is not local
    on the network i.e. when database server is remote
+- Query
+
+- Storage
+ - Performance improvements to querying ADO stores
+ - Added support for additional reasoning modes for Stardog
 - Update
  - Made LeviathanUpdateProcessor more extensible
   - Now supports a custom query processor used in evaluating WHERE clauses
