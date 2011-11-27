@@ -65,7 +65,7 @@ namespace VDS.RDF.Writing
         private bool _prettyprint = true;
         private bool _n3compat = false;
         private int _compressionLevel = WriterCompressionLevel.Default;
-        private bool _useMultiThreading = true;
+        private bool _useMultiThreading = Options.AllowMultiThreadedWriting;
 
         /// <summary>
         /// Gets/Sets whether High Speed Write Mode is permitted

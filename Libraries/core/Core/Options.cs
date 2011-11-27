@@ -94,6 +94,7 @@ namespace VDS.RDF
         private static bool _utf8Bom = true;
         //private static bool _rigorousQuery = false;
         private static bool _useDTDs = true;
+        private static bool _multiThreadedWriting = false;
 
         #if DEBUG
         //Debug Build Only
@@ -375,6 +376,24 @@ namespace VDS.RDF
             set
             {
                 _useDTDs = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether multi-theaded writing is permitted
+        /// </summary>
+        /// <remarks>
+        /// In some contexts multi-threaded writing may not even work due to restrictions on thread types since we use the <see cref="System.Threading.WaitAll">WaitAll()</see> method which is only valid in <strong>MTA</strong> contexts.
+        /// </remarks>
+        public static bool AllowMultiThreadedWriting
+        {
+            get
+            {
+                return _multiThreadedWriting;
+            }
+            set
+            {
+                _multiThreadedWriting = value;
             }
         }
 

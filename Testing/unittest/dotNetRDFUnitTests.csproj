@@ -250,7 +250,7 @@
     <Compile Include="Writing\SparqlTsvTests.cs" />
     <Compile Include="Writing\SparqlXmlTests.cs" />
     <Compile Include="Writing\StringEscapingTest.cs" />
-    <Compile Include="Writing\TriGWriterTests.cs" />
+    <Compile Include="Writing\StoreWriterTests.cs" />
     <Content Include="resources\bad_profile.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -51,10 +51,11 @@ namespace VDS.RDF.Writing
     /// Class for serializing a Triple Store in the NQuads (NTriples plus context) syntax
     /// </summary>
     public class NQuadsWriter 
-        : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter
+        : IStoreWriter, IPrettyPrintingWriter, IFormatterBasedWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
         private bool _prettyPrint = true;
+        private bool _multiThreaded = Options.AllowMultiThreadedWriting;
 
         /// <summary>
         /// Controls whether Pretty Printing is used
@@ -71,6 +72,21 @@ namespace VDS.RDF.Writing
             set
             {
                 this._prettyPrint = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Multi-Threaded Writing
+        /// </summary>
+        public bool UseMultiThreadedWriting
+        {
+            get
+            {
+                return this._multiThreaded;
+            }
+            set
+            {
+                this._multiThreaded = value;
             }
         }
 
@@ -117,45 +133,60 @@ namespace VDS.RDF.Writing
 
                 try
                 {
-                    //Queue the Graphs to be written
-                    foreach (IGraph g in context.Store.Graphs)
+                    if (this._multiThreaded)
                     {
-                        if (g.BaseUri == null)
+                        //Queue the Graphs to be written
+                        foreach (IGraph g in context.Store.Graphs)
                         {
-                            context.Add(new Uri(GraphCollection.DefaultGraphUri));
+                            if (g.BaseUri == null)
+                            {
+                                context.Add(new Uri(GraphCollection.DefaultGraphUri));
+                            }
+                            else
+                            {
+                                context.Add(g.BaseUri);
+                            }
                         }
-                        else
-                        {
-                            context.Add(g.BaseUri);
-                        }
-                    }
 
-                    //Start making the async calls
-                    List<IAsyncResult> results = new List<IAsyncResult>();
-                    SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
-                    for (int i = 0; i < this._threads; i++)
+                        //Start making the async calls
+                        List<IAsyncResult> results = new List<IAsyncResult>();
+                        SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
+                        for (int i = 0; i < this._threads; i++)
+                        {
+                            results.Add(d.BeginInvoke(context, null, null));
+                        }
+
+                        //Wait for all the async calls to complete
+                        WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
+                        RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
+                        foreach (IAsyncResult result in results)
+                        {
+                            try
+                            {
+                                d.EndInvoke(result);
+                            }
+                            catch (Exception ex)
+                            {
+                                outputEx.AddException(ex);
+                            }
+                        }
+                        context.Output.Close();
+
+                        //If there were any errors we'll throw an RdfThreadedOutputException now
+                        if (outputEx.InnerExceptions.Any()) throw outputEx;
+                    }
+                    else
                     {
-                        results.Add(d.BeginInvoke(context, null, null));
-                    }
-
-                    //Wait for all the async calls to complete
-                    WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                    RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TSV"));
-                    foreach (IAsyncResult result in results)
-                    {
-                        try
+                        foreach (IGraph g in context.Store.Graphs)
                         {
-                            d.EndInvoke(result);
+                            NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output);
+                            foreach (Triple t in g.Triples)
+                            {
+                                context.Output.WriteLine(this.TripleToNQuads(graphContext, t));
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            outputEx.AddException(ex);
-                        }
+                        context.Output.Close();
                     }
-                    context.Output.Close();
-
-                    //If there were any errors we'll throw an RdfThreadedOutputException now
-                    if (outputEx.InnerExceptions.Any()) throw outputEx;
                 }
                 catch
                 {
