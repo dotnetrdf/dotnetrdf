@@ -1191,6 +1191,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Regex Keyword
                         this.LastTokenType = Token.REGEX;
                         return new RegexKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordReplace:
+                        //Replace Keyword
+                        this.LastTokenType = Token.REPLACE;
+                        return new ReplaceKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordRound:
                         //Round Function Keyword
                         this.LastTokenType = Token.ROUND;
@@ -1243,6 +1247,14 @@ namespace VDS.RDF.Parsing.Tokens
                         //Str Keyword
                         this.LastTokenType = Token.STR;
                         return new StrKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrAfter:
+                        //StrAfter Keyword
+                        this.LastTokenType = Token.STRAFTER;
+                        return new StrAfterKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrBefore:
+                        //StrBefore Keyword
+                        this.LastTokenType = Token.STRBEFORE;
+                        return new StrBeforeKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordContains:
                         //StrContains Function Keyword
                         this.LastTokenType = Token.CONTAINS;

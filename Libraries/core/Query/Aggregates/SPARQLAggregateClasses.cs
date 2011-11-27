@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.Aggregates
                     if (this._distinct)
                     {
                         INode temp = this._expr.Value(context, id);
-                        if (temp == null) continue;
+                        if (temp == null) return null;
                         if (values.Contains(temp))
                         {
                             continue;
@@ -134,11 +134,12 @@ namespace VDS.RDF.Query.Aggregates
                 }
                 catch
                 {
-                    continue;
+                    //SPARQL Working Group changed spec so this should now return no binding
+                    return null;
                 }
 
                 //Skip if Not a Number
-                if (numtype == SparqlNumericType.NaN) continue;
+                if (numtype == SparqlNumericType.NaN) return null;
 
                 //Track the Numeric Type
                 if ((int)numtype > (int)maxtype)

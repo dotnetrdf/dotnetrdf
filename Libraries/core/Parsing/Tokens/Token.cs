@@ -189,6 +189,9 @@ namespace VDS.RDF.Parsing.Tokens
                           SHA512 = 198,
                           BNODE = 199,
                           RAND = 200,
+                          STRAFTER = 201,
+                          STRBEFORE = 202,
+                          REPLACE = 203,
 
                           PLUS = 250,
                           MINUS = 251,

@@ -404,6 +404,7 @@ namespace VDS.RDF.Query
                 case Token.NOW:
                 case Token.RAND:
                 case Token.REGEX:
+                case Token.REPLACE:
                 case Token.ROUND:
                 case Token.SAMETERM:
                 case Token.SECONDS:
@@ -413,6 +414,8 @@ namespace VDS.RDF.Query
                 case Token.SHA384:
                 case Token.SHA512:
                 case Token.STR:
+                case Token.STRAFTER:
+                case Token.STRBEFORE:
                 case Token.CONTAINS:
                 case Token.STRDT:
                 case Token.STRENDS:
@@ -567,6 +570,7 @@ namespace VDS.RDF.Query
             IToken next = tokens.Dequeue();
             bool comma = false, first = true;
             List<ISparqlExpression> args;
+            ISparqlExpression strExpr;
 
             switch (next.TokenType)
             {
@@ -687,6 +691,20 @@ namespace VDS.RDF.Query
 
                 case Token.REGEX:
                     return this.TryParseRegexExpression(tokens);
+                case Token.REPLACE:
+                    //REPLACE may have 3/4 arguments
+                    strExpr = this.TryParseBrackettedExpression(tokens);
+                    ISparqlExpression patternExpr = this.TryParseBrackettedExpression(tokens, false);
+                    ISparqlExpression replaceExpr = this.TryParseBrackettedExpression(tokens, false, out comma);
+                    if (comma)
+                    {
+                        ISparqlExpression opsExpr = this.TryParseBrackettedExpression(tokens, false);
+                        return new ReplaceFunction(strExpr, patternExpr, replaceExpr, opsExpr);
+                    }
+                    else
+                    {
+                        return new ReplaceFunction(strExpr, patternExpr, replaceExpr);
+                    }
                 case Token.ROUND:
                     return new RoundFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SAMETERM:
@@ -705,6 +723,10 @@ namespace VDS.RDF.Query
                     return new Sha512HashFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STR:
                     return new StrFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.STRAFTER:
+                    return new StrAfterFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.STRBEFORE:
+                    return new StrBeforeFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.STRDT:
                     return new StrDtFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.STRENDS:
@@ -718,7 +740,7 @@ namespace VDS.RDF.Query
 
                 case Token.SUBSTR:
                     //SUBSTR may have 2/3 arguments
-                    ISparqlExpression strExpr = this.TryParseBrackettedExpression(tokens);
+                    strExpr = this.TryParseBrackettedExpression(tokens);
                     ISparqlExpression startExpr = this.TryParseBrackettedExpression(tokens, false, out comma);
                     if (comma)
                     {

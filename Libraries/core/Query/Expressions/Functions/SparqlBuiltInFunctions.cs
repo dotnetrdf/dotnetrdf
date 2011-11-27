@@ -1455,7 +1455,7 @@ namespace VDS.RDF.Query.Expressions.Functions
     }
 
     /// <summary>
-    /// Class representing the Sparql Regex() function
+    /// Class representing the SPARQL REGEX function
     /// </summary>
     public class RegexFunction 
         : ISparqlExpression

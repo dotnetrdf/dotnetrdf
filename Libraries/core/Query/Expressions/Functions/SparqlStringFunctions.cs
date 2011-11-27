@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Expressions.Functions
@@ -95,7 +96,7 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="stringLit">String Literal</param>
         /// <param name="argLit">Argument Literal</param>
         /// <returns></returns>
-        private bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
+        protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
         {
             if (stringLit.DataType != null)
             {
@@ -503,6 +504,441 @@ namespace VDS.RDF.Query.Expressions.Functions
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new LCaseFunction(transformer.Transform(this._expr));
+        }
+    }
+
+    public class StrAfterFunction
+    : ISparqlExpression
+    {
+        private ISparqlExpression _stringExpr, _startsExpr;
+
+        public StrAfterFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+        {
+            this._stringExpr = stringExpr;
+            this._startsExpr = startsExpr;
+        }
+
+        public INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
+            ILiteralNode starts = this.CheckArgument(this._startsExpr, context, bindingID);
+
+            if (!this.IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+
+            Uri datatype = (input.DataType != null ? input.DataType : starts.DataType);
+            String lang = (!input.Language.Equals(String.Empty) ? input.Language : starts.Language);
+
+            if (input.Value.Contains(starts.Value))
+            {
+                int startIndex = input.Value.IndexOf(starts.Value) + starts.Value.Length;
+                String resultValue = (startIndex >= input.Value.Length ? String.Empty : input.Value.Substring(startIndex));
+
+                if (datatype != null)
+                {
+                    return new LiteralNode(null, resultValue, datatype);
+                }
+                else if (!lang.Equals(String.Empty))
+                {
+                    return new LiteralNode(null, resultValue, lang);
+                }
+                else
+                {
+                    return new LiteralNode(null, resultValue);
+                }
+            }
+            else
+            {
+                if (datatype != null)
+                {
+                    return new LiteralNode(null, String.Empty, datatype);
+                }
+                else
+                {
+                    return new LiteralNode(null, String.Empty, lang);
+                }
+            }
+        }
+
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        {
+            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+        }
+
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        {
+            INode temp = expr.Value(context, bindingID);
+            if (temp != null)
+            {
+                if (temp.NodeType == NodeType.Literal)
+                {
+                    ILiteralNode lit = (ILiteralNode)temp;
+                    if (lit.DataType != null)
+                    {
+                        if (argumentTypeValidator(lit.DataType))
+                        {
+                            //Appropriately typed literals are fine
+                            return lit;
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a typed literal with an invalid type");
+                        }
+                    }
+                    else if (argumentTypeValidator(new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)))
+                    {
+                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                        return lit;
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Unable to evalaute as one of the argument expressions returned an untyped literal");
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a non-literal");
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Unable to evaluate as one of the argument expressions evaluated to null");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the Arguments are valid
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
+        protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
+        {
+            if (stringLit.DataType != null)
+            {
+                //If 1st argument has a DataType must be an xsd:string or not valid
+                if (!stringLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+
+                if (argLit.DataType != null)
+                {
+                    //If 2nd argument also has a DataType must also be an xsd:string or not valid
+                    if (!argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+                    return true;
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
+                    //Language Tag
+                    return true;
+                }
+                else
+                {
+                    //2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                    return false;
+                }
+            }
+            else if (!stringLit.Language.Equals(String.Empty))
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
+                    //to be valid
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty) || stringLit.Language.Equals(argLit.Language))
+                {
+                    //If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
+                    //or no Language Tag in order to be valid
+                    return true;
+                }
+                else
+                {
+                    //Otherwise Invalid
+                    return false;
+                }
+            }
+            else
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                    return true;
+                }
+                else
+                {
+                    //If 1st argument is plain literal and 2nd has language tag then invalid
+                    return false;
+                }
+            }
+        }
+
+        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
+        }
+
+        public IEnumerable<string> Variables
+        {
+            get
+            {
+                return this._startsExpr.Variables.Concat(this._stringExpr.Variables);
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        public string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordStrAfter;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return new ISparqlExpression[] { this._stringExpr, this._startsExpr };
+            }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrAfterFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";
+        }
+    }
+
+    public class StrBeforeFunction
+        : ISparqlExpression
+    {
+        private ISparqlExpression _stringExpr, _startsExpr;
+
+        public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
+        {
+            this._stringExpr = stringExpr;
+            this._startsExpr = startsExpr;
+        }
+
+        public INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
+            ILiteralNode starts = this.CheckArgument(this._startsExpr, context, bindingID);
+
+            if (!this.IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+
+            Uri datatype = (input.DataType != null ? input.DataType : starts.DataType);
+            String lang = (!input.Language.Equals(String.Empty) ? input.Language : starts.Language);
+
+            if (input.Value.Contains(starts.Value))
+            {
+                int endIndex = input.Value.IndexOf(starts.Value);
+                String resultValue = (endIndex == 0 ? String.Empty : input.Value.Substring(0, endIndex));
+
+                if (datatype != null)
+                {
+                    return new LiteralNode(null, resultValue, datatype);
+                }
+                else if (!lang.Equals(String.Empty))
+                {
+                    return new LiteralNode(null, resultValue, lang);
+                }
+                else
+                {
+                    return new LiteralNode(null, resultValue);
+                }
+            }
+            else
+            {
+                if (datatype != null)
+                {
+                    return new LiteralNode(null, String.Empty, datatype);
+
+                }
+                else
+                {
+                    return new LiteralNode(null, String.Empty, lang);
+                }
+            }
+        }
+
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID)
+        {
+            return this.CheckArgument(expr, context, bindingID, XPathFunctionFactory.AcceptStringArguments);
+        }
+
+        private ILiteralNode CheckArgument(ISparqlExpression expr, SparqlEvaluationContext context, int bindingID, Func<Uri, bool> argumentTypeValidator)
+        {
+            INode temp = expr.Value(context, bindingID);
+            if (temp != null)
+            {
+                if (temp.NodeType == NodeType.Literal)
+                {
+                    ILiteralNode lit = (ILiteralNode)temp;
+                    if (lit.DataType != null)
+                    {
+                        if (argumentTypeValidator(lit.DataType))
+                        {
+                            //Appropriately typed literals are fine
+                            return lit;
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a typed literal with an invalid type");
+                        }
+                    }
+                    else if (argumentTypeValidator(new Uri(XmlSpecsHelper.XmlSchemaDataTypeString)))
+                    {
+                        //Untyped Literals are treated as Strings and may be returned when the argument allows strings
+                        return lit;
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Unable to evalaute as one of the argument expressions returned an untyped literal");
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("Unable to evaluate as one of the argument expressions returned a non-literal");
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Unable to evaluate as one of the argument expressions evaluated to null");
+            }
+        }
+
+        /// <summary>
+        /// Determines whether the Arguments are valid
+        /// </summary>
+        /// <param name="stringLit">String Literal</param>
+        /// <param name="argLit">Argument Literal</param>
+        /// <returns></returns>
+        protected bool IsValidArgumentPair(ILiteralNode stringLit, ILiteralNode argLit)
+        {
+            if (stringLit.DataType != null)
+            {
+                //If 1st argument has a DataType must be an xsd:string or not valid
+                if (!stringLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+
+                if (argLit.DataType != null)
+                {
+                    //If 2nd argument also has a DataType must also be an xsd:string or not valid
+                    if (!argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) return false;
+                    return true;
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 2nd argument does not have a DataType but 1st does then 2nd argument must have no
+                    //Language Tag
+                    return true;
+                }
+                else
+                {
+                    //2nd argument does not have a DataType but 1st does BUT 2nd has a Language Tag so invalid
+                    return false;
+                }
+            }
+            else if (!stringLit.Language.Equals(String.Empty))
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument has a Language Tag and 2nd Argument is typed then must be xsd:string
+                    //to be valid
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty) || stringLit.Language.Equals(argLit.Language))
+                {
+                    //If 1st argument has a Language Tag then 2nd Argument must have same Language Tag 
+                    //or no Language Tag in order to be valid
+                    return true;
+                }
+                else
+                {
+                    //Otherwise Invalid
+                    return false;
+                }
+            }
+            else
+            {
+                if (argLit.DataType != null)
+                {
+                    //If 1st argument is plain literal then 2nd argument must be xsd:string if typed
+                    return argLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString);
+                }
+                else if (argLit.Language.Equals(String.Empty))
+                {
+                    //If 1st argument is plain literal then 2nd literal cannot have a language tag to be valid
+                    return true;
+                }
+                else
+                {
+                    //If 1st argument is plain literal and 2nd has language tag then invalid
+                    return false;
+                }
+            }
+        }
+
+        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
+        }
+
+        public IEnumerable<string> Variables
+        {
+            get 
+            { 
+                return this._startsExpr.Variables.Concat(this._stringExpr.Variables);
+            }
+        }
+
+        public SparqlExpressionType Type
+        {
+            get 
+            { 
+                return SparqlExpressionType.Function; 
+            }
+        }
+
+        public string Functor
+        {
+            get
+            { 
+                return SparqlSpecsHelper.SparqlKeywordStrBefore;
+            }
+        }
+
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get 
+            {
+                return new ISparqlExpression[] { this._stringExpr, this._startsExpr }; 
+            }
+        }
+
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
+        }
+
+        public override string ToString()
+        {
+            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";
         }
     }
 
@@ -1014,5 +1450,379 @@ namespace VDS.RDF.Query.Expressions.Functions
             return new UCaseFunction(transformer.Transform(this._expr));
         }
 
+    }
+
+    /// <summary>
+    /// Represents the XPath fn:replace() function
+    /// </summary>
+    public class ReplaceFunction
+        : ISparqlExpression
+    {
+        private String _find = null;
+        private String _replace = null;
+        private RegexOptions _options = RegexOptions.None;
+        private bool _fixedPattern = false;
+        private bool _fixedReplace = false;
+        private ISparqlExpression _textExpr = null;
+        private ISparqlExpression _findExpr = null;
+        private ISparqlExpression _optionExpr = null;
+        private ISparqlExpression _replaceExpr = null;
+
+        /// <summary>
+        /// Creates a new SPARQL Replace function
+        /// </summary>
+        /// <param name="text">Text Expression</param>
+        /// <param name="find">Search Expression</param>
+        /// <param name="replace">Replace Expression</param>
+        public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace)
+            : this(text, find, replace, null) { }
+
+        /// <summary>
+        /// Creates a new SPARQL Replace function
+        /// </summary>
+        /// <param name="text">Text Expression</param>
+        /// <param name="find">Search Expression</param>
+        /// <param name="replace">Replace Expression</param>
+        /// <param name="options">Options Expression</param>
+        public ReplaceFunction(ISparqlExpression text, ISparqlExpression find, ISparqlExpression replace, ISparqlExpression options)
+        {
+            this._textExpr = text;
+
+            //Get the Pattern
+            if (find is NodeExpressionTerm)
+            {
+                //If the Pattern is a Node Expression Term then it is a fixed Pattern
+                INode n = find.Value(null, 0);
+                if (n.NodeType == NodeType.Literal)
+                {
+                    //Try to parse as a Regular Expression
+                    try
+                    {
+                        String p = ((ILiteralNode)n).Value;
+                        Regex temp = new Regex(p);
+
+                        //It's a Valid Pattern
+                        this._fixedPattern = true;
+                        this._find = p;
+                    }
+                    catch
+                    {
+                        //No catch actions
+                    }
+                }
+            }
+            this._findExpr = find;
+
+            //Get the Replace
+            if (replace is NodeExpressionTerm)
+            {
+                //If the Replace is a Node Expresison Term then it is a fixed Pattern
+                INode n = replace.Value(null, 0);
+                if (n.NodeType == NodeType.Literal)
+                {
+                    this._replace = ((ILiteralNode)n).Value;
+                    this._fixedReplace = true;
+                }
+            }
+            this._replaceExpr = replace;
+
+            //Get the Options
+            if (options != null)
+            {
+                if (options is NodeExpressionTerm)
+                {
+                    this.ConfigureOptions(options.Value(null, 0), false);
+                }
+                this._optionExpr = options;
+            }
+        }
+
+        /// <summary>
+        /// Configures the Options for the Regular Expression
+        /// </summary>
+        /// <param name="n">Node detailing the Options</param>
+        /// <param name="throwErrors">Whether errors should be thrown or suppressed</param>
+        private void ConfigureOptions(INode n, bool throwErrors)
+        {
+            //Start by resetting to no options
+            this._options = RegexOptions.None;
+
+            if (n == null)
+            {
+                if (throwErrors)
+                {
+                    throw new RdfQueryException("REGEX Options Expression does not produce an Options string");
+                }
+            }
+            else
+            {
+                if (n.NodeType == NodeType.Literal)
+                {
+                    String ops = ((ILiteralNode)n).Value;
+                    foreach (char c in ops.ToCharArray())
+                    {
+                        switch (c)
+                        {
+                            case 'i':
+                                this._options |= RegexOptions.IgnoreCase;
+                                break;
+                            case 'm':
+                                this._options |= RegexOptions.Multiline;
+                                break;
+                            case 's':
+                                this._options |= RegexOptions.Singleline;
+                                break;
+                            case 'x':
+                                this._options |= RegexOptions.IgnorePatternWhitespace;
+                                break;
+                            default:
+                                if (throwErrors)
+                                {
+                                    throw new RdfQueryException("Invalid flag character '" + c + "' in Options string");
+                                }
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (throwErrors)
+                    {
+                        throw new RdfQueryException("REGEX Options Expression does not produce an Options string");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public INode Value(SparqlEvaluationContext context, int bindingID)
+        {
+            //Configure Options
+            if (this._optionExpr != null)
+            {
+                this.ConfigureOptions(this._optionExpr.Value(context, bindingID), true);
+            }
+
+            //Compile the Regex if necessary
+            if (!this._fixedPattern)
+            {
+                //Regex is not pre-compiled
+                if (this._findExpr != null)
+                {
+                    INode p = this._findExpr.Value(context, bindingID);
+                    if (p != null)
+                    {
+                        if (p.NodeType == NodeType.Literal)
+                        {
+                            this._find = ((ILiteralNode)p).Value;
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot parse a Pattern String from a non-Literal Node");
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Not a valid Pattern Expression");
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("Not a valid Pattern Expression or the fixed Pattern String was invalid");
+                }
+            }
+            //Compute the Replace if necessary
+            if (!this._fixedReplace)
+            {
+                if (this._replaceExpr != null)
+                {
+                    INode r = this._replaceExpr.Value(context, bindingID);
+                    if (r != null)
+                    {
+                        if (r.NodeType == NodeType.Literal)
+                        {
+                            this._replace = ((ILiteralNode)r).Value;
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot parse a Replace String from a non-Literal Node");
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Not a valid Replace Expression");
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("Not a valid Replace Expression");
+                }
+            }
+
+            //Execute the Regular Expression
+            INode textNode = this._textExpr.Value(context, bindingID);
+            if (textNode == null)
+            {
+                throw new RdfQueryException("Cannot evaluate a Regular Expression against a NULL");
+            }
+            if (textNode.NodeType == NodeType.Literal)
+            {
+
+                //Execute
+                ILiteralNode lit = (ILiteralNode)textNode;
+                if (lit.DataType != null && !lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+                String text = lit.Value;
+                String output = Regex.Replace(text, this._find, this._replace, this._options);
+
+                if (lit.DataType != null)
+                {
+                    return new LiteralNode(null, output, lit.DataType);
+                }
+                else if (!lit.Language.Equals(String.Empty))
+                {
+                    return new LiteralNode(null, output, lit.Language);
+                }
+                else
+                {
+                    return new LiteralNode(null, output);
+                }
+            }
+            else
+            {
+                throw new RdfQueryException("Cannot evaluate a Regular Expression against a non-Literal Node");
+            }
+        }
+
+        /// <summary>
+        /// Computes the Effective Boolean Value of this Expression as evaluated for a given Binding
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
+        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
+        {
+            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
+        }
+
+        /// <summary>
+        /// Gets the String representation of this Expression
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append("<");
+            output.Append(XPathFunctionFactory.XPathFunctionsNamespace);
+            output.Append(XPathFunctionFactory.Replace);
+            output.Append(">(");
+            output.Append(this._textExpr.ToString());
+            output.Append(",");
+            if (this._fixedPattern)
+            {
+                output.Append('"');
+                output.Append(this._find);
+                output.Append('"');
+            }
+            else
+            {
+                output.Append(this._findExpr.ToString());
+            }
+            output.Append(",");
+            if (this._fixedReplace)
+            {
+                output.Append('"');
+                output.Append(this._replace);
+                output.Append('"');
+            }
+            else if (this._replaceExpr != null)
+            {
+                output.Append(this._replaceExpr.ToString());
+            }
+            if (this._optionExpr != null)
+            {
+                output.Append("," + this._optionExpr.ToString());
+            }
+            output.Append(")");
+
+            return output.ToString();
+        }
+
+        /// <summary>
+        /// Gets the enumeration of Variables involved in this Expression
+        /// </summary>
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                List<String> vs = new List<String>();
+                if (this._textExpr != null) vs.AddRange(this._textExpr.Variables);
+                if (this._findExpr != null) vs.AddRange(this._findExpr.Variables);
+                if (this._replaceExpr != null) vs.AddRange(this._replaceExpr.Variables);
+                if (this._optionExpr != null) vs.AddRange(this._optionExpr.Variables);
+                return vs;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
+        public SparqlExpressionType Type
+        {
+            get
+            {
+                return SparqlExpressionType.Function;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
+        public string Functor
+        {
+            get
+            {
+                return SparqlSpecsHelper.SparqlKeywordReplace;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Arguments of the Expression
+        /// </summary>
+        public IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                if (this._optionExpr != null)
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr, this._optionExpr };
+                }
+                else
+                {
+                    return new ISparqlExpression[] { this._textExpr, this._findExpr, this._replaceExpr };
+                }
+            }
+        }
+
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
+        public ISparqlExpression Transform(IExpressionTransformer transformer)
+        {
+            if (this._optionExpr != null)
+            {
+                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr), transformer.Transform(this._optionExpr));
+            }
+            else
+            {
+                return new ReplaceFunction(transformer.Transform(this._textExpr), transformer.Transform(this._findExpr), transformer.Transform(this._replaceExpr));
+            }
+        }
     }
 }

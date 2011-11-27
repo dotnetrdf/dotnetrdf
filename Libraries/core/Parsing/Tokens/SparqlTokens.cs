@@ -915,6 +915,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL REPLACE Keyword
+    /// </summary>
+    public class ReplaceKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new REPLACE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public ReplaceKeywordToken(int line, int pos) : base(Token.REPLACE, "REPLACE", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL ROUND Keyword
     /// </summary>
     public class RoundKeywordToken : BaseToken
@@ -1071,16 +1084,42 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
-    /// Token which represents the SPARQL STRCONTAINS Keyword
+    /// Token which represents the SPARQL STRAFTER Keyword
+    /// </summary>
+    public class StrAfterKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRAFTER Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrAfterKeywordToken(int line, int pos) : base(Token.STRAFTER, "STRAFTER", line, line, pos, pos + 8) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL STRBEFORE Keyword
+    /// </summary>
+    public class StrBeforeKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRBEFORE Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrBeforeKeywordToken(int line, int pos) : base(Token.STRBEFORE, "STRBEFORE", line, line, pos, pos + 9) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL CONTAINS Keyword
     /// </summary>
     public class StrContainsKeywordToken : BaseToken
     {
         /// <summary>
-        /// Creates a new STRCONTAINS Keyword Token
+        /// Creates a new CONTAINS Keyword Token
         /// </summary>
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
-        public StrContainsKeywordToken(int line, int pos) : base(Token.CONTAINS, "STRCONTAINS", line, line, pos, pos + 11) { }
+        public StrContainsKeywordToken(int line, int pos) : base(Token.CONTAINS, "CONTAINS", line, line, pos, pos + 11) { }
     }
 
     /// <summary>

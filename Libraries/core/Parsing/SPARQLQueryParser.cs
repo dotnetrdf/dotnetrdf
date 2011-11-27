@@ -761,6 +761,7 @@ namespace VDS.RDF.Parsing
                     case Token.NOW:
                     case Token.RAND:
                     case Token.REGEX:
+                    case Token.REPLACE:
                     case Token.ROUND:
                     case Token.SAMETERM:
                     case Token.SECONDS:
@@ -770,6 +771,8 @@ namespace VDS.RDF.Parsing
                     case Token.SHA384:
                     case Token.SHA512:
                     case Token.STR:
+                    case Token.STRAFTER:
+                    case Token.STRBEFORE:
                     case Token.CONTAINS:
                     case Token.STRDT:
                     case Token.STRENDS:
@@ -2220,6 +2223,7 @@ namespace VDS.RDF.Parsing
                 case Token.MONTH:
                 case Token.NOW:
                 case Token.RAND:
+                case Token.REPLACE:
                 case Token.ROUND:
                 case Token.SAMETERM:
                 case Token.SECONDS:
@@ -2229,6 +2233,8 @@ namespace VDS.RDF.Parsing
                 case Token.SHA384:
                 case Token.SHA512:
                 case Token.STR:
+                case Token.STRAFTER:
+                case Token.STRBEFORE:
                 case Token.CONTAINS:
                 case Token.STRDT:
                 case Token.STRENDS:
@@ -2660,6 +2666,7 @@ namespace VDS.RDF.Parsing
                     case Token.NOW:
                     case Token.RAND:
                     case Token.REGEX:
+                    case Token.REPLACE:
                     case Token.ROUND:
                     case Token.SAMETERM:
                     case Token.SECONDS:
@@ -2669,6 +2676,8 @@ namespace VDS.RDF.Parsing
                     case Token.SHA384:
                     case Token.SHA512:
                     case Token.STR:
+                    case Token.STRAFTER:
+                    case Token.STRBEFORE:
                     case Token.CONTAINS:
                     case Token.STRDT:
                     case Token.STRENDS:
@@ -2801,6 +2810,7 @@ namespace VDS.RDF.Parsing
                     case Token.NOW:
                     case Token.RAND:
                     case Token.REGEX:
+                    case Token.REPLACE:
                     case Token.ROUND:
                     case Token.SAMETERM:
                     case Token.SECONDS:
@@ -2810,6 +2820,8 @@ namespace VDS.RDF.Parsing
                     case Token.SHA384:
                     case Token.SHA512:
                     case Token.STR:
+                    case Token.STRAFTER:
+                    case Token.STRBEFORE:
                     case Token.CONTAINS:
                     case Token.STRDT:
                     case Token.STRENDS:
@@ -2960,6 +2972,7 @@ namespace VDS.RDF.Parsing
                 case Token.NOW:
                 case Token.RAND:
                 case Token.REGEX:
+                case Token.REPLACE:
                 case Token.ROUND:
                 case Token.SAMETERM:
                 case Token.SECONDS:
@@ -2969,6 +2982,8 @@ namespace VDS.RDF.Parsing
                 case Token.SHA384:
                 case Token.SHA512:
                 case Token.STR:
+                case Token.STRAFTER:
+                case Token.STRBEFORE:
                 case Token.CONTAINS:
                 case Token.STRDT:
                 case Token.STRENDS:
@@ -3179,6 +3194,7 @@ namespace VDS.RDF.Parsing
                             case Token.NOW:
                             case Token.RAND:
                             case Token.REGEX:
+                            case Token.REPLACE:
                             case Token.ROUND:
                             case Token.SAMETERM:
                             case Token.SECONDS:
@@ -3188,6 +3204,8 @@ namespace VDS.RDF.Parsing
                             case Token.SHA384:
                             case Token.SHA512:
                             case Token.STR:
+                            case Token.STRAFTER:
+                            case Token.STRBEFORE:
                             case Token.CONTAINS:
                             case Token.STRDT:
                             case Token.STRENDS:
