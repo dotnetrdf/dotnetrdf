@@ -108,8 +108,16 @@ namespace VDS.RDF.Query.Aggregates
             float flttotal = 0.0f;
             double dbltotal = 0.0d;
             SparqlNumericType maxtype = SparqlNumericType.NaN;
-            if (!(this._expr is ISparqlNumericExpression)) throw new RdfQueryException("Cannot calculate an average aggregate over a non-numeric expression");
-            ISparqlNumericExpression numExpr = (ISparqlNumericExpression)this._expr;
+            ISparqlNumericExpression numExpr;
+            if (!(this._expr is ISparqlNumericExpression))
+            {
+                numExpr = new NumericWrapperExpression(this._expr);
+                //throw new RdfQueryException("Cannot calculate an average aggregate over a non-numeric expression");
+            }
+            else
+            {
+                numExpr = (ISparqlNumericExpression)this._expr;
+            }
             SparqlNumericType numtype;
 
             foreach (int id in bindingIDs)
