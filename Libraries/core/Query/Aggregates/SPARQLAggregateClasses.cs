@@ -200,9 +200,9 @@ namespace VDS.RDF.Query.Aggregates
                         return new LiteralNode(null, "0", new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
                     case SparqlNumericType.Integer:
-                        //Integer Values
-                        lngavg = lngtotal / (long)count;
-                        return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+                        ////Integer Values
+                        //lngavg = lngtotal / (long)count;
+                        //return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
                     case SparqlNumericType.Decimal:
                         //Decimal Values

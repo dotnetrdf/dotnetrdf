@@ -64,6 +64,7 @@ namespace dotNetRDFTest
                     "aggregates/agg-avg-02.rq",
                     "aggregates/agg-min-02.rq",
                     "aggregates/agg-sum-02.rq",
+                    "aggregates/agg-err-02.rq",
                     //The following are tests that fail simply because our SparqlResultSet equality algorithm doesn't cope well
                     //with lots of BNodes in the results
                     "functions/bnode01.rq",
@@ -73,8 +74,6 @@ namespace dotNetRDFTest
                     //The following are tests where the test cases are in the manifest but missing
                     "functions/notin01.rq",
                     "negation/temporalProximity02.rq",
-                    //The following is a BINDINGS test which myself and Andy Seaborne believe to be incorrect
-                    "bindings/bindings07.rq",
                     //The following are the SERVICE tests which we are not yet set up to handle properly
                     "service/service01.rq",
                     "service/service02.rq",
