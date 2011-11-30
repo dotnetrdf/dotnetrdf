@@ -115,6 +115,7 @@ namespace VDS.RDF.Storage
         /// Creates a new ADO Store
         /// </summary>
         /// <param name="parameters">Parameters for the connection</param>
+        /// <param name="accessMode">Access Mode</param>
         public BaseAdoStore(Dictionary<String,String> parameters, AdoAccessMode accessMode)
         {
             this._parameters = parameters;
@@ -419,6 +420,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Database Type that is used by this ADO Store
+        /// </summary>
         [Description("Shows the underlying database for this ADO Store")]
         public abstract String DatabaseType
         {
@@ -1820,10 +1824,15 @@ namespace VDS.RDF.Storage
         /// Creates a new SQL Client based ADO Store
         /// </summary>
         /// <param name="parameters">Connection Parameters</param>
+        /// <param name="mode">Access Mode</param>
         public BaseAdoSqlClientStore(Dictionary<String,String> parameters, AdoAccessMode mode)
             : base(parameters, mode) { }
 
-        public BaseAdoSqlClientStore(Dictionary<String, String> paramters)
-            : this(paramters, AdoAccessMode.Streaming) { }
+        /// <summary>
+        /// Creates a new SQL Client based ADO Store
+        /// </summary>
+        /// <param name="parameters">Connection Parameters</param>
+        public BaseAdoSqlClientStore(Dictionary<String, String> parameters)
+            : this(parameters, AdoAccessMode.Streaming) { }
     }
 }

@@ -59,6 +59,7 @@ namespace VDS.RDF.Storage
         /// <param name="db">Database</param>
         /// <param name="username">Username (will automatically have the @server appended to it)</param>
         /// <param name="password">Password</param>
+        /// <param name="mode">Access Mode</param>
         /// <remarks>
         /// SQL Azure connections are always encrypted
         /// </remarks>
@@ -69,9 +70,22 @@ namespace VDS.RDF.Storage
             this._azureUser = username;
         }
 
+        /// <summary>
+        /// Creates a new Azure ADO Manager instance
+        /// </summary>
+        /// <param name="server">Server Name (this is the alphanumeric server name issues by the Azure platform which precedes <em>.database.windows.net</em> in the Server hostname)</param>
+        /// <param name="db">Database</param>
+        /// <param name="username">Username (will automatically have the @server appended to it)</param>
+        /// <param name="password">Password</param>
+        /// <remarks>
+        /// SQL Azure connections are always encrypted
+        /// </remarks>
         public AzureAdoManager(String server, String db, String username, String password)
             : this(server, db, username, password, AdoAccessMode.Streaming) { }
 
+        /// <summary>
+        /// Gets the Database Type
+        /// </summary>
         public override string DatabaseType
         {
             get

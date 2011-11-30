@@ -81,6 +81,7 @@ namespace VDS.RDF.Storage
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
         /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <param name="mode">Access Mode</param>
         public MicrosoftAdoManager(String server, String db, String user, String password, bool encrypt, AdoAccessMode mode)
             : base(CreateConnectionParameters(server, db, user, password, encrypt), mode)
         {
@@ -110,9 +111,17 @@ namespace VDS.RDF.Storage
         /// <param name="db">Database</param>
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
+        /// <param name="mode">Access Mode</param>
         public MicrosoftAdoManager(String server, String db, String user, String password, AdoAccessMode mode)
             : this(server, db, user, password, false, mode) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
         public MicrosoftAdoManager(String server, String db, String user, String password)
             : this(server, db, user, password, AdoAccessMode.Streaming) { }
 
@@ -123,14 +132,38 @@ namespace VDS.RDF.Storage
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
         /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <param name="mode">Access Mode</param>
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server
         /// </remarks>
         public MicrosoftAdoManager(String db, String user, String password, bool encrypt, AdoAccessMode mode)
             : this(DefaultServer, db, user, password, encrypt, mode) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server
+        /// </remarks>
         public MicrosoftAdoManager(String db, String user, String password, bool encrypt)
             : this(DefaultServer, db, user, password, encrypt, AdoAccessMode.Streaming) { }
+
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="mode">Access Mode</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server
+        /// </remarks>
+        public MicrosoftAdoManager(String db, String user, String password, AdoAccessMode mode)
+            : this(db, user, password, false, mode) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -141,9 +174,6 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server
         /// </remarks>
-        public MicrosoftAdoManager(String db, String user, String password, AdoAccessMode mode)
-            : this(db, user, password, false, mode) { }
-
         public MicrosoftAdoManager(String db, String user, String password)
             : this(db, user, password, false, AdoAccessMode.Streaming) { }
 
@@ -153,14 +183,36 @@ namespace VDS.RDF.Storage
         /// <param name="server">Server</param>
         /// <param name="db">Database</param>
         /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <param name="mode">Access Mode</param>
         /// <remarks>
         /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
         public MicrosoftAdoManager(String server, String db, bool encrypt, AdoAccessMode mode)
             : this(server, db, null, null, encrypt, mode) { }
 
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <remarks>
+        /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
         public MicrosoftAdoManager(String server, String db, bool encrypt)
             : this(server, db, null, null, encrypt, AdoAccessMode.Streaming) { }
+
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="db">Database</param>
+        /// <param name="mode">Access Mode</param>
+        /// <remarks>
+        /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
+        public MicrosoftAdoManager(String server, String db, AdoAccessMode mode)
+            : this(server, db, false, mode) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -170,11 +222,20 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
-        public MicrosoftAdoManager(String server, String db, AdoAccessMode mode)
-            : this(server, db, false, mode) { }
-
         public MicrosoftAdoManager(String server, String db)
             : this(server, db, false, AdoAccessMode.Streaming) { }
+
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="encrypt">Whether to encrypt the connection</param>
+        /// <param name="mode">Access Mode</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
+        public MicrosoftAdoManager(String db, bool encrypt, AdoAccessMode mode)
+            : this(DefaultServer, db, encrypt, mode) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -184,11 +245,19 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
-        public MicrosoftAdoManager(String db, bool encrypt, AdoAccessMode mode)
-            : this(DefaultServer, db, encrypt, mode) { }
-
         public MicrosoftAdoManager(String db, bool encrypt)
             : this(DefaultServer, db, encrypt, AdoAccessMode.Streaming) { }
+
+        /// <summary>
+        /// Creates a new Microsoft SQL Server ADO Store Manager
+        /// </summary>
+        /// <param name="db">Database</param>
+        /// <param name="mode">Access Mode</param>
+        /// <remarks>
+        /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
+        /// </remarks>
+        public MicrosoftAdoManager(String db, AdoAccessMode mode)
+            : this(db, false, mode) { }
 
         /// <summary>
         /// Creates a new Microsoft SQL Server ADO Store Manager
@@ -197,9 +266,6 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Will use <strong>localhost</strong> as the server and will assume a Trusted Connection (i.e. Windows authentication) since no username and password are specified
         /// </remarks>
-        public MicrosoftAdoManager(String db, AdoAccessMode mode)
-            : this(db, false, mode) { }
-
         public MicrosoftAdoManager(String db)
             : this(db, false, AdoAccessMode.Streaming) { }
 
@@ -233,6 +299,9 @@ namespace VDS.RDF.Storage
             return ps;
         }
 
+        /// <summary>
+        /// Gets the Database Type
+        /// </summary>
         public override string DatabaseType
         {
             get

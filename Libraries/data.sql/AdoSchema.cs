@@ -134,11 +134,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Microsoft SQL Server (and SQL Azure)
         /// </summary>
-        MicrosoftSqlServer,
-        /// <summary>
-        /// SQL Server CE
-        /// </summary>
-        SqlServerCe
+        MicrosoftSqlServer
+        ///// <summary>
+        ///// SQL Server CE
+        ///// </summary>
+        //SqlServerCe
     }
 
     /// <summary>
@@ -223,8 +223,8 @@ namespace VDS.RDF.Storage
                     {
                         new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.CreateMicrosoftAdoSimpleStore.sql"),
                         new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoSimpleStore.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.CreateSqlServerCeAdoSimpleStore.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.DropSqlServerCeAdoSimpleStore.sql")
+                        //new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.CreateSqlServerCeAdoSimpleStore.sql"),
+                        //new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.DropSqlServerCeAdoSimpleStore.sql")
                     }));
                 _defs.Add(new AdoSchemaDefinition("Simple 2000", "A variant of the Simple schema that should work on pre-2005 SQL Server instances",
                     new AdoSchemaScriptDefinition[]
