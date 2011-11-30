@@ -54,6 +54,9 @@ namespace VDS.RDF.Update
     public class LeviathanUpdateProcessor 
         : ISparqlUpdateProcessor
     {
+        /// <summary>
+        /// Dataset over which updates are applied
+        /// </summary>
         protected ISparqlDataset _dataset;
 #if !NO_RWLOCK
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
@@ -115,11 +118,20 @@ namespace VDS.RDF.Update
             this._canCommit = true;
         }
 
+        /// <summary>
+        /// Creates a new Evaluation Context
+        /// </summary>
+        /// <param name="cmds">Update Commands</param>
+        /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext(SparqlUpdateCommandSet cmds)
         {
             return new SparqlUpdateEvaluationContext(cmds, this._dataset, this.GetQueryProcessor());
         }
 
+        /// <summary>
+        /// Creates a new Evaluation Context
+        /// </summary>
+        /// <returns></returns>
         protected SparqlUpdateEvaluationContext GetContext()
         {
             return new SparqlUpdateEvaluationContext(this._dataset, this.GetQueryProcessor());

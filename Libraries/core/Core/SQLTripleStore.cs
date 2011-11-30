@@ -259,7 +259,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="manager">An <see cref="IThreadedSqlIOManager">IThreadedSqlIOManager</see> for your chosen backing SQL Store</param>
         /// <param name="threads">The Number of Threads to use for Loading (Default is 8)</param>
-        /// <param name="async">Whether loading should be done asynchronously</param>
+        /// <param name="isAsync">Whether loading should be done asynchronously</param>
         /// <remarks>
         /// If loading is set to Asynchronous then the Graphs will be loaded in a multi-threaded fashion without waiting for them to load before proceeding.  This means that code can start working immediately with the Triple Store but that the data contained in it may be incomplete.
         /// <br />

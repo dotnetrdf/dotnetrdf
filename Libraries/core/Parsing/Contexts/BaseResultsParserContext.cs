@@ -1,7 +1,40 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
@@ -16,11 +49,23 @@ namespace VDS.RDF.Parsing.Contexts
     {
         private ISparqlResultsHandler _handler;
         private List<String> _variables = new List<string>();
+        /// <summary>
+        /// Controls parser tracing behaviour
+        /// </summary>
         protected bool _traceParsing = false;
 
+        /// <summary>
+        /// Creates a new Results Parser Context
+        /// </summary>
+        /// <param name="results">Result Set</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
         public BaseResultsParserContext(SparqlResultSet results, bool traceParsing)
             : this(new ResultSetHandler(results), traceParsing) { }
 
+        /// <summary>
+        /// Creates a new Results Parser Context
+        /// </summary>
+        /// <param name="results">Result Set</param>
         public BaseResultsParserContext(SparqlResultSet results)
             : this(results, false) { }
 
@@ -28,6 +73,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// Creates a new Parser Context
         /// </summary>
         /// <param name="handler">Results Handler</param>
+        /// <param name="traceParsing">Whether to trace parsing</param>
         public BaseResultsParserContext(ISparqlResultsHandler handler, bool traceParsing)
         {
             if (handler == null) throw new ArgumentNullException("handler");
@@ -35,6 +81,10 @@ namespace VDS.RDF.Parsing.Contexts
             this._traceParsing = traceParsing;
         }
 
+        /// <summary>
+        /// Creates a new Results Parser Context
+        /// </summary>
+        /// <param name="handler">Results Handler</param>
         public BaseResultsParserContext(ISparqlResultsHandler handler)
             : this(handler, false) { }
 
@@ -60,6 +110,9 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether Parser Tracing is used
+        /// </summary>
         public bool TraceParsing
         {
             get
@@ -73,6 +126,9 @@ namespace VDS.RDF.Parsing.Contexts
         }
     }
 
+    /// <summary>
+    /// Class for Tokenising SPARQL Results Parser Contexts
+    /// </summary>
     public class TokenisingResultParserContext
         : BaseResultsParserContext
     {

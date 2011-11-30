@@ -695,11 +695,21 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether a particular Type of Object can be parsed
+        /// </summary>
+        /// <typeparam name="T">Object Type</typeparam>
+        /// <returns></returns>
         public bool CanParseObject<T>()
         {
             return this._objectParserTypes.ContainsKey(typeof(T));
         }
 
+        /// <summary>
+        /// Gets an Object Parser for the given Type
+        /// </summary>
+        /// <typeparam name="T">Object Type</typeparam>
+        /// <returns></returns>
         public Type GetObjectParserType<T>()
         {
             Type t = typeof(T);
@@ -714,6 +724,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Sets an Object Parser for the given Type
+        /// </summary>
+        /// <typeparam name="T">Object Type</typeparam>
+        /// <param name="parserType">Parser Type</param>
         public void SetObjectParserType<T>(Type parserType)
         {
             Type t = typeof(T);
@@ -740,6 +755,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets an Object Parser for the given Type
+        /// </summary>
+        /// <typeparam name="T">Object Type</typeparam>
+        /// <returns></returns>
         public IObjectParser<T> GetObjectParser<T>()
         {
             if (this._objectParserTypes.ContainsKey(typeof(T)))
@@ -753,6 +773,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the registered Object Parser Types
+        /// </summary>
         public IEnumerable<KeyValuePair<Type, Type>> ObjectParserTypes
         {
             get

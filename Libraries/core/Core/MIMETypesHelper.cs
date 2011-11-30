@@ -900,11 +900,25 @@ namespace VDS.RDF
 
         #region File Filters
 
+        /// <summary>
+        /// Generates a Filename Filter that can be used with any .Net application and includes all formats that dotNetRDF is aware of
+        /// </summary>
+        /// <returns></returns>
         public static String GetFilenameFilter()
         {
             return MimeTypesHelper.GetFilenameFilter(true, true, true, true, true, true);
         }
 
+        /// <summary>
+        /// Generates a Filename Filter that can be used with any .Net application and includes a user dictated subset of the formats that dotNetRDF is aware of
+        /// </summary>
+        /// <param name="rdf">Allow RDF Graph formats (e.g. Turtle)</param>
+        /// <param name="rdfDatasets">Allow RDF Dataset formats (e.g. NQuads)</param>
+        /// <param name="sparqlResults">Allow SPARQL Results formats (e.g. SPARQL Results XML)</param>
+        /// <param name="sparqlQuery">Allow SPARQL Query (i.e. .rq files)</param>
+        /// <param name="sparqlUpdate">Allow SPARQL Update (i.e. .ru files)</param>
+        /// <param name="allFiles">Allow All Files (i.e. */*)</param>
+        /// <returns></returns>
         public static String GetFilenameFilter(bool rdf, bool rdfDatasets, bool sparqlResults, bool sparqlQuery, bool sparqlUpdate, bool allFiles)
         {
             if (!_init) Init();

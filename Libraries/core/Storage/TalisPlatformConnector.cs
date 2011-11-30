@@ -938,6 +938,9 @@ namespace VDS.RDF.Storage
             this.Add(g);
         }
 
+        /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
         public IOBehaviour IOBehaviour
         {
             get

@@ -1,26 +1,68 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+If this license is not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Tokens
 {
+    /// <summary>
+    /// Tokeniser for tokenising TSV inputs
+    /// </summary>
     public class TsvTokeniser
         : BaseTokeniser
     {
         private BlockingTextReader _in;
 
+        /// <summary>
+        /// Creates a new TSV Tokeniser
+        /// </summary>
+        /// <param name="reader">Text Reader</param>
         public TsvTokeniser(BlockingTextReader reader)
             : base(reader)
         {
             this._in = reader;
         }
 
+        /// <summary>
+        /// Creates a new TSV Tokeniser
+        /// </summary>
+        /// <param name="reader">Stream Reader</param>
         public TsvTokeniser(StreamReader reader)
             : this(new BlockingTextReader(reader)) { }
         
+        /// <summary>
+        /// Gets the next available token from the input
+        /// </summary>
+        /// <returns></returns>
         public override IToken GetNextToken()
         {
             //Have we read anything yet?

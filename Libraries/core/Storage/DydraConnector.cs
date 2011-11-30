@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-11
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -106,6 +106,9 @@ namespace VDS.RDF.Storage
         //    this._hasCredentials = true;
         //}
 
+        /// <summary>
+        /// Gets the Account Name under which the repository is located
+        /// </summary>
         [Description("The Account Name under which the repository is located.")]
         public String AccountName
         {
@@ -115,6 +118,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the Repository Name
+        /// </summary>
         [Description("The Dydra Repository to which this is a connection.")]
         public String RepositoryName
         {
@@ -124,6 +130,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets whether the Store is ready
+        /// </summary>
         public bool IsReady
         {
             get
@@ -131,7 +140,10 @@ namespace VDS.RDF.Storage
                 return true;
             }
         }
-
+        
+        /// <summary>
+        /// Returns false because Dydra stores are always read/write
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -140,6 +152,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Saves a Graph to the Store
+        /// </summary>
+        /// <param name="g">Graph to save</param>
         public void SaveGraph(IGraph g)
         {
             HttpWebRequest request;
@@ -182,6 +198,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
         public IOBehaviour IOBehaviour
         {
             get
@@ -190,21 +209,41 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the graph to load</param>
         public void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the graph to load</param>
         public void LoadGraph(IGraph g, String graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the graph to load</param>
         public void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             this.LoadGraph(handler, graphUri.ToSafeString());
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
             Dictionary<String, String> requestParams = new Dictionary<string, string>();
@@ -238,6 +277,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns true as listing graphs is supported by Dydra
+        /// </summary>
         public bool ListGraphsSupported
         {
             get
@@ -290,6 +332,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns true as Triple Level updates are supported by Dydra
+        /// </summary>
         public bool UpdateSupported
         {
             get
@@ -298,11 +343,29 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates an existing Graph in the Store by adding and removing triples
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// Removals are processed before any additions, to force a specific order of additions and removals you should make multiple calls to this function specifying each set of additions or removals you wish to perform seperately
+        /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             this.UpdateGraph(graphUri.ToSafeString(), additions, removals);
         }
 
+        /// <summary>
+        /// Updates an existing Graph in the Store by adding and removing triples
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// Removals are processed before any additions, to force a specific order of additions and removals you should make multiple calls to this function specifying each set of additions or removals you wish to perform seperately
+        /// </remarks>
         public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             StringBuilder sparqlUpdate = new StringBuilder();
@@ -364,6 +427,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Deletes a Graph from the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(string graphUri)
@@ -379,6 +443,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Deletes a Graph from the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         public void DeleteGraph(Uri graphUri)
@@ -387,7 +452,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store
+        /// Performs a SPARQL Query against the underlying Store
         /// </summary>
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">SPARQL Results Handler</param>
@@ -507,7 +572,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Makes a SPARQL Query against the underlying Store
+        /// Performs a SPARQL Query against the underlying Store
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns></returns>
@@ -527,6 +592,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Performs a SPARQL Update request on the Store
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Updates</param>
         public void Update(String sparqlUpdates)
         {
             HttpWebRequest request = this.CreateRequest("/sparql", MimeTypesHelper.HttpSparqlAcceptHeader, "POST", null);
@@ -686,6 +755,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Disposes of the connection
+        /// </summary>
         public void Dispose()
         {
             //No Dispose actions needed

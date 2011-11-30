@@ -507,17 +507,31 @@ namespace VDS.RDF.Query.Expressions.Functions
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL STRAFTER Function
+    /// </summary>
     public class StrAfterFunction
     : ISparqlExpression
     {
         private ISparqlExpression _stringExpr, _startsExpr;
 
+        /// <summary>
+        /// Creates a new STRAFTER Function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="startsExpr">Starts Expression</param>
         public StrAfterFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
         {
             this._stringExpr = stringExpr;
             this._startsExpr = startsExpr;
         }
 
+        /// <summary>
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
             ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
@@ -676,11 +690,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Returns the Effective Boolean Value of the Expression as evaluated for a given Binding as a Literal Node
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
+        /// <summary>
+        /// Gets the Variables used in the function
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get
@@ -689,6 +712,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get
@@ -697,6 +723,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -705,6 +734,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Function
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get
@@ -713,28 +745,51 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrAfterFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
         }
 
+        /// <summary>
+        /// Gets the String representation of the function
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrAfter + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";
         }
     }
 
+    /// <summary>
+    /// Represents the SPARQL STRBEFORE function
+    /// </summary>
     public class StrBeforeFunction
         : ISparqlExpression
     {
         private ISparqlExpression _stringExpr, _startsExpr;
 
+        /// <summary>
+        /// Creates a new STRBEFORE Function
+        /// </summary>
+        /// <param name="stringExpr">String Expression</param>
+        /// <param name="startsExpr">Starts Expression</param>
         public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
         {
             this._stringExpr = stringExpr;
             this._startsExpr = startsExpr;
         }
 
+        /// <summary>
+        /// Returns the value of the Expression as evaluated for a given Binding as a Literal Node
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public INode Value(SparqlEvaluationContext context, int bindingID)
         {
             ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
@@ -894,11 +949,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Returns the Effective Boolean Value of the Expression as evaluated for a given Binding as a Literal Node
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
         {
             return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
+        /// <summary>
+        /// Gets the Variables used in the function
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get 
@@ -907,6 +971,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Type of the Expression
+        /// </summary>
         public SparqlExpressionType Type
         {
             get 
@@ -915,6 +982,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Functor of the Expression
+        /// </summary>
         public string Functor
         {
             get
@@ -923,6 +993,9 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Gets the Arguments of the Function
+        /// </summary>
         public IEnumerable<ISparqlExpression> Arguments
         {
             get 
@@ -931,11 +1004,20 @@ namespace VDS.RDF.Query.Expressions.Functions
             }
         }
 
+        /// <summary>
+        /// Transforms the Expression using the given Transformer
+        /// </summary>
+        /// <param name="transformer">Expression Transformer</param>
+        /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
         }
 
+        /// <summary>
+        /// Gets the String representation of the function
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";

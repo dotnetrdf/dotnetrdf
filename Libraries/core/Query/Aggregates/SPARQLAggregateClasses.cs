@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Aggregates
             //Prep Variables
             HashSet<INode> values = new HashSet<INode>();
             int count = 0;
-            long lngtotal = 0;
+            //long lngtotal = 0;
             decimal dectotal = 0.0m;
             float flttotal = 0.0f;
             double dbltotal = 0.0d;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Aggregates
                 switch (maxtype)
                 {
                     case SparqlNumericType.Integer:
-                        lngtotal += numExpr.IntegerValue(context, id);
+                        //lngtotal += numExpr.IntegerValue(context, id);
                         dectotal += numExpr.DecimalValue(context, id);
                         flttotal += numExpr.FloatValue(context, id);
                         dbltotal += numExpr.DoubleValue(context, id);
@@ -188,7 +188,7 @@ namespace VDS.RDF.Query.Aggregates
             }
             else
             {
-                long lngavg;
+                //long lngavg;
                 decimal decavg;
                 float fltavg;
                 double dblavg;

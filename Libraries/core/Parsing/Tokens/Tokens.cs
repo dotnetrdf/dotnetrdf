@@ -76,6 +76,11 @@ namespace VDS.RDF.Parsing.Tokens
     /// </summary>
     public class EOLToken : BaseToken
     {
+        /// <summary>
+        /// Creates a new End of Line Token
+        /// </summary>
+        /// <param name="line">Line</param>
+        /// <param name="pos">Column at which the line ends</param>
         public EOLToken(int line, int pos) : base(Token.EOL, String.Empty, line, line, pos, pos+1) { }
     }
 
@@ -131,8 +136,16 @@ namespace VDS.RDF.Parsing.Tokens
         public CommaToken(int line, int pos) : base(Token.COMMA, ",", line, line, pos, pos+1) { }
     }
 
+    /// <summary>
+    /// Tokens which represents the tab character
+    /// </summary>
     public class TabToken : BaseToken
     {
+        /// <summary>
+        /// Creates a new Tab Token
+        /// </summary>
+        /// <param name="line">Line at which the tab occurs</param>
+        /// <param name="pos">Column at which the tab occurs</param>
         public TabToken(int line, int pos) : base(Token.TAB, "\t", line, line, pos, pos + 1) { }
     }
 

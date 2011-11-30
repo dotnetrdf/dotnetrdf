@@ -124,6 +124,9 @@ namespace VDS.RDF.Storage
         public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
             : this(baseUri, null, storeID, username, password) { }
 
+        /// <summary>
+        /// Gets the Catalog under which the repository you are connected to is located
+        /// </summary>
         [Description("The Catalog under which the repository is located.  If using the Root Catalog on AllegroGrah 4+ <ROOT> will be displayed.")]
         public String Catalog
         {

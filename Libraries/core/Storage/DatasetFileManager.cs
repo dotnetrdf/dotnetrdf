@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
         /// Creates a new Dataset File Manager
         /// </summary>
         /// <param name="filename">File to load from</param>
-        /// <param name="async">Whether to load asynchronously</param>
+        /// <param name="isAsync">Whether to load asynchronously</param>
         public DatasetFileManager(String filename, bool isAsync)
         {
             if (!File.Exists(filename)) throw new RdfStorageException("Cannot connect to a Dataset File that doesn't exist");

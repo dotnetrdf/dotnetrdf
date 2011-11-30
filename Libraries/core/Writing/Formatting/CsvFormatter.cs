@@ -52,11 +52,23 @@ namespace VDS.RDF.Writing.Formatting
         public CsvFormatter()
             : base("CSV") { }
 
+        /// <summary>
+        /// Formats URIs for CSV output
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatUriNode(IUriNode u, TripleSegment? segment)
         {
             return this.FormatUri(u.Uri);
         }
 
+        /// <summary>
+        /// Formats Literals for CSV output
+        /// </summary>
+        /// <param name="l">Literal</param>
+        /// <param name="segment">Triple Segment</param>
+        /// <returns></returns>
         protected override string FormatLiteralNode(ILiteralNode l, TripleSegment? segment)
         {
             String value = l.Value;

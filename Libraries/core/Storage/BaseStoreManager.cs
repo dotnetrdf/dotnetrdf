@@ -868,6 +868,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
         public virtual IOBehaviour IOBehaviour
         {
             get

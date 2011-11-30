@@ -50,14 +50,39 @@ namespace VDS.RDF
     /// </remarks>
     public interface IObjectParser<T>
     {
+        /// <summary>
+        /// Parses an Object from an Input Stream
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <returns></returns>
         T Parse(StreamReader input);
 
+        /// <summary>
+        /// Parses an Object from a Text Stream
+        /// </summary>
+        /// <param name="input">Text Stream</param>
+        /// <returns></returns>
         T Parse(TextReader input);
 
-        T ParseFromFile(String queryFile);
+        /// <summary>
+        /// Parses an Object from a File
+        /// </summary>
+        /// <param name="file">Filename</param>
+        /// <returns></returns>
+        T ParseFromFile(String file);
 
-        T ParseFromString(String queryString);
+        /// <summary>
+        /// Parses an Object from a String
+        /// </summary>
+        /// <param name="data">String</param>
+        /// <returns></returns>
+        T ParseFromString(String data);
 
-        T ParseFromString(SparqlParameterizedString queryString);
+        /// <summary>
+        /// Parses an Object from a Parameterized String
+        /// </summary>
+        /// <param name="cmdString">Parameterized String</param>
+        /// <returns></returns>
+        T ParseFromString(SparqlParameterizedString cmdString);
     }
 }
