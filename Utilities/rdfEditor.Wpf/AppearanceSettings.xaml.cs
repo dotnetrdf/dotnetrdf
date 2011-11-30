@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Rendering;
+using VDS.RDF.Utilities.Editor.Syntax;
+using VDS.RDF.Utilities.Editor.Wpf.Syntax;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
@@ -25,6 +29,8 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private VisualOptions<FontFamily, Color> _options;
 
         private List<String> _decorations;
+
+        private static ITextRunConstructionContext _colourContext = new FakeTextRunContext();
 
         public AppearanceSettings(VisualOptions<FontFamily, Color> options)
         {
@@ -217,7 +223,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 Properties.Settings.Default.Save();
 
                 //Force the Syntax Manager to update colours appropriately
-                //SyntaxManager.UpdateHighlightingColours();
+                AppearanceSettings.UpdateHighlightingColours();
 
                 this.DialogResult = true;
                 this.Close();
@@ -320,6 +326,114 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             btnReset_Click(sender, e);
             btnResetSyntaxChanges_Click(sender, e);
             btnErrorReset_Click(sender, e);
+        }
+
+        public static void UpdateHighlightingColours()
+        {
+            //Only applicable if not using customised XSHD Files
+            if (!Properties.Settings.Default.UseCustomisedXshdFiles)
+            {
+                IHighlightingDefinition h;
+
+                //Apply XML Format Colours
+                h = HighlightingManager.Instance.GetDefinition("XML");
+                if (h != null)
+                {
+                    foreach (HighlightingColor c in h.NamedHighlightingColors)
+                    {
+                        switch (c.Name)
+                        {
+                            case "Comment":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlComments);
+                                break;
+                            case "CData":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlCData);
+                                break;
+                            case "DocType":
+                            case "XmlDeclaration":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlDocType);
+                                break;
+                            case "XmlTag":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlTag);
+                                break;
+                            case "AttributeName":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlAttrName);
+                                break;
+                            case "AttributeValue":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlAttrValue);
+                                break;
+                            case "Entity":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlEntity);
+                                break;
+                            case "BrokenEntity":
+                                AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourXmlBrokenEntity);
+                                break;
+
+                        }
+                    }
+                }
+
+                //Apply non-XML format colours
+                foreach (SyntaxDefinition def in SyntaxManager.Definitions)
+                {
+                    if (!def.IsXmlFormat)
+                    {
+                        h = HighlightingManager.Instance.GetDefinition(def.Name);
+                        if (h != null)
+                        {
+                            foreach (HighlightingColor c in h.NamedHighlightingColors)
+                            {
+                                switch (c.Name)
+                                {
+                                    case "BNode":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourBNode);
+                                        break;
+                                    case "Comment":
+                                    case "Comments":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourComment);
+                                        break;
+                                    case "EscapedChar":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourEscapedChar);
+                                        break;
+                                    case "Keyword":
+                                    case "Keywords":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourKeyword);
+                                        break;
+                                    case "LangSpec":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourLangSpec);
+                                        break;
+                                    case "Numbers":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourNumbers);
+                                        break;
+                                    case "Punctuation":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourPunctuation);
+                                        break;
+                                    case "QName":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourQName);
+                                        break;
+                                    case "String":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourString);
+                                        break;
+                                    case "URI":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourURI);
+                                        break;
+                                    case "Variable":
+                                        AdjustHighlightingColour(c, Properties.Settings.Default.SyntaxColourVariables);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void AdjustHighlightingColour(HighlightingColor current, Color desired)
+        {
+            if (!desired.Equals(current.Foreground.GetColor(_colourContext)))
+            {
+                current.Foreground = new CustomHighlightingBrush(desired);
+            }
         }
     }
 }

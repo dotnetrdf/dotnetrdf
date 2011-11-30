@@ -8,7 +8,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
-    class CustomHighlightingBrush : HighlightingBrush
+    public class CustomHighlightingBrush : HighlightingBrush
     {
         private SolidColorBrush _brush;
 

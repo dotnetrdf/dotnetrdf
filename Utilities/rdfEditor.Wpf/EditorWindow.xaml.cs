@@ -73,6 +73,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this._editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
             this._editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
             this._editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
+
+            //If custom highlighting colours have been used this call forces them to be used
+            AppearanceSettings.UpdateHighlightingColours();
             
             //Setup Options based on the User Config file
             if (!Properties.Settings.Default.UseUtf8Bom)
@@ -1090,6 +1093,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf
                 this._editor.DocumentManager.VisualOptions.FontSize = Math.Round(Properties.Settings.Default.EditorFontSize, 0);
                 this._editor.DocumentManager.VisualOptions.Foreground = Properties.Settings.Default.EditorForeground;
                 this._editor.DocumentManager.VisualOptions.Background = Properties.Settings.Default.EditorBackground;
+
+                this._editor.DocumentManager.VisualOptions.ErrorBackground = Properties.Settings.Default.ErrorHighlightBackground;
+                this._editor.DocumentManager.VisualOptions.ErrorDecoration = Properties.Settings.Default.ErrorHighlightDecoration;
+                if (Properties.Settings.Default.ErrorHighlightFontFamily != null)
+                {
+                    this._editor.DocumentManager.VisualOptions.ErrorFontFace = Properties.Settings.Default.ErrorHighlightFontFamily;
+                }
+                this._editor.DocumentManager.VisualOptions.ErrorForeground = Properties.Settings.Default.ErrorHighlightForeground;
             }
         }
 

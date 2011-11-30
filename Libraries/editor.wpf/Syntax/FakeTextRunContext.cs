@@ -9,7 +9,7 @@ using ICSharpCode.AvalonEdit.Rendering;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
-    class FakeTextRunContext : ITextRunConstructionContext
+    public class FakeTextRunContext : ITextRunConstructionContext
     {
         public ICSharpCode.AvalonEdit.Document.TextDocument Document
         {
