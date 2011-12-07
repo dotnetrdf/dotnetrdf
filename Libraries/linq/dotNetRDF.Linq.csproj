@@ -1,0 +1,113 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DCB04931-F2F1-45CA-B857-233D7B0AC615}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF.Linq</RootNamespace>
+    <AssemblyName>dotNetRDF.Linq</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>VDSOpenSourceKey.pfx</AssemblyOriginatorKeyFile>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRules>-Microsoft.Globalization#CA1301;-Microsoft.Globalization#CA1302;-Microsoft.Globalization#CA1303;-Microsoft.Globalization#CA1306;-Microsoft.Globalization#CA1304;-Microsoft.Globalization#CA1305;-Microsoft.Globalization#CA1300</CodeAnalysisRules>
+    <DocumentationFile>bin\Debug\dotNetRDF.Linq.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Dependencies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Attributes.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Evaluator.cs" />
+    <Compile Include="FunctionalExtensions.cs" />
+    <Compile Include="ILinqResultsSink.cs" />
+    <Compile Include="IPendingLinqAction.cs" />
+    <Compile Include="IQueryFormatTranslator.cs" />
+    <Compile Include="IRdfCommand.cs" />
+    <Compile Include="IRdfConnection.cs" />
+    <Compile Include="IRdfContext.cs" />
+    <Compile Include="IRdfQuery.cs" />
+    <Compile Include="LinqQueryProcessor.cs" />
+    <Compile Include="LinqToRdfException.cs" />
+    <Compile Include="LinqToSparqlExtensions.cs" />
+    <Compile Include="LinqTripleStore.cs" />
+    <Compile Include="LinqUpdateProcessor.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="LogSink.cs" />
+    <Compile Include="MemoryStoreExtensions.cs" />
+    <Compile Include="NamespaceManager.cs" />
+    <Compile Include="ObjectDeserialiser.cs" />
+    <Compile Include="OwlClassSupertype.cs" />
+    <Compile Include="OwlInstanceSupertype.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QueryFactory.cs" />
+    <Compile Include="QuerySupertype.cs" />
+    <Compile Include="RdfDataContext.cs" />
+    <Compile Include="RdfExpressionTranslator.cs" />
+    <Compile Include="LinqToSparqlQuery.cs" />
+    <Compile Include="LinqToSparqlExpTranslator.cs" />
+    <Compile Include="LinqToSparqlCommand.cs" />
+    <Compile Include="SparqlConnection.cs" />
+    <Compile Include="TypeCalculations.cs" />
+    <Compile Include="XsdtTypeConverter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+    <None Include="VDSOpenSourceKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
