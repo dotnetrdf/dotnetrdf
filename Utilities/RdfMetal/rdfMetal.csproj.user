@@ -1,5 +1,0 @@
-﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <StartArguments>-e http://api.talis.com/stores/space/services/sparql -h Test -N Test.Namespace -o test.cs -i -r</StartArguments>
-  </PropertyGroup>
-</Project>
