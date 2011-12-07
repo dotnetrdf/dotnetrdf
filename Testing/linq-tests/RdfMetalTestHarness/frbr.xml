@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfOntologyClass xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <OntologyClass>
+    <Uri>http://purl.org/vocab/frbr/core#Work</Uri>
+    <Name>Work</Name>
+    <Properties />
+  </OntologyClass>
+  <OntologyClass>
+    <Uri>http://purl.org/vocab/frbr/core#Expression</Uri>
+    <Name>Expression</Name>
+    <Properties />
+  </OntologyClass>
+  <OntologyClass>
+    <Uri>http://purl.org/vocab/frbr/core#Manifestation</Uri>
+    <Name>Manifestation</Name>
+    <Properties />
+  </OntologyClass>
+  <OntologyClass>
+    <Uri>http://purl.org/vocab/frbr/core#Item</Uri>
+    <Name>Item</Name>
+    <Properties />
+  </OntologyClass>
+</ArrayOfOntologyClass>

@@ -1,0 +1,12 @@
+﻿@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+
+<dotnetrdf:/linqtordf/sparql> a dnr:HttpHandler ;
+                    dnr:type "VDS.RDF.Web.QueryHandler" ;
+                    dnr:queryProcessor [ a dnr:SparqlQueryProcessor ;
+						                 dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+						                 dnr:usingStore [ a dnr:TripleStore ;
+										                  dnr:type "VDS.RDF.TripleStore" ;
+										                  dnr:usingGraph [ a dnr:Graph ; dnr:fromFile "~/App_Data/store3.n3" ] ;
+										                  dnr:usingGraph [ a dnr:Graph ; dnr:fromFile "~/App_Data/music.n3" ] 
+									                    ]
+					                   ] .

@@ -1,0 +1,168 @@
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix daml: <http://www.daml.org/2001/03/daml+oil#> .
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsdt: <http://www.w3.org/2001/XMLSchema#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix log: <http://www.w3.org/2000/10/swap/log#> .
+@prefix math: <http://www.w3.org/2000/10/swap/math#>.
+@prefix : <http://aabs.purl.org/ontologies/2007/11/tasks#> .
+
+# Network graph of project P1:
+#	        T3_1 
+#         /     \
+# T1 - T2 - T3_2 - T4
+#         \     /
+#           T3_3
+
+# Stats (for testing purposes)
+# Projects:		1
+# Tasks:		6
+# Resources:	3
+# Concurrent Tasks: 3
+:P1 a :Project;
+	:name "P1" .
+	
+:T1 a :Task;
+	:inProject :P1;
+	:name "P1T1";
+	:description "Description ";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-09"^^xsdt:date;
+	:requiresResource :tom.
+
+:T2 a :Task;
+	:inProject :P1;
+	:name "P1T2";
+	:description "Description 2";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-10"^^xsdt:date;
+	:predecessor :T1;
+	:requiresResource :tom.
+
+:T3_1 a :Task;
+	:inProject :P1;
+	:name "P1T3_1";
+	:description "Description 3.1";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-11"^^xsdt:date;
+	:predecessor :T2;
+	:requiresResource :tom.
+
+:T3_2 a :Task;
+	:inProject :P1;
+	:name "P1T3_2";
+	:description "Description 3.2";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-11"^^xsdt:date;
+	:predecessor :T2;
+	:requiresResource :dick.
+
+:T3_3 a :Task;
+	:inProject :P1;
+	:name "P1T3_3";
+	:description "Description 3.3";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-11"^^xsdt:date;
+	:predecessor :T2;
+	:requiresResource :harry.
+
+:T4 a :Task;
+	:inProject :P1;
+	:name "P1T4";
+	:description "Description ";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-11-12"^^xsdt:date;
+	:predecessor :T3_1;
+	:predecessor :T3_2;
+	:predecessor :T3_3;
+	:requiresResource :harry.
+
+# Network graph of project P2:
+#	        T3_1 
+#         /     \
+# T1 - T2 - T3_2 - T4
+#         \     /
+#           T3_3
+
+# Stats (for testing purposes)
+# Projects:		1
+# Tasks:		6
+# Resources:	3
+# Concurrent Tasks: 3
+# Project is invalid because T7_3 requires the same resource as T7_2
+:P2 a :Project;
+	:name "P2" .
+	
+:T5 a :Task;
+	:inProject :P2;
+	:name "P2T5";
+	:description "Description 5";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-09"^^xsdt:date;
+	:requiresResource :tom.
+
+:T6 a :Task;
+	:inProject :P2;
+	:name "P2T6";
+	:description "Description 6";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-10"^^xsdt:date;
+	:predecessor :T5;
+	:requiresResource :tom.
+
+:T7_1 a :Task;
+	:inProject :P2;
+	:name "P2T7_1";
+	:description "Description 7.1";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-11"^^xsdt:date;
+	:predecessor :T2;
+	:requiresResource :tom.
+
+:T7_2 a :Task;
+	:inProject :P2;
+	:name "P2T7_2";
+	:description "Description 7.2";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-11"^^xsdt:date;
+	:predecessor :T6;
+	:requiresResource :dick.
+
+:T7_3 a :Task;
+	:inProject :P2;
+	:name "P2T7_3";
+	:description "Description 7.3";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-11"^^xsdt:date;
+	:predecessor :T6;
+	:requiresResource :dick.
+
+:T8 a :Task;
+	:inProject :P2;
+	:name "P2T8";
+	:description "Description ";
+	:duration "P1D"^^xsdt:duration;
+	:startDate "2007-12-12"^^xsdt:date;
+	:predecessor :T7_1;
+	:predecessor :T7_2;
+	:predecessor :T7_3;
+	:requiresResource :harry.
+
+
+
+
+:tom a :Resource;
+	:name "Tom Jones";
+	:email "tom@tempuri.com".
+:dick a :Resource;
+	:name "Dick Smith";
+	:email "dick@tempuri.com".
+:harry a :Resource;
+	:name "Harry Houdini";
+	:email "harry@tempuri.com".
+
+# total tasks:		12
+# total projects:	2
+# total resources:	3
