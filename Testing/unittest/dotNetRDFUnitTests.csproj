@@ -106,10 +106,6 @@
       <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
       <Name>dotNetRDF.Data.Virtuoso</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\interop.jena\dotNetRDF.Interop.Jena.csproj">
-      <Project>{5DF56038-7FEE-40DA-92D5-49932924A32A}</Project>
-      <Name>dotNetRDF.Interop.Jena</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\interop.semweb\dotNetRDF.Interop.SemWeb.csproj">
       <Project>{21512DB9-2795-4ED0-B3DB-910499A9D8AC}</Project>
       <Name>dotNetRDF.Interop.SemWeb</Name>

@@ -208,7 +208,11 @@ namespace VDS.RDF.Utilities.Convert
                 Console.WriteLine("rdfConvert: Converting Input " + input.ToString() + " to '" + outFile + "'...");
                 try
                 {
-                    if (this._verbose) Console.WriteLine("rdfConvert: Debug: Conversion Handler is " + input.ConversionHandler.GetType().FullName);
+                    if (this._verbose)
+                    {
+                        input.ConversionHandler = new ConversionProgressHandler(input.ConversionHandler);
+                        Console.WriteLine("rdfConvert: Debug: Conversion Handler is " + input.ConversionHandler.GetType().FullName);
+                    }
                     input.Convert();
                     Console.WriteLine("rdfConvert: Converted Input " + input.ToString() + " to '" + outFile + "' OK");
                 }

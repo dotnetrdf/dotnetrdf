@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ConversionExtensions.cs" />
     <Compile Include="ConversionOption.cs" />
+    <Compile Include="ConversionProgressHandler.cs" />
     <Compile Include="RdfConvert.cs" />
     <Compile Include="Inputs\BaseInput.cs" />
     <Compile Include="Inputs\FileInput.cs" />

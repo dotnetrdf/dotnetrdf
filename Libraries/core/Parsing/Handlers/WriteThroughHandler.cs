@@ -54,6 +54,9 @@ namespace VDS.RDF.Parsing.Handlers
         private TextWriter _writer;
         private bool _closeOnEnd = true;
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
+        private int _written = 0;
+
+        private const int FlushInterval = 50000;
 
         /// <summary>
         /// Creates a new Write-Through Handler
@@ -160,6 +163,7 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphHeader(this._formattingMapper));
             }
+            this._written = 0;
         }
 
         /// <summary>
@@ -222,7 +226,13 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
+            this._written++;
             this._writer.WriteLine(this._formatter.Format(t));
+            if (this._written >= FlushInterval)
+            {
+                this._written = 0;
+                this._writer.Flush();
+            }
             return true;
         }
 
