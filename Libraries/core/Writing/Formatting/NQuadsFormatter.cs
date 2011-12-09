@@ -43,7 +43,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter which formats Triples as NQuads adding an additional URI at the end of the Triple if there is a Graph URI associated with the Triple
     /// </summary>
-    public class NQuadsFormatter : NTriplesFormatter
+    public class NQuadsFormatter 
+        : NTriplesFormatter
     {
         /// <summary>
         /// Creates a new NQuads Formatter

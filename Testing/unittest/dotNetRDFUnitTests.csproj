@@ -217,7 +217,6 @@
     <Compile Include="Web\ConnegTests.cs" />
     <Compile Include="Writing\CollectionCompressionTests.cs" />
     <Compile Include="Writing\FormattingTests.cs" />
-    <Compile Include="Interop\JenaInteropTests.cs" />
     <Compile Include="Query\PelletTests.cs" />
     <Compile Include="Parsing\RdfATests.cs" />
     <Compile Include="Parsing\RdfXmlTests.cs" />

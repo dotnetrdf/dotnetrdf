@@ -333,7 +333,7 @@ namespace VDS.RDF.Writing
         private static String _uriEncodeForXmlPattern = "&([^;]+)$";
 
         /// <summary>
-        /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes
+        /// Determines whether a Blank Node ID is valid as-is when serialised in NTriple like syntaxes (Turtle/N3/SPARQL)
         /// </summary>
         /// <param name="id">ID to test</param>
         /// <returns></returns>
@@ -365,6 +365,31 @@ namespace VDS.RDF.Writing
                 }
             }
             
+        }
+
+        /// <summary>
+        /// Determines whether a Blank Node ID is valid as-is when serialised as NTriples
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static bool IsValidStrictBlankNodeID(String id)
+        {
+            if (id == null)
+            {
+                //Can't be null
+                return false;
+            }
+            else if (id.Equals(String.Empty))
+            {
+                //Can't be empty
+                return false;
+            }
+            else
+            {
+                //All characters must be alphanumeric in NTriples
+                char[] cs = id.ToCharArray();
+                return cs.All(c => Char.IsLetterOrDigit(c));
+            }
         }
 
         /// <summary>

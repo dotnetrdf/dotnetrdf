@@ -43,9 +43,10 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting as NTriples
     /// </summary>
-    public class NTriplesFormatter : BaseFormatter
+    public class NTriplesFormatter
+        : BaseFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
 
         /// <summary>
         /// Set of characters that may follow a backslash and are legal escapes
