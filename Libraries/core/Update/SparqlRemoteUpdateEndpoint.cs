@@ -100,7 +100,7 @@ namespace VDS.RDF.Update
                 {
                     longUpdate = true;
                     postData.Append("update=");
-                    postData.Append(Uri.EscapeDataString(sparqlUpdate));
+                    postData.Append(HttpUtility.UrlEncode(sparqlUpdate));
                 }
 
                 //Make the request
