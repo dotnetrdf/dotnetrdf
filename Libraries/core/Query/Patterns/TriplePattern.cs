@@ -251,6 +251,7 @@ namespace VDS.RDF.Query.Patterns
 
             //Stuff for more precise indexing
             IEnumerable<INode> values = null;
+            IEnumerable<ISet> valuePairs = null;
             String subjVar = this._subj.VariableName;
             String predVar = this._pred.VariableName;
             String objVar = this._obj.VariableName;
@@ -264,13 +265,25 @@ namespace VDS.RDF.Query.Patterns
                     subj = ((NodeMatchPattern)this._subj).Node;
                     if (boundPred)
                     {
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(predVar)
-                                  select set[predVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithSubjectPredicate(subj, value)
-                                select t);
+                        if (boundObj)
+                        {
+                            valuePairs = (from set in context.InputMultiset.Sets
+                                          where set.ContainsVariable(predVar) && set.ContainsVariable(objVar)
+                                          select set).Distinct(new SetDistinctnessComparer(new String[] { predVar, objVar }));
+                            return (from set in valuePairs
+                                    where set[predVar] != null && set[objVar] != null
+                                    select this.CreateTriple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
+                        }
+                        else
+                        {
+                            values = (from set in context.InputMultiset.Sets
+                                      where set.ContainsVariable(predVar)
+                                      select set[predVar]).Distinct();
+                            return (from value in values
+                                    where value != null
+                                    from t in context.Data.GetTriplesWithSubjectPredicate(subj, value)
+                                    select t);
+                        }
                     }
                     else if (boundObj)
                     {
@@ -291,18 +304,43 @@ namespace VDS.RDF.Query.Patterns
                     subj = ((NodeMatchPattern)this._subj).Node;
                     pred = ((NodeMatchPattern)this._pred).Node;
 
-                    return context.Data.GetTriplesWithSubjectPredicate(subj, pred);
+                    if (boundObj)
+                    {
+                        values = (from set in context.InputMultiset.Sets
+                                  where set.ContainsVariable(objVar)
+                                  select set[objVar]).Distinct();
+                        return (from value in values
+                                where value != null
+                                select this.CreateTriple(subj, pred, value)).Where(t => context.Data.ContainsTriple(t));
+                    }
+                    else
+                    {
+                        return context.Data.GetTriplesWithSubjectPredicate(subj, pred);
+                    }
 
                 case TripleIndexType.SubjectObject:
                     subj = ((NodeMatchPattern)this._subj).Node;
                     obj = ((NodeMatchPattern)this._obj).Node;
 
-                    return context.Data.GetTriplesWithSubjectObject(subj, obj);
+                    if (boundPred)
+                    {
+                        values = (from set in context.InputMultiset.Sets
+                                  where set.ContainsVariable(predVar)
+                                  select set[predVar]).Distinct();
+                        return (from value in values
+                                where value != null
+                                select this.CreateTriple(subj, value, obj)).Where(t => context.Data.ContainsTriple(t));
+                    }
+                    else
+                    {
+                        return context.Data.GetTriplesWithSubjectObject(subj, obj);
+                    }
 
                 case TripleIndexType.Predicate:
                     pred = ((NodeMatchPattern)this._pred).Node;
                     if (boundSubj)
                     {
+                        //TODO: Add handling for when boundObj is also true
                         values = (from set in context.InputMultiset.Sets
                                   where set.ContainsVariable(subjVar)
                                   select set[subjVar]).Distinct();
@@ -330,12 +368,25 @@ namespace VDS.RDF.Query.Patterns
                     pred = ((NodeMatchPattern)this._pred).Node;
                     obj = ((NodeMatchPattern)this._obj).Node;
 
-                    return context.Data.GetTriplesWithPredicateObject(pred, obj);
+                    if (boundSubj)
+                    {
+                        values = (from set in context.InputMultiset.Sets
+                                  where set.ContainsVariable(subjVar)
+                                  select set[subjVar]).Distinct();
+                        return (from value in values
+                                where value != null
+                                select this.CreateTriple(value, pred, obj)).Where(t => context.Data.ContainsTriple(t));
+                    }
+                    else
+                    {
+                        return context.Data.GetTriplesWithPredicateObject(pred, obj);
+                    }
 
                 case TripleIndexType.Object:
                     obj = ((NodeMatchPattern)this._obj).Node;
                     if (boundSubj)
                     {
+                        //TODO: Add handling for when boundPred is also true
                         values = (from set in context.InputMultiset.Sets
                                   where set.ContainsVariable(subjVar)
                                   select set[subjVar]).Distinct();
@@ -375,7 +426,9 @@ namespace VDS.RDF.Query.Patterns
                     }
 
                 case TripleIndexType.None:
-                    //REQ: Code the additional cases for this
+                    //This means we got a pattern like ?s ?p ?o so we want to use whatever bound variables 
+                    //we have to reduce the triples we return as far as possible
+                    //TODO: Add handling for all the cases here
                     if (boundSubj)
                     {
                         if (boundPred)
@@ -432,6 +485,17 @@ namespace VDS.RDF.Query.Patterns
                 default:
                     return context.Data.Triples;
             }
+        }
+
+        private Triple CreateTriple(INode s, INode p, INode o)
+        {
+            IGraph target = s.Graph;
+            if (target == null)
+            {
+                target = p.Graph;
+                if (target == null) target = o.Graph;
+            }
+            return new Triple(s.CopyNode(target), p.CopyNode(target), o.CopyNode(target));
         }
 
         /// <summary>
@@ -527,6 +591,50 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             return this._subj.ToString() + " " + this._pred.ToString() + " " + this._obj.ToString();
+        }
+    }
+
+    class SetDistinctnessComparer
+        : IEqualityComparer<ISet>
+    {
+        private List<String> _vars = new List<String>();
+
+        public SetDistinctnessComparer() { }
+
+        public SetDistinctnessComparer(IEnumerable<String> variables)
+        {
+            this._vars.AddRange(variables);
+        }
+
+        public bool Equals(ISet x, ISet y)
+        {
+            if (this._vars.Count == 0)
+            {
+                return x.Equals(y);
+            }
+            else
+            {
+                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && y[v] == null) && x[v].Equals(y[v]));
+            }
+        }
+
+        public int GetHashCode(ISet obj)
+        {
+            if (this._vars.Count == 0)
+            {
+                return obj.GetHashCode();
+            }
+            else
+            {
+                StringBuilder output = new StringBuilder();
+                foreach (String var in this._vars)
+                {
+                    output.Append("?" + var + " = " + obj[var].ToSafeString());
+                    output.Append(" , ");
+                }
+                output.Remove(output.Length - 3, 3);
+                return output.ToString().GetHashCode();
+            }
         }
     }
 }

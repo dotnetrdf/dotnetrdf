@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{EBCF6F50-7879-4C91-9021-67E0DA05564C}</ProjectGuid>
+    <ProjectGuid>{D54B96E7-46EB-4183-9C5D-898BE5DEBE2B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>dotNetRDFTest</RootNamespace>
