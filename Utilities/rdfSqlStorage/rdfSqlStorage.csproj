@@ -48,7 +48,7 @@
     <Compile Include="ListGraphs.cs" />
     <Compile Include="ListSchemas.cs" />
     <Compile Include="ManagementAction.cs" />
-    <Compile Include="Migrate.cs" />
+    <None Include="Migrate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

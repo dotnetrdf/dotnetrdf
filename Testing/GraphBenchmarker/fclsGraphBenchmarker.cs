@@ -145,7 +145,10 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             {
                 if (this.lstTestData.SelectedItem != null)
                 {
-                    TestSuite suite = new TestSuite(this._testCases, (String)this.lstTestData.SelectedItem, (int)this.numIterations.Value);
+                    TestSet set = TestSet.Standard;
+                    if (this.radLoadAndMem.Checked) set = TestSet.LoadAndMemory;
+
+                    TestSuite suite = new TestSuite(this._testCases, (String)this.lstTestData.SelectedItem, (int)this.numIterations.Value, set);
                     fclsTestRunner runner = new fclsTestRunner(suite);
                     runner.ShowDialog();
                 }

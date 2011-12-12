@@ -44,8 +44,7 @@ namespace VDS.RDF.Configuration
     public class VirtuosoObjectFactory
         : IObjectFactory
     {
-        private const String NonNativeVirtuosoManager = "VDS.RDF.Storage.NonNativeVirtuosoManager",
-                             Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
+        private const String Virtuoso = "VDS.RDF.Storage.VirtuosoManager";
 
         /// <summary>
         /// Attempts to load an Object of the given type identified by the given Node and returned as the Type that this loader generates
@@ -83,10 +82,6 @@ namespace VDS.RDF.Configuration
             //Based on this information create a Manager if possible
             switch (targetType.FullName)
             {
-                case NonNativeVirtuosoManager:
-                    obj = new NonNativeVirtuosoManager(server, p, db, user, pwd);
-                    break;
-
                 case Virtuoso:
                     //Get Server settings
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -109,7 +104,6 @@ namespace VDS.RDF.Configuration
         {
             switch (t.FullName)
             {
-                case NonNativeVirtuosoManager:
                 case Virtuoso:
                     return true;
                 default:

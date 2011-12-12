@@ -15,22 +15,20 @@ namespace VDS.RDF.Test.Update
     {
         protected override ISparqlDataset GetEmptyDataset()
         {
-            MicrosoftSqlStoreManager sql = new MicrosoftSqlStoreManager("unit_test", "example", "password");
+            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
             sql.DeleteGraph(TestGraphUri);
-            sql.Flush();
-            return new SqlDataset(sql);
+            return new MicrosoftAdoDataset(sql);
         }
 
         protected override ISparqlDataset GetNonEmptyDataset()
         {
-            MicrosoftSqlStoreManager sql = new MicrosoftSqlStoreManager("unit_test", "example", "password");
+            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
             sql.DeleteGraph(TestGraphUri);
             Graph g = new Graph();
             g.BaseUri = TestGraphUri;
             sql.SaveGraph(g);
-            sql.Flush();
 
-            return new SqlDataset(sql);
+            return new MicrosoftAdoDataset(sql);
         }
     }
 }

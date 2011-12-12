@@ -19,7 +19,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         private String _data;
         private int _iterations;
 
-        public TestSuite(IEnumerable<TestCase> testCases, String data, int iterations)
+        public TestSuite(IEnumerable<TestCase> testCases, String data, int iterations, TestSet set)
         {
             this._data = data;
             this._iterations = iterations;
@@ -37,13 +37,16 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             this._tests.Add(new MemoryUsageCheck());
 
             //Then add the actual tests
-            this._tests.Add(new EnumerateTriplesTest(iterations));
-            this._tests.Add(new SubjectLookupTest(iterations));
-            this._tests.Add(new PredicateLookupTest(iterations));
-            this._tests.Add(new ObjectLookupTest(iterations));
+            if (set == TestSet.Standard)
+            {
+                this._tests.Add(new EnumerateTriplesTest(iterations));
+                this._tests.Add(new SubjectLookupTest(iterations));
+                this._tests.Add(new PredicateLookupTest(iterations));
+                this._tests.Add(new ObjectLookupTest(iterations));
 
-            //Do an Enumerate Test again to see if index population has changed performance
-            this._tests.Add(new EnumerateTriplesTest(iterations));
+                //Do an Enumerate Test again to see if index population has changed performance
+                this._tests.Add(new EnumerateTriplesTest(iterations));
+            }
 
             //Finally add the final Memory Usage Check
             this._tests.Add(new MemoryUsageCheck());

@@ -112,7 +112,7 @@ namespace VDS.RDF.Test
             Console.WriteLine();
 
             Console.WriteLine("SPARQL Ordering");
-            foreach (INode n in nodes.OrderBy(x => x, new SparqlOrderingComparer()))
+            foreach (INode n in nodes.OrderBy(x => x, (IComparer<INode>)new SparqlOrderingComparer()))
             {
                 Console.WriteLine(n.ToString(formatter));
             }

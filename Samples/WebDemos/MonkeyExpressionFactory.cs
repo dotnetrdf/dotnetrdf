@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using VDS.RDF;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace WebDemos
 {
@@ -11,8 +13,7 @@ namespace WebDemos
     {
         public bool TryCreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, out ISparqlExpression expr)
         {
-            Graph g = new Graph();
-            expr = new NodeExpressionTerm(g.CreateLiteralNode("Monkey"));
+            expr = new ConstantTerm(new StringNode(null, "monkey"));
             return true;
         }
 

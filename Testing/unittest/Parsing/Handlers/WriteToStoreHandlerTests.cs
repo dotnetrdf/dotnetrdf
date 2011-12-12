@@ -223,7 +223,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingWriteToStoreHandlerSql()
         {
-            MicrosoftSqlStoreManager sql = new MicrosoftSqlStoreManager("unit_test", "example", "password");
+            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
             this.TestWriteToStoreHandler(sql);
             sql.Dispose();
         }
@@ -266,7 +266,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesSql()
         {
-            MicrosoftSqlStoreManager sql = new MicrosoftSqlStoreManager("unit_test", "example", "password");
+            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
             this.TestWriteToStoreHandlerWithBNodes(sql);
             sql.Dispose();
         }

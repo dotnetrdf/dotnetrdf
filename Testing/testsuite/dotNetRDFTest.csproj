@@ -56,25 +56,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="9MReportFigures.cs" />
     <Compile Include="AllegroGraphTest.cs" />
-    <Compile Include="ConfigurationLoaderTests.cs" />
     <Compile Include="Sparql11EvaluationTestSuite.cs" />
     <Compile Include="MockGenericManager.cs" />
     <Compile Include="RdfATestSuite.cs" />
-    <Compile Include="JosekiTest.cs" />
     <Compile Include="SparqlEvaluationTestSuite.cs" />
     <Compile Include="SparqlUpdateParserTests.cs" />
     <Compile Include="TriXTestSuite.cs" />
     <Compile Include="NQuadsTestSuite.cs" />
     <Compile Include="DocumentationHelloWorld.cs" />
-    <Compile Include="FolderStoreTest.cs" />
-    <Compile Include="FourStoreTest.cs" />
     <Compile Include="JSONTest.cs" />
     <Compile Include="LocalSparqlTests.cs" />
     <Compile Include="SparqlTestSuite.cs" />
     <Compile Include="HashCodeTests.cs" />
-    <Compile Include="MySqlStoreTest.cs" />
     <Compile Include="GraphBuildingExample.cs" />
     <Compile Include="GraphBuildingExample2.cs" />
     <Compile Include="InferenceTest.cs" />
@@ -83,16 +77,12 @@
     <Compile Include="NTriplesTestSuite.cs" />
     <Compile Include="ParserSpeedTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuerySpeedTest.cs" />
     <Compile Include="SortingTests.cs" />
     <Compile Include="RemoteSparqlTestSuite.cs" />
-    <Compile Include="SqlStoreTest.cs" />
-    <Compile Include="StoreHashCodeChecker.cs" />
     <Compile Include="TalisTests.cs" />
     <Compile Include="TestSuite.cs" />
     <Compile Include="ThreadSafeGraphTest.cs" />
     <Compile Include="TriGTestSuite.cs" />
-    <Compile Include="TripleStoreTest.cs" />
     <Compile Include="TurtleTestSuite.cs" />
     <Compile Include="RdfXmlTestSuite.cs" />
     <Compile Include="UriNodeEqualityTests.cs" />

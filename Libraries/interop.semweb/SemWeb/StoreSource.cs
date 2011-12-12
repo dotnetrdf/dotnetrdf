@@ -38,6 +38,8 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using SW = SemWeb;
@@ -610,9 +612,9 @@ namespace VDS.RDF.Interop.SemWeb
                 patterns.Add(new TriplePattern(s, p, o));
 
                 //If any of the parts were a Blank Node apply an IsBlank() FILTER
-                if (stmt.Subject is BNode && !(stmt.Subject is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm(s.VariableName)))));
-                if (stmt.Predicate is BNode && !(stmt.Predicate is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm(p.VariableName)))));
-                if (stmt.Object is BNode && !(stmt.Object is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm(o.VariableName)))));
+                if (stmt.Subject is BNode && !(stmt.Subject is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm(s.VariableName)))));
+                if (stmt.Predicate is BNode && !(stmt.Predicate is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm(p.VariableName)))));
+                if (stmt.Object is BNode && !(stmt.Object is Variable)) patterns.Add(new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm(o.VariableName)))));
             }
 
             return new Bgp(patterns);

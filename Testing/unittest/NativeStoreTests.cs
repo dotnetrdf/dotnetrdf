@@ -35,7 +35,7 @@ namespace VDS.RDF.Test
 
                 //Create our Native Managers
                 List<IGenericIOManager> managers = new List<IGenericIOManager>() {
-                    new MicrosoftSqlStoreManager("localhost", "dotnetrdf_experimental","example","password"),
+                    new MicrosoftAdoManager("localhost", "dotnetrdf_experimental","example","password"),
                     new VirtuosoManager("localhost", 1111, "DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword)
                 };
 

@@ -10,6 +10,9 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
@@ -63,7 +66,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             LeftJoin selectOptionalNamed = new LeftJoin(selectAll, selectNames);
             Union selectAllUnion = new Union(selectAll, selectAll);
             Union selectAllUnion2 = new Union(selectAllUnion, selectAll);
-            Filter selectAllUriObjects = new Filter(selectAll, new UnaryExpressionFilter(new IsUriFunction(new VariableExpressionTerm("o"))));
+            Filter selectAllUriObjects = new Filter(selectAll, new UnaryExpressionFilter(new IsUriFunction(new VariableTerm("o"))));
 
             //Test out the BGPs
             //Console.WriteLine("{}");
@@ -202,7 +205,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin NULL-LHS");
-            BaseMultiset leftjoin = nullset.LeftJoin(m, new BooleanExpressionTerm(true));
+            BaseMultiset leftjoin = nullset.LeftJoin(m, new ConstantTerm(new BooleanNode(null, true)));
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -211,7 +214,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
 
             //Try a LeftJoin
             Console.WriteLine("LeftJoin LHS-NULL");
-            leftjoin = m.LeftJoin(nullset, new BooleanExpressionTerm(true));
+            leftjoin = m.LeftJoin(nullset, new ConstantTerm(new BooleanNode(null, true)));
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -229,7 +232,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
            
             //Try a LeftOuterJoin
             Console.WriteLine("LeftJoin LHS-RHS");
-            leftjoin = m.LeftJoin(n, new BooleanExpressionTerm(true));
+            leftjoin = m.LeftJoin(n, new ConstantTerm(new BooleanNode(null, true)));
             foreach (ISet set in leftjoin.Sets)
             {
                 Console.WriteLine(set.ToString());
@@ -386,7 +389,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             TriplePattern tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
             TriplePattern novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
             TriplePattern novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
-            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm("?s"))));
+            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
             List<List<ITriplePattern>> tests = new List<List<ITriplePattern>>()
             {
                 new List<ITriplePattern>() { },
@@ -494,7 +497,7 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             TriplePattern tp3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(rdfsLabel), new VariablePattern("?label"));
             TriplePattern novars = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfType), new NodeMatchPattern(carClass));
             TriplePattern novars2 = new TriplePattern(new NodeMatchPattern(fordFiesta), new NodeMatchPattern(rdfsLabel), new NodeMatchPattern(carClass));
-            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableExpressionTerm("?s"))));
+            FilterPattern blankSubject = new FilterPattern(new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("?s"))));
             List<List<ITriplePattern>> tests = new List<List<ITriplePattern>>()
             {
                 new List<ITriplePattern>() { },

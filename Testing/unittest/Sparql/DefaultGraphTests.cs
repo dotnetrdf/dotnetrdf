@@ -59,7 +59,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlDefaultGraphExists3()
         {
-            SqlDataset dataset = new SqlDataset(new MicrosoftSqlStoreManager("localhost", "unit_test", "example", "password"));
+            MicrosoftAdoDataset dataset = new MicrosoftAdoDataset(new MicrosoftAdoManager("localhost", "unit_test", "example", "password"));
 
             //Create Default Graph only if required
             if (!dataset.HasGraph(null))
@@ -89,7 +89,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlDefaultGraphExists4()
         {
-            SqlDataset dataset = new SqlDataset(new MicrosoftSqlStoreManager("localhost", "unit_test", "example", "password"));
+            MicrosoftAdoDataset dataset = new MicrosoftAdoDataset(new MicrosoftAdoManager("localhost", "unit_test", "example", "password"));
 
             //Create Default Graph only if required
             if (!dataset.HasGraph(null))
@@ -119,9 +119,8 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlDefaultGraphExists5()
         {
-            MicrosoftSqlStoreManager db = new MicrosoftSqlStoreManager("localhost", "unit_test", "example", "password");
-            db.PreserveState = true;
-            SqlTripleStore store = new SqlTripleStore(db);
+            MicrosoftAdoManager db = new MicrosoftAdoManager("localhost", "unit_test", "example", "password");
+            PersistentTripleStore store = new PersistentTripleStore(db);
 
             //Create Default Graph only if required
             if (!store.HasGraph(null))
@@ -143,16 +142,14 @@ namespace VDS.RDF.Test.Sparql
             }
 
             store.Flush();
-            db.PreserveState = false;
             store.Dispose();
         }
 
         [TestMethod]
         public void SparqlDefaultGraphExists6()
         {
-            MicrosoftSqlStoreManager db = new MicrosoftSqlStoreManager("localhost", "unit_test", "example", "password");
-            db.PreserveState = true;
-            SqlTripleStore store = new SqlTripleStore(db);
+            MicrosoftAdoManager db = new MicrosoftAdoManager("localhost", "unit_test", "example", "password");
+            PersistentTripleStore store = new PersistentTripleStore(db);
 
             //Create Default Graph only if required
             if (!store.HasGraph(null))
@@ -174,7 +171,6 @@ namespace VDS.RDF.Test.Sparql
             }
 
             store.Flush();
-            db.PreserveState = false;
             store.Dispose();
         }
 

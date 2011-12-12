@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions.Nodes;
 
-namespace VDS.RDF.Query.Expressions.Functions.Sparql
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
     /// Class representing the Sparql IsBlank() function

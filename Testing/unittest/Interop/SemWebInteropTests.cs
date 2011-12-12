@@ -137,47 +137,6 @@ namespace VDS.RDF.Test.Interop
         }
 
         [TestMethod]
-        public void InteropSemWebInMemoryStoreSource()
-        {
-            MicrosoftSqlStoreManager mssql = new MicrosoftSqlStoreManager("dotnetrdf_experimental", "sa", "20sQl08");
-            InMemoryStoreSource source = new InMemoryStoreSource(new SqlTripleStore(mssql));
-
-            N3Writer writer = new N3Writer(Console.Out);
-
-            Console.WriteLine("Outputting all Triples of the form ?s rdf:type ?type");
-            Statement template = new Statement(new Variable(), new Entity(RdfSpecsHelper.RdfType), new Variable());
-            source.Select(template, writer);
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("Outputting all Triples of the form ?s rdf:type ?car");
-            template = new Statement(new Variable(), new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/vehicles/Car"));
-            source.Select(template, writer);
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("Outputting all Triples for Cars and Planes");
-            SelectFilter filter = new SelectFilter();
-            filter.Predicates = new Entity[] { new Entity(RdfSpecsHelper.RdfType) };
-            filter.Objects = new Entity[] { new Entity("http://example.org/vehicles/Car"), new Entity("http://example.org/vehicles/Plane") };
-            source.Select(filter, writer);
-            Console.WriteLine();
-            Console.WriteLine();
-
-            Console.WriteLine("Outputting the Speeds of all Cards");
-            Variable car = new Variable("car");
-            Statement[] pattern = new Statement[] 
-            {
-                new Statement(car, new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/vehicles/Car")),
-                new Statement(car, new Entity("http://example.org/vehicles/Speed"), new Variable("speed"))
-            };
-            source.Query(pattern, new QueryOptions(), new SemWebResultsConsolePrinter());
-            Console.WriteLine();
-
-            writer.Close();
-        }
-
-        [TestMethod]
         public void InteropSemWebInMemoryStoreConversion()
         {
             //Set up a Store and load 3 Graphs into it
