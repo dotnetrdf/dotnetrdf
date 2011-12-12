@@ -987,7 +987,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(b.ToString().ToLower(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+            return factory.CreateLiteralNode(b.ToString().ToLower(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
         }
 
         /// <summary>
@@ -1007,11 +1007,11 @@ namespace VDS.RDF
             {
                 //If value is > 128 must use unsigned byte as the type as xsd:byte has range -127 to 128 
                 //while .Net byte has range 0-255
-                return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
+                return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte));
             }
             else
             {
-                return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+                return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte));
             }
         }
 
@@ -1028,7 +1028,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(XmlConvert.ToString(b), new Uri(XmlSpecsHelper.XmlSchemaDataTypeByte));
+            return factory.CreateLiteralNode(XmlConvert.ToString(b), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte));
         }
 
         /// <summary>
@@ -1042,7 +1042,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
         }
 
         /// <summary>
@@ -1056,7 +1056,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDate));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
         }
 
         /// <summary>
@@ -1070,7 +1070,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), new Uri(XmlSpecsHelper.XmlSchemaDataTypeTime));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime));
         }
         
         /// <summary>
@@ -1083,7 +1083,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(XmlConvert.ToString(t), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
+            return factory.CreateLiteralNode(XmlConvert.ToString(t), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
         }
 
         /// <summary>
@@ -1097,7 +1097,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
+            return factory.CreateLiteralNode(d.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal));
         }
 
         /// <summary>
@@ -1111,7 +1111,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(d.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+            return factory.CreateLiteralNode(d.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
         }
 
         /// <summary>
@@ -1125,7 +1125,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(f.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat));
+            return factory.CreateLiteralNode(f.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat));
         }
 
         /// <summary>
@@ -1139,7 +1139,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(i.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
@@ -1153,7 +1153,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(i.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(i.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
@@ -1167,7 +1167,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(l.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+            return factory.CreateLiteralNode(l.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
         }
 
         /// <summary>
@@ -1182,7 +1182,7 @@ namespace VDS.RDF
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
             if (s == null) throw new ArgumentNullException("s", "Cannot create a Literal Node for a null String");
 
-            return factory.CreateLiteralNode(s, new Uri(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return factory.CreateLiteralNode(s, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
     }
 }

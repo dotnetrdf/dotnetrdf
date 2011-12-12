@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Ordering
@@ -286,7 +287,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get
             {
-                return new VariableExpressionTerm(this._varname); 
+                return new VariableTerm(this._varname); 
             }
         }
 
@@ -361,11 +362,11 @@ namespace VDS.RDF.Query.Ordering
                 INode a, b;
                 try
                 {
-                    a = this._expr.Value(this._context, x.ID);
+                    a = this._expr.Evaluate(this._context, x.ID);
 
                     try
                     {
-                        b = this._expr.Value(this._context, y.ID);
+                        b = this._expr.Evaluate(this._context, y.ID);
                     }
                     catch
                     {
@@ -408,7 +409,7 @@ namespace VDS.RDF.Query.Ordering
         /// <returns></returns>
         public override IComparer<Triple> GetComparer(TriplePattern pattern)
         {
-            if (this._expr is VariableExpressionTerm)
+            if (this._expr is VariableTerm)
             {
                 IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
                 Func<Triple, Triple, int> compareFunc = null;
@@ -442,7 +443,7 @@ namespace VDS.RDF.Query.Ordering
         {
             get 
             {
-                if (this._expr is VariableExpressionTerm)
+                if (this._expr is VariableTerm)
                 {
                     //An Expression Ordering can be simple if that expression is a Variable Term
                     //and the Child Ordering (if any) is simple

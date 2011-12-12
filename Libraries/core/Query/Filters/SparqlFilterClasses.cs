@@ -39,14 +39,18 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Filters
 {
     /// <summary>
     /// Abstract Base class for Unary Filters that operate on a single Expression
     /// </summary>
-    public abstract class BaseUnaryFilter : ISparqlFilter 
+    public abstract class BaseUnaryFilter 
+        : ISparqlFilter 
     {
         /// <summary>
         /// Expression which is the Argument to the Filter
@@ -100,13 +104,14 @@ namespace VDS.RDF.Query.Filters
     /// <summary>
     /// Filter that represents the Sparql BOUND() function
     /// </summary>
-    public class BoundFilter : BaseUnaryFilter
+    public class BoundFilter 
+        : BaseUnaryFilter
     {
         /// <summary>
         /// Creates a new Bound Filter
         /// </summary>
         /// <param name="varTerm">Variable Expression</param>
-        public BoundFilter(VariableExpressionTerm varTerm)
+        public BoundFilter(VariableTerm varTerm)
             : base(varTerm) { }
 
         /// <summary>
@@ -127,7 +132,7 @@ namespace VDS.RDF.Query.Filters
             {
                 try
                 {
-                    if (this._arg.Value(context, id) == null)
+                    if (this._arg.Evaluate(context, id) == null)
                     {
                         context.InputMultiset.Remove(id);
                     }
@@ -176,7 +181,7 @@ namespace VDS.RDF.Query.Filters
                     //Filter Expression evaluates to False then the Null Multiset is returned
                     try
                     {
-                        if (!this._arg.EffectiveBooleanValue(context, 0))
+                        if (!this._arg.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.InputMultiset = new NullMultiset();
                         }
@@ -199,7 +204,7 @@ namespace VDS.RDF.Query.Filters
                 {
                     try
                     {
-                        if (!this._arg.EffectiveBooleanValue(context, id))
+                        if (!this._arg.Evaluate(context, id).AsSafeBoolean())
                         {
                             context.InputMultiset.Remove(id);
                         }
@@ -320,7 +325,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                ISparqlExpression expr = new BooleanExpressionTerm(true);
+                ISparqlExpression expr = new ConstantTerm(new BooleanNode(null, true));
                 if (this._filters.Count == 1)
                 {
                     expr = this._filters[0].Expression;

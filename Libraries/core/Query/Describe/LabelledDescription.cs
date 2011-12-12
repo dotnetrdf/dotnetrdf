@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Describe
             //Get Triples for this Subject
             Queue<INode> bnodes = new Queue<INode>();
             HashSet<INode> expandedBNodes = new HashSet<INode>();
-            INode rdfsLabel = handler.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfsLabel = handler.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             foreach (INode n in nodes)
             {
                 //Get Triples where the Node is the Subject

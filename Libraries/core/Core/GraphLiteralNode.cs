@@ -41,6 +41,9 @@ using System.Xml.Serialization;
 #if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
 #endif
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF
 {
@@ -51,7 +54,7 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="graphliteral")]
 #endif
     public abstract class BaseGraphLiteralNode
-        : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>
+        : BaseNode, IGraphLiteralNode, IEquatable<BaseGraphLiteralNode>, IComparable<BaseGraphLiteralNode>, IValuedNode
     {
         private IGraph _subgraph;
 
@@ -387,6 +390,53 @@ namespace VDS.RDF
 
         #endregion
 #endif
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get 
+            {
+                return SparqlNumericType.NaN; 
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>

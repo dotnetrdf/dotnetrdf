@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.Common;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Construct

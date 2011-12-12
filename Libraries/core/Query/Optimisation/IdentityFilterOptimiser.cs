@@ -38,6 +38,9 @@ using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
@@ -48,7 +51,7 @@ namespace VDS.RDF.Query.Optimisation
     public class IdentityFilterOptimiser
         : IAlgebraOptimiser
     {
-        private Type _exprType = typeof(NodeExpressionTerm);
+        private Type _exprType = typeof(ConstantTerm);
 
         /// <summary>
         /// Optimises the Algebra to use Identity Filters where applicable
@@ -69,11 +72,11 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         if (equals)
                         {
-                            return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new NodeExpressionTerm(term));
+                            return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                         }
                         else
                         {
-                            return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new NodeExpressionTerm(term));
+                            return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
                         }
                     }
                     else
@@ -132,12 +135,12 @@ namespace VDS.RDF.Query.Optimisation
                 return false;
             }
 
-            if (lhs is VariableExpressionTerm)
+            if (lhs is VariableTerm)
             {
                 if (rhs.GetType().Equals(this._exprType))
                 {
                     var = lhs.Variables.First();
-                    term = rhs.Value(null, 0);
+                    term = rhs.Evaluate(null, 0);
                     if (term.NodeType == NodeType.Uri)
                     {
                         return true;
@@ -154,10 +157,10 @@ namespace VDS.RDF.Query.Optimisation
             }
             else if (lhs.GetType().Equals(this._exprType))
             {
-                if (rhs is VariableExpressionTerm)
+                if (rhs is VariableTerm)
                 {
                     var = rhs.Variables.First();
-                    term = lhs.Value(null, 0);
+                    term = lhs.Evaluate(null, 0);
                     if (term.NodeType == NodeType.Uri)
                     {
                         return true;

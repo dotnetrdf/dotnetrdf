@@ -55,7 +55,7 @@ namespace VDS.RDF.Configuration
         public ConfigurationSerializationContext()
         {
             this._g = new Graph();
-            this._g.NamespaceMap.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
+            this._g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
         }
 
         /// <summary>

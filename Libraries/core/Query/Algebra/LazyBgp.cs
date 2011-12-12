@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
@@ -440,7 +441,7 @@ namespace VDS.RDF.Query.Algebra
                         //No Variables so have to evaluate it to see if it gives true otherwise
                         try
                         {
-                            if (filterExpr.EffectiveBooleanValue(context, 0))
+                            if (filterExpr.Evaluate(context, 0).AsSafeBoolean())
                             {
                                 if (pattern < this._triplePatterns.Count - 1)
                                 {
@@ -473,7 +474,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         try
                         {
-                            if (filterExpr.EffectiveBooleanValue(context, id))
+                            if (filterExpr.Evaluate(context, id).AsSafeBoolean())
                             {
                                 //If evaluates to true then add to output
                                 context.OutputMultiset.Add(context.InputMultiset[id]);
@@ -531,7 +532,7 @@ namespace VDS.RDF.Query.Algebra
                         ISet x = s.Copy();
                         try
                         {
-                            INode val = bindExpr.Value(context, s.ID);
+                            INode val = bindExpr.Evaluate(context, s.ID);
                             x.Add(bindVar, val);
                         }
                         catch (RdfQueryException)

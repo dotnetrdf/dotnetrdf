@@ -101,11 +101,11 @@ namespace VDS.RDF.Parsing
                 RaiseWarning("Assigned a file: URI as the Base URI for the input Graph");
                 if (Path.IsPathRooted(filename))
                 {
-                    g.BaseUri = new Uri("file:///" + filename);
+                    g.BaseUri = UriFactory.Create("file:///" + filename);
                 }
                 else
                 {
-                    g.BaseUri = new Uri("file:///" + Path.GetFullPath(filename));
+                    g.BaseUri = UriFactory.Create("file:///" + Path.GetFullPath(filename));
                 }
             }
 

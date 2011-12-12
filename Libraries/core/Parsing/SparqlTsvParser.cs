@@ -339,7 +339,7 @@ namespace VDS.RDF.Parsing
                 value = t.Value;
                 if (value.Equals("true") || value.Equals("false"))
                 {
-                    return context.Handler.CreateLiteralNode(value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                    return context.Handler.CreateLiteralNode(value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
                 }
                 else
                 {
@@ -353,7 +353,7 @@ namespace VDS.RDF.Parsing
             if (next.TokenType == Token.DATATYPE)
             {
                 next = context.Tokens.Dequeue();
-                Uri dtUri = new Uri(next.Value.Substring(1, next.Length - 2));
+                Uri dtUri = UriFactory.Create(next.Value.Substring(1, next.Length - 2));
                 return context.Handler.CreateLiteralNode(value, dtUri);
             }
             else if (next.TokenType == Token.LANGSPEC)

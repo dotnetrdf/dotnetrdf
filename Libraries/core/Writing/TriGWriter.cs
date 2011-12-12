@@ -206,7 +206,7 @@ namespace VDS.RDF.Writing
                     {
                         if (g.BaseUri == null)
                         {
-                            context.Add(new Uri(GraphCollection.DefaultGraphUri));
+                            context.Add(UriFactory.Create(GraphCollection.DefaultGraphUri));
                         }
                         else
                         {

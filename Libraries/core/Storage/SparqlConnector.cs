@@ -280,7 +280,7 @@ namespace VDS.RDF.Storage
         {
             if (g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
-                g.BaseUri = new Uri(graphUri);
+                g.BaseUri = UriFactory.Create(graphUri);
             }
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
@@ -501,8 +501,8 @@ namespace VDS.RDF.Storage
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
 
@@ -535,11 +535,11 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.ToString())));
                 foreach (String u in this._endpoint.DefaultGraphs)
                 {
-                    context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(new Uri(u))));
+                    context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
                 }
                 foreach (String u in this._endpoint.NamedGraphs)
                 {
-                    context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(new Uri(u))));
+                    context.Graph.Assert(new Triple(manager, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
                 }
             }
         }

@@ -38,7 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Arq;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.BNode:
                         if (args.Count == 1)
                         {
-                            arqFunc = new ArqBNodeFunction(args.First());
+                            arqFunc = new BNodeFunction(args.First());
                         }
                         else
                         {
@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.E:
                         if (args.Count == 0)
                         {
-                            arqFunc = new ArqEFunction();
+                            arqFunc = new EFunction();
                         }
                         else
                         {
@@ -151,7 +151,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.LocalName:
                         if (args.Count == 1)
                         {
-                            arqFunc = new ArqLocalNameFunction(args.First());
+                            arqFunc = new LocalNameFunction(args.First());
                         }
                         else
                         {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Max:
                         if (args.Count == 2)
                         {
-                            arqFunc = new ArqMaxFunction(args.First(), args.Last());
+                            arqFunc = new MaxFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Min:
                         if (args.Count == 2)
                         {
-                            arqFunc = new ArqMinFunction(args.First(), args.Last());
+                            arqFunc = new MinFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -181,7 +181,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Namespace:
                         if (args.Count == 1)
                         {
-                            arqFunc = new ArqNamespaceFunction(args.First());
+                            arqFunc = new NamespaceFunction(args.First());
                         }
                         else
                         {
@@ -191,7 +191,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Now:
                         if (args.Count == 0)
                         {
-                            arqFunc = new ArqNowFunction();
+                            arqFunc = new NowFunction();
                         }
                         else
                         {
@@ -201,7 +201,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Pi:
                         if (args.Count == 0)
                         {
-                            arqFunc = new ArqPiFunction();
+                            arqFunc = new PiFunction();
                         }
                         else
                         {
@@ -211,7 +211,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Sha1Sum:
                         if (args.Count == 1)
                         {
-                            arqFunc = new ArqSha1SumFunction(args.First());
+                            arqFunc = new Sha1Function(args.First());
                         }
                         else
                         {
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.StrJoin:
                         if (args.Count >= 2)
                         {
-                            arqFunc = new ArqStringJoinFunction(args.First(), args.Skip(1));
+                            arqFunc = new StringJoinFunction(args.First(), args.Skip(1));
                         }
                         else
                         {
@@ -232,11 +232,11 @@ namespace VDS.RDF.Query.Expressions
                     case ArqFunctionFactory.Substring:
                         if (args.Count == 2)
                         {
-                            arqFunc = new ArqSubstringFunction(args.First(), args.Last());
+                            arqFunc = new SubstringFunction(args.First(), args.Last());
                         }
                         else if (args.Count == 3)
                         {
-                            arqFunc = new ArqSubstringFunction(args.First(), args[1], args.Last());
+                            arqFunc = new SubstringFunction(args.First(), args[1], args.Last());
                         }
                         else
                         {
@@ -263,7 +263,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in FunctionUris
-                        select new Uri(ArqFunctionsNamespace + u));
+                        select UriFactory.Create(ArqFunctionsNamespace + u));
             }
         }
 

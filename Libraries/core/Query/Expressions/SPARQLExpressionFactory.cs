@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -127,31 +128,31 @@ namespace VDS.RDF.Query.Expressions
                 String cast = u.ToString();
                 if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                 {
-                    return new XPathBooleanCast(arg);
+                    return new BooleanCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime))
                 {
-                    return new XPathDateTimeCast(arg);
+                    return new DateTimeCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDecimal))
                 {
-                    return new XPathDecimalCast(arg);
+                    return new DecimalCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeDouble))
                 {
-                    return new XPathDoubleCast(arg);
+                    return new DoubleCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeFloat))
                 {
-                    return new XPathFloatCast(arg);
+                    return new FloatCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInteger) || cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeInt))
                 {
-                    return new XPathIntegerCast(arg);
+                    return new IntegerCast(arg);
                 }
                 else if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                 {
-                    return new XPathStringCast(arg);
+                    return new StringCast(arg);
                 }
                 else
                 {

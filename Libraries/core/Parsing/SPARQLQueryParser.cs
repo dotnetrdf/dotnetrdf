@@ -44,6 +44,8 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Optimisation;
@@ -593,7 +595,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.URI)
             {
-                context.Query.BaseUri = new Uri(next.Value);
+                context.Query.BaseUri = UriFactory.Create(next.Value);
                 context.ExpressionParser.BaseUri = context.Query.BaseUri;
             }
             else
@@ -615,7 +617,7 @@ namespace VDS.RDF.Parsing
                 if (uri.TokenType == Token.URI)
                 {
                     String baseUri = (context.Query.BaseUri != null) ? context.Query.BaseUri.ToString() : String.Empty;
-                    Uri u = new Uri(Tools.ResolveUri(uri.Value, baseUri));
+                    Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                     if (prefix.Value.Length == 1)
                     {
                         //Defining prefix for Default Namespace
@@ -811,7 +813,7 @@ namespace VDS.RDF.Parsing
 
                         //Try and parse a Project Expression which is a naked function call
                         //Resolve the URI
-                        Uri u = new Uri(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri));
+                        Uri u = UriFactory.Create(Tools.ResolveUriOrQName(next, context.Query.NamespaceMap, context.Query.BaseUri));
                         context.Tokens.Dequeue();
 
                         //Ensure we then see a Open Bracket
@@ -857,13 +859,9 @@ namespace VDS.RDF.Parsing
                         }
 
                         //Turn into the appropriate type of Variable
-                        if (expr is AggregateExpressionTerm)
+                        if (expr is AggregateTerm)
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateExpressionTerm)expr).Aggregate));
-                        }
-                        else if (expr is NonNumericAggregateExpressionTerm)
-                        {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((NonNumericAggregateExpressionTerm)expr).Aggregate));
+                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateTerm)expr).Aggregate));
                         }
                         else
                         {
@@ -903,13 +901,9 @@ namespace VDS.RDF.Parsing
                         }
 
                         //Turn into the appropriate type of Variable
-                        if (expr is AggregateExpressionTerm)
+                        if (expr is AggregateTerm)
                         {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateExpressionTerm)expr).Aggregate));
-                        }
-                        else if (expr is NonNumericAggregateExpressionTerm)
-                        {
-                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((NonNumericAggregateExpressionTerm)expr).Aggregate));
+                            context.Query.AddVariable(new SparqlVariable(next.Value.Substring(1), ((AggregateTerm)expr).Aggregate));
                         }
                         else
                         {
@@ -1021,13 +1015,9 @@ namespace VDS.RDF.Parsing
             ISparqlExpression aggExpr = context.ExpressionParser.Parse(tokens);
             context.ExpressionParser.AllowAggregates = false;
 
-            if (aggExpr is AggregateExpressionTerm)
+            if (aggExpr is AggregateTerm)
             {
-                aggregate = ((AggregateExpressionTerm)aggExpr).Aggregate;
-            }
-            else if (aggExpr is NonNumericAggregateExpressionTerm)
-            {
-                aggregate = ((NonNumericAggregateExpressionTerm)aggExpr).Aggregate;
+                aggregate = ((AggregateTerm)aggExpr).Aggregate;
             }
             else
             {
@@ -1213,7 +1203,7 @@ namespace VDS.RDF.Parsing
                 {
                     //Default Graph Specified
                     String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                    context.Query.AddDefaultGraph(new Uri(Tools.ResolveUri(next.Value, baseUri)));
+                    context.Query.AddDefaultGraph(UriFactory.Create(Tools.ResolveUri(next.Value, baseUri)));
                     context.Tokens.Dequeue();
                 }
                 else if (next.TokenType == Token.QNAME)
@@ -1230,7 +1220,7 @@ namespace VDS.RDF.Parsing
                     if (next.TokenType == Token.URI) 
                     {
                         String baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                        context.Query.AddNamedGraph(new Uri(Tools.ResolveUri(next.Value, baseUri)));
+                        context.Query.AddNamedGraph(UriFactory.Create(Tools.ResolveUri(next.Value, baseUri)));
                         context.Tokens.Dequeue();
                     }
                     else if (next.TokenType == Token.QNAME)
@@ -2039,9 +2029,9 @@ namespace VDS.RDF.Parsing
                 bool first = true;
 
                 IUriNode rdfFirst, rdfRest, rdfNil;
-                rdfFirst = new UriNode(null, new Uri(NamespaceMapper.RDF + "first"));
-                rdfRest = new UriNode(null, new Uri(NamespaceMapper.RDF + "rest"));
-                rdfNil = new UriNode(null, new Uri(NamespaceMapper.RDF + "nil"));
+                rdfFirst = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "first"));
+                rdfRest = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "rest"));
+                rdfNil = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "nil"));
 
                 do
                 {
@@ -2314,7 +2304,7 @@ namespace VDS.RDF.Parsing
             ISparqlExpression expr = context.ExpressionParser.Parse(subtokens);
             if (expr is BoundFunction)
             {
-                filter = new BoundFilter((VariableExpressionTerm)expr.Arguments.First());
+                filter = new BoundFilter((VariableTerm)expr.Arguments.First());
             }
             else
             {
@@ -2513,7 +2503,7 @@ namespace VDS.RDF.Parsing
                     if (exprTerms.Count == 0)
                     {
                         context.Tokens.Dequeue();
-                        return new DistinctModifierExpression();
+                        return new DistinctModifier();
                     }
                     else
                     {
@@ -3228,7 +3218,7 @@ namespace VDS.RDF.Parsing
                                 break;
                             case Token.VARIABLE:
                                 context.Tokens.Dequeue();
-                                expr = new VariableExpressionTerm(next.Value);
+                                expr = new VariableTerm(next.Value);
                                 break;
                             default:
                                 throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token which was valid as the start of an expression for the right hand side of a LET assignment", next);
@@ -3547,7 +3537,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         String uri = Tools.ResolveUri(t.Value, context.Query.BaseUri.ToSafeString());
-                        u = new Uri(uri);
+                        u = UriFactory.Create(uri);
                         //if (Options.UriNormalization)
                         //{
                             return new NodeMatchPattern(new UriNode(null, u));
@@ -3581,22 +3571,22 @@ namespace VDS.RDF.Parsing
                     {
                         //Double - Check first since to be considered a double must contain an exponent so is unique compared to 
                         //the other two numeric types
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
                     }
                     else if (TurtleSpecsHelper.IsValidInteger(t.Value))
                     {
                         //Integer - Check before decimal as any valid integer is a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
                     }
                     else if (TurtleSpecsHelper.IsValidDecimal(t.Value))
                     {
                         //Decimal - Check last since any valid integer is also a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
                     }
                     else
                     {
                         //Boolean
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
+                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
                     }
 
 
@@ -3606,7 +3596,7 @@ namespace VDS.RDF.Parsing
                     if (litdt.DataType.StartsWith("<"))
                     {
                         baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.ToString();
-                        u = new Uri(Tools.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), baseUri));
+                        u = UriFactory.Create(Tools.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), baseUri));
                         return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litdt.Value, u));
                     }
                     else
@@ -3625,7 +3615,7 @@ namespace VDS.RDF.Parsing
                     return new BlankNodePattern(t.Value.Substring(2));
 
                 case Token.KEYWORDA:
-                    return new NodeMatchPattern(new UriNode(null, new Uri(NamespaceMapper.RDF + "type")));
+                    return new NodeMatchPattern(new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "type")));
 
                 default:
                     throw ParserHelper.Error("Unable to Convert a '" + t.GetType().ToString() + "' to a Pattern Item in a Triple Pattern", t);
@@ -3634,7 +3624,7 @@ namespace VDS.RDF.Parsing
 
         private Uri ResolveQName(SparqlQueryParserContext context, String qname)
         {
-            return new Uri(Tools.ResolveQName(qname, context.Query.NamespaceMap, context.Query.BaseUri));
+            return UriFactory.Create(Tools.ResolveQName(qname, context.Query.NamespaceMap, context.Query.BaseUri));
         }
 
         private bool IsProjectableExpression(SparqlQueryParserContext context, ISparqlExpression expr, List<String> projectedSoFar)

@@ -95,6 +95,7 @@ namespace VDS.RDF
         //private static bool _rigorousQuery = false;
         private static bool _useDTDs = true;
         private static bool _multiThreadedWriting = false;
+        private static bool _internUris = true;
 
         #if DEBUG
         //Debug Build Only
@@ -394,6 +395,21 @@ namespace VDS.RDF
             set
             {
                 _multiThreadedWriting = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage
+        /// </summary>
+        public static bool InternUris
+        {
+            get
+            {
+                return _internUris;
+            }
+            set
+            {
+                _internUris = value;
             }
         }
 

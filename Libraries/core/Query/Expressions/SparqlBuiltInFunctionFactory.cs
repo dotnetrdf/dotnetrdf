@@ -3,8 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Aggregates.Sparql;
+using VDS.RDF.Query.Expressions.Functions.Sparql;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+using VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -14,7 +22,8 @@ namespace VDS.RDF.Query.Expressions
     /// <remarks>
     /// This supports the requirement of SPARQL 1.1 that all functions can be accessed via URI as well as by keyword.  This also means that SPARQL 1.1 functions can be used in SPARQL 1.0 mode by using their URIs instead of their keywords and they are then treated simply as extension functions
     /// </remarks>
-    public class SparqlBuiltInFunctionFactory : ISparqlCustomExpressionFactory
+    public class SparqlBuiltInFunctionFactory 
+        : ISparqlCustomExpressionFactory
     {
         /// <summary>
         /// Namespace Uri for SPARQL Built In Functions Namespace
@@ -70,7 +79,7 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordAvg:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateExpressionTerm(new AverageAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new AverageAggregate(args.First()));
                         }
                         else
                         {
@@ -80,9 +89,9 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordBound:
                         if (args.Count == 1)  
                         {
-                            if (args[0] is VariableExpressionTerm)
+                            if (args[0] is VariableTerm)
                             {
-                                sparqlFunc = new BoundFunction((VariableExpressionTerm)args[0]);
+                                sparqlFunc = new BoundFunction((VariableTerm)args[0]);
                             }
                             else
                             {
@@ -138,7 +147,7 @@ namespace VDS.RDF.Query.Expressions
                         //Q: What will the URIs be for the special forms of COUNT?
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateExpressionTerm(new CountAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new CountAggregate(args.First()));
                         }
                         else
                         {
@@ -190,11 +199,11 @@ namespace VDS.RDF.Query.Expressions
                         {
                             if (scalarArguments.ContainsKey(SparqlSpecsHelper.SparqlKeywordSeparator))
                             {
-                                sparqlFunc = new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(args.First(), scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator]));
+                                sparqlFunc = new AggregateTerm(new GroupConcatAggregate(args.First(), scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator]));
                             }
                             else
                             {
-                                sparqlFunc = new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(args.First()));
+                                sparqlFunc = new AggregateTerm(new GroupConcatAggregate(args.First()));
                             }
                         }
                         else
@@ -315,7 +324,7 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordMax:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new NonNumericAggregateExpressionTerm(new MaxAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new MaxAggregate(args.First()));
                         }
                         else
                         {
@@ -335,7 +344,7 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordMin:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new NonNumericAggregateExpressionTerm(new MinAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new MinAggregate(args.First()));
                         }
                         else
                         {
@@ -409,7 +418,7 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordSample:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new NonNumericAggregateExpressionTerm(new SampleAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new SampleAggregate(args.First()));
                         }
                         else
                         {
@@ -553,7 +562,7 @@ namespace VDS.RDF.Query.Expressions
                     case SparqlSpecsHelper.SparqlKeywordSum:
                         if (args.Count == 1)
                         {
-                            sparqlFunc = new AggregateExpressionTerm(new SumAggregate(args.First()));
+                            sparqlFunc = new AggregateTerm(new SumAggregate(args.First()));
                         }
                         else
                         {
@@ -630,7 +639,7 @@ namespace VDS.RDF.Query.Expressions
             get 
             {
                 return (from u in SparqlSpecsHelper.FunctionKeywords
-                        select new Uri(SparqlFunctionsNamespace + u.ToLower()));
+                        select UriFactory.Create(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
 
@@ -642,7 +651,7 @@ namespace VDS.RDF.Query.Expressions
             get 
             {
                 return (from u in SparqlSpecsHelper.AggregateFunctionKeywords
-                        select new Uri(SparqlFunctionsNamespace + u.ToLower()));
+                        select UriFactory.Create(SparqlFunctionsNamespace + u.ToLower()));
             }
         }
     }

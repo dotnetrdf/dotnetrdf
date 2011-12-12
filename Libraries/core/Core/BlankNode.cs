@@ -39,6 +39,9 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF
 {
@@ -49,7 +52,7 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="bnode")]
 #endif
     public abstract class BaseBlankNode
-        : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>
+        : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>, IValuedNode
     {
         private String _id;
         private bool _autoassigned = false;
@@ -448,6 +451,53 @@ namespace VDS.RDF
         #endregion
 
 #endif
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get 
+            {
+                return SparqlNumericType.NaN; 
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>

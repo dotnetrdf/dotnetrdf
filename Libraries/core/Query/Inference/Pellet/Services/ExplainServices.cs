@@ -192,8 +192,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainUnsatisfiable(INode cls)
         {
             this._baseQuery.SetParameter("s", cls);
-            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
-            this._baseQuery.SetUri("o", new Uri(OwlHelper.OwlNothing));
+            this._baseQuery.SetUri("p", UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetUri("o", UriFactory.Create(OwlHelper.OwlNothing));
 
             return base.Explain(this._baseQuery.ToString());
         }
@@ -210,8 +210,8 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public void ExplainUnsatisfiable(INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", cls);
-            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
-            this._baseQuery.SetUri("o", new Uri(OwlHelper.OwlNothing));
+            this._baseQuery.SetUri("p", UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetUri("o", UriFactory.Create(OwlHelper.OwlNothing));
 
             base.Explain(this._baseQuery.ToString(), callback, state);
         }
@@ -242,7 +242,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainInstance(INode instance, INode cls)
         {
             this._baseQuery.SetParameter("s", instance);
-            this._baseQuery.SetUri("p", new Uri(RdfSpecsHelper.RdfType));
+            this._baseQuery.SetUri("p", UriFactory.Create(RdfSpecsHelper.RdfType));
             this._baseQuery.SetParameter("o", cls);
 
             return base.Explain(this._baseQuery.ToString());
@@ -261,7 +261,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public void ExplainInstance(INode instance, INode cls, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", instance);
-            this._baseQuery.SetUri("p", new Uri(RdfSpecsHelper.RdfType));
+            this._baseQuery.SetUri("p", UriFactory.Create(RdfSpecsHelper.RdfType));
             this._baseQuery.SetParameter("o", cls);
 
             base.Explain(this._baseQuery.ToString(), callback, state);
@@ -293,7 +293,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public IGraph ExplainSubclass(INode subclass, INode superclass)
         {
             this._baseQuery.SetParameter("s", subclass);
-            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetUri("p", UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
             this._baseQuery.SetParameter("o", superclass);
 
             return base.Explain(this._baseQuery.ToString());
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         public void ExplainSubclass(INode subclass, INode superclass, GraphCallback callback, Object state)
         {
             this._baseQuery.SetParameter("s", subclass);
-            this._baseQuery.SetUri("p", new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._baseQuery.SetUri("p", UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
             this._baseQuery.SetParameter("o", superclass);
 
             base.Explain(this._baseQuery.ToString(), callback, state);

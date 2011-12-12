@@ -39,6 +39,9 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF
 {
@@ -49,7 +52,7 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="uri")]
 #endif
     public abstract class BaseUriNode 
-        : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>
+        : BaseNode, IUriNode, IEquatable<BaseUriNode>, IComparable<BaseUriNode>, IValuedNode
     {
         private Uri _uri;
 
@@ -82,7 +85,7 @@ namespace VDS.RDF
             {
                 if (this._graph != null)
                 {
-                    this._uri = new Uri(Tools.ResolveQName(qname, this._graph.NamespaceMap, this._graph.BaseUri));
+                    this._uri = UriFactory.Create(Tools.ResolveQName(qname, this._graph.NamespaceMap, this._graph.BaseUri));
                 }
                 else
                 {
@@ -121,7 +124,7 @@ namespace VDS.RDF
         protected BaseUriNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Uri)
         {
-            this._uri = new Uri(info.GetString("uri"));
+            this._uri = UriFactory.Create(info.GetString("uri"));
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -425,7 +428,7 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._uri = new Uri(reader.ReadElementContentAsString());
+            this._uri = UriFactory.Create(reader.ReadElementContentAsString());
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
@@ -442,6 +445,53 @@ namespace VDS.RDF
         #endregion
 
 #endif
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            return this._uri.ToString();
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get 
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>

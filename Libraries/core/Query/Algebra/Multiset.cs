@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
@@ -190,7 +191,7 @@ namespace VDS.RDF.Query.Algebra
                         try
                         {
                             joinedSet.Add(z);
-                            if (!expr.EffectiveBooleanValue(subcontext, z.ID))
+                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;
@@ -220,7 +221,7 @@ namespace VDS.RDF.Query.Algebra
                         try
                         {
                             joinedSet.Add(z);
-                            if (!expr.EffectiveBooleanValue(subcontext, z.ID))
+                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;

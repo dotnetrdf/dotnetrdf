@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions
 {
@@ -91,20 +92,9 @@ namespace VDS.RDF.Query.Expressions.Functions
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        public INode Value(SparqlEvaluationContext context, int bindingID)
+        public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             return null;
-        }
-
-        /// <summary>
-        /// Gets the Effective Boolean Value of the Function (will always be an error as dotNetRDF does not know how to evaluate Unknown Functions)
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID)
-        {
-            return SparqlSpecsHelper.EffectiveBooleanValue(this.Value(context, bindingID));
         }
 
         /// <summary>

@@ -102,7 +102,7 @@ namespace VDS.RDF.Web
 
             //Then check there is configuration associated with the expected URI
             String objUri = "dotnetrdf:" + context.Request.Path;
-            INode objNode = g.GetUriNode(new Uri(objUri));
+            INode objNode = g.GetUriNode(UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Protocol Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
             ProtocolHandlerConfiguration config = new ProtocolHandlerConfiguration(context, g, objNode);
 

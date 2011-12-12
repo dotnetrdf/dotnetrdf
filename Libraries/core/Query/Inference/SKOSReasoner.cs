@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Inference
         public StaticSkosReasoner()
         {
             Graph g = new Graph();
-            g.NamespaceMap.AddNamespace("skos", new Uri(SKOSNamespace));
+            g.NamespaceMap.AddNamespace("skos", UriFactory.Create(SKOSNamespace));
             this._rdfType = g.CreateUriNode("rdf:type");
             this._skosBroader = g.CreateUriNode("skos:broader");
             this._skosConcept = g.CreateUriNode("skos:Concept");

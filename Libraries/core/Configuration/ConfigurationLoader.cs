@@ -165,10 +165,7 @@ namespace VDS.RDF.Configuration
             //Default Data Factories
             new GraphFactory(),
             new StoreFactory(),
-            //Default SQL and Generic Manager Factories
-#if !NO_DATA && !NO_STORAGE
-            new SqlManagerFactory(),
-#endif
+            //Default Manager Factories
 #if !NO_STORAGE
             new GenericManagerFactory(),
 #endif
@@ -221,7 +218,7 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph</param>
         public static void AutoDetectObjectFactories(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode objLoader = CreateConfigurationNode(g, ClassObjectFactory);
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
@@ -244,10 +241,10 @@ namespace VDS.RDF.Configuration
         /// <param name="g">Configuration Graph</param>
         public static void AutoDetectReadersAndWriters(IGraph g)
         {
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode desiredType = CreateConfigurationNode(g, ClassRdfParser);
-            INode formatMimeType = g.CreateUriNode(new Uri("http://www.w3.org/ns/formats/media_type"));
-            INode formatExtension = g.CreateUriNode(new Uri("http://www.w3.org/ns/formats/preferred_suffix"));
+            INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
+            INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
             Object temp;
             String[] mimeTypes, extensions;
 
@@ -423,10 +420,10 @@ namespace VDS.RDF.Configuration
             if (_nodeMap.ContainsKey(qname)) return Tools.CopyNode(_nodeMap[qname], g);
 
             //Does our special namespace mapper know of the dnr prefix?
-            if (!_nsmap.HasNamespace("dnr")) _nsmap.AddNamespace("dnr", new Uri(ConfigurationNamespace));
+            if (!_nsmap.HasNamespace("dnr")) _nsmap.AddNamespace("dnr", UriFactory.Create(ConfigurationNamespace));
 
             //Create the URI Node
-            Uri propertyUri = new Uri(Tools.ResolveQName(qname, _nsmap, null));
+            Uri propertyUri = UriFactory.Create(Tools.ResolveQName(qname, _nsmap, null));
             IUriNode u = g.CreateUriNode(propertyUri);
             _nodeMap.Add(qname, u);
             return u;
@@ -855,7 +852,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static String GetDefaultType(IGraph g, INode objNode)
         {
-            IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode declaredType = ConfigurationLoader.GetConfigurationNode(g, objNode, rdfType);
             if (declaredType == null) return null; //Fixes Bug CORE-98
             if (declaredType.NodeType == NodeType.Uri)

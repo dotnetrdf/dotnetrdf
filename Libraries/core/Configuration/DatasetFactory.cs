@@ -47,8 +47,7 @@ namespace VDS.RDF.Configuration
     /// </summary>
     public class DatasetFactory : IObjectFactory
     {
-        private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
-                             SqlDataset = "VDS.RDF.Query.Datasets.SqlDataset";
+        private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset";
 
         /// <summary>
         /// Tries to load a SPARQL Dataset based on information from the Configuration Graph
@@ -83,30 +82,6 @@ namespace VDS.RDF.Configuration
                             throw new DotNetRdfConfigurationException("Unable to load the In-Memory Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:usingStore property could not be loaded as an object which implements the IInMemoryQueryableStore interface");
                         }
                     }
-
-#if !NO_DATA && !NO_STORAGE
-
-                case SqlDataset:
-                    INode sqlManager = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertySqlManager));
-                    if (sqlManager == null)
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load the SQL Dataset identified by the Node '" + objNode.ToString() + "' since there was no value given for the required property dnr:sqlManager");
-                    }
-                    else
-                    {
-                        Object temp = ConfigurationLoader.LoadObject(g, sqlManager);
-                        if (temp is IDotNetRDFStoreManager)
-                        {
-                            obj = new SqlDataset((IDotNetRDFStoreManager)temp);
-                            return true;
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load the SQL Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:sqlManager property could not be laoded as an object which implements the IDotNetRDFStoreManager interface");
-                        }
-                    }
-
-#endif
             } 
 
             return false;
@@ -122,9 +97,6 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case InMemoryDataset:
-#if !NO_DATA && !NO_STORAGE
-                case SqlDataset:
-#endif
                     return true;
                 default:
                     return false;

@@ -333,7 +333,7 @@ namespace VDS.RDF.Update.Commands
 
                             //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                             IGraph h;
-                            Uri destUri = new Uri(graphUri);
+                            Uri destUri = UriFactory.Create(graphUri);
                             if (context.Data.HasGraph(destUri))
                             {
                                 h = context.Data.GetModifiableGraph(destUri);

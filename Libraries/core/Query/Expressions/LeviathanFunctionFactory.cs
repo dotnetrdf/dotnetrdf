@@ -38,15 +38,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Aggregates.Leviathan;
+using VDS.RDF.Query.Expressions.Functions.Leviathan;
+using VDS.RDF.Query.Expressions.Functions.Leviathan.Hash;
+using VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric;
+using VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
     /// Expression Factory which generates Leviathan Function expressions
     /// </summary>
-    public class LeviathanFunctionFactory : ISparqlCustomExpressionFactory
+    public class LeviathanFunctionFactory
+        : ISparqlCustomExpressionFactory
     {
         /// <summary>
         /// Leviathan Function Namespace
@@ -187,11 +192,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.All:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new AllAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new AllAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new AllAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new AllAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -201,11 +206,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Any:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new AnyAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new AnyAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new AnyAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new AnyAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -215,11 +220,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Cartesian:
                         if (args.Count == 4)
                         {
-                            lvnFunc = new LeviathanCartesianFunction(args[0], args[1], args[2], args[3]);
+                            lvnFunc = new CartesianFunction(args[0], args[1], args[2], args[3]);
                         }
                         else if (args.Count == 6)
                         {
-                            lvnFunc = new LeviathanCartesianFunction(args[0], args[1], args[2], args[3], args[4], args[5]);
+                            lvnFunc = new CartesianFunction(args[0], args[1], args[2], args[3], args[4], args[5]);
                         }
                         else
                         {
@@ -229,7 +234,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Cube:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanCubeFunction(args.First());
+                            lvnFunc = new CubeFunction(args.First());
                         }
                         else
                         {
@@ -239,7 +244,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.DegreesToRadians:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanDegreesToRadiansFunction(args.First());
+                            lvnFunc = new DegreesToRadiansFunction(args.First());
                         }
                         else
                         {
@@ -249,7 +254,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.E:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanEFunction(args.First());
+                            lvnFunc = new EFunction(args.First());
                         }
                         else
                         {
@@ -259,7 +264,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Factorial:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanFactorialFunction(args.First());
+                            lvnFunc = new FactorialFunction(args.First());
                         }
                         else
                         {
@@ -279,11 +284,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Log:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanLogFunction(args.First());
+                            lvnFunc = new LogFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            lvnFunc = new LeviathanLogFunction(args.First(), args.Last());
+                            lvnFunc = new LogFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -293,7 +298,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.MD5Hash:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanMD5HashFunction(args.First());
+                            lvnFunc = new MD5HashFunction(args.First());
                         }
                         else
                         {
@@ -303,11 +308,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Median:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new MedianAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new MedianAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new MedianAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new MedianAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -317,11 +322,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Mode:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new ModeAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new ModeAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new ModeAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new ModeAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -331,11 +336,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.None:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new NoneAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new NoneAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new NoneAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new NoneAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -345,11 +350,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.NumericMax:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateExpressionTerm(new NumericMaxAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new NumericMaxAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new NumericMaxAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new NumericMaxAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -359,11 +364,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.NumericMin:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new AggregateExpressionTerm(new NumericMinAggregate(args.First()));
+                            lvnFunc = new AggregateTerm(new NumericMinAggregate(args.First()));
                         }
-                        else if (args.Count == 2 && args.First() is DistinctModifierExpression)
+                        else if (args.Count == 2 && args.First() is DistinctModifier)
                         {
-                            lvnFunc = new NonNumericAggregateExpressionTerm(new NumericMinAggregate(args.Last(), true));
+                            lvnFunc = new AggregateTerm(new NumericMinAggregate(args.Last(), true));
                         }
                         else
                         {
@@ -373,11 +378,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Power:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSquareFunction(args.First());
+                            lvnFunc = new SquareFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            lvnFunc = new LeviathanPowerFunction(args.First(), args.Last());
+                            lvnFunc = new PowerFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -387,7 +392,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Pythagoras:
                         if (args.Count == 2)
                         {
-                            lvnFunc = new LeviathanPyathagoreanDistanceFunction(args.First(), args.Last());
+                            lvnFunc = new PythagoreanDistanceFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -397,7 +402,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.RadiansToDegrees:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanRadiansToDegreesFunction(args.First());
+                            lvnFunc = new RadiansToDegreesFunction(args.First());
                         }
                         else
                         {
@@ -407,15 +412,15 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Random:
                         if (args.Count == 0)
                         {
-                            lvnFunc = new LeviathanRandomFunction();
+                            lvnFunc = new RandomFunction();
                         }
                         else if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanRandomFunction(args.First());
+                            lvnFunc = new RandomFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            lvnFunc = new LeviathanRandomFunction(args.First(), args.Last());
+                            lvnFunc = new RandomFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -425,7 +430,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Reciprocal:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanReciprocalFunction(args.First());
+                            lvnFunc = new ReciprocalFunction(args.First());
                         }
                         else
                         {
@@ -435,11 +440,11 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Root:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSquareRootFunction(args.First());
+                            lvnFunc = new SquareRootFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            lvnFunc = new LeviathanRootFunction(args.First(), args.Last());
+                            lvnFunc = new RootFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -449,7 +454,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Sha256Hash:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSha256HashFunction(args.First());
+                            lvnFunc = new Sha256HashFunction(args.First());
                         }
                         else
                         {
@@ -459,7 +464,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Square:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSquareFunction(args.First());
+                            lvnFunc = new SquareFunction(args.First());
                         }
                         else
                         {
@@ -469,7 +474,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.SquareRoot:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSquareRootFunction(args.First());
+                            lvnFunc = new SquareRootFunction(args.First());
                         }
                         else
                         {
@@ -479,7 +484,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.Ten:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanTenFunction(args.First());
+                            lvnFunc = new TenFunction(args.First());
                         }
                         else
                         {
@@ -490,7 +495,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigCosInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanCosineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosInv));
+                            lvnFunc = new CosineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosInv));
                         }
                         else
                         {
@@ -501,7 +506,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigCosecInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanCosecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosecInv));
+                            lvnFunc = new CosecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCosecInv));
                         }
                         else
                         {
@@ -512,7 +517,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigCotanInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanCotangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCotanInv));
+                            lvnFunc = new CotangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigCotanInv));
                         }
                         else
                         {
@@ -523,7 +528,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigSecInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSecInv));
+                            lvnFunc = new SecantFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSecInv));
                         }
                         else
                         {
@@ -534,7 +539,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigSinInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanSineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSinInv));
+                            lvnFunc = new SineFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigSinInv));
                         }
                         else
                         {
@@ -545,7 +550,7 @@ namespace VDS.RDF.Query.Expressions
                     case LeviathanFunctionFactory.TrigTanInv:
                         if (args.Count == 1)
                         {
-                            lvnFunc = new LeviathanTangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigTanInv));
+                            lvnFunc = new TangentFunction(args.First(), func.Equals(LeviathanFunctionFactory.TrigTanInv));
                         }
                         else
                         {
@@ -572,7 +577,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in FunctionUris
-                        select new Uri(LeviathanFunctionsNamespace + u));
+                        select UriFactory.Create(LeviathanFunctionsNamespace + u));
             }
         }
 
@@ -584,7 +589,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in AggregateUris
-                        select new Uri(LeviathanFunctionsNamespace + u));
+                        select UriFactory.Create(LeviathanFunctionsNamespace + u));
             }
         }
     }

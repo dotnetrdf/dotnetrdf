@@ -39,6 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF.Query
 {
@@ -46,7 +47,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Comparer class for implementing the SPARQL semantics for the relational operators
     /// </summary>
-    public class SparqlNodeComparer : IComparer<INode>
+    public class SparqlNodeComparer 
+        : IComparer<INode>, IComparer<IValuedNode>
     {
         /// <summary>
         /// Compares two Nodes
@@ -172,6 +174,12 @@ namespace VDS.RDF.Query
             }
         }
 
+        public virtual int Compare(IValuedNode x, IValuedNode y)
+        {
+            //TODO: Reverse the logic here so that we do comparisons using our ready to go valued nodes
+            return this.Compare((INode)x, (INode)y);
+        }
+
         /// <summary>
         /// Compares two Nodes for Numeric Ordering
         /// </summary>
@@ -276,7 +284,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Comparer class for use in SPARQL ORDER BY - implements the Semantics broadly similar to the relational operator but instead of erroring using Node/Lexical ordering where an error would occur
     /// </summary>
-    public class SparqlOrderingComparer : SparqlNodeComparer
+    public class SparqlOrderingComparer 
+        : SparqlNodeComparer
     {
         /// <summary>
         /// Compares two Nodes

@@ -96,7 +96,7 @@ namespace VDS.RDF.Writing
             IGraph g = new Graph();
 
             //Add the relevant namespaces
-            g.NamespaceMap.AddNamespace("rs", new Uri(SparqlSpecsHelper.SparqlRdfResultsNamespace));
+            g.NamespaceMap.AddNamespace("rs", UriFactory.Create(SparqlSpecsHelper.SparqlRdfResultsNamespace));
 
             //Create relevant Nodes
             IUriNode rdfType = g.CreateUriNode("rdf:type");
@@ -165,7 +165,7 @@ namespace VDS.RDF.Writing
             else
             {
                 //A Boolean Result Set
-                g.Assert(new Triple(rset, boolean, g.CreateLiteralNode(results.Result.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean))));
+                g.Assert(new Triple(rset, boolean, g.CreateLiteralNode(results.Result.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))));
             }
 
             return g;

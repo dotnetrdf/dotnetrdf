@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Patterns
@@ -83,7 +84,7 @@ namespace VDS.RDF.Query.Patterns
 
                     try
                     {
-                        if (!this._filter.Expression.EffectiveBooleanValue(context, 0))
+                        if (!this._filter.Expression.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.OutputMultiset = new NullMultiset();
                             return;

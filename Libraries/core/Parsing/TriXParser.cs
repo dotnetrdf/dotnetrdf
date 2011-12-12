@@ -313,7 +313,7 @@ namespace VDS.RDF.Parsing
             if (nameEl.Name.Equals("uri"))
             {
                 //TODO: Add support for reading Base Uri from xml:base attributes in the file
-                graphUri = new Uri(Tools.ResolveUri(nameEl.InnerText, String.Empty));
+                graphUri = UriFactory.Create(Tools.ResolveUri(nameEl.InnerText, String.Empty));
             }
             else
             {
@@ -359,7 +359,7 @@ namespace VDS.RDF.Parsing
             INode subj, pred, obj;
             if (subjEl.Name.Equals("uri"))
             {
-                subj = handler.CreateUriNode(new Uri(subjEl.InnerText));
+                subj = handler.CreateUriNode(UriFactory.Create(subjEl.InnerText));
             }
             else if (subjEl.Name.Equals("id"))
             {
@@ -372,7 +372,7 @@ namespace VDS.RDF.Parsing
 
             if (predEl.Name.Equals("uri"))
             {
-                pred = handler.CreateUriNode(new Uri(predEl.InnerText));
+                pred = handler.CreateUriNode(UriFactory.Create(predEl.InnerText));
             }
             else
             {
@@ -381,7 +381,7 @@ namespace VDS.RDF.Parsing
 
             if (objEl.Name.Equals("uri"))
             {
-                obj = handler.CreateUriNode(new Uri(objEl.InnerText));
+                obj = handler.CreateUriNode(UriFactory.Create(objEl.InnerText));
             }
             else if (objEl.Name.Equals("id"))
             {
@@ -402,7 +402,7 @@ namespace VDS.RDF.Parsing
             {
                 if (objEl.Attributes.GetNamedItem("datatype") != null)
                 {
-                    Uri dtUri = new Uri(objEl.Attributes["datatype"].Value);
+                    Uri dtUri = UriFactory.Create(objEl.Attributes["datatype"].Value);
                     if (objEl.FirstChild.NodeType == XmlNodeType.Text)
                     {
                         obj = handler.CreateLiteralNode(objEl.InnerText, dtUri);

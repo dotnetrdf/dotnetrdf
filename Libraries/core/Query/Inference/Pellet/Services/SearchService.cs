@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     INode node;
                     if (type.ToLower().Equals("uri"))
                     {
-                        node = new UriNode(null, new Uri((String)hit.SelectToken("value")));
+                        node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
                     }
                     else
                     {
@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                             INode node;
                             if (type.ToLower().Equals("uri"))
                             {
-                                node = new UriNode(null, new Uri((String)hit.SelectToken("value")));
+                                node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
                             }
                             else
                             {

@@ -73,7 +73,7 @@ namespace VDS.RDF.Configuration
                                                         select n.ToString();
                     IEnumerable<String> namedGraphs = from n in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyNamedGraphUri))
                                                       select n.ToString();
-                    endpoint = new SparqlRemoteEndpoint(new Uri(endpointUri), defaultGraphs, namedGraphs);
+                    endpoint = new SparqlRemoteEndpoint(UriFactory.Create(endpointUri), defaultGraphs, namedGraphs);
 
                     break;
 

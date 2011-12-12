@@ -37,6 +37,9 @@ using System;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -736,7 +739,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public abstract class BaseVirtualBlankNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IBlankNode, 
-          IEquatable<BaseVirtualBlankNode<TNodeID, TGraphID>>, IComparable<BaseVirtualBlankNode<TNodeID, TGraphID>>
+          IEquatable<BaseVirtualBlankNode<TNodeID, TGraphID>>, IComparable<BaseVirtualBlankNode<TNodeID, TGraphID>>,
+          IValuedNode
     {
         private String _internalID;
 
@@ -841,6 +845,53 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IBlankNode)other);
         }
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -850,7 +901,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public abstract class BaseVirtualGraphLiteralNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IGraphLiteralNode,
-          IEquatable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>
+          IEquatable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualGraphLiteralNode<TNodeID, TGraphID>>,
+          IValuedNode
     {
         private IGraph _subgraph;
 
@@ -955,6 +1007,53 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IGraphLiteralNode)other);
         }
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -1106,7 +1205,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public abstract class BaseVirtualUriNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IUriNode,
-          IEquatable<BaseVirtualUriNode<TNodeID, TGraphID>>, IComparable<BaseVirtualUriNode<TNodeID, TGraphID>>
+          IEquatable<BaseVirtualUriNode<TNodeID, TGraphID>>, IComparable<BaseVirtualUriNode<TNodeID, TGraphID>>,
+          IValuedNode
     {
         private Uri _u;
 
@@ -1211,6 +1311,53 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IUriNode)other);
         }
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            return this.Uri.ToString();
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>
@@ -1220,7 +1367,8 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public abstract class BaseVirtualVariableNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, IVariableNode,
-          IEquatable<BaseVirtualVariableNode<TNodeID, TGraphID>>, IComparable<BaseVirtualVariableNode<TNodeID, TGraphID>>
+          IEquatable<BaseVirtualVariableNode<TNodeID, TGraphID>>, IComparable<BaseVirtualVariableNode<TNodeID, TGraphID>>,
+          IValuedNode
     {
         private String _var;
 
@@ -1325,5 +1473,52 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IVariableNode)other);
         }
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 }

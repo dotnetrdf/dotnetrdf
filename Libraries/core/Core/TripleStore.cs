@@ -62,7 +62,7 @@ namespace VDS.RDF
         /// <summary>
         /// Graph Uri for the special Graph used to store inferred information
         /// </summary>
-        protected Uri _inferenceGraphUri = new Uri("dotNetRDF:inference-graph");
+        protected Uri _inferenceGraphUri = UriFactory.Create("dotNetRDF:inference-graph");
 
         /// <summary>
         /// Creates a new Triple Store using a new empty Graph collection

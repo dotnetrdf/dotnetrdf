@@ -211,7 +211,7 @@ namespace VDS.RDF
                     break;
                 case 2:
                     //Get the Datatype
-                    this._datatype = new Uri(info.GetString("datatype"));
+                    this._datatype = UriFactory.Create(info.GetString("datatype"));
                     this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
                     break;
                 default:
@@ -572,7 +572,7 @@ namespace VDS.RDF
                             exit = true;
                             break;
                         case "datatype":
-                            this._datatype = new Uri(reader.Value);
+                            this._datatype = UriFactory.Create(reader.Value);
                             exit = true;
                             break;
                     }

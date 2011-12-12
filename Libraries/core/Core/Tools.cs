@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,7 +147,7 @@ namespace VDS.RDF
             {
                 String temp = u.ToString();
                 temp = temp.Substring(0, temp.Length - u.Fragment.Length);
-                return new Uri(temp);
+                return UriFactory.Create(temp);
             }
         }
 
@@ -167,7 +166,7 @@ namespace VDS.RDF
                 if (uriref.Equals(String.Empty))
                 {
                     //Empty Uri reference refers to the Base Uri
-                    return new Uri(Tools.FixMalformedUriStrings(baseUri)).ToString();
+                    return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).ToString();
                 }
                 else
                 {
@@ -180,7 +179,7 @@ namespace VDS.RDF
                     } 
                     else 
                     {
-                        Uri b = new Uri(Tools.FixMalformedUriStrings(baseUri));
+                        Uri b = UriFactory.Create(Tools.FixMalformedUriStrings(baseUri));
 
                         //Check that the Base Uri is valid for resolving Relative URIs
                         //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant

@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                 NamespaceMapper nsmap = new NamespaceMapper(true);
                 foreach (JProperty nsDef in json.Properties())
                 {
-                    nsmap.AddNamespace(nsDef.Name, new Uri((String)nsDef.Value));
+                    nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String)nsDef.Value));
                 }
 
                 return nsmap;
@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     NamespaceMapper nsmap = new NamespaceMapper(true);
                     foreach (JProperty nsDef in json.Properties())
                     {
-                        nsmap.AddNamespace(nsDef.Name, new Uri((String)nsDef.Value));
+                        nsmap.AddNamespace(nsDef.Name, UriFactory.Create((String)nsDef.Value));
                     }
 
                     callback(nsmap, state);

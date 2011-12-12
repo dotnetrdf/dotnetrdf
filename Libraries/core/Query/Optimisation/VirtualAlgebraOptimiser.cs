@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Storage.Virtualisation;
 using VDS.RDF.Update;
@@ -56,7 +57,7 @@ namespace VDS.RDF.Query.Optimisation
         /// Virtual RDF Provider
         /// </summary>
         protected IVirtualRdfProvider<TNodeID, TGraphID> _provider;
-        private Type _exprType = typeof(NodeExpressionTerm);
+        private Type _exprType = typeof(ConstantTerm);
 
         /// <summary>
         /// Creates a new Virtual Algebra Optimiser
@@ -242,12 +243,12 @@ namespace VDS.RDF.Query.Optimisation
         {
             if (expr.GetType().Equals(this._exprType))
             {
-                NodeExpressionTerm term = (NodeExpressionTerm)expr;
-                INode curr = term.Value(null, 0);
+                ConstantTerm term = (ConstantTerm)expr;
+                INode curr = term.Evaluate(null, 0);
                 TNodeID id = this._provider.GetID(curr);
                 if (id == null || id.Equals(this._provider.NullID)) throw new RdfQueryException("Cannot transform the Expression to use Virtual Nodes");
                 INode virt = this.CreateVirtualNode(id, curr);
-                return new NodeExpressionTerm(virt);
+                return new ConstantTerm(virt);
             }
             else
             {

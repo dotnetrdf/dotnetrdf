@@ -38,6 +38,7 @@ using System.Linq;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query
 {
@@ -66,9 +67,9 @@ namespace VDS.RDF.Query
                 case SparqlExpressionType.UnaryOperator:
                     return expr.Arguments.All(arg => arg.UsesDefaultDataset());
                 case SparqlExpressionType.Primary:
-                    if (expr is GraphPatternExpressionTerm)
+                    if (expr is GraphPatternTerm)
                     {
-                        return ((GraphPatternExpressionTerm)expr).Pattern.UsesDefaultDataset;
+                        return ((GraphPatternTerm)expr).Pattern.UsesDefaultDataset;
                     }
                     else
                     {

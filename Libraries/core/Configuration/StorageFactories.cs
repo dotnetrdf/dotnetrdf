@@ -42,93 +42,6 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
 {
-
-#if !NO_DATA && !NO_STORAGE
-
-    /// <summary>
-    /// Factory class for producing <see cref="ISqlIOManager">ISqlIOManager</see> instances from Configuration Graphs
-    /// </summary>
-    public class SqlManagerFactory : IObjectFactory
-    {
-        private const String MicrosoftSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager";
-        private const String MySqlManager = "VDS.RDF.Storage.MySqlStoreManager";
-
-        /// <summary>
-        /// Tries to load a SQL IO Manager based on information from the Configuration Graph
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        /// <param name="objNode">Object Node</param>
-        /// <param name="targetType">Target Type</param>
-        /// <param name="obj">Output Object</param>
-        /// <returns></returns>
-        public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out Object obj)
-        {
-            ISqlIOManager manager = null;
-            String server, port, db, user, pwd;
-
-            //Create the URI Nodes we're going to use to search for things
-            INode propServer = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer),
-                  propDb = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDatabase);
-
-            //Get Server and Database details
-            server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-            if (server == null) server = "localhost";
-            db = ConfigurationLoader.GetConfigurationString(g, objNode, propDb);
-            if (db == null)
-            {
-                obj = null;
-                return false;
-            }
-
-            //Get user credentials
-            ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-
-            //Based on this information create a Manager if possible
-            switch (targetType.FullName)
-            {
-                case MicrosoftSqlManager:
-                    if (user == null || pwd == null)
-                    {
-                        manager = new MicrosoftSqlStoreManager(server, db);
-                    }
-                    else
-                    {
-                        manager = new MicrosoftSqlStoreManager(server, db, user, pwd);
-                    }
-                    break;
-
-                case MySqlManager:
-                    if (user != null && pwd != null)
-                    {
-                        manager = new MySqlStoreManager(server, db, user, pwd);
-                    }
-                    break;
-
-            }
-            obj = manager;
-            return (manager != null);
-        }
-
-        /// <summary>
-        /// Gets whether this Factory can load objects of the given Type
-        /// </summary>
-        /// <param name="t">Type</param>
-        /// <returns></returns>
-        public bool CanLoadObject(Type t)
-        {
-            switch (t.FullName)
-            {
-                case MicrosoftSqlManager:
-                case MySqlManager:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    }
-
-#endif
-
 #if !NO_STORAGE
 
     /// <summary>
@@ -397,11 +310,11 @@ namespace VDS.RDF.Configuration
                                                        select ((IUriNode)named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
                         {
-                            manager = new SparqlConnector(new SparqlRemoteEndpoint(new Uri(server), defGraphs, namedGraphs), loadMode);
+                            manager = new SparqlConnector(new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs), loadMode);
                         }
                         else
                         {
-                            manager = new SparqlConnector(new Uri(server), loadMode);
+                            manager = new SparqlConnector(UriFactory.Create(server), loadMode);
                         }                        
                     }
                     break;
@@ -410,7 +323,7 @@ namespace VDS.RDF.Configuration
                     //Get the Service URI
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    manager = new SparqlHttpProtocolConnector(new Uri(server));
+                    manager = new SparqlHttpProtocolConnector(UriFactory.Create(server));
                     break;
 
                 case Stardog:

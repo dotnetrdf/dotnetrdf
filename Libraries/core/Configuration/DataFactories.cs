@@ -135,38 +135,6 @@ namespace VDS.RDF.Configuration
 
             IEnumerable<Object> connections;
 
-#if !NO_DATA && !NO_STORAGE
-
-            //Load from Databases
-            IEnumerable<INode> dbs = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromDatabase));
-            dbs.All(db => !ConfigurationLoader.CheckCircularReference(objNode, db, "dnr:fromDatabase"));
-            connections = dbs.Select(db => ConfigurationLoader.LoadObject(g, db));
-            sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyWithUri));
-            foreach (Object db in connections)
-            {
-                if (db is ISqlIOManager)
-                {
-                    SqlReader reader = new SqlReader((ISqlIOManager)db);
-                    foreach (INode source in sources)
-                    {
-                        if (source.NodeType == NodeType.Uri || source.NodeType == NodeType.Literal)
-                        {
-                            output.Merge(reader.Load(source.ToString()));
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load data from a database for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:withUri property is not a URI/Literal Node as required");
-                        }
-                    }
-                }
-                else
-                {
-                    throw new DotNetRdfConfigurationException("Unable to load data from a database for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromDatabase property points to an Object which cannot be loaded as an object which implements the ISqlIOManager interface");
-                }
-            }
-
-#endif
-
 #if !NO_STORAGE
 
             //Load from Stores
@@ -200,7 +168,7 @@ namespace VDS.RDF.Configuration
                         }
                         else if (source.NodeType == NodeType.Literal)
                         {
-                            output.Merge(((ITripleStore)store).Graph(new Uri(((ILiteralNode)source).Value)));
+                            output.Merge(((ITripleStore)store).Graph(UriFactory.Create(((ILiteralNode)source).Value)));
                         }
                         else
                         {
@@ -231,7 +199,7 @@ namespace VDS.RDF.Configuration
                 else if (source.NodeType == NodeType.Literal)
                 {
 #if !SILVERLIGHT
-                    UriLoader.Load(output, new Uri(((ILiteralNode)source).Value));
+                    UriLoader.Load(output, UriFactory.Create(((ILiteralNode)source).Value));
 #else
                     throw new PlatformNotSupportedException("Loading Data into a Graph from a remote URI is not currently supported under Silverlight/Windows Phone 7");
 #endif
@@ -252,7 +220,7 @@ namespace VDS.RDF.Configuration
                 }
                 else if (baseUri.NodeType == NodeType.Literal)
                 {
-                    output.BaseUri = new Uri(((ILiteralNode)baseUri).Value);
+                    output.BaseUri = UriFactory.Create(((ILiteralNode)baseUri).Value);
                 }
                 else
                 {
@@ -355,43 +323,6 @@ namespace VDS.RDF.Configuration
                 case WebDemandTripleStore:
                     store = new WebDemandTripleStore();
                     break;
-#endif
-
-#if !NO_DATA && !NO_STORAGE
-
-                case SqlTripleStore:
-                case ThreadedSqlTripleStore:
-                case OnDemandTripleStore:
-                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propSqlManager);
-                    if (subObj == null) return false;
-
-                    temp = ConfigurationLoader.LoadObject(g, subObj);
-                    if (temp is ISqlIOManager)
-                    {
-                        if (targetType.FullName.Equals(SqlTripleStore))
-                        {
-                            store = new SqlTripleStore((ISqlIOManager)temp);
-                        }
-                        else if (targetType.FullName.Equals(OnDemandTripleStore))
-                        {
-                            store = new OnDemandTripleStore((ISqlIOManager)temp);
-                        }
-                        else if (temp is IThreadedSqlIOManager)
-                        {
-                            isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
-                            store = new ThreadedSqlTripleStore((IThreadedSqlIOManager)temp, isAsync);
-                        }
-                        else
-                        {
-                            throw new DotNetRdfConfigurationException("Unable to load a SQL Triple Store identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:sqlManager property points to an Object which could not be loaded as an object which implements either the ISqlIOManager/IThreadedSqlIOManager interface");
-                        }
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load a SQL Triple Store identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:sqlManager property points to an Object which could not be loaded as an object which implements either the ISqlIOManager interface");
-                    }
-                    break;
-
 #endif
 
 #if !NO_STORAGE

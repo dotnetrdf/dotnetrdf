@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.Common;
 
 namespace VDS.RDF
 {
@@ -98,9 +99,9 @@ namespace VDS.RDF
             if (!empty)
             {
                 //Add Standard Namespaces
-                this.AddNamespace("rdf", new Uri(RDF));
-                this.AddNamespace("rdfs", new Uri(RDFS));
-                this.AddNamespace("xsd", new Uri(XMLSCHEMA));
+                this.AddNamespace("rdf", UriFactory.Create(RDF));
+                this.AddNamespace("rdfs", UriFactory.Create(RDFS));
+                this.AddNamespace("xsd", UriFactory.Create(XMLSCHEMA));
             }
         }
 
@@ -535,7 +536,7 @@ namespace VDS.RDF
             }
 
             //Add to Namespace Map
-            this.AddNamespace(nsPrefix, new Uri(nsUri));
+            this.AddNamespace(nsPrefix, UriFactory.Create(nsUri));
 
             //Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, String.Empty);

@@ -33,15 +33,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Aggregates.XPath;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.XPath;
+using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
+using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
+using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
+using VDS.RDF.Query.Expressions.Functions.XPath.String;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions
 {
     /// <summary>
     /// Expression Factory which generates XPath Function expressions
     /// </summary>
-    public class XPathFunctionFactory : ISparqlCustomExpressionFactory
+    public class XPathFunctionFactory 
+        : ISparqlCustomExpressionFactory
     {
         /// <summary>
         /// Namespace Uri for XPath Functions Namespace
@@ -193,7 +202,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Absolute:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathAbsoluteFunction(args.First());
+                            xpathFunc = new AbsFunction(args.First());
                         }
                         else
                         {
@@ -205,7 +214,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Boolean:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathBooleanFunction(args.First());
+                            xpathFunc = new BooleanFunction(args.First());
                         }
                         else
                         {
@@ -215,7 +224,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Ceiling:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathCeilingFunction(args.First());
+                            xpathFunc = new CeilingFunction(args.First());
                         }
                         else
                         {
@@ -225,7 +234,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Compare:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathCompareFunction(args.First(), args.Last());
+                            xpathFunc = new CompareFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -235,11 +244,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Concat:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathConcatFunction(args.First(), args.Last());
+                            xpathFunc = new ConcatFunction(args.First(), args.Last());
                         }
                         else if (args.Count > 2)
                         {
-                            xpathFunc = new XPathConcatFunction(args);
+                            xpathFunc = new ConcatFunction(args);
                         }
                         else
                         {
@@ -249,7 +258,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Contains:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathContainsFunction(args.First(), args.Last());
+                            xpathFunc = new ContainsFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -259,7 +268,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.DayFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathDayFromDateTimeFunction(args.First());
+                            xpathFunc = new DayFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -269,7 +278,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.EncodeForURI:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathEncodeForUriFunction(args.First());
+                            xpathFunc = new EncodeForUriFunction(args.First());
                         }
                         else
                         {
@@ -279,7 +288,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.EndsWith:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathEndsWithFunction(args.First(), args.Last());
+                            xpathFunc = new EndsWithFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -290,7 +299,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.EscapeHtmlURI:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathEscapeHtmlUriFunction(args.First());
+                            xpathFunc = new EscapeHtmlUriFunction(args.First());
                         }
                         else
                         {
@@ -301,7 +310,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.False:
                         if (args.Count == 0)
                         {
-                            xpathFunc = new BooleanExpressionTerm(false);
+                            xpathFunc = new ConstantTerm(new BooleanNode(null, false));
                         }
                         else
                         {
@@ -311,7 +320,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Floor:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathFloorFunction(args.First());
+                            xpathFunc = new FloorFunction(args.First());
                         }
                         else
                         {
@@ -321,7 +330,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.HoursFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathHoursFromDateTimeFunction(args.First());
+                            xpathFunc = new HoursFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -331,7 +340,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.LowerCase:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathLowerCaseFunction(args.First());
+                            xpathFunc = new LowerCaseFunction(args.First());
                         }
                         else
                         {
@@ -341,11 +350,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Matches:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new RegexFunction(args.First(), args.Last());
+                            xpathFunc = new VDS.RDF.Query.Expressions.Functions.Sparql.Boolean.RegexFunction(args.First(), args.Last());
                         }
                         else if (args.Count == 3)
                         {
-                            xpathFunc = new RegexFunction(args.First(), args[1], args.Last());
+                            xpathFunc = new VDS.RDF.Query.Expressions.Functions.Sparql.Boolean.RegexFunction(args.First(), args[1], args.Last());
                         }
                         else
                         {
@@ -355,7 +364,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.MinutesFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathMinutesFromDateTimeFunction(args.First());
+                            xpathFunc = new MinutesFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -365,7 +374,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.MonthFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathMonthFromDateTimeFunction(args.First());
+                            xpathFunc = new MonthFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -375,7 +384,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.NormalizeSpace:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathNormalizeSpaceFunction(args.First());
+                            xpathFunc = new NormalizeSpaceFunction(args.First());
                         }
                         else
                         {
@@ -386,11 +395,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.NormalizeUnicode:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathNormalizeUnicodeFunction(args.First());
+                            xpathFunc = new NormalizeUnicodeFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            xpathFunc = new XPathNormalizeUnicodeFunction(args.First(), args.Last());
+                            xpathFunc = new NormalizeUnicodeFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -401,7 +410,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Not:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new NegationExpression(args.First());
+                            xpathFunc = new NotExpression(args.First());
                         }
                         else
                         {
@@ -411,11 +420,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Replace:
                         if (args.Count == 3)
                         {
-                            xpathFunc = new XPathReplaceFunction(args.First(), args[1], args.Last());
+                            xpathFunc = new ReplaceFunction(args.First(), args[1], args.Last());
                         }
                         else if (args.Count == 4)
                         {
-                            xpathFunc = new XPathReplaceFunction(args.First(), args[1], args[2], args.Last());
+                            xpathFunc = new ReplaceFunction(args.First(), args[1], args[2], args.Last());
                         }
                         else
                         {
@@ -425,7 +434,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Round:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathRoundFunction(args.First());
+                            xpathFunc = new RoundFunction(args.First());
                         }
                         else
                         {
@@ -436,11 +445,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.RoundHalfToEven:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathRoundHalfToEvenFunction(args.First());
+                            xpathFunc = new RoundHalfToEvenFunction(args.First());
                         }
                         else if (args.Count == 2)
                         {
-                            xpathFunc = new XPathRoundHalfToEvenFunction(args.First(), args.Last());
+                            xpathFunc = new RoundHalfToEvenFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -451,7 +460,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.SecondsFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathSecondsFromDateTimeFunction(args.First());
+                            xpathFunc = new SecondsFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -461,7 +470,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.StartsWith:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathStartsWithFunction(args.First(), args.Last());
+                            xpathFunc = new StartsWithFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -471,11 +480,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.StringJoin:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new NonNumericAggregateExpressionTerm(new XPathStringJoinFunction(args.First()));
+                            xpathFunc = new AggregateTerm(new StringJoinAggregate(args.First()));
                         }
                         else if (args.Count == 2)
                         {
-                            xpathFunc = new NonNumericAggregateExpressionTerm(new XPathStringJoinFunction(args.First(), args.Last()));
+                            xpathFunc = new AggregateTerm(new StringJoinAggregate(args.First(), args.Last()));
                         }
                         else
                         {
@@ -485,7 +494,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.StringLength:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathStringLengthFunction(args.First());
+                            xpathFunc = new StringLengthFunction(args.First());
                         }
                         else
                         {
@@ -495,11 +504,11 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.Substring:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathSubstringFunction(args.First(), args.Last());
+                            xpathFunc = new SubstringFunction(args.First(), args.Last());
                         }
                         else if (args.Count == 3)
                         {
-                            xpathFunc = new XPathSubstringFunction(args.First(), args[1], args.Last());
+                            xpathFunc = new SubstringFunction(args.First(), args[1], args.Last());
                         }
                         else
                         {
@@ -509,7 +518,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.SubstringAfter:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathSubstringAfterFunction(args.First(), args.Last());
+                            xpathFunc = new SubstringAfterFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -519,7 +528,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.SubstringBefore:
                         if (args.Count == 2)
                         {
-                            xpathFunc = new XPathSubstringBeforeFunction(args.First(), args.Last());
+                            xpathFunc = new SubstringBeforeFunction(args.First(), args.Last());
                         }
                         else
                         {
@@ -529,7 +538,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.TimezoneFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathTimezoneFromDateTimeFunction(args.First());
+                            xpathFunc = new TimezoneFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -541,7 +550,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.True:
                         if (args.Count == 0)
                         {
-                            xpathFunc = new BooleanExpressionTerm(true);
+                            xpathFunc = new ConstantTerm(new BooleanNode(null, true));
                         }
                         else
                         {
@@ -551,7 +560,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.UpperCase:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathUpperCaseFunction(args.First());
+                            xpathFunc = new UpperCaseFunction(args.First());
                         }
                         else
                         {
@@ -561,7 +570,7 @@ namespace VDS.RDF.Query.Expressions
                     case XPathFunctionFactory.YearFromDateTime:
                         if (args.Count == 1)
                         {
-                            xpathFunc = new XPathYearFromDateTimeFunction(args.First());
+                            xpathFunc = new YearFromDateTimeFunction(args.First());
                         }
                         else
                         {
@@ -588,7 +597,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in FunctionUris
-                        select new Uri(XPathFunctionsNamespace + u));
+                        select UriFactory.Create(XPathFunctionsNamespace + u));
             }
         }
 
@@ -600,7 +609,7 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return (from u in AggregateUris
-                        select new Uri(XPathFunctionsNamespace + u));
+                        select UriFactory.Create(XPathFunctionsNamespace + u));
             }
         }
     }

@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Algebra
                             ISet s = context.InputMultiset[id];
                             try
                             {
-                                INode temp = v.Projection.Value(context, id);
+                                INode temp = v.Projection.Evaluate(context, id);
                                 s.Add(v.Name, temp);
                             }
                             catch (RdfQueryException)

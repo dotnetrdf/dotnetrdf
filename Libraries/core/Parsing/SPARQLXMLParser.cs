@@ -389,7 +389,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.Input.Name.Equals("uri"))
             {
-                return context.Handler.CreateUriNode(new Uri(context.Input.ReadElementContentAsString()));
+                return context.Handler.CreateUriNode(UriFactory.Create(context.Input.ReadElementContentAsString()));
             }
             else if (context.Input.Name.Equals("literal"))
             {
@@ -413,7 +413,7 @@ namespace VDS.RDF.Parsing
                         //Data Type is specified
                         String dt = context.Input.Value;
                         context.Input.MoveToContent();
-                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), new Uri(dt));
+                        return context.Handler.CreateLiteralNode(context.Input.ReadElementContentAsString(), UriFactory.Create(dt));
                     }
                     else
                     {

@@ -37,6 +37,9 @@ using System;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF
 {
@@ -47,7 +50,7 @@ namespace VDS.RDF
     [Serializable,XmlRoot(ElementName="variable")]
 #endif
     public abstract class BaseVariableNode
-        : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>
+        : BaseNode, IVariableNode, IEquatable<BaseVariableNode>, IComparable<BaseVariableNode>, IValuedNode
     {
         private String _var;
 
@@ -395,6 +398,53 @@ namespace VDS.RDF
         }
 
 #endif
+
+        #region IValuedNode Members
+
+        public string AsString()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public long AsInteger()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public decimal AsDecimal()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public float AsFloat()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public double AsDouble()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public bool AsBoolean()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get
+            {
+                return SparqlNumericType.NaN;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>

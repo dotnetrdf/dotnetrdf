@@ -232,7 +232,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            subjNode = context.Handler.CreateUriNode(new Uri(subjValue));
+                            subjNode = context.Handler.CreateUriNode(UriFactory.Create(subjValue));
                         }
 
                         this.ParsePredicateObjectList(context, subjNode);
@@ -270,7 +270,7 @@ namespace VDS.RDF.Parsing
                         if (context.Input.TokenType == JsonToken.PropertyName)
                         {
                             String predValue = context.Input.Value.ToString();
-                            INode predNode = context.Handler.CreateUriNode(new Uri(predValue));
+                            INode predNode = context.Handler.CreateUriNode(UriFactory.Create(predValue));
 
                             this.ParseObjectList(context, subj, predNode);
                         }
@@ -414,7 +414,7 @@ namespace VDS.RDF.Parsing
                     INode obj;
                     if (nodeType.Equals("uri"))
                     {
-                        obj = context.Handler.CreateUriNode(new Uri(nodeValue));
+                        obj = context.Handler.CreateUriNode(UriFactory.Create(nodeValue));
                     }
                     else if (nodeType.Equals("bnode"))
                     {
@@ -428,7 +428,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (nodeDatatype != null)
                         {
-                            obj = context.Handler.CreateLiteralNode(nodeValue, new Uri(nodeDatatype));
+                            obj = context.Handler.CreateLiteralNode(nodeValue, UriFactory.Create(nodeDatatype));
                         }
                         else
                         {

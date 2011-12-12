@@ -102,19 +102,19 @@ namespace VDS.RDF.Writing
             Object results;
 
             //Add the Namespaces we want to use later on
-            context.QNameMapper.AddNamespace("owl", new Uri(NamespaceMapper.OWL));
-            context.QNameMapper.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-            context.QNameMapper.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-            context.QNameMapper.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
-            context.QNameMapper.AddNamespace("dct", new Uri("http://purl.org/dc/terms/"));
-            context.QNameMapper.AddNamespace("vann", new Uri("http://purl.org/vocab/vann/"));
-            context.QNameMapper.AddNamespace("vs", new Uri("http://www.w3.org/2003/06/sw-vocab-status/ns#"));
+            context.QNameMapper.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            context.QNameMapper.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+            context.QNameMapper.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
+            context.QNameMapper.AddNamespace("dc", UriFactory.Create("http://purl.org/dc/elements/1.1/"));
+            context.QNameMapper.AddNamespace("dct", UriFactory.Create("http://purl.org/dc/terms/"));
+            context.QNameMapper.AddNamespace("vann", UriFactory.Create("http://purl.org/vocab/vann/"));
+            context.QNameMapper.AddNamespace("vs", UriFactory.Create("http://www.w3.org/2003/06/sw-vocab-status/ns#"));
 
             //Find the Node that represents the Schema Ontology
             //Assumes there is exactly one thing given rdf:type owl:Ontology
-            IUriNode ontology = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "Ontology"));
-            IUriNode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            IUriNode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            IUriNode ontology = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "Ontology"));
+            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            IUriNode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode ontoNode = context.Graph.GetTriplesWithPredicateObject(rdfType, ontology).Select(t => t.Subject).FirstOrDefault();
             INode ontoLabel = (ontoNode != null) ? context.Graph.GetTriplesWithSubjectPredicate(ontoNode, rdfsLabel).Select(t => t.Object).FirstOrDefault() : null;
 
@@ -458,14 +458,14 @@ namespace VDS.RDF.Writing
 #endif
 
             //Now create the URI Nodes we need for the next stage of Output
-            IUriNode rdfsDomain = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain"));
-            IUriNode rdfsRange = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "range"));
-            IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
-            IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
-            IUriNode owlDisjointClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "disjointWith"));
-            IUriNode owlEquivalentClass = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentClass"));
-            IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "equivalentProperty"));
-            IUriNode owlInverseProperty = context.Graph.CreateUriNode(new Uri(NamespaceMapper.OWL + "inverseOf"));
+            IUriNode rdfsDomain = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+            IUriNode rdfsRange = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
+            IUriNode rdfsSubClassOf = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
+            IUriNode rdfsSubPropertyOf = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
+            IUriNode owlDisjointClass = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "disjointWith"));
+            IUriNode owlEquivalentClass = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "equivalentClass"));
+            IUriNode owlEquivalentProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "equivalentProperty"));
+            IUriNode owlInverseProperty = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.OWL + "inverseOf"));
 
             //Alter our previous getClasses query to get additional details
             getClasses.CommandText = "SELECT ?class (SAMPLE(?label) AS ?classLabel) (SAMPLE(?description) AS ?classDescription) WHERE { { ?class a rdfs:Class } UNION { ?class a owl:Class } FILTER(ISURI(?class)) OPTIONAL { ?class rdfs:label ?label } OPTIONAL { ?class rdfs:comment ?description } } GROUP BY ?class ORDER BY ?class";

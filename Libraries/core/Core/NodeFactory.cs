@@ -256,7 +256,7 @@ namespace VDS.RDF
         private IBlankNode _bnode = new BlankNode(null, "mock");
         private IGraphLiteralNode _glit = new GraphLiteralNode(null);
         private ILiteralNode _lit = new LiteralNode(null, "mock");
-        private IUriNode _uri = new UriNode(null, new Uri("dotnetrdf:mock"));
+        private IUriNode _uri = new UriNode(null, UriFactory.Create("dotnetrdf:mock"));
         private IVariableNode _var = new VariableNode(null, "mock");
 
         #region INodeFactory Members

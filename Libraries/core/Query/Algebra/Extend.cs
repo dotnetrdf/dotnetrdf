@@ -134,7 +134,7 @@ namespace VDS.RDF.Query.Algebra
                 Set s = new Set();
                 try
                 {
-                    INode temp = this._expr.Value(context, 0);
+                    INode temp = this._expr.Evaluate(context, 0);
                     s.Add(this._var, temp);
                 }
                 catch
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Algebra
                     try
                     {
                         //Make a new assignment
-                        INode temp = this._expr.Value(context, id);
+                        INode temp = this._expr.Evaluate(context, id);
                         s.Add(this._var, temp);
                     }
                     catch

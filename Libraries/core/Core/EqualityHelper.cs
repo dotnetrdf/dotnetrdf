@@ -680,10 +680,10 @@ namespace VDS.RDF
                                 Uri aUri, bUri;
                                 try
                                 {
-                                    aUri = new Uri(a.Value);
+                                    aUri = UriFactory.Create(a.Value);
                                     try
                                     {
-                                        bUri = new Uri(b.Value);
+                                        bUri = UriFactory.Create(b.Value);
                                         return ComparisonHelper.CompareUris(aUri, bUri);
                                     }
                                     catch
@@ -695,7 +695,7 @@ namespace VDS.RDF
                                 {
                                     try
                                     {
-                                        bUri = new Uri(b.Value);
+                                        bUri = UriFactory.Create(b.Value);
                                         return 1;
                                     }
                                     catch

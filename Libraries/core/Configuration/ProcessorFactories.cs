@@ -156,7 +156,7 @@ namespace VDS.RDF.Configuration
                     String kb = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyStore));
                     if (kb == null) return false;
 
-                    processor = new PelletQueryProcessor(new Uri(server), kb);
+                    processor = new PelletQueryProcessor(UriFactory.Create(server), kb);
                     break;
 #endif
             }

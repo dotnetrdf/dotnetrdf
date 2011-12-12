@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF.Query.Expressions
 {
@@ -107,20 +108,17 @@ namespace VDS.RDF.Query.Expressions
     public interface ISparqlExpression
     {
         /// <summary>
-        /// Gets the Value of the SPARQL Expression as evaluated for a given Binding
+        /// Evalutes a SPARQL Expression for the given binding in a given context
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingID">Binding ID</param>
         /// <returns></returns>
-        INode Value(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Effective Boolean Value of the SPARQL Expression as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        bool EffectiveBooleanValue(SparqlEvaluationContext context, int bindingID);
+        /// <remarks>
+        /// <para>
+        /// Newly introduced in Version 0.6.0 to replace the variety of functions that were used previously for numeric vs non-numeric versions to allow our code to be simplified and improve performance
+        /// </para>
+        /// </remarks>
+        IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
         /// Gets an enumeration of all the Variables used in an expression
@@ -161,57 +159,4 @@ namespace VDS.RDF.Query.Expressions
         /// <returns></returns>
         ISparqlExpression Transform(IExpressionTransformer transformer);
     }
-
-    /// <summary>
-    /// Interface for SPARQL Expression Terms that are expected to provide a Numeric value
-    /// </summary>
-    public interface ISparqlNumericExpression : ISparqlExpression
-    {
-        /// <summary>
-        /// Gets the Numeric Type of a SPARQL Expression as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        SparqlNumericType NumericType(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Numeric Value of a Sparql Expression as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        object NumericValue(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Numeric Value of a Sparql Expression as an Integer as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        long IntegerValue(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Numeric Value of a Sparql Expression as a Decimal as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        decimal DecimalValue(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Numeric Value of a Sparql Expression as a Float as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        float FloatValue(SparqlEvaluationContext context, int bindingID);
-
-        /// <summary>
-        /// Gets the Numeric Value of a Sparql Expression as a Double as evaluated for a given Binding
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        double DoubleValue(SparqlEvaluationContext context, int bindingID);
-    }
-
 }

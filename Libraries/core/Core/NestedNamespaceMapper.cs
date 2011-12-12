@@ -65,9 +65,9 @@ namespace VDS.RDF
             if (!empty)
             {
                 //Add Standard Namespaces
-                this.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
-                this.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
-                this.AddNamespace("xsd", new Uri(NamespaceMapper.XMLSCHEMA));
+                this.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
+                this.AddNamespace("rdfs", UriFactory.Create(NamespaceMapper.RDFS));
+                this.AddNamespace("xsd", UriFactory.Create(NamespaceMapper.XMLSCHEMA));
             }
         }
 

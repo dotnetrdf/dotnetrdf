@@ -354,7 +354,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
         {
-            return new UriNode(this, new Uri(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
+            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -903,7 +903,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Uri ResolveQName(String qname)
         {
-            return new Uri(Tools.ResolveQName(qname, this._nsmapper, this._baseuri));
+            return UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, this._baseuri));
         }
 
         /// <summary>
@@ -1269,7 +1269,7 @@ namespace VDS.RDF
                             String prefix = reader.Value;
                             if (reader.MoveToAttribute("uri"))
                             {
-                                Uri u = new Uri(reader.Value);
+                                Uri u = UriFactory.Create(reader.Value);
                                 this.NamespaceMap.AddNamespace(prefix, u);
                                 reader.Read();
                             }

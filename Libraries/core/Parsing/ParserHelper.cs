@@ -26,7 +26,7 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     try
                     {
-                        return context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
+                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
-                        return context.Handler.CreateUriNode(new Uri(uri));
+                        return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing
                 case Token.QNAME:
                     try
                     {
-                        return context.Handler.CreateUriNode(new Uri(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
+                        return context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(t.Value, context.Namespaces, context.BaseUri)));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, context.BaseUri.ToSafeString());
-                        return context.Handler.CreateUriNode(new Uri(uri));
+                        return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -121,7 +121,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
-                        return handler.CreateUriNode(new Uri(uri));
+                        return handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -145,7 +145,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
-                        return context.Handler.CreateUriNode(new Uri(uri));
+                        return context.Handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -181,7 +181,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, String.Empty);
-                        return handler.CreateUriNode(new Uri(uri));
+                        return handler.CreateUriNode(UriFactory.Create(uri));
                     }
                     catch (UriFormatException formatEx)
                     {
@@ -225,7 +225,7 @@ namespace VDS.RDF.Parsing
                     try
                     {
                         String uri = Tools.ResolveUri(t.Value, g.BaseUri.ToSafeString());
-                        return g.CreateUriNode(new Uri(uri));
+                        return g.CreateUriNode(UriFactory.Create(uri));
                      }
                     catch (UriFormatException formatEx)
                     {

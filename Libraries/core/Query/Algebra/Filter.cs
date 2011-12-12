@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -47,7 +48,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Filter
     /// </summary>
-    public class Filter : IFilter
+    public class Filter 
+        : IFilter
     {
         private ISparqlAlgebra _pattern;
         private ISparqlFilter _filter;
@@ -89,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     try
                     {
-                        if (!this._filter.Expression.EffectiveBooleanValue(context, 0))
+                        if (!this._filter.Expression.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.OutputMultiset = new NullMultiset();
                             return context.OutputMultiset;

@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Algebra
                         {
                             case Token.URI:
                             case Token.QNAME:
-                                Uri activeGraphUri = new Uri(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
+                                Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
                                 if (context.Data.HasGraph(activeGraphUri))
                                 {
                                     //If the Graph is explicitly specified and there are FROM NAMED present then the Graph 
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Algebra
                         //Be sure to translate String.Empty back to the null URI to select the default graph
                         //correctly
                         context.InputMultiset = initialInput;
-                        Uri currGraphUri = (uri.Equals(String.Empty)) ? null : new Uri(uri);
+                        Uri currGraphUri = (uri.Equals(String.Empty)) ? null : UriFactory.Create(uri);
 
                         //This bit of logic takes care of the fact that calling SetActiveGraph((Uri)null) resets the
                         //Active Graph to be the default graph which if the default graph is null is usually the Union of

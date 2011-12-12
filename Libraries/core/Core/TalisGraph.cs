@@ -64,7 +64,7 @@ namespace VDS.RDF
         /// <param name="resourceUri">Uri of resource to retrieve a Description of</param>
         /// <param name="connector">Connection to a Talis Store</param>
         public TalisGraph(String resourceUri, TalisPlatformConnector connector)
-            : this(new Uri(resourceUri), connector) { }
+            : this(UriFactory.Create(resourceUri), connector) { }
 
         /// <summary>
         /// Creates a new instance of a Talis Graph which contains the description of the given Uri from the given underlying Talis Store

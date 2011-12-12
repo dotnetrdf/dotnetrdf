@@ -194,7 +194,7 @@ namespace VDS.RDF.Writing
             try
             {
                 g.NamespaceMap.Import(this._defaultNamespaces);
-                g.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
+                g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
                 RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
                 this.GenerateOutput(context);
                 output.Close();
@@ -227,7 +227,7 @@ namespace VDS.RDF.Writing
             List<String> tempNamespaces = new List<String>();
 
             //Always force RDF Namespace to be correctly defined
-            context.Graph.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
+            context.Graph.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             //Create an XML Document
             XmlDocument doc = new XmlDocument();
@@ -771,7 +771,7 @@ namespace VDS.RDF.Writing
             }
             String prefix = "ns" + nextNamespaceID;
             nextNamespaceID++;
-            context.Graph.NamespaceMap.AddNamespace(prefix, new Uri(nsUri));
+            context.Graph.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
             tempNamespaceIDs.Add(prefix);
 
             //Add to XML Document Element
@@ -823,7 +823,7 @@ namespace VDS.RDF.Writing
         private Dictionary<INode, String> FindTypeReferences(RdfXmlWriterContext context, ref int nextNamespaceID, List<String> tempNamespaceIDs, XmlDocument doc)
         {
             //LINQ query to find all Triples which define the rdf:type of a Uri/BNode as a Uri
-            IUriNode rdfType = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            IUriNode rdfType = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
             IEnumerable<Triple> ts = from t in context.Graph.Triples
                                      where (t.Subject.NodeType == NodeType.Blank || t.Subject.NodeType == NodeType.Uri)
                                             && t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri

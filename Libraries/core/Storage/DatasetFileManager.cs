@@ -161,7 +161,7 @@ namespace VDS.RDF.Storage
                 }
                 else
                 {
-                    foreach (Uri u in WriterHelper.StoreDefaultGraphURIs.Select(s => new Uri(s)))
+                    foreach (Uri u in WriterHelper.StoreDefaultGraphURIs.Select(s => UriFactory.Create(s)))
                     {
                         if (this._store.HasGraph(u))
                         {
@@ -192,7 +192,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(g, new Uri(graphUri));
+                this.LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -209,7 +209,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(handler, new Uri(graphUri));
+                this.LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -364,8 +364,8 @@ namespace VDS.RDF.Storage
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode file = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyFromFile);

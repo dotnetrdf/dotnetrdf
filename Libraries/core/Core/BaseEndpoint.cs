@@ -356,7 +356,7 @@ namespace VDS.RDF
                 if (this._proxy != null)
                 {
                     INode proxy = context.NextSubject;
-                    INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                    INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                     INode proxyType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassProxy);
                     INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
 

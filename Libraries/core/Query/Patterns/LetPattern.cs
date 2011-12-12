@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.Patterns
                 Set s = new Set();
                 try
                 {
-                    INode temp = this._expr.Value(context, 0);
+                    INode temp = this._expr.Evaluate(context, 0);
                     s.Add(this._var, temp);
                     context.OutputMultiset.Add(s);
                 }
@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.Patterns
                         {
                             //A value already exists so see if the two values match
                             INode current = s[this._var];
-                            INode temp = this._expr.Value(context, id);
+                            INode temp = this._expr.Evaluate(context, id);
                             if (current != temp)
                             {
                                 //Where the values aren't equal the solution is eliminated
@@ -118,7 +118,7 @@ namespace VDS.RDF.Query.Patterns
                         try
                         {
                             //Make a new assignment
-                            INode temp = this._expr.Value(context, id);
+                            INode temp = this._expr.Evaluate(context, id);
                             s.Add(this._var, temp);
                         }
                         catch

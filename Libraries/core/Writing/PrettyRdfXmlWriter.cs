@@ -246,7 +246,7 @@ namespace VDS.RDF.Writing
         {
             //Always force RDF Namespace to be correctly defined
             g.NamespaceMap.Import(this._defaultNamespaces);
-            g.NamespaceMap.AddNamespace("rdf", new Uri(NamespaceMapper.RDF));
+            g.NamespaceMap.AddNamespace("rdf", UriFactory.Create(NamespaceMapper.RDF));
 
             //Create our Writer Context and start the XML Document
             RdfXmlWriterContext context = new RdfXmlWriterContext(g, output);
@@ -385,7 +385,7 @@ namespace VDS.RDF.Writing
             //First off determine what the XML Element should be
             //If there is a rdf:type triple then create a typed node
             //Otherwise create a rdf:Description node
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             Triple typeTriple = ts.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
             INode subj;
             if (typeTriple != null)
@@ -691,7 +691,7 @@ namespace VDS.RDF.Writing
                 }
 
                 //First see if there is a typed triple available
-                INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                 Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
                 if (typeTriple != null)
                 {
@@ -827,7 +827,7 @@ namespace VDS.RDF.Writing
             }
             String prefix = "ns" + context.NextNamespaceID;
             context.NextNamespaceID++;
-            context.NamespaceMap.AddNamespace(prefix, new Uri(nsUri));
+            context.NamespaceMap.AddNamespace(prefix, UriFactory.Create(nsUri));
 
             tempPrefix = prefix;
             tempUri = nsUri;

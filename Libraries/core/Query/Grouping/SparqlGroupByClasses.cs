@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 
 namespace VDS.RDF.Query.Grouping
@@ -290,7 +291,7 @@ namespace VDS.RDF.Query.Grouping
         {
             get 
             {
-                return new VariableExpressionTerm(this._name); 
+                return new VariableTerm(this._name); 
             }
         }
 
@@ -355,7 +356,7 @@ namespace VDS.RDF.Query.Grouping
             {
                 try
                 {
-                    INode value = this._expr.Value(context, id);
+                    INode value = this._expr.Evaluate(context, id);
 
                     if (value != null)
                     {
@@ -425,7 +426,7 @@ namespace VDS.RDF.Query.Grouping
                 {
                     try
                     {
-                        INode value = this._expr.Value(context, id);
+                        INode value = this._expr.Evaluate(context, id);
 
                         if (value != null)
                         {
@@ -508,7 +509,7 @@ namespace VDS.RDF.Query.Grouping
             {
                 List<String> vars = new List<string>();
                 if (this.AssignVariable != null) vars.Add(this.AssignVariable);
-                if (this._expr is VariableExpressionTerm)
+                if (this._expr is VariableTerm)
                 {
                     vars.AddRange(this._expr.Variables);
                 }

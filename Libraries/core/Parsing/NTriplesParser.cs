@@ -296,7 +296,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.Handler.CreateBlankNode(subjToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(new Uri(subjToken.Value));
+                    return context.Handler.CreateUriNode(UriFactory.Create(subjToken.Value));
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
                 case Token.LITERALWITHLANG:
@@ -322,7 +322,7 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     throw Error("Predicate cannot be a Blank Node in NTriples", predToken);
                 case Token.URI:
-                    return context.Handler.CreateUriNode(new Uri(predToken.Value));
+                    return context.Handler.CreateUriNode(UriFactory.Create(predToken.Value));
                     //return this.ConvertToNode(g, predToken);
                 case Token.LITERAL:
                 case Token.LITERALWITHDT:
@@ -351,11 +351,11 @@ namespace VDS.RDF.Parsing
                 case Token.BLANKNODEWITHID:
                     return context.Handler.CreateBlankNode(objToken.Value.Substring(2));
                 case Token.URI:
-                    return context.Handler.CreateUriNode(new Uri(objToken.Value));
+                    return context.Handler.CreateUriNode(UriFactory.Create(objToken.Value));
                 case Token.LITERALWITHDT:
                     dt = ((LiteralWithDataTypeToken)objToken).DataType;
                     dt = dt.Substring(1,dt.Length-2);
-                    return context.Handler.CreateLiteralNode(objToken.Value, new Uri(dt));
+                    return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(dt));
                 case Token.LITERALWITHLANG:
                     return context.Handler.CreateLiteralNode(objToken.Value, ((LiteralWithLanguageSpecifierToken)objToken).Language);
                 case Token.LITERAL:
@@ -369,7 +369,7 @@ namespace VDS.RDF.Parsing
                     else if (next.TokenType == Token.URI)
                     {
                         context.Tokens.Dequeue();
-                        return context.Handler.CreateLiteralNode(objToken.Value, new Uri(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri)));
+                        return context.Handler.CreateLiteralNode(objToken.Value, UriFactory.Create(Tools.ResolveUriOrQName(next, context.Namespaces, context.BaseUri)));
                     }
                     else
                     {

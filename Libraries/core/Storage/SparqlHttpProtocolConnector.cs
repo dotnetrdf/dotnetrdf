@@ -115,7 +115,7 @@ namespace VDS.RDF.Storage
             Uri origUri = g.BaseUri;
             if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
-                origUri = new Uri(graphUri);
+                origUri = UriFactory.Create(graphUri);
             }
             this.LoadGraph(new GraphHandler(g), graphUri);
             g.BaseUri = origUri;
@@ -270,7 +270,7 @@ namespace VDS.RDF.Storage
             }
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(saveUri));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
                 RdfXmlWriter writer = new RdfXmlWriter();
@@ -359,7 +359,7 @@ namespace VDS.RDF.Storage
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(updateUri));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
                 RdfXmlWriter writer = new RdfXmlWriter();
@@ -436,7 +436,7 @@ namespace VDS.RDF.Storage
 
             try
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(new Uri(deleteUri));
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
 
 #if DEBUG
@@ -553,8 +553,8 @@ namespace VDS.RDF.Storage
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);

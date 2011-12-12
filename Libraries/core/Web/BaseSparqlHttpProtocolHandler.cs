@@ -94,7 +94,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath));
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
@@ -114,7 +114,7 @@ namespace VDS.RDF.Web
                         this._config.Processor.ProcessPut(context);
                         break;
                     case "POST":
-                        Uri serviceUri = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath);
+                        Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.ToString()))
                         {
                             //If there is a ?graph parameter or ?default parameter then this is a normal Post

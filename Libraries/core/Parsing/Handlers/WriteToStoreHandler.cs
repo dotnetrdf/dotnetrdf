@@ -129,7 +129,7 @@ namespace VDS.RDF.Parsing.Handlers
             }
             //Then process each batch of non-ground triples
             List<Uri> uris = (from u in this._bnodeUris
-                              select (u.Equals(String.Empty) ? null : new Uri(u))).ToList();
+                              select (u.Equals(String.Empty) ? null : UriFactory.Create(u))).ToList();
             foreach (Uri u in uris)
             {
                 List<Triple> batch = new List<Triple>();

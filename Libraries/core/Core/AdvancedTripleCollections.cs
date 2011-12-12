@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.Common;
 
 namespace VDS.RDF
 {

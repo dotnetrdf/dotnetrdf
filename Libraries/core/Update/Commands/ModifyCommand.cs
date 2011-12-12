@@ -357,10 +357,10 @@ namespace VDS.RDF.Update.Commands
                             }
 
                             //If the Dataset doesn't contain the Graph then no need to do the Deletions
-                            if (!context.Data.HasGraph(new Uri(graphUri))) continue;
+                            if (!context.Data.HasGraph(UriFactory.Create(graphUri))) continue;
 
                             //Do the actual Deletions
-                            IGraph h = context.Data.GetModifiableGraph(new Uri(graphUri));
+                            IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
                             ConstructContext constructContext = new ConstructContext(h, s, true);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
@@ -455,7 +455,7 @@ namespace VDS.RDF.Update.Commands
 
                             //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
                             IGraph h;
-                            Uri destUri = new Uri(graphUri);
+                            Uri destUri = UriFactory.Create(graphUri);
                             if (context.Data.HasGraph(destUri))
                             {
                                 h = context.Data.GetModifiableGraph(destUri);

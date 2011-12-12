@@ -37,7 +37,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -168,7 +172,7 @@ namespace VDS.RDF.Query.Algebra
     public abstract class SingleValueRestrictionFilter 
         : VariableRestrictionFilter
     {
-        private NodeExpressionTerm _term;
+        private ConstantTerm _term;
 
         /// <summary>
         /// Creates a new Single Value Restriction Filter
@@ -177,7 +181,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="var">Variable to restrict on</param>
         /// <param name="term">Value to restrict to</param>
         /// <param name="filter">Filter to use</param>
-        public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term, ISparqlFilter filter)
+        public SingleValueRestrictionFilter(ISparqlAlgebra pattern, String var, ConstantTerm term, ISparqlFilter filter)
             : base(pattern, var, filter)
         {
             this._term = term;
@@ -186,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Gets the Value Restriction which this filter applies
         /// </summary>
-        public NodeExpressionTerm RestrictionValue
+        public ConstantTerm RestrictionValue
         {
             get
             {
@@ -201,7 +205,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public sealed override BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            INode term = this._term.Value(null, 0);
+            INode term = this._term.Evaluate(null, 0);
 
             //First take appropriate pre-filtering actions
             if (context.InputMultiset is IdentityMultiset)
@@ -301,8 +305,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Algebra the Filter applies over</param>
         /// <param name="var">Variable to restrict on</param>
         /// <param name="term">Expression Term</param>
-        public IdentityFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term)
-            : base(pattern, var, term, new UnaryExpressionFilter(new EqualsExpression(new VariableExpressionTerm(var), term))) { }
+        public IdentityFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
+            : base(pattern, var, term, new UnaryExpressionFilter(new EqualsExpression(new VariableTerm(var), term))) { }
 
         /// <summary>
         /// Transforms the Inner Algebra using the given Optimiser
@@ -313,7 +317,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new IdentityFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (NodeExpressionTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
+                return new IdentityFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
             }
             else
             {
@@ -334,8 +338,8 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="pattern">Algebra the Filter applies over</param>
         /// <param name="var">Variable to restrict on</param>
         /// <param name="term">Expression Term</param>
-        public SameTermFilter(ISparqlAlgebra pattern, String var, NodeExpressionTerm term)
-            : base(pattern, var, term, new UnaryExpressionFilter(new SameTermFunction(new VariableExpressionTerm(var), term))) { }
+        public SameTermFilter(ISparqlAlgebra pattern, String var, ConstantTerm term)
+            : base(pattern, var, term, new UnaryExpressionFilter(new SameTermFunction(new VariableTerm(var), term))) { }
 
         /// <summary>
         /// Transforms the Inner Algebra using the given Optimiser
@@ -346,7 +350,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (optimiser is IExpressionTransformer)
             {
-                return new SameTermFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (NodeExpressionTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
+                return new SameTermFilter(optimiser.Optimise(this.InnerAlgebra), this.RestrictionVariable, (ConstantTerm)((IExpressionTransformer)optimiser).Transform(this.RestrictionValue));
             }
             else
             {

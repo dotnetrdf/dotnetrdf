@@ -252,7 +252,7 @@ namespace VDS.RDF.Storage
         /// <param name="servicePath">Service to get the resource from</param>
         private void DescribeInternal(IGraph g, String resourceUri, String servicePath)
         {
-            if (g.IsEmpty) g.BaseUri = new Uri(resourceUri);
+            if (g.IsEmpty) g.BaseUri = UriFactory.Create(resourceUri);
             this.DescribeInternal(new GraphHandler(g), resourceUri, servicePath);
         }
 
@@ -541,8 +541,8 @@ namespace VDS.RDF.Storage
 
             //Now we need to build a ChangeSet Graph
             Graph g = new Graph();
-            g.BaseUri = new Uri("http://www.dotnetrdf.org/");
-            g.NamespaceMap.AddNamespace("cs", new Uri(TalisChangeSetNamespace));
+            g.BaseUri = UriFactory.Create("http://www.dotnetrdf.org/");
+            g.NamespaceMap.AddNamespace("cs", UriFactory.Create(TalisChangeSetNamespace));
 
             //Make all the Nodes we need
             IUriNode rdfType = g.CreateUriNode("rdf:type");
@@ -567,7 +567,7 @@ namespace VDS.RDF.Storage
             foreach (INode subj in subjects)
             {
                 //Create a ChangeSet for this Subject
-                IUriNode report = g.CreateUriNode(new Uri(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.ToString())));
+                IUriNode report = g.CreateUriNode(UriFactory.Create(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.ToString())));
                 g.Assert(new Triple(report, rdfType, changeSet));
                 g.Assert(new Triple(report, subjOfChange, Tools.CopyNode(subj, g)));
                 g.Assert(new Triple(report, createdDate, now));
@@ -1096,8 +1096,8 @@ namespace VDS.RDF.Storage
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode store = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyStore);

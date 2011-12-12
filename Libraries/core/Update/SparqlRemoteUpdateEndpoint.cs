@@ -67,7 +67,7 @@ namespace VDS.RDF.Update
         /// </summary>
         /// <param name="endpointUri">Endpoint URI</param>
         public SparqlRemoteUpdateEndpoint(String endpointUri)
-            : this(new Uri(endpointUri)) { }
+            : this(UriFactory.Create(endpointUri)) { }
 
 #if !SILVERLIGHT
 

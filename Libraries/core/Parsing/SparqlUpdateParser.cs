@@ -360,7 +360,7 @@ namespace VDS.RDF.Parsing
             IToken next = context.Tokens.Dequeue();
             if (next.TokenType == Token.URI)
             {
-                context.BaseUri = new Uri(next.Value);
+                context.BaseUri = UriFactory.Create(next.Value);
                 context.CommandSet.BaseUri = context.BaseUri;
                 context.QueryParser.DefaultBaseUri = context.BaseUri;
                 context.ExpressionParser.BaseUri = context.BaseUri;
@@ -382,7 +382,7 @@ namespace VDS.RDF.Parsing
                 if (uri.TokenType == Token.URI)
                 {
                     String baseUri = (context.BaseUri != null) ? context.BaseUri.ToString() : String.Empty;
-                    Uri u = new Uri(Tools.ResolveUri(uri.Value, baseUri));
+                    Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                     if (prefix.Value.Length == 1)
                     {
                         //Defining prefix for Default Namespace
@@ -1050,9 +1050,9 @@ namespace VDS.RDF.Parsing
             switch (next.TokenType)
             {
                 case Token.URI:
-                    return new Uri(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
+                    return UriFactory.Create(Tools.ResolveUri(next.Value, context.BaseUri.ToSafeString()));
                 case Token.QNAME:
-                    return new Uri(Tools.ResolveQName(next.Value, context.NamespaceMap, context.BaseUri));
+                    return UriFactory.Create(Tools.ResolveQName(next.Value, context.NamespaceMap, context.BaseUri));
                 default:
                     throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a URI/QName Token " + expected, next);
             }

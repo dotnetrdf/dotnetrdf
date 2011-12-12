@@ -165,7 +165,7 @@ namespace VDS.RDF.Update.Commands
                         case Token.QNAME:
                             throw new NotSupportedException("Graph Specifiers as QNames for INSERT DATA Commands are not supported - please specify an absolute URI instead");
                         case Token.URI:
-                            graphUri = new Uri(pattern.GraphSpecifier.Value);
+                            graphUri = UriFactory.Create(pattern.GraphSpecifier.Value);
                             break;
                         default:
                             throw new SparqlUpdateException("Cannot evaluate an INSERT DATA Command as the Graph Specifier is not a QName/URI");

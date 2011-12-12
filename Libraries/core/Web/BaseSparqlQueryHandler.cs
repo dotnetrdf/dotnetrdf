@@ -85,7 +85,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Web
                         {
                             //If not a HTML Writer selected OR not showing Query Form then show the Service Description Graph
                             //unless an error occurs creating it
-                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri));
+                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                             context.Response.ContentType = definition.CanonicalMimeType;
                             context.Response.ContentEncoding = definition.Encoding;
                             writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
@@ -225,7 +225,7 @@ namespace VDS.RDF.Web
                     {
                         if (!userDefaultGraph.Equals(String.Empty))
                         {
-                            query.AddDefaultGraph(new Uri(userDefaultGraph));
+                            query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
                         }
                     }
                 }
@@ -234,7 +234,7 @@ namespace VDS.RDF.Web
                     //Only applies if the Query doesn't specify any Default Graph
                     if (!query.DefaultGraphs.Any())
                     {
-                        query.AddDefaultGraph(new Uri(this._config.DefaultGraphURI));
+                        query.AddDefaultGraph(UriFactory.Create(this._config.DefaultGraphURI));
                     }
                 }
 
@@ -245,7 +245,7 @@ namespace VDS.RDF.Web
                     {
                         if (!userNamedGraph.Equals(String.Empty))
                         {
-                            query.AddNamedGraph(new Uri(userNamedGraph));
+                            query.AddNamedGraph(UriFactory.Create(userNamedGraph));
                         }
                     }
                 }

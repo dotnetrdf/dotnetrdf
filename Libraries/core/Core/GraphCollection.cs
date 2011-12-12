@@ -72,7 +72,7 @@ namespace VDS.RDF
             int id;
             if (graphUri == null)
             {
-                id = new Uri(DefaultGraphUri).GetEnhancedHashCode();
+                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
             }
             else
             {
@@ -114,7 +114,7 @@ namespace VDS.RDF
             int id;
             if (g.BaseUri == null)
             {
-                id = new Uri(DefaultGraphUri).GetEnhancedHashCode();
+                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
             }
             else
             {
@@ -193,7 +193,7 @@ namespace VDS.RDF
             int id;
             if (graphUri == null)
             {
-                id = new Uri(DefaultGraphUri).GetEnhancedHashCode();
+                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
             }
             else
             {
@@ -277,7 +277,7 @@ namespace VDS.RDF
                 int id;
                 if (graphUri == null)
                 {
-                    id = new Uri(DefaultGraphUri).GetEnhancedHashCode();
+                    id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
                 }
                 else
                 {

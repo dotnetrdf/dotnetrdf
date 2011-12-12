@@ -95,7 +95,7 @@ namespace VDS.RDF.Web
             //OPTIONS requests always result in the Service Description document
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath + "description"), ServiceDescriptionType.All);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath + "description"), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
             }
             else
@@ -134,7 +134,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
@@ -248,7 +248,7 @@ namespace VDS.RDF.Web
                     {
                         if (!userDefaultGraph.Equals(String.Empty))
                         {
-                            query.AddDefaultGraph(new Uri(userDefaultGraph));
+                            query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
                         }
                     }
                 }
@@ -257,7 +257,7 @@ namespace VDS.RDF.Web
                     //Only applies if the Query doesn't specify any Default Graph
                     if (!query.DefaultGraphs.Any())
                     {
-                        query.AddDefaultGraph(new Uri(this._config.DefaultGraphURI));
+                        query.AddDefaultGraph(UriFactory.Create(this._config.DefaultGraphURI));
                     }
                 }
 
@@ -268,7 +268,7 @@ namespace VDS.RDF.Web
                     {
                         if (!userNamedGraph.Equals(String.Empty))
                         {
-                            query.AddNamedGraph(new Uri(userNamedGraph));
+                            query.AddNamedGraph(UriFactory.Create(userNamedGraph));
                         }
                     }
                 }
@@ -337,7 +337,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
@@ -436,7 +436,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath), ServiceDescriptionType.Protocol);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath), ServiceDescriptionType.Protocol);
                 HandlerHelper.SendToClient(context, svcDescrip, this._config);
                 return;
             }
@@ -456,7 +456,7 @@ namespace VDS.RDF.Web
                         this._config.ProtocolProcessor.ProcessPut(context);
                         break;
                     case "POST":
-                        Uri serviceUri = new Uri(new Uri(context.Request.Url.AbsoluteUri), this._basePath);
+                        Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
                         if (context.Request.Url.AbsoluteUri.Equals(serviceUri.ToString()))
                         {
                             //If there is a ?graph parameter or ?default parameter then this is a normal Post
@@ -548,7 +548,7 @@ namespace VDS.RDF.Web
             try
             {
                 //Get the Service Description Graph
-                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
+                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(context, serviceDescrip, this._config);
             }
             catch

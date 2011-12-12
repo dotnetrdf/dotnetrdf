@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.Algebra
                 //Select which service to use
                 if (this._endpointSpecifier.TokenType == Token.URI)
                 {
-                    endpointUri = new Uri(Tools.ResolveUri(this._endpointSpecifier.Value, baseUri));
+                    endpointUri = UriFactory.Create(Tools.ResolveUri(this._endpointSpecifier.Value, baseUri));
                     endpoint = new SparqlRemoteEndpoint(endpointUri);
                 }
                 else if (this._endpointSpecifier.TokenType == Token.VARIABLE)

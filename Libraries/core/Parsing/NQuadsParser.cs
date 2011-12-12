@@ -289,7 +289,7 @@ namespace VDS.RDF.Parsing
                         context = new BlankNode(null, next.Value.Substring(2));
                         break;
                     case Token.URI:
-                        context = new UriNode(null, new Uri(next.Value));
+                        context = new UriNode(null, UriFactory.Create(next.Value));
                         break;
                     case Token.LITERAL:
                         //Check for Datatype/Language
@@ -302,7 +302,7 @@ namespace VDS.RDF.Parsing
                         else if (temp.TokenType == Token.DATATYPE)
                         {
                             tokens.Dequeue();
-                            context = new LiteralNode(null, next.Value, new Uri(temp.Value.Substring(1, temp.Value.Length - 2)));
+                            context = new LiteralNode(null, next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
                         }
                         else
                         {
@@ -327,11 +327,11 @@ namespace VDS.RDF.Parsing
                 }
                 else if (context.NodeType == NodeType.Blank)
                 {
-                    return new Uri("nquads:bnode:" + context.GetHashCode());
+                    return UriFactory.Create("nquads:bnode:" + context.GetHashCode());
                 }
                 else if (context.NodeType == NodeType.Literal)
                 {
-                    return new Uri("nquads:literal:" + context.GetHashCode());
+                    return UriFactory.Create("nquads:literal:" + context.GetHashCode());
                 }
                 else
                 {
@@ -375,7 +375,7 @@ namespace VDS.RDF.Parsing
                     break;
                 case Token.LITERALWITHDT:
                     String dtUri = ((LiteralWithDataTypeToken)o).DataType;
-                    obj = handler.CreateLiteralNode(o.Value, new Uri(dtUri.Substring(1, dtUri.Length - 2)));
+                    obj = handler.CreateLiteralNode(o.Value, UriFactory.Create(dtUri.Substring(1, dtUri.Length - 2)));
                     break;
                 case Token.LITERALWITHLANG:
                     obj = handler.CreateLiteralNode(o.Value, ((LiteralWithLanguageSpecifierToken)o).Language);

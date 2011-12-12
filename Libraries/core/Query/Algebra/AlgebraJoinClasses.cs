@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -47,7 +49,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a LeftJoin predicated on the existence/non-existence of joinable sets on the RHS for each item on the LHS
     /// </summary>
-    public class ExistsJoin : IExistsJoin
+    public class ExistsJoin 
+        : IExistsJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
         private bool _mustExist;
@@ -218,10 +221,11 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a LeftJoin predicated on an arbitrary filter expression
     /// </summary>
-    public class LeftJoin : ILeftJoin
+    public class LeftJoin 
+        : ILeftJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
-        private ISparqlFilter _filter = new UnaryExpressionFilter(new BooleanExpressionTerm(true));
+        private ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
 
         /// <summary>
         /// Creates a new LeftJoin where there is no Filter over the join
@@ -357,9 +361,16 @@ namespace VDS.RDF.Query.Algebra
             GraphPattern p = this._lhs.ToGraphPattern();
             GraphPattern opt = this._rhs.ToGraphPattern();
             opt.IsOptional = true;
-            if (this._filter.Expression is BooleanExpressionTerm)
+            if (this._filter.Expression is ConstantTerm)
             {
-                if (!this._filter.Expression.EffectiveBooleanValue(null, 0))
+                try
+                {
+                    if (!this._filter.Expression.Evaluate(null, 0).AsSafeBoolean())
+                    {
+                        opt.Filter = this._filter;
+                    }
+                }
+                catch
                 {
                     opt.Filter = this._filter;
                 }
@@ -427,7 +438,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Join
     /// </summary>
-    public class Join : IJoin
+    public class Join 
+        : IJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
 
@@ -622,7 +634,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Union
     /// </summary>
-    public class Union : IUnion
+    public class Union 
+        : IUnion
     {
         private ISparqlAlgebra _lhs, _rhs;
 

@@ -38,13 +38,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF.Query.Aggregates
 {
     /// <summary>
     /// Abstract Base Class for Aggregate Functions
     /// </summary>
-    public abstract class BaseAggregate : ISparqlAggregate
+    public abstract class BaseAggregate 
+        : ISparqlAggregate
     {
         /// <summary>
         /// Expression that the aggregate operates over
@@ -80,7 +82,7 @@ namespace VDS.RDF.Query.Aggregates
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
-        public INode Apply(SparqlEvaluationContext context)
+        public IValuedNode Apply(SparqlEvaluationContext context)
         {
             return this.Apply(context, context.Binder.BindingIDs);
         }
@@ -91,7 +93,7 @@ namespace VDS.RDF.Query.Aggregates
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingIDs">Enumerable of Binding IDs over which the Aggregate applies</param>
         /// <returns></returns>
-        public abstract INode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
+        public abstract IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
 
         /// <summary>
         /// Expression that the Aggregate executes over

@@ -21,7 +21,7 @@ namespace VDS.RDF.Writing.Serialization
             String baseUri = info.GetString("base");
             if (!baseUri.Equals(String.Empty))
             {
-                this._baseUri = new Uri(baseUri);
+                this._baseUri = UriFactory.Create(baseUri);
             }
         }
 
@@ -31,7 +31,7 @@ namespace VDS.RDF.Writing.Serialization
             g.Assert(this._triples);
             foreach (KeyValuePair<String, String> ns in this._namespaces)
             {
-                g.NamespaceMap.AddNamespace(ns.Key, new Uri(ns.Value));
+                g.NamespaceMap.AddNamespace(ns.Key, UriFactory.Create(ns.Value));
             }
         }
     }

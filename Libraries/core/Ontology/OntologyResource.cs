@@ -130,7 +130,7 @@ namespace VDS.RDF.Ontology
         /// <param name="requireLiteral">Whether only Literal values are acceptable</param>
         protected void IntialiseProperty(String propertyUri, bool requireLiteral)
         {
-            IUriNode prop = this._graph.CreateUriNode(new Uri(propertyUri));
+            IUriNode prop = this._graph.CreateUriNode(UriFactory.Create(propertyUri));
             foreach (Triple t in this._graph.GetTriplesWithSubjectPredicate(this._resource, prop))
             {
                 if (requireLiteral)
@@ -162,7 +162,7 @@ namespace VDS.RDF.Ontology
                 if (!this._literalProperties[propertyUri].Contains(value))
                 {
                     this._literalProperties[propertyUri].Add(value);
-                    if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                    if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
                 else
@@ -173,7 +173,7 @@ namespace VDS.RDF.Ontology
             else
             {
                 this._literalProperties.Add(propertyUri, new List<ILiteralNode>() { value });
-                if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                 return true;
             }
         }
@@ -203,7 +203,7 @@ namespace VDS.RDF.Ontology
                 if (!this._resourceProperties[propertyUri].Contains(value))
                 {
                     this._resourceProperties[propertyUri].Add(value);
-                    if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                    if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
                 else
@@ -214,7 +214,7 @@ namespace VDS.RDF.Ontology
             else
             {
                 this._resourceProperties.Add(propertyUri, new List<INode>() { value });
-                if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                if (persist) this._graph.Assert(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                 return true;
             }
         }
@@ -241,7 +241,7 @@ namespace VDS.RDF.Ontology
             if (this._literalProperties.ContainsKey(propertyUri))
             {
                 this._literalProperties[propertyUri].Clear();
-                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(new Uri(propertyUri))));
+                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))));
                 return true;
             }
             else
@@ -271,7 +271,7 @@ namespace VDS.RDF.Ontology
             if (this._resourceProperties.ContainsKey(propertyUri))
             {
                 this._resourceProperties[propertyUri].Clear();
-                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(new Uri(propertyUri))));
+                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))));
                 return true;
             }
             else
@@ -304,7 +304,7 @@ namespace VDS.RDF.Ontology
                 if (this._literalProperties[propertyUri].Contains(value))
                 {
                     this._literalProperties[propertyUri].Remove(value);
-                    if (persist) this._graph.Retract(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                    if (persist) this._graph.Retract(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
                 else
@@ -343,7 +343,7 @@ namespace VDS.RDF.Ontology
                 if (this._resourceProperties[propertyUri].Contains(value))
                 {
                     this._resourceProperties[propertyUri].Remove(value);
-                    if (persist) this._graph.Retract(new Triple(this._resource, this._graph.CreateUriNode(new Uri(propertyUri)), value));
+                    if (persist) this._graph.Retract(new Triple(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri)), value));
                     return true;
                 }
                 else
@@ -475,7 +475,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearDifferentFrom()
         {
-            INode diffFrom = this._graph.CreateUriNode(new Uri(OntologyHelper.PropertyDifferentFrom));
+            INode diffFrom = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
             this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, diffFrom));
             this._graph.Retract(this._graph.GetTriplesWithPredicateObject(diffFrom, this._resource));
             return this.ClearResourceProperty(OntologyHelper.PropertyDifferentFrom, true);
@@ -687,7 +687,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSameAs()
         {
-            INode sameAs = this._graph.CreateUriNode(new Uri(OntologyHelper.PropertySameAs));
+            INode sameAs = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySameAs));
             this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, sameAs));
             this._graph.Retract(this._graph.GetTriplesWithPredicateObject(sameAs, this._resource));
             return this.ClearResourceProperty(OntologyHelper.PropertySameAs, true);

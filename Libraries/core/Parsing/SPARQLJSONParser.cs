@@ -646,7 +646,7 @@ namespace VDS.RDF.Parsing
                     INode n;
                     if (nodeType.Equals("uri"))
                     {
-                        n = context.Handler.CreateUriNode(new Uri(nodeValue));
+                        n = context.Handler.CreateUriNode(UriFactory.Create(nodeValue));
                     }
                     else if (nodeType.Equals("bnode"))
                     {
@@ -675,7 +675,7 @@ namespace VDS.RDF.Parsing
                         }
                         else if (nodeDatatype != null)
                         {
-                            n = context.Handler.CreateLiteralNode(nodeValue, new Uri(nodeDatatype));
+                            n = context.Handler.CreateLiteralNode(nodeValue, UriFactory.Create(nodeDatatype));
                         }
                         else
                         {

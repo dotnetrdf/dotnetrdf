@@ -73,7 +73,7 @@ namespace VDS.RDF.Configuration
                     String kb = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyStore));
                     if (kb == null) return false;
 
-                    output = new PelletReasoner(new Uri(server), kb);
+                    output = new PelletReasoner(UriFactory.Create(server), kb);
                     break;
 #endif
 

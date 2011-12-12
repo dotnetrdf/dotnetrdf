@@ -519,7 +519,7 @@ namespace VDS.RDF.Query
             else
             {
                 //Make the query normally via GET
-                httpResponse = this.ExecuteQuery(new Uri(queryUri.ToString()), String.Empty, acceptHeader);
+                httpResponse = this.ExecuteQuery(UriFactory.Create(queryUri.ToString()), String.Empty, acceptHeader);
             }
 
             return httpResponse;
@@ -735,7 +735,7 @@ namespace VDS.RDF.Query
         {
             INode endpoint = context.NextSubject;
             INode endpointClass = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassSparqlEndpoint);
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode endpointUri = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyEndpointUri);
             INode defGraphUri = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyDefaultGraphUri);
@@ -747,11 +747,11 @@ namespace VDS.RDF.Query
 
             foreach (String u in this._defaultGraphUris)
             {
-                context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(new Uri(u))));
+                context.Graph.Assert(new Triple(endpoint, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
             }
             foreach (String u in this._namedGraphUris)
             {
-                context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(new Uri(u))));
+                context.Graph.Assert(new Triple(endpoint, namedGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));
             }
 
             context.NextSubject = endpoint;

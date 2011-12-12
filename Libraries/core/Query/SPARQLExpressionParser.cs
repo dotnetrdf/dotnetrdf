@@ -41,10 +41,24 @@ using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Query.Aggregates;
+using VDS.RDF.Query.Aggregates.Sparql;
+using VDS.RDF.Query.Aggregates.Leviathan;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Conditional;
+using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Functions.Sparql;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+using VDS.RDF.Query.Expressions.Functions.Sparql.DateTime;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Hash;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Numeric;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 
 namespace VDS.RDF.Query
 {
@@ -353,7 +367,7 @@ namespace VDS.RDF.Query
             {
                 case Token.NEGATION:
                     tokens.Dequeue();
-                    return new NegationExpression(this.TryParsePrimaryExpression(tokens));
+                    return new NotExpression(this.TryParsePrimaryExpression(tokens));
                 case Token.PLUS:
                     //Semantically Unary Plus does nothing so no special expression class for it
                     tokens.Dequeue();
@@ -464,7 +478,7 @@ namespace VDS.RDF.Query
 
                 case Token.VARIABLE:
                     tokens.Dequeue();
-                    return new VariableExpressionTerm(next.Value);
+                    return new VariableTerm(next.Value);
 
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Primary Expression",next);
@@ -539,7 +553,7 @@ namespace VDS.RDF.Query
                     {
                         tokens.Dequeue();
                         commaTerminated = true;
-                        return new DistinctModifierExpression();
+                        return new DistinctModifier();
                     }
                     else
                     {
@@ -587,7 +601,7 @@ namespace VDS.RDF.Query
                         next = tokens.Dequeue();
                         if (next.TokenType == Token.VARIABLE)
                         {
-                            VariableExpressionTerm varExpr = new VariableExpressionTerm(next.Value);
+                            VariableTerm varExpr = new VariableTerm(next.Value);
                             next = tokens.Dequeue();
                             if (next.TokenType == Token.RIGHTBRACKET)
                             {
@@ -827,11 +841,11 @@ namespace VDS.RDF.Query
             if (first.TokenType == Token.QNAME)
             {
                 //Resolve QName
-                u = new Uri(Tools.ResolveQName(first.Value, this._nsmapper, this._baseUri));
+                u = UriFactory.Create(Tools.ResolveQName(first.Value, this._nsmapper, this._baseUri));
             }
             else
             {
-                u = new Uri(Tools.ResolveUri(first.Value, this._baseUri.ToSafeString()));
+                u = UriFactory.Create(Tools.ResolveUri(first.Value, this._baseUri.ToSafeString()));
             }
             
             //Get the Argument List (if any)
@@ -862,7 +876,7 @@ namespace VDS.RDF.Query
 
                     //Return an Extension Function expression
                     ISparqlExpression expr = SparqlExpressionFactory.CreateExpression(u, args, this._factories);
-                    if (expr is AggregateExpressionTerm || expr is NonNumericAggregateExpressionTerm)
+                    if (expr is AggregateTerm)
                     {
                         if (!this._allowAggregates) throw new RdfParseException("Aggregate Expression '" + expr.ToString() + "' encountered but aggregates are not permitted in this Expression");
                     }
@@ -871,13 +885,13 @@ namespace VDS.RDF.Query
                 else
                 {
                     //Just an IRIRef
-                    return new NodeExpressionTerm(new UriNode(null, u));
+                    return new ConstantTerm(new UriNode(null, u));
                 }
             }
             else
             {
                 //Just an IRIRef
-                return new NodeExpressionTerm(new UriNode(null, u));
+                return new ConstantTerm(new UriNode(null, u));
             }
         }
 
@@ -893,7 +907,7 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.LANGSPEC)
                 {
                     tokens.Dequeue();
-                    return new NodeExpressionTerm(new LiteralNode(null, str.Value, next.Value));
+                    return new ConstantTerm(new LiteralNode(null, str.Value, next.Value));
                 }
                 else if (next.TokenType == Token.HATHAT)
                 {
@@ -906,12 +920,12 @@ namespace VDS.RDF.Query
 
                     if (next.Value.StartsWith("<"))
                     {
-                        u = new Uri(next.Value.Substring(1, next.Value.Length - 2));
+                        u = UriFactory.Create(next.Value.Substring(1, next.Value.Length - 2));
                     }
                     else
                     {
                         //Resolve the QName
-                        u = new Uri(Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri));
+                        u = UriFactory.Create(Tools.ResolveQName(next.Value, this._nsmapper, this._baseUri));
                     }
 
                     if (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN)
@@ -922,22 +936,30 @@ namespace VDS.RDF.Query
                     else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.ToString()))
                     {
                         //Appears to be a Boolean
-                        return new BooleanExpressionTerm(Boolean.Parse(dtlit.Value));
+                        bool b;
+                        if (Boolean.TryParse(dtlit.Value, out b))
+                        {
+                            return new ConstantTerm(new BooleanNode(null, b));
+                        }
+                        else
+                        {
+                            return new ConstantTerm(new StringNode(null, dtlit.Value, dtlit.DataType));
+                        }
                     }
                     else
                     {
                         //Just a datatyped Literal Node
-                        return new NodeExpressionTerm(new LiteralNode(null, str.Value, u));
+                        return new ConstantTerm(new LiteralNode(null, str.Value, u));
                     }
                 }
                 else
                 {
-                    return new NodeExpressionTerm(new LiteralNode(null, str.Value));
+                    return new ConstantTerm(new LiteralNode(null, str.Value));
                 }
             }
             else
             {
-                return new NodeExpressionTerm(new LiteralNode(null, str.Value));
+                return new ConstantTerm(new LiteralNode(null, str.Value));
             }
 
         }
@@ -949,11 +971,11 @@ namespace VDS.RDF.Query
 
             if (lit.Value.Equals("true"))
             {
-                return new BooleanExpressionTerm(true);
+                return new ConstantTerm(new BooleanNode(null, true));
             }
             else if (lit.Value.Equals("false"))
             {
-                return new BooleanExpressionTerm(false);
+                return new ConstantTerm(new BooleanNode(null, false));
             }
             else
             {
@@ -969,15 +991,15 @@ namespace VDS.RDF.Query
                     //Use Regular Expressions to see what type it is
                     if (SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new NumericExpressionTerm(Int32.Parse(literal.Value));
+                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new NumericExpressionTerm(Decimal.Parse(literal.Value));
+                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new NumericExpressionTerm(Double.Parse(literal.Value));
+                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
                     }
                     else
                     {
@@ -1001,19 +1023,19 @@ namespace VDS.RDF.Query
                     //Return a Numeric Expression Term if it's an Integer/Decimal/Double
                     if (XmlSpecsHelper.XmlSchemaDataTypeInteger.Equals(dtUri) && SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new NumericExpressionTerm(Int32.Parse(literal.Value));
+                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeDecimal.Equals(dtUri) && SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new NumericExpressionTerm(Decimal.Parse(literal.Value));
+                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeFloat.Equals(dtUri) && SparqlSpecsHelper.IsFloat(literal.Value))
                     {
-                        return new NumericExpressionTerm(Single.Parse(literal.Value));
+                        return new ConstantTerm(new FloatNode(null, Single.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeDouble.Equals(dtUri) && SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new NumericExpressionTerm(Double.Parse(literal.Value));
+                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
                     }
                     else
                     {
@@ -1035,47 +1057,24 @@ namespace VDS.RDF.Query
                             //Self-recurse to save replicating code
                             return this.TryParseNumericLiteral(dtlit, tokens);
                         }
-                        else
-                        {
-                            //Use Regex to see if it's a Integer/Decimal/Double
-                            if (SparqlSpecsHelper.IsInteger(literal.Value))
-                            {
-                                return new NumericExpressionTerm(Int32.Parse(literal.Value));
-                            }
-                            else if (SparqlSpecsHelper.IsDecimal(literal.Value))
-                            {
-                                return new NumericExpressionTerm(Decimal.Parse(literal.Value));
-                            }
-                            else if (SparqlSpecsHelper.IsDouble(literal.Value))
-                            {
-                                return new NumericExpressionTerm(Double.Parse(literal.Value));
-                            }
-                            else
-                            {
-                                //Otherwise treat as a Node Expression
-                                throw Error("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
-                            }
-                        }
+                    }
+                    //Use Regex to see if it's a Integer/Decimal/Double
+                    if (SparqlSpecsHelper.IsInteger(literal.Value))
+                    {
+                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
+                    }
+                    else if (SparqlSpecsHelper.IsDecimal(literal.Value))
+                    {
+                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                    }
+                    else if (SparqlSpecsHelper.IsDouble(literal.Value))
+                    {
+                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
                     }
                     else
                     {
-                        //Use Regular Expressions to see what type it is
-                        if (SparqlSpecsHelper.IsInteger(literal.Value))
-                        {
-                            return new NumericExpressionTerm(Int32.Parse(literal.Value));
-                        }
-                        else if (SparqlSpecsHelper.IsDecimal(literal.Value))
-                        {
-                            return new NumericExpressionTerm(Decimal.Parse(literal.Value));
-                        }
-                        else if (SparqlSpecsHelper.IsDouble(literal.Value))
-                        {
-                            return new NumericExpressionTerm(Double.Parse(literal.Value));
-                        }
-                        else
-                        {
-                            throw Error("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
-                        }
+                        //Otherwise treat as a Node Expression
+                        throw Error("The Literal '" + literal.Value + "' is not a valid Integer, Decimal or Double", literal);
                     }
 
                 default:
@@ -1184,7 +1183,7 @@ namespace VDS.RDF.Query
                 if (expressions.Count == 0) throw new RdfParseException("Aggregate must have at least one argument expression unless they are a COUNT(*)");
                 if (agg.TokenType == Token.GROUPCONCAT)
                 {
-                    aggExpr = new XPathConcatFunction(expressions);
+                    aggExpr = new ConcatFunction(expressions);
                 }
                 else
                 {
@@ -1209,13 +1208,13 @@ namespace VDS.RDF.Query
             {
                 case Token.AVG:
                     //AVG Aggregate
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new AggregateExpressionTerm(new AverageAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new AverageAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new AggregateExpressionTerm(new AverageAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new AverageAggregate(aggExpr, distinct));
                     }
 
                 case Token.COUNT:
@@ -1224,130 +1223,130 @@ namespace VDS.RDF.Query
                     {
                         if (distinct)
                         {
-                            return new AggregateExpressionTerm(new CountAllDistinctAggregate());
+                            return new AggregateTerm(new CountAllDistinctAggregate());
                         }
                         else
                         {
-                            return new AggregateExpressionTerm(new CountAllAggregate());
+                            return new AggregateTerm(new CountAllAggregate());
                         }
                     }
-                    else if (aggExpr is VariableExpressionTerm)
+                    else if (aggExpr is VariableTerm)
                     {
                         if (distinct)
                         {
-                            return new AggregateExpressionTerm(new CountDistinctAggregate((VariableExpressionTerm)aggExpr));
+                            return new AggregateTerm(new CountDistinctAggregate((VariableTerm)aggExpr));
                         }
                         else
                         {
-                            return new AggregateExpressionTerm(new CountAggregate((VariableExpressionTerm)aggExpr));
+                            return new AggregateTerm(new CountAggregate((VariableTerm)aggExpr));
                         }
                     }
                     else
                     {
                         if (distinct)
                         {
-                            return new AggregateExpressionTerm(new CountDistinctAggregate(aggExpr));
+                            return new AggregateTerm(new CountDistinctAggregate(aggExpr));
                         }
                         else
                         {
-                            return new AggregateExpressionTerm(new CountAggregate(aggExpr));
+                            return new AggregateTerm(new CountAggregate(aggExpr));
                         }
                     }
                 case Token.GROUPCONCAT:
                     if (scalarArgs)
                     {
                         if (!scalarArguments.ContainsKey(SparqlSpecsHelper.SparqlKeywordSeparator)) throw new RdfParseException("The GROUP_CONCAT aggregate has Scalar Arguments but does not have the expected SEPARATOR argument");
-                        return new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(aggExpr, scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator], distinct));
+                        return new AggregateTerm(new GroupConcatAggregate(aggExpr, scalarArguments[SparqlSpecsHelper.SparqlKeywordSeparator], distinct));
                     }
                     else
                     {
-                        return new NonNumericAggregateExpressionTerm(new GroupConcatAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new GroupConcatAggregate(aggExpr, distinct));
                     }
 
                 case Token.MAX:
                     //MAX Aggregate
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new NonNumericAggregateExpressionTerm(new MaxAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new MaxAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new NonNumericAggregateExpressionTerm(new MaxAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new MaxAggregate(aggExpr, distinct));
                     }
 
                 case Token.MEDIAN:
                     //MEDIAN Aggregate
                     if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MEDIAN aggregate is only supported when the Syntax is set to Extended.");
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new NonNumericAggregateExpressionTerm(new MedianAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new MedianAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new NonNumericAggregateExpressionTerm(new MedianAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new MedianAggregate(aggExpr, distinct));
                     }
 
                 case Token.MIN:
                     //MIN Aggregate
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new NonNumericAggregateExpressionTerm(new MinAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new MinAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new NonNumericAggregateExpressionTerm(new MinAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new MinAggregate(aggExpr, distinct));
                     }
 
                 case Token.MODE:
                     //MODE Aggregate
                     if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The MODE aggregate is only supported when the Syntax is set to Extended.");
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new NonNumericAggregateExpressionTerm(new ModeAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new ModeAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new NonNumericAggregateExpressionTerm(new ModeAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new ModeAggregate(aggExpr, distinct));
                     }
 
                 case Token.NMAX:
                     //NMAX Aggregate
                     if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMAX (Numeric Maximum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new AggregateExpressionTerm(new NumericMaxAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new NumericMaxAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new AggregateExpressionTerm(new NumericMaxAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new NumericMaxAggregate(aggExpr, distinct));
                     }
 
                 case Token.NMIN:
                     //NMIN Aggregate
                     if (this._syntax != SparqlQuerySyntax.Extended) throw new RdfParseException("The NMIN (Numeric Minimum) aggregate is only supported when the Syntax is set to Extended.  To achieve an equivalent result in SPARQL 1.0/1.1 apply a FILTER to your query so the aggregated variable is only literals of the desired numeric type");
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new AggregateExpressionTerm(new NumericMinAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new NumericMinAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new AggregateExpressionTerm(new NumericMinAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new NumericMinAggregate(aggExpr, distinct));
                     }
 
                 case Token.SAMPLE:
                     //SAMPLE Aggregate
                     if (distinct) throw new RdfParseException("DISTINCT modifier is not valid for the SAMPLE aggregate");
-                    return new NonNumericAggregateExpressionTerm(new SampleAggregate(aggExpr));
+                    return new AggregateTerm(new SampleAggregate(aggExpr));
 
                 case Token.SUM:
                     //SUM Aggregate
-                    if (aggExpr is VariableExpressionTerm)
+                    if (aggExpr is VariableTerm)
                     {
-                        return new AggregateExpressionTerm(new SumAggregate((VariableExpressionTerm)aggExpr, distinct));
+                        return new AggregateTerm(new SumAggregate((VariableTerm)aggExpr, distinct));
                     }
                     else
                     {
-                        return new AggregateExpressionTerm(new SumAggregate(aggExpr, distinct));
+                        return new AggregateTerm(new SumAggregate(aggExpr, distinct));
                     }
 
                 default:
@@ -1487,11 +1486,11 @@ namespace VDS.RDF.Query
 
             if (inSet)
             {
-                return new SparqlInFunction(expr, expressions);
+                return new InFunction(expr, expressions);
             }
             else
             {
-                return new SparqlNotInFunction(expr, expressions);
+                return new NotInFunction(expr, expressions);
             }
         }
 

@@ -260,22 +260,22 @@ namespace VDS.RDF.Parsing
             if (value.Equals("true") || value.Equals("false"))
             {
                 //Is a Boolean
-                return new Uri(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
             }
             else if (_validInteger.IsMatch(value)) 
             {
                 //Is an Integer
-                return new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger);
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
             }
             else if (_validDecimal.IsMatch(value))
             {
                 //Is a Decimal
-                return new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
             }
             else if (_validDouble.IsMatch(value))
             {
                 //Is a Double
-                return new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble);
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);
             }
             else
             {

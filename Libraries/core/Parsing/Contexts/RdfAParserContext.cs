@@ -167,7 +167,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfAEvaluationContext(Uri baseUri)
         {
             this._baseUri = baseUri;
-            this._nsmapper.AddNamespace(String.Empty, new Uri(RdfAParser.XHtmlVocabNamespace));
+            this._nsmapper.AddNamespace(String.Empty, UriFactory.Create(RdfAParser.XHtmlVocabNamespace));
         }
 
         /// <summary>

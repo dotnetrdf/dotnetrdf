@@ -57,7 +57,7 @@ namespace VDS.RDF.Query
         public ExactClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
-            this._type = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            this._type = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query
         public SubClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
-            this._subclassof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._subclassof = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query
         public SuperClassSelector(IGraph g, IUriNode targetClass)
         {
             this._targetclass = targetClass;
-            this._subclassof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"));
+            this._subclassof = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subClassOf"));
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ namespace VDS.RDF.Query
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);
             //Create the Type node for later use
-            this._type = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            this._type = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
 
             //Perform the inference on the Graph to find subclasses
             this.InferSubClasses(g, targetClass);
@@ -260,7 +260,7 @@ namespace VDS.RDF.Query
             //Add the Target Class to the list of possible classes
             this._classes.Add(targetClass);
             //Create the Type node for later use
-            this._type = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
+            this._type = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDF + "type"));
 
             //Perform the inference on the Graph to find subclasses
             this.InferSuperClasses(g, targetClass);
@@ -365,7 +365,7 @@ namespace VDS.RDF.Query
         public SubPropertySelector(IGraph g, IUriNode targetProperty)
         {
             this._targetproperty = targetProperty;
-            this._subpropof = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subPropertyOf"));
+            this._subpropof = g.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "subPropertyOf"));
         }
 
         /// <summary>

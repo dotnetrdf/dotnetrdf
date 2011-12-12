@@ -106,8 +106,8 @@ namespace VDS.RDF.Storage
                 this._baseUri = baseUri;
             }
 
-            this._endpoint = new SparqlRemoteEndpoint(new Uri(this._baseUri + "sparql/"));
-            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(new Uri(this._baseUri + "update/"));
+            this._endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._baseUri + "sparql/"));
+            this._updateEndpoint = new SparqlRemoteUpdateEndpoint(UriFactory.Create(this._baseUri + "update/"));
             this._endpoint.Timeout = 60000;
             this._updateEndpoint.Timeout = 60000;
         }
@@ -155,7 +155,7 @@ namespace VDS.RDF.Storage
         {
             if (g.IsEmpty && graphUri != null & !graphUri.Equals(String.Empty))
             {
-                g.BaseUri = new Uri(graphUri);
+                g.BaseUri = UriFactory.Create(graphUri);
             }
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
@@ -685,8 +685,8 @@ namespace VDS.RDF.Storage
         public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);

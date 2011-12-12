@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 
 namespace VDS.RDF.Query.Aggregates
 {
@@ -50,14 +51,14 @@ namespace VDS.RDF.Query.Aggregates
         /// Applies the Aggregate to the Result Binder and returns a single Node as a Result
         /// </summary>
         /// <param name="context">Evaluation Context</param>
-        INode Apply(SparqlEvaluationContext context);
+        IValuedNode Apply(SparqlEvaluationContext context);
 
         /// <summary>
         /// Applies the Aggregate to the Result Binder and returns a single Node as a Result
         /// </summary>
         /// <param name="context">Evaluation Context</param>
         /// <param name="bindingIDs">Enumerable of Binding IDs which the aggregate is applied over</param>
-        INode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
+        IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs);
 
         /// <summary>
         /// Gets the Expression that the Aggregate is applied to

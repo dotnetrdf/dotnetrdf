@@ -99,7 +99,7 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to retrieve</param>
         /// <param name="manager">Generic Store Manager</param>
         public StoreGraph(String graphUri, IGenericIOManager manager) 
-            : this(new Uri(graphUri), manager) { }
+            : this(UriFactory.Create(graphUri), manager) { }
 
         #region Data Persistence to Generic Storage
 
@@ -207,7 +207,7 @@ namespace VDS.RDF
         /// <param name="graphUri">URI of the Graph to write to</param>
         /// <param name="manager">Generic Store Manager</param>
         public WriteOnlyStoreGraph(String graphUri, IGenericIOManager manager) 
-            : this(new Uri(graphUri), manager) { }
+            : this(UriFactory.Create(graphUri), manager) { }
     }
 }
 

@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns></returns>
         public Object Query(String sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
 
             using (HttpWebResponse response = endpoint.QueryRaw(sparqlQuery))
             {
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(this._sparqlUri));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(UriFactory.Create(this._sparqlUri));
             switch (q.QueryType)
             {
                 case SparqlQueryType.Ask:

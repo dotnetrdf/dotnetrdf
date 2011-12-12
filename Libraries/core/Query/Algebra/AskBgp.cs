@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -263,7 +264,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //If the Input is the Identity Multiset then the Output is either
                         //the Identity/Null Multiset depending on whether the Expression evaluates to true
-                        if (expr.EffectiveBooleanValue(context, 0))
+                        if (expr.Evaluate(context, 0).AsSafeBoolean())
                         {
                             context.OutputMultiset = new IdentityMultiset();
                         }
@@ -287,7 +288,7 @@ namespace VDS.RDF.Query.Algebra
 
                         try
                         {
-                            if (expr.EffectiveBooleanValue(context, id))
+                            if (expr.Evaluate(context, id).AsSafeBoolean())
                             {
                                 resultsFound++;
                                 context.OutputMultiset.Add(context.InputMultiset[id]);

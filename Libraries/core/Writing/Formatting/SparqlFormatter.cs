@@ -42,6 +42,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Ordering;
@@ -721,15 +722,10 @@ namespace VDS.RDF.Writing.Formatting
                 switch (expr.Type)
                 {
                     case SparqlExpressionType.Aggregate:
-                        if (expr is AggregateExpressionTerm)
+                        if (expr is AggregateTerm)
                         {
-                            AggregateExpressionTerm agg = (AggregateExpressionTerm)expr;
+                            AggregateTerm agg = (AggregateTerm)expr;
                             output.Append(this.FormatAggregate(agg.Aggregate));
-                        }
-                        else if (expr is NonNumericAggregateExpressionTerm)
-                        {
-                            NonNumericAggregateExpressionTerm nonNumAgg = (NonNumericAggregateExpressionTerm)expr;
-                            output.Append(this.FormatAggregate(nonNumAgg.Aggregate));
                         }
                         else
                         {
@@ -821,19 +817,14 @@ namespace VDS.RDF.Writing.Formatting
 
                     case SparqlExpressionType.Primary:
                         //If Node/Numeric Term then use Node Formatting otherwise use ToString() on the expression
-                        if (expr is NodeExpressionTerm)
+                        if (expr is ConstantTerm)
                         {
-                            NodeExpressionTerm nodeTerm = (NodeExpressionTerm)expr;
-                            output.Append(this.Format(nodeTerm.Value(null, 0)));
+                            ConstantTerm nodeTerm = (ConstantTerm)expr;
+                            output.Append(this.Format(nodeTerm.Evaluate(null, 0)));
                         }
-                        else if (expr is NumericExpressionTerm)
+                        else if (expr is GraphPatternTerm)
                         {
-                            NumericExpressionTerm numTerm = (NumericExpressionTerm)expr;
-                            output.Append(this.Format(numTerm.Value(null, 0)));
-                        }
-                        else if (expr is GraphPatternExpressionTerm)
-                        {
-                            GraphPatternExpressionTerm gp = (GraphPatternExpressionTerm)expr;
+                            GraphPatternTerm gp = (GraphPatternTerm)expr;
                             output.Append(this.Format(gp.Pattern));
                         }
                         else
@@ -913,7 +904,7 @@ namespace VDS.RDF.Writing.Formatting
             for (int i = 0; i < args.Count; i++)
             {
                 output.Append(this.FormatExpression(args[i]));
-                if (i < args.Count - 1 && !(args[i] is DistinctModifierExpression))
+                if (i < args.Count - 1 && !(args[i] is DistinctModifier))
                 {
                     output.Append(", ");
                 }
