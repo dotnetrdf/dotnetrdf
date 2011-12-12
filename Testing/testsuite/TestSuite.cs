@@ -108,22 +108,22 @@ namespace dotNetRDFTest
             //Console.WriteLine("Graph Merging Tests Done");
 
             //Call XML/RDF Test Suite
-            //RdfXmlTestSuite.Main(args);
+            RdfXmlTestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("RDF/XML Parser Tests Done");
 
             //Call Notation3 Test Suite
-            //Notation3TestSuite.Main(args);
+            Notation3TestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("Notation 3 Parser Tests Done");
 
             //Call Turtle Test Suite
-            //TurtleTestSuite.Main(args);
+            TurtleTestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("Turtle Parser Tests Done");
 
             //Call the NTriples Test Suite
-            //NTriplesTestSuite.Main(args);
+            NTriplesTestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("NTriples Parser Tests Done");
 
@@ -133,7 +133,7 @@ namespace dotNetRDFTest
             //Console.WriteLine("JSON Tests Done");
 
             //Call the RDFa Test Suite
-            //RdfATestSuite.Main(args);
+            RdfATestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("RDFa Tests Done");
 
@@ -156,18 +156,6 @@ namespace dotNetRDFTest
             //SparqlTestSuite.Main(args);
             Console.SetOut(stdout);
             //Console.WriteLine("SPARQL Query Parser Tests Done");
-
-            //Call the SPARQL Evaluation Test Suite
-            SparqlEvaluationTestSuite sparqlEvaluation = new SparqlEvaluationTestSuite();
-            sparqlEvaluation.RunTests();
-            Console.SetOut(stdout);
-            //Console.WriteLine("SPARQL Evaluation Tests Done");
-
-            //Call the SPARQL 1.1 Evaluation Test Suite
-            Sparql11EvaluationTestSuite sparql11Evaluation = new Sparql11EvaluationTestSuite();
-            sparql11Evaluation.RunTests();
-            Console.SetOut(stdout);
-            //Console.WriteLine("SPARQL 1.1 Evaluation Tests Done");
 
             //Call the Local Sparql Test Suite
             //LocalSparqlTests.Main(args);
