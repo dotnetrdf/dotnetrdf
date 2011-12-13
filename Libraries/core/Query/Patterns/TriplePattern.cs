@@ -340,14 +340,25 @@ namespace VDS.RDF.Query.Patterns
                     pred = ((NodeMatchPattern)this._pred).Node;
                     if (boundSubj)
                     {
-                        //TODO: Add handling for when boundObj is also true
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(subjVar)
-                                  select set[subjVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithSubjectPredicate(value, pred)
-                                select t);
+                        if (boundObj)
+                        {
+                            valuePairs = (from set in context.InputMultiset.Sets
+                                          where set.ContainsVariable(subjVar) && set.ContainsVariable(objVar)
+                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, objVar }));
+                            return (from set in valuePairs
+                                    where set[subjVar] != null && set[objVar] != null
+                                    select this.CreateTriple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
+                        }
+                        else
+                        {
+                            values = (from set in context.InputMultiset.Sets
+                                      where set.ContainsVariable(subjVar)
+                                      select set[subjVar]).Distinct();
+                            return (from value in values
+                                    where value != null
+                                    from t in context.Data.GetTriplesWithSubjectPredicate(value, pred)
+                                    select t);
+                        }
                     }
                     else if (boundObj)
                     {
@@ -386,14 +397,25 @@ namespace VDS.RDF.Query.Patterns
                     obj = ((NodeMatchPattern)this._obj).Node;
                     if (boundSubj)
                     {
-                        //TODO: Add handling for when boundPred is also true
-                        values = (from set in context.InputMultiset.Sets
-                                  where set.ContainsVariable(subjVar)
-                                  select set[subjVar]).Distinct();
-                        return (from value in values
-                                where value != null
-                                from t in context.Data.GetTriplesWithSubjectObject(value, obj)
-                                select t);
+                        if (boundPred)
+                        {
+                            valuePairs = (from set in context.InputMultiset.Sets
+                                          where set.ContainsVariable(subjVar) && set.ContainsVariable(predVar)
+                                          select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, predVar }));
+                            return (from set in valuePairs
+                                    where set[subjVar] != null && set[predVar] != null
+                                    select this.CreateTriple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
+                        }
+                        else
+                        {
+                            values = (from set in context.InputMultiset.Sets
+                                      where set.ContainsVariable(subjVar)
+                                      select set[subjVar]).Distinct();
+                            return (from value in values
+                                    where value != null
+                                    from t in context.Data.GetTriplesWithSubjectObject(value, obj)
+                                    select t);
+                        }
                     }
                     else if (boundPred)
                     {

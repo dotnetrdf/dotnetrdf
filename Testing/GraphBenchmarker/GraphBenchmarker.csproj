@@ -59,6 +59,7 @@
       <DependentUpon>fclsGraphBenchmarker.cs</DependentUpon>
     </Compile>
     <Compile Include="fclsTestRunner.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="fclsTestRunner.Designer.cs">
       <DependentUpon>fclsTestRunner.cs</DependentUpon>
