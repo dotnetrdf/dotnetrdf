@@ -28,6 +28,7 @@ terms.
 
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -165,6 +166,55 @@ namespace VDS.Common
         internal bool ContainsKey(TKeyBit key)
         {
             return this._children.ContainsKey(key);
+        }
+
+        /// <summary>
+        /// Clears the Value (if any) stored at this node
+        /// </summary>
+        public void ClearValue()
+        {
+            this.Value = null;
+        }
+
+        /// <summary>
+        /// Clears the Value (if any) stored at this node and removes all child nodes
+        /// </summary>
+        public void Clear()
+        {
+            this.ClearValue();
+            this.Trim();
+        }
+
+        /// <summary>
+        /// Removes all child nodes
+        /// </summary>
+        public void Trim()
+        {
+            this.Trim(0);
+        }
+
+        /// <summary>
+        /// Removes all ancestor nodes which are at the given depth below the current node
+        /// </summary>
+        /// <param name="depth">Depth</param>
+        /// <exception cref="ArgumentException">Thrown if depth is less than zero</exception>
+        public void Trim(int depth)
+        {
+            if (depth == 0)
+            {
+                this._children.Clear();
+            }
+            else if (depth > 0)
+            {
+                foreach (TrieNode<TKeyBit, TValue> node in this.Children)
+                {
+                    node.Trim(depth-1);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Depth must be >= 0");
+            }
         }
 
         /// <summary>

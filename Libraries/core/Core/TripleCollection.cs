@@ -532,7 +532,7 @@ namespace VDS.RDF
         /// <summary>
         /// Hash Table storage of Triples
         /// </summary>
-        protected HashTable<int, Triple> _triples = new HashTable<int, Triple>(HashTableBias.IO);
+        protected HashTable<int, Triple> _triples;
         private HashTable<INode, Triple> _predIndex;
         private HashTable<INode, Triple> _subjIndex;
         private HashTable<INode, Triple> _objIndex;
@@ -559,16 +559,23 @@ namespace VDS.RDF
 
 
         public IndexedTripleCollection(HashTableBias bias, int capacity)
+            : this(bias, bias, bias, capacity) { }
+
+        public IndexedTripleCollection(HashTableBias bias, HashTableBias indexBias, HashTableBias compoundIndexBias)
+            : this(bias, indexBias, compoundIndexBias, 10) { }
+
+        public IndexedTripleCollection(HashTableBias bias, HashTableBias indexBias, HashTableBias compoundIndexBias, int capacity)
         {
-            this._subjIndex = new HashTable<INode, Triple>(bias, capacity);
-            this._predIndex = new HashTable<INode, Triple>(bias, capacity);
-            this._objIndex = new HashTable<INode, Triple>(bias, capacity);
+            this._triples = new HashTable<int, Triple>(bias);
+            this._subjIndex = new HashTable<INode, Triple>(indexBias, capacity);
+            this._predIndex = new HashTable<INode, Triple>(indexBias, capacity);
+            this._objIndex = new HashTable<INode, Triple>(indexBias, capacity);
             if (Options.FullTripleIndexing)
             {
                 this._fullyIndexed = true;
-                this._subjPredIndex = new HashTable<int, Triple>(bias, capacity);
-                this._subjObjIndex = new HashTable<int, Triple>(bias, capacity);
-                this._predObjIndex = new HashTable<int, Triple>(bias, capacity);
+                this._subjPredIndex = new HashTable<int, Triple>(compoundIndexBias, capacity);
+                this._subjObjIndex = new HashTable<int, Triple>(compoundIndexBias, capacity);
+                this._predObjIndex = new HashTable<int, Triple>(compoundIndexBias, capacity);
             }
         }
 
@@ -1273,6 +1280,13 @@ namespace VDS.RDF
     {
         public IOIndexedTripleCollection()
             : base(HashTableBias.IO, 1) { }
+    }
+
+    public class HybridIndexedTripleCollecton
+        : IndexedTripleCollection
+    {
+        public HybridIndexedTripleCollecton()
+            : base(HashTableBias.IO, HashTableBias.Compactness, HashTableBias.Enumeration) { }
     }
 
 }

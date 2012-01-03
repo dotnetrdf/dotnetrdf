@@ -72,5 +72,13 @@ namespace VDS.RDF
                 return new Uri(uri);
             }
         }
+
+        /// <summary>
+        /// Clears all interned URIs
+        /// </summary>
+        public static void Clear()
+        {
+            _uris.Clear();
+        }
     }
 }

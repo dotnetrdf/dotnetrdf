@@ -212,5 +212,13 @@ namespace VDS.Common
                 return this._root.Values;
             }
         }
+
+        /// <summary>
+        /// Clears the Trie
+        /// </summary>
+        public void Clear()
+        {
+            this._root.Clear();
+        }
     }
 }

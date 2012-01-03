@@ -131,6 +131,9 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
                     TestResult r = this._tests[t].Run(this._cases[c]);
                     this._cases[c].Results.Add(r);
                 }
+
+                //Clear URI Factory after Tests to return memory usage to base levels
+                UriFactory.Clear();
             }
             this.RaiseProgress();
             if (this._cancelled)
