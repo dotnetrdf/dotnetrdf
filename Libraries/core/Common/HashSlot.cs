@@ -12,7 +12,8 @@ namespace VDS.Common
     /// <remarks>
     /// Hash Slots may contain duplicate values
     /// </remarks>
-    class HashSlot<T> : IEnumerable<T>, ICollection<T>
+    class ListSlot<T> 
+        : IHashSlot<T>
     {
         private List<T> _values;
 
@@ -20,7 +21,7 @@ namespace VDS.Common
         /// Creates a new Hash Slot which contains the given Value
         /// </summary>
         /// <param name="value">Value</param>
-        public HashSlot(T value)
+        public ListSlot(T value)
         {
             this._values = new List<T>(1);
             this._values.Add(value);
@@ -30,7 +31,7 @@ namespace VDS.Common
         /// Creates a new Hash Slot which is an empty
         /// </summary>
         /// <param name="capacity">Initial Capacity of Slot</param>
-        public HashSlot(int capacity)
+        public ListSlot(int capacity)
         {
             this._values = new List<T>(capacity);
         }
@@ -40,7 +41,7 @@ namespace VDS.Common
         /// </summary>
         /// <param name="value">Value</param>
         /// <param name="capacity">Initial Capacity of Slot</param>
-        public HashSlot(T value, int capacity)
+        public ListSlot(T value, int capacity)
         {
             if (capacity >= 1)
             {
@@ -143,6 +144,142 @@ namespace VDS.Common
         public void Add(T item)
         {
             this._values.Add(item);
+        }
+    }
+
+    class CompactSlot<T>
+        : IHashSlot<T>
+    {
+        private LinkedList<T> _values;
+
+        public CompactSlot()
+        {
+            this._values = new LinkedList<T>();
+        }
+
+        public CompactSlot(T value)
+        {
+            this._values = new LinkedList<T>();
+            this._values.AddLast(value);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this._values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public void Add(T item)
+        {
+            this._values.AddLast(item);
+        }
+
+        public void Clear()
+        {
+            this._values.Clear();
+        }
+
+        public bool Contains(T item)
+        {
+            return this._values.Contains(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            this._values.CopyTo(array, arrayIndex);
+        }
+
+        public int Count
+        {
+            get
+            {
+                return this._values.Count;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get 
+            {
+                return false;
+            }
+        }
+
+        public bool Remove(T item)
+        {
+            return this._values.Remove(item);
+        }
+    }
+
+    class SetSlot<T>
+        : IHashSlot<T>
+    {
+        private HashSet<T> _values;
+
+        public SetSlot()
+        {
+            this._values = new HashSet<T>();
+        }
+
+        public SetSlot(T value)
+        {
+            this._values = new HashSet<T>();
+            this._values.Add(value);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            return this._values.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        public void Add(T item)
+        {
+            this._values.Add(item);
+        }
+
+        public void Clear()
+        {
+            this._values.Clear();
+        }
+
+        public bool Contains(T item)
+        {
+            return this._values.Contains(item);
+        }
+
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            this._values.CopyTo(array, arrayIndex);
+        }
+
+        public int Count
+        {
+            get 
+            {
+                return this._values.Count;
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public bool Remove(T item)
+        {
+            return this._values.Remove(item);
         }
     }
 }

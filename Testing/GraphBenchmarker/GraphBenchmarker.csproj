@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{456524B8-7F2A-45B9-9642-5CD4737D051F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -111,33 +111,43 @@
   <ItemGroup>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_10.ttl">
       <Link>Data\dataset_10.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_100.ttl">
       <Link>Data\dataset_100.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1000.ttl">
       <Link>Data\dataset_1000.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1500.ttl">
       <Link>Data\dataset_1500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2000.ttl">
       <Link>Data\dataset_2000.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_250.ttl">
       <Link>Data\dataset_250.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2500.ttl">
       <Link>Data\dataset_2500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2785.ttl">
       <Link>Data\dataset_2785.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_50.ttl">
       <Link>Data\dataset_50.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="..\..\Utilities\bsbm\App_Data\dataset_500.ttl">
       <Link>Data\dataset_500.ttl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

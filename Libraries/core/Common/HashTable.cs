@@ -41,6 +41,30 @@ using System.Text;
 namespace VDS.Common
 {
     /// <summary>
+    /// Controls the bias of the hash table
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The bias is a parameter used to control how the hash table stores actual multiple values in its slots.  Changing the bias parameter will cause different data structures to be used internally and thus modify the performance characteristics of the Hash Table
+    /// </para>
+    /// </remarks>
+    public enum HashTableBias
+    {
+        /// <summary>
+        /// Bias towards Compactness i.e. memory usage should be minimised
+        /// </summary>
+        Compactness,
+        /// <summary>
+        /// Bias towards IO i.e. will be more performant in scenarios with lots of adds, removes and contains
+        /// </summary>
+        IO,
+        /// <summary>
+        /// Bias towards Enumeration i.e. will be more performant for scenarios with lots of enumerating over the data (Default)
+        /// </summary>
+        Enumeration
+    }
+
+    /// <summary>
     /// A Hash Table for use as in-memory storage
     /// </summary>
     /// <typeparam name="TKey">Type of Keys</typeparam>
@@ -53,9 +77,10 @@ namespace VDS.Common
     public class HashTable<TKey, TValue> 
         : IDictionary<TKey, TValue>, IEnumerable<TValue>
     {
-        private Dictionary<TKey, HashSlot<TValue>> _values = new Dictionary<TKey, HashSlot<TValue>>();
+        private Dictionary<TKey, IHashSlot<TValue>> _values = new Dictionary<TKey, IHashSlot<TValue>>();
         private int _capacity = 1;
         private bool _emptyKeys = false;
+        private HashTableBias _bias = HashTableBias.Enumeration;
 
         /// <summary>
         /// Creates a new HashTable
@@ -68,6 +93,11 @@ namespace VDS.Common
 
         }
 
+        public HashTable(HashTableBias bias)
+        {
+            this._bias = bias;
+        }
+
         /// <summary>
         /// Creates a new HashTable
         /// </summary>
@@ -75,6 +105,12 @@ namespace VDS.Common
         public HashTable(bool emptyKeys)
         {
             this._emptyKeys = emptyKeys;
+        }
+
+        public HashTable(HashTableBias bias, bool emptyKeys)
+            : this(emptyKeys)
+        {
+            this._bias = bias;
         }
 
         /// <summary>
@@ -87,6 +123,12 @@ namespace VDS.Common
         public HashTable(int capacity)
         {
             if (capacity >= 1) this._capacity = capacity;
+        }
+
+        public HashTable(HashTableBias bias, int capacity)
+            : this(capacity)
+        {
+            this._bias = bias;
         }
 
         /// <summary>
@@ -103,6 +145,40 @@ namespace VDS.Common
             if (capacity >= 1) this._capacity = capacity;
         }
 
+        public HashTable(HashTableBias bias, int capacity, bool emptyKeys)
+            : this(capacity, emptyKeys)
+        {
+            this._bias = bias;
+        }
+
+        private IHashSlot<TValue> CreateSlot(TValue value, int capacity)
+        {
+            switch (this._bias)
+            {
+                case HashTableBias.Compactness:
+                    return new CompactSlot<TValue>(value);
+                case HashTableBias.IO:
+                    return new SetSlot<TValue>(value);
+                case HashTableBias.Enumeration:
+                default:
+                    return new ListSlot<TValue>(value, capacity);
+            }
+        }
+
+        private IHashSlot<TValue> CreateEmptySlot(int capacity)
+        {
+            switch (this._bias)
+            {
+                case HashTableBias.Compactness:
+                    return new CompactSlot<TValue>();
+                case HashTableBias.IO:
+                    return new SetSlot<TValue>();
+                case HashTableBias.Enumeration:
+                default:
+                    return new ListSlot<TValue>(capacity);
+            }
+        }
+
         /// <summary>
         /// Adds a Key with an empty value set to the Hash Table
         /// </summary>
@@ -112,7 +188,7 @@ namespace VDS.Common
             if (!this._values.ContainsKey(key))
             {
                 if (!this._emptyKeys) throw new InvalidOperationException("HashTable must be instantiated with the emptyKeys parameter set to true in order to allow empty keys");
-                this._values.Add(key, new HashSlot<TValue>(this._capacity));
+                this._values.Add(key, this.CreateEmptySlot(this._capacity));
             }
         }
 
@@ -123,14 +199,14 @@ namespace VDS.Common
         /// <param name="value">Value</param>
         public void Add(TKey key, TValue value)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 slot.Add(value);
             }
             else
             {
-                this._values.Add(key, new HashSlot<TValue>(value, this._capacity));
+                this._values.Add(key, this.CreateSlot(value, this._capacity));
             }
         }
 
@@ -152,7 +228,7 @@ namespace VDS.Common
         /// <returns></returns>
         public bool Contains(TKey key, TValue value)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 return slot.Contains(value);
@@ -192,7 +268,7 @@ namespace VDS.Common
         /// <returns></returns>
         public bool Remove(TKey key, TValue value)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 bool res = slot.Remove(value);
@@ -214,7 +290,7 @@ namespace VDS.Common
         /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 value = slot.First();
@@ -236,7 +312,7 @@ namespace VDS.Common
         /// <returns></returns>
         public bool TryGetValue(TKey key, TValue value, out TValue result)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 result = slot.FirstOrDefault(v => v.Equals(value));
@@ -271,7 +347,7 @@ namespace VDS.Common
         {
             get
             {
-                HashSlot<TValue> slot;
+                IHashSlot<TValue> slot;
                 if (this._values.TryGetValue(key, out slot))
                 {
                     return slot.FirstOrDefault();
@@ -297,7 +373,7 @@ namespace VDS.Common
         /// <returns></returns>
         public IEnumerable<TValue> GetValues(TKey key)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 return slot;
@@ -343,7 +419,7 @@ namespace VDS.Common
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             int i = arrayIndex;
-            foreach (KeyValuePair<TKey, HashSlot<TValue>> pair in this._values)
+            foreach (KeyValuePair<TKey, IHashSlot<TValue>> pair in this._values)
             {
                 foreach (TValue value in pair.Value)
                 {
@@ -371,7 +447,7 @@ namespace VDS.Common
         /// <returns></returns>
         public int ValueCount(TKey key)
         {
-            HashSlot<TValue> slot;
+            IHashSlot<TValue> slot;
             if (this._values.TryGetValue(key, out slot))
             {
                 return slot.Count;

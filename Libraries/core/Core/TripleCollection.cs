@@ -532,7 +532,7 @@ namespace VDS.RDF
         /// <summary>
         /// Hash Table storage of Triples
         /// </summary>
-        protected HashTable<int, Triple> _triples = new HashTable<int, Triple>();
+        protected HashTable<int, Triple> _triples = new HashTable<int, Triple>(HashTableBias.IO);
         private HashTable<INode, Triple> _predIndex;
         private HashTable<INode, Triple> _subjIndex;
         private HashTable<INode, Triple> _objIndex;
@@ -555,16 +555,20 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         public IndexedTripleCollection(int capacity)
+            : this(HashTableBias.Enumeration, capacity) { }
+
+
+        public IndexedTripleCollection(HashTableBias bias, int capacity)
         {
-            this._subjIndex = new HashTable<INode, Triple>(capacity);
-            this._predIndex = new HashTable<INode, Triple>(capacity);
-            this._objIndex = new HashTable<INode, Triple>(capacity);
+            this._subjIndex = new HashTable<INode, Triple>(bias, capacity);
+            this._predIndex = new HashTable<INode, Triple>(bias, capacity);
+            this._objIndex = new HashTable<INode, Triple>(bias, capacity);
             if (Options.FullTripleIndexing)
             {
                 this._fullyIndexed = true;
-                this._subjPredIndex = new HashTable<int, Triple>(capacity);
-                this._subjObjIndex = new HashTable<int, Triple>(capacity);
-                this._predObjIndex = new HashTable<int, Triple>(capacity);
+                this._subjPredIndex = new HashTable<int, Triple>(bias, capacity);
+                this._subjObjIndex = new HashTable<int, Triple>(bias, capacity);
+                this._predObjIndex = new HashTable<int, Triple>(bias, capacity);
             }
         }
 
@@ -1256,5 +1260,19 @@ namespace VDS.RDF
     }
 
 #endif
+
+    public class CompactIndexedTripleCollection
+        : IndexedTripleCollection
+    {
+        public CompactIndexedTripleCollection()
+            : base(HashTableBias.Compactness, 1) { }
+    }
+
+    public class IOIndexedTripleCollection
+        : IndexedTripleCollection
+    {
+        public IOIndexedTripleCollection()
+            : base(HashTableBias.IO, 1) { }
+    }
 
 }
