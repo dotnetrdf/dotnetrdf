@@ -122,8 +122,33 @@ namespace VDS.Common
         /// <returns>Null if the Key does not map to a Node</returns>
         public TrieNode<TKeyBit, TValue> Find(TKey key)
         {
+            return this.Find(key, this._keyMapper);
+        }
+
+        /// <summary>
+        /// Finds and returns a Node for the given Key using the given Key to Key Bit mapping function
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns>Null if the Key does not map to a Node</returns>
+        /// <remarks>
+        /// The ability to provide a custom mapping function allows you to do custom lookups into the Trie.  For example you might want to only match some portion of the key rather than the entire key
+        /// </remarks>
+        public TrieNode<TKeyBit, TValue> Find(TKey key, Func<TKey, IEnumerable<TKeyBit>> keyMapper)
+        {
+            return this.Find(keyMapper(key));
+        }
+
+        /// <summary>
+        /// Finds and returns a Node for the given sequence of Key Bits
+        /// </summary>
+        /// <param name="bs">Key Bits</param>
+        /// <returns>Null if the Key does not map to a Node</returns>
+        /// <remarks>
+        /// The ability to provide a specific seqeunce of key bits may be useful for custom lookups where you don't necessarily have a value of the <strong>TKey</strong> type but do have values of the <strong>TKeyBit</strong> type
+        /// </remarks>
+        public TrieNode<TKeyBit, TValue> Find(IEnumerable<TKeyBit> bs)
+        {
             TrieNode<TKeyBit, TValue> node = this._root;
-            IEnumerable<TKeyBit> bs = this._keyMapper(key);
             foreach (TKeyBit b in bs)
             {
                 //Bail out early if key does not exist

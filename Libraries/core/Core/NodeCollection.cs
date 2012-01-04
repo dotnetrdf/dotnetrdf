@@ -39,13 +39,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.Common;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Basic Node Collection
     /// </summary>
-    public class NodeCollection : BaseNodeCollection, IEnumerable<INode>
+    public class NodeCollection
+        : BaseNodeCollection, IEnumerable<INode>
     {
         /// <summary>
         /// Underlying storage of the Node Collection
@@ -242,7 +244,8 @@ namespace VDS.RDF
     /// <summary>
     /// Thread Safe Node Collection
     /// </summary>
-    public class ThreadSafeNodeCollection : NodeCollection, IEnumerable<INode>
+    public class ThreadSafeNodeCollection 
+        : NodeCollection, IEnumerable<INode>
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
@@ -435,4 +438,106 @@ namespace VDS.RDF
     }
 
 #endif
+
+    public class HashedNodeCollection
+        : BaseNodeCollection, IEnumerable<INode>
+    {
+        private HashTable<int, INode> _nodes = new HashTable<int, INode>(HashTableBias.Enumeration);
+
+        protected internal override void Add(INode n)
+        {
+            this._nodes.Add(n.GetHashCode(), n);
+        }
+
+        public override IEnumerable<IBlankNode> BlankNodes
+        {
+            get 
+            {
+                return (from n in this._nodes.Values
+                        where n.NodeType == NodeType.Blank
+                        select (IBlankNode)n);
+            }
+        }
+
+        public override bool Contains(INode n)
+        {
+            return this._nodes.Contains(n.GetHashCode(), n);
+        }
+
+        public override int Count
+        {
+            get
+            {
+                return this._nodes.Count;
+            }
+        }
+
+        public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
+        {
+            get 
+            {
+                return (from n in this._nodes.Values
+                        where n.NodeType == NodeType.GraphLiteral
+                        select (IGraphLiteralNode)n);
+            }
+        }
+
+        public override IEnumerable<ILiteralNode> LiteralNodes
+        {
+            get 
+            {
+                return (from n in this._nodes.Values
+                        where n.NodeType == NodeType.Literal
+                        select (ILiteralNode)n); 
+            }
+        }
+
+        public override IEnumerable<IUriNode> UriNodes
+        {
+            get 
+            {
+                return (from n in this._nodes.Values
+                        where n.NodeType == NodeType.Uri
+                        select (IUriNode)n);
+            }
+        }
+
+        #region IEnumerable<INode> Members
+
+        /// <summary>
+        /// Gets the Enumerator for the Collection
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerator<INode> GetEnumerator()
+        {
+            return this._nodes.Values.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        /// <summary>
+        /// Gets the Enumerator for the Collection
+        /// </summary>
+        /// <returns></returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Disposes of a Node Collection
+        /// </summary>
+        public override void Dispose()
+        {
+            this._nodes.Clear();
+        }
+
+        #endregion
+    }
 }

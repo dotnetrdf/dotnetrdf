@@ -803,4 +803,359 @@ namespace VDS.RDF
             }
         }
     }
+
+    public class TrieIndexedTripleCollection
+        : BaseTripleCollection, IEnumerable<Triple>
+    {
+        private HashTable<int, Triple> _triples;
+        private TripleTrie _spIndex = new TripleTrie(TripleIndexType.SubjectPredicate),
+                           _poIndex = new TripleTrie(TripleIndexType.PredicateObject),
+                           _osIndex = new TripleTrie(TripleTrie.KeyMapperOS),
+                           _soIndex = new TripleTrie(TripleIndexType.SubjectObject);
+
+        public TrieIndexedTripleCollection()
+        {
+            this._triples = new HashTable<int, Triple>(1);
+        }
+
+        /// <summary>
+        /// Adds a Triple to the Collection if it doesn't already exist
+        /// </summary>
+        /// <param name="t">Triple to add</param>
+        protected internal override void Add(Triple t)
+        {
+            int hash = t.GetHashCode();
+            if (!this._triples.ContainsKey(hash))
+            {
+                this._triples.Add(hash, t);
+                this.Index(t);
+            }
+            else
+            {
+                if (!this._triples.Contains(hash, t))
+                {
+                    this._triples.Add(hash, t);
+                    t.Collides = true;
+                    this.Index(t);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Internal method for indexing Triples as they are asserted
+        /// </summary>
+        /// <param name="t">Triple to index</param>
+        private void Index(Triple t)
+        {
+            this.AddToIndex(t, this._spIndex);
+            this.AddToIndex(t, this._poIndex);
+            this.AddToIndex(t, this._osIndex);
+            this.AddToIndex(t, this._soIndex);
+        }
+
+        private void AddToIndex(Triple t, TripleTrie index)
+        {
+            TrieNode<INode, List<Triple>> node = index.MoveToNode(t);
+            if (node.Value == null) node.Value = new List<Triple>();
+            node.Value.Add(t);
+        }
+
+        /// <summary>
+        /// Internal method for unindexing Triples as they are retracted
+        /// </summary>
+        /// <param name="t">Triple to unindex</param>
+        private void UnIndex(Triple t)
+        {
+            this.RemoveFromIndex(t, this._spIndex);
+            this.RemoveFromIndex(t, this._poIndex);
+            this.RemoveFromIndex(t, this._osIndex);
+            this.RemoveFromIndex(t, this._soIndex);
+        }
+
+        private void RemoveFromIndex(Triple t, TripleTrie index)
+        {
+            TrieNode<INode, List<Triple>> node = index.Find(t);
+            if (node == null) return;
+            if (node.Value == null) return;
+            node.Value.Remove(t);
+        }
+
+        /// <summary>
+        /// Gets whether a given Triple is contained in the collection
+        /// </summary>
+        /// <param name="t">Triple to test</param>
+        /// <returns></returns>
+        public override bool Contains(Triple t)
+        {
+            return this._triples.Contains(t.GetHashCode(), t);
+        }
+
+        /// <summary>
+        /// Gets the number of Triples in the collection
+        /// </summary>
+        public override int Count
+        {
+            get
+            {
+                return this._triples.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets the given Triple from the Collection
+        /// </summary>
+        /// <param name="t">Triple to retrieve</param>
+        /// <returns></returns>
+        /// <exception cref="KeyNoutFoundException">Thrown if the given Triple does not exist in the Triple Collection</exception>
+        public override Triple this[Triple t]
+        {
+            get
+            {
+                if (this.Contains(t))
+                {
+                    Triple temp;
+                    if (this._triples.TryGetValue(t.GetHashCode(), t, out temp))
+                    {
+                        if (temp == null) throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
+                        return temp;
+                    }
+                    else
+                    {
+                        throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
+                    }
+                }
+                else
+                {
+                    throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Triple from the collection
+        /// </summary>
+        /// <param name="t">Triple to remove</param>
+        protected internal override void Delete(Triple t)
+        {
+            int hash = t.GetHashCode();
+            if (this._triples.ContainsKey(hash))
+            {
+                if (this._triples.Remove(hash, t))
+                {
+                    this.UnIndex(t);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the Object Nodes from the collection
+        /// </summary>
+        public override IEnumerable<INode> ObjectNodes
+        {
+            get
+            {
+                return (from Triple t in this._triples
+                        select t.Object).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Predicate Nodes from the collection
+        /// </summary>
+        public override IEnumerable<INode> PredicateNodes
+        {
+            get
+            {
+                return (from Triple t in this._triples
+                        select t.Predicate).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Subject Nodes from the collection
+        /// </summary>
+        public override IEnumerable<INode> SubjectNodes
+        {
+            get
+            {
+                return (from Triple t in this._triples
+                        select t.Subject).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubject(INode subj)
+        {
+            TrieNode<INode, List<Triple>> node = this._spIndex.Find(new INode[] { subj });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithPredicate(INode pred)
+        {
+            TrieNode<INode, List<Triple>> node = this._poIndex.Find(new INode[] { pred });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithObject(INode obj)
+        {
+            TrieNode<INode, List<Triple>> node = this._osIndex.Find(new INode[] { obj });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Subject and Predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
+        {
+            TrieNode<INode, List<Triple>> node = this._spIndex.Find(new INode[] { subj, pred });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Predicate and Object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
+        {
+            TrieNode<INode, List<Triple>> node = this._poIndex.Find(new INode[] { pred, obj });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Gets all the Triples with a given Subject and Object
+        /// </summary>
+        /// <param name="subj"></param>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
+        {
+            TrieNode<INode, List<Triple>> node = this._soIndex.Find(new INode[] { subj, obj });
+            if (node == null) return Enumerable.Empty<Triple>();
+            return (from ts in node.Values
+                    from t in ts
+                    select t);
+        }
+
+        /// <summary>
+        /// Disposes of a Triple collection
+        /// </summary>
+        public override void Dispose()
+        {
+            this._triples.Clear();
+            this._spIndex.Clear();
+            this._poIndex.Clear();
+            this._osIndex.Clear();
+            this._soIndex.Clear();
+        }
+
+        /// <summary>
+        /// Gets the enumerator of the Collection
+        /// </summary>
+        /// <returns></returns>
+        public override IEnumerator<Triple> GetEnumerator()
+        {
+            return (from Triple t in this._triples
+                    select t).GetEnumerator();
+        }
+    }
+
+    class TripleTrie
+        : Trie<Triple, INode, List<Triple>>
+    {
+        public TripleTrie(TripleIndexType type)
+            : base(GetKeyMapper(type)) { }
+
+        public TripleTrie(Func<Triple, IEnumerable<INode>> keyMapper)
+            : base(keyMapper) { }
+
+        static Func<Triple, IEnumerable<INode>> GetKeyMapper(TripleIndexType type)
+        {
+            switch (type)
+            {
+                case TripleIndexType.Object:
+                    return KeyMapperO;
+                case TripleIndexType.Predicate:
+                    return KeyMapperP;
+                case TripleIndexType.PredicateObject:
+                    return KeyMapperPO;
+                case TripleIndexType.Subject:
+                    return KeyMapperS;
+                case TripleIndexType.SubjectObject:
+                    return KeyMapperOS;
+                case TripleIndexType.SubjectPredicate:
+                    return KeyMapperSP;
+                default:
+                    throw new ArgumentException("Not an index type supported by the TripleTrie");
+            }
+        }
+
+        internal static IEnumerable<INode> KeyMapperS(Triple t)
+        {
+            return t.Subject.AsEnumerable();
+        }
+
+        internal static IEnumerable<INode> KeyMapperP(Triple t)
+        {
+            return t.Predicate.AsEnumerable();
+        }
+
+        internal static IEnumerable<INode> KeyMapperO(Triple t)
+        {
+            return t.Object.AsEnumerable();
+        }
+
+        internal static IEnumerable<INode> KeyMapperSP(Triple t)
+        {
+            return new INode[] { t.Subject, t.Predicate };
+        }
+
+        internal static IEnumerable<INode> KeyMapperSO(Triple t)
+        {
+            return new INode[] { t.Subject, t.Object };
+        }
+
+        internal static IEnumerable<INode> KeyMapperOS(Triple t)
+        {
+            return new INode[] { t.Object, t.Subject };
+        }
+
+        internal static IEnumerable<INode> KeyMapperPO(Triple t)
+        {
+            return new INode[] { t.Predicate, t.Object };
+        }
+    }
 }

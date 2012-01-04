@@ -522,9 +522,6 @@ namespace VDS.RDF
     /// <para>
     /// In cases where you require minimal indexing and want to reduce memory usage you can set the <see cref="Options.FullTripleIndexing">Options.FullTripleIndexing</see> property to be false which disables the paired indices.  Once this is disabled any instance of this class instantiated when the option is disabled will only create basic indexes.
     /// </para>
-    /// <para>
-    /// Note: This is a change from the 0.1.x API behaviour where the <see cref="Options.FullTripleIndexing">FullTripleIndexing</see> option was disabled by default, from the 0.2.0 release onwards this is enabled by default.
-    /// </para>
     /// </remarks>
     public class IndexedTripleCollection 
         : BaseTripleCollection, IEnumerable<Triple>

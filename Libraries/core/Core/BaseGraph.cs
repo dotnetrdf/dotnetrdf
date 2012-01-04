@@ -105,7 +105,7 @@ namespace VDS.RDF
         protected BaseGraph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
         {
             this._triples = tripleCollection;
-            this._nodes = new NodeCollection();
+            this._nodes = nodeCollection;
             this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
 
@@ -120,7 +120,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
         protected BaseGraph(BaseTripleCollection tripleCollection)
-            : this(tripleCollection, new NodeCollection()) { }
+            //TODO: Update comments here
+            : this(tripleCollection, new HashedNodeCollection()) { }
 
         /// <summary>
         /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection and the default <see cref="NodeCollection">NodeCollection</see> as the Node Collection
