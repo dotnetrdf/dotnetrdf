@@ -113,6 +113,9 @@ namespace VDS.RDF
                 //Define SPARQL Results JSON
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
 
+                //Define SPARQL Boolean
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlBoolean, Enumerable.Empty<String>(), null, null, typeof(SparqlBooleanParser), null, null, null));
+
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
@@ -527,9 +530,14 @@ namespace VDS.RDF
         internal static string[] SparqlXml = { "application/sparql-results+xml" };
 
         /// <summary>
-        /// Mime Types for SPARQL Results JSON
+        /// MIME Types for SPARQL Results JSON
         /// </summary>
         internal static string[] SparqlJson = { "application/sparql-results+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Boolean Result
+        /// </summary>
+        internal static string[] SparqlBoolean = { "text/boolean" };
 
         /// <summary>
         /// MIME Types for CSV
