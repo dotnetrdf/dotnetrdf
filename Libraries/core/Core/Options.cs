@@ -91,7 +91,7 @@ namespace VDS.RDF
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
-        private static bool _utf8Bom = true;
+        private static bool _utf8Bom = false;
         //private static bool _rigorousQuery = false;
         private static bool _useDTDs = true;
         private static bool _multiThreadedWriting = false;
