@@ -147,7 +147,7 @@ namespace VDS.RDF.Storage
             try
             {
                 Dictionary<String, String> createParams = new Dictionary<string, string>();
-                createParams.Add("overwrite", "false");
+                createParams.Add("override", "false");
                 request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", createParams);
 
 #if DEBUG
