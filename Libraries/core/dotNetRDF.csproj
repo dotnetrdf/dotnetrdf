@@ -363,7 +363,7 @@
     <Compile Include="Query\Algebra\SubQuery.cs" />
     <Compile Include="Query\Algebra\ZeroLengthPath.cs" />
     <Compile Include="Query\Algebra\ZeroOrMorePath.cs" />
-    <None Include="Query\Datasets\BaseQuadDataset.cs" />
+    <Compile Include="Query\Datasets\BaseQuadDataset.cs" />
     <Compile Include="Query\ExplainQueryProcessor.cs" />
     <Compile Include="Query\Expressions\Arithmetic\AdditionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\DivisionExpression.cs" />

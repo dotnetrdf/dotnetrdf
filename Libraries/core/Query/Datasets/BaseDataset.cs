@@ -138,11 +138,6 @@ namespace VDS.RDF.Query.Datasets
 
         #region Active and Default Graph Management
 
-        public void SetDefaultGraph(IGraph g)
-        {
-            throw new NotSupportedException("No longer used/supported as of 0.6.0");
-        }
-
         /// <summary>
         /// Sets the Default Graph for the SPARQL Query
         /// </summary>
@@ -193,11 +188,6 @@ namespace VDS.RDF.Query.Datasets
                 this.SetDefaultGraphInternal(g);
                 this._defaultGraphUris.Value.Push(graphUris.ToList());
             }
-        }
-
-        public void SetActiveGraph(IGraph g)
-        {
-            throw new NotSupportedException("No longer used/supported as of 0.6.0");
         }
 
         /// <summary>

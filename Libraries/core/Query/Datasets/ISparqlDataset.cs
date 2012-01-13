@@ -81,20 +81,6 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         void SetActiveGraph(Uri graphUri);
 
-        /// <summary>
-        /// Sets the Active Graph to be the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        [Obsolete("No longer supported, please use the alternative overloads of SetActiveGraph()", true)]
-        void SetActiveGraph(IGraph g);
-
-        /// <summary>
-        /// Sets the Default Graph to be the given Graph
-        /// </summary>
-        /// <param name="g">Graph</param>
-        [Obsolete("No longer supported, please use the alternative overloads of SetDefaultGraph()", true)]
-        void SetDefaultGraph(IGraph g);
-
         void SetDefaultGraph(Uri graphUri);
 
         void SetDefaultGraph(IEnumerable<Uri> graphUris);
