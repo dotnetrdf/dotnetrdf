@@ -63,6 +63,10 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         private readonly ThreadIsolatedReference<Stack<IGraph>> _activeGraphs;
 
+        private readonly ThreadIsolatedReference<Stack<IEnumerable<Uri>>> _defaultGraphUris;
+
+        private readonly ThreadIsolatedReference<Stack<IEnumerable<Uri>>> _activeGraphUris;
+
         private readonly bool _unionDefaultGraph = true;
         private readonly Uri _defaultGraphUri;
 
@@ -75,6 +79,8 @@ namespace VDS.RDF.Query.Datasets
             this._defaultGraph = new ThreadIsolatedReference<IGraph>(this.InitDefaultGraph);
             this._defaultGraphs = new ThreadIsolatedReference<Stack<IGraph>>(this.InitGraphStack);
             this._activeGraphs = new ThreadIsolatedReference<Stack<IGraph>>(this.InitGraphStack);
+            this._defaultGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<Uri>>>(this.InitDefaultGraphUriStack);
+            this._activeGraphUris = new ThreadIsolatedReference<Stack<IEnumerable<Uri>>>(this.InitGraphUriStack);
         }
 
         /// <summary>
@@ -115,23 +121,90 @@ namespace VDS.RDF.Query.Datasets
             return new Stack<IGraph>();
         }
 
+        private Stack<IEnumerable<Uri>> InitDefaultGraphUriStack()
+        {
+            Stack<IEnumerable<Uri>> s = new Stack<IEnumerable<Uri>>();
+            if (!this._unionDefaultGraph)
+            {
+                s.Push(new Uri[] { this._defaultGraphUri });
+            }
+            return s;
+        }
+
+        private Stack<IEnumerable<Uri>> InitGraphUriStack()
+        {
+            return new Stack<IEnumerable<Uri>>();
+        }
+
         #region Active and Default Graph Management
+
+        public void SetDefaultGraph(IGraph g)
+        {
+            throw new NotSupportedException("No longer used/supported as of 0.6.0");
+        }
 
         /// <summary>
         /// Sets the Default Graph for the SPARQL Query
         /// </summary>
         /// <param name="g"></param>
-        public void SetDefaultGraph(IGraph g)
+        private void SetDefaultGraphInternal(IGraph g)
         {
             this._defaultGraphs.Value.Push(this._defaultGraph.Value);
             this._defaultGraph.Value = g;
+        }
+
+        public void SetDefaultGraph(Uri graphUri)
+        {
+            if (this.HasGraph(graphUri))
+            {
+                this.SetDefaultGraphInternal(this[graphUri]);
+                this._defaultGraphUris.Value.Push(new Uri[] { graphUri });
+            }
+            else
+            {
+                this.SetDefaultGraphInternal(new Graph());
+                this._defaultGraphUris.Value.Push(Enumerable.Empty<Uri>());
+            }
+        }
+
+        public void SetDefaultGraph(IEnumerable<Uri> graphUris)
+        {
+            if (!graphUris.Any())
+            {
+                this.SetDefaultGraphInternal(new Graph());
+                this._defaultGraphUris.Value.Push(Enumerable.Empty<Uri>());
+            }
+            else if (graphUris.Count() == 1)
+            {
+                this.SetDefaultGraph(graphUris.First());
+            }
+            else
+            {
+                //Multiple Graph URIs
+                //Build a merged Graph of all the Graph URIs
+                Graph g = new Graph();
+                foreach (Uri u in graphUris)
+                {
+                    if (this.HasGraph(u))
+                    {
+                        g.Merge(this[u], true);
+                    }
+                }
+                this.SetDefaultGraphInternal(g);
+                this._defaultGraphUris.Value.Push(graphUris.ToList());
+            }
+        }
+
+        public void SetActiveGraph(IGraph g)
+        {
+            throw new NotSupportedException("No longer used/supported as of 0.6.0");
         }
 
         /// <summary>
         /// Sets the Active Graph for the SPARQL Query
         /// </summary>
         /// <param name="g">Active Graph</param>
-        public void SetActiveGraph(IGraph g)
+        private void SetActiveGraphInternal(IGraph g)
         {
             this._activeGraphs.Value.Push(this._activeGraph.Value);
             this._activeGraph.Value = g;
@@ -152,20 +225,18 @@ namespace VDS.RDF.Query.Datasets
                 //If the default graph is null then it operates over the entire dataset
                 this._activeGraphs.Value.Push(this._activeGraph.Value);
                 this._activeGraph.Value = this._defaultGraph.Value;
+                this._activeGraphUris.Value.Push(this._defaultGraphUris.Value.Count > 0 ? this._defaultGraphUris.Value.Peek() : Enumerable.Empty<Uri>());
             }
             else if (this.HasGraph(graphUri))
             {
-                //Push current Active Graph on the Stack
-                this._activeGraphs.Value.Push(this._activeGraph.Value);
-
-                //Set the new Active Graph
-                this._activeGraph.Value = this[graphUri];
+                this.SetActiveGraphInternal(this[graphUri]);
+                this._activeGraphUris.Value.Push(new Uri[] { graphUri });
             }
             else
             {
                 //Active Graph is an empty Graph in the case where the Graph is not present in the Dataset
-                this._activeGraphs.Value.Push(this._activeGraph.Value);
-                this._activeGraph.Value = new Graph();
+                this.SetActiveGraphInternal(new Graph());
+                this._activeGraphUris.Value.Push(Enumerable.Empty<Uri>());
             }
         }
 
@@ -192,17 +263,9 @@ namespace VDS.RDF.Query.Datasets
                     {
                         g.Merge(this[u], true);
                     }
-                    //else
-                    //{
-                    //    throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, a GRAPH Clause cannot be used to change the Active Graph to a Graph that doesn't exist");
-                    //}
                 }
-
-                //Push current Active Graph on the Stack
-                this._activeGraphs.Value.Push(this._activeGraph.Value);
-
-                //Set the new Active Graph
-                this._activeGraph.Value = g;
+                this.SetActiveGraphInternal(g);
+                this._activeGraphUris.Value.Push(graphUris.ToList());
             }
         }
 
@@ -214,6 +277,7 @@ namespace VDS.RDF.Query.Datasets
             if (this._activeGraphs.Value.Count > 0)
             {
                 this._activeGraph.Value = this._activeGraphs.Value.Pop();
+                this._activeGraphUris.Value.Pop();
             }
             else
             {
@@ -229,6 +293,7 @@ namespace VDS.RDF.Query.Datasets
             if (this._defaultGraphs.Value.Count > 0)
             {
                 this._defaultGraph.Value = this._defaultGraphs.Value.Pop();
+                this._defaultGraphUris.Value.Pop();
             }
             else
             {
@@ -247,6 +312,21 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        public IEnumerable<Uri> DefaultGraphUris
+        {
+            get
+            {
+                if (this._defaultGraphUris.Value.Count > 0)
+                {
+                    return this._defaultGraphUris.Value.Peek();
+                }
+                else
+                {
+                    return Enumerable.Empty<Uri>();
+                }
+            }
+        }
+
         /// <summary>
         /// Gets the current Active Graph (null if none)
         /// </summary>
@@ -255,6 +335,21 @@ namespace VDS.RDF.Query.Datasets
             get
             {
                 return this._activeGraph.Value;
+            }
+        }
+
+        public IEnumerable<Uri> ActiveGraphUris
+        {
+            get
+            {
+                if (this._activeGraphUris.Value.Count > 0)
+                {
+                    return this._activeGraphUris.Value.Peek();
+                }
+                else
+                {
+                    return Enumerable.Empty<Uri>();
+                }
             }
         }
 

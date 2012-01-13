@@ -873,12 +873,12 @@ namespace dotNetRDFTest
 
                     //Since all Tests assume that the WHERE is limited to the unnamed default graph unless specified
                     //then must set this to be the Active Graph for the dataset
-                    dataset.SetDefaultGraph(dataset[null]);
+                    //dataset.SetDefaultGraph(dataset[null]);
 
                     //Try the Update
                     processor.ProcessCommandSet(cmds);
 
-                    dataset.ResetDefaultGraph();
+                    //dataset.ResetDefaultGraph();
                 }
                 catch (SparqlUpdateException updateEx)
                 {

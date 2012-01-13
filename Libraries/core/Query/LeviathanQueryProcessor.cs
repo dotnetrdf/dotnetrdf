@@ -152,38 +152,40 @@ namespace VDS.RDF.Query
                 try
                 {
                     //Set up the Default and Active Graphs
-                    IGraph defGraph;
+                    //IGraph defGraph;
                     if (query.DefaultGraphs.Any())
                     {
                         //Default Graph is the Merge of all the Graphs specified by FROM clauses
-                        Graph g = new Graph();
-                        foreach (Uri u in query.DefaultGraphs)
-                        {
-                            if (this._dataset.HasGraph(u))
-                            {
-                                g.Merge(this._dataset[u], true);
-                            }
-                            else
-                            {
-                                throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, this URI cannot be used in a FROM clause in SPARQL queries to this Triple Store");
-                            }
-                        }
-                        defGraph = g;
-                        this._dataset.SetDefaultGraph(defGraph);
+                        //Graph g = new Graph();
+                        //foreach (Uri u in query.DefaultGraphs)
+                        //{
+                        //    if (this._dataset.HasGraph(u))
+                        //    {
+                        //        g.Merge(this._dataset[u], true);
+                        //    }
+                        //    else
+                        //    {
+                        //        throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, this URI cannot be used in a FROM clause in SPARQL queries to this Triple Store");
+                        //    }
+                        //}
+                        //defGraph = g;
+                        //this._dataset.SetDefaultGraph(defGraph);
+                        this._dataset.SetDefaultGraph(query.DefaultGraphs);
                     }
                     else if (query.NamedGraphs.Any())
                     {
                         //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
-                        defGraph = new Graph();
-                        this._dataset.SetDefaultGraph(defGraph);
+                        this._dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
                     }
-                    else
-                    {
-                        defGraph = this._dataset.DefaultGraph;
-                        this._dataset.SetDefaultGraph(defGraph);
-                    }
+                    //Q: Was the following actually in any way needed?
+                    //else
+                    //{
+                    //    defGraph = this._dataset.DefaultGraph;
+                    //    this._dataset.SetDefaultGraph(defGraph);
+                    //}
                     defGraphOk = true;
-                    this._dataset.SetActiveGraph(defGraph);
+                    //this._dataset.SetActiveGraph(defGraph);
+                    this._dataset.SetActiveGraph(this._dataset.DefaultGraphUris);
                     datasetOk = true;
 
                     //Convert to Algebra and execute the Query

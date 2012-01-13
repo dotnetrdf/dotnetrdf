@@ -68,6 +68,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
+            throw new NotSupportedException("Currently not supported pending ISparqlDataset related refactorings in 0.6.0");
+
             //Create a copy of the evaluation context for the RHS
             SparqlEvaluationContext context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
             if (!(context.InputMultiset is IdentityMultiset))
@@ -130,13 +132,13 @@ namespace VDS.RDF.Query.Algebra
                 //Set the Active Graph
                 if (activeGraph != null)
                 {
-                    context.Data.SetActiveGraph(activeGraph);
+                    //context.Data.SetActiveGraph(activeGraph);
                     activeGraphOk = true;
                 }
                 //Set the Default Graph
                 if (defGraph != null)
                 {
-                    context.Data.SetDefaultGraph(defGraph);
+                    //context.Data.SetDefaultGraph(defGraph);
                     defaultGraphOk = true;
                 }
 
@@ -390,13 +392,13 @@ namespace VDS.RDF.Query.Algebra
                 //Set the Active Graph
                 if (activeGraph != null)
                 {
-                    context.Data.SetActiveGraph(activeGraph);
+                    //context.Data.SetActiveGraph(activeGraph);
                     activeGraphOk = true;
                 }
                 //Set the Default Graph
                 if (defGraph != null)
                 {
-                    context.Data.SetDefaultGraph(defGraph);
+                    //context.Data.SetDefaultGraph(defGraph);
                     defaultGraphOk = true;
                 }
 

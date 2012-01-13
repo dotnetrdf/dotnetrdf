@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -54,7 +54,7 @@ namespace VDS.RDF.Query.Datasets
     /// <ol>
     ///     <li>If an Active Graph is set then Queries operate over that</li>
     ///     <li>Otherwise if a Default Graph is set then Queries operate over that</li>
-    ///     <li>Finally the Queries operate over the Union of all Graphs in the Dataset</li>
+    ///     <li>Finally the Queries operate over the all triples, the notion of all triples may be dataset implementation specific i.e. may be union of all graphs, the default unnamed graph only or something else entirely</li>
     /// </ol>
     /// Please note that the Query may change the Active and Default Graph over the course of the query depending on the Query e.g. FROM, FROM NAMED and GRAPH all can potentially change these.
     /// </para>
@@ -85,13 +85,19 @@ namespace VDS.RDF.Query.Datasets
         /// Sets the Active Graph to be the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
+        [Obsolete("No longer supported, please use the alternative overloads of SetActiveGraph()", true)]
         void SetActiveGraph(IGraph g);
 
         /// <summary>
         /// Sets the Default Graph to be the given Graph
         /// </summary>
         /// <param name="g">Graph</param>
+        [Obsolete("No longer supported, please use the alternative overloads of SetDefaultGraph()", true)]
         void SetDefaultGraph(IGraph g);
+
+        void SetDefaultGraph(Uri graphUri);
+
+        void SetDefaultGraph(IEnumerable<Uri> graphUris);
 
         /// <summary>
         /// Resets the Active Graph to the previous Active Graph
@@ -112,9 +118,25 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
+        /// Gets the enumeration of the Graph URIs that currently make up the default graph
+        /// </summary>
+        IEnumerable<Uri> DefaultGraphUris
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the current Active Graph (null if none)
         /// </summary>
         IGraph ActiveGraph
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the enumeration of the Graph URIs that currently make up the active graph
+        /// </summary>
+        IEnumerable<Uri> ActiveGraphUris
         {
             get;
         }

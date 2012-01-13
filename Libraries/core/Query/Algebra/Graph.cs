@@ -182,19 +182,11 @@ namespace VDS.RDF.Query.Algebra
                         context.InputMultiset = initialInput;
                         Uri currGraphUri = (uri.Equals(String.Empty)) ? null : UriFactory.Create(uri);
 
-                        //This bit of logic takes care of the fact that calling SetActiveGraph((Uri)null) resets the
-                        //Active Graph to be the default graph which if the default graph is null is usually the Union of
-                        //all Graphs in the Store
-                        if (currGraphUri == null && context.Data.DefaultGraph == null && context.Data.UsesUnionDefaultGraph)
+                        //Set Active Graph
+                        if (currGraphUri == null)
                         {
-                            if (context.Data.HasGraph(null))
-                            {
-                                context.Data.SetActiveGraph(context.Data[null]);
-                            }
-                            else
-                            {
-                                continue;
-                            }
+                            //GRAPH operates over named graphs only so default graph gets skipped
+                            continue;
                         }
                         else
                         {

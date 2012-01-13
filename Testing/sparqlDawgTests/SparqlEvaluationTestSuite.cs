@@ -688,7 +688,14 @@ namespace dotNetRDFTest
             Console.WriteLine("# Test Data");
             foreach (Triple t in data.Triples)
             {
-                Console.WriteLine(t.ToString(this._formatter) + " from Graph " + t.GraphUri.Segments.Last());
+                if (t.GraphUri != null)
+                {
+                    Console.WriteLine(t.ToString(this._formatter) + " from Graph " + t.GraphUri.Segments.Last());
+                }
+                else
+                {
+                    Console.WriteLine(t.ToString(this._formatter) + " from Default Graph");
+                }
             }
             Console.WriteLine();
         }
