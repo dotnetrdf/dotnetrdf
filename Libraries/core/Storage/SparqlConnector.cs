@@ -68,7 +68,12 @@ namespace VDS.RDF.Storage
     /// Class for connecting to any SPARQL Endpoint as a read-only Store
     /// </summary>
     /// <remarks>
+    /// <para>
     /// This class is effectively a read-only wrapper around a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> using it with it's default settings, if you only need to query an endpoint and require more control over the settings used to access the endpoint you should use that class directly or use the constructors which allow you to provide your own pre-configure <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance
+    /// </para>
+    /// <para>
+    /// Unlike other HTTP based connectors this connector does not derive from <see cref="BaseHttpConnector">BaseHttpConnector</see> - if you need to specify proxy information you should do so on the SPARQL Endpoint you are wrapping either by providing a <see cref="SparqlRemoteEndpoint">SparqlRemoteEndpoint</see> instance pre-configured with the proxy settings or by accessing the endpoint via the <see cref="SparqlConnector.Endpoint">Endpoint</see> property and programmatically adding the settings.
+    /// </para>
     /// </remarks>
     public class SparqlConnector
         : IQueryableGenericIOManager, IConfigurationSerializable

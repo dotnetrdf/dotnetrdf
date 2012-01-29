@@ -68,7 +68,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class JosekiConnector
-        : IUpdateableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri, _queryService, _updateService;
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -687,6 +687,7 @@ namespace VDS.RDF.Storage
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
             request.Accept = accept;
             request.Method = method;
+            request = base.GetProxiedRequest(request);
 
             ////Add Credentials if needed
             //if (this._hasCredentials)

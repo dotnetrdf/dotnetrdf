@@ -46,7 +46,8 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base class for HTTP endpoints
     /// </summary>
-    public abstract class BaseEndpoint : IConfigurationSerializable
+    public abstract class BaseEndpoint
+        : IConfigurationSerializable
     {
         private Uri _endpoint = null;
         private int _timeout = 30000;

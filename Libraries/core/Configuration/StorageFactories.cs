@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
@@ -375,6 +376,24 @@ namespace VDS.RDF.Configuration
                         manager = new TalisPlatformConnector(store);
                     }
                     break;
+            }
+
+            //Check whether this is a proxyable manager and if we need to load proxy settings
+            if (manager is BaseHttpConnector)
+            {
+                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyProxy));
+                if (proxyNode != null)
+                {
+                    temp = ConfigurationLoader.LoadObject(g, proxyNode);
+                    if (temp is WebProxy)
+                    {
+                        ((BaseHttpConnector)manager).Proxy = (WebProxy)temp;
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load Generic Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
+                    }
+                }
             }
 
             obj = manager;

@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
     public class DydraConnector
-        : IUpdateableGenericIOManager
+        : BaseHttpConnector, IUpdateableGenericIOManager
     {
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
@@ -697,7 +697,7 @@ namespace VDS.RDF.Storage
                 request.Credentials = credentials;
             }
 
-            return request;
+            return base.GetProxiedRequest(request);
         }
 
         private String GetCredentialedUri()

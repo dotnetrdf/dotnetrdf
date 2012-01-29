@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector 
-        : IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// Base Uri for the Store
@@ -801,7 +801,7 @@ namespace VDS.RDF.Storage
                 request.Credentials = credentials;                
             }
 
-            return request;
+            return base.GetProxiedRequest(request);
         }
 
         /// <summary>

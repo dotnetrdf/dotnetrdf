@@ -78,7 +78,7 @@ namespace VDS.RDF.Storage
     /// The Talis platform automatically converts all Blank Nodes input into it into Uri nodes.  This means that data saved to Talis and then retrieved may lose it's Blank Nodes or have them assigned different IDs (different IDs is perfectly acceptable behaviour for any RDF based application since Blank Node IDs are only ever scoped to a given serialization).
     /// </remarks>
     public class TalisPlatformConnector
-        : IQueryableGenericIOManager, IConfigurationSerializable 
+        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable 
     {
         private String _storename, _username, _password;
         private String _baseuri;
@@ -806,6 +806,7 @@ namespace VDS.RDF.Storage
 
             //Create the Request Object
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request = base.GetProxiedRequest(request);
 
             //Create the Request Credentials
             if (this._hasCredentials)

@@ -97,7 +97,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class StardogConnector 
-        : IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
@@ -877,6 +877,7 @@ namespace VDS.RDF.Storage
             //if (accept.EndsWith("*/*;q=0.5")) accept = accept.Substring(0, accept.LastIndexOf(","));
             request.Accept = accept;
             request.Method = method;
+            request = base.GetProxiedRequest(request);
 
             //Add the special Stardog Headers
             request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";persist=sync" + this.GetReasoningParameter());

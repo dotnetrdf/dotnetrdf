@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 
-        : IGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// URI of the Protocol Server
@@ -142,6 +142,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
                 request.Method = "GET";
                 request.Accept = MimeTypesHelper.HttpAcceptHeader;
+                request = base.GetProxiedRequest(request);
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -211,6 +212,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(lookupUri);
                 request.Method = "HEAD";
+                request = base.GetProxiedRequest(request);
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -273,6 +275,8 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
+                request = base.GetProxiedRequest(request);
+
                 RdfXmlWriter writer = new RdfXmlWriter();
                 writer.Save(g, new StreamWriter(request.GetRequestStream()));
 
@@ -362,6 +366,8 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
                 request.Method = "POST";
                 request.ContentType = MimeTypesHelper.RdfXml[0];
+                request = base.GetProxiedRequest(request);
+
                 RdfXmlWriter writer = new RdfXmlWriter();
                 Graph g = new Graph();
                 g.Assert(additions);
@@ -438,6 +444,7 @@ namespace VDS.RDF.Storage
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
                 request.Method = "DELETE";
+                request = base.GetProxiedRequest(request);
 
 #if DEBUG
                 if (Options.HttpDebugging)

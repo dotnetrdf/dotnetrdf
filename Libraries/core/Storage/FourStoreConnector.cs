@@ -66,8 +66,8 @@ namespace VDS.RDF.Storage
     /// Prior to the 1.x releases 4store did not permit the saving of unamed Graphs to the Store or Triple level updates.  There was a branch of 4store that supports Triple level updates and you could tell the connector if your 4store instance supports this when you instantiate it.  From the 0.4.0 release of the library onwards this support was enabled by default since the 1.x builds of 4store have this feature integrated into them by default.
     /// </para>
     /// </remarks>
-    public class FourStoreConnector 
-        : IQueryableGenericIOManager, IUpdateableGenericIOManager, IConfigurationSerializable
+    public class FourStoreConnector
+        : BaseHttpConnector, IQueryableGenericIOManager, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
@@ -223,6 +223,7 @@ namespace VDS.RDF.Storage
                 }
                 request.Method = "PUT";
                 request.ContentType = MimeTypesHelper.Turtle[0];
+                request = base.GetProxiedRequest(request);
 
                 //Write the Graph as Turtle to the Request Stream
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
@@ -345,6 +346,7 @@ namespace VDS.RDF.Storage
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
                             request.Method = "POST";
                             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                            request = base.GetProxiedRequest(request);
 
                             StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
                             postWriter.Write("update=");
@@ -383,6 +385,7 @@ namespace VDS.RDF.Storage
                             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._baseUri + "update/");
                             request.Method = "POST";
                             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                            request = base.GetProxiedRequest(request);
 
                             StreamWriter postWriter = new StreamWriter(request.GetRequestStream());
                             postWriter.Write("update=");
@@ -550,6 +553,7 @@ namespace VDS.RDF.Storage
                     throw new RdfStorageException("Cannot delete a Graph without a Base URI from a 4store Server");
                 }
                 request.Method = "DELETE";
+                request = base.GetProxiedRequest(request);
 
                 #if DEBUG
                     if (Options.HttpDebugging)
