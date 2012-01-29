@@ -171,6 +171,7 @@ namespace VDS.RDF.Query
                         //defGraph = g;
                         //this._dataset.SetDefaultGraph(defGraph);
                         this._dataset.SetDefaultGraph(query.DefaultGraphs);
+                        defGraphOk = true;
                     }
                     else if (query.NamedGraphs.Any())
                     {
@@ -183,7 +184,7 @@ namespace VDS.RDF.Query
                     //    defGraph = this._dataset.DefaultGraph;
                     //    this._dataset.SetDefaultGraph(defGraph);
                     //}
-                    defGraphOk = true;
+                    //defGraphOk = true;
                     //this._dataset.SetActiveGraph(defGraph);
                     this._dataset.SetActiveGraph(this._dataset.DefaultGraphUris);
                     datasetOk = true;

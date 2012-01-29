@@ -464,7 +464,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
             InMemoryDataset dataset = new InMemoryDataset(store);
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            dataset.SetDefaultGraph(store.Graph(null));
+            dataset.SetDefaultGraph((Uri)null);
             processor.ProcessCommandSet(cmds);
 
             IGraph def = store.Graph(null);
@@ -493,7 +493,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
             InMemoryDataset dataset = new InMemoryDataset(store);
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
-            dataset.SetDefaultGraph(store.Graph(null));
+            dataset.SetDefaultGraph((Uri)null);
             processor.ProcessCommandSet(cmds);
 
             IGraph def = store.Graph(null);

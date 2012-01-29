@@ -237,7 +237,11 @@ namespace VDS.RDF.Query.Datasets
         /// <remarks>Helper function used primarily in the execution of GRAPH Clauses</remarks>
         public void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
-            if (graphUris.Count() == 1)
+            if (!graphUris.Any())
+            {
+                this.SetActiveGraph((Uri)null);
+            }
+            else if (graphUris.Count() == 1)
             {
                 //If only 1 Graph Uri call the simpler SetActiveGraph method which will be quicker
                 this.SetActiveGraph(graphUris.First());

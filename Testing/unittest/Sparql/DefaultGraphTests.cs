@@ -186,7 +186,7 @@ namespace VDS.RDF.Test.Sparql
             store.Add(h);
 
             InMemoryDataset dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(h);
+            dataset.SetDefaultGraph(h.BaseUri);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
@@ -215,7 +215,7 @@ namespace VDS.RDF.Test.Sparql
             store.Add(h);
 
             InMemoryDataset dataset = new InMemoryDataset(store);
-            dataset.SetDefaultGraph(g);
+            dataset.SetDefaultGraph(g.BaseUri);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString("SELECT * WHERE { ?s ?p ?o }");
@@ -360,7 +360,7 @@ namespace VDS.RDF.Test.Sparql
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
-            dataset.SetDefaultGraph(def);
+            dataset.SetDefaultGraph(def.BaseUri);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             Object results = processor.ProcessQuery(q);
@@ -422,7 +422,7 @@ namespace VDS.RDF.Test.Sparql
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
-            dataset.SetDefaultGraph(def);
+            dataset.SetDefaultGraph(def.BaseUri);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             Object results = processor.ProcessQuery(q);
@@ -488,7 +488,7 @@ namespace VDS.RDF.Test.Sparql
             IGraph def = new Graph();
             dataset.AddGraph(def);
 
-            dataset.SetDefaultGraph(def);
+            dataset.SetDefaultGraph(def.BaseUri);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             Object results = processor.ProcessQuery(q);
