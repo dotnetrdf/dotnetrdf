@@ -58,8 +58,9 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private bool _allowHiSpeed = true;
-        private int _compressionLevel = WriterCompressionLevel.Default;
+        private int _compressionLevel = Options.DefaultCompressionLevel;
         private INamespaceMapper _defaultNamespaces = new NamespaceMapper();
+        private TurtleSyntax _syntax = TurtleSyntax.Original;
 
         /// <summary>
         /// Creates a new Compressing Turtle Writer which uses the Default Compression Level
@@ -77,6 +78,17 @@ namespace VDS.RDF.Writing
         public CompressingTurtleWriter(int compressionLevel)
         {
             this._compressionLevel = compressionLevel;
+        }
+
+        public CompressingTurtleWriter(TurtleSyntax syntax)
+        {
+            this._syntax = syntax;
+        }
+
+        public CompressingTurtleWriter(int compressionLevel, TurtleSyntax syntax)
+            : this(compressionLevel)
+        {
+            this._syntax = syntax;
         }
 
         /// <summary>
@@ -156,7 +168,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return typeof(TurtleFormatter);
+                return (this._syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
             }
         }
 
@@ -181,7 +193,7 @@ namespace VDS.RDF.Writing
             {
                 //Create the Writing Context
                 g.NamespaceMap.Import(this._defaultNamespaces);
-                CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed);
+                CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, output, this._compressionLevel, this._prettyprint, this._allowHiSpeed, this._syntax);
                 this.GenerateOutput(context);
             }
             finally
@@ -486,7 +498,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "Turtle (Compressing Writer)";
+            return "Turtle (Compressing Writer)" + (this._syntax == TurtleSyntax.Original ? "" : " (W3C)");
         }
     }
 }

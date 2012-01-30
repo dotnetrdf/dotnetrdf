@@ -343,7 +343,7 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t);
+                    Uri plUri = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)t, TurtleSyntax.Original);
                     return context.Handler.CreateLiteralNode(value, plUri);
                 }
             }

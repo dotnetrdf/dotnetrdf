@@ -56,6 +56,14 @@ namespace VDS.RDF.Writing
     {
         private bool _prettyprint = true;
         private bool _allowhispeed = false;
+        private TurtleSyntax _syntax = TurtleSyntax.Original;
+
+        public TurtleWriter() { }
+
+        public TurtleWriter(TurtleSyntax syntax)
+        {
+            this._syntax = syntax;
+        }
 
         /// <summary>
         /// Gets/Sets whether Pretty Printing is used
@@ -95,7 +103,7 @@ namespace VDS.RDF.Writing
         {
             get
             {
-                return typeof(TurtleFormatter);
+                return (this._syntax == TurtleSyntax.Original ? typeof(TurtleFormatter) : typeof(TurtleW3CFormatter));
             }
         }
 
@@ -118,7 +126,7 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed);
+                TurtleWriterContext context = new TurtleWriterContext(g, output, this._prettyprint, this._allowhispeed, this._syntax);
                 this.GenerateOutput(context);
                 output.Close();
             }
@@ -152,7 +160,7 @@ namespace VDS.RDF.Writing
             //Write Prefixes
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
-                if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
+                if (TurtleSpecsHelper.IsValidQName(prefix + ":", this._syntax))
                 {
                     context.Output.Write("@prefix " + prefix + ": <");
                     String nsUri = context.UriFormatter.FormatUri(context.Graph.NamespaceMap.GetNamespaceUri(prefix));
@@ -304,7 +312,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         public override string ToString()
         {
-            return "Turtle";
+            return "Turtle" + (this._syntax == TurtleSyntax.Original ? "" : " (W3C)");
         }
     }
 }

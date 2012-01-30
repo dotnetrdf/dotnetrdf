@@ -589,7 +589,7 @@ namespace VDS.RDF.Parsing.Tokens
             if (this.Value.EndsWith(".")) this.Backtrack();
 
             //Validate
-            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value))
+            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value, TurtleSyntax.Original))
             {
                 this._lasttokentype = Token.PLAINLITERAL;
                 return new PlainLiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);

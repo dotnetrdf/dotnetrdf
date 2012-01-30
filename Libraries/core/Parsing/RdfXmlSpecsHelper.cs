@@ -178,6 +178,27 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        public static bool IsValidQName(String qname)
+        {
+            if (qname.Contains(":"))
+            {
+                String[] parts = qname.Split(':');
+                if (parts[0].Length == 0)
+                {
+                    //Empty Prefix is permitted
+                    return XmlSpecsHelper.IsNCName(parts[1]);
+                }
+                else
+                {
+                    return XmlSpecsHelper.IsNCName(parts[0]) && XmlSpecsHelper.IsNCName(parts[1]);
+                }
+            }
+            else
+            {
+                return XmlSpecsHelper.IsNCName(qname);
+            }
+        }
+
         #endregion
 
         //The following set of Grammar Productions encode Tests pertaining to the Types of Attributes

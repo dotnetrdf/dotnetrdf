@@ -43,6 +43,21 @@ using VDS.RDF.Parsing.Tokens;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
+    /// Acceptable Turtle syntaxes
+    /// </summary>
+    public enum TurtleSyntax
+    {
+        /// <summary>
+        /// Turtle as originally specified by the <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle Submission</a>
+        /// </summary>
+        Original,
+        /// <summary>
+        /// Turtle as standardised by the <a href="http://www.w3.org/TR/turtle/">W3C RDF Working Group</a>
+        /// </summary>
+        W3C
+    }
+
+    /// <summary>
     /// Helper function relating to the Turtle Specifications
     /// </summary>
     /// <remarks>Not currently used in the actual <see cref="TurtleTokeniser">TurtleTokeniser</see> or <see cref="TurtleParser">TurtleParser</see> but is used for the new <see cref="TriGTokeniser">TriGTokeniser</see></remarks>
@@ -75,9 +90,10 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">String to test</param>
         /// <returns></returns>
-        public static bool IsValidPlainLiteral(String value)
+        public static bool IsValidPlainLiteral(String value, TurtleSyntax syntax)
         {
-            if (value.Equals("true") || value.Equals("false"))
+            StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            if (value.Equals("true", comparison) || value.Equals("false", comparison))
             {
                 return true;
             } 
@@ -85,7 +101,6 @@ namespace VDS.RDF.Parsing
             {
                 return (_validDecimal.IsMatch(value) || _validInteger.IsMatch(value) || _validDouble.IsMatch(value));
             }
-            
         }
 
         /// <summary>
@@ -94,9 +109,10 @@ namespace VDS.RDF.Parsing
         /// <param name="value">Value</param>
         /// <param name="dt">Datatype</param>
         /// <returns></returns>
-        public static bool IsValidPlainLiteral(String value, Uri dt)
+        public static bool IsValidPlainLiteral(String value, Uri dt, TurtleSyntax syntax)
         {
-            if ((value.Equals("true") || value.Equals("false")) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+            StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+            if ((value.Equals("true", comparison) || value.Equals("false", comparison)) && dt.ToSafeString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
             {
                 return true;
             }
@@ -148,12 +164,17 @@ namespace VDS.RDF.Parsing
             return _validDouble.IsMatch(value);
         }
 
+        public static bool IsValidQName(String value)
+        {
+            return IsValidQName(value, TurtleSyntax.Original);
+        }
+
         /// <summary>
         /// Determines whether a given String is a valid QName
         /// </summary>
         /// <param name="value">String to test</param>
         /// <returns></returns>
-        public static bool IsValidQName(String value)
+        public static bool IsValidQName(String value, TurtleSyntax syntax)
         {
             if (value.Contains(':'))
             {
@@ -165,23 +186,23 @@ namespace VDS.RDF.Parsing
                 if (!ns.Equals(String.Empty))
                 {
                     //Allowed empty Namespace
-                    if (ns.StartsWith("-"))
+                    if (ns.StartsWith("-") || ns.StartsWith("."))
                     {
-                        //Can't start with a -
+                        //Can't start with a - or .
                         return false;
                     }
                     else
                     {
                         char[] nchars = ns.ToCharArray();
-                        if (XmlSpecsHelper.IsNameStartChar(nchars[0]) && nchars[0] != '_')
+                        if (IsPNCharsBase(nchars[0]))
                         {
                             if (nchars.Length > 1)
                             {
                                 for (int i = 1; i < nchars.Length; i++)
                                 {
-                                    //Not a valid Name Char
-                                    if (!XmlSpecsHelper.IsNameChar(nchars[i])) return false;
-                                    if (nchars[i] == '.') return false;
+                                    //Check if valid Name Char
+                                    //The . character is not allowed in original Turtle but is permitted in new Turtle
+                                    if (!IsPNChars(nchars[i]) || (nchars[i] == '.' && syntax == TurtleSyntax.Original)) return false;
                                 }
                                 //If we reach here the Namespace is OK
                             }
@@ -204,15 +225,15 @@ namespace VDS.RDF.Parsing
                     //Allowed empty Local Name
                     char[] lchars = localname.ToCharArray();
 
-                    if (XmlSpecsHelper.IsNameStartChar(lchars[0]))
+                    if (IsPNCharsU(lchars[0]) || (Char.IsDigit(lchars[0]) && syntax == TurtleSyntax.W3C))
                     {
                         if (lchars.Length > 1)
                         {
                             for (int i = 1; i < lchars.Length; i++)
                             {
-                                //Not a valid Name Char
-                                if (!XmlSpecsHelper.IsNameChar(lchars[i])) return false;
-                                if (lchars[i] == '.') return false;
+                                //Check if valid Name Char
+                                //The . character is not allowed in original Turtle but is permitted in new Turtle
+                                if (!IsPNChars(lchars[i]) || (lchars[i] == '.' && syntax == TurtleSyntax.Original)) return false;
                             }
                             //If we reach here the Local Name is OK
                         }
@@ -253,11 +274,12 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="p">Plain Literal to infer the Type of</param>
         /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal</returns>
-        public static Uri InferPlainLiteralType(PlainLiteralToken p)
+        public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
         {
             String value = p.Value;
+            StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
-            if (value.Equals("true") || value.Equals("false"))
+            if (value.Equals("true", comparison) || value.Equals("false", comparison))
             {
                 //Is a Boolean
                 return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
@@ -281,6 +303,73 @@ namespace VDS.RDF.Parsing
             {
                 throw new RdfParseException("Unable to automatically Infer a Type for this PlainLiteralToken.  Plain Literals may only be Booleans, Integers, Decimals or Doubles");
             }
+        }
+
+        public static bool IsPNCharsBase(char c)
+        {
+            if (c >= 'a' && c <= 'z')
+            {
+                return true;
+            }
+            else if (c >= 'A' && c <= 'Z')
+            {
+                return true;
+            }
+            else if ((c >= 0x00c0 && c <= 0x00d6) ||
+                     (c >= 0x00d8 && c <= 0x00f6) ||
+                     (c >= 0x00f8 && c <= 0x02ff) ||
+                     (c >= 0x0370 && c <= 0x037d) ||
+                     (c >= 0x200c && c <= 0x200d) ||
+                     (c >= 0x2070 && c <= 0x218f) ||
+                     (c >= 0x2c00 && c <= 0x2fef) ||
+                     (c >= 0x3001 && c <= 0xd7ff) ||
+                     (c >= 0xf900 && c <= 0xfdcf) ||
+                     (c >= 0xfdf0 && c <= 0xfffd) /*||
+                     (c >= 0x10000 && c <= 0xeffff)*/)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsPNChars(char c)
+        {
+            if (IsPNCharsU(c))
+            {
+                return true;
+            }
+            else if (c == '-')
+            {
+                return true;
+            }
+            else if (Char.IsDigit(c))
+            {
+                return true;
+            }
+            else if (c == 0x00b7)
+            {
+                return true;
+            }
+            else if (c >= 0x0300 && c <= 0x036f)
+            {
+                return true;
+            }
+            else if (c >= 0x203f && c <= 0x2040)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsPNCharsU(char c)
+        {
+            return c == '_' || IsPNCharsBase(c);
         }
     }
 

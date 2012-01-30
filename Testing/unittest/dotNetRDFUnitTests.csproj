@@ -215,6 +215,7 @@
     <Compile Include="Update\UpdateTimeouts.cs" />
     <Compile Include="Web\ConnegTests.cs" />
     <Compile Include="Writing\CollectionCompressionTests.cs" />
+    <Compile Include="Writing\CompressionTests.cs" />
     <Compile Include="Writing\FormattingTests.cs" />
     <Compile Include="Query\PelletTests.cs" />
     <Compile Include="Parsing\RdfATests.cs" />

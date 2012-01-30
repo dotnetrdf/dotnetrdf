@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -30,27 +31,32 @@ namespace VDS.RDF.Test.Writing
 
         private void CheckRoundTrip(IGraph g, IEnumerable<Type> exceptions)
         {
-            Console.WriteLine("Original Triples:");
-            foreach (Triple t in g.Triples)
-            {
-                Console.WriteLine(t.ToString(this._formatter));
-            }
-            Console.WriteLine();
+            //Console.WriteLine("Original Triples:");
+            //foreach (Triple t in g.Triples)
+            //{
+            //    Console.WriteLine(t.ToString(this._formatter));
+            //}
+            //Console.WriteLine();
 
             foreach (IRdfWriter writer in this._writers)
             {
                 Console.WriteLine("Checking round trip with " + writer.GetType().Name);
                 System.IO.StringWriter strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
-                Console.WriteLine(strWriter.ToString());
+                //Console.WriteLine(strWriter.ToString());
                 Console.WriteLine();
 
                 Graph h = new Graph();
-                this._parser.Load(h, new StringReader(strWriter.ToString()));
-                Console.WriteLine("Parsed Triples:");
-                foreach (Triple t in h.Triples)
+                try
                 {
-                    Console.WriteLine(t.ToString(this._formatter));
+                    this._parser.Load(h, new StringReader(strWriter.ToString()));
+                    Console.WriteLine("Output was parsed OK");
+                }
+                catch
+                {
+                    Console.WriteLine("Invalid Output:");
+                    Console.WriteLine(strWriter.ToString());
+                    throw;
                 }
                 Console.WriteLine();
 
@@ -60,7 +66,16 @@ namespace VDS.RDF.Test.Writing
                 }
                 else
                 {
-                    Assert.AreEqual(g, h, "Graphs should be equal [" + writer.GetType().Name + "]");
+                    try
+                    {
+                        Assert.AreEqual(g, h, "Graphs should be equal [" + writer.GetType().Name + "]");
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Output did not round trip:");
+                        Console.WriteLine(strWriter.ToString());
+                        throw;
+                    }
                     Console.WriteLine("Graphs are equal");
                 }
             }
@@ -69,6 +84,38 @@ namespace VDS.RDF.Test.Writing
         private void CheckRoundTrip(IGraph g)
         {
             this.CheckRoundTrip(g, Enumerable.Empty<Type>());
+        }
+
+        private void CheckFailure(IGraph g)
+        {
+            Console.WriteLine("Original Triples:");
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(this._formatter));
+            }
+            Console.WriteLine();
+
+            foreach (IRdfWriter writer in this._writers)
+            {
+                Console.WriteLine("Checking for Failure with " + writer.GetType().Name);
+                bool failed = false;
+                try
+                {
+                    System.IO.StringWriter sw = new System.IO.StringWriter();
+                    writer.Save(g, sw);
+
+                    Console.WriteLine("Produced Output when failure was expected:");
+                    Console.WriteLine(sw.ToString());
+
+                    failed = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Failed as expected - " + ex.Message);
+                }
+                if (failed) Assert.Fail(writer.GetType().Name + " produced output when failure was expected");
+                Console.WriteLine();
+            }
         }
 
         [TestMethod]
@@ -221,7 +268,8 @@ namespace VDS.RDF.Test.Writing
         public void WritingRdfXmlComplex()
         {
             Graph g = new Graph();
-            g.LoadFromFile("chado-in-owl.ttl");
+            TurtleParser parser = new TurtleParser();
+            parser.Load(new PagingHandler(new GraphHandler(g), 1000), "chado-in-owl.ttl");
 
             this.CheckRoundTrip(g);
         }
@@ -234,6 +282,16 @@ namespace VDS.RDF.Test.Writing
             g.LoadFromString(fragment);
 
             this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlInvalidPredicates1()
+        {
+            String fragment = "@prefix ex: <http://example.org/>. ex:subj ex:123 ex:object .";
+            Graph g = new Graph();
+            g.LoadFromString(fragment);
+
+            this.CheckFailure(g);
         }
     }
 }

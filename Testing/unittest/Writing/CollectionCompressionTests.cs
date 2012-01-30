@@ -14,45 +14,8 @@ namespace VDS.RDF.Test.Writing
 {
     [TestClass]
     public class CollectionCompressionTests
+        : CompressionTests
     {
-        List<KeyValuePair<IRdfWriter, IRdfReader>> _compressers = new List<KeyValuePair<IRdfWriter, IRdfReader>>()
-        {
-            new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new FastRdfXmlWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
-            //new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlTreeWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
-        };
-
-        private void CheckCompressionRoundTrip(IGraph g)
-        {
-            foreach (KeyValuePair<IRdfWriter, IRdfReader> kvp in this._compressers)
-            {
-
-                IRdfWriter writer = kvp.Key;
-                if (writer is ICompressingWriter)
-                {
-                    ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
-                }
-                if (writer is IHighSpeedWriter)
-                {
-                    ((IHighSpeedWriter)writer).HighSpeedModePermitted = false;
-                }
-                System.IO.StringWriter strWriter = new System.IO.StringWriter();
-                writer.Save(g, strWriter);
-
-                Console.WriteLine("Compressed Output using " + kvp.Key.GetType().Name);
-                Console.WriteLine(strWriter.ToString());
-                Console.WriteLine();
-
-                Graph h = new Graph();
-                StringParser.Parse(h, strWriter.ToString(), kvp.Value);
-
-                Assert.AreEqual(g, h, "Graphs should be equal after round trip to and from serialization using " + kvp.Key.GetType().Name);
-            }
-        }
-
         [TestMethod]
         public void WritingCollectionCompressionEmpty1()
         {

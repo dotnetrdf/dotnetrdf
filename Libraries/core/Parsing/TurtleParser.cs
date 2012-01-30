@@ -48,18 +48,26 @@ namespace VDS.RDF.Parsing
     /// Parser for Turtle syntax
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
-    public class TurtleParser : IRdfReader, ITraceableParser, ITraceableTokeniser
+    public class TurtleParser 
+        : IRdfReader, ITraceableParser, ITraceableTokeniser
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
         private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
+        private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
         /// Creates a new Turtle Parser
         /// </summary>
-        public TurtleParser()
-        {
+        public TurtleParser() { }
 
+        /// <summary>
+        /// Creates a new Turtle Parser
+        /// </summary>
+        /// <param name="syntax">Turtle Syntax</param>
+        public TurtleParser(TurtleSyntax syntax) 
+        {
+            this._syntax = syntax;
         }
 
         /// <summary>
@@ -67,6 +75,17 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="queueMode">Queue Mode for Tokenising</param>
         public TurtleParser(TokenQueueMode queueMode)
+        {
+            this._queueMode = queueMode;
+        }
+
+        /// <summary>
+        /// Creates a new Turtle Parser which uses the given Token Queue Mode
+        /// </summary>
+        /// <param name="queueMode">Queue Mode for Tokenising</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax)
+            : this(syntax)
         {
             this._queueMode = queueMode;
         }
@@ -170,7 +189,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new TurtleTokeniser(input), this._queueMode, this._traceParsing, this._traceTokeniser);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new TurtleTokeniser(input, this._syntax), this._queueMode, this._traceParsing, this._traceTokeniser);
                 this.Parse(context);
             }
             catch
@@ -863,7 +882,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.PLAINLITERAL:
                     //Attempt to infer Type
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, this._syntax))
                     {
                         if (TurtleSpecsHelper.IsValidDouble(lit.Value))
                         {
@@ -879,7 +898,7 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            return context.Handler.CreateLiteralNode(lit.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+                            return context.Handler.CreateLiteralNode(lit.Value.ToLower(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
                         }
                     }
                     else

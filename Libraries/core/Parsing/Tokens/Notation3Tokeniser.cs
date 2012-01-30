@@ -415,7 +415,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Validate the final result
             if (this.Value.EndsWith(".")) this.Backtrack();
-            if (!TurtleSpecsHelper.IsValidPlainLiteral(this.Value)) 
+            if (!TurtleSpecsHelper.IsValidPlainLiteral(this.Value, TurtleSyntax.Original)) 
             {
                 throw Error("The format of the Numeric Literal '" + this.Value + "' is not valid!");
             }
@@ -485,7 +485,7 @@ namespace VDS.RDF.Parsing.Tokens
                     this.LastTokenType = Token.KEYWORDOF;
                     return new KeywordOfToken(this.CurrentLine, this.StartPosition);
                 }
-                else if (TurtleSpecsHelper.IsValidPlainLiteral(value))
+                else if (TurtleSpecsHelper.IsValidPlainLiteral(value, TurtleSyntax.Original))
                 {
                     //Other Valid Plain Literal
                     this.LastTokenType = Token.PLAINLITERAL;

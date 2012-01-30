@@ -508,7 +508,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value))
+            if (TurtleSpecsHelper.IsValidPlainLiteral(this.Value, TurtleSyntax.Original))
             {
                 this.LastTokenType = Token.PLAINLITERAL;
                 return new PlainLiteralToken(this.Value, this.StartLine, this.StartPosition, this.EndPosition);

@@ -1319,7 +1319,7 @@ namespace VDS.RDF.Parsing
 
                 case Token.PLAINLITERAL:
                     //Attempt to infer Type
-                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value))
+                    if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, TurtleSyntax.Original))
                     {
                         if (TurtleSpecsHelper.IsValidDouble(lit.Value))
                         {

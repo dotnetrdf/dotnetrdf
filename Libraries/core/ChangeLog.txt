@@ -9,45 +9,35 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.5.1 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.6.0 release of dotNetRDF
 
 Added
+- Core
+ - URIs are now interned to reduce memory usage and speed up equality comparisons
+ - Improved configurability of HashTable so perfomance can be tailored to usage
 - Parsing
- - Support for registering arbitrary parsers via MimeTypesHelper
- - Added a SPARQL TSV Parser
-- Query
- - Added support for new SPARQL 1.1 functions STRAFTER, STRBEFORE and STRREPLACE
+ - Support for parsing W3C standard Turtle (allows for more QNames, case insensitive boolean literals and single quoted literals)
+ - Registered text/boolean parser for SPARQL Results
 - Storage
- - Added Dydra Support
+ - All HTTP based storage now supports HTTP proxying
 
 Changed
 - Bug Fixes
- - Fixed a Bug where NegotiateByFileExtension would cause a HTTP 500 error rather than failing silently
- - Fixed a Bug with NegotiateByFileExtension and nested handler paths
- - Fixed a rare corner case Bug related to round-trip serialization of literals containing backslashes
- - Fixed a bug with some COPY/MOVE commands when processed with Leviathan
- - Fixed a bug related to data loading of Blank Node heavy data into the new ADO Store
- - Fixed a bug with the BaseAdoDataset reporting incorrectly for HasGraph()
- - Fixed a bug with HtmlSchemaWriter documenting anonymous classes
- - Fixed some bugs with Stardog connectivity due to changes in their HTTP server code
- - Fixed a bug with CSV output
- - Fixed a bug with SPARQL XML Parser not always decoding XML entities
- - Fixed a performance bug with new SQL backend that occurs primarily when the database server is not local
-   on the network i.e. when database server is remote
+ - Fixed a bug with long URIs and SparqlRemoteUpdateEndpoint
+ - Critical bug where connecting to an AllegroGraph 4.x repository cleared existing data
+ - Fixed a bug whereby Blank Node IDs in NTriples output could be invalid
 - Query
- - AVG() aggregate can now be applied over non-numeric expressions
-- Storage
- - Performance improvements to querying ADO stores
- - Added support for additional reasoning modes for Stardog
-- Update
- - Made LeviathanUpdateProcessor more extensible
-  - Now supports a custom query processor used in evaluating WHERE clauses
+ - Major refactor of SPARQL expression evaluation to make it more efficient and maintainable
+ - Improved selectivity of TriplePattern.GetTriples()
+ - Some refactoring of ISparqlDataset interface
 - Writing
- - Updated SPARQL CSV/TSV output to match SPARQL 1.1 specification
+ - Support for outputting W3C standard Turtle (allows for more URIs to be compressed to QNames)
+ - WriteThroughHandler periodically flushes the output stream
+ - 
 
 
 Removed
-
+- Legacy SQL Store support
 
    
 

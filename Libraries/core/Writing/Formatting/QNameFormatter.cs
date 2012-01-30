@@ -44,7 +44,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Abstract Base Class for Formatters that can compress URIs to QNames
     /// </summary>
-    public abstract class QNameFormatter : BaseFormatter, INamespaceFormatter
+    public abstract class QNameFormatter 
+        : BaseFormatter, INamespaceFormatter
     {
         /// <summary>
         /// QName Map used for compressing URIs to QNames

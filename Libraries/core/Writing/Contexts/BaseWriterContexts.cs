@@ -138,7 +138,8 @@ namespace VDS.RDF.Writing.Contexts
     /// <remarks>
     /// This is not an abstract class since some writers will require only this information or possibly less
     /// </remarks>
-    public class BaseWriterContext : IWriterContext
+    public class BaseWriterContext 
+        : IWriterContext
     {
         /// <summary>
         /// Compression Level to be used

@@ -587,7 +587,7 @@ namespace VDS.RDF.Writing
                 //Need to generate a temporary namespace
                 this.GenerateTemporaryNamespace(context, p, out tempPrefix, out tempUri);
                 uriref = this.GenerateUriRef(context, p.Uri, UriRefType.QName, out outType);
-                if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                if (outType != UriRefType.QName) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable + " - '" + p.Uri + "'");
             }
             //Use the QName for the Node
             if (uriref.Contains(':'))
@@ -752,7 +752,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname))
+            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;

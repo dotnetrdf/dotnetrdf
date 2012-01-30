@@ -586,7 +586,7 @@ namespace VDS.RDF.Parsing
 
                     case Token.PLAINLITERAL:
                         //Plain Literals
-                        Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)obj);
+                        Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)obj, TurtleSyntax.Original);
                         objNode = context.Handler.CreateLiteralNode(obj.Value, plt);
                         break;
 
@@ -697,7 +697,7 @@ namespace VDS.RDF.Parsing
 
                         break;
                     case Token.PLAINLITERAL:
-                        Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)next);
+                        Uri plt = TurtleSpecsHelper.InferPlainLiteralType((PlainLiteralToken)next, TurtleSyntax.Original);
                         item = context.Handler.CreateLiteralNode(next.Value, plt);
                         break;
 

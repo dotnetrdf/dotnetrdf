@@ -52,7 +52,8 @@ namespace VDS.RDF.Web
     /// <summary>
     /// Abstract base class for HTTP Handlers for serving Graphs in ASP.Net applications
     /// </summary>
-    public abstract class BaseGraphHandler : IHttpHandler
+    public abstract class BaseGraphHandler
+        : IHttpHandler
     {
         /// <summary>
         /// Handler Configuration

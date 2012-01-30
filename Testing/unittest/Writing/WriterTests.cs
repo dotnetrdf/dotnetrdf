@@ -13,7 +13,9 @@ namespace VDS.RDF.Test.Writing
 {
     [TestClass]
     public class WriterTests
+        : CompressionTests
     {
+
         private List<String> samples = new List<string>()
             {
                 @":backslashes :string ""This example has some backslashes: C:\Program Files\somewhere"".",
@@ -393,6 +395,30 @@ namespace VDS.RDF.Test.Writing
                     Assert.AreEqual(g.BaseUri, h.BaseUri, "Base URIs should be equal");
                 }
             }
+        }
+
+        [TestMethod]
+        public void WritingQNameValidation()
+        {
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
+            INode subj = g.CreateUriNode("ex:subject");
+            INode pred = g.CreateUriNode("ex:predicate");
+            List<INode> objects = new List<INode>()
+            {
+                g.CreateUriNode("ex:123"),
+                g.CreateBlankNode("a_blank_node"),
+                /*g.CreateBlankNode("_blank"),
+                g.CreateBlankNode("-blank"),*/
+                g.CreateUriNode("ex:_object"),
+                g.CreateUriNode("ex:-object")
+            };
+            foreach (INode obj in objects)
+            {
+                g.Assert(subj, pred, obj);
+            }
+
+            this.CheckCompressionRoundTrip(g);
         }
     }
 }

@@ -34,6 +34,7 @@ namespace VDS.RDF.Test.Writing
                 //Create Nodes used for our test Triples
                 IBlankNode subjBnode = g.CreateBlankNode();
                 IUriNode subjUri = g.CreateUriNode(new Uri("http://example.org/subject"));
+                IUriNode subjUri2 = g.CreateUriNode(new Uri("http://example.org/123"));
                 IUriNode predUri = g.CreateUriNode(new Uri("http://example.org/vocab#predicate"));
                 IUriNode predType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
                 IBlankNode objBnode = g.CreateBlankNode();
@@ -55,6 +56,7 @@ namespace VDS.RDF.Test.Writing
                     new UncompressedTurtleFormatter(),
                     new UncompressedNotation3Formatter(),
                     new TurtleFormatter(g),
+                    new TurtleW3CFormatter(g),
                     new Notation3Formatter(g),
                     new CsvFormatter(),
                     new TsvFormatter(),
@@ -63,7 +65,8 @@ namespace VDS.RDF.Test.Writing
                 List<INode> subjects = new List<INode>()
                 {
                     subjBnode,
-                    subjUri
+                    subjUri,
+                    subjUri2
                 };
                 List<INode> predicates = new List<INode>()
                 {

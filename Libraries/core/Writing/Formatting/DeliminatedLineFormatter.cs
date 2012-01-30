@@ -130,7 +130,7 @@ namespace VDS.RDF.Writing.Formatting
         protected override string FormatLiteralNode(ILiteralNode lit, TripleSegment? segment)
         {
             StringBuilder output = new StringBuilder();
-            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType))
+            if (TurtleSpecsHelper.IsValidPlainLiteral(lit.Value, lit.DataType, TurtleSyntax.Original))
             {
                 output.Append(lit.Value);
             }

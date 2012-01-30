@@ -79,9 +79,10 @@ namespace VDS.RDF.Writing.Formatting
     }
 
     /// <summary>
-    /// Formatter which formats Turtle with compression
+    /// Formatter which formats Turtle with QName compression
     /// </summary>
-    public class TurtleFormatter : QNameFormatter, IBaseUriFormatter
+    public class TurtleFormatter 
+        : QNameFormatter, IBaseUriFormatter
     {
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
         /// <summary>
@@ -168,7 +169,7 @@ namespace VDS.RDF.Writing.Formatting
             bool longlit = false, plainlit = false;
 
             longlit = TurtleSpecsHelper.IsLongLiteral(l.Value);
-            plainlit = TurtleSpecsHelper.IsValidPlainLiteral(l.Value, l.DataType);
+            plainlit = TurtleSpecsHelper.IsValidPlainLiteral(l.Value, l.DataType, TurtleSyntax.Original);
 
             if (plainlit)
             {
@@ -286,6 +287,76 @@ namespace VDS.RDF.Writing.Formatting
         public virtual string FormatBaseUri(Uri u)
         {
             return "@base <" + this.FormatUri(u) + "> .";
+        }
+    }
+
+    /// <summary>
+    /// Formatter which formats Turtle with QName compression using the newer W3C syntax which permits a wider range of valid QNames
+    /// </summary>
+    public class TurtleW3CFormatter
+        : TurtleFormatter
+    {
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        public TurtleW3CFormatter() 
+            : base("Turtle (W3C)", new QNameOutputMapper()) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter that uses the given QName mapper
+        /// </summary>
+        /// <param name="qnameMapper">QName Mapper</param>
+        public TurtleW3CFormatter(QNameOutputMapper qnameMapper)
+            : base("Turtle (W3C)", qnameMapper) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter for the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        public TurtleW3CFormatter(IGraph g)
+            : base("Turtle (W3C)", new QNameOutputMapper(g.NamespaceMap)) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter for the given Namespace Map
+        /// </summary>
+        /// <param name="nsmap">Namespace Map</param>
+        public TurtleW3CFormatter(INamespaceMapper nsmap)
+            : base("Turtle (W3C)", new QNameOutputMapper(nsmap)) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        protected TurtleW3CFormatter(String formatName)
+            : base(formatName, new QNameOutputMapper()) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="g">Graph</param>
+        protected TurtleW3CFormatter(String formatName, IGraph g)
+            : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="nsmap">Namespace Map</param>
+        protected TurtleW3CFormatter(String formatName, INamespaceMapper nsmap)
+            : base(formatName, new QNameOutputMapper(nsmap)) { }
+
+        /// <summary>
+        /// Creates a new Turtle Formatter
+        /// </summary>
+        /// <param name="formatName">Format Name</param>
+        /// <param name="qnameMapper">QName Map</param>
+        protected TurtleW3CFormatter(String formatName, QNameOutputMapper qnameMapper)
+            : base(formatName, qnameMapper) { }
+
+        protected override bool IsValidQName(string value)
+        {
+            return TurtleSpecsHelper.IsValidQName(value, TurtleSyntax.W3C);
         }
     }
 }

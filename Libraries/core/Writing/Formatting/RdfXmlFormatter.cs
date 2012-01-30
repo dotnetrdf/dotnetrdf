@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing.Formatting
 
         private void GetQName(Uri u, out String qname, out String ns)
         {
-            if (this._mapper != null && this._mapper.ReduceToQName(u.ToString(), out qname))
+            if (this._mapper != null && this._mapper.ReduceToQName(u.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
@@ -119,7 +119,7 @@ namespace VDS.RDF.Writing.Formatting
 #else
                 qname = u.Segments().LastOrDefault();
 #endif
-                if (qname == null) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
+                if (qname == null || !RdfXmlSpecsHelper.IsValidQName(qname)) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
                 ns = u.ToString().Substring(0, u.ToString().Length - qname.Length);
             }
         }

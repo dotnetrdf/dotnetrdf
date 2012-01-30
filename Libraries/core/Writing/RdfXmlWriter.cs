@@ -717,7 +717,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname))
+            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;

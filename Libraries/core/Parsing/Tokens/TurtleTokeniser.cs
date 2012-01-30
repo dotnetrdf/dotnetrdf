@@ -44,9 +44,11 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// A Class for Reading an Input Stream and generating Turtle Tokens from it
     /// </summary>
-    public class TurtleTokeniser : BaseTokeniser
+    public class TurtleTokeniser 
+        : BaseTokeniser
     {
         private BlockingTextReader _in;
+        private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -60,11 +62,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public TurtleTokeniser(BlockingTextReader input)
-            : base(input)
-        {
-            this._in = input;
-            this.Format = "Turtle";
-        }
+            : this(input, TurtleSyntax.W3C) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -72,6 +70,32 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Input to read from</param>
         public TurtleTokeniser(TextReader input)
             : this(new BlockingTextReader(input)) { }
+
+        /// <summary>
+        /// Creates a new Turtle Tokeniser
+        /// </summary>
+        /// <param name="input">The Input Stream to generate Tokens from</param>
+        public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
+            : this(new BlockingTextReader(input), syntax) { }
+
+        /// <summary>
+        /// Creates a new Turtle Tokeniser
+        /// </summary>
+        /// <param name="input">The Input Stream to generate Tokens from</param>
+        public TurtleTokeniser(BlockingTextReader input, TurtleSyntax syntax)
+            : base(input)
+        {
+            this._in = input;
+            this.Format = "Turtle";
+            this._syntax = syntax;
+        }
+
+        /// <summary>
+        /// Creates a new Turtle Tokeniser
+        /// </summary>
+        /// <param name="input">Input to read from</param>
+        public TurtleTokeniser(TextReader input, TurtleSyntax syntax)
+            : this(new BlockingTextReader(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error
@@ -134,6 +158,7 @@ namespace VDS.RDF.Parsing.Tokens
                 bool whitespaceignored = true;
                 bool rightangleallowed = true;
                 bool quotemarksallowed = true;
+                bool altquotemarksallowed = true;
                 bool longliteral = false;
 
                 try
@@ -322,7 +347,7 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 #endregion
 
-                                #region Quotation Mark Handling
+                                #region Quotation Mark Handling (Literals)
 
                                 case '"':
                                     if (!anycharallowed)
@@ -409,6 +434,100 @@ namespace VDS.RDF.Parsing.Tokens
                                         }
                                     }
                                     break;
+
+                                case '\'':
+                                    if (this._syntax == TurtleSyntax.W3C)
+                                    {
+                                        if (!anycharallowed)
+                                        {
+                                            //Start of a String Literal
+                                            this.StartNewToken();
+                                            anycharallowed = true;
+                                            whitespaceignored = false;
+                                            whitespaceallowed = true;
+                                            altquotemarksallowed = false;
+                                        }
+                                        else if (altquotemarksallowed && longliteral)
+                                        {
+                                            //Could be the end of a Long Literal
+
+                                            this.ConsumeCharacter();
+                                            next = this.Peek();
+
+                                            if (next != '\'')
+                                            {
+                                                //Just a quote in a long literal
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                //Got Two Quote Marks in a row
+                                                this.ConsumeCharacter();
+                                                next = this.Peek();
+
+                                                //Did we get the Third?
+                                                if (next == '\'')
+                                                {
+                                                    //End of Long Literal
+                                                    this.ConsumeCharacter();
+                                                    this.LastTokenType = Token.LONGLITERAL;
+
+                                                    //If there are any additional quotes immediatedly following this then
+                                                    //we want to consume them also
+                                                    next = this.Peek();
+                                                    if (next == '\'')
+                                                    {
+                                                        throw Error("Too many \' characters encountered at the end of a long literal - ensure that you have escaped quotes in a long literal to avoid this error");
+                                                    }
+
+                                                    return new LongLiteralToken(this.Value, this.StartLine, this.EndLine, this.StartPosition, this.EndPosition);
+                                                }
+                                                else
+                                                {
+                                                    //Just two quotes in a long literal
+                                                    continue;
+                                                }
+                                            }
+                                        }
+                                        else if (!altquotemarksallowed)
+                                        {
+                                            //See if this is a Triple Quote for Long Literals
+                                            //OR if it's the Empty String
+                                            if (this.Length == 1 && this.Value.StartsWith("'"))
+                                            {
+                                                this.ConsumeCharacter();
+                                                next = this.Peek();
+
+                                                if (next == '\'')
+                                                {
+                                                    //Turn on Support for Long Literal reading
+                                                    newlineallowed = true;
+                                                    altquotemarksallowed = true;
+                                                    longliteral = true;
+                                                }
+                                                else if (Char.IsWhiteSpace(next) || next == '.' || next == ';' || next == ',' || next == '^' || next == '@')
+                                                {
+                                                    //Empty String
+                                                    this.LastTokenType = Token.LITERAL;
+                                                    return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //Assume End of String Literal
+                                                this.ConsumeCharacter();
+                                                this.LastTokenType = Token.LITERAL;
+
+                                                return new LiteralToken(this.Value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        //Fallback to default behaviour if not W3C Turtle
+                                        goto default;
+                                    }
 
                                 #endregion
 
@@ -888,6 +1007,7 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
             bool colonoccurred = false;
             bool dotoccurred = false;
+            StringComparison comparison = (this._syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 
             if (this.Length == 1 && this.Value[0] == '.')
             {
@@ -899,7 +1019,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
 
             //Grab all the Characters in the QName
-            while (next == ':' || Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == '+' || (next == '.' && !colonoccurred))
+            while (next == ':' || Char.IsLetterOrDigit(next) || next == '_' || next == '-' || next == '+' || (next == '.' && !colonoccurred) || (next == '\\' && this._syntax == TurtleSyntax.W3C))
             {
                 //Can't have more than one Colon in a QName
                 if (next == ':' && !colonoccurred)
@@ -911,15 +1031,24 @@ namespace VDS.RDF.Parsing.Tokens
                     throw Error("Unexpected additional Colon Character while trying to parse a QName from content:\n" + this.Value + "\nQNames can only contain 1 Colon character");
                 }
 
-                //Can't have more than one Dot in a QName
-                if (next == '.' && !dotoccurred)
+                //Can't have more than one Dot in a QName unless we're using W3C Syntax
+                if (next == '.' && (!dotoccurred || this._syntax == TurtleSyntax.W3C))
                 {
-                    if (this.Value.Equals("true") || this.Value.Equals("false")) break;
+                    if (this.Value.Equals("true", comparison) || this.Value.Equals("false", comparison)) break;
                     dotoccurred = true;
                 }
                 else if (next == '.')
                 {
                     throw Error("Unexpected additional Dot Character while trying to parse a Plain Literal from content:\n" + this.Value + "\nPlain Literals can only contain 1 Dot Character, ensure you use White Space after a Plain Literal which contains a dot to avoid ambiguity");
+                }
+
+                //A Backslash allow for unicode escapes in QNames
+                if (next == '\\')
+                {
+                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    //If escape is handled characters have already been consumed so must continue to avoid double consumption
+                    next = this.Peek();
+                    continue;
                 }
 
                 this.ConsumeCharacter();
@@ -929,7 +1058,7 @@ namespace VDS.RDF.Parsing.Tokens
             //If it ends in a trailing . then we need to backtrack
             if (this.Value.EndsWith(".")) this.Backtrack();
 
-            if (colonoccurred && !dotoccurred)
+            if (colonoccurred && (!dotoccurred || this._syntax == TurtleSyntax.W3C))
             {
                 //A QName must contain a Colon at some point
                 String qname = this.Value;
@@ -954,9 +1083,14 @@ namespace VDS.RDF.Parsing.Tokens
                     //Illegal use of - to start a QName
                     throw Error("The - Character cannot be used at the start of a QName");
                 }
+                else if (qname.StartsWith("."))
+                {
+                    //Illegal use of . to start a QName
+                    throw Error("The . Character cannot be used at the start of a QName");
+                }
                 else
                 {
-                    if (qname.Length > 1) 
+                    if (qname.Length > 1)
                     {
                         //Check Illegal use of - or a Digit to start a Local Name
                         String[] localname = qname.Split(':');
@@ -968,7 +1102,7 @@ namespace VDS.RDF.Parsing.Tokens
                             }
                             //Check for Illegal use of a Digit to start a Local Name
                             char[] lnamechar = localname[1].Substring(0, 1).ToCharArray();
-                            if (Char.IsDigit(lnamechar[0]))
+                            if (Char.IsDigit(lnamechar[0]) && this._syntax == TurtleSyntax.Original)
                             {
                                 throw Error("A Local Name within a QName may not start with a Number");
                             }
@@ -1013,7 +1147,7 @@ namespace VDS.RDF.Parsing.Tokens
                 else
                 {
                     //Must be a Plain Literal
-                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value))
+                    if (!TurtleSpecsHelper.IsValidPlainLiteral(value, this._syntax))
                     {
                         throw Error("The value of the Plain Literal '" + value + "' is not valid in Turtle.  Turtle supports Boolean, Integer, Decimal and Double Plain Literals");
                     }
