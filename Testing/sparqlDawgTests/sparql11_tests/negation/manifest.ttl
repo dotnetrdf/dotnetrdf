@@ -17,6 +17,8 @@
     :subset-02
     :set-equals-1
     :subset-03
+    :exists-01
+    :exists-02
    ) .
 
 
@@ -83,4 +85,20 @@
          [ qt:query  <subset-03.rq> ;
            qt:data   <set-data.ttl> ] ;
     mf:result  <subset-03.srx> .
+
+:exists-01 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Positive EXISTS 1" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <exists-01.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <exists-01.srx> .
+
+:exists-02 rdf:type mf:QueryEvaluationTest ;
+    mf:name    "Positive EXISTS 2" ;
+    dawgt:approval dawgt:NotClassified ;
+    mf:action
+         [ qt:query  <exists-02.rq> ;
+           qt:data   <set-data.ttl> ] ;
+    mf:result  <exists-02.srx> .
 

@@ -227,7 +227,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public override bool IsApplicable(SparqlQuery q)
         {
-            return q.QueryType == SparqlQueryType.Ask;
+            return q.QueryType == SparqlQueryType.Ask && !q.HasSolutionModifier;
         }
 
         /// <summary>

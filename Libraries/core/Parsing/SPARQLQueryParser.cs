@@ -429,8 +429,9 @@ namespace VDS.RDF.Parsing
                             }
                         }
 
-                        //If we're an ASK then we shouldn't have any Solution Modifier
-                        if (context.Query.QueryType == SparqlQueryType.Ask) continue;
+                        //If we're an ASK then we shouldn't have any Solution Modifier for SPARQL 1.0
+                        //SPARQL 1.1 allows modifiers so we don't continue if using SPARQL 1.1
+                        if (context.Query.QueryType == SparqlQueryType.Ask && context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) continue;
 
                         //Otherwise we can now have a Solution Modifier
 

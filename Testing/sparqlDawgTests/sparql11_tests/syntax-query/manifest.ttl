@@ -62,6 +62,10 @@
 :test_49
 :test_50
 :test_51
+
+:test_52
+:test_53
+
 ) .
 
 :test_1 rdf:type   mf:PositiveSyntaxTest11 ;
@@ -369,5 +373,15 @@
    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
    mf:name    "syntax-bindings-09.rq" ;
    mf:action  <syntax-bindings-09.rq> ;.
+
+:test_52 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "PrefixName with backslash-escaped colons" ;
+   mf:action  <qname-escape-01.rq> ;.
+
+:test_53 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "PrefixName with hex-encoded colons" ;
+   mf:action  <qname-escape-02.rq> ;.
 
 

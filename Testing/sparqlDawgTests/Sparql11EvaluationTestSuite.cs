@@ -163,6 +163,7 @@ namespace dotNetRDFTest
                 IUriNode negativeUpdateSyntaxTest = manifest.CreateUriNode("mf:NegativeUpdateSyntaxTest11");
                 IUriNode evaluationTest = manifest.CreateUriNode("mf:QueryEvaluationTest");
                 IUriNode updateEvaluationTest = manifest.CreateUriNode("ut:UpdateEvaluationTest");
+                IUriNode updateEvaluationTest2 = manifest.CreateUriNode("mf:UpdateEvaluationTest");
                 IUriNode action = manifest.CreateUriNode("mf:action");
                 IUriNode result = manifest.CreateUriNode("mf:result");
                 IUriNode approval = manifest.CreateUriNode("dawgt:approval");
@@ -310,7 +311,7 @@ namespace dotNetRDFTest
                 }
 
                 //Find all the Update Evaluation Tests
-                foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, updateEvaluationTest))
+                foreach (Triple t in manifest.GetTriplesWithPredicateObject(rdfType, updateEvaluationTest).Concat(manifest.GetTriplesWithPredicateObject(rdfType, updateEvaluationTest2)))
                 {
                     if (manifest.Triples.Contains(new Triple(t.Subject, approval, approvedTest)) || manifest.Triples.Contains(new Triple(t.Subject, approval, unclassifiedTest)))
                     {
@@ -673,10 +674,19 @@ namespace dotNetRDFTest
                 }
                 else
                 {
-                    testsIndeterminate++;
-                    testsEvaluationIndeterminate++;
-                    Console.WriteLine("# Test Result - Unable to load the expected Result Set (Test Indeterminate)");
-                    return 0;
+                    try
+                    {
+                        ISparqlResultsReader resultSetParser = MimeTypesHelper.GetSparqlParser(MimeTypesHelper.GetMimeType(Path.GetExtension(resultFile)));
+                        resultSetParser.Load(expectedResults, resultFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.ReportError("Result Set Parser Error", ex);
+                        testsIndeterminate++;
+                        testsEvaluationIndeterminate++;
+                        Console.WriteLine("# Test Result - Unable to load the expected Result Set (Test Indeterminate)");
+                        return 0;
+                    }
                 }
 
                 ourResults.Trim();

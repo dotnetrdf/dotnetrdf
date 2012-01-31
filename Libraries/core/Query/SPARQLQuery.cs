@@ -689,6 +689,17 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets whether the Query has a Solution Modifier (a GROUP BY, HAVING, ORDER BY, LIMIT or OFFSET)
+        /// </summary>
+        public bool HasSolutionModifier
+        {
+            get
+            {
+                return this._groupBy != null || this._having != null || this._orderBy != null || this._limit >= 0 || this._offset > 0;
+            }
+        }
+
         #endregion
 
         #region Methods for setting up the Query (used by SparqlQueryParser)

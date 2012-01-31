@@ -328,11 +328,11 @@ namespace VDS.RDF.Parsing
             String value;
             if (t.TokenType == Token.LITERAL)
             {
-                value = t.Value.Substring(1, t.Length - 2);
+                value = t.Value;
             }
             else if (t.TokenType == Token.LONGLITERAL)
             {
-                value = t.Value.Substring(3, t.Length - 6);
+                value = t.Value;
             }
             else
             {
