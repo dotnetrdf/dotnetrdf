@@ -445,16 +445,6 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the SPARQL SHA1() function");
                         }
                         break;
-                    case SparqlSpecsHelper.SparqlKeywordSha224:
-                        if (args.Count == 1)
-                        {
-                            sparqlFunc = new Sha224HashFunction(args.First());
-                        }
-                        else
-                        {
-                            throw new RdfParseException("Incorrect number of arguments for the SPARQL SHA224() function");
-                        }
-                        break;
                     case SparqlSpecsHelper.SparqlKeywordSha256:
                         if (args.Count == 1)
                         {

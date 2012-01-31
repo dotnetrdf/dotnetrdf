@@ -1223,10 +1223,6 @@ namespace VDS.RDF.Parsing.Tokens
                         //Sha1 Function Keyword
                         this.LastTokenType = Token.SHA1;
                         return new Sha1KeywordToken(this.CurrentLine, this.StartPosition);
-                    case SparqlSpecsHelper.SparqlKeywordSha224:
-                        //Sha224 Function Keyword
-                        this.LastTokenType = Token.SHA224;
-                        return new Sha224KeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSha256:
                         //Sha256 Function Keyword
                         this.LastTokenType = Token.SHA256;

@@ -650,7 +650,14 @@ namespace VDS.RDF.Query
                 case Token.CONTAINS:
                     return new ContainsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
                 case Token.DATATYPEFUNC:
-                    return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
+                    if (this._syntax == SparqlQuerySyntax.Sparql_1_0)
+                    {
+                        return new DataTypeFunction(this.TryParseBrackettedExpression(tokens));
+                    }
+                    else
+                    {
+                        return new DataType11Function(this.TryParseBrackettedExpression(tokens));
+                    }
                 case Token.DAY:
                     return new DayFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.ENCODEFORURI:
@@ -727,8 +734,6 @@ namespace VDS.RDF.Query
                     return new SecondsFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SHA1:
                     return new Sha1HashFunction(this.TryParseBrackettedExpression(tokens));
-                case Token.SHA224:
-                    return new Sha224HashFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SHA256:
                     return new Sha256HashFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.SHA384:

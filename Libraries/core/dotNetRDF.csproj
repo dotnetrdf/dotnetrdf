@@ -449,7 +449,6 @@
     <Compile Include="Query\Expressions\Functions\Sparql\Boolean\SameTermFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\DateTime\SecondsFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha1HashFunction.cs" />
-    <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha224HashFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha256HashFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\Hash\Sha512HashFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\StrAfterFunction.cs" />
