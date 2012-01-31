@@ -985,12 +985,13 @@ namespace VDS.RDF.Parsing
 
         private void TryParseTransferUris(SparqlUpdateParserContext context, out Uri sourceUri, out Uri destUri)
         {
-            IToken next = context.Tokens.Dequeue();
+            IToken next = context.Tokens.Peek();
             sourceUri = destUri = null;
 
             //Parse the Source Graph URI
             if (next.TokenType == Token.GRAPH)
             {
+                context.Tokens.Dequeue();
                 next = context.Tokens.Peek();
                 if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
                 {
@@ -1001,8 +1002,14 @@ namespace VDS.RDF.Parsing
                     ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a URI/QName after a GRAPH keyword to specify the URI of the Source Graph for a Transfer (ADD/COPY/MOVE) Command", next);
                 }
             }
+            else if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
+            {
+                //May have a URI/QName for a Graph without a GRAPH keyword
+                sourceUri = this.TryParseIriRef(context, " to indicate the Source Graph for a Transfer (ADD/COPY/MOVE) command");
+            }
             else if (next.TokenType == Token.DEFAULT)
             {
+                context.Tokens.Dequeue();
                 sourceUri = null;
             }
             else
@@ -1014,11 +1021,12 @@ namespace VDS.RDF.Parsing
             next = context.Tokens.Dequeue();
             if (next.TokenType != Token.TO) throw ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a TO Keyword after the Source Graph specifier", next);
 
-            next = context.Tokens.Dequeue();
+            next = context.Tokens.Peek();
 
             //Parse the Destination Graph URI
             if (next.TokenType == Token.GRAPH)
             {
+                context.Tokens.Dequeue();
                 next = context.Tokens.Peek();
                 if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
                 {
@@ -1029,8 +1037,14 @@ namespace VDS.RDF.Parsing
                     ParserHelper.Error("Unexpected Token '" + next.GetType().Name + "' encountered, expected a URI/QName after a GRAPH keyword to specify the URI of the Destination Graph for a Transfer (ADD/COPY/MOVE) Command", next);
                 }
             }
+            else if (next.TokenType == Token.URI || next.TokenType == Token.QNAME)
+            {
+                //May have a URI/QName for a Graph without a GRAPH keyword
+                destUri = this.TryParseIriRef(context, " to indicate the Destination Graph for a Transfer (ADD/COPY/MOVE) command");
+            }
             else if (next.TokenType == Token.DEFAULT)
             {
+                context.Tokens.Dequeue();
                 destUri = null;
             }
             else
