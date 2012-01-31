@@ -70,6 +70,9 @@ namespace VDS.RDF.Update.Commands
         {
             try
             {
+                //If Source and Destination are same this is a no-op
+                if (EqualityHelper.AreUrisEqual(this._sourceUri, this._destUri)) return;
+
                 if (context.Data.HasGraph(this._sourceUri))
                 {
                     //Get the Source Graph

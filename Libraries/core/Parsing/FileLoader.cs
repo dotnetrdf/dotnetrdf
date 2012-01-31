@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing
 #if SILVERLIGHT
                 throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist");
 #else
-                throw new FileNotFoundException("Cannot read RDF from a File that doesn't exist", filename);
+                throw new FileNotFoundException("Cannot read RDF from the File '" + filename + "' since it doesn't exist", filename);
 #endif
             }
 
@@ -236,7 +236,7 @@ namespace VDS.RDF.Parsing
 #if SILVERLIGHT
                 throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist");
 #else
-                throw new FileNotFoundException("Cannot read a RDF Dataset from a File that doesn't exist", filename);
+                throw new FileNotFoundException("Cannot read a RDF Dataset from the File '" + filename + "' since it doesn't exist", filename);
 #endif
             }
 

@@ -43,7 +43,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents the SPARQL Update COPY Command
     /// </summary>
-    public class CopyCommand : BaseTransferCommand
+    public class CopyCommand 
+        : BaseTransferCommand
     {
         /// <summary>
         /// Creates a Command which Copies the contents of one Graph to another overwriting the destination Graph
@@ -72,6 +73,9 @@ namespace VDS.RDF.Update.Commands
             {
                 if (context.Data.HasGraph(this._sourceUri))
                 {
+                    //If Source and Destination are same this is a no-op
+                    if (EqualityHelper.AreUrisEqual(this._sourceUri, this._destUri)) return;
+
                     //Get the Source Graph
                     IGraph source = context.Data.GetModifiableGraph(this._sourceUri);
 

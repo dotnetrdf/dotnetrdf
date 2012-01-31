@@ -43,7 +43,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents the SPARQL Update ADD Command
     /// </summary>
-    public class AddCommand : BaseTransferCommand
+    public class AddCommand 
+        : BaseTransferCommand
     {
         /// <summary>
         /// Creates a Command which merges the data from the Source Graph into the Destination Graph
@@ -77,15 +78,13 @@ namespace VDS.RDF.Update.Commands
 
                     //Get the Destination Graph
                     IGraph dest;
-                    if (context.Data.HasGraph(this._destUri))
-                    {
-                        dest = context.Data.GetModifiableGraph(this._destUri);
-                    }
-                    else
+                    if (!context.Data.HasGraph(this._destUri))
                     {
                         dest = new Graph();
                         dest.BaseUri = this._destUri;
+                        context.Data.AddGraph(dest);
                     }
+                    dest = context.Data.GetModifiableGraph(this._destUri);
 
                     //Move data from the Source into the Destination
                     dest.Merge(source);

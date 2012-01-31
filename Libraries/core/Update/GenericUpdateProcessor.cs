@@ -237,6 +237,9 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    //If Source and Destination are equal this is a no-op
+                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+
                     Graph source = new Graph();
                     this._manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
@@ -1321,6 +1324,9 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    //If Source and Destination are equal this is a no-op
+                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+
                     Graph source = new Graph();
                     this._manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;

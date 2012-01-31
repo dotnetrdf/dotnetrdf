@@ -67,24 +67,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="sparql11_tests\add\add-01.ru">
+    <Content Include="sparql11_tests\add\add-01.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="sparql11_tests\add\add-03.ru">
+    </Content>
+    <Content Include="sparql11_tests\add\add-03.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="sparql11_tests\add\add-05.ru">
+    </Content>
+    <Content Include="sparql11_tests\add\add-05.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="sparql11_tests\add\add-06.ru">
+    </Content>
+    <Content Include="sparql11_tests\add\add-06.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="sparql11_tests\add\add-07.ru">
+    </Content>
+    <Content Include="sparql11_tests\add\add-07.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="sparql11_tests\add\add-08.ru">
+    </Content>
+    <Content Include="sparql11_tests\add\add-08.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
     <None Include="sparql11_tests\bind\bind10.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2612,6 +2612,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sparql11_tests\add\add-03-post.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\add\add-03-pre.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sparql11_tests\add\add-default.ttl">
