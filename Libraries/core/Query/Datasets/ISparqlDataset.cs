@@ -96,25 +96,9 @@ namespace VDS.RDF.Query.Datasets
         void ResetDefaultGraph();
 
         /// <summary>
-        /// Gets the current Default Graph (null if none)
-        /// </summary>
-        IGraph DefaultGraph
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets the enumeration of the Graph URIs that currently make up the default graph
         /// </summary>
         IEnumerable<Uri> DefaultGraphUris
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Gets the current Active Graph (null if none)
-        /// </summary>
-        IGraph ActiveGraph
         {
             get;
         }

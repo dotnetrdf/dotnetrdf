@@ -81,12 +81,12 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            IGraph activeGraph = context.Data.ActiveGraph;
-            IGraph defaultGraph = context.Data.DefaultGraph;
+            List<Uri> activeGraphs = context.Data.ActiveGraphUris.ToList();
+            List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
             ParallelEvaluateDelegate d = new ParallelEvaluateDelegate(this.ParallelEvaluate);
-            IAsyncResult lhs = d.BeginInvoke(this._lhs, context, activeGraph, defaultGraph, null, null);
-            IAsyncResult rhs = d.BeginInvoke(this._rhs, context2, activeGraph, defaultGraph, null, null);
+            IAsyncResult lhs = d.BeginInvoke(this._lhs, context, activeGraphs, defaultGraphs, null, null);
+            IAsyncResult rhs = d.BeginInvoke(this._rhs, context2, activeGraphs, defaultGraphs, null, null);
 
             WaitHandle.WaitAll(new WaitHandle[] { lhs.AsyncWaitHandle, rhs.AsyncWaitHandle });
 
@@ -122,23 +122,23 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
-        private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IGraph activeGraph, IGraph defGraph);
+        private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs);
 
-        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IGraph activeGraph, IGraph defGraph)
+        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs)
         {
             bool activeGraphOk = false, defaultGraphOk = false;
             try
             {
                 //Set the Active Graph
-                if (activeGraph != null)
+                if (activeGraphs.Any())
                 {
-                    //context.Data.SetActiveGraph(activeGraph);
+                    context.Data.SetActiveGraph(activeGraphs);
                     activeGraphOk = true;
                 }
                 //Set the Default Graph
-                if (defGraph != null)
+                if (defGraphs.Any())
                 {
-                    //context.Data.SetDefaultGraph(defGraph);
+                    context.Data.SetDefaultGraph(defGraphs);
                     defaultGraphOk = true;
                 }
 
@@ -315,12 +315,12 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            IGraph activeGraph = context.Data.ActiveGraph;
-            IGraph defaultGraph = context.Data.DefaultGraph;
+            List<Uri> activeGraphs = context.Data.ActiveGraphUris.ToList();
+            List<Uri> defaultGraphs = context.Data.DefaultGraphUris.ToList();
 
             //Start both executing asynchronously
-            IAsyncResult lhs = this._d.BeginInvoke(this._lhs, context, activeGraph, defaultGraph, null, null);
-            IAsyncResult rhs = this._d.BeginInvoke(this._rhs, context2, activeGraph, defaultGraph, new AsyncCallback(this.RhsCallback), null);
+            IAsyncResult lhs = this._d.BeginInvoke(this._lhs, context, activeGraphs, defaultGraphs, null, null);
+            IAsyncResult rhs = this._d.BeginInvoke(this._rhs, context2, activeGraphs, defaultGraphs, new AsyncCallback(this.RhsCallback), null);
 
             //Wait on the LHS
             if (context.RemainingTimeout > 0)
@@ -382,23 +382,23 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
-        private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IGraph activeGraph, IGraph defGraph);
+        private delegate BaseMultiset ParallelEvaluateDelegate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs);
 
-        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IGraph activeGraph, IGraph defGraph)
+        private BaseMultiset ParallelEvaluate(ISparqlAlgebra algebra, SparqlEvaluationContext context, IEnumerable<Uri> activeGraphs, IEnumerable<Uri> defGraphs)
         {
             bool activeGraphOk = false, defaultGraphOk = false;
             try
             {
                 //Set the Active Graph
-                if (activeGraph != null)
+                if (activeGraphs.Any())
                 {
-                    //context.Data.SetActiveGraph(activeGraph);
+                    context.Data.SetActiveGraph(activeGraphs);
                     activeGraphOk = true;
                 }
                 //Set the Default Graph
-                if (defGraph != null)
+                if (defGraphs.Any())
                 {
-                    //context.Data.SetDefaultGraph(defGraph);
+                    context.Data.SetDefaultGraph(defGraphs);
                     defaultGraphOk = true;
                 }
 

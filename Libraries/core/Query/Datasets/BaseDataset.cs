@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Abstract Base Class for Datasets which provides implementation of Active and Default Graph management
     /// </summary>
-    public abstract class BaseDataset : ISparqlDataset
+    public abstract class BaseDataset
+        : ISparqlDataset
     {
         /// <summary>
         /// Reference to the Active Graph being used for executing a SPARQL Query
@@ -137,6 +138,17 @@ namespace VDS.RDF.Query.Datasets
         }
 
         #region Active and Default Graph Management
+
+        /// <summary>
+        /// Gets a reference to the actual <see cref="IGraph">IGraph</see> that is currently treated as the default graph
+        /// </summary>
+        protected IGraph InternalDefaultGraph
+        {
+            get
+            {
+                return this._defaultGraph.Value;
+            }
+        }
 
         /// <summary>
         /// Sets the Default Graph for the SPARQL Query
@@ -295,17 +307,6 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
-        /// <summary>
-        /// Gets the current Default Graph (null if none)
-        /// </summary>
-        public IGraph DefaultGraph
-        {
-            get
-            {
-                return this._defaultGraph.Value;
-            }
-        }
-
         public IEnumerable<Uri> DefaultGraphUris
         {
             get
@@ -318,17 +319,6 @@ namespace VDS.RDF.Query.Datasets
                 {
                     return Enumerable.Empty<Uri>();
                 }
-            }
-        }
-
-        /// <summary>
-        /// Gets the current Active Graph (null if none)
-        /// </summary>
-        public IGraph ActiveGraph
-        {
-            get
-            {
-                return this._activeGraph.Value;
             }
         }
 
@@ -779,7 +769,8 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Abstract Base Class for Immutable Datasets
     /// </summary>
-    public abstract class BaseImmutableDataset : BaseDataset
+    public abstract class BaseImmutableDataset
+        : BaseDataset
     {
         /// <summary>
         /// Throws an exception since Immutable Datasets cannot be altered
@@ -828,7 +819,8 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Abstract Base Class for Mutable Datasets that support Transactions
     /// </summary>
-    public abstract class BaseTransactionalDataset : BaseDataset
+    public abstract class BaseTransactionalDataset
+        : BaseDataset
     {
         private List<GraphPersistenceAction> _actions = new List<GraphPersistenceAction>();
         private TripleStore _modifiableGraphs = new TripleStore();
@@ -885,9 +877,9 @@ namespace VDS.RDF.Query.Datasets
         {
             if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
             {
-                if (this.DefaultGraph != null)
+                if (this.InternalDefaultGraph != null)
                 {
-                    GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(DefaultGraph);
+                    GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(this.InternalDefaultGraph);
                     wrapper.Clear();
                     this._actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
                 }
@@ -918,9 +910,9 @@ namespace VDS.RDF.Query.Datasets
             {
                 if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
                 {
-                    if (this.DefaultGraph != null)
+                    if (this.InternalDefaultGraph != null)
                     {
-                        return this.DefaultGraph;
+                        return this.InternalDefaultGraph;
                     }
                     else if (this._modifiableGraphs.HasGraph(graphUri))
                     {
