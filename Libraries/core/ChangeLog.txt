@@ -26,14 +26,15 @@ Changed
  - Fixed a bug with long URIs and SparqlRemoteUpdateEndpoint
  - Critical bug where connecting to an AllegroGraph 4.x repository cleared existing data
  - Fixed a bug whereby Blank Node IDs in NTriples output could be invalid
+ - Fixed a bug where QNames in RDF/XML weren't fully validated against the latest revisions of the XML specs
 - Query
  - Major refactor of SPARQL expression evaluation to make it more efficient and maintainable
+ - Replaced the Join algorithm with a new algorithm which is significantly faster
  - Improved selectivity of TriplePattern.GetTriples()
  - Some refactoring of ISparqlDataset interface
 - Writing
  - Support for outputting W3C standard Turtle (allows for more URIs to be compressed to QNames)
  - WriteThroughHandler periodically flushes the output stream
- - 
 
 
 Removed

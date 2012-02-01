@@ -10,6 +10,9 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
 
+//This is not compiled currently as this was used while prototyping FastJoin which has been removed from the core library
+//as the algorithm is now fully integrated rather than a custom Algebra operator
+
 namespace VDS.RDF.Test.Sparql
 {
     [TestClass]
