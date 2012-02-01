@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Represents an in-memory dataset (i.e. a <see cref="IInMemoryQueryableStore">InMemoryQueryableStore</see>) for querying and updating using SPARQL
     /// </summary>
-    public class InMemoryDataset : BaseTransactionalDataset
+    public class InMemoryDataset
+        : BaseTransactionalDataset
 #if !NO_RWLOCK
         , IThreadSafeDataset
 #endif

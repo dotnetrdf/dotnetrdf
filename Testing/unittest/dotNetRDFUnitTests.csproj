@@ -210,6 +210,7 @@
     <Compile Include="Storage\Sql\AdoTransactionalUpdateTests.cs" />
     <Compile Include="Storage\StardogTests.cs" />
     <Compile Include="Update\GenericUpdateProcessorTests.cs" />
+    <Compile Include="Update\TransactionalUpdateQuadTests.cs" />
     <Compile Include="Update\TransactionalUpdateSqlTests.cs" />
     <Compile Include="Update\TransactionalUpdateTests.cs" />
     <Compile Include="Update\UpdateTimeouts.cs" />

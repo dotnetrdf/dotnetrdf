@@ -819,6 +819,14 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Abstract Base Class for Mutable Datasets that support Transactions
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The Transaction implementation of dotNetRDF is based upon a MRSW concurrency model, since only one writer may be active changes are immediately pushed to the dataset and visible within the transaction and they are committed or rolled back when <see cref="BaseTransactionalDataset.Flush()">Flush()</see> or <see cref="BaseTransactionalDataset.Discard()">Discard()</see> are called.
+    /// </para>
+    /// <para>
+    /// So in practical terms it is perfectly OK for the storage to be updated during a transaction because if the transaction fails the changes will be rolled back because all changes are stored in-memory until the end of the transaction.  This may not be an ideal transaction model for all scenarios so you may wish to implement your own version of transactions or code your implementations of the abstract methods accordingly to limit actual persistence to the end of a transaction.
+    /// </para>
+    /// </remarks>
     public abstract class BaseTransactionalDataset
         : BaseDataset
     {
@@ -1057,7 +1065,7 @@ namespace VDS.RDF.Query.Datasets
         }
 
         /// <summary>
-        /// Allows the derived dataset to take and post-Flush() actions required
+        /// Allows the derived dataset to take any post-Flush() actions required
         /// </summary>
         protected virtual void FlushInternal()
         {
