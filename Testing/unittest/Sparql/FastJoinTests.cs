@@ -18,7 +18,7 @@ namespace VDS.RDF.Test.Sparql
         private InMemoryDataset _dataset;
         private NodeFactory _factory = new NodeFactory();
 
-        private void Test(ISparqlAlgebra slow, ISparqlAlgebra fast)
+        private void SetupDataset()
         {
             if (this._dataset == null)
             {
@@ -28,10 +28,14 @@ namespace VDS.RDF.Test.Sparql
                 store.Add(g);
                 this._dataset = new InMemoryDataset(store);
             }
+        }
 
-            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._dataset);
+        private void Test(ISparqlAlgebra slow, ISparqlAlgebra fast)
+        {
+            this.SetupDataset();
 
             //Execute the Slower form of the Query first
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._dataset);
             Stopwatch slowTime = new Stopwatch();
             slowTime.Start();
             BaseMultiset slowResult = slow.Evaluate(context);
@@ -39,23 +43,54 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("Slow Query returned " + slowResult.Count + " Result(s) in " + slowTime.Elapsed);
 
             //Execute the Faster form of the query
+            context = new SparqlEvaluationContext(null, this._dataset);
             Stopwatch fastTime = new Stopwatch();
             fastTime.Start();
             BaseMultiset fastResult = fast.Evaluate(context);
             fastTime.Stop();
             Console.WriteLine("Fast Query returned " + fastResult.Count + " Result(s) in " + fastTime.Elapsed);
+            Console.WriteLine();
 
-            if (slowResult.Count != fastResult.Count)
-            {
-                //Results were different so print for comparison
                 Console.WriteLine("Slow Results:");
                 TestTools.ShowMultiset(slowResult);
+                Console.WriteLine();
                 Console.WriteLine("Fast Results:");
                 TestTools.ShowMultiset(fastResult);
-            }
 
             Assert.AreEqual(slowResult.Count, fastResult.Count, "Result Counts should be equal");
             Assert.IsTrue(fastTime.Elapsed < slowTime.Elapsed, "Expected Fast Query to be faster");
+        }
+
+        private void TestCorrectness(ISparqlAlgebra algebra, int expected)
+        {
+            this.SetupDataset();
+
+            SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._dataset);
+            BaseMultiset results = algebra.Evaluate(context);
+            Console.WriteLine("Algebra generated " + results.Count + " Result(s)");
+            Assert.AreEqual(expected, results.Count);
+        }
+
+        [TestMethod]
+        public void SparqlJoinCorrectness1()
+        {
+            this.SetupDataset();
+
+            TriplePattern p = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))), new VariablePattern("?type"));
+            IBgp bgp = new Bgp(p);
+
+            this.TestCorrectness(bgp, this._dataset.GetTriplesWithPredicate(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))).Count());
+        }
+
+        [TestMethod]
+        public void SparqlJoinCorrectness2()
+        {
+            this.SetupDataset();
+
+            TriplePattern p = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))), new VariablePattern("?type"));
+            ISparqlAlgebra algebra = new Distinct(new Bgp(p));
+
+            this.TestCorrectness(algebra, this._dataset.GetTriplesWithPredicate(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))).Count());
         }
 
         [TestMethod]
@@ -177,6 +212,40 @@ namespace VDS.RDF.Test.Sparql
 
             ISparqlAlgebra currJoin = new Join(lhs, rhs);
             ISparqlAlgebra fastJoin = new FastJoin(lhs, rhs);
+
+            this.Test(currJoin, fastJoin);
+        }
+
+        [TestMethod]
+        public void SparqlFastJoinComplex2()
+        {
+            TriplePattern p1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))), new VariablePattern("?type"));
+            TriplePattern p2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"))), new VariablePattern("?label"));
+            TriplePattern p3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"))), new VariablePattern("?range"));
+
+            IBgp a = new Bgp(p1);
+            IBgp b = new Bgp(p2);
+            IBgp c = new Bgp(p3);
+
+            ISparqlAlgebra currJoin = new Join(a, new LeftJoin(b, c));
+            ISparqlAlgebra fastJoin = new FastJoin(a, new LeftJoin(b, c));
+
+            this.Test(currJoin, fastJoin);
+        }
+
+        [TestMethod]
+        public void SparqlFastJoinComplex3()
+        {
+            TriplePattern p1 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType))), new VariablePattern("?type"));
+            TriplePattern p2 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"))), new VariablePattern("?label"));
+            TriplePattern p3 = new TriplePattern(new VariablePattern("?s"), new NodeMatchPattern(this._factory.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"))), new VariablePattern("?range"));
+
+            IBgp a = new Bgp(p1);
+            IBgp b = new Bgp(p2);
+            IBgp c = new Bgp(p3);
+
+            ISparqlAlgebra currJoin = new Join(new LeftJoin(b, c), a);
+            ISparqlAlgebra fastJoin = new FastJoin(new LeftJoin(b, c), a);
 
             this.Test(currJoin, fastJoin);
         }

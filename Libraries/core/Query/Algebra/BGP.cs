@@ -248,7 +248,18 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override string ToString()
         {
-            return "BGP()";
+            if (this._triplePatterns.Count == 0)
+            {
+                return "BGP()";
+            }
+            else if (this._triplePatterns.Count == 1)
+            {
+                return "BGP(" + this._triplePatterns[0].ToString() + ")";
+            }
+            else
+            {
+                return "BGP([" + this._triplePatterns.Count + " Patterns])";
+            }
         }
 
         /// <summary>

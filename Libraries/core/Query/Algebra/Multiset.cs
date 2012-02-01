@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Nodes;
 using VDS.RDF.Query.Patterns;
@@ -138,23 +139,97 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
-            foreach (ISet x in this.Sets)
+
+            //This is the old Join algorithm which while correct is O(n^2) so scales terribly
+            //foreach (ISet x in this.Sets)
+            //{
+            //    //For sets to be compatible for every joinable variable they must either have a null for the
+            //    //variable in one of the sets or if they have values the values must be equal
+
+            //    ////This first check is to try speed things up, it looks whether there are solutions that may match
+            //    ////without needing to do a full table scan of the RHS results as the subsequent LINQ call will do
+            //    ////if (!joinVars.All(v => x[v] == null || other.ContainsValue(v, x[v]) || other.ContainsValue(v, null))) continue;
+
+            //    IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+            //    //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
+
+            //    foreach (ISet y in ys)
+            //    {
+            //        joinedSet.Add(x.Join(y));
+            //    }
+            //}
+
+            //This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
             {
-                //For sets to be compatible for every joinable variable they must either have a null for the
-                //variable in one of the sets or if they have values the values must be equal
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
 
-                ////This first check is to try speed things up, it looks whether there are solutions that may match
-                ////without needing to do a full table scan of the RHS results as the subsequent LINQ call will do
-                ////if (!joinVars.All(v => x[v] == null || other.ContainsValue(v, x[v]) || other.ContainsValue(v, null))) continue;
-
-                IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
-
-                foreach (ISet y in ys)
+            //First do a pass over the LHS Result to find all possible values for joined variables
+            foreach (Set x in this.Sets)
+            {
+                int i = 0;
+                foreach (String var in joinVars)
                 {
-                    joinedSet.Add(x.Join(y));
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
                 }
             }
+
+            //Then do a pass over the RHS and work out the intersections
+            foreach (Set y in other.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Now do the actual joins for the current set
+                //Note - We access the dictionary directly here because going through the this[int id] method
+                //incurs a Contains() call each time and we know the IDs must exist because they came from
+                //our dictionary originally!
+                foreach (int poss in possMatches)
+                {
+                    if (this._sets[poss].IsCompatibleWith(y, joinVars))
+                    {
+                        joinedSet.Add(this._sets[poss].Join(y));
+                    }
+                }
+            }
+
             return joinedSet;
         }
 
@@ -208,32 +283,131 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                foreach (ISet x in this.Sets)
+                //This is the old algorithm which is correct but has complexity O(n^2) so it scales terribly
+                //foreach (ISet x in this.Sets)
+                //{
+                //    IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+                //    //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
+                //    bool standalone = false;
+                //    int i = 0;
+                //    foreach (ISet y in ys)
+                //    {
+                //        i++;
+                //        ISet z = x.Join(y);
+                //        try
+                //        {
+                //            joinedSet.Add(z);
+                //            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                //            {
+                //                joinedSet.Remove(z.ID);
+                //                standalone = true;
+                //            }
+                //        }
+                //        catch
+                //        {
+                //            joinedSet.Remove(z.ID);
+                //            standalone = true;
+                //        }
+                //    }
+                //    if (standalone || i == 0) joinedSet.Add(x);
+                //}
+
+                //This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
+                //Downside is that it does require more memory than the old algorithm
+                List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+                List<List<int>> nulls = new List<List<int>>();
+                foreach (String var in joinVars)
                 {
-                    IEnumerable<ISet> ys = other.Sets.Where(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                    //IEnumerable<ISet> ys = other.Sets.Where(s => s.IsCompatibleWith(x, joinVars));
-                    bool standalone = false;
+                    values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                    nulls.Add(new List<int>());
+                }
+
+                //First do a pass over the LHS Result to find all possible values for joined variables
+                Dictionary<int, bool> matched = new Dictionary<int, bool>();
+                HashSet<int> standalone = new HashSet<int>();
+                foreach (Set x in this.Sets)
+                {
                     int i = 0;
-                    foreach (ISet y in ys)
+                    foreach (String var in joinVars)
                     {
-                        i++;
-                        ISet z = x.Join(y);
-                        try
+                        INode value = x[var];
+                        if (value != null)
                         {
-                            joinedSet.Add(z);
-                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                            values[i].Add(value, x.ID);
+                        }
+                        else
+                        {
+                            nulls[i].Add(x.ID);
+                        }
+                        i++;
+                    }
+                    matched.Add(x.ID, false);
+                }
+
+                //Then do a pass over the RHS and work out the intersections
+                foreach (Set y in other.Sets)
+                {
+                    IEnumerable<int> possMatches = null;
+                    int i = 0;
+                    foreach (String var in joinVars)
+                    {
+                        INode value = y[var];
+                        if (value != null)
+                        {
+                            if (values[i].ContainsKey(value))
                             {
-                                joinedSet.Remove(z.ID);
-                                standalone = true;
+                                possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                            }
+                            else
+                            {
+                                possMatches = Enumerable.Empty<int>();
+                                break;
                             }
                         }
-                        catch
+                        else
                         {
-                            joinedSet.Remove(z.ID);
-                            standalone = true;
+                            //Don't forget that a null will be potentially compatible with everything
+                            possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                        }
+                        i++;
+                    }
+                    if (possMatches == null) continue;
+
+                    //Now do the actual joins for the current set
+                    //Note - We access the dictionary directly here because going through the this[int id] method
+                    //incurs a Contains() call each time and we know the IDs must exist because they came from
+                    //our dictionary originally!
+                    foreach (int poss in possMatches)
+                    {
+                        if (this._sets[poss].IsCompatibleWith(y, joinVars))
+                        {
+                            ISet z = this._sets[poss].Join(y);
+                            joinedSet.Add(z);
+                            try
+                            {
+                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                                {
+                                    joinedSet.Remove(z.ID);
+                                    standalone.Add(poss);
+                                }
+                                else
+                                {
+                                    matched[poss] = true;
+                                }
+                            }
+                            catch
+                            {
+                                joinedSet.Remove(z.ID);
+                                standalone.Add(poss);
+                            }
                         }
                     }
-                    if (standalone || i == 0) joinedSet.Add(x);
+                }
+
+                //Finally add in unmatched sets from LHS
+                foreach (int id in this.SetIDs)
+                {
+                    if (!matched[id] || standalone.Contains(id)) joinedSet.Add(this._sets[id]);
                 }
             }
             return joinedSet;

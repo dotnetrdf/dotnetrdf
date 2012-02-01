@@ -243,7 +243,7 @@ dnr:enableUpdates a rdf:Property ;
 				   
 dnr:async a rdf:Property ;
 		  rdfs:label "Asynchronous" ;
-		  rdfs:comment "This property indicates whether a connection should be opened in asyncrhonous mode." ;
+		  rdfs:comment "This property indicates whether a connection should be opened in asynchronous mode." ;
 		  rdfs:domain dnr:GenericIOManager ;
 		  rdfs:domain dnr:SqlIOManager ;
 		  rdfs:range xsd:boolean .
