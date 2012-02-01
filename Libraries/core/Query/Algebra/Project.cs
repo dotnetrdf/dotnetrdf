@@ -135,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
             }
-            else if (context.Query.IsAggregate)
+            else if (context.Query != null && context.Query.IsAggregate)
             {
                 context.OutputMultiset = new Multiset();
             }
