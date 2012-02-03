@@ -275,7 +275,7 @@ namespace VDS.RDF
             else
             {
                 //QName in some other Namespace
-                String[] parts = qname.Split(':');
+                String[] parts = qname.Split(new char[] { ':' }, 2);
                 if (parts.Length == 1)
                 {
                     output = nsmap.GetNamespaceUri(String.Empty).ToString() + parts[0];

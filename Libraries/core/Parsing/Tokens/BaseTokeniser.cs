@@ -67,7 +67,8 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// Abstract Base Class for Tokeniser which handles the Position tracking
     /// </summary>
-    public abstract class BaseTokeniser : ITokeniser
+    public abstract class BaseTokeniser 
+: ITokeniser
     {
         private TextReader _reader;
         private StringBuilder _output;
@@ -473,6 +474,8 @@ namespace VDS.RDF.Parsing.Tokens
             //Grab the first character which must be a \
             char next = this.SkipCharacter();
 
+            if (next != '\\') throw Error("HandleEscapes() was called but the first character was not a \\ as expected");
+
             //Stuff for Unicode escapes
             StringBuilder localOutput;
 
@@ -637,7 +640,6 @@ namespace VDS.RDF.Parsing.Tokens
                     }
 
                     //Did we get eight Hex Digits
-                    this._output.Append(localOutput.ToString());
                     if (localOutput.Length != 8)
                     {
                         throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
@@ -669,7 +671,151 @@ namespace VDS.RDF.Parsing.Tokens
                     }
 
             }
-        }          
+        }
+
+        /// <summary>
+        /// Handles the special SPARQL escapes that can occur in a local name
+        /// </summary>
+        /// <remarks>
+        /// Unlike <see cref="BaseTokeniser.HandleEscapes()">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping
+        /// </remarks>
+        protected void HandleSparqlLocalNameEscapes()
+        {
+            //Grab the first character which must be a \ or %
+            char next = this.SkipCharacter();
+
+            //Stuff for Unicode/Hex escapes
+            StringBuilder localOutput;
+
+            if (next == '\\')
+            {
+                //Backslash based escape
+                this._output.Append('\\');
+                next = this.Peek();
+                switch (next)
+                {
+                    case '_':
+                    case '-':
+                    case '.':
+                    case '|':
+                    case '$':
+                    case '&':
+                    case '\'':
+                    case '(':
+                    case ')':
+                    case '*':
+                    case '+':
+                    case ',':
+                    case ';':
+                    case '=':
+                    case ':':
+                    case '/':
+                    case '?':
+                    case '#':
+                    case '@':
+                    case '%':
+                        //Escapable Characters
+                        this.ConsumeCharacter();
+                        return;
+
+                    case 'u':
+                        //Need to consume the u first
+                        localOutput = new StringBuilder();
+                        this.SkipCharacter();
+
+                        next = this.Peek();
+
+                        //Try to get Four Hex Digits
+                        while (localOutput.Length < 4 && this.IsHexDigit(next))
+                        {
+                            localOutput.Append(next);
+                            this.SkipCharacter();
+                            next = this.Peek();
+                        }
+
+                        //Did we get four Hex Digits
+                        if (localOutput.Length != 4)
+                        {
+                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\u Escape must be followed by four Hex Digits");
+                        }
+                        else if (localOutput.ToString().Equals("0000"))
+                        {
+                            //Ignore the null escape
+                        }
+                        else
+                        {
+                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                        }
+
+                        return;
+
+                    case 'U':
+                        //Need to consume the U first
+                        localOutput = new StringBuilder();
+                        this.SkipCharacter();
+
+                        next = this.Peek();
+
+                        //Try to get Eight Hex Digits
+                        while (localOutput.Length < 8 && this.IsHexDigit(next))
+                        {
+                            localOutput.Append(next);
+                            this.SkipCharacter();
+                            next = this.Peek();
+                        }
+
+                        //Did we get eight Hex Digits
+                        if (localOutput.Length != 8)
+                        {
+                            throw Error("Unexpected Character (Code " + (int)next + "): " + next + " encountered while trying to parse Unicode Escape from Content:\n" + this._output.ToString() + "\nThe \\U Escape must be followed by eight Hex Digits");
+                        }
+                        else if (localOutput.ToString().Equals("00000000"))
+                        {
+                            //Ignore the null escape
+                        }
+                        else
+                        {
+                            this._output.Append(UnicodeSpecsHelper.ConvertToChar(localOutput.ToString()));
+                        }
+                        return;
+
+                    default:
+                        throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_-.|&'()*+,;=/?#@%) in Local Names");
+                }
+            }
+            else if (next == '%')
+            {
+                localOutput = new StringBuilder();
+                localOutput.Append(next);
+
+                next = this.Peek();
+                while (localOutput.Length < 3 && this.IsHexDigit(next))
+                {
+                    localOutput.Append(next);
+                    this.SkipCharacter();
+                    next = this.Peek();
+                }
+
+                //Did we get % followed by two hex digits
+                if (localOutput.Length != 3)
+                {
+                    throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character");
+                }
+                else if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
+                {
+                    throw Error("Invalid % encoded character encountered");
+                }
+                else
+                {
+                    this._output.Append(localOutput.ToString());
+                }
+            }
+            else
+            {
+                throw Error("HandleSparqlLocalNameEscapes() was called but the next character is not a % or \\ as expected");
+            }
+        }
+
 
         /// <summary>
         /// Determines whether a given Character can be valid as a Hex Digit

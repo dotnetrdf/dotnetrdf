@@ -411,14 +411,14 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
             //First Character must be from PN_CHARS_U or a digit
             char first = cs[0];
-            if (Char.IsDigit(first) || SparqlSpecsHelper.IsPNCharU(first))
+            if (Char.IsDigit(first) || SparqlSpecsHelper.IsPNCharsU(first))
             {
                 if (cs.Length > 1)
                 {
                     for (int i = 1; i < cs.Length; i++)
                     {
                         //Middle Chars must be from PN_CHARS or a '.'
-                        if (!(cs[i] == '.' || SparqlSpecsHelper.IsPNChar(cs[i])))
+                        if (!(cs[i] == '.' || SparqlSpecsHelper.IsPNChars(cs[i])))
                         {
                             return false;
                         }

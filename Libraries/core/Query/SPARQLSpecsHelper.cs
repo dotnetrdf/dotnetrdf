@@ -613,7 +613,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="value">QName to check</param>
         /// <returns></returns>
-        public static bool IsValidQName(String value)
+        public static bool IsValidQName(String value, SparqlQuerySyntax syntax)
         {
             if (!value.Contains(':')) 
             {
@@ -626,7 +626,7 @@ namespace VDS.RDF.Query
                 //Just validation Local Name
                 char[] cs = value.ToCharArray(1, value.Length - 1);
 
-                return IsPNLocal(cs);
+                return IsPNLocal(cs, syntax);
             }
             else
             {
@@ -634,7 +634,7 @@ namespace VDS.RDF.Query
                 char[] prefix = value.ToCharArray(0, value.IndexOf(':'));
                 char[] local = value.ToCharArray(value.IndexOf(':') + 1, value.Length - value.IndexOf(':')-1);
 
-                return (IsPNPrefix(prefix) && IsPNLocal(local));
+                return (IsPNPrefix(prefix) && IsPNLocal(local, syntax));
             }
         }
 
@@ -655,7 +655,7 @@ namespace VDS.RDF.Query
 
             //First Character must be from PN_CHARS_U or a digit
             char first = cs[0];
-            if (Char.IsDigit(first) || IsPNCharU(first))
+            if (Char.IsDigit(first) || IsPNCharsU(first))
             {
                 if (cs.Length > 1)
                 {
@@ -663,21 +663,12 @@ namespace VDS.RDF.Query
                     {
                         if (i < cs.Length - 1)
                         {
-                            //Middle Chars must be from PN_CHARS or a '.'
-                            if (!(cs[i] == '.' || IsPNChar(cs[i])))
-                            {
-                                return false;
-                            }
-                        }
-                        else
-                        {
-                            //Last Character must be from PN_CHARS
-                            return IsPNChar(cs[i]);
+                            //Subsequent Chars must be from PN_CHARS (except -) or a '.'
+                            if (cs[i] == '.' || cs[i] == '-') return false;
+                            if (!IsPNChars(cs[i])) return false;
                         }
                     }
-
-                    //Should never get here but have to add this to keep compiler happy
-                    throw new RdfParseException("Variable Name validation error in SparqlSpecsHelper.IsValidVarName(String value)");
+                    return true;
                 }
                 else
                 {
@@ -695,29 +686,75 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="c">Character to test</param>
         /// <returns></returns>
-        public static bool IsPNCharBase(char c)
+        public static bool IsPNCharsBase(char c)
         {
-            return XmlSpecsHelper.IsNameStartChar(c);
+            if (c >= 'A' && c <= 'Z')
+            {
+                return true;
+            }
+            else if (c >= 'a' && c <= 'z')
+            {
+                return true;
+            }
+            else if ((c >= 0x00c0 && c <= 0x00d6) ||
+                     (c >= 0x00d8 && c <= 0x00f6) ||
+                     (c >= 0x00f8 && c <= 0x02ff) ||
+                     (c >= 0x0370 && c <= 0x037d) ||
+                     (c >= 0x037f && c <= 0x1fff) ||
+                     (c >= 0x200c && c <= 0x200d) ||
+                     (c >= 0x2070 && c <= 0x218f) ||
+                     (c >= 0x2c00 && c <= 0x2fef) ||
+                     (c >= 0x3001 && c <= 0xd7ff) ||
+                     (c >= 0xf900 && c <= 0xfdcf) ||
+                     (c >= 0xfdf0 && c <= 0xfffd) /*||
+                     (c >= 0x10000 && c <= 0xeffff)*/)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        /// Checks whether a given Character matches the PN_CHARS_U rule from the Sparql Specification
+        /// Checks whether a given Character matches the PN_CHARS_U rule from the SPARQL Specification
         /// </summary>
         /// <param name="c">Character to test</param>
         /// <returns></returns>
-        public static bool IsPNCharU(char c)
+        public static bool IsPNCharsU(char c)
         {
-            return (c == '_' || IsPNCharBase(c));
+            return (c == '_' || IsPNCharsBase(c));
         }
 
         /// <summary>
-        /// Checks whether a given Character matches the PN_CHARS rule from the Sparql Specification
+        /// Checks whether a given Character matches the PN_CHARS rule from the SPARQL Specification
         /// </summary>
         /// <param name="c">Character to test</param>
         /// <returns></returns>
-        public static bool IsPNChar(char c)
+        public static bool IsPNChars(char c)
         {
-            return (c != '.' && XmlSpecsHelper.IsNameChar(c));
+            if (c == '-' || Char.IsDigit(c))
+            {
+                return true;
+            }
+            else if (c == 0x00b7)
+            {
+                return true;
+            }
+            else if (IsPNCharsU(c))
+            {
+                return true;
+            }
+            else if ((c >= 0x0300 && c <= 0x036f) ||
+                     (c >= 0x204f && c <= 0x2040))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -725,7 +762,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="cs">String as character array</param>
         /// <returns></returns>
-        public static bool IsPNLocal(char[] cs)
+        public static bool IsPNLocal(char[] cs, SparqlQuerySyntax syntax)
         {
             if (cs.Length == 0)
             {
@@ -735,24 +772,51 @@ namespace VDS.RDF.Query
 
             //First character must be a digit or from PN_CHARS_U
             char first = cs[0];
-            if (Char.IsDigit(first) || IsPNCharU(first))
+            int start = 0;
+            if (Char.IsDigit(first) || IsPNCharsU(first) ||
+                (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, 0, out start)))
             {
-                if (cs.Length > 1)
+                if (start > 0)
                 {
-                    for (int i = 1; i < cs.Length; i++)
+                    //Means the first thing was a PLX
+                    //If the only thing in the local name was a PLX this is valid
+                    if (start == cs.Length - 1) return true;
+                    //If there are further characters we'll start 
+                }
+                else
+                {
+                    //Otherwise we need to check the rest of the characters
+                    start = 1;
+                }
+
+                //Check the rest of the characters
+                if (cs.Length > start)
+                {
+                    for (int i = start; i < cs.Length; i++)
                     {
                         if (i < cs.Length - 1)
                         {
                             //Middle characters may be from PN_CHARS or '.'
-                            if (!(cs[i] == '.' || IsPNChar(cs[i])))
+                            int j = i;
+                            if (!(cs[i] == '.' || IsPNChars(cs[i]) || 
+                                  (syntax != SparqlQuerySyntax.Sparql_1_0 && IsPLX(cs, i, out j))
+                                ))
                             {
                                 return false;
+                            }
+                            if (i != j)
+                            {
+                                //This means we just saw a PLX
+                                //Last thing being a PLX is valid
+                                if (j == cs.Length - 1) return true;
+                                //Otherwise adjust the index appropriately and continue checking further characters
+                                i = j;
                             }
                         }
                         else
                         {
-                            //Last Character must be from PN_CHARS
-                            return IsPNChar(cs[i]);
+                            //Last Character must be from PN_CHARS if it wasn't a PLX which is handled elsewhere
+                            return IsPNChars(cs[i]);
                         }
                     }
 
@@ -779,7 +843,7 @@ namespace VDS.RDF.Query
         {
             //First character must be from PN_CHARS_BASE
             char first = cs[0];
-            if (IsPNCharBase(first))
+            if (IsPNCharsBase(first))
             {
                 if (cs.Length > 1)
                 {
@@ -788,7 +852,7 @@ namespace VDS.RDF.Query
                         if (i < cs.Length - 1)
                         {
                             //Middle characters may be from PN_CHARS or '.'
-                            if (!(cs[i] == '.' || IsPNChar(cs[i])))
+                            if (!(cs[i] == '.' || IsPNChars(cs[i])))
                             {
                                 return false;
                             }
@@ -796,7 +860,7 @@ namespace VDS.RDF.Query
                         else
                         {
                             //Last Character must be from PN_CHARS
-                            return IsPNChar(cs[i]);
+                            return IsPNChars(cs[i]);
                         }
                     }
 
@@ -811,6 +875,173 @@ namespace VDS.RDF.Query
             else
             {
                 return false;
+            }
+        }
+
+        public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
+        {
+            endIndex = startIndex;
+            if (cs[startIndex] == '%')
+            {
+                if (startIndex > cs.Length - 2)
+                {
+                    //If we saw a base % but there are not two subsequent characters not a valid PLX escape
+                    return false;
+                }
+                else
+                {
+                    char a = cs[startIndex + 1];
+                    char b = cs[startIndex + 2];
+                    if (IsHex(a) && IsHex(b))
+                    {
+                        //Valid % encoding
+                        endIndex = startIndex + 2;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            else if (cs[startIndex] == '\\')
+            {
+                if (startIndex >= cs.Length - 1)
+                {
+                    //If we saw a backslash but no subsequent character not a valid PLX escape
+                    return false;
+                }
+                else
+                {
+                    char c = cs[startIndex + 1];
+                    switch (c)
+                    {
+                        case '_':
+                        case '-':
+                        case '.':
+                        case '|':
+                        case '$':
+                        case '&':
+                        case '\'':
+                        case '(':
+                        case ')':
+                        case '*':
+                        case '+':
+                        case ',':
+                        case ';':
+                        case '=':
+                        case ':':
+                        case '/':
+                        case '?':
+                        case '#':
+                        case '@':
+                        case '%':
+                            //Valid Escape
+                            endIndex = startIndex + 1;
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static bool IsHex(char c)
+        {
+            if (Char.IsDigit(c))
+            {
+                return true;
+            }
+            else
+            {
+                switch (c)
+                {
+                    case 'A':
+                    case 'a':
+                    case 'B':
+                    case 'b':
+                    case 'C':
+                    case 'c':
+                    case 'D':
+                    case 'd':
+                    case 'E':
+                    case 'f':
+                    case 'F':
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        public static String UnescapeQName(String value)
+        {
+            if (value.Contains('\\') || value.Contains('%'))
+            {
+                StringBuilder output = new StringBuilder();
+                output.Append(value.Substring(0, value.IndexOf(':')));
+                char[] cs = value.ToCharArray();
+                for (int i = output.Length; i < cs.Length; i++)
+                {
+                    if (cs[i] == '\\')
+                    {
+                        if (i == cs.Length - 1) throw new RdfParseException("Invalid backslash to start an escape at the end of the Local Name, expecting a single character after the backslash");
+                        char esc = cs[i + 1];
+                        switch (esc)
+                        {
+                            case '_':
+                            case '-':
+                            case '.':
+                            case '|':
+                            case '$':
+                            case '&':
+                            case '\'':
+                            case '(':
+                            case ')':
+                            case '*':
+                            case '+':
+                            case ',':
+                            case ';':
+                            case '=':
+                            case ':':
+                            case '/':
+                            case '?':
+                            case '#':
+                            case '@':
+                            case '%':
+                                output.Append(esc);
+                                i++;
+                                break;
+                            default:
+                                throw new RdfParseException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_-.|$&\\()*+,;=:/?#@%) of characters in a Local Name");
+                        }
+                    }
+                    else if (cs[i] == '%')
+                    {
+                        if (i > cs.Length - 2)
+                        {
+                            throw new RdfParseException("Invalid % to start a percent encoded character in a Local Name, two hex digits are required after a %, use \\% to denote a percent character directly");
+                        }
+                        else
+                        {
+                            output.Append(Uri.HexUnescape(value, ref i));
+                            i--;
+                        }
+                    }
+                    else
+                    {
+                        output.Append(cs[i]);
+                    }
+                }
+                return output.ToString();
+            }
+            else
+            {
+                return value;
             }
         }
 

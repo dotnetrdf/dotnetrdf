@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Aggregates;
@@ -94,7 +95,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override bool IsValidQName(string value)
         {
-            return SparqlSpecsHelper.IsValidQName(value);
+            return SparqlSpecsHelper.IsValidQName(value, SparqlQuerySyntax.Sparql_1_0);
         }
 
         /// <summary>

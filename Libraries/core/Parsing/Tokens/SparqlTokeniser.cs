@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.IO;
+using System.Text;
 using VDS.RDF.Query;
 
 namespace VDS.RDF.Parsing.Tokens
@@ -42,7 +43,8 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// A Class for Reading an Input Stream and generating SPARQL Tokens
     /// </summary>
-    public class SparqlTokeniser : BaseTokeniser
+    public class SparqlTokeniser 
+        : BaseTokeniser
     {
         private BlockingTextReader _in;
         private bool _queryKeywordSeen = false;
@@ -664,7 +666,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
             }
-            if (!SparqlSpecsHelper.IsValidQName(this.Value))
+            if (!SparqlSpecsHelper.IsValidQName(this.Value, this._syntax))
             {
                 throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in SPARQL", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
             }
@@ -740,12 +742,19 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
             bool colonoccurred = false;
 
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.'  || next == '\\')
+            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.'  || next == '\\' || next == '%')
             {
-                if (next == '\\')
+                if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    if (!colonoccurred)
+                    {
+                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                    }
+                    else
+                    {
+                        this.HandleSparqlLocalNameEscapes();
+                    }
                     next = this.Peek();
                     continue;
                 }
@@ -811,7 +820,7 @@ namespace VDS.RDF.Parsing.Tokens
                 this.LastTokenType = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value))
+            else if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
             {
                 //Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
@@ -820,7 +829,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 //Return the QName
                 this.LastTokenType = Token.QNAME;
-                return new QNameToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
             }
         }
 
@@ -830,12 +839,19 @@ namespace VDS.RDF.Parsing.Tokens
             bool colonoccurred = false;
             String value;
 
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.' || next == '\\')
+            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '.' || next == '\\' || next == '%')
             {
-                if (next == '\\')
+                if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    if (!colonoccurred)
+                    {
+                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                    }
+                    else
+                    {
+                        this.HandleSparqlLocalNameEscapes();
+                    }
                     next = this.Peek();
                     continue;
                 }
@@ -1381,7 +1397,7 @@ namespace VDS.RDF.Parsing.Tokens
                 this.LastTokenType = Token.PLAINLITERAL;
                 return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
             }
-            else if (!SparqlSpecsHelper.IsValidQName(value))
+            else if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
             {
                 //Not a valid QName
                 throw Error("The value '" + value + "' is not valid as a QName");
@@ -1390,7 +1406,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 //Return the QName
                 this.LastTokenType = Token.QNAME;
-                return new QNameToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
             }
         }
 
@@ -1400,12 +1416,19 @@ namespace VDS.RDF.Parsing.Tokens
             bool colonoccurred = false;
             bool dotoccurred = false;
 
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '\\' || (next == '.' && !dotoccurred && !colonoccurred) || next == '+' || next == '-')
+            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '\\' || (next == '.' && !dotoccurred && !colonoccurred) || next == '+' || next == '-' || next == '%')
             {
-                if (next == '\\')
+                if (next == '\\' || next == '%')
                 {
                     //Handle Escapes
-                    this.HandleEscapes(TokeniserEscapeMode.QName);
+                    if (!colonoccurred)
+                    {
+                        this.HandleEscapes(TokeniserEscapeMode.QName);
+                    }
+                    else
+                    {
+                        this.HandleSparqlLocalNameEscapes();
+                    }
                     next = this.Peek();
                     continue;
                 }
@@ -1463,7 +1486,7 @@ namespace VDS.RDF.Parsing.Tokens
             if (colonoccurred)
             {
                 //Must be a QName
-                if (!SparqlSpecsHelper.IsValidQName(value))
+                if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
                 {
                     //Not a valid QName
                     throw Error("The value '" + value + "' is not valid as a QName");
@@ -1471,7 +1494,7 @@ namespace VDS.RDF.Parsing.Tokens
                 else
                 {
                     this.LastTokenType = Token.QNAME;
-                    return new QNameToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
+                    return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
                 }
             }
             else
@@ -1859,9 +1882,11 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else
             {
-                throw Error("The value '" + value + "' is not valid a Variable Name");
+                throw Error("The value '" + value + "' is not valid as a Variable Name");
             }
 
         }
+
+
     }
 }

@@ -187,6 +187,7 @@
     <Compile Include="Sparql\ParallelEvaluation.cs" />
     <Compile Include="Sparql\PropertyPathEvaluationTests.cs" />
     <Compile Include="Sparql\PropertyPathTransformationTests.cs" />
+    <Compile Include="Sparql\QNameEscapingTests.cs" />
     <Compile Include="Sparql\QueryFormattingTests.cs" />
     <Compile Include="Sparql\QueryThreadSafety.cs" />
     <Compile Include="Sparql\QueryTimeouts.cs" />
