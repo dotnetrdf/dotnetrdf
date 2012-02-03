@@ -2557,6 +2557,9 @@ namespace VDS.RDF.Parsing
             //ORDER BY has already been discarded
             IToken next = context.Tokens.Peek();
 
+            //If SPARQL 1.1 then aggregates are permitted in ORDER BY
+            if (context.SyntaxMode != SparqlQuerySyntax.Sparql_1_0) context.ExpressionParser.AllowAggregates = true;
+
             ISparqlOrderBy first, last;
             first = last = null;
             int termsSeen = 0;
@@ -2698,6 +2701,30 @@ namespace VDS.RDF.Parsing
                         }
                         break;
 
+                    case Token.AVG:
+                    case Token.COUNT:
+                    case Token.GROUPCONCAT:
+                    case Token.MAX:
+                    case Token.MIN:
+                    case Token.SUM:
+                    case Token.SAMPLE:
+                        if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToSafeString() + "' encountered, aggregates are not permitted in an ORDER BY in SPARQL 1.0", next);
+
+                        //Built-in/Extension Function Call Order By
+                        ISparqlExpression aggExpr = this.TryParseFunctionExpression(context);
+
+                        if (first == null)
+                        {
+                            first = new OrderByExpression(aggExpr);
+                            last = first;
+                        }
+                        else
+                        {
+                            last.Child = new OrderByExpression(aggExpr);
+                            last = last.Child;
+                        }
+                        break;
+
                     default:
                         if (termsSeen == 0)
                         {
@@ -2714,6 +2741,8 @@ namespace VDS.RDF.Parsing
                 termsSeen++;
                 next = context.Tokens.Peek();
             }
+
+            context.ExpressionParser.AllowAggregates = false;
 
             //Set to Query
             context.Query.OrderBy = first;
