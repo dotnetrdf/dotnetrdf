@@ -570,7 +570,8 @@ namespace dotNetRDFTest
             }
 
             //Create a Dataset and then Set Graphs
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            //ISparqlDataset dataset = new InMemoryQuadDataset(store);
+            ISparqlDataset dataset = new InMemoryDataset(store);
             if (!query.DefaultGraphs.Any())
             {
                 if (defaultGraph.BaseUri != null) query.AddDefaultGraph(defaultGraph.BaseUri);
@@ -844,7 +845,8 @@ namespace dotNetRDFTest
                 }
 
                 //Build the Initial Dataset
-                InMemoryDataset dataset = new InMemoryDataset(new TripleStore());
+                //ISparqlDataset dataset = new InMemoryQuadDataset();
+                ISparqlDataset dataset = new InMemoryDataset(new TripleStore());
                 try
                 {
                     foreach (Triple t in manifest.GetTriplesWithSubjectPredicate(actionNode, utData))
@@ -879,11 +881,12 @@ namespace dotNetRDFTest
                 //Try running the Update
                 try
                 {
+                    dataset.Flush();
                     LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
 
                     //Since all Tests assume that the WHERE is limited to the unnamed default graph unless specified
                     //then must set this to be the Active Graph for the dataset
-                    //dataset.SetDefaultGraph(dataset[null]);
+                    dataset.SetDefaultGraph((Uri)null);
 
                     //Try the Update
                     processor.ProcessCommandSet(cmds);

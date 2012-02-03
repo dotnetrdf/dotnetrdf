@@ -486,7 +486,8 @@ namespace dotNetRDFTest
             }
 
             //Create a Dataset and then Set Graphs
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            //ISparqlDataset dataset = new InMemoryQuadDataset(store);
+            ISparqlDataset dataset = new InMemoryDataset(store);
             if (!query.DefaultGraphs.Any())
             {
                 query.AddDefaultGraph(defaultGraph.BaseUri);
