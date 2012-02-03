@@ -500,7 +500,7 @@ namespace VDS.RDF.Parsing.Tokens
                     {
                         //A Blank Node QName
                         this.LastTokenType = Token.BLANKNODEWITHID;
-                        return new BlankNodeWithIDToken(value.Substring(2), this.CurrentLine, this.StartPosition, this.EndPosition);
+                        return new BlankNodeWithIDToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
                     }
                     else
                     {
@@ -572,7 +572,7 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     //A Blank Node QName
                     this.LastTokenType = Token.BLANKNODEWITHID;
-                    return new BlankNodeWithIDToken(value.Substring(2), this.CurrentLine, this.StartPosition, this.EndPosition);
+                    return new BlankNodeWithIDToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
                 }
                 else 
                 {

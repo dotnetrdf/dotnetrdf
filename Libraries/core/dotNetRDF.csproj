@@ -229,10 +229,12 @@
     <Compile Include="Ontology\OntologyProperty.cs" />
     <Compile Include="Ontology\OntologyResource.cs" />
     <Compile Include="Ontology\ReasonerGraph.cs" />
+    <Compile Include="Parsing\SparqlCsvParser.cs" />
     <Compile Include="Parsing\Handlers\AnyHandler.cs" />
     <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
     <Compile Include="Core\IObjectParser.cs" />
     <Compile Include="Parsing\SparqlTsvParser.cs" />
+    <Compile Include="Parsing\Tokens\CsvTokeniser.cs" />
     <Compile Include="Parsing\Tokens\TsvTokeniser.cs" />
     <Compile Include="Parsing\UriLoaderAsync.cs" />
     <Compile Include="Parsing\BlockingTextReader.cs" />

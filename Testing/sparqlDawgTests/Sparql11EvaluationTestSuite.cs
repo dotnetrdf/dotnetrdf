@@ -679,6 +679,18 @@ namespace dotNetRDFTest
                     {
                         ISparqlResultsReader resultSetParser = MimeTypesHelper.GetSparqlParser(MimeTypesHelper.GetMimeType(Path.GetExtension(resultFile)));
                         resultSetParser.Load(expectedResults, resultFile);
+
+                        if (resultSetParser is SparqlCsvParser)
+                        {
+                            //SPARQL CSV is lossy so we must lossify our local results
+                            Console.WriteLine("Lossified Results for correct comparison with expected results in CSV format");
+                            System.IO.StringWriter temp = new System.IO.StringWriter();
+                            SparqlCsvWriter csvWriter = new SparqlCsvWriter();
+                            csvWriter.Save(ourResults, temp);
+                            SparqlResultSet ourResultsLossified = new SparqlResultSet();
+                            resultSetParser.Load(ourResultsLossified, new StringReader(temp.ToString()));
+                            ourResults = ourResultsLossified;
+                        }
                     }
                     catch (Exception ex)
                     {

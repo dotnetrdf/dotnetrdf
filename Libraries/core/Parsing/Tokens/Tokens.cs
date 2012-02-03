@@ -496,6 +496,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="start">Column the Literal starts at</param>
         /// <param name="end">Column the Literal ends at</param>
         public LiteralToken(String value, int line, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), line, line, start, end) { }
+
+        /// <summary>
+        /// Creates a new Literal Token
+        /// </summary>
+        /// <param name="value">Literal Value including the Quote deliminators</param>
+        /// <param name="startLine">Line the Literal starts on</param>
+        /// <param name="endLine">Line the Literal ends on</param>
+        /// <param name="start">Column the Literal starts at</param>
+        /// <param name="end">Column the Literal ends at</param>
+        /// <remarks>
+        /// Most syntaxes use different deliminators for multiline literals and will usually use a <see cref="LongLiteralToken">LongLiteralToken</see> instead but some formats like CSV only use quotes for multiline literals and use no delimitors for single line literals
+        /// </remarks>
+        public LiteralToken(String value, int startLine, int endLine, int start, int end) : base(Token.LITERAL, value.Substring(1, value.Length - 2), startLine, endLine, start, end) { }
     }
 
     /// <summary>
