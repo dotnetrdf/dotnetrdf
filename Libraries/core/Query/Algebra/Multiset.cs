@@ -562,7 +562,7 @@ namespace VDS.RDF.Query.Algebra
                 if (this._containsCache == null || this._cacheInvalid)
                 {
                     this._containsCache = new Dictionary<string, HashSet<INode>>();
-                    this._cacheInvalid = true;
+                    this._cacheInvalid = false;
                 }
                 if (!this._containsCache.ContainsKey(var))
                 {
