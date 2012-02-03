@@ -1,0 +1,34 @@
+﻿<?xml version="1.0"?>
+<RDF:RDF xmlns:NS1="http://amb.vis.ne.jp/mozilla/scrapbook-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:scrapbook:item20080908150937"
+                   NS1:id="20080908150937"
+                   NS1:type=""
+                   NS1:title="Display Graphics Dynamically Based on Data Content in SQL Server Reporting Services"
+                   NS1:chars="UTF-8"
+                   NS1:comment=""
+                   NS1:source="http://www.mssqltips.com/tip.asp?tip=1355"
+                   NS1:icon="resource://scrapbook/data/20080908150937/favicon.ico" />
+  <RDF:Seq RDF:about="urn:scrapbook:item20100928160520">
+    <RDF:li RDF:resource="urn:scrapbook:item20100928161103"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929133635"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929144608"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928161238"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929133948"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929134140"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100930105107"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929131137"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929143635"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929103620"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928161129"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928161332"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928161307"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929130432"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928160715"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100929150132"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928160547"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20100928160643"/>
+    <RDF:li RDF:resource="urn:scrapbook:item20101201084009"/>
+  </RDF:Seq>
+</RDF:RDF>

@@ -419,7 +419,12 @@ namespace VDS.RDF.Parsing
             }
 
             //Call the RDF Production on the first child if it's an rdf:RDF element
-            if (root.Children[0].QName.Equals("rdf:RDF") || root.Children[0].QName.Equals(":RDF"))
+            //if (root.Children[0].QName.Equals("rdf:RDF") || root.Children[0].QName.Equals(":RDF"))
+            String localName = root.Children[0].LocalName;
+            String prefix = root.Children[0].Namespace;
+            if (localName.Equals("RDF") && 
+                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).ToString().Equals(NamespaceMapper.RDF)) 
+                 || root.DocumentElement.NamespaceAttributes.Any(ns => ns.Prefix.Equals(prefix) && ns.Uri.Equals(NamespaceMapper.RDF))))
             {
                 this.GrammarProductionRDF(context, root.Children[0]);
             }
@@ -443,11 +448,19 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("RDF");
+                this.ProductionTrace("RDF", element);
             }
 
-            //Check Uri is correct (using the QName for simplicity)
-            if (!element.QName.Equals("rdf:RDF") && !element.QName.Equals(":RDF"))
+            //Check Uri is correct
+            String localName = element.LocalName;
+            String prefix = element.Namespace;
+            if (localName.Equals("RDF") || 
+                ((context.Namespaces.HasNamespace(prefix) && context.Namespaces.GetNamespaceUri(prefix).ToString().Equals(NamespaceMapper.RDF)) 
+                 || element.NamespaceAttributes.Any(ns => ns.Prefix.Equals(prefix) && ns.Uri.Equals(NamespaceMapper.RDF))))
+            {
+                //This is OK
+            }
+            else
             {
                 throw ParserHelper.Error("Unexpected Node '" + element.QName + "', an 'rdf:RDF' node was expected", "RDF", element);
             }
@@ -537,7 +550,7 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Node Element");
+                this.ProductionTracePartial("Node Element");
             }
 
             //Get First Event in the Queue
@@ -552,6 +565,7 @@ namespace VDS.RDF.Parsing
 
             //Check it has a valid Uri
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
             this.ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsNodeElementUri(element.QName))
             {
@@ -771,7 +785,7 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Property Element");
+                this.ProductionTracePartial("Property Element");
             }
 
             //Get first thing from the Queue
@@ -787,6 +801,7 @@ namespace VDS.RDF.Parsing
 
             //Validate the Uri
             element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
             this.ApplyNamespaces(context, element);
             if (!RdfXmlSpecsHelper.IsPropertyElementURI(element.QName))
             {
@@ -875,7 +890,7 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Resource Property Element");
+                this.ProductionTracePartial("Resource Property Element");
             }
 
             //Cast to an ElementEvent
@@ -884,6 +899,7 @@ namespace VDS.RDF.Parsing
             IRdfXmlEvent first = eventlist.Dequeue();
             IRdfXmlEvent next = eventlist.Peek();
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
 
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
@@ -981,7 +997,7 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Literal Property Element");
+                this.ProductionTracePartial("Literal Property Element");
             }
 
             //Get the 3 Events (should only be three)
@@ -997,6 +1013,7 @@ namespace VDS.RDF.Parsing
             }
 
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
 
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
@@ -1099,13 +1116,14 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Parse Type Literal Property Element");
+                this.ProductionTracePartial("Parse Type Literal Property Element");
             }
 
             //Get the first Event, should be an ElementEvent
             //Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
 
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
@@ -1201,13 +1219,14 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Parse Type Resource Property Element");
+                this.ProductionTracePartial("Parse Type Resource Property Element");
             }
 
             //Get the first Event, should be an ElementEvent
             //Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
 
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
@@ -1331,13 +1350,14 @@ namespace VDS.RDF.Parsing
             //Tracing
             if (this._traceparsing)
             {
-                this.ProductionTrace("Parse Type Collection Property Element");
+                this.ProductionTracePartial("Parse Type Collection Property Element");
             }
 
             //Get the first Event, should be an ElementEvent
             //Type checking is done by the Parent Production
             IRdfXmlEvent first = eventlist.Dequeue();
             ElementEvent element = (ElementEvent)first;
+            if (this._traceparsing) this.ProductionTracePartial(element);
 
             //Apply Namespaces
             this.ApplyNamespaces(context, element);
@@ -1731,8 +1751,6 @@ namespace VDS.RDF.Parsing
             }
         }
 
-
-
         //Useful Functions defined as part of the Grammar
         #region Useful Grammar Helper Functions
 
@@ -1901,9 +1919,31 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Tracing function used when Parse Tracing is enabled
         /// </summary>
-        /// <param name="production"></param>
-        private void ProductionTrace(String production) {
+        /// <param name="production">Production</param>
+        private void ProductionTrace(String production)
+        {
             Console.WriteLine("Production '" + production + "' called");
+        }
+
+
+        private void ProductionTracePartial(String production)
+        {
+            Console.Write("Production '" + production + "' called");
+        }
+
+        private void ProductionTracePartial(ElementEvent evt)
+        {
+            Console.WriteLine(" on element <" + evt.QName + ">" + (evt.Position != null ? " at Line " + evt.Position.StartLine + " Column " + evt.Position.StartPosition : String.Empty));
+        }
+
+        /// <summary>
+        /// Tracing function used when Parse Tracing is enabled
+        /// </summary>
+        /// <param name="production">Production</param>
+        /// <param name="evt"></param>
+        private void ProductionTrace(String production, ElementEvent evt)
+        {
+            Console.WriteLine("Production '" + production + "' called on element <" + evt.QName + ">" + (evt.Position != null ? " at Line " + evt.Position.StartLine + " Column " + evt.Position.StartPosition : String.Empty));
         }
 
         #endregion

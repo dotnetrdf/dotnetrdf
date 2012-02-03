@@ -367,9 +367,15 @@
     <Content Include="resources\dbpedia-query-time.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\sequence2.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\empty-string-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="resources\sequence.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\no-gap-prefixes.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

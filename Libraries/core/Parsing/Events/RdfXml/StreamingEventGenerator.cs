@@ -207,6 +207,7 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                             this._rdfRootSeen = this.IsName("RDF", NamespaceMapper.RDF);
                             this._rootEl = this.GetElement();
                             RootEvent root = new RootEvent(this.GetBaseUri(), this._reader.Value, this.GetPosition());
+                            root.DocumentElement = (ElementEvent)this._rootEl;
                             root.Children.Add((ElementEvent)this._rootEl);
                             return root;
                         }

@@ -75,5 +75,45 @@ namespace VDS.RDF.Test.Parsing
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+
+        private void TestRdfXmlSequence(IRdfReader parser, String file)
+        {
+            Graph g = new Graph();
+            if (parser is ITraceableParser)
+            {
+                ((ITraceableParser)parser).TraceParsing = true;
+            }
+            parser.Load(g, file);
+
+            TestTools.ShowGraph(g);
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlSequenceStreaming()
+        {
+            RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
+            this.TestRdfXmlSequence(parser, "sequence.rdf");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlSequenceDom()
+        {
+            RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
+            this.TestRdfXmlSequence(parser, "sequence.rdf");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlSequenceStreaming2()
+        {
+            RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
+            this.TestRdfXmlSequence(parser, "sequence2.rdf");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlSequenceDom2()
+        {
+            RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
+            this.TestRdfXmlSequence(parser, "sequence2.rdf");
+        }
 	}
 }
