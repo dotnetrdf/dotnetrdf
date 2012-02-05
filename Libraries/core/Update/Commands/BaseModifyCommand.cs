@@ -43,7 +43,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Abstract Base class for classes that represent SPARQL Update INSERT, DELETE and INSERT/DELETE commands
     /// </summary>
-    public abstract class BaseModificationCommand : SparqlUpdateCommand
+    public abstract class BaseModificationCommand
+        : SparqlUpdateCommand
     {
         /// <summary>
         /// URI from the WITH statement

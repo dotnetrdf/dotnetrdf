@@ -298,7 +298,7 @@ namespace VDS.RDF.Storage
             {
                 //Use the /contexts method to get the Graph URIs
                 //HACK: Have to use SPARQL JSON as currently Dydra's SPARQL XML Results are malformed
-                HttpWebRequest request = this.CreateRequest("/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlJson), "GET", new Dictionary<string, string>());
+                HttpWebRequest request = this.CreateRequest("/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlResultsJson), "GET", new Dictionary<string, string>());
                 SparqlResultSet results = new SparqlResultSet();
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {

@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 #if !NO_DATA
@@ -41,8 +40,6 @@ using System.Data;
 #endif
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -116,11 +113,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Base Graph which uses the given Triple Collection and the default <see cref="NodeCollection">NodeCollection</see> as the Node Collection
+        /// Creates a new Base Graph which uses the given Triple Collection and the default <see cref="HashedNodeCollection">HashedNodeCollection</see> as the Node Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
         protected BaseGraph(BaseTripleCollection tripleCollection)
-            //TODO: Update comments here
             : this(tripleCollection, new HashedNodeCollection()) { }
 
         /// <summary>

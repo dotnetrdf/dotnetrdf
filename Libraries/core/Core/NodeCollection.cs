@@ -33,11 +33,8 @@ terms.
 
 */
 
-
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using VDS.Common;
 
@@ -439,10 +436,13 @@ namespace VDS.RDF
 
 #endif
 
+    /// <summary>
+    /// Node Collection backed by a Hash Table
+    /// </summary>
     public class HashedNodeCollection
         : BaseNodeCollection, IEnumerable<INode>
     {
-        private HashTable<int, INode> _nodes = new HashTable<int, INode>(HashTableBias.Enumeration);
+        private HashTable<int, INode> _nodes = new HashTable<int, INode>(HashTableBias.Enumeration, 2);
 
         protected internal override void Add(INode n)
         {

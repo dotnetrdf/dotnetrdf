@@ -234,7 +234,7 @@ namespace VDS.RDF.Storage
                 String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
 
                 //String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
-                String accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlXml.Concat(MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
+                String accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlResultsXml.Concat(MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
 
                 //Create the Request
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();

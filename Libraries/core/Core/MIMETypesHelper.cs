@@ -62,7 +62,7 @@ namespace VDS.RDF
         /// </summary>
         private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
 
-        #region Default MIME Type Definitions
+        #region Initialisation of MIME Type Definitions
 
         /// <summary>
         /// List of MIME Type Definition
@@ -108,13 +108,13 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, null, typeof(TriXParser), null, null, typeof(TriXWriter), null));
 
                 //Define SPARQL Results XML
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
 
                 //Define SPARQL Results JSON
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlResultsJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
 
                 //Define SPARQL Boolean
-                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlBoolean, Enumerable.Empty<String>(), null, null, typeof(SparqlBooleanParser), null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, Enumerable.Empty<String>(), null, null, typeof(SparqlBooleanParser), null, null, null));
 
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
@@ -133,12 +133,12 @@ namespace VDS.RDF
                 _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
 
                 //Define SPARQL Query
-                MimeTypeDefinition qDef = new MimeTypeDefinition("SPARQL Query", new String[] { "application/sparql-query" }, new String[] { ".rq" });
+                MimeTypeDefinition qDef = new MimeTypeDefinition("SPARQL Query", new String[] { SparqlQuery }, new String[] { DefaultSparqlQueryExtension });
                 qDef.SetObjectParserType<SparqlQuery>(typeof(SparqlQueryParser));
                 _mimeTypes.Add(qDef);
 
                 //Define SPARQL Update
-                MimeTypeDefinition uDef = new MimeTypeDefinition("SPARQL Update", new String[] { "application/sparql-update" }, new String[] { ".ru" });
+                MimeTypeDefinition uDef = new MimeTypeDefinition("SPARQL Update", new String[] { SparqlUpdate }, new String[] { DefaultSparqlUpdateExtension });
                 uDef.SetObjectParserType<SparqlUpdateCommandSet>(typeof(SparqlUpdateParser));
                 _mimeTypes.Add(uDef);
 
@@ -148,7 +148,7 @@ namespace VDS.RDF
 
         #endregion
 
-        #region MIME Types
+        #region Definition, Parser and Writer Management
 
         /// <summary>
         /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
@@ -469,6 +469,10 @@ namespace VDS.RDF
                     
         }
 
+#endregion
+
+        #region MIME Type Constants
+
         /// <summary>
         /// MIME Type for accept any content Type
         /// </summary>
@@ -497,7 +501,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for NTriples
         /// </summary>
-        internal static string[] NTriples = { "text/plain", "application/x-ntriples" };
+        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
 
         /// <summary>
         /// MIME Types for NQuads
@@ -515,29 +519,29 @@ namespace VDS.RDF
         internal static string[] TriX = { "application/trix" };
 
         /// <summary>
-        /// MIME Types for RDF/Json
+        /// MIME Types for RDF/JSON
         /// </summary>
         internal static string[] Json = { "application/json", "text/json" };
 
         /// <summary>
         /// MIME Types for SPARQL Result Sets
         /// </summary>
-        internal static string[] Sparql = { "application/sparql-results+xml", "application/sparql-results+json" };
+        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Results XML
         /// </summary>
-        internal static string[] SparqlXml = { "application/sparql-results+xml" };
+        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
 
         /// <summary>
         /// MIME Types for SPARQL Results JSON
         /// </summary>
-        internal static string[] SparqlJson = { "application/sparql-results+json" };
+        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Boolean Result
         /// </summary>
-        internal static string[] SparqlBoolean = { "text/boolean" };
+        internal static string[] SparqlResultsBoolean = { "text/boolean" };
 
         /// <summary>
         /// MIME Types for CSV
@@ -553,6 +557,16 @@ namespace VDS.RDF
         /// MIME Types for HTML
         /// </summary>
         internal static string[] Html = { "text/html", "application/xhtml+xml" };
+
+        /// <summary>
+        /// MIME Type for SPARQL Queries
+        /// </summary>
+        public const String SparqlQuery = "application/sparql-query";
+
+        /// <summary>
+        /// MIME Type for SPARQL Updates
+        /// </summary>
+        public const String SparqlUpdate = "application/sparql-update";
 
         #endregion
 
@@ -618,6 +632,14 @@ namespace VDS.RDF
         /// Default File Extension for XHTML
         /// </summary>
         public const String DefaultXHtmlExtension = "xhtml";
+        /// <summary>
+        /// Default File Extension for SPARQL Queries
+        /// </summary>
+        public const String DefaultSparqlQueryExtension = "rq";
+        /// <summary>
+        /// Default File Extension for SPARQL Updates
+        /// </summary>
+        public const String DefaultSparqlUpdateExtension = "ru";
 
         #endregion
 
@@ -1270,7 +1292,7 @@ namespace VDS.RDF
             }
 
             //Default to SPARQL XML Output
-            contentType = MimeTypesHelper.SparqlXml[0];
+            contentType = MimeTypesHelper.SparqlResultsXml[0];
             return new SparqlXmlWriter();
         }
 

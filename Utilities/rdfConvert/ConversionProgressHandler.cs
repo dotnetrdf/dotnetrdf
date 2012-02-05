@@ -35,7 +35,10 @@ namespace VDS.RDF.Utilities.Convert
         {
             this._handler.EndRdf(ok);
             this._timer.Stop();
-            Console.WriteLine("rdfConvert: Info: Converted " + ((ReportingInterval * this._batches) + this._count) + " triple(s) in " + this._timer.Elapsed);
+            long triples = ((ReportingInterval * this._batches) + this._count);
+            Console.WriteLine("rdfConvert: Info: Converted " + triples + " triple(s) in " + this._timer.Elapsed);
+            double speed = ((double)triples / (double)this._timer.ElapsedMilliseconds) * 1000;
+            Console.WriteLine("rdfConvert: Info: Average Conversion Speed was " + speed + " Triples/second");
         }
 
         protected override bool HandleBaseUriInternal(Uri baseUri)

@@ -215,12 +215,12 @@ namespace VDS.RDF.Web
                 //Try and get the registered Definition for SPARQL Results XML
                 if (definition == null)
                 {
-                    definition = MimeTypesHelper.GetDefinitions(MimeTypesHelper.SparqlXml[0]).FirstOrDefault();
+                    definition = MimeTypesHelper.GetDefinitions(MimeTypesHelper.SparqlResultsXml[0]).FirstOrDefault();
                 }
                 //If Definition is still null create a temporary definition
                 if (definition == null)
                 {
-                    definition = new MimeTypeDefinition("SPARQL Results XML", MimeTypesHelper.SparqlXml, Enumerable.Empty<String>());
+                    definition = new MimeTypeDefinition("SPARQL Results XML", MimeTypesHelper.SparqlResultsXml, Enumerable.Empty<String>());
                     definition.SparqlResultsWriterType = typeof(VDS.RDF.Writing.SparqlXmlWriter);
                 }
                 

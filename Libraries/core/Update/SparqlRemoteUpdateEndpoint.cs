@@ -69,6 +69,31 @@ namespace VDS.RDF.Update
         public SparqlRemoteUpdateEndpoint(String endpointUri)
             : this(UriFactory.Create(endpointUri)) { }
 
+        /// <summary>
+        /// Gets/Sets the HTTP Method used for requests
+        /// </summary>
+        /// <remarks>
+        /// The SPARQL 1.1 Protocol specification mandates that Update requests may only be POSTed, attempting to alter the HTTP Mode to anything other than POST will result in a <see cref="SparqlUpdateException">SparqlUpdateException</see>
+        /// </remarks>
+        public override string HttpMode
+        {
+            get
+            {
+                return base.HttpMode;
+            }
+            set
+            {
+                if (value.Equals("POST"))
+                {
+                    base.HttpMode = value;
+                }
+                else
+                {
+                    throw new SparqlUpdateException("The SPARQL 1.1 Protocol specification requires SPARQL Updates to be POSTed, you cannot set the HTTP Method to a value other than POST");
+                }
+            }
+        }
+
 #if !SILVERLIGHT
 
         /// <summary>

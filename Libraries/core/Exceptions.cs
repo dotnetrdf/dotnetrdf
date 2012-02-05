@@ -551,6 +551,27 @@ namespace VDS.RDF.Update
         public SparqlUpdateTimeoutException(String errorMsg)
             : base(errorMsg) { }
     }
+
+
+    public class SparqlUpdatePermissionException
+        : SparqlUpdateException
+    {
+        public SparqlUpdatePermissionException(String message)
+            : base(message) { }
+
+        public SparqlUpdatePermissionException(String message, Exception cause)
+            : base(message, cause) { }
+    }
+
+    public class SparqlUpdateMalformedException
+        : SparqlUpdateException
+    {
+        public SparqlUpdateMalformedException(String message)
+            : base(message) { }
+
+        public SparqlUpdateMalformedException(String message, Exception cause)
+            : base(message, cause) { }
+    }
 }
 
 namespace VDS.RDF.Update.Protocol

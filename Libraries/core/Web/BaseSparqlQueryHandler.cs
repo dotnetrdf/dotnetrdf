@@ -53,7 +53,8 @@ namespace VDS.RDF.Web
     /// <summary>
     /// Abstract Base class for Handlers which provide SPARQL Query endpoints
     /// </summary>
-    public abstract class BaseSparqlQueryHandler : IHttpHandler
+    public abstract class BaseSparqlQueryHandler
+        : IHttpHandler
     {
         /// <summary>
         /// Handler Configuration
@@ -94,7 +95,14 @@ namespace VDS.RDF.Web
             String queryText = context.Request.QueryString["query"];
             if (queryText == null || queryText.Equals(String.Empty))
             {
-                queryText = context.Request.Form["query"];
+                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                {
+                    queryText = context.Request.Form["query"];
+                }
+                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
+                {
+                    queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                }
             }
 
             //If no Query sent either show Query Form or give a HTTP 400 response

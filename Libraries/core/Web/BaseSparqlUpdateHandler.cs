@@ -36,6 +36,7 @@ terms.
 #if !NO_WEB && !NO_ASP
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.IO;
@@ -45,6 +46,7 @@ using System.Web.UI;
 using VDS.RDF.Web.Configuration.Update;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
+using VDS.RDF.Update.Commands;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web
@@ -52,7 +54,8 @@ namespace VDS.RDF.Web
     /// <summary>
     /// Abstract Base Class for creating SPARQL Update Handler implementations
     /// </summary>
-    public abstract class BaseSparqlUpdateHandler : IHttpHandler
+    public abstract class BaseSparqlUpdateHandler
+        : IHttpHandler
     {
         /// <summary>
         /// Handler Configuration
@@ -90,10 +93,14 @@ namespace VDS.RDF.Web
             }
 
             //See if there has been an update submitted
-            String updateText = context.Request.QueryString["update"];
-            if (updateText == null || updateText.Equals(String.Empty))
+            String updateText = null;
+            if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
             {
                 updateText = context.Request.Form["update"];
+            }
+            else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
+            {
+                updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
             }
 
             //If no Update sent either show Update Form or give a HTTP 400 response
@@ -137,6 +144,29 @@ namespace VDS.RDF.Web
                 return;
             }
 
+            //Get Other options associated with this update
+            List<String> userDefaultGraphs = new List<String>();
+            List<String> userNamedGraphs = new List<String>();
+
+            //Get the USING URIs (if any)
+            if (context.Request.QueryString["using-graph-uri"] != null)
+            {
+                userDefaultGraphs.AddRange(context.Request.QueryString.GetValues("using-graph-uri"));
+            }
+            else if (context.Request.Form["using-graph-uri"] != null)
+            {
+                userDefaultGraphs.AddRange(context.Request.Form.GetValues("using-graph-uri"));
+            }
+            //Get the USING NAMED URIs (if any)
+            if (context.Request.QueryString["using-named-graph-uri"] != null)
+            {
+                userNamedGraphs.AddRange(context.Request.QueryString.GetValues("using-named-graph-uri"));
+            }
+            else if (context.Request.Form["using-named-graph-uri"] != null)
+            {
+                userNamedGraphs.AddRange(context.Request.Form.GetValues("using-named-graph-uri"));
+            }
+
             try
             {
                 //Now we're going to parse the Updates
@@ -155,7 +185,7 @@ namespace VDS.RDF.Web
                 }
                 if (!isAuth) return;
 
-                //First check actions to see whether they are all permissible
+                //First check actions to see whether they are all permissible and apply USING/USING NAMED parameters
                 foreach (SparqlUpdateCommand cmd in commands.Commands)
                 {
                     //Authenticate each action
@@ -163,7 +193,27 @@ namespace VDS.RDF.Web
                     if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetPermissionAction(cmd));
                     if (!actionAuth)
                     {
-                        throw new SparqlUpdateException("You are not authorised to perform the " + this.GetPermissionAction(cmd) + " action");
+                        throw new SparqlUpdatePermissionException("You are not authorised to perform the " + this.GetPermissionAction(cmd) + " action");
+                    }
+
+                    //Check whether we need to (and are permitted to) apply USING/USING NAMED parameters
+                    if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
+                    {
+                        BaseModificationCommand modify = cmd as BaseModificationCommand;
+                        if (modify != null)
+                        {
+                            if (modify.GraphUri != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
+                            {
+                                //Invalid if a command already has a WITH/USING/USING NAMED
+                                throw new SparqlUpdateMalformedException("A command in your update request contains a WITH/USING/USING NAMED clause but you have also specified one/both of the using-graph-uri or using-named-graph-uri parameters which is not permitted by the SPARQL Protocol");
+                            }
+                            else
+                            {
+                                //Otherwise go ahead and apply
+                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(UriFactory.Create(u)));
+                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(UriFactory.Create(u)));
+                            }
+                        }
                     }
                 }
 
@@ -178,7 +228,15 @@ namespace VDS.RDF.Web
             }
             catch (RdfParseException parseEx)
             {
-                HandleErrors(context, "Parsing Error", updateText, parseEx);
+                HandleErrors(context, "Parsing Error", updateText, parseEx, (int)HttpStatusCode.BadRequest);
+            }
+            catch (SparqlUpdatePermissionException permEx)
+            {
+                HandleErrors(context, "Permissions Error", updateText, permEx, (int)HttpStatusCode.Forbidden);
+            }
+            catch (SparqlUpdateMalformedException malEx)
+            {
+                HandleErrors(context, "Malformed Update Error", updateText, malEx, (int)HttpStatusCode.BadRequest);
             }
             catch (SparqlUpdateException updateEx)
             {
@@ -264,7 +322,7 @@ namespace VDS.RDF.Web
 
             //Query Form
             output.AddAttribute(HtmlTextWriterAttribute.Name, "sparqlUpdate");
-            output.AddAttribute("method", "get");
+            output.AddAttribute("method", "post");
             output.AddAttribute("action", context.Request.Path);
             output.RenderBeginTag(HtmlTextWriterTag.Form);
 
@@ -318,6 +376,20 @@ namespace VDS.RDF.Web
         protected virtual void HandleErrors(HttpContext context, String title, String update, Exception ex)
         {
             HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex);
+        }
+
+
+        /// <summary>
+        /// Handles errors in processing SPARQL Update Requests
+        /// </summary>
+        /// <param name="context">Context of the HTTP Request</param>
+        /// <param name="title">Error title</param>
+        /// <param name="update">SPARQL Update</param>
+        /// <param name="ex">Error</param>
+        /// <param name="statusCode">HTTP Status Code</param>
+        protected virtual void HandleErrors(HttpContext context, String title, String update, Exception ex, int statusCode)
+        {
+            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex, statusCode);
         }
 
         /// <summary>

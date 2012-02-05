@@ -272,7 +272,7 @@ namespace VDS.RDF.Query
                     ctype = ctype.Substring(0, ctype.IndexOf(";"));
                 }
 
-                if (MimeTypesHelper.Sparql.Contains(ctype))
+                if (MimeTypesHelper.SparqlResults.Contains(ctype))
                 {
                     ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
                     resultsParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
