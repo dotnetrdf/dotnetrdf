@@ -39,7 +39,7 @@ using System.Linq;
 using System.Text;
 using VDS.Common;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra

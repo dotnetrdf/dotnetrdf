@@ -37,8 +37,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Expressions.Nodes
+namespace VDS.RDF.Nodes
 {
     /// <summary>
     /// Interface for Valued Nodes

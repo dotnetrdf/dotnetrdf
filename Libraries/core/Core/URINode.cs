@@ -41,7 +41,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF
 {

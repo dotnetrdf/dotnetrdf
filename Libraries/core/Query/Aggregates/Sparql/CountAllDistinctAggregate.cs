@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Aggregates.Sparql

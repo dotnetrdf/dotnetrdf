@@ -35,7 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions
 {

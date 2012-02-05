@@ -37,7 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 {

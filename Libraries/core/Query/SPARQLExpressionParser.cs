@@ -48,7 +48,7 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;

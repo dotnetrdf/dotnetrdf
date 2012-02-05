@@ -1,13 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
+﻿/*
 
-namespace VDS.RDF.Query.Expressions.Nodes
+Copyright Robert Vesse 2009-11
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
+using System.Linq;
+using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+
+namespace VDS.RDF.Nodes
 {
-    public static class ExpressionNodeExtensions
+    /// <summary>
+    /// Extension Methods related to valued nodes
+    /// </summary>
+    public static class ValuedNodeExtensions
     {
+        /// <summary>
+        /// Takes a <see cref="INode">INode</see> and converts it to a <see cref="IValuedNode">IValuedNode</see> if it is not already an instance that implements the interface
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns>Valued Node</returns>
         public static IValuedNode AsValuedNode(this INode n)
         {
             if (n == null) return (IValuedNode)n;
@@ -199,6 +241,12 @@ namespace VDS.RDF.Query.Expressions.Nodes
             }
         }
 
+        /// <summary>
+        /// Tries to get the result of calling <see cref="IValuedNode.AsBoolean()">AsBoolean()</see> on a node throwing an error if the node is null
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <exception cref="RdfQueryException">Thrown if the input is null of the specific valued node cannot be cast to a boolean</exception>
+        /// <returns></returns>
         public static bool AsSafeBoolean(this IValuedNode n)
         {
             if (n == null) throw new RdfQueryException("Cannot cast a null to a boolean");

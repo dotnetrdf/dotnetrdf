@@ -39,7 +39,7 @@ using System.Xml;
 using System.Xml.Schema;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -1063,10 +1063,12 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     public abstract class BaseVirtualLiteralNode<TNodeID, TGraphID>
         : BaseVirtualNode<TNodeID, TGraphID>, ILiteralNode,
-          IEquatable<BaseVirtualLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualLiteralNode<TNodeID, TGraphID>>
+          IEquatable<BaseVirtualLiteralNode<TNodeID, TGraphID>>, IComparable<BaseVirtualLiteralNode<TNodeID, TGraphID>>,
+          IValuedNode
     {
         private String _litValue, _lang;
         private Uri _datatype;
+        private IValuedNode _strongValue;
 
         /// <summary>
         /// Creates a new Virtual Literal Node
@@ -1090,7 +1092,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Takes post materialisation actions
         /// </summary>
-        protected sealed override void  OnMaterialise()
+        protected sealed override void OnMaterialise()
         {
             ILiteralNode temp = (ILiteralNode)this._value;
             this._litValue = temp.Value;
@@ -1195,7 +1197,70 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((ILiteralNode)other);
         }
-        
+
+        #region IValuedNode Members
+
+        private void EnsureStrongValue()
+        {
+            if (this._strongValue == null)
+            {
+                if (this._value == null) this.MaterialiseValue();
+                this._strongValue = this._value.AsValuedNode();
+            }
+        }
+
+        public string AsString()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsString();
+        }
+
+        public long AsInteger()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsInteger();
+        }
+
+        public decimal AsDecimal()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsDecimal();
+        }
+
+        public float AsFloat()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsFloat();
+        }
+
+        public double AsDouble()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsDouble();
+        }
+
+        public bool AsBoolean()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsBoolean();
+        }
+
+        public DateTimeOffset AsDateTime()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsDateTime();
+        }
+
+        public SparqlNumericType NumericType
+        {
+            get 
+            {
+                this.EnsureStrongValue();
+                return this._strongValue.NumericType;
+            }
+        }
+
+        #endregion
     }
 
     /// <summary>

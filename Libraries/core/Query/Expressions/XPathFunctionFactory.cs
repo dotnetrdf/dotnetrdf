@@ -41,7 +41,7 @@ using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Functions.XPath.DateTime;
 using VDS.RDF.Query.Expressions.Functions.XPath.Numeric;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Expressions

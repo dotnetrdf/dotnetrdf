@@ -38,8 +38,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
+using VDS.RDF.Query.Expressions;
 
-namespace VDS.RDF.Query.Expressions.Nodes
+namespace VDS.RDF.Nodes
 {
     /// <summary>
     /// A Valued Node with a Long value

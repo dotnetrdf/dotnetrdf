@@ -6,7 +6,7 @@ using System.Text;
 using System.Web;
 #endif
 using VDS.RDF.Parsing;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.XPath.String
 {
