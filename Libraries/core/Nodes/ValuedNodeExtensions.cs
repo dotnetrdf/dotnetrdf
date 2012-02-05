@@ -149,7 +149,7 @@ namespace VDS.RDF.Nodes
                                 long lng;
                                 if (Int64.TryParse(lit.Value, out lng))
                                 {
-                                    return new LongNode(n.Graph, lng, lit.Value);
+                                    return new LongNode(n.Graph, lng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
@@ -161,7 +161,7 @@ namespace VDS.RDF.Nodes
                                 long neglng;
                                 if (Int64.TryParse(lit.Value, out neglng) && neglng < 0)
                                 {
-                                    return new LongNode(n.Graph, neglng, lit.Value);
+                                    return new LongNode(n.Graph, neglng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
@@ -173,7 +173,7 @@ namespace VDS.RDF.Nodes
                                 long poslng;
                                 if (Int64.TryParse(lit.Value, out poslng) && poslng >= 0)
                                 {
-                                    return new LongNode(n.Graph, poslng, lit.Value);
+                                    return new LongNode(n.Graph, poslng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
@@ -197,7 +197,7 @@ namespace VDS.RDF.Nodes
                                 ulong ulng;
                                 if (UInt64.TryParse(lit.Value, out ulng))
                                 {
-                                    return new UnsignedLongNode(n.Graph, ulng, lit.Value);
+                                    return new UnsignedLongNode(n.Graph, ulng, lit.Value, lit.DataType);
                                 }
                                 else
                                 {
@@ -209,7 +209,7 @@ namespace VDS.RDF.Nodes
                                     long l;
                                     if (Int64.TryParse(lit.Value, out l))
                                     {
-                                        return new LongNode(n.Graph, l, lit.Value);
+                                        return new LongNode(n.Graph, l, lit.Value, lit.DataType);
                                     }
                                     else
                                     {

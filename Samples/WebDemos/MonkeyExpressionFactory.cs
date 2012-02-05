@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using VDS.RDF;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Nodes;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace WebDemos

@@ -690,7 +690,6 @@ namespace VDS.RDF.Parsing.Tokens
             if (next == '\\')
             {
                 //Backslash based escape
-                this._output.Append('\\');
                 next = this.Peek();
                 switch (next)
                 {
@@ -715,6 +714,7 @@ namespace VDS.RDF.Parsing.Tokens
                     case '@':
                     case '%':
                         //Escapable Characters
+                        this._output.Append('\\');
                         this.ConsumeCharacter();
                         return;
 

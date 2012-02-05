@@ -57,6 +57,12 @@ namespace VDS.RDF.Nodes
             this._value = value;
         }
 
+        public LongNode(IGraph g, long value, String lexicalValue, Uri datatype)
+            : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
+        {
+            this._value = value;
+        }
+
         public LongNode(IGraph g, long value)
             : this(g, value, value.ToString()) { }
 
@@ -112,6 +118,12 @@ namespace VDS.RDF.Nodes
 
         public UnsignedLongNode(IGraph g, ulong value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt), SparqlNumericType.Integer)
+        {
+            this._value = value;
+        }
+
+        public UnsignedLongNode(IGraph g, ulong value, String lexicalValue, Uri datatype)
+            : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
             this._value = value;
         }
