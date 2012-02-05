@@ -231,51 +231,58 @@ namespace VDS.RDF
             g.Retract(new Triple(subj, pred, obj));
         }
 
+        #endregion
+
+        #region List Helpers
+
         /// <summary>
         /// Asserts a list as a RDF collection and returns the node that represents the root of the RDF collection
         /// </summary>
         /// <typeparam name="T">Type of Objects</typeparam>
         /// <param name="g">Graph to assert in</param>
-        /// <param name="subj">Subject to link to the collection</param>
-        /// <param name="pred">Predicate which links the subject to the collection</param>
         /// <param name="objects">Objects to place in the collection</param>
         /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see></param>
         /// <returns>
         /// Either the blank node which is the root of the collection or <strong>rdf:nil</strong> for empty collections
         /// </returns>
-        public static INode AssertList<T>(this IGraph g, INode subj, INode pred, IEnumerable<T> objects, Func<T, INode> mapFunc)
+        public static INode AssertList<T>(this IGraph g, IEnumerable<T> objects, Func<T, INode> mapFunc)
         {
-            INode listRoot = g.CreateBlankNode();
-            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
-            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
-            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
-            INode listCurrent = listRoot;
-
-            List<INode> nodes = objects.Select(x => mapFunc(x)).ToList();
-            if (nodes.Count == 0)
+            if (!objects.Any())
             {
-                g.Assert(subj, pred, rdfNil);
-                return rdfNil;
+                return g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
             }
             else
             {
-                g.Assert(subj, pred, listRoot);
-                for (int i = 0; i < nodes.Count; i++)
-                {
-                    g.Assert(listCurrent, rdfFirst, nodes[i]);
-
-                    if (i < nodes.Count - 1)
-                    {
-                        INode listNext = g.CreateBlankNode();
-                        g.Assert(listCurrent, rdfRest, listNext);
-                        listCurrent = listNext;
-                    }
-                    else
-                    {
-                        g.Assert(listCurrent, rdfRest, rdfNil);
-                    }
-                }
+                INode listRoot = g.CreateBlankNode();
+                AssertList<T>(g, listRoot, objects, mapFunc);
                 return listRoot;
+            }
+        }
+
+        public static void AssertList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
+        {
+            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode listCurrent = listRoot;
+
+            //Then we can assert the collection
+            List<INode> nodes = objects.Select(x => mapFunc(x)).ToList();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i] == null) throw new RdfException("Unable to assert list because one of the items was null");
+                g.Assert(listCurrent, rdfFirst, nodes[i]);
+
+                if (i < nodes.Count - 1)
+                {
+                    INode listNext = g.CreateBlankNode();
+                    g.Assert(listCurrent, rdfRest, listNext);
+                    listCurrent = listNext;
+                }
+                else
+                {
+                    g.Assert(listCurrent, rdfRest, rdfNil);
+                }
             }
         }
 
@@ -284,15 +291,84 @@ namespace VDS.RDF
         /// </summary>
         /// <typeparam name="T">Type of Objects</typeparam>
         /// <param name="g">Graph to assert in</param>
-        /// <param name="subj">Subject to link to the collection</param>
-        /// <param name="pred">Predicate which links the subject to the collection</param>
         /// <param name="objects">Objects to place in the collection</param>
         /// <returns>
         /// Either the blank node which is the root of the collection or <strong>rdf:nil</strong> for empty collections
         /// </returns>
-        public static INode AssertList(this IGraph g, INode subj, INode pred, IEnumerable<INode> objects)
+        public static INode AssertList(this IGraph g, IEnumerable<INode> objects)
         {
-            return AssertList(g, subj, pred, objects, n => n);
+            return AssertList(g, objects, n => n);
+        }
+
+        public static void AssertList(this IGraph g, INode listRoot, IEnumerable<INode> objects)
+        {
+            AssertList(g, listRoot, objects, n => n);
+        }
+
+        public static IEnumerable<Triple> GetListAsTriples(this IGraph g, INode listRoot)
+        {
+            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+
+            if (listRoot.Equals(rdfNil)) return Enumerable.Empty<Triple>();
+
+            List<Triple> ts = new List<Triple>();
+            int currCount = 0;
+            int diff = 0;
+            INode listCurrent = listRoot;
+            do
+            {
+                ts.AddRange(g.GetTriplesWithSubjectPredicate(listCurrent, rdfFirst));
+                diff = ts.Count - currCount;
+                if (diff == 0) throw new RdfException("Unable to get list as there was no rdf:first associated with the list item " + listCurrent.ToString());
+                if (diff > 1) throw new RdfException("Unable to get list as there was more than one rdf:first associated with the list item " + listCurrent.ToString());
+                currCount = ts.Count;
+
+                ts.AddRange(g.GetTriplesWithSubjectPredicate(listCurrent, rdfRest));
+                diff = ts.Count - currCount;
+                if (diff == 0) throw new RdfException("Unable to get list as there was no rdf:rest associated with the list item " + listCurrent.ToString());
+                if (diff > 0) throw new RdfException("Unable to get list as there was more than one rdf:rest associated with the list item " + listCurrent.ToString());
+                currCount = ts.Count;
+
+                listCurrent = ts[ts.Count - 1].Object;
+            } while (!listCurrent.Equals(rdfNil));
+
+            return ts;
+        }
+
+        public static IEnumerable<INode> GetList(this IGraph g, INode listRoot)
+        {
+            return GetListAsTriples(g, listRoot).Select(t => t.Object);
+        }
+
+        public static INode GetListTail(this IGraph g, INode listRoot)
+        {
+            return GetListAsTriples(g, listRoot).Select(t => t.Subject).Last();
+        }
+
+        public static void RetractList(this IGraph g, INode listRoot)
+        {
+            g.Retract(GetListAsTriples(g, listRoot));
+        }
+
+        public static void AddToList<T>(this IGraph g, INode listRoot, IEnumerable<T> objects, Func<T, INode> mapFunc)
+        {
+            //Get the List Tail
+            INode listTail = GetListTail(g, listRoot);
+
+            //Remove the rdf:rest rdf:nil triple
+            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            g.Retract(new Triple(listTail, rdfRest, rdfNil));
+
+            //Create a new tail for the list that will act as the root of the extended list
+            INode newRoot = g.CreateBlankNode();
+            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            g.Assert(new Triple(listTail, rdfRest, newRoot));
+
+            //Then assert the new list
+            AssertList<T>(g, newRoot, objects, mapFunc);
         }
 
         #endregion
