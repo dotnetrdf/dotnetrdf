@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -229,6 +229,70 @@ namespace VDS.RDF
         public static void Retract(this IGraph g, INode subj, INode pred, INode obj)
         {
             g.Retract(new Triple(subj, pred, obj));
+        }
+
+        /// <summary>
+        /// Asserts a list as a RDF collection and returns the node that represents the root of the RDF collection
+        /// </summary>
+        /// <typeparam name="T">Type of Objects</typeparam>
+        /// <param name="g">Graph to assert in</param>
+        /// <param name="subj">Subject to link to the collection</param>
+        /// <param name="pred">Predicate which links the subject to the collection</param>
+        /// <param name="objects">Objects to place in the collection</param>
+        /// <param name="mapFunc">Mapping from Object Type to <see cref="INode">INode</see></param>
+        /// <returns>
+        /// Either the blank node which is the root of the collection or <strong>rdf:nil</strong> for empty collections
+        /// </returns>
+        public static INode AssertList<T>(this IGraph g, INode subj, INode pred, IEnumerable<T> objects, Func<T, INode> mapFunc)
+        {
+            INode listRoot = g.CreateBlankNode();
+            INode rdfFirst = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst));
+            INode rdfRest = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest));
+            INode rdfNil = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil));
+            INode listCurrent = listRoot;
+
+            List<INode> nodes = objects.Select(x => mapFunc(x)).ToList();
+            if (nodes.Count == 0)
+            {
+                g.Assert(subj, pred, rdfNil);
+                return rdfNil;
+            }
+            else
+            {
+                g.Assert(subj, pred, listRoot);
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    g.Assert(listCurrent, rdfFirst, nodes[i]);
+
+                    if (i < nodes.Count - 1)
+                    {
+                        INode listNext = g.CreateBlankNode();
+                        g.Assert(listCurrent, rdfRest, listNext);
+                        listCurrent = listNext;
+                    }
+                    else
+                    {
+                        g.Assert(listCurrent, rdfRest, rdfNil);
+                    }
+                }
+                return listRoot;
+            }
+        }
+
+        /// <summary>
+        /// Asserts a list as a RDF collection and returns the node that represents the root of the RDF collection
+        /// </summary>
+        /// <typeparam name="T">Type of Objects</typeparam>
+        /// <param name="g">Graph to assert in</param>
+        /// <param name="subj">Subject to link to the collection</param>
+        /// <param name="pred">Predicate which links the subject to the collection</param>
+        /// <param name="objects">Objects to place in the collection</param>
+        /// <returns>
+        /// Either the blank node which is the root of the collection or <strong>rdf:nil</strong> for empty collections
+        /// </returns>
+        public static INode AssertList(this IGraph g, INode subj, INode pred, IEnumerable<INode> objects)
+        {
+            return AssertList(g, subj, pred, objects, n => n);
         }
 
         #endregion
