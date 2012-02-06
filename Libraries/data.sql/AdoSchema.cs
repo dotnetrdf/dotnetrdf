@@ -123,7 +123,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Script for dropping the database
         /// </summary>
-        Drop
+        Drop,
+        /// <summary>
+        /// Script for upgrading a version 1 schema to the version 2 schema
+        /// </summary>
+        UpgradeToVersion2
     }
 
     /// <summary>
@@ -204,6 +208,12 @@ namespace VDS.RDF.Storage
         private static bool _init = false;
         private static AdoSchemaDefinition _default;
 
+        /// <summary>
+        /// Constants for Schema Versions
+        /// </summary>
+        public const int Version1 = 1,
+                         Version2 = 2;
+
         private static void Init()
         {
             if (!_init)
@@ -212,8 +222,8 @@ namespace VDS.RDF.Storage
                 _defs.Add(new AdoSchemaDefinition("Hash", "A schema that uses MD5 hash based indexes to provide better Node ID lookup speed",
                     new AdoSchemaScriptDefinition[] 
                     { 
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.CreateMicrosoftAdoHashStore.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoHashStore.sql")
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.CreateMicrosoftAdoHashStore.sql"),
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.DropMicrosoftAdoHashStore.sql")
                     }));
                 _default = _defs[0];
 
@@ -221,16 +231,14 @@ namespace VDS.RDF.Storage
                 _defs.Add(new AdoSchemaDefinition("Simple", "A simple schema that uses partial value indexes to speed up Node ID lookups",
                     new AdoSchemaScriptDefinition[]
                     {
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.CreateMicrosoftAdoSimpleStore.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoSimpleStore.sql"),
-                        //new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.CreateSqlServerCeAdoSimpleStore.sql"),
-                        //new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.SqlServerCe, "VDS.RDF.Storage.DropSqlServerCeAdoSimpleStore.sql")
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.CreateMicrosoftAdoSimpleStore.sql"),
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.DropMicrosoftAdoSimpleStore.sql"),
                     }));
                 _defs.Add(new AdoSchemaDefinition("Simple 2000", "A variant of the Simple schema that should work on pre-2005 SQL Server instances",
                     new AdoSchemaScriptDefinition[]
                     {
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.CreateMicrosoftAdoSimple2000Store.sql"),
-                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.DropMicrosoftAdoSimple2000Store.sql")
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Create, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.CreateMicrosoftAdoSimple2000Store.sql"),
+                        new AdoSchemaScriptDefinition(AdoSchemaScriptType.Drop, AdoSchemaScriptDatabase.MicrosoftSqlServer, "VDS.RDF.Storage.Schemas.DropMicrosoftAdoSimple2000Store.sql")
                     }));
                 _init = true;
             }

@@ -95,7 +95,7 @@ namespace VDS.RDF.Storage
         where TAdapter : DbDataAdapter
         where TException : Exception
     {
-        private int _version = 1;
+        private int _version = AdoSchemaHelper.Version1;
         private AdoAccessMode _accessMode = AdoAccessMode.Streaming;
         private String _schema = "Hash";
         private TConn _connection;
@@ -320,7 +320,8 @@ namespace VDS.RDF.Storage
                 int version = (int)cmd.Parameters["RC"].Value;
                 switch (version)
                 {
-                    case 1:
+                    case AdoSchemaHelper.Version2:
+                    case AdoSchemaHelper.Version1:
                         //OK
                         break;
                     default:

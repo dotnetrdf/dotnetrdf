@@ -180,19 +180,28 @@ namespace VDS.RDF.Query.Datasets
             int o = this._manager.GetID(t.Object);
             if (o == 0) return false;
 
-            TCommand cmd = this._manager.GetCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "HasQuad";
-            cmd.Connection = this._manager.Connection;
-            this._manager.EncodeNodeID(cmd, s, TripleSegment.Subject);
-            this._manager.EncodeNodeID(cmd, p, TripleSegment.Predicate);
-            this._manager.EncodeNodeID(cmd, o, TripleSegment.Object);
-            cmd.Parameters.Add(this._manager.GetParameter("RC"));
-            cmd.Parameters["RC"].DbType = DbType.Int32;
-            cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
-            cmd.ExecuteNonQuery();
+            switch (this._manager.Version)
+            {
+                case AdoSchemaHelper.Version2:
+                    //Use the HasQuadsAny() stored procedure
+                    TCommand cmd = this._manager.GetCommand();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "HasQuadAny";
+                    cmd.Connection = this._manager.Connection;
+                    this._manager.EncodeNodeID(cmd, s, TripleSegment.Subject);
+                    this._manager.EncodeNodeID(cmd, p, TripleSegment.Predicate);
+                    this._manager.EncodeNodeID(cmd, o, TripleSegment.Object);
+                    cmd.Parameters.Add(this._manager.GetParameter("RC"));
+                    cmd.Parameters["RC"].DbType = DbType.Int32;
+                    cmd.Parameters["RC"].Direction = ParameterDirection.ReturnValue;
+                    cmd.ExecuteNonQuery();
 
-            return ((int)cmd.Parameters["RC"].Value) == 1;
+                    return ((int)cmd.Parameters["RC"].Value) == 1;
+
+                case AdoSchemaHelper.Version1:
+                default:
+                    return this.GetTriplesWithSubjectObjectInternal(t.Subject, t.Object).Any(x => x.Predicate.Equals(t.Predicate));
+            }
         }
 
         /// <summary>

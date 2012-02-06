@@ -359,7 +359,9 @@ namespace VDS.RDF.Storage
         {
             switch (currVersion)
             {
-                case 1:
+                case AdoSchemaHelper.Version2:
+                    //TODO: Once Version 2 is defined add necessary upgrade logic here
+                case AdoSchemaHelper.Version1:
                     //Note - In future versions this may take upgrade actions on the database
                     return currVersion;
                 default:

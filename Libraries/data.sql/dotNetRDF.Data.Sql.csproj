@@ -54,7 +54,6 @@
     <Compile Include="BaseAdoStoreManager.cs" />
     <Compile Include="MicrosoftAdoManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="SqlCeAdoManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\core\dotNetRDF.csproj">
@@ -63,18 +62,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CreateMicrosoftAdoSimpleStore.sql" />
-    <EmbeddedResource Include="DropMicrosoftAdoSimpleStore.sql" />
+    <EmbeddedResource Include="Schemas\CreateMicrosoftAdoSimpleStore.sql" />
+    <EmbeddedResource Include="Schemas\DropMicrosoftAdoSimpleStore.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CreateMicrosoftAdoHashStore.sql" />
-    <EmbeddedResource Include="DropMicrosoftAdoHashStore.sql" />
+    <EmbeddedResource Include="Schemas\CreateMicrosoftAdoHashStore.sql" />
+    <EmbeddedResource Include="Schemas\DropMicrosoftAdoHashStore.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CreateMicrosoftAdoSimple2000Store.sql" />
+    <EmbeddedResource Include="Schemas\CreateMicrosoftAdoSimple2000Store.sql" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DropMicrosoftAdoSimple2000Store.sql" />
+    <EmbeddedResource Include="Schemas\DropMicrosoftAdoSimple2000Store.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Schemas\Upgrades\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
