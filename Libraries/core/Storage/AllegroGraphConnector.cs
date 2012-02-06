@@ -1,4 +1,4 @@
-﻿/*
+/*
 
 Copyright Robert Vesse 2009-10
 rvesse@vdesign-studios.com
