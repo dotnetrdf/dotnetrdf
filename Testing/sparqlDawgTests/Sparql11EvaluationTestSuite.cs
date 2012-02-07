@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -32,6 +33,9 @@ namespace dotNetRDFTest
         private List<String> evaluationTestOverride;
 
         private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+        private IGraph _earl = new Graph();
+        private INode _lvn;
 
         public void RunTests()
         {
@@ -85,6 +89,15 @@ namespace dotNetRDFTest
                     "service/service06.rq"                    
                 };
 
+                //Build the base Graph for our EARL report
+                this._lvn = this._earl.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org/leviathan#"));
+                this._earl.NamespaceMap.AddNamespace("dc", UriFactory.Create("http://purl.org/dc/elements/1.1/"));
+                this._earl.NamespaceMap.AddNamespace("earl", UriFactory.Create("http://www.w3.org/ns/earl#"));
+                this._earl.NamespaceMap.AddNamespace("foaf", UriFactory.Create("http://xmlns.com/foaf/0.1/"));
+                this._earl.NamespaceMap.AddNamespace("dct", UriFactory.Create("http://purl.org/dc/terms/"));
+                this._earl.NamespaceMap.AddNamespace("dawg", UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
+                this._earl.NamespaceMap.AddNamespace("doap", UriFactory.Create("http://usefulinc.com/ns/doap#"));
+
                 if (Directory.Exists("sparql11_tests"))
                 {
                     foreach (String dir in Directory.GetDirectories("sparql11_tests"))
@@ -123,6 +136,9 @@ namespace dotNetRDFTest
             finally
             {
                 output.Close();
+                Version verData = Assembly.GetAssembly(typeof(IGraph)).GetName().Version;
+                String ver = verData.Major.ToString() + verData.Minor.ToString() + verData.Build;
+                this._earl.SaveToFile("earl-sparql11-v" + ver + "-" + DateTime.Now.ToString("yyyy-MM-dd") + ".ttl");
             }
 
             Options.LiteralValueNormalization = true;
@@ -198,7 +214,7 @@ namespace dotNetRDFTest
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
                         if (queryDef != null)
                         {
-                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), true);
+                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), testID, true);
                         }
                         else
                         {
@@ -229,7 +245,7 @@ namespace dotNetRDFTest
                         Triple queryDef = manifest.Triples.WithSubjectPredicate(testID, action).FirstOrDefault();
                         if (queryDef != null)
                         {
-                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), false);
+                            this.ProcessSyntaxTest(queryParser, updateParser, queryDef.Object.ToString(), testID, false);
                         }
                         else
                         {
@@ -280,7 +296,7 @@ namespace dotNetRDFTest
                                     Triple commentDef = manifest.Triples.WithSubjectPredicate(testID, rdfsComment).FirstOrDefault();
 
                                     //Run the Evaluation Test
-                                    int eval = this.ProcessEvaluationTest(queryParser, commentDef, queryDef.Object.ToString(), defGraph, namedGraphs, resultDef.Object.ToString());
+                                    int eval = this.ProcessEvaluationTest(queryParser, commentDef, testID, queryDef.Object.ToString(), defGraph, namedGraphs, resultDef.Object.ToString());
                                 }
                                 else
                                 {
@@ -342,9 +358,45 @@ namespace dotNetRDFTest
             //}
         }
 
-        private void ProcessSyntaxTest(SparqlQueryParser queryParser, SparqlUpdateParser updateParser, String inputFile, bool shouldParse)
+
+        // this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
+
+        ////EARL Reporting
+        //INode test = this._earl.CreateBlankNode();
+        //INode testResult = this._earl.CreateBlankNode();
+        //INode rdfType = this._earl.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+        //this._earl.Assert(test, rdfType, this._earl.CreateUriNode("earl:Assertion"));
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:assertedBy"), this._lvn);
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:subject"), this._lvn);
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:test"), commentDef.Subject.CopyNode(this._earl));
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:result"), testResult);
+        //this._earl.Assert(testResult, rdfType, this._earl.CreateUriNode("earl:TestResult"));
+        //this._earl.Assert(testResult, this._earl.CreateUriNode("dc:date"), DateTime.Now.ToLiteralDate(this._earl));
+
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:manual"));
+        //this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
+
+        //this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:automatic"));
+
+        //this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
+
+        //this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
+
+        private void ProcessSyntaxTest(SparqlQueryParser queryParser, SparqlUpdateParser updateParser, String inputFile, INode testID, bool shouldParse)
         {
             if (inputFile.StartsWith("file:///")) inputFile = inputFile.Substring(8);
+
+            //EARL Reporting
+            INode test = this._earl.CreateBlankNode();
+            INode testResult = this._earl.CreateBlankNode();
+            INode rdfType = this._earl.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            this._earl.Assert(test, rdfType, this._earl.CreateUriNode("earl:Assertion"));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:assertedBy"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:subject"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:test"), testID.CopyNode(this._earl));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:result"), testResult);
+            this._earl.Assert(testResult, rdfType, this._earl.CreateUriNode("earl:TestResult"));
+            this._earl.Assert(testResult, this._earl.CreateUriNode("dc:date"), DateTime.Now.ToLiteralDate(this._earl));
 
             bool error = false;
             bool skipFinally = false;
@@ -363,6 +415,8 @@ namespace dotNetRDFTest
 
                 if (evaluationTestOverride.Any(x => inputFile.EndsWith(x)))
                 {
+                    this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:manual"));
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                     Console.WriteLine();
                     Console.WriteLine("# Test Result = Manually overridden to Pass (Test Passed)");
                     skipFinally = true;
@@ -370,6 +424,7 @@ namespace dotNetRDFTest
                     testsSyntaxPassed++;
                     return;
                 }
+                this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:automatic"));
 
                 if (inputFile.EndsWith(".rq"))
                 {
@@ -389,6 +444,7 @@ namespace dotNetRDFTest
                 }
                 else
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     Console.WriteLine("# Test Result - Unknown Input File for Syntax Test (Test Indeterminate)");
                     skipFinally = true;
                     testsIndeterminate++;
@@ -415,12 +471,14 @@ namespace dotNetRDFTest
                     {
                         if (shouldParse)
                         {
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                             Console.WriteLine(" Parsing Failed when should have parsed (Test Failed)");
                             testsFailed++;
                             testsSyntaxFailed++;
                         }
                         else
                         {
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                             Console.WriteLine(" Parsing Failed as expected (Test Passed)");
                             testsPassed++;
                             testsSyntaxPassed++;
@@ -430,12 +488,14 @@ namespace dotNetRDFTest
                     {
                         if (shouldParse)
                         {
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                             Console.WriteLine(" Parsed OK as expected (Test Passed)");
                             testsPassed++;
                             testsSyntaxPassed++;
                         }
                         else
                         {
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                             Console.WriteLine(" Parsed OK when should have failed (Test Failed)");
                             testsFailed++;
                             testsSyntaxFailed++;
@@ -446,7 +506,7 @@ namespace dotNetRDFTest
             }
         }
 
-        private int ProcessEvaluationTest(SparqlQueryParser parser, Triple commentDef, String queryFile, String dataFile, List<String> dataFiles, String resultFile)
+        private int ProcessEvaluationTest(SparqlQueryParser parser, Triple commentDef, INode testID, String queryFile, String dataFile, List<String> dataFiles, String resultFile)
         {
             Console.WriteLine("# Processing Query Evaluation Test " + Path.GetFileName(queryFile));
 
@@ -456,6 +516,19 @@ namespace dotNetRDFTest
                 Console.WriteLine();
             }
 
+            //EARL Reporting
+            INode test = this._earl.CreateBlankNode();
+            INode testResult = this._earl.CreateBlankNode();
+            INode rdfType = this._earl.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            this._earl.Assert(test, rdfType, this._earl.CreateUriNode("earl:Assertion"));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:assertedBy"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:subject"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:test"), testID.CopyNode(this._earl));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:result"), testResult);
+            this._earl.Assert(testResult, rdfType, this._earl.CreateUriNode("earl:TestResult"));
+            this._earl.Assert(testResult, this._earl.CreateUriNode("dc:date"), DateTime.Now.ToLiteralDate(this._earl));
+
+            //Get Files
             if (dataFiles.Contains(dataFile)) dataFiles.Remove(dataFile);
             if (queryFile.StartsWith("file:///")) queryFile = queryFile.Substring(8);
             if (dataFile != null && dataFile.StartsWith("file:///")) dataFile = dataFile.Substring(8);
@@ -464,12 +537,15 @@ namespace dotNetRDFTest
             Console.WriteLine("Query File is " + queryFile);
             if (evaluationTestOverride.Any(x => queryFile.EndsWith(x)))
             {
+                this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:manual"));
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                 Console.WriteLine();
                 Console.WriteLine("# Test Result = Manually overridden to Pass (Test Passed)");
                 testsPassed++;
                 testsEvaluationPassed++;
                 return 1;
             }
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:automatic"));
             if (dataFile != null) Console.WriteLine("Default Graph File is " + dataFile);
             foreach (String file in dataFiles)
             {
@@ -499,6 +575,7 @@ namespace dotNetRDFTest
             }
             catch (RdfParseException parseEx)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Query Parser Error", parseEx);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -507,6 +584,7 @@ namespace dotNetRDFTest
             }
             catch (Exception ex)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Unexpected Parsing Error", ex);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -536,6 +614,7 @@ namespace dotNetRDFTest
             }
             catch (RdfParseException parseEx)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Parser Error", parseEx);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -562,6 +641,7 @@ namespace dotNetRDFTest
             }
             catch (RdfParseException parseEx)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Parser Error", parseEx);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -593,6 +673,7 @@ namespace dotNetRDFTest
             }
             catch (RdfQueryException queryEx)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Query Error", queryEx);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -601,6 +682,7 @@ namespace dotNetRDFTest
             }
             catch (Exception ex)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Other Error", ex);
                 testsFailed++;
                 testsEvaluationFailed++;
@@ -610,6 +692,7 @@ namespace dotNetRDFTest
 
             if (results == null)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 testsFailed++;
                 testsEvaluationFailed++;
                 Console.WriteLine("# Test Result - No result was returned from the Query (Test Failed)");
@@ -634,6 +717,7 @@ namespace dotNetRDFTest
                     }
                     catch (RdfParseException parseEx)
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         this.ReportError("Result Set Parser Error", parseEx);
                         testsIndeterminate++;
                         testsEvaluationIndeterminate++;
@@ -650,6 +734,7 @@ namespace dotNetRDFTest
                     }
                     catch (RdfParseException parseEx)
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         this.ReportError("Result Set Parser Error", parseEx);
                         testsIndeterminate++;
                         testsEvaluationIndeterminate++;
@@ -666,6 +751,7 @@ namespace dotNetRDFTest
                     }
                     catch (RdfParseException parseEx)
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         this.ReportError("Result Set Parser Error", parseEx);
                         testsIndeterminate++;
                         testsEvaluationIndeterminate++;
@@ -694,6 +780,7 @@ namespace dotNetRDFTest
                     }
                     catch (Exception ex)
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         this.ReportError("Result Set Parser Error", ex);
                         testsIndeterminate++;
                         testsEvaluationIndeterminate++;
@@ -706,6 +793,7 @@ namespace dotNetRDFTest
                 expectedResults.Trim();
                 if (ourResults.Equals(expectedResults))
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                     testsPassed++;
                     testsEvaluationPassed++;
                     Console.WriteLine("# Test Result - Result Set as expected (Test Passed)");
@@ -750,6 +838,7 @@ namespace dotNetRDFTest
                         {
                             if (ourResults.Equals(expectedResults))
                             {
+                                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                                 testsPassed++;
                                 testsEvaluationPassed++;
                                 Console.WriteLine("# Test Result - Graph as expected (Test Passed)");
@@ -757,6 +846,7 @@ namespace dotNetRDFTest
                             }
                             else
                             {
+                                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                                 this.ShowTestData(store);
                                 this.ShowGraphs(ourResults, expectedResults);
                                 testsFailed++;
@@ -767,6 +857,7 @@ namespace dotNetRDFTest
                         }
                         catch (NotImplementedException)
                         {
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                             this.ShowGraphs(ourResults, expectedResults);
                             testsIndeterminate++;
                             testsEvaluationIndeterminate++;
@@ -776,6 +867,7 @@ namespace dotNetRDFTest
                     }
                     catch (RdfParseException parseEx)
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         this.ReportError("Graph Parser Error", parseEx);
                         testsIndeterminate++;
                         testsEvaluationIndeterminate++;
@@ -785,6 +877,7 @@ namespace dotNetRDFTest
                 }
                 else
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     testsIndeterminate++;
                     testsEvaluationIndeterminate++;
                     Console.WriteLine("# Test Result - Unable to load expected Graph (Test Indeterminate)");
@@ -793,6 +886,7 @@ namespace dotNetRDFTest
             }
             else
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 testsFailed++;
                 testsEvaluationFailed++;
                 Console.WriteLine("# Test Result - Didn't produce a Graph as expected (Test Failed)");
@@ -803,6 +897,18 @@ namespace dotNetRDFTest
 
         private int ProcessUpdateEvaluationTest(IGraph manifest, INode testNode)
         {
+            //EARL Reporting
+            INode test = this._earl.CreateBlankNode();
+            INode testResult = this._earl.CreateBlankNode();
+            INode rdfType = this._earl.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            this._earl.Assert(test, rdfType, this._earl.CreateUriNode("earl:Assertion"));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:assertedBy"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:subject"), this._lvn);
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:test"), testNode.CopyNode(this._earl));
+            this._earl.Assert(test, this._earl.CreateUriNode("earl:result"), testResult);
+            this._earl.Assert(testResult, rdfType, this._earl.CreateUriNode("earl:TestResult"));
+            this._earl.Assert(testResult, this._earl.CreateUriNode("dc:date"), DateTime.Now.ToLiteralDate(this._earl));
+
             try
             {
                 IUriNode utData = manifest.CreateUriNode("ut:data");
@@ -825,12 +931,15 @@ namespace dotNetRDFTest
 
                 if (evaluationTestOverride.Any(x => updateFile.EndsWith(x)))
                 {
+                    this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:manual"));
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                     Console.WriteLine();
                     Console.WriteLine("# Test Result = Manually overridden to Pass (Test Passed)");
                     testsPassed++;
                     testsEvaluationPassed++;
                     return 1;
                 }
+                this._earl.Assert(test, this._earl.CreateUriNode("earl:mode"), this._earl.CreateUriNode("earl:automatic"));
 
                 //Parse the Update
                 SparqlUpdateParser parser = new SparqlUpdateParser();
@@ -850,6 +959,7 @@ namespace dotNetRDFTest
                 {
                     this.ReportError("Error Parsing Update Commands", ex);
 
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     Console.WriteLine("# Test Result - Update Command failed to pass (Test Failed)");
                     testsEvaluationFailed++;
                     testsFailed++;
@@ -882,6 +992,7 @@ namespace dotNetRDFTest
                 }
                 catch (Exception ex)
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     this.ReportError("Error Building Initial Dataset", ex);
                     Console.WriteLine("# Test Result - Unable to build Initial Dataset (Test Indeterminate)");
                     testsEvaluationIndeterminate++;
@@ -907,6 +1018,7 @@ namespace dotNetRDFTest
                 }
                 catch (SparqlUpdateException updateEx)
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     //TODO: Some Update tests might be to test cases where a failure should occur
                     this.ReportError("Unexpected Error while performing Update", updateEx);
                     Console.WriteLine("# Test Result - Update Failed (Test Failed)");
@@ -916,6 +1028,7 @@ namespace dotNetRDFTest
                 }
                 catch (Exception ex)
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     this.ReportError("Unexpected Error while performing Update", ex);
                     Console.WriteLine("# Test Result - Update Failed (Test Failed)");
                     testsEvaluationFailed++;
@@ -970,6 +1083,7 @@ namespace dotNetRDFTest
                         {
                             this.ShowGraphs(dataset[u], resultDataset[u]);
 
+                            this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                             Console.WriteLine("# Test Result - Expected Result Dataset Graph '" + this.ToSafeString(u) + "' is different from the Graph with that name in the Updated Dataset (Test Failed)");
                             testsEvaluationFailed++;
                             testsFailed++;
@@ -978,6 +1092,7 @@ namespace dotNetRDFTest
                     }
                     else
                     {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                         Console.WriteLine("# Test Result - Expected Result Dataset has Graph '" + this.ToSafeString(u) + "' which is not present in the Updated Dataset (Test Failed)");
                         testsEvaluationFailed++;
                         testsFailed++;
@@ -992,6 +1107,7 @@ namespace dotNetRDFTest
                     }
                 }
 
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:pass"));
                 Console.WriteLine("# Test Result - Updated Dataset matches Expected Result Dataset (Test Passed)");
                 testsEvaluationPassed++;
                 testsPassed++;
@@ -999,6 +1115,7 @@ namespace dotNetRDFTest
             }
             catch (Exception ex)
             {
+                this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                 this.ReportError("Unexpected Error", ex);
                 Console.WriteLine("# Test Result - Unexpected Error (Test Failed)");
                 testsEvaluationFailed++;
