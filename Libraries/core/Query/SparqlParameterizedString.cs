@@ -36,9 +36,10 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.IO;
+using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query
@@ -85,6 +86,8 @@ namespace VDS.RDF.Query
         private Dictionary<String, INode> _variables = new Dictionary<string, INode>();
         private SparqlFormatter _formatter = new SparqlFormatter();
         private IGraph _g = new NonIndexedGraph();
+        private ISparqlQueryProcessor _queryProcessor;
+        private ISparqlUpdateProcessor _updateProcessor;
 
         private const String _validParameterNamePattern = "^@?[\\w\\-_]+$";
         private const String _validVariableNamePattern = "^[?$]?[\\w\\-_]+$";
@@ -137,18 +140,32 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the parameterized Query Text
+        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteQuery()">ExecuteQuery()</see> method
         /// </summary>
-        [Obsolete("Deprecated - Use the more descriptive synonym CommandText instead",true)]
-        public String QueryText
+        public ISparqlQueryProcessor QueryProcessor
         {
             get
             {
-                return this._command;
+                return this._queryProcessor;
             }
             set
             {
-                this._command = value;
+                this._queryProcessor = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the Query processor which is used when you call the <see cref="SparqlParameterizedString.ExecuteUpdate()">ExecuteUpdate()</see> method
+        /// </summary>
+        public ISparqlUpdateProcessor UpdateProcessor
+        {
+            get
+            {
+                return this._updateProcessor;
+            }
+            set
+            {
+                this._updateProcessor = value;
             }
         }
 
@@ -441,6 +458,43 @@ namespace VDS.RDF.Query
         public void SetBlankNode(String name)
         {
             this.SetParameter(name, this._g.CreateBlankNode());
+        }
+
+        /// <summary>
+        /// Executes this command as a query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlResultSet ExecuteQuery()
+        {
+            SparqlResultSet rset = new SparqlResultSet();
+            this.ExecuteQuery(null, new ResultSetHandler(rset));
+            return rset;
+        }
+
+        /// <summary>
+        /// Executes this command as a query
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
+        {
+            if (this._queryProcessor == null) throw new RdfQueryException("Cannot call ExecuteQuery() when the QueryProcessor property has not been set");
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(this.ToString());
+            this._queryProcessor.ProcessQuery(rdfHandler, resultsHandler, q);
+        }
+
+        /// <summary>
+        /// Executes this command as an update
+        /// </summary>
+        public void ExecuteUpdate()
+        {
+            if (this._updateProcessor == null) throw new SparqlUpdateException("Cannot call ExecuteUpdate() when the UpdateProcessor property has not been set");
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(this.ToString());
+            this._updateProcessor.ProcessCommandSet(cmds);
         }
 
         /// <summary>

@@ -26,9 +26,10 @@ Changed
  - Fixed a bug with long URIs and SparqlRemoteUpdateEndpoint
  - Critical bug where connecting to an AllegroGraph 4.x repository cleared existing data
  - Fixed a bug whereby Blank Node IDs in NTriples output could be invalid
- - Fixed a bug where QNames in RDF/XML weren't fully validated against the latest revisions of the XML specs
+ - Fixed a bug where QNames in RDF/XML output weren't fully validated against the latest revisions of the XML specs
+ - Fixed a bug where Blank Node IDs in RDF/XML output could be invalid
 - Parsing
- - Constructors for BlockingTextReader and now private, use BlockingTextReader.Create() static instead
+ - Constructors for BlockingTextReader are now private, use BlockingTextReader.Create() static instead
 - Query
  - Major refactor of SPARQL expression evaluation to make it more efficient and maintainable
  - Replaced the Join algorithm with a new algorithm which is significantly faster
@@ -42,6 +43,7 @@ Changed
 Removed
 - Legacy SQL Store support
 - Obsolete BlockingStreamReader class
+- Obsolete QueryText method on SparqlParameterizedString
 
    
 
