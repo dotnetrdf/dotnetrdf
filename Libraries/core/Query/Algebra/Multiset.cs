@@ -47,7 +47,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Multiset of possible solutions
     /// </summary>
-    public class Multiset : BaseMultiset
+    public class Multiset 
+        : BaseMultiset
     {
         /// <summary>
         /// Variables contained in the Multiset
@@ -170,7 +171,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             //First do a pass over the LHS Result to find all possible values for joined variables
-            foreach (Set x in this.Sets)
+            foreach (ISet x in this.Sets)
             {
                 int i = 0;
                 foreach (String var in joinVars)
@@ -189,7 +190,7 @@ namespace VDS.RDF.Query.Algebra
             }
 
             //Then do a pass over the RHS and work out the intersections
-            foreach (Set y in other.Sets)
+            foreach (ISet y in other.Sets)
             {
                 IEnumerable<int> possMatches = null;
                 int i = 0;
@@ -325,7 +326,7 @@ namespace VDS.RDF.Query.Algebra
                 //First do a pass over the LHS Result to find all possible values for joined variables
                 Dictionary<int, bool> matched = new Dictionary<int, bool>();
                 HashSet<int> standalone = new HashSet<int>();
-                foreach (Set x in this.Sets)
+                foreach (ISet x in this.Sets)
                 {
                     int i = 0;
                     foreach (String var in joinVars)
@@ -345,7 +346,7 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 //Then do a pass over the RHS and work out the intersections
-                foreach (Set y in other.Sets)
+                foreach (ISet y in other.Sets)
                 {
                     IEnumerable<int> possMatches = null;
                     int i = 0;
@@ -455,23 +456,132 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
+
+            //This is the old algorithm which is correct but naive with worse case O(n^2)
+            //foreach (ISet x in this.Sets)
+            //{
+            //    //New ExistsJoin() logic based on the improved Join() logic
+            //    bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+            //    //bool exists = other.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
+
+            //    if (exists)
+            //    {
+            //        //If there are compatible sets and this is an EXIST then preserve the solution
+            //        if (mustExist) joinedSet.Add(x);
+            //    }
+            //    else
+            //    {
+            //        //If there are no compatible sets and this is a NOT EXISTS then preserve the solution
+            //        if (!mustExist) joinedSet.Add(x);
+            //    }
+            //}
+
+            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in this.Sets)
             {
-                //New ExistsJoin() logic based on the improved Join() logic
-                bool exists = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-                //bool exists = other.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
-
-                if (exists)
+                int i = 0;
+                foreach (String var in joinVars)
                 {
-                    //If there are compatible sets and this is an EXIST then preserve the solution
-                    if (mustExist) joinedSet.Add(x);
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
+                }
+            }
+
+            //Then do a pass over the RHS and work out the intersections
+            HashSet<int> exists = new HashSet<int>();
+            foreach (ISet y in other.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Look at possible matches, if is a valid match then mark the set as having an existing match
+                //Don't reconsider sets which have already been marked as having an existing match
+                foreach (int poss in possMatches)
+                {
+                    if (exists.Contains(poss)) continue;
+                    if (this._sets[poss].IsCompatibleWith(y, joinVars))
+                    {
+                        exists.Add(poss);
+                    }
+                }
+            }
+
+            //Apply the actual exists
+            if (exists.Count == this.Count)
+            {
+                //If number of sets that have a match is equal to number of sets then we're either returning everything or nothing
+                if (mustExist)
+                {
+                    return this;
                 }
                 else
                 {
-                    //If there are no compatible sets and this is a NOT EXISTS then preserve the solution
-                    if (!mustExist) joinedSet.Add(x);
+                    return new NullMultiset();
                 }
             }
+            else
+            {
+                //Otherwise iterate
+                foreach (ISet x in this.Sets)
+                {
+                    if (mustExist)
+                    {
+                        if (exists.Contains(x.ID))
+                        {
+                            joinedSet.Add(x);
+                        }
+                    }
+                    else
+                    {
+                        if (!exists.Contains(x.ID))
+                        {
+                            joinedSet.Add(x);
+                        }
+                    }
+                }
+            }
+
             return joinedSet;
         }
 
@@ -494,17 +604,109 @@ namespace VDS.RDF.Query.Algebra
 
             //Start building the Joined Set
             Multiset joinedSet = new Multiset();
+
+            //This is the old algorithm which is correct but naive and has O(n^2) complexity
+            //foreach (ISet x in this.Sets)
+            //{
+            //    //New Minus logic based on the improved Join() logic
+            //    bool minus = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
+
+            //    //If no compatible sets then this set is preserved
+            //    if (!minus)
+            //    {
+            //        joinedSet.Add(x);
+            //    }
+            //}
+
+            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
             foreach (ISet x in this.Sets)
             {
-                //New Minus logic based on the improved Join() logic
-                bool minus = other.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-
-                //If no compatible sets then this set is preserved
-                if (!minus)
+                int i = 0;
+                foreach (String var in joinVars)
                 {
-                    joinedSet.Add(x);
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
                 }
             }
+
+            //Then do a pass over the RHS and work out the intersections
+            HashSet<int> toMinus = new HashSet<int>();
+            foreach (ISet y in other.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Look at possible matches, if is a valid match then mark the matched set for minus'ing
+                //Don't reconsider sets which have already been marked for minusing
+                foreach (int poss in possMatches)
+                {
+                    if (toMinus.Contains(poss)) continue;
+                    if (this._sets[poss].IsCompatibleWith(y, joinVars))
+                    {
+                        toMinus.Add(poss);
+                    }
+                }
+            }
+
+            //Apply the actual minus
+            if (toMinus.Count == this.Count)
+            {
+                //If number of sets to minus is equal to number of sets then we're minusing everything
+                return new NullMultiset();
+            }
+            else
+            {
+                //Otherwise iterate
+                foreach (ISet x in this.Sets)
+                {
+                    if (!toMinus.Contains(x.ID))
+                    {
+                        joinedSet.Add(x);
+                    }
+                }
+            }
+
             return joinedSet;
         }
 

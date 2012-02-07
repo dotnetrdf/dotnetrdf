@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Nodes;
@@ -53,8 +54,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
     {
         private GraphPattern _pattern;
         private bool _mustExist;
+
         private BaseMultiset _result;
         private int? _lastInput;
+        private int _lastCount = 0;
+        private List<System.String> _joinVars;
+        private HashSet<int> _exists;
 
         /// <summary>
         /// Creates a new EXISTS/NOT EXISTS function
@@ -75,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode()) this.EvaluateInternal(context);
+            if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode() || this._lastCount != context.InputMultiset.Count) this.EvaluateInternal(context);
 
             if (this._result is IdentityMultiset) return new BooleanNode(null, true);
             if (this._mustExist)
@@ -91,9 +96,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 if (this._result.IsEmpty) return new BooleanNode(null, true);
             }
 
-            ISet x = context.InputMultiset[bindingID];
-            List<string> joinVars = x.Variables.Where(v => this._result.ContainsVariable(v)).ToList();
-            if (joinVars.Count == 0)
+            if (this._joinVars.Count == 0)
             {
                 //If Disjoint then all solutions are compatible
                 if (this._mustExist)
@@ -108,8 +111,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 }
             }
 
-            bool exists = this._result.Sets.Any(s => joinVars.All(v => x[v] == null || s[v] == null || x[v].Equals(s[v])));
-            //bool exists = this._result.Sets.Any(s => s.IsCompatibleWith(x, joinVars));
+            ISet x = context.InputMultiset[bindingID];
+
+            bool exists = this._exists.Contains(x.ID);
             if (this._mustExist)
             {
                 //If an EXISTS then return the value of exists i.e. are there any compatible solutions
@@ -131,18 +135,89 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         /// </remarks>
         private void EvaluateInternal(SparqlEvaluationContext context)
         {
-            if (this._lastInput != context.InputMultiset.GetHashCode())
-            {
-                this._result = null;
-                this._lastInput = context.InputMultiset.GetHashCode();
-            }
-            if (this._result != null) return;
+            this._result = null;
+            this._lastInput = context.InputMultiset.GetHashCode();
+            this._lastCount = context.InputMultiset.Count;
 
             //REQ: Optimise the algebra here
             ISparqlAlgebra existsClause = this._pattern.ToAlgebra();
             BaseMultiset initialInput = context.InputMultiset;
-            this._result = context.Evaluate(existsClause);//existsClause.Evaluate(context);
+            this._result = context.Evaluate(existsClause);
             context.InputMultiset = initialInput;
+
+            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            this._joinVars = context.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
+            if (this._joinVars.Count == 0) return;
+
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (System.String var in this._joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
+            foreach (ISet x in context.InputMultiset.Sets)
+            {
+                int i = 0;
+                foreach (System.String var in this._joinVars)
+                {
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
+                }
+            }
+
+            //Then do a pass over the RHS and work out the intersections
+            this._exists = new HashSet<int>();
+            foreach (ISet y in this._result.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (System.String var in this._joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? context.InputMultiset.SetIDs : possMatches.Intersect(context.InputMultiset.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Look at possible matches, if is a valid match then mark the set as having an existing match
+                //Don't reconsider sets which have already been marked as having an existing match
+                foreach (int poss in possMatches)
+                {
+                    if (this._exists.Contains(poss)) continue;
+                    if (context.InputMultiset[poss].IsCompatibleWith(y, this._joinVars))
+                    {
+                        this._exists.Add(poss);
+                    }
+                }
+            }
         }
 
         /// <summary>
