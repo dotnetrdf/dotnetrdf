@@ -134,7 +134,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingResultParserContext context = new TokenisingResultParserContext(handler, new TsvTokeniser(new BlockingTextReader(input)));
+                TokenisingResultParserContext context = new TokenisingResultParserContext(handler, new TsvTokeniser(BlockingTextReader.Create(input)));
                 this.TryParseResults(context);
                 input.Close();
             }

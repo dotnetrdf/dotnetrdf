@@ -334,7 +334,7 @@ namespace VDS.RDF.Test.Parsing
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, new BlockingTextReader(response.GetResponseStream()));
+                parser.Load(g, BlockingTextReader.Create(response.GetResponseStream()));
 
                 foreach (Triple t in g.Triples)
                 {

@@ -70,7 +70,6 @@
     <Compile Include="Core\TalisTripleStore.cs" />
     <Compile Include="Core\ThreadSafeGraph.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="Parsing\BlockingStreamReader.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\GenericReader.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />

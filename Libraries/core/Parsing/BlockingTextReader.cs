@@ -67,7 +67,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="reader">Text Reader to wrap</param>
         /// <param name="bufferSize">Buffer Size</param>
-        public BlockingTextReader(TextReader reader, int bufferSize)
+        private BlockingTextReader(TextReader reader, int bufferSize)
         {
             if (reader == null) throw new ArgumentNullException("reader", "Cannot read from a null TextReader");
             if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", "bufferSize");
@@ -79,7 +79,7 @@ namespace VDS.RDF.Parsing
         /// Creates a new Blocking Text Reader
         /// </summary>
         /// <param name="reader">Text Reader to wrap</param>
-        public BlockingTextReader(TextReader reader)
+        private BlockingTextReader(TextReader reader)
             : this(reader, DefaultBufferSize) { }
 
         /// <summary>
@@ -87,15 +87,60 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="bufferSize">Buffer Size</param>
-        public BlockingTextReader(Stream input, int bufferSize)
+        private BlockingTextReader(Stream input, int bufferSize)
             : this(new StreamReader(input), bufferSize) { }
 
         /// <summary>
         /// Creates a new Blocking Text Reader
         /// </summary>
         /// <param name="input">Input Stream</param>
-        public BlockingTextReader(Stream input)
+        private BlockingTextReader(Stream input)
             : this(new StreamReader(input)) { }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        /// <remarks>
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// </remarks>
+        public static BlockingTextReader Create(TextReader input, int bufferSize)
+        {
+            if (input is BlockingTextReader) return (BlockingTextReader)input;
+            return new BlockingTextReader(input, bufferSize);
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        /// <remarks>
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// </remarks>
+        public static BlockingTextReader Create(TextReader input)
+        {
+            return Create(input, DefaultBufferSize);
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        public static BlockingTextReader Create(Stream input, int bufferSize)
+        {
+            return Create(new StreamReader(input), bufferSize);
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        public static BlockingTextReader Create(Stream input)
+        {
+            return Create(input, DefaultBufferSize);
+        }
 
         /// <summary>
         /// Fills the Buffer

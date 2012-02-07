@@ -52,7 +52,7 @@ namespace VDS.RDF.Parsing
             : base(reader) { }
 
         public CommentIgnoringJsonTextReader(TextReader reader) 
-            : this(new BlockingTextReader(reader)) { }
+            : this(BlockingTextReader.Create(reader)) { }
 
         /// <summary>
         /// Reads the next non-comment Token if one is available

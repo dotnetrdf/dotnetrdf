@@ -70,7 +70,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public Notation3Tokeniser(StreamReader input)
-            : this(new BlockingTextReader(input)) { }
+            : this(BlockingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
@@ -88,7 +88,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input to generate Tokens from</param>
         public Notation3Tokeniser(TextReader input)
-            : this(new BlockingTextReader(input)) { }
+            : this(BlockingTextReader.Create(input)) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

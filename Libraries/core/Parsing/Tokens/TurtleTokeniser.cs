@@ -55,7 +55,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public TurtleTokeniser(StreamReader input)
-            : this(new BlockingTextReader(input)) { }
+            : this(BlockingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -69,14 +69,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from</param>
         public TurtleTokeniser(TextReader input)
-            : this(new BlockingTextReader(input)) { }
+            : this(BlockingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
-            : this(new BlockingTextReader(input), syntax) { }
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -95,7 +95,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from</param>
         public TurtleTokeniser(TextReader input, TurtleSyntax syntax)
-            : this(new BlockingTextReader(input), syntax) { }
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

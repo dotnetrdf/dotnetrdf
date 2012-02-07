@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(StreamReader input, SparqlQuerySyntax syntax)
-            : this(new BlockingTextReader(input), syntax) { }
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(TextReader input, SparqlQuerySyntax syntax)
-            : this(new BlockingTextReader(input), syntax) { }
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

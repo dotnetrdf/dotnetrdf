@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="reader">Stream Reader</param>
         public TsvTokeniser(StreamReader reader)
-            : this(new BlockingTextReader(reader)) { }
+            : this(BlockingTextReader.Create(reader)) { }
         
         /// <summary>
         /// Gets the next available token from the input
