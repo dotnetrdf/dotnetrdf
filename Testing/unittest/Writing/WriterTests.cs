@@ -410,6 +410,7 @@ namespace VDS.RDF.Test.Writing
                 g.CreateBlankNode("a_blank_node"),
                 g.CreateBlankNode("_blank"),
                 g.CreateBlankNode("-blank"),
+                g.CreateBlankNode("123blank"),
                 g.CreateUriNode("ex:_object"),
                 g.CreateUriNode("ex:-object")
             };
