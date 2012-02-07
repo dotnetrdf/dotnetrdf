@@ -39,6 +39,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Writing.Contexts
@@ -46,7 +47,8 @@ namespace VDS.RDF.Writing.Contexts
     /// <summary>
     /// Writer Context for RDF/XML Writers
     /// </summary>
-    public class RdfXmlWriterContext : IWriterContext, ICollectionCompressingWriterContext
+    public class RdfXmlWriterContext 
+        : IWriterContext, ICollectionCompressingWriterContext
     {
         /// <summary>
         /// Pretty Printing Mode setting
@@ -70,11 +72,9 @@ namespace VDS.RDF.Writing.Contexts
         private NestedNamespaceMapper _nsmapper = new NestedNamespaceMapper(true);
         private bool _useDTD = Options.UseDtd;
         private bool _useAttributes = true;
-
         private int _compressionLevel = WriterCompressionLevel.Default;
-
         private int _nextNamespaceID = 0;
-
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(XmlSpecsHelper.IsName);
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
         private TripleCollection _triplesDone = new TripleCollection();
 
@@ -203,6 +203,17 @@ namespace VDS.RDF.Writing.Contexts
             get
             {
                 return this._nsmapper;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Blank Node map in use
+        /// </summary>
+        public BlankNodeOutputMapper BlankNodeMapper
+        {
+            get
+            {
+                return this._bnodeMapper;
             }
         }
 

@@ -344,7 +344,7 @@ namespace VDS.RDF.Writing
                             else
                             {
                                 XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                                nodeID.Value = ((IBlankNode)t.Subject).InternalID;
+                                nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Subject).InternalID);
                                 subj.Attributes.Append(nodeID);
                             }
                             break;
@@ -389,7 +389,7 @@ namespace VDS.RDF.Writing
                         {
                             //Terminate the Blank Node triple by adding a rdf:nodeID attribute
                             XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                            nodeID.Value = ((IBlankNode)t.Object).InternalID;
+                            nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Object).InternalID);
                             pred.Attributes.Append(nodeID);
                         }
 
@@ -465,7 +465,7 @@ namespace VDS.RDF.Writing
                         //Generate an rdf:Description Node with a rdf:nodeID on it
                         XmlElement colNode = doc.CreateElement("rdf:Description");
                         XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID");
-                        nodeID.Value = ((IBlankNode)pair.Key).InternalID;
+                        nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)pair.Key).InternalID);
                         colNode.Attributes.Append(nodeID);
                         doc.DocumentElement.AppendChild(colNode);
                         this.GenerateCollectionOutput(context, pair.Key, colNode, ref nextNamespaceID, tempNamespaces, doc);
@@ -518,7 +518,7 @@ namespace VDS.RDF.Writing
                     {
                         case NodeType.Blank:
                             XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                            nodeID.Value = ((IBlankNode)next).InternalID;
+                            nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)next).InternalID);
                             first.Attributes.Append(nodeID);
                             break;
                         case NodeType.GraphLiteral:
@@ -557,7 +557,7 @@ namespace VDS.RDF.Writing
                 {
                     //Terminate the Blank Node triple by adding a rdf:nodeID attribute
                     XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                    nodeID.Value = ((IBlankNode)key).InternalID;
+                    nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)key).InternalID);
                     pred.Attributes.Append(nodeID);
                 }
                 else
@@ -594,7 +594,7 @@ namespace VDS.RDF.Writing
                                 else
                                 {
                                     XmlAttribute nodeID = doc.CreateAttribute("rdf:nodeID", NamespaceMapper.RDF);
-                                    nodeID.Value = ((IBlankNode)nextObj).InternalID;
+                                    nodeID.Value = context.BlankNodeMapper.GetOutputID(((IBlankNode)nextObj).InternalID);
                                     p.Attributes.Append(nodeID);
                                 }
                                 break;
