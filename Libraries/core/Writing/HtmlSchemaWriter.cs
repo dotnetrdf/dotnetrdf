@@ -53,7 +53,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// HTML Schema Writer is a HTML Writer which writes a human readable description of a Schema/Ontology
     /// </summary>
-    public class HtmlSchemaWriter : BaseHtmlWriter, IRdfWriter
+    public class HtmlSchemaWriter
+        : BaseHtmlWriter, IRdfWriter
     {
         /// <summary>
         /// Saves the Graph to the given File as an XHTML Table with embedded RDFa
@@ -277,6 +278,8 @@ namespace VDS.RDF.Writing
 #endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    int currIndent = context.HtmlWriter.Indent;
+                                    context.HtmlWriter.Indent = 0;
                                     context.HtmlWriter.WriteEncodedText("<?xml version=\"1.0\" charset=\"utf-8\"?>");
                                     context.HtmlWriter.WriteLine();
                                     context.HtmlWriter.WriteEncodedText("<rdf:RDF xmlns:rdf=\"" + NamespaceMapper.RDF + "\" xmlns:" + prefix + "=\"" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "\">");
@@ -284,6 +287,7 @@ namespace VDS.RDF.Writing
                                     context.HtmlWriter.WriteEncodedText("   <!-- Your RDF here... -->");
                                     context.HtmlWriter.WriteLine();
                                     context.HtmlWriter.WriteEncodedText("</rdf:RDF>");
+                                    context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -298,7 +302,10 @@ namespace VDS.RDF.Writing
 #endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    currIndent = context.HtmlWriter.Indent;
+                                    context.HtmlWriter.Indent = 0;
                                     context.HtmlWriter.WriteEncodedText("@prefix " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + "> .");
+                                    context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -313,7 +320,10 @@ namespace VDS.RDF.Writing
 #endif
                                     context.HtmlWriter.AddStyleAttribute(HtmlTextWriterStyle.Width, "90%");
                                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Pre);
+                                    currIndent = context.HtmlWriter.Indent;
+                                    context.HtmlWriter.Indent = 0;
                                     context.HtmlWriter.WriteEncodedText("PREFIX " + prefix + ": <" + context.UriFormatter.FormatUri(context.QNameMapper.GetNamespaceUri(prefix)) + ">");
+                                    context.HtmlWriter.Indent = currIndent;
                                     context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
                                     context.HtmlWriter.WriteLine();
@@ -332,6 +342,14 @@ namespace VDS.RDF.Writing
                     throw new RdfOutputException("Tried to make a SPARQL Query to determine Schema Information but a Query Error occurred", queryEx);
                 }
             }
+
+            SparqlParameterizedString getPropertyRanges = new SparqlParameterizedString();
+            getPropertyRanges.Namespaces = new NamespaceMapper();
+            getPropertyRanges.Namespaces.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+            getPropertyRanges.CommandText = "SELECT ?range WHERE { { @property rdfs:range ?range . FILTER(ISURI(?range)) } UNION { @property rdfs:range ?union . ?union owl:unionOf ?ranges . { ?ranges rdf:first ?range } UNION { ?ranges rdf:rest+/rdf:first ?range } } }";
+            SparqlParameterizedString getPropertyDomains = new SparqlParameterizedString();
+            getPropertyDomains.Namespaces = getPropertyRanges.Namespaces;
+            getPropertyDomains.CommandText = "SELECT ?domain WHERE { { @property rdfs:domain ?domain . FILTER(ISURI(?domain)) } UNION { @property rdfs:domain ?union . ?union owl:unionOf ?domains . { ?domains rdf:first ?domain } UNION { ?domains rdf:rest+/rdf:first ?domain } } }";
 
             //Show lists of all Classes and Properties in the Schema
             context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.H4);
@@ -584,7 +602,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteLine();
 #endif
 
-            //Alter our previous getClasses query to get additional details
+            //Alter our previous getProperties query to get additional details
             getProperties.CommandText = "SELECT ?property (SAMPLE(?label) AS ?propertyLabel) (SAMPLE(?description) AS ?propertyDescription) WHERE { { ?property a rdf:Property } UNION { ?property a owl:ObjectProperty } UNION { ?property a owl:DatatypeProperty } FILTER(ISURI(?property)) OPTIONAL { ?property rdfs:label ?label } OPTIONAL { ?property rdfs:comment ?description } } GROUP BY ?property ORDER BY ?property";
             try
             {
@@ -653,10 +671,14 @@ namespace VDS.RDF.Writing
                         this.GenerateCaptionedInformation(context, "Has Sub Properties", ts, t => t.Object);
 
                         //Output Domain and Range
-                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
-                        this.GenerateCaptionedInformation(context, "Has Domain", ts, t => t.Object);
-                        ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
-                        this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
+                        //ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsDomain);
+                        //this.GenerateCaptionedInformation(context, "Has Domain", ts, t => t.Object);
+                        //ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], rdfsRange);
+                        //this.GenerateCaptionedInformation(context, "Has Range", ts, t => t.Object);
+                        getPropertyDomains.SetParameter("property", r["property"]);
+                        this.GenerateCaptionedInformation(context, "Has Domain", context.Graph.ExecuteQuery(getPropertyDomains) as SparqlResultSet, "domain");
+                        getPropertyRanges.SetParameter("property", r["property"]);
+                        this.GenerateCaptionedInformation(context, "Has Range", context.Graph.ExecuteQuery(getPropertyRanges) as SparqlResultSet, "range");
 
                         //Output any Equivalent Properties
                         ts = context.Graph.GetTriplesWithSubjectPredicate(r["property"], owlEquivalentProperty).Concat(context.Graph.GetTriplesWithPredicateObject(owlEquivalentProperty, r["property"]));
@@ -701,7 +723,18 @@ namespace VDS.RDF.Writing
 
         private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<Triple> ts, Func<Triple,INode> displaySelector)
         {
-            if (ts.Any())
+            this.GenerateCaptionedInformation(context, caption, ts.Select(t => displaySelector(t)));
+        }
+
+        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, SparqlResultSet results, String var)
+        {
+            if (results == null) return;
+            this.GenerateCaptionedInformation(context, caption, results.Select(r => r[var]).Where(n => n != null));
+        }
+
+        private void GenerateCaptionedInformation(HtmlWriterContext context, String caption, IEnumerable<INode> ns)
+        {
+            if (ns.Any())
             {
                 context.HtmlWriter.AddStyleAttribute("width", "90%");
                 context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.P);
@@ -710,9 +743,9 @@ namespace VDS.RDF.Writing
                 context.HtmlWriter.WriteEncodedText(caption + ": ");
                 context.HtmlWriter.RenderEndTag();
                 context.HtmlWriter.WriteLine();
-                foreach (Triple t in ts.OrderBy(displaySelector))
+                foreach (INode n in ns.OrderBy(x => x))
                 {
-                    String qname = context.NodeFormatter.Format(displaySelector(t));
+                    String qname = context.NodeFormatter.Format(n);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, "#" + qname);
                     context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassUri);
                     context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
