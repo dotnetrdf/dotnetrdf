@@ -72,6 +72,25 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
 
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state);
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state);
+
     }
 
     /// <summary>

@@ -602,6 +602,7 @@ namespace VDS.RDF.Query
         }
 
 #endif
+
         /// <summary>
         /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
         /// </summary>
@@ -666,6 +667,62 @@ namespace VDS.RDF.Query
 
         }
 
+        public void QueryWithResultSet(ISparqlResultsHandler handler, String query, QueryCallback callback, Object state)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            request.Method = "POST";
+            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.Accept = MimeTypesHelper.HttpSparqlAcceptHeader;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetRequestStream(result =>
+            {
+                Stream stream = request.EndGetRequestStream(result);
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write("query=");
+                    writer.Write(HttpUtility.UrlEncode(query));
+
+                    foreach (String u in this.DefaultGraphs)
+                    {
+                        writer.Write("&default-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+                    foreach (String u in this.NamedGraphs)
+                    {
+                        writer.Write("&named-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+
+                    writer.Close();
+                }
+
+                request.BeginGetResponse(innerResult =>
+                {
+                    using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult))
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType, false);
+                        parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                        response.Close();
+                        callback(null, handler, state);
+                    }
+                }, null);
+            }, null);
+        }
+
         /// <summary>
         /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
         /// </summary>
@@ -722,6 +779,59 @@ namespace VDS.RDF.Query
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     callback(g, state);
+                }, null);
+            }, null);
+        }
+
+        public void QueryWithResultGraph(IRdfHandler handler, String query, QueryCallback callback, Object state)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
+            request.Method = "POST";
+            request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+            request.Accept = MimeTypesHelper.HttpAcceptHeader;
+
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+
+            request.BeginGetRequestStream(result =>
+            {
+                Stream stream = request.EndGetRequestStream(result);
+                using (StreamWriter writer = new StreamWriter(stream))
+                {
+                    writer.Write("query=");
+                    writer.Write(HttpUtility.UrlEncode(query));
+
+                    foreach (String u in this.DefaultGraphs)
+                    {
+                        writer.Write("&default-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+                    foreach (String u in this.NamedGraphs)
+                    {
+                        writer.Write("&named-graph-uri=");
+                        writer.Write(Uri.EscapeDataString(u));
+                    }
+
+                    writer.Close();
+                }
+
+                request.BeginGetResponse(innerResult =>
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(innerResult);
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                    callback(handler, null, state);
                 }, null);
             }, null);
         }

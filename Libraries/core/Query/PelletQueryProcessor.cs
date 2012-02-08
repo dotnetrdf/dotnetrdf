@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !SILVERLIGHT
-
 using System;
 using VDS.RDF.Query.Inference.Pellet;
 using VDS.RDF.Query.Inference.Pellet.Services;
@@ -92,6 +90,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
+#if !SILVERLIGHT
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             query.QueryExecutionTime = null;
@@ -108,6 +107,9 @@ namespace VDS.RDF.Query
                 query.QueryTime = elapsed.Milliseconds;
                 query.QueryTimeTicks = elapsed.Ticks;
             }
+#else
+            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
+#endif
         }
 
         /// <summary>
@@ -118,6 +120,7 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
+#if !SILVERLIGHT
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
             query.QueryExecutionTime = null;
@@ -133,8 +136,62 @@ namespace VDS.RDF.Query
                 query.QueryTime = elapsed.Milliseconds;
                 query.QueryTimeTicks = elapsed.Ticks;
             }
+#else
+            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
+#endif
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        {
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            query.QueryExecutionTime = null;
+            DateTime start = DateTime.Now;
+            try
+            {
+                this._svc.Query(query.ToString(), rdfCallback, resultsCallback, state);
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = (DateTime.Now - start);
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        {
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            query.QueryExecutionTime = null;
+            DateTime start = DateTime.Now;
+            try
+            {
+                this._svc.Query(rdfHandler, resultsHandler, query.ToString(), callback, state);
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = (DateTime.Now - start);
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
         }
     }
 }
-
-#endif

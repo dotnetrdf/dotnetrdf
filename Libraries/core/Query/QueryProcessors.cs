@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
@@ -107,6 +108,58 @@ namespace VDS.RDF.Query
                 query.QueryTimeTicks = elapsed.Ticks;
             }
         }
+
+        /// <summary>
+        /// Delegate used for asychronous execution
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        private delegate void ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        {
+            Graph g = new Graph();
+            SparqlResultSet rset = new SparqlResultSet();
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
+                {
+                    d.EndInvoke(r);
+                    if (rset.ResultsType != SparqlResultsType.Unknown)
+                    {
+                        resultsCallback(rset, state);
+                    }
+                    else
+                    {
+                        rdfCallback(g, state);
+                    }
+                }, state);
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        {
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
+            {
+                d.EndInvoke(r);
+                callback(rdfHandler, resultsHandler, state);
+            }, state);
+        }
     }
 
 #if !NO_STORAGE
@@ -178,11 +231,61 @@ namespace VDS.RDF.Query
                 query.QueryTimeTicks = elapsed.Ticks;
             }
         }
+
+        /// <summary>
+        /// Delegate used for asychronous execution
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        private delegate void ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        {
+            Graph g = new Graph();
+            SparqlResultSet rset = new SparqlResultSet();
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
+            {
+                d.EndInvoke(r);
+                if (rset.ResultsType != SparqlResultsType.Unknown)
+                {
+                    resultsCallback(rset, state);
+                }
+                else
+                {
+                    rdfCallback(g, state);
+                }
+            }, state);
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        {
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
+            {
+                d.EndInvoke(r);
+                callback(rdfHandler, resultsHandler, state);
+            }, state);
+        }
     }
 
 #endif
-
-#if !SILVERLIGHT
 
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to a remote SPARQL endpoint
@@ -209,6 +312,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public object ProcessQuery(SparqlQuery query)
         {
+#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
@@ -244,6 +348,9 @@ namespace VDS.RDF.Query
                 query.QueryTime = elapsed.Milliseconds;
                 query.QueryTimeTicks = elapsed.Ticks;
             }
+#else
+            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
+#endif
         }
 
         /// <summary>
@@ -254,6 +361,7 @@ namespace VDS.RDF.Query
         /// <param name="query">SPARQL Query</param>
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
+#if !SILVERLIGHT
             query.QueryExecutionTime = null;
             query.QueryTime = -1;
             query.QueryTimeTicks = -1;
@@ -287,8 +395,98 @@ namespace VDS.RDF.Query
                 query.QueryTime = elapsed.Milliseconds;
                 query.QueryTimeTicks = elapsed.Ticks;
             }
+#else
+            throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
+#endif
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        {
+            query.QueryExecutionTime = null;
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            try
+            {
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        this._endpoint.QueryWithResultSet(this._formatter.Format(query), resultsCallback, state);
+                        break;
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        this._endpoint.QueryWithResultGraph(this._formatter.Format(query), rdfCallback, state);
+                        break;
+                    default:
+                        throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
+                }
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        {
+            query.QueryExecutionTime = null;
+            query.QueryTime = -1;
+            query.QueryTimeTicks = -1;
+            DateTime start = DateTime.Now;
+            try
+            {
+                switch (query.QueryType)
+                {
+                    case SparqlQueryType.Ask:
+                    case SparqlQueryType.Select:
+                    case SparqlQueryType.SelectAll:
+                    case SparqlQueryType.SelectAllDistinct:
+                    case SparqlQueryType.SelectAllReduced:
+                    case SparqlQueryType.SelectDistinct:
+                    case SparqlQueryType.SelectReduced:
+                        this._endpoint.QueryWithResultSet(resultsHandler, this._formatter.Format(query), callback, state);
+                        break;
+                    case SparqlQueryType.Construct:
+                    case SparqlQueryType.Describe:
+                    case SparqlQueryType.DescribeAll:
+                        this._endpoint.QueryWithResultGraph(rdfHandler, this._formatter.Format(query), callback, state);
+                        break;
+                    default:
+                        throw new RdfQueryException("Unable to execute an unknown query type against a Remote Endpoint");
+                }
+            }
+            finally
+            {
+                TimeSpan elapsed = (DateTime.Now - start);
+                query.QueryExecutionTime = elapsed;
+                query.QueryTime = elapsed.Milliseconds;
+                query.QueryTimeTicks = elapsed.Ticks;
+            }
         }
     }
-
-#endif
 }

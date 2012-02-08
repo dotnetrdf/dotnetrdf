@@ -315,6 +315,58 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Delegate used for asychronous execution
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        private delegate void ProcessQueryAsync(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query);
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously invoking the relevant callback when the query completes
+        /// </summary>
+        /// <param name="query">SPARQL QUery</param>
+        /// <param name="rdfCallback">Callback for queries that return a Graph</param>
+        /// <param name="resultsCallback">Callback for queries that return a Result Set</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
+        {
+            Graph g = new Graph();
+            SparqlResultSet rset = new SparqlResultSet();
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(new GraphHandler(g), new ResultSetHandler(rset), query, r =>
+            {
+                d.EndInvoke(r);
+                if (rset.ResultsType != SparqlResultsType.Unknown)
+                {
+                    resultsCallback(rset, state);
+                }
+                else
+                {
+                    rdfCallback(g, state);
+                }
+            }, state);
+        }
+
+        /// <summary>
+        /// Processes a SPARQL Query asynchronously passing the results to the relevant handler and invoking the callback when the query completes
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
+        {
+            ProcessQueryAsync d = new ProcessQueryAsync(this.ProcessQuery);
+            d.BeginInvoke(rdfHandler, resultsHandler, query, r =>
+            {
+                d.EndInvoke(r);
+                callback(rdfHandler, resultsHandler, state);
+            }, state);
+        }
+
+        /// <summary>
         /// Creates a new Evaluation Context
         /// </summary>
         /// <returns></returns>
