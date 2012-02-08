@@ -740,6 +740,8 @@ namespace VDS.RDF.Storage
             {
                 context.Graph.Assert(new Triple(manager, updatePath, context.Graph.CreateLiteralNode(this._updateService)));
             }
+
+            base.SerializeProxyConfig(manager, context);
         }
     }
 }

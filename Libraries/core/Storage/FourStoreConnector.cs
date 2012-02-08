@@ -701,6 +701,8 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
             context.Graph.Assert(new Triple(manager, enableUpdates, this._updatesEnabled.ToLiteral(context.Graph)));
+
+            base.SerializeProxyConfig(manager, context);
         }
     }
 }

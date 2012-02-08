@@ -382,6 +382,8 @@ namespace VDS.RDF.Storage
                 context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
                 context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
             }
+
+            base.SerializeProxyConfig(manager, context);
         }
     }
 }

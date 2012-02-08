@@ -52,7 +52,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Class for connecting to a remote SPARQL Endpoint and executing Queries against it
     /// </summary>
-    public class SparqlRemoteEndpoint : BaseEndpoint, IConfigurationSerializable
+    public class SparqlRemoteEndpoint 
+        : BaseEndpoint, IConfigurationSerializable
     {
         private List<String> _defaultGraphUris = new List<string>();
         private List<String> _namedGraphUris = new List<string>();

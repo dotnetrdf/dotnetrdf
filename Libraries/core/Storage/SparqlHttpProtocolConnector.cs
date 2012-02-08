@@ -570,6 +570,8 @@ namespace VDS.RDF.Storage
             context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
             context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
             context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._serviceUri)));
+
+            base.SerializeProxyConfig(manager, context);
         }
     }
 }

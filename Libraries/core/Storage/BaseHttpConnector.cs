@@ -35,6 +35,8 @@ terms.
 
 using System;
 using System.Net;
+using VDS.RDF.Parsing;
+using VDS.RDF.Configuration;
 
 namespace VDS.RDF.Storage
 {
@@ -187,6 +189,38 @@ namespace VDS.RDF.Storage
             }
 #endif
             return request;
+        }
+
+        /// <summary>
+        /// Helper method which adds proxy configuration to serialization
+        /// </summary>
+        /// <param name="objNode">Object Node representing the <see cref="IGenericIOManager">IGenericIOManager</see> whose configuration is being serialized</param>
+        /// <param name="context">Serialization Context</param>
+        protected void SerializeProxyConfig(INode objNode, ConfigurationSerializationContext context)
+        {
+#if !NO_PROXY
+            if (this._proxy != null)
+            {
+                INode proxy = context.NextSubject;
+                INode usesProxy = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyProxy);
+                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode proxyType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassProxy);
+                INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
+                INode user = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
+                INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
+
+                context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
+                context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
+                context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.ToString())));
+
+                if (this._proxy.Credentials is NetworkCredential)
+                {
+                    NetworkCredential cred = (NetworkCredential)this._proxy.Credentials;
+                    context.Graph.Assert(new Triple(proxy, user, context.Graph.CreateLiteralNode(cred.UserName)));
+                    context.Graph.Assert(new Triple(proxy, pwd, context.Graph.CreateLiteralNode(cred.Password)));
+                }
+            }
+#endif
         }
     }
 }

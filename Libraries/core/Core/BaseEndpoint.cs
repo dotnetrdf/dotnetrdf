@@ -358,9 +358,11 @@ namespace VDS.RDF
                 {
                     INode proxy = context.NextSubject;
                     INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                    INode usesProxy = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyProxy);
                     INode proxyType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassProxy);
                     INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
 
+                    context.Graph.Assert(new Triple(endpoint, usesProxy, proxy));
                     context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
                     context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.ToString())));
 
