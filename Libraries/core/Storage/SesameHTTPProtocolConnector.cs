@@ -106,6 +106,7 @@ namespace VDS.RDF.Storage
         protected bool _postAllQueries = false;
 
         private StringBuilder _output = new StringBuilder();
+        private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
         /// <summary>
@@ -191,6 +192,19 @@ namespace VDS.RDF.Storage
         {
             try
             {
+                //Pre-parse the query to determine what the Query Type is
+                bool isAsk = false;
+                try
+                {
+                    SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
+                    isAsk = q.QueryType == SparqlQueryType.Ask;
+                }
+                catch
+                {
+                    //If parsing error fallback to naive detection
+                    isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
+                }
+
                 HttpWebRequest request;
 
                 //Create the Request
@@ -236,7 +250,7 @@ namespace VDS.RDF.Storage
                     try
                     {
                         //Is the Content Type referring to a Sparql Result Set format?
-                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase));
+                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
                         resreader.Load(resultsHandler, data);
                         response.Close();
                     }

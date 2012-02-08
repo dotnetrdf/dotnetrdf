@@ -1205,7 +1205,7 @@ namespace VDS.RDF
         /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response
         /// </summary>
         /// <param name="contentType">Value of the HTTP Content-Type Header</param>
-        /// <param name="allowPlainTextResults">Whether you allow Sparql Boolean results in text/plain format</param>
+        /// <param name="allowPlainTextResults">Whether you allow Sparql Boolean results in text/plain format (Boolean results in text/boolean are handled properly but text/plain results can be conflated with CONSTRUCT/DESCRIBE results in NTriples format)</param>
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType, bool allowPlainTextResults)
         {
