@@ -40,6 +40,15 @@ namespace VDS.RDF.Utilities.Convert
     {
         static void Main(string[] args)
         {
+            //Disable URI Interning as this will otherwise cause us to use way too much
+            //memory when doing large streaming conversions
+            Options.InternUris = false;
+
+            //Also turn off UTF-8 BOM by default for maximum compatibility and portability
+            //of the data we output
+            Options.UseBomForUtf8 = false;
+
+            //Set Console Output Encoding to UTF-8
             Console.OutputEncoding = Encoding.UTF8;
             if (args.Length >= 1 && args[0].Equals("-rapper"))
             {

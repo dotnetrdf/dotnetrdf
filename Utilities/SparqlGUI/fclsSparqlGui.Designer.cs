@@ -41,6 +41,7 @@
             this.lblSourceFile = new System.Windows.Forms.Label();
             this.lblDataset = new System.Windows.Forms.Label();
             this.grpQuery = new System.Windows.Forms.GroupBox();
+            this.btnExplain = new System.Windows.Forms.Button();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.btnViewLog = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
@@ -76,7 +77,6 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.btnExplain = new System.Windows.Forms.Button();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -203,6 +203,17 @@
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
             // 
+            // btnExplain
+            // 
+            this.btnExplain.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnExplain.Location = new System.Drawing.Point(333, 315);
+            this.btnExplain.Name = "btnExplain";
+            this.btnExplain.Size = new System.Drawing.Size(75, 23);
+            this.btnExplain.TabIndex = 7;
+            this.btnExplain.Text = "&Explain";
+            this.btnExplain.UseVisualStyleBackColor = true;
+            this.btnExplain.Click += new System.EventHandler(this.btnExplain_Click);
+            // 
             // btnClearLog
             // 
             this.btnClearLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -319,8 +330,6 @@
             // chkUseUtf8Bom
             // 
             this.chkUseUtf8Bom.AutoSize = true;
-            this.chkUseUtf8Bom.Checked = true;
-            this.chkUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkUseUtf8Bom.Location = new System.Drawing.Point(6, 219);
             this.chkUseUtf8Bom.Name = "chkUseUtf8Bom";
             this.chkUseUtf8Bom.Size = new System.Drawing.Size(155, 17);
@@ -596,17 +605,6 @@
             this.sfdQuery.FileName = "query.rq";
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
-            // 
-            // btnExplain
-            // 
-            this.btnExplain.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnExplain.Location = new System.Drawing.Point(333, 315);
-            this.btnExplain.Name = "btnExplain";
-            this.btnExplain.Size = new System.Drawing.Size(75, 23);
-            this.btnExplain.TabIndex = 7;
-            this.btnExplain.Text = "&Explain";
-            this.btnExplain.UseVisualStyleBackColor = true;
-            this.btnExplain.Click += new System.EventHandler(this.btnExplain_Click);
             // 
             // fclsSparqlGui
             // 

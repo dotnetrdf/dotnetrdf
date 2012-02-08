@@ -8,7 +8,7 @@ namespace VDS.RDF.Utilities.Editor
 {
     public static class GlobalOptions
     {
-        private static bool _useBomForUtf8 = true;
+        private static bool _useBomForUtf8 = false;
 
         public static bool UseBomForUtf8
         {

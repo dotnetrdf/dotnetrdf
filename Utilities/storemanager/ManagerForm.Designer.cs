@@ -46,6 +46,7 @@
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUseUtf8Bom = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuShowStartPage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuWindows = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuCascade = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuTileVertical = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,7 +58,6 @@
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
-            this.mnuShowStartPage = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -191,13 +191,21 @@
             // 
             // mnuUseUtf8Bom
             // 
-            this.mnuUseUtf8Bom.Checked = true;
             this.mnuUseUtf8Bom.CheckOnClick = true;
-            this.mnuUseUtf8Bom.CheckState = System.Windows.Forms.CheckState.Checked;
             this.mnuUseUtf8Bom.Name = "mnuUseUtf8Bom";
             this.mnuUseUtf8Bom.Size = new System.Drawing.Size(217, 22);
             this.mnuUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
             this.mnuUseUtf8Bom.Click += new System.EventHandler(this.mnuUseUtf8Bom_Click);
+            // 
+            // mnuShowStartPage
+            // 
+            this.mnuShowStartPage.Checked = true;
+            this.mnuShowStartPage.CheckOnClick = true;
+            this.mnuShowStartPage.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.mnuShowStartPage.Name = "mnuShowStartPage";
+            this.mnuShowStartPage.Size = new System.Drawing.Size(217, 22);
+            this.mnuShowStartPage.Text = "Show Start Page";
+            this.mnuShowStartPage.Click += new System.EventHandler(this.mnuShowStartPage_Click);
             // 
             // mnuWindows
             // 
@@ -279,17 +287,7 @@
             // 
             this.ofdConnection.Title = "Open Connection";
             // 
-            // mnuShowStartPage
-            // 
-            this.mnuShowStartPage.Checked = true;
-            this.mnuShowStartPage.CheckOnClick = true;
-            this.mnuShowStartPage.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.mnuShowStartPage.Name = "mnuShowStartPage";
-            this.mnuShowStartPage.Size = new System.Drawing.Size(217, 22);
-            this.mnuShowStartPage.Text = "Show Start Page";
-            this.mnuShowStartPage.Click += new System.EventHandler(this.mnuShowStartPage_Click);
-            // 
-            // fclsManager
+            // ManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -299,7 +297,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.mnuStrip;
-            this.Name = "fclsManager";
+            this.Name = "ManagerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "dotNetRDF Store Manager";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

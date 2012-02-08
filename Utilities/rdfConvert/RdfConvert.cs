@@ -365,6 +365,10 @@ namespace VDS.RDF.Utilities.Convert
                 {
                     Options.UriLoaderCaching = false;
                 }
+                else if (arg.Equals("-bom"))
+                {
+                    Options.UseBomForUtf8 = true;
+                }
                 else if (arg.Equals("-nobom"))
                 {
                     Options.UseBomForUtf8 = false;
@@ -470,6 +474,9 @@ namespace VDS.RDF.Utilities.Convert
             Console.WriteLine();
             Console.WriteLine("-best");
             Console.WriteLine("Causes the utility to attempt the best conversion it can (i.e. most compressed syntax) taking into account other options like compression level.  May cause conversions to be slower and require more memory");
+            Console.WriteLine();
+            Console.WriteLine("-bom");
+            Console.WriteLine("Specifies that a BOM should be used for UTF-8 Output");
             Console.WriteLine();
             Console.WriteLine("-c[:integer]");
             Console.WriteLine("Sets the Compression Level used by compressing writers, if specified without an integer parameter then defaults to default compression.  Specify -best to ensure the setting is respected");

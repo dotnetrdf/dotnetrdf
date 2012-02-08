@@ -134,7 +134,7 @@
                     <Separator />
                     <MenuItem Header="Prompt for Advanced Writer Options?" Name="mnuSaveWithPromptOptions" Click="mnuSaveWithPromptOptions_Click" IsCheckable="True" IsChecked="False" />
                 </MenuItem>
-                <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Click="mnuUseBomForUtf8_Click" IsCheckable="True" IsChecked="True" />
+                <MenuItem Header="Use BOM for UTF-8 Output" Name="mnuUseBomForUtf8" Click="mnuUseBomForUtf8_Click" IsCheckable="True" IsChecked="False" />
                 <Separator />
                 <MenuItem Header="Page Setup" Name="mnuPageSetup" Click="mnuPageSetup_Click" />
                 <Separator />

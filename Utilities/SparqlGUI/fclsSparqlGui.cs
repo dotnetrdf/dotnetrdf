@@ -60,10 +60,12 @@ namespace VDS.RDF.Utilities.Sparql
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
 
-            if (!Properties.Settings.Default.UseUtf8Bom)
+            //Enable UTF-8 BOM setting if user set
+            Options.UseBomForUtf8 = false;
+            if (Properties.Settings.Default.UseUtf8Bom)
             {
-                Options.UseBomForUtf8 = false;
-                this.chkUseUtf8Bom.Checked = false;
+                Options.UseBomForUtf8 = true;
+                this.chkUseUtf8Bom.Checked = true;
             }
 
             String temp = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

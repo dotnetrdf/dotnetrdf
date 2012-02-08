@@ -78,11 +78,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             AppearanceSettings.UpdateHighlightingColours();
             
             //Setup Options based on the User Config file
-            if (!Properties.Settings.Default.UseUtf8Bom)
+            Options.UseBomForUtf8 = false;
+            if (Properties.Settings.Default.UseUtf8Bom)
             {
-                this.mnuUseBomForUtf8.IsChecked = false;
-                Options.UseBomForUtf8 = false;
-                GlobalOptions.UseBomForUtf8 = false;
+                this.mnuUseBomForUtf8.IsChecked = true;
+                Options.UseBomForUtf8 = true;
+                GlobalOptions.UseBomForUtf8 = true;
             }
             if (Properties.Settings.Default.SaveWithOptionsPrompt)
             {

@@ -123,9 +123,6 @@
   <metadata name="ttpTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>430, 17</value>
   </metadata>
-  <metadata name="ttpTips.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>430, 17</value>
-  </metadata>
   <data name="chkViewResultsInApp.ToolTip" xml:space="preserve">
     <value>When this Option is set then Result Sets and Graphs will be displayed using Forms inside this application.  Otherwise the default application for the Results/Graph Format will be launched to view the Results</value>
   </data>
