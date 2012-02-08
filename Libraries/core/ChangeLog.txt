@@ -28,6 +28,7 @@ Changed
  - Fixed a bug whereby Blank Node IDs in NTriples output could be invalid
  - Fixed a bug where QNames in RDF/XML output weren't fully validated against the latest revisions of the XML specs
  - Fixed a bug where Blank Node IDs in RDF/XML output could be invalid
+ - Fixed a bug with some queries falsely being considered ASK queries and their results improperly handled for Sesame stores
 - Parsing
  - Constructors for BlockingTextReader are now private, use BlockingTextReader.Create() static instead
 - Query
@@ -35,10 +36,11 @@ Changed
  - Replaced the Join algorithm with a new algorithm which is significantly faster
  - Improved selectivity of TriplePattern.GetTriples()
  - Some refactoring of ISparqlDataset interface
+- Update
+ - GenericUpdateProcessor is more intelligent in determining whether a command can be applied to stores that don't have native SPARQL Update support
 - Writing
  - Support for outputting W3C standard Turtle (allows for more URIs to be compressed to QNames)
  - WriteThroughHandler periodically flushes the output stream
-
 
 Removed
 - Legacy SQL Store support

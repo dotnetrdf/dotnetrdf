@@ -434,7 +434,24 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
-                    //TODO: Check IO Behaviour required
+                    //Check IO Behaviour
+                    //For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
+                    //Firstly check behaviour persuant to default graph if applicable
+                    if (cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                    {
+                        //Must support notion of default graph
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        //Must allow either OverwriteDefault or CanUpdateDeleteTriples
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    //Then check behaviour persuant to named graphs if applicable
+                    if (cmd.DeletePattern.HasChildGraphPatterns)
+                    {
+                        //Must support named graphs
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        //Must allow either CanUpdateDeleteTriples or OverwriteNamed
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
 
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
@@ -599,7 +616,24 @@ namespace VDS.RDF.Update
             }
             else
             {
-                //TODO: Check IO Behaviour
+                //Check IO Behaviour
+                //For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
+                //Firstly check behaviour persuant to default graph if applicable
+                if (cmd.DataPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                {
+                    //Must support notion of default graph
+                    if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                    //Must allow either OverwriteDefault or CanUpdateDeleteTriples
+                    if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                }
+                //Then check behaviour persuant to named graphs if applicable
+                if (cmd.DataPattern.HasChildGraphPatterns)
+                {
+                    //Must support named graphs
+                    if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                    //Must allow either CanUpdateDeleteTriples or OverwriteNamed
+                    if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                }
 
                 //Split the Pattern into the set of Graph Patterns
                 List<GraphPattern> patterns = new List<GraphPattern>();
@@ -796,7 +830,24 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
-                    //TODO: Check required IO behaviour
+                    //Check IO Behaviour
+                    //For a insert we either need the ability to Update Add Triples or to Overwrite Graphs
+                    //Firstly check behaviour persuant to default graph if applicable
+                    if (cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                    {
+                        //Must support notion of default graph
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        //Must allow either OverwriteDefault or CanUpdateAddTriples
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    //Then check behaviour persuant to named graphs if applicable
+                    if (cmd.InsertPattern.HasChildGraphPatterns)
+                    {
+                        //Must support named graphs
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        //Must allow either CanUpdateAddTriples or OverwriteNamed
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
 
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
@@ -961,7 +1012,24 @@ namespace VDS.RDF.Update
             }
             else
             {
-                //TODO: Check required IO Behaviour
+                //Check IO Behaviour
+                //For a insert we either need the ability to Update Delete Triples or to Overwrite Graphs
+                //Firstly check behaviour persuant to default graph if applicable
+                if (cmd.DataPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                {
+                    //Must support notion of default graph
+                    if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                    //Must allow either OverwriteDefault or CanUpdateAddTriples
+                    if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                }
+                //Then check behaviour persuant to named graphs if applicable
+                if (cmd.DataPattern.HasChildGraphPatterns)
+                {
+                    //Must support named graphs
+                    if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                    //Must allow either CanUpdateAddTriples or OverwriteNamed
+                    if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                }
 
                 //Split the Pattern into the set of Graph Patterns
                 List<GraphPattern> patterns = new List<GraphPattern>();
@@ -1044,7 +1112,22 @@ namespace VDS.RDF.Update
             {
                 try
                 {
-                    //TODO: Check required IO Behaviour
+                    //Check IO Behaviour
+                    //For a load which is essentially an insert we either need the ability to Update Add Triples or to Overwrite Graphs
+                    if (cmd.TargetUri == null)
+                    {
+                        //Must support notion of default graph
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        //Must allow either OverwriteDefault or CanUpdateDeleteTriples
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    else
+                    {
+                        //Must support named graphs
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        //Must allow either CanUpdateDeleteTriples or OverwriteNamed
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
 
                     Graph g = new Graph();
                     if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, cmd.TargetUri);
@@ -1080,7 +1163,42 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
-                    //TODO: Check required IO Behaviour
+                    //Check IO Behaviour
+                    //For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
+                    //Firstly check behaviour persuant to default graph if applicable
+                    if (cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                    {
+                        //Must support notion of default graph
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        //Must allow either OverwriteDefault or CanUpdateDeleteTriples
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    //Then check behaviour persuant to named graphs if applicable
+                    if (cmd.DeletePattern.HasChildGraphPatterns)
+                    {
+                        //Must support named graphs
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        //Must allow either CanUpdateDeleteTriples or OverwriteNamed
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateDeleteTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    //Check IO Behaviour
+                    //For a insert we either need the ability to Update Add Triples or to Overwrite Graphs
+                    //Firstly check behaviour persuant to default graph if applicable
+                    if (cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>().Any())
+                    {
+                        //Must support notion of default graph
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of an explicit unnamed Default Graph required to process this command");
+                        //Must allow either OverwriteDefault or CanUpdateAddTriples
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteDefault) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
+                    //Then check behaviour persuant to named graphs if applicable
+                    if (cmd.InsertPattern.HasChildGraphPatterns)
+                    {
+                        //Must support named graphs
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasNamedGraphs) == 0) throw new SparqlUpdateException("The underlying store does not support the notion of named graphs required to process this command");
+                        //Must allow either CanUpdateAddTriples or OverwriteNamed
+                        if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
+                    }
 
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
