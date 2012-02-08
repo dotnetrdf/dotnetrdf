@@ -245,7 +245,7 @@
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
@@ -253,35 +253,35 @@
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-windowsphone">
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.dll" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.xml" />
     <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-mono" description="Copy the latest Mono build to the Mono Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-mono">
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-linq" description="Copy the latest Linq build to the Linq Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
@@ -291,7 +291,7 @@
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
@@ -321,22 +321,22 @@
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core .Net 3.5 Client Profile Build -->
     <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
     <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.Net35.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core Silverlight 4.0 Build -->
     <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
     <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.Silverlight.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core Silverlight 4.0 Build for Windows Phone 7 Build -->
     <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
     <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.WindowsPhone.dll" />
+    <copy overwrite="true" todir="../bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Data.Sql Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
