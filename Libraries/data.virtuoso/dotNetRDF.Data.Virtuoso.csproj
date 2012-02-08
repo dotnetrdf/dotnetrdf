@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="OpenLink.Data.Virtuoso, Version=6.2.3128.1, Culture=neutral, PublicKeyToken=6654f6917d07cb95, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\OpenLink.Data.Virtuoso.dll</HintPath>
+      <HintPath>..\..\Dependencies\net35\OpenLink.Data.Virtuoso.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
