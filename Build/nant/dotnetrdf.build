@@ -246,7 +246,6 @@
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/ChangeLog.txt" />
   </target>
 
@@ -283,7 +282,6 @@
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
   </target>
 
   <target name="build-linq" description="Copy the latest Linq build to the Linq Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
@@ -294,7 +292,6 @@
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
     <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/core/bin/Debug/MySql.Data.dll" />
   </target>
 
   <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
@@ -325,7 +322,6 @@
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/Newtonsoft.Json.Net35.dll" />
-    <copy overwrite="true" todir="../bin/stable/Core/net35/" file="Libraries/core/bin/Debug/MySql.Data.dll" />
     <!-- Core .Net 3.5 Client Profile Build -->
     <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
     <copy overwrite="true" todir="../bin/stable/Core/net35-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
