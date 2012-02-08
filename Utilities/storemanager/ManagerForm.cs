@@ -60,11 +60,12 @@ namespace VDS.RDF.Utilities.StoreManager
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
 
-            //Disable UTF-8 BOM Output if relevant
-            if (!Properties.Settings.Default.UseUtf8Bom)
+            //Enable UTF-8 BOM Output if relevant
+            Options.UseBomForUtf8 = false;
+            if (Properties.Settings.Default.UseUtf8Bom)
             {
-                this.mnuUseUtf8Bom.Checked = false;
-                Options.UseBomForUtf8 = false;
+                this.mnuUseUtf8Bom.Checked = true;
+                Options.UseBomForUtf8 = true;
             }
             this.mnuShowStartPage.Checked = Properties.Settings.Default.ShowStartPage;
 

@@ -103,6 +103,14 @@ namespace VDS.RDF.Storage
         CanUpdateDeleteTriples = 2048,
 
         /// <summary>
+        /// Indicates that a Store has a notion of explicit empty graphs
+        /// </summary>
+        /// <remarks>
+        /// For some quad stores the existence of a graph may only be defined in terms of one/more quads being stored in that graph
+        /// </remarks>
+        ExplicitEmptyGraphs = 4096,
+
+        /// <summary>
         /// Indicates a Store that can do Triple Level additions and removals on existing Graphs using the UpdateGraph() method
         /// </summary>
         CanUpdateTriples = CanUpdateAddTriples | CanUpdateDeleteTriples,

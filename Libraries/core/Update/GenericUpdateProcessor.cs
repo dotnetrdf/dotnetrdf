@@ -105,13 +105,16 @@ namespace VDS.RDF.Update
             {
                 try
                 {
-                    ////Firstly check that appropriate IO Behaviour is provided
-                    //if (cmd.SourceUri == null || cmd.DestinationUri == null)
-                    //{
-                    //    if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
-                    //}
-                    //IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
-                    //if ((this._manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
+                    //If Source and Destination are equal this is a no-op
+                    if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+
+                    //Firstly check that appropriate IO Behaviour is provided
+                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    {
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                    }
+                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    if ((this._manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                     //Load Source Graph
                     Graph source = new Graph();
@@ -240,6 +243,14 @@ namespace VDS.RDF.Update
                     //If Source and Destination are equal this is a no-op
                     if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
 
+                    //Firstly check that appropriate IO Behaviour is provided
+                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    {
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                    }
+                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    if ((this._manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
+
                     Graph source = new Graph();
                     this._manager.LoadGraph(source, cmd.SourceUri);
                     source.BaseUri = cmd.SourceUri;
@@ -253,7 +264,7 @@ namespace VDS.RDF.Update
                         }
                         catch (Exception ex)
                         {
-                            throw new SparqlUpdateException("Unable to process a MOVE command as unable to ensure that the Destination Graph was deleted prior to moving the data from the Source Graph", ex);
+                            throw new SparqlUpdateException("Unable to process a COPY command as unable to ensure that the Destination Graph was deleted prior to moving the data from the Source Graph", ex);
                         }
                     }
 
@@ -296,8 +307,10 @@ namespace VDS.RDF.Update
             {
                 Graph g = new Graph();
                 g.BaseUri = cmd.TargetUri;
+
                 try
                 {
+                    if ((this._manager.IOBehaviour & IOBehaviour.ExplicitEmptyGraphs) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
                     this._manager.SaveGraph(g);
                 }
                 catch
@@ -421,6 +434,8 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
+                    //TODO: Check IO Behaviour required
+
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
@@ -584,6 +599,8 @@ namespace VDS.RDF.Update
             }
             else
             {
+                //TODO: Check IO Behaviour
+
                 //Split the Pattern into the set of Graph Patterns
                 List<GraphPattern> patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
@@ -779,6 +796,8 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
+                    //TODO: Check required IO behaviour
+
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
@@ -942,6 +961,8 @@ namespace VDS.RDF.Update
             }
             else
             {
+                //TODO: Check required IO Behaviour
+
                 //Split the Pattern into the set of Graph Patterns
                 List<GraphPattern> patterns = new List<GraphPattern>();
                 if (cmd.DataPattern.IsGraph)
@@ -1023,6 +1044,8 @@ namespace VDS.RDF.Update
             {
                 try
                 {
+                    //TODO: Check required IO Behaviour
+
                     Graph g = new Graph();
                     if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, cmd.TargetUri);
                     UriLoader.Load(g, cmd.SourceUri);
@@ -1057,6 +1080,8 @@ namespace VDS.RDF.Update
             {
                 if (this._manager is IQueryableGenericIOManager)
                 {
+                    //TODO: Check required IO Behaviour
+
                     //First build and make the query to get a Result Set
                     String queryText = "SELECT * WHERE " + cmd.WherePattern.ToString();
                     SparqlQueryParser parser = new SparqlQueryParser();
@@ -1326,6 +1351,14 @@ namespace VDS.RDF.Update
                 {
                     //If Source and Destination are equal this is a no-op
                     if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
+
+                    //Firstly check that appropriate IO Behaviour is provided
+                    if (cmd.SourceUri == null || cmd.DestinationUri == null)
+                    {
+                        if ((this._manager.IOBehaviour & IOBehaviour.HasDefaultGraph) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                    }
+                    IOBehaviour desired = cmd.DestinationUri == null ? IOBehaviour.OverwriteDefault : IOBehaviour.OverwriteNamed;
+                    if ((this._manager.IOBehaviour & desired) == 0) throw new SparqlUpdateException("The underlying store does not provide the required IO Behaviour to implement this command");
 
                     Graph source = new Graph();
                     this._manager.LoadGraph(source, cmd.SourceUri);
