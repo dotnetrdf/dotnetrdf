@@ -186,15 +186,15 @@ namespace VDS.RDF.Query.Patterns
             {
                 BlankNodePattern a = new BlankNodePattern(factory.GetNextBlankNodeID());
                 BlankNodePattern b = new BlankNodePattern(factory.GetNextBlankNodeID());
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(new Uri(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst))), this._matchVar));
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest))), b));
-                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfListFirst))), this._scoreVar));
-                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfListRest))), new NodeMatchPattern(factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfListNil)))));
+                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
+                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst))), this._matchVar));
+                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest))), b));
+                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst))), this._scoreVar));
+                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest))), new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil)))));
             }
             else
             {
-                this._origPatterns.Add(new TriplePattern(this._matchVar, new NodeMatchPattern(factory.CreateUriNode(new Uri(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
+                this._origPatterns.Add(new TriplePattern(this._matchVar, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
             }
         }
 #endif

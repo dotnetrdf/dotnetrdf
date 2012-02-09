@@ -34,20 +34,18 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Datasets;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
     /// An Object Factory for creating SPARQL Datasets
     /// </summary>
-    public class DatasetFactory : IObjectFactory
+    public class DatasetFactory 
+        : IObjectFactory
     {
-        private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset";
+        private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
+                             InMemoryQuadDataset = "VDS.RDF.Query.Datasets.InMemoryQuadDataset";
 
         /// <summary>
         /// Tries to load a SPARQL Dataset based on information from the Configuration Graph
@@ -61,13 +59,14 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
 
+            INode storeNode;
             switch (targetType.FullName)
             {
                 case InMemoryDataset:
-                    INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
                     if (storeNode == null)
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the In-Memory Dataset identified by the Node '" + objNode.ToString() + "' since there was no value given for the required property dnr:usingStore");
+                        obj = new InMemoryDataset();
                     }
                     else
                     {
@@ -82,6 +81,28 @@ namespace VDS.RDF.Configuration
                             throw new DotNetRdfConfigurationException("Unable to load the In-Memory Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:usingStore property could not be loaded as an object which implements the IInMemoryQueryableStore interface");
                         }
                     }
+                    break;
+
+                case InMemoryQuadDataset:
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                    if (storeNode == null)
+                    {
+                        obj = new InMemoryQuadDataset();
+                    }
+                    else
+                    {
+                        Object temp = ConfigurationLoader.LoadObject(g, storeNode);
+                        if (temp is IInMemoryQueryableStore)
+                        {
+                            obj = new InMemoryQuadDataset((IInMemoryQueryableStore)temp);
+                            return true;
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the In-Memory Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:usingStore property could not be loaded as an object which implements the IInMemoryQueryableStore interface");
+                        }
+                    }
+                    break;
             } 
 
             return false;
@@ -97,6 +118,7 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case InMemoryDataset:
+                case InMemoryQuadDataset:
                     return true;
                 default:
                     return false;

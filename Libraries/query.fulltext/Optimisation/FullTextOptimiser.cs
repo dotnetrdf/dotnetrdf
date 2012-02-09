@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Optimisation
 
             INode optObj = context.NextSubject;
 
-            context.Graph.Assert(optObj, context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassAlgebraOptimiser));
+            context.Graph.Assert(optObj, context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassAlgebraOptimiser));
             context.Graph.Assert(optObj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType), context.Graph.CreateLiteralNode(this.GetType().FullName + ", dotNetRDF.Query.FullText"));
 
             if (this._provider is IConfigurationSerializable)
@@ -238,7 +238,7 @@ namespace VDS.RDF.Query.Optimisation
                 INode searcherObj = context.Graph.CreateBlankNode();
                 context.NextSubject = searcherObj;
                 ((IConfigurationSerializable)this._provider).SerializeConfiguration(context);
-                context.Graph.Assert(optObj, context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertySearcher)), searcherObj);
+                context.Graph.Assert(optObj, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertySearcher)), searcherObj);
             }
             else
             {

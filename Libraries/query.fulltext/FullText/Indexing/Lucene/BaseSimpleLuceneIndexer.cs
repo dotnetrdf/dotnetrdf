@@ -79,7 +79,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             this._indexDir = indexDir;
             this._analyzer = analyzer;
             this._schema = schema;
-            this._writer = new IndexWriter(indexDir, analyzer);
+            this._writer = new IndexWriter(indexDir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
             this._searcher = new LucSearch.IndexSearcher(this._indexDir, true);
         }
 
@@ -192,12 +192,12 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode indexerObj = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
-            INode indexerClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassIndexer));
-            INode index = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyIndex));
-            INode schema = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertySchema));
-            INode analyzer = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyAnalyzer));
+            INode indexerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndexer));
+            INode index = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndex));
+            INode schema = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertySchema));
+            INode analyzer = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyAnalyzer));
 
             //Basic Properties
             context.Graph.Assert(indexerObj, rdfType, indexerClass);

@@ -72,17 +72,29 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <param name="indexDir">Directory</param>
         /// <param name="analyzer">Analyzer</param>
         /// <param name="schema">Index Schema</param>
-        public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+        /// <param name="autoSync">Whether the Search Provider should stay in sync with the underlying index</param>
+        public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema, bool autoSync)
         {
             this._version = ver;
             this._indexDir = indexDir;
             this._analyzer = analyzer;
             this._schema = schema;
+            this._autoSync = autoSync;
 
             //Create necessary objects
             this._searcher = new LucSearch.IndexSearcher(this._indexDir, true);
             this._parser = new QueryParser(this._version, this._schema.IndexField, this._analyzer);
         }
+
+        /// <summary>
+        /// Creates a new Base Lucene Search Provider
+        /// </summary>
+        /// <param name="ver">Lucene Version</param>
+        /// <param name="indexDir">Directory</param>
+        /// <param name="analyzer">Analyzer</param>
+        /// <param name="schema">Index Schema</param>
+        public BaseLuceneSearchProvider(LucUtil.Version ver, Directory indexDir, Analyzer analyzer, IFullTextIndexSchema schema)
+            : this(ver, indexDir, analyzer, schema, true) { }
 
         /// <summary>
         /// Destructor which ensures that the Search Provider is properly disposed of
@@ -156,6 +168,17 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
+        /// Gets whether this search provider is always seeing the latest state of the index
+        /// </summary>
+        public bool IsAutoSynced
+        {
+            get
+            {
+                return this._autoSync;
+            }
+        }
+
+        /// <summary>
         /// Ensures that the Index Searcher is searching the current Index unless this feature has been disabled by the user
         /// </summary>
         private void EnsureCurrent()
@@ -206,12 +229,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode searcherObj = context.NextSubject;
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
-            INode searcherClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassSearcher));
-            INode index = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyIndex));
-            INode schema = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertySchema));
-            INode analyzer = context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyAnalyzer));
+            INode searcherClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassSearcher));
+            INode index = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndex));
+            INode schema = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertySchema));
+            INode analyzer = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyAnalyzer));
+            INode indexSync = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexSync));
 
             //Basic Properties
             context.Graph.Assert(searcherObj, rdfType, searcherClass);
@@ -241,6 +265,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             context.NextSubject = analyzerObj;
             this._analyzer.SerializeConfiguration(context);
             context.Graph.Assert(searcherObj, index, analyzerObj);
+
+            //Serialize auto-sync settings
+            context.Graph.Assert(searcherObj, indexSync, this._autoSync.ToLiteral(context.Graph));
         }
     }
 }

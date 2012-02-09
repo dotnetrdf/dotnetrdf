@@ -107,13 +107,13 @@ namespace VDS.RDF.Query
                         else
                         {
                             //Assume a Datatyped literal
-                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, new Uri(nodeMeta)), score);
+                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, UriFactory.Create(nodeMeta)), score);
                         }
                     }
 
                 case NodeType.Uri:
                     //Can just create a URI Node
-                    return new FullTextSearchResult(_factory.CreateUriNode(new Uri(nodeValue)), score);
+                    return new FullTextSearchResult(_factory.CreateUriNode(UriFactory.Create(nodeValue)), score);
 
                 default:
                     throw new RdfQueryException("Only Blank, Literal and URI Nodes may be retrieved from a Lucene Document");
@@ -196,13 +196,13 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
-            INode indexClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassIndex));
+            INode indexClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndex));
             INode dirObj = context.NextSubject;
 
             context.Graph.Assert(dirObj, rdfType, indexClass);
-            context.Graph.Assert(dirObj, context.Graph.CreateUriNode(new Uri(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
+            context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyEnsureIndex)), (true).ToLiteral(context.Graph));
             if (directory is RAMDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(directory.GetType().FullName + ", Lucene.Net"));
@@ -222,9 +222,9 @@ namespace VDS.RDF.Query
         {
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
-            INode analyzerClass = context.Graph.CreateUriNode(new Uri(FullTextHelper.ClassAnalyzer));
+            INode analyzerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassAnalyzer));
             INode analyzerObj = context.NextSubject;
 
             Type t = analyzer.GetType();

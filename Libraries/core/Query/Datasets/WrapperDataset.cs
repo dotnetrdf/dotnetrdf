@@ -35,6 +35,10 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Query.Datasets
 {
@@ -42,8 +46,15 @@ namespace VDS.RDF.Query.Datasets
     /// An abstract dataset wrapper that can be used to wrap another dataset and just modify some functionality i.e. provides a decorator over an existing dataset
     /// </summary>
     public abstract class WrapperDataset
-        : ISparqlDataset
+        : ISparqlDataset, IConfigurationSerializable
+#if !NO_RWLOCK
+        , IThreadSafeDataset
+#endif
     {
+#if !NO_RWLOCK
+        private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+#endif
+
         /// <summary>
         /// Underlying Dataset
         /// </summary>
@@ -58,6 +69,26 @@ namespace VDS.RDF.Query.Datasets
             if (dataset == null) throw new ArgumentNullException("dataset");
             this._dataset = dataset;
         }
+
+#if !NO_RWLOCK
+        /// <summary>
+        /// Gets the Lock used to ensure MRSW concurrency on the dataset when available
+        /// </summary>
+        public ReaderWriterLockSlim Lock
+        {
+            get
+            {
+                if (this._dataset is IThreadSafeDataset)
+                {
+                    return ((IThreadSafeDataset)this._dataset).Lock;
+                }
+                else
+                {
+                    return this._lock;
+                }
+            }
+        }
+#endif
 
         #region ISparqlDataset Members
 
@@ -221,5 +252,37 @@ namespace VDS.RDF.Query.Datasets
         }
 
         #endregion
+
+        /// <summary>
+        /// Serializes the Configuration of the Dataset
+        /// </summary>
+        /// <param name="context">Serialization Context</param>
+        public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            if (this._dataset is IConfigurationSerializable)
+            {
+                INode dataset = context.NextSubject;
+                INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+                INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+                INode datasetClass = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassSparqlDataset);
+                INode usingDataset = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUsingDataset);
+                INode innerDataset = context.Graph.CreateBlankNode();
+
+                String assm = Assembly.GetAssembly(this.GetType()).FullName;
+                if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
+                String effectiveType = this.GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);
+
+                context.Graph.Assert(dataset, rdfType, datasetClass);
+                context.Graph.Assert(dataset, dnrType, context.Graph.CreateLiteralNode(effectiveType));
+                context.Graph.Assert(dataset, usingDataset, innerDataset);
+                context.NextSubject = innerDataset;
+
+                ((IConfigurationSerializable)this._dataset).SerializeConfiguration(context);
+            }
+            else
+            {
+                throw new DotNetRdfConfigurationException("Unable to serialize configuration as the inner dataset is now serializable");
+            }
+        }
     }
 }

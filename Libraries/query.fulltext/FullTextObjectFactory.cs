@@ -68,7 +68,8 @@ namespace VDS.RDF.Configuration
                              LucenePredicatesIndexer = "VDS.RDF.Query.FullText.Indexing.Lucene.LucenePredicatesIndexer",
                              DefaultIndexSchema = "VDS.RDF.Query.FullText.Schema.DefaultIndexSchema",
                              LuceneSearchProvider = "VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider",
-                             FullTextOptimiser = "VDS.RDF.Query.Optimisation.FullTextOptimiser";
+                             FullTextOptimiser = "VDS.RDF.Query.Optimisation.FullTextOptimiser",
+                             FullTextIndexedDataset = "VDS.RDF.Query.Datasets.FullTextIndexedDataset";
 
         private readonly Type _luceneAnalyzerType = typeof(Analyzer);
         private readonly Type _luceneDirectoryType = typeof(Directory);
@@ -86,12 +87,12 @@ namespace VDS.RDF.Configuration
         {
             obj = null;
 
-            INode index = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "index"));
-            //INode indexer = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "indexer"));
-            INode searcher = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "searcher"));
-            INode analyzer = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "analyzer"));
-            INode schema = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "schema"));
-            INode version = g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "version"));
+            INode index = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "index"));
+            INode indexerProperty = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "indexer"));
+            INode searcher = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "searcher"));
+            INode analyzer = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "analyzer"));
+            INode schema = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "schema"));
+            INode version = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "version"));
 
             Object tempIndex, tempAnalyzer, tempSchema;
             int ver = 2900;
@@ -102,6 +103,33 @@ namespace VDS.RDF.Configuration
             {
                 case DefaultIndexSchema:
                     obj = new DefaultIndexSchema();
+                    break;
+
+                case FullTextIndexedDataset:
+                    //Need to get the inner dataset
+                    INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
+                    if (datasetNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + "' as there was no value specified for the required dnr:usingDataset property");
+                    Object tempDataset = ConfigurationLoader.LoadObject(g, datasetNode);
+                    if (tempDataset is ISparqlDataset)
+                    {
+                        //Then load the indexer associated with the dataset
+                        INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, indexerProperty);
+                        if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + " as there was no value specified for the required dnr-ft:indexer property");
+                        Object tempIndexer = ConfigurationLoader.LoadObject(g, indexerNode);
+                        if (tempIndexer is IFullTextIndexer)
+                        {
+                            bool indexNow = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexNow)), false);
+                            obj = new FullTextIndexedDataset((ISparqlDataset)tempDataset, (IFullTextIndexer)tempIndexer, indexNow);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + "' as the value specified for the dnr-ft:indexer property pointed to an object which could not be loaded as a type that implements the required IFullTextIndexer interface");
+                        }
+                    }
+                    else
+                    {
+                        throw new DotNetRdfConfigurationException("Unable to load the Full Text Indexed Dataset specified by the Node '" + objNode.ToString() + "' as the value specified for the dnr:usingDataset property pointed to an object which could not be loaded as a type that implements the required ISparqlDataset interface");
+                    }
                     break;
 
                 case FullTextOptimiser:
@@ -171,11 +199,11 @@ namespace VDS.RDF.Configuration
                                         break;
                                     case LuceneSearchProvider:
                                         //Before the Search Provider has been loaded determine whether we need to carry out auto-indexing
-                                        List<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "buildIndexFor"))).ToList();
+                                        List<INode> sources = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "buildIndexFor"))).ToList();
                                         if (sources.Count > 0)
                                         {
                                             //If there are sources to index ensure we have an indexer to index with
-                                            INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "buildIndexWith")));
+                                            INode indexerNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "buildIndexWith")));
                                             if (indexerNode == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as there were values specified for the dnr-ft:buildIndexFor property but no dnr-ft:buildIndexWith property was found");
                                             IFullTextIndexer indexer = ConfigurationLoader.LoadObject(g, indexerNode) as IFullTextIndexer;
                                             if (indexer == null) throw new DotNetRdfConfigurationException("Unable to load the Lucene Search Provider specified by the Node '" + objNode.ToString() + "' as the value given for the dnr-ft:buildIndexWith property pointed to an Object which could not be loaded as a type that implements the required IFullTextIndexer interface");
@@ -214,7 +242,8 @@ namespace VDS.RDF.Configuration
                                         }
 
                                         //Then we actually load the Search Provider
-                                        obj = new LuceneSearchProvider(this.GetLuceneVersion(ver), (Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema);
+                                        bool autoSync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndexSync)), true);
+                                        obj = new LuceneSearchProvider(this.GetLuceneVersion(ver), (Directory)tempIndex, (Analyzer)tempAnalyzer, (IFullTextIndexSchema)tempSchema, autoSync);
                                         break;
                                 }
                             }
@@ -273,9 +302,9 @@ namespace VDS.RDF.Configuration
                             //Ensure the Index if necessary
                             if (obj != null)
                             {
-                                if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(new Uri(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
+                                if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
                                 {
-                                    IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)));
+                                    IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)), IndexWriter.MaxFieldLength.UNLIMITED);
                                     writer.Close();
                                 }
                             }
@@ -303,6 +332,7 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case DefaultIndexSchema:
+                case FullTextIndexedDataset:
                 case FullTextOptimiser:
                 case LuceneObjectsIndexer:
                 case LucenePredicatesIndexer:

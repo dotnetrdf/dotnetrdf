@@ -83,7 +83,9 @@ namespace VDS.RDF.Query
                             PropertyVersion = FullTextConfigurationNamespace + "version",
                             PropertyEnsureIndex = FullTextConfigurationNamespace + "ensureIndex",
                             PropertyBuildIndexFor = FullTextConfigurationNamespace + "buildIndexFor",
-                            PropertyBuildIndexWith = FullTextConfigurationNamespace + "buildIndexWith";
+                            PropertyBuildIndexWith = FullTextConfigurationNamespace + "buildIndexWith",
+                            PropertyIndexNow = FullTextConfigurationNamespace + "indexNow",
+                            PropertyIndexSync = FullTextConfigurationNamespace + "indexSync";
 
         /// <summary>
         /// Used to extract the patterns that make up a <see cref="FullTextPattern">FullTextPattern</see>
