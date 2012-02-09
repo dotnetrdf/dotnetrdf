@@ -76,6 +76,7 @@ namespace VDS.RDF.Query.FullText.Indexing
             {
                 this.Index(t);
             }
+            this.Flush();
         }
 
         /// <summary>
@@ -107,6 +108,7 @@ namespace VDS.RDF.Query.FullText.Indexing
             {
                 this.Unindex(t);
             }
+            this.Flush();
         }
 
         /// <summary>

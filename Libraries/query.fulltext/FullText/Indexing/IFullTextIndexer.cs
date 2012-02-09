@@ -79,36 +79,54 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// Indexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Index(Triple t);
 
         /// <summary>
         /// Indexes a Graph
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Index(IGraph g);
 
         /// <summary>
         /// Indexes a Dataset
         /// </summary>
         /// <param name="dataset">Dataset</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Index(ISparqlDataset dataset);
 
         /// <summary>
         /// Unindexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD NOT</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Unindex(Triple t);
 
         /// <summary>
         /// Unindexes a Graph
         /// </summary>
         /// <param name="g">Graph</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Unindex(IGraph g);
 
         /// <summary>
         /// Unindexes a Dataset
         /// </summary>
         /// <param name="dataset">Dataset</param>
+        /// <remarks>
+        /// Implementations <emph>SHOULD</emph> automatically Flush changes to the indexes at the end of this operation
+        /// </remarks>
         void Unindex(ISparqlDataset dataset);
 
         /// <summary>

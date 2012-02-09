@@ -167,7 +167,9 @@
     <Compile Include="Parsing\SpeedTesting.cs" />
     <Compile Include="Parsing\StringReaderEncodingTests.cs" />
     <Compile Include="Query\FullText\FullTextConfigTests.cs" />
+    <Compile Include="Query\FullText\FullTextDatasetTests.cs" />
     <Compile Include="Query\FullText\FullTextHelperTests.cs" />
+    <Compile Include="Query\FullText\FullTextIncrementalIndexAndSearch.cs" />
     <Compile Include="Query\FullText\FullTextOptimiserTests.cs" />
     <Compile Include="Query\FullText\FullTextSparqlTests.cs" />
     <Compile Include="Query\FullText\FullTextSparqlTests2.cs" />

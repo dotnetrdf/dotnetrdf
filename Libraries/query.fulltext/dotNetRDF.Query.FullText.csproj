@@ -51,6 +51,7 @@
     <Compile Include="Algebra\FullTextMatch.cs" />
     <None Include="Expressions\FullTextFunctionFactory.cs" />
     <None Include="Expressions\Functions\FullTextMatchFunction.cs" />
+    <Compile Include="Datasets\FullTextIndexedDataset.cs" />
     <Compile Include="FullTextExtensions.cs" />
     <Compile Include="FullTextHelper.cs" />
     <Compile Include="FullTextObjectFactory.cs" />

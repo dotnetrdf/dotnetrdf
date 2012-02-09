@@ -367,6 +367,7 @@
     <Compile Include="Query\Datasets\BaseQuadDataset.cs" />
     <Compile Include="Query\Datasets\InMemoryQuadDataset.cs" />
     <Compile Include="Query\Datasets\QuadDatasetTripleCollection.cs" />
+    <Compile Include="Query\Datasets\WrapperDataset.cs" />
     <Compile Include="Query\ExplainQueryProcessor.cs" />
     <Compile Include="Query\Expressions\Arithmetic\AdditionExpression.cs" />
     <Compile Include="Query\Expressions\Arithmetic\DivisionExpression.cs" />
