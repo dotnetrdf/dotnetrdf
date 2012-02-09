@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Lucene.Net.Index;
 using Lucene.Net.Analysis;
 using Lucene.Net.QueryParsers;
 using LucSearch = Lucene.Net.Search;
@@ -62,6 +63,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         private LucUtil.Version _version;
         private Analyzer _analyzer;
         private IFullTextIndexSchema _schema;
+        private bool _autoSync = true;
 
         /// <summary>
         /// Creates a new Base Lucene Search Provider
@@ -99,6 +101,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold, int limit)
         {
+            this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
             return (from doc in docs.scoreDocs
@@ -114,6 +117,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, double scoreThreshold)
         {
+            this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             DocCollector collector = new DocCollector(scoreThreshold);
             this._searcher.Search(q, collector);
@@ -129,6 +133,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text, int limit)
         {
+            this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
             return (from doc in docs.scoreDocs
@@ -142,11 +147,28 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         public virtual IEnumerable<IFullTextSearchResult> Match(string text)
         {
+            this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             DocCollector collector = new DocCollector();
             this._searcher.Search(q, collector);
             return (from doc in collector.Documents
                     select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
+        }
+
+        /// <summary>
+        /// Ensures that the Index Searcher is searching the current Index unless this feature has been disabled by the user
+        /// </summary>
+        private void EnsureCurrent()
+        {
+            if (this._autoSync)
+            {
+                if (!this._searcher.GetIndexReader().IsCurrent())
+                {
+                    IndexReader oldReader = this._searcher.GetIndexReader();
+                    this._searcher = new LucSearch.IndexSearcher(oldReader.Reopen());
+                    oldReader.Close();
+                }
+            }
         }
 
         /// <summary>

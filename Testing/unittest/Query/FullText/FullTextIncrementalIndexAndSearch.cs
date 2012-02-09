@@ -36,6 +36,7 @@ namespace VDS.RDF.Test.Query.FullText
             
             //Try indexing in 100 Triple chunks
             Random rnd = new Random();
+            String searchTerm = "http";
             for (int i = 0; i < g.Triples.Count; i += 100)
             {
                 //Index the Triples
@@ -48,10 +49,8 @@ namespace VDS.RDF.Test.Query.FullText
 
                 //Now do a search to check some of those triples got indexed
                 //Pick the first multi-word string literal we can find from the batch and grab one word from it
-                Triple searchTriple = ts.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains(' ')).First();
-                INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ');
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];
+                INode targetNode = ts.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http")).Select(t => t.Subject).FirstOrDefault();
+                if (targetNode == null) continue;
 
                 Console.WriteLine("Picked " + targetNode.ToString(this._formatter) + " as search target with search term '" + searchTerm + "'");
 
@@ -83,6 +82,7 @@ namespace VDS.RDF.Test.Query.FullText
 
             //Try indexing in 100 Triple chunks
             Random rnd = new Random();
+            String searchTerm = "http";
             for (int i = 0; i < g.Triples.Count; i += 100)
             {
                 //Index the Triples
@@ -95,10 +95,8 @@ namespace VDS.RDF.Test.Query.FullText
 
                 //Now do a search to check some of those triples got indexed
                 //Pick the first multi-word string literal we can find from the batch and grab one word from it
-                Triple searchTriple = ts.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains(' ')).First();
-                INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ');
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];
+                INode targetNode = ts.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http")).Select(t => t.Subject).FirstOrDefault();
+                if (targetNode == null) continue;
 
                 Console.WriteLine("Picked " + targetNode.ToString(this._formatter) + " as search target with search term '" + searchTerm + "'");
 

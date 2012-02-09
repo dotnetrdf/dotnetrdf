@@ -43,16 +43,12 @@ namespace VDS.RDF.Test.Query.FullText
             Assert.IsTrue(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Subject.NodeType == NodeType.Uri && t.Object.ToString().Contains(' '));
-            Random rnd = new Random();
+            String searchTerm = "http";
+            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http"));
             LuceneSearchProvider searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
             foreach (Triple searchTriple in searchTriples)
             {
                 INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ').Where(t => t.Length >= 5 && t.ToCharArray().All(c => Char.IsLetter(c))).ToArray();
-                if (terms.Length == 0) continue;
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];;
-
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
                 Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
@@ -65,10 +61,6 @@ namespace VDS.RDF.Test.Query.FullText
             foreach (Triple searchTriple in searchTriples)
             {
                 INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ').Where(t => t.Length >= 5 && t.ToCharArray().All(c => Char.IsLetter(c))).ToArray();
-                if (terms.Length == 0) continue;
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];
-
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
                 Assert.IsFalse(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
@@ -98,15 +90,11 @@ namespace VDS.RDF.Test.Query.FullText
             Assert.IsTrue(dataset.HasGraph(g.BaseUri), "Graph should exist in dataset");
 
             //Now do a search to check all the triples got indexed
-            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Subject.NodeType == NodeType.Uri && t.Object.ToString().Contains(' '));
-            Random rnd = new Random();
+            String searchTerm = "http";
+            IEnumerable<Triple> searchTriples = g.Triples.Where(t => t.Object.NodeType == NodeType.Literal && t.Object.ToString().Contains("http"));
             foreach (Triple searchTriple in searchTriples)
             {
                 INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ').Where(t => t.Length >= 5 && t.ToCharArray().All(c => Char.IsLetter(c))).ToArray();
-                if (terms.Length == 0) continue;
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];
-
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
                 Assert.IsTrue(results.Any(r => r.Node.Equals(targetNode)), "Did not find expected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();
@@ -119,10 +107,6 @@ namespace VDS.RDF.Test.Query.FullText
             foreach (Triple searchTriple in searchTriples)
             {
                 INode targetNode = searchTriple.Subject;
-                String[] terms = searchTriple.Object.ToString().Split(' ').Where(t => t.Length >= 5 && t.ToCharArray().All(c => Char.IsLetter(c))).ToArray();
-                if (terms.Length == 0) continue;
-                String searchTerm = terms[rnd.Next(terms.Length - 1)];
-
                 IEnumerable<IFullTextSearchResult> results = searcher.Match(searchTerm);
                 Assert.IsFalse(results.Any(r => r.Node.Equals(targetNode)), "Found unexpected node " + targetNode.ToString(this._formatter) + " in search results using search term '" + searchTerm + "' (found " + results.Count() + " results)");
                 Console.WriteLine();

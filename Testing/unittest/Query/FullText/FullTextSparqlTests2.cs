@@ -77,7 +77,10 @@ namespace VDS.RDF.Test.Query.FullText
                     {
                         Assert.IsTrue(results.Any(r => r.HasValue("match") && r["match"] != null && r["match"].Equals(n)), "Did not get expected ?match => " + formatter.Format(n));
                     }
-                    Assert.IsTrue(results.All(r => r.HasValue("match") && r["match"] != null && expected.Contains(r["match"])), "Not all matches were expected");
+                    foreach (SparqlResult r in results)
+                    {
+                        Assert.IsTrue(r.HasValue("match") && r["match"] != null && expected.Contains(r["match"]), "Unexpected Match " + formatter.Format(r["match"]));
+                    }
                 }
                 else
                 {
@@ -169,27 +172,8 @@ namespace VDS.RDF.Test.Query.FullText
                                           && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
                                     select t.Subject).ToList();
             NodeFactory factory = new NodeFactory();
-            expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
-            expected.RemoveAll(n => !this._dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match ?p ?o }", expected);
+            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . OPTIONAL { ?match ?p ?o } }", expected);
         }
-
-        //[TestMethod]
-        //public void GenerateQuarters()
-        //{
-        //    foreach (String quarter in GetQuarters(3, 2011, 10))
-        //    {
-        //        Console.WriteLine(quarter);
-        //    }
-        //}
-
-
-        //public IEnumerable<String> GetQuarters(int current, int year, int count)
-        //{
-        //    return (from q in Enumerable.Range(0, count)
-        //            select String.Format("Q{0}-{1}", (current - q) + (((q + 1) / 4) * 4) , year - ((q + 1) / 4)));
-        //}
-
     }
 }
