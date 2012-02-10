@@ -214,7 +214,7 @@
     </exec>
   </target>
 
-  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="projectgen-clientprofile-net35">
+  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -236,7 +236,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly,projectgen-data-sql-net35">
+  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-data-sql-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -269,7 +269,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly,projectgen-query-fulltext-net35">
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-query-fulltext-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">

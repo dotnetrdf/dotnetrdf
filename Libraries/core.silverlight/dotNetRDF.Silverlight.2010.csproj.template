@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <AssemblyName>dotNetRDF.Silverlight</AssemblyName>   
+    <AssemblyName>dotNetRDF</AssemblyName>   
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
@@ -57,11 +57,11 @@
     <Reference Include="System.Windows.Browser" />
     <Reference Include="HtmlAgilityPack.Silverlight, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\HtmlAgilityPack.Silverlight.dll</HintPath>
+      <HintPath>..\..\Dependencies\sl4\HtmlAgilityPack.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Dependencies\sl4\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup> 
   <ItemGroup>

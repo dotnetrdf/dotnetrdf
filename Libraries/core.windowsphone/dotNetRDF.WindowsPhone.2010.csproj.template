@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF</RootNamespace>
-    <AssemblyName>dotNetRDF.WindowsPhone</AssemblyName>
+    <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
@@ -51,11 +51,11 @@
     <!--Reference Include="System.Windows.Browser" /-->
     <Reference Include="HtmlAgilityPack.WindowsPhone, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\HtmlAgilityPack.WindowsPhone.dll</HintPath>
+      <HintPath>..\..\Dependencies\sl4-wp\HtmlAgilityPack.WindowsPhone.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Dependencies\sl4-wp\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
