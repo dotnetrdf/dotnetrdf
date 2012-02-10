@@ -38,7 +38,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Data.SqlServerCe;
 using System.Linq;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing;
