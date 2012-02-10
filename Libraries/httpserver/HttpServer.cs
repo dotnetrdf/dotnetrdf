@@ -1,10 +1,43 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Xml;
 using VDS.Web.Configuration;
@@ -17,7 +50,8 @@ namespace VDS.Web
     /// <summary>
     /// A simple but extensible HTTP Server based on a <see cref="HttpListener">HttpListener</see>
     /// </summary>
-    public class HttpServer : IDisposable
+    public class HttpServer
+        : IDisposable
     {
         private HttpListener _listener;
         private IHttpListenerHandlerCollection _handlers;
@@ -59,39 +93,121 @@ namespace VDS.Web
 
         #region Explicit Constructors
 
+        /// <summary>
+        /// Creates a new Server with the given host
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host)
             : this(host, new HttpListenerHandlerCollection(), false) { }
 
+        /// <summary>
+        /// Creates a new Server with the given host and optionally starts the server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, bool autostart)
             : this(host, new HttpListenerHandlerCollection(), autostart) { }
 
+        /// <summary>
+        /// Creates a new Server with the given handlers
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="handlers">Handlers</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host, HttpListenerHandlerCollection handlers)
             : this(host, handlers, false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(int port)
             : this(port, new HttpListenerHandlerCollection()) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port and optionally starts the server
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(int port, bool autostart)
             : this(port, new HttpListenerHandlerCollection(), autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port with the given handlers
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <param name="handlers">Handlers</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(int port, IHttpListenerHandlerCollection handlers)
             : this(port, handlers, false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host with the given handlers
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="handlers">Handlers</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, IHttpListenerHandlerCollection handlers, bool autostart)
             : this(host, DefaultPort, handlers, autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port with the given handlers
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <param name="handlers">Handlers</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(int port, IHttpListenerHandlerCollection handlers, bool autostart)
             : this(DefaultHost, port, handlers, autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host and port
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host, int port)
             : this(host, port, new HttpListenerHandlerCollection(), false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host and port and optionally starts the server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, int port, bool autostart)
             : this(host, port, new HttpListenerHandlerCollection(), autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host and port with the given handlers
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <param name="handlers">Handlers</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host, int port, IHttpListenerHandlerCollection handlers)
             : this(host, port, handlers, false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host and port with the given handlers and optionally starts the server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <param name="handlers">Handlers</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, int port, IHttpListenerHandlerCollection handlers, bool autostart)
         {
             if (host == null) throw new ArgumentNullException("host", "Cannot specify a null host, to specify any host please use the constant HttpServer.AnyHost");
@@ -112,6 +228,13 @@ namespace VDS.Web
 
         #region Using Configuration File Constructors
 
+        /// <summary>
+        /// Creates a new Server on the given host and port using a specified configuration file and optionally starts the server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, int port, String configFile, bool autostart)
         {
             if (host == null) throw new ArgumentNullException("host", "Cannot specify a null host, to specify any host please use the constant HttpServer.AnyHost");
@@ -391,9 +514,10 @@ namespace VDS.Web
                     throw new HttpServerException("Configuration File did not contain the required root element <server>");
                 }
             }
-            catch (HttpServerException serverEx)
+            catch (HttpServerException)
             {
-                    throw;
+                //This catch exists since the try block may throw this error and if it does we don't want to wrap it which is what the general catch block will do
+                throw;
             }
             catch (Exception ex)
             {
@@ -409,23 +533,73 @@ namespace VDS.Web
             if (autostart) this.Start();
         }
 
+        /// <summary>
+        /// Creates a new Server on the given host and port using a specified configuration file
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host, int port, String configFile)
             : this(host, port, configFile, false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host using a specified configuration file and optionally starts the server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(String host, String configFile, bool autostart)
             : this(host, DefaultPort, configFile, autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given host using a specified configuration file
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(String host, String configFile)
             : this(host, DefaultPort, configFile, false) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port using a specified configuration file and optionally starts the server
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <param name="autostart">Whether to auto-start</param>
         public HttpServer(int port, String configFile, bool autostart)
             : this(DefaultHost, port, configFile, autostart) { }
 
+        /// <summary>
+        /// Creates a new Server on the given port using a specified configuration file
+        /// </summary>
+        /// <param name="port">Port</param>
+        /// <param name="configFile">Configuration File</param>
+        /// <remarks>
+        /// Must be explicitly started
+        /// </remarks>
         public HttpServer(int port, String configFile)
             : this(DefaultHost, port, configFile, false) { }
 
         #endregion
 
+        /// <summary>
+        /// Destructor which ensures the server is cleaned up
+        /// </summary>
+        ~HttpServer()
+        {
+            this.DisposeInternal(false);
+        }
+
+        /// <summary>
+        /// Initialisation of the Server
+        /// </summary>
+        /// <param name="host">Host</param>
+        /// <param name="port">Port</param>
         private void Initialise(String host, int port)
         {
             this._port = port;
@@ -443,6 +617,9 @@ namespace VDS.Web
 
         #region Server Properties
 
+        /// <summary>
+        /// Gets whether the Server is running
+        /// </summary>
         public bool IsRunning
         {
             get
@@ -452,6 +629,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Port the Server is using
+        /// </summary>
         public int Port
         {
             get
@@ -461,6 +641,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Host the Server is using
+        /// </summary>
         public String Host
         {
             get
@@ -470,6 +653,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Base Directory used for static content
+        /// </summary>
         public String BaseDirectory
         {
             get
@@ -484,6 +670,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the State of the Server
+        /// </summary>
         public HttpServerState State
         {
             get
@@ -493,6 +682,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Handlers for the Server
+        /// </summary>
         public IHttpListenerHandlerCollection Handlers
         {
             get
@@ -502,6 +694,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Loggers for the Server
+        /// </summary>
         public IEnumerable<IHttpLogger> Loggers
         {
             get
@@ -511,6 +706,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the pre-request modules for the Server
+        /// </summary>
         public IEnumerable<IHttpListenerModule> PreRequestModules
         {
             get
@@ -520,6 +718,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the pre-response modules for the Server
+        /// </summary>
         public IEnumerable<IHttpListenerModule> PreResponseModules
         {
             get
@@ -533,6 +734,11 @@ namespace VDS.Web
 
         #region Server Configuration
 
+        /// <summary>
+        /// Adds a virtual directory to the Server
+        /// </summary>
+        /// <param name="path">Virtual Path</param>
+        /// <param name="directory">Physical Directory</param>
         public void AddVirtualDirectory(String path, String directory)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
@@ -540,84 +746,143 @@ namespace VDS.Web
             this._virtualDirs.AddVirtualDirectory(path, directory);
         }
 
+        /// <summary>
+        /// Adds a MIME Type to the Server
+        /// </summary>
+        /// <param name="ext">File Extension</param>
+        /// <param name="mimeType">MIME Type</param>
+        /// <param name="binary">Whether the type should be treated as binary content</param>
         public void AddMimeType(String ext, String mimeType, bool binary)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._mimeTypes.AddMimeType(ext, mimeType, binary);
         }
 
+        /// <summary>
+        /// Adds a MIME Type to the Server
+        /// </summary>
+        /// <param name="ext">File Extension</param>
+        /// <param name="mimeType">MIME Type</param>
         public void AddMimeType(String ext, String mimeType)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._mimeTypes.AddMimeType(ext, mimeType);
         }
 
+        /// <summary>
+        /// Adds a pre-request module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
         public void AddPreRequestModule(IHttpListenerModule module)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Add(module);
         }
 
+        /// <summary>
+        /// Adds a pre-response module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
         public void AddPreResponseModule(IHttpListenerModule module)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Add(module);
         }
 
+        /// <summary>
+        /// Inserts a pre-request module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
+        /// <param name="insertAt">Index to insert at</param>
         public void InsertPreRequestModule(IHttpListenerModule module, int insertAt)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Insert(insertAt, module);
         }
 
+        /// <summary>
+        /// Inserts a pre-response module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
+        /// <param name="insertAt">Index to insert at</param>
         public void InsertPreResponseModule(IHttpListenerModule module, int insertAt)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Insert(insertAt, module);
         }
 
+        /// <summary>
+        /// Removes a pre-request module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
         public void RemovePreRequestModule(IHttpListenerModule module)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Remove(module);
         }
 
+        /// <summary>
+        /// Removes a pre-response module to the Server
+        /// </summary>
+        /// <param name="module">Module</param>
         public void RemovePreResponseModule(IHttpListenerModule module)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Remove(module);
         }
 
+        /// <summary>
+        /// Removes all pre-request modules
+        /// </summary>
         public void ClearPreRequestModules()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preRequestModules.Clear();
         }
 
+        /// <summary>
+        /// Removes all pre-response modules
+        /// </summary>
         public void ClearPreResponseModules()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._preResponseModules.Clear();
         }
 
+        /// <summary>
+        /// Adds a Logger
+        /// </summary>
+        /// <param name="logger">Logger</param>
         public void AddLogger(IHttpLogger logger)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Add(logger);
         }
 
+        /// <summary>
+        /// Inserts a Logger
+        /// </summary>
+        /// <param name="logger">Logger</param>
+        /// <param name="insertAt">Index to insert at</param>
         public void InsertLogger(IHttpLogger logger, int insertAt)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Insert(insertAt, logger);
         }
 
+        /// <summary>
+        /// Removes a Logger
+        /// </summary>
+        /// <param name="logger">Logger</param>
         public void RemoveLogger(IHttpLogger logger)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
             this._loggers.Remove(logger);
         }
 
+        /// <summary>
+        /// Removes all loggers
+        /// </summary>
         public void ClearLoggers()
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
@@ -696,6 +961,9 @@ namespace VDS.Web
 
         #region Request Processing
 
+        /// <summary>
+        /// Actual method which implements the main server process
+        /// </summary>
         private void Run()
         {
             while (true)
@@ -724,8 +992,18 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Delegate for handing off request processing to be asynchronous
+        /// </summary>
+        /// <param name="context">Listener Context</param>
+        /// <returns></returns>
         private delegate HttpServerContext HandleRequestDelegate(HttpListenerContext context);
 
+        /// <summary>
+        /// Begins request handling
+        /// </summary>
+        /// <param name="context">Listener Context</param>
+        /// <returns></returns>
         private HttpServerContext HandleRequest(HttpListenerContext context)
         {
             IHttpListenerHandler handler;
@@ -753,6 +1031,10 @@ namespace VDS.Web
             return serverContext;
         }
 
+        /// <summary>
+        /// Ends request handling
+        /// </summary>
+        /// <param name="result">Async Result</param>
         private void EndRequest(IAsyncResult result)
         {
             try
@@ -770,6 +1052,11 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Applies pre-request modules returning whether actual request handling should be skipped
+        /// </summary>
+        /// <param name="context">Server Context</param>
+        /// <returns></returns>
         private bool ApplyPreRequestModules(HttpServerContext context)
         {
             foreach (IHttpListenerModule module in this._preRequestModules)
@@ -789,6 +1076,10 @@ namespace VDS.Web
             return false;
         }
 
+        /// <summary>
+        /// Applies pre-response modules
+        /// </summary>
+        /// <param name="context">Server Context</param>
         private void ApplyPreResponseModules(HttpServerContext context)
         {
             foreach (IHttpListenerModule module in this._preResponseModules)
@@ -835,7 +1126,7 @@ namespace VDS.Web
             {
                 if (path.StartsWith("/")) path = path.Substring(1);
 
-                //Try to ensure that pathws cannot go outside the base directory
+                //Try to ensure that paths cannot go outside the base directory
                 if (path.Contains("../") || path.Contains("./")) return null;
                 realPath = Path.Combine(this._baseDirectory, path.Replace('/', Path.DirectorySeparatorChar));
                 if (realPath.StartsWith(this._baseDirectory))
@@ -889,6 +1180,10 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Logs errors
+        /// </summary>
+        /// <param name="ex">Error</param>
         public void LogErrors(Exception ex)
         {
             foreach (IExtendedHttpLogger logger in this._loggers.OfType<IExtendedHttpLogger>())
@@ -899,9 +1194,22 @@ namespace VDS.Web
 
         #endregion
 
+        /// <summary>
+        /// Disposes of the Server
+        /// </summary>
         public void Dispose()
         {
+            this.DisposeInternal(true);
+        }
+
+        /// <summary>
+        /// Actually dispose of the Server
+        /// </summary>
+        /// <param name="disposing">Whether this was called from the Dispose() method or not</param>
+        private void DisposeInternal(bool disposing)
+        {
             if (this._disposed) return;
+            if (disposing) GC.SuppressFinalize(this);
 
             this._disposed = true;
             if (this._listener != null)

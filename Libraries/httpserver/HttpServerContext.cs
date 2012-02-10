@@ -1,24 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
 using System.Net;
-using System.Security;
 using System.Security.Principal;
-using System.Text;
 
 namespace VDS.Web
 {
+    /// <summary>
+    /// Represents the Server Context for a request
+    /// </summary>
     public class HttpServerContext
     {
         private HttpServer _server;
         private HttpListenerContext _context;
 
+        /// <summary>
+        /// Creates a new Server Context
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="context">Listener Context</param>
         public HttpServerContext(HttpServer server, HttpListenerContext context)
         {
             this._server = server;
             this._context = context;
         }
 
+        /// <summary>
+        /// Gets the Server processing this request
+        /// </summary>
         public HttpServer Server
         {
             get
@@ -27,6 +68,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the request
+        /// </summary>
         public HttpListenerRequest Request
         {
             get
@@ -35,6 +79,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the response
+        /// </summary>
         public HttpListenerResponse Response
         {
             get
@@ -43,6 +90,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the User
+        /// </summary>
         public IPrincipal User
         {
             get
@@ -51,6 +101,9 @@ namespace VDS.Web
             }
         }
 
+        /// <summary>
+        /// Gets the Listener Context
+        /// </summary>
         internal HttpListenerContext InnerContext
         {
             get

@@ -1,15 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading;
 
 namespace VDS.Web.Logging
 {
-    public abstract class ApacheStyleLogger : IHttpLogger
+    /// <summary>
+    /// An Apache style Logger
+    /// </summary>
+    public abstract class ApacheStyleLogger
+        : IHttpLogger
     {
         private String _formatString;
         private String[] _logParts;
@@ -35,6 +70,10 @@ namespace VDS.Web.Logging
         /// </summary>
         public const String LogUserAgent = "\"%{User-Agent}i\"";
 
+        /// <summary>
+        /// Creates a new Apache style Logger
+        /// </summary>
+        /// <param name="logFormatString">Log Format</param>
         public ApacheStyleLogger(String logFormatString)
         {
             if (logFormatString == null || logFormatString.Equals(String.Empty))
@@ -55,6 +94,17 @@ namespace VDS.Web.Logging
             }
         }
 
+        /// <summary>
+        /// Creates a new Apache style logger using the Common Log format
+        /// </summary>
+        public ApacheStyleLogger()
+            : this(LogCommon) { }
+
+        /// <summary>
+        /// Helper method to convert string format names into Log Formats
+        /// </summary>
+        /// <param name="format">Log Format Name</param>
+        /// <returns></returns>
         public static String GetLogFormat(String format)
         {
             if (format == null) return ApacheStyleLogger.LogCommon;
@@ -76,6 +126,10 @@ namespace VDS.Web.Logging
             }
         }
 
+        /// <summary>
+        /// Logs a request
+        /// </summary>
+        /// <param name="context">Server Context</param>
         public void LogRequest(HttpServerContext context)
         {
             StringBuilder logLine = new StringBuilder();
@@ -266,8 +320,18 @@ namespace VDS.Web.Logging
             this.AppendToLog(logLine.ToString());
         }
 
+        /// <summary>
+        /// Appends to the log
+        /// </summary>
+        /// <param name="line">Line to append</param>
+        /// <remarks>
+        /// Abstract so that derived implementations can log to whatever target they want
+        /// </remarks>
         protected abstract void AppendToLog(String line);
 
+        /// <summary>
+        /// Disposes of the logger
+        /// </summary>
         public virtual void Dispose()
         {
 

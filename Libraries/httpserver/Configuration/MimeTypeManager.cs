@@ -1,20 +1,64 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml;
 
 namespace VDS.Web.Configuration
 {
+    /// <summary>
+    /// Class for managing MIME types which are used to determine what static content the server can serve
+    /// </summary>
     public class MimeTypeManager
     {
         private Dictionary<String, MimeTypeMapping> _mappings = new Dictionary<string, MimeTypeMapping>();
 
+        /// <summary>
+        /// Creates a new MIME Type manager optionally using default mappings
+        /// </summary>
+        /// <param name="useDefaults">Whether to use defaults</param>
         public MimeTypeManager(bool useDefaults)
         {
             if (useDefaults) this.InitialiseWithDefaults();
         }
 
+        /// <summary>
+        /// Creates a new MIME Type manager from XML configuration
+        /// </summary>
+        /// <param name="node">Node representing MIME Types settings</param>
         public MimeTypeManager(XmlNode node)
         {
             if (node.Name.Equals("mimeTypes"))
@@ -55,6 +99,9 @@ namespace VDS.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Initialises the manager with default MIME type mappings
+        /// </summary>
         private void InitialiseWithDefaults()
         {
             this.AddMimeType(new MimeTypeMapping(".html", "text/html"));
@@ -74,6 +121,10 @@ namespace VDS.Web.Configuration
             this.AddMimeType(new MimeTypeMapping(".ico", "image/vnd.microsoft.icon", true));
         }
 
+        /// <summary>
+        /// Adds a MIME Type
+        /// </summary>
+        /// <param name="mapping">Mapping</param>
         public void AddMimeType(MimeTypeMapping mapping)
         {
             if (this._mappings.ContainsKey(mapping.Extension))
@@ -86,21 +137,40 @@ namespace VDS.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Adds a MIME Type
+        /// </summary>
+        /// <param name="extension">File Extension</param>
+        /// <param name="binary">MIME Type</param>
+        /// <param name="mimeType">Whether the content is binary</param>
         public void AddMimeType(String extension, String mimeType, bool binary)
         {
             this.AddMimeType(new MimeTypeMapping(extension, mimeType, binary));
         }
 
+        /// <summary>
+        /// Adds a MIME Type
+        /// </summary>
+        /// <param name="extension">File Extension</param>
+        /// <param name="mimeType">MIME Type</param>
         public void AddMimeType(String extension, String mimeType)
         {
             this.AddMimeType(extension, mimeType, false);
         }
 
+        /// <summary>
+        /// Removes a MIME Type
+        /// </summary>
+        /// <param name="mapping">Mapping</param>
         public void RemoveMimeType(MimeTypeMapping mapping)
         {
             this.RemoveMimeType(mapping.Extension);
         }
 
+        /// <summary>
+        /// Removes a MIME Type
+        /// </summary>
+        /// <param name="extension">File Extension</param>
         public void RemoveMimeType(String extension)
         {
             if (this._mappings.ContainsKey(extension))
@@ -109,6 +179,11 @@ namespace VDS.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets a Mapping
+        /// </summary>
+        /// <param name="extension">File Extension</param>
+        /// <returns>Mapping or null if none found</returns>
         public MimeTypeMapping GetMapping(String extension)
         {
             if (this._mappings.ContainsKey(extension))
