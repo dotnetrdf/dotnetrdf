@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("rdfServerGUI")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2010")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

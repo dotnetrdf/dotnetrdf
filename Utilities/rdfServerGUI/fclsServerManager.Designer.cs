@@ -1,4 +1,4 @@
-﻿namespace rdfServer.GUI
+﻿namespace VDS.RDF.Utilities.Server.GUI
 {
     partial class fclsServerManager
     {
@@ -61,7 +61,7 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.cboServers = new System.Windows.Forms.ComboBox();
             this.lblServers = new System.Windows.Forms.Label();
-            this.monServers = new rdfServer.GUI.ServerMonitor();
+            this.monServers = new VDS.RDF.Utilities.Server.GUI.ServerMonitor();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
             this.tabControls.SuspendLayout();
             this.tabCreate.SuspendLayout();

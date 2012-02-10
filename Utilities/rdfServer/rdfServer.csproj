@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +8,7 @@
     <ProjectGuid>{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>rdfServer</RootNamespace>
+    <RootNamespace>VDS.RDF.Utilities.Server</RootNamespace>
     <AssemblyName>rdfServer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -33,7 +33,7 @@
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Trunk\Dependencies\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\..\Dependencies\net35\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
@@ -49,19 +49,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriter.cs">
+    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriter.cs">
       <Link>HtmlTextWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterAttribute.cs">
+    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterAttribute.cs">
       <Link>HtmlTextWriterAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterStyle.cs">
+    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterStyle.cs">
       <Link>HtmlTextWriterStyle.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HtmlTextWriterTag.cs">
+    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterTag.cs">
       <Link>HtmlTextWriterTag.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\Trunk\Libraries\core.silverlight\Compatability\HttpUtility.cs">
+    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HttpUtility.cs">
       <Link>HttpUtility.cs</Link>
     </Compile>
     <Compile Include="HandlerHelper.cs" />
@@ -73,15 +73,7 @@
     <Compile Include="SparqlServerHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Trunk\Libraries\alexandria.mongodb\dotNetRDF.Alexandria.MongoDB.csproj">
-      <Project>{5976AA06-893B-4E0D-BDED-19A8515E809C}</Project>
-      <Name>dotNetRDF.Alexandria.MongoDB</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Trunk\Libraries\alexandria\dotNetRDF.Alexandria.csproj">
-      <Project>{6CDCEDB4-8D4F-4C51-B0CF-30B37D1518E3}</Project>
-      <Name>dotNetRDF.Alexandria</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Trunk\Libraries\core\dotNetRDF.csproj">
+    <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
@@ -94,14 +86,6 @@
     <EmbeddedResource Include="default.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="alexfs-example.ttl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="mongodb-example.ttl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

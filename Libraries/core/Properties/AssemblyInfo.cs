@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-11")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

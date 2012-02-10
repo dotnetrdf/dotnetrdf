@@ -1,4 +1,4 @@
-﻿namespace rdfServer.GUI
+﻿namespace VDS.RDF.Utilities.Server.GUI
 {
     partial class ServerMonitor
     {
