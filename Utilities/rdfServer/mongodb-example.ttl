@@ -1,0 +1,37 @@
+﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix dnr: <http://www.dotnetrdf.org/configuration#>.
+
+# This is an example Configuration File for use with rdfServer
+# It provides a persistent Dataset backed by MongoDB
+# Change the dnr:database property at the end to a name suitable for your application
+
+_:factory a dnr:ObjectFactory ;
+          dnr:type "VDS.Alexandria.Utilities.MongoDBObjectFactory, dotNetRDF.Alexandria.MongoDB" .
+
+<dotnetrdf:/*> a dnr:HttpHandler ;
+				 dnr:type "VDS.RDF.Web.SparqlServer" ;
+				 dnr:queryProcessor _:autos1 ;
+				 dnr:updateProcessor _:autos2 ;
+			 	 dnr:protocolProcessor _:autos3 .
+										 
+ _:autos1 a dnr:SparqlQueryProcessor ;
+ 		   dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
+ 		   dnr:usingDataset _:mongoDataset .
+ 		   
+_:autos2 a dnr:SparqlUpdateProcessor ;
+		  dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
+		  dnr:usingDataset _:mongoDataset .
+		  
+_:autos3 a dnr:SparqlHttpProtocolProcessor  ;
+		  dnr:type "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor" ;
+		  dnr:usingDataset _:mongoDataset .
+		  
+_:mongoDataset a dnr:SparqlDataset ;
+			   dnr:type "VDS.Alexandria.Datasets.AlexandriaMongoDBDataset, dotNetRDF.Alexandria.MongoDB" ;
+			   dnr:genericManager _:mongo .
+		  
+_:mongo a dnr:GenericIOManager ;
+		 dnr:type "VDS.Alexandria.AlexandriaMongoDBManager, dotNetRDF.Alexandria.MongoDB" ;
+		 dnr:loadMode "GraphCentric" ;
+		 dnr:database "mongo-rdf-store" .
+		 															 
