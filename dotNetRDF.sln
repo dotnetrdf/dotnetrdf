@@ -129,16 +129,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{1456B530-FB7E-41E2-9831-80691A61B85A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientProfile", "ClientProfile", "{1A8E3A21-D934-4BA4-8147-5FDAB29D175E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4", "Client Profile 4", "{1A8E3A21-D934-4BA4-8147-5FDAB29D175E}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\core.clientprofile\Properties\AssemblyInfo.cs = Libraries\core.clientprofile\Properties\AssemblyInfo.cs
 		Libraries\core.clientprofile\dotNetRDF.ClientProfile.csproj.template = Libraries\core.clientprofile\dotNetRDF.ClientProfile.csproj.template
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lite", "Lite", "{7F701790-9F5F-4C8F-B8F5-D1E86EB41C7B}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core.lite\Properties\AssemblyInfo.cs = Libraries\core.lite\Properties\AssemblyInfo.cs
-		Libraries\core.lite\dotNetRDF.Lite.csproj.template = Libraries\core.lite\dotNetRDF.Lite.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight 4", "Silverlight 4", "{158759E3-877B-41FD-BEE9-87D182A8FCD4}"
@@ -168,6 +162,30 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServer", "Utilities\rdfServer\rdfServer.csproj", "{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServerGUI", "Utilities\rdfServerGUI\rdfServerGUI.csproj", "{BB0C0B98-00F9-4244-87DF-B4B808FF69F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core 3.5", "Core 3.5", "{A871941C-629E-4DCC-8C88-5AD31ED09995}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\core.net35\Properties\AssemblyInfo.cs = Libraries\core.net35\Properties\AssemblyInfo.cs
+		Libraries\core.net35\dotNetRDF.Net35.csproj.template = Libraries\core.net35\dotNetRDF.Net35.csproj.template
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query.FullText 3.5", "Query.FullText 3.5", "{954B6783-7ECC-4FC0-9022-76A618D6F5B8}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\query.fulltext.net35\Properties\AssemblyInfo.cs = Libraries\query.fulltext.net35\Properties\AssemblyInfo.cs
+		Libraries\query.fulltext.net35\dotNetRDF.Query.FullText.Net35.csproj.template = Libraries\query.fulltext.net35\dotNetRDF.Query.FullText.Net35.csproj.template
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\core.clientprofile.net35\Properties\AssemblyInfo.cs = Libraries\core.clientprofile.net35\Properties\AssemblyInfo.cs
+		Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template = Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data.Sql 3.5", "Data.Sql 3.5", "{646D9EC4-D09D-4FF5-8798-FB7E16BF21B7}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\data.sql.net35\Properties\AssemblyInfo.cs = Libraries\data.sql.net35\Properties\AssemblyInfo.cs
+		Libraries\data.sql.net35\dotNetRDF.Data.Sql.Net35.csproj.template = Libraries\data.sql.net35\dotNetRDF.Data.Sql.Net35.csproj.template
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -481,9 +499,12 @@ Global
 		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661} = {3B5E2EA1-394B-4137-9F62-062F0163CD9D}
 		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE} = {3B5E2EA1-394B-4137-9F62-062F0163CD9D}
 		{1A8E3A21-D934-4BA4-8147-5FDAB29D175E} = {1456B530-FB7E-41E2-9831-80691A61B85A}
-		{7F701790-9F5F-4C8F-B8F5-D1E86EB41C7B} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{158759E3-877B-41FD-BEE9-87D182A8FCD4} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{CCF5858F-3452-4EFB-849B-5928008EDFF9} = {1456B530-FB7E-41E2-9831-80691A61B85A}
+		{A871941C-629E-4DCC-8C88-5AD31ED09995} = {1456B530-FB7E-41E2-9831-80691A61B85A}
+		{954B6783-7ECC-4FC0-9022-76A618D6F5B8} = {1456B530-FB7E-41E2-9831-80691A61B85A}
+		{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D} = {1456B530-FB7E-41E2-9831-80691A61B85A}
+		{646D9EC4-D09D-4FF5-8798-FB7E16BF21B7} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{09097771-84FD-4DC8-A259-1CB0591714EA} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 	EndGlobalSection
 EndGlobal

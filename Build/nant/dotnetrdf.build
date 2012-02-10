@@ -16,11 +16,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="051" />
+  <property name="dotnetrdf.version" value="060" />
   <property name="dotnetrdf.releasetype" value="beta" />
-  <property name="dotnetrdf.toolsversion" value="040" />
+  <property name="dotnetrdf.toolsversion" value="050" />
   <property name="dotnetrdf.toolsreleasetype" value="beta" />
-  <property name="dotnetrdf.nuspecversion" value="0.5.1" />
+  <property name="dotnetrdf.nuspecversion" value="0.6.0" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -36,6 +36,15 @@
   <property name="dotnetrdf.toolkitzip" value="dotNetRDF_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}.zip" />
   
   <!-- Project Generation Targets which generate some Project Files from others -->
+
+  <target name="projectgen-net35" description="Generates the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/core/dotNetRDF.csproj" />
+      <arg value="Libraries/core.net35/dotNetRDF.Net35.csproj.template" />
+      <arg value="Libraries/core.net35/dotNetRDF.Net35.csproj" />
+    </exec>
+  </target>
 
   <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
@@ -76,12 +85,30 @@
     </exec>
   </target>
 
-  <target name="projectgen-lite" description="Generates the dotNetRDF Lite build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Lite project file with the Core Library -->
+  <target name="projectgen-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-clientprofile" unless="${dotnetrdf.nocomiple}">
+    <!-- This exec task syncs the Client Profile .Net 3.5 project file with the Client Profile project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core/dotNetRDF.csproj" />
-      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj.template" />
-      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj" />
+      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
+      <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj.template" />
+      <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj" />
+    </exec>
+  </target>
+
+  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
+    <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
+      <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj.template" />
+      <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
+    </exec>
+  </target>
+
+  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
+    <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
+      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj.template" />
+      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
     </exec>
   </target>
   
@@ -96,7 +123,7 @@
   </target>
 
   <target name="compile-nightly" description="Compiles just the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -106,19 +133,8 @@
     </exec>
   </target>
 
-  <target name="compile-lite" description="Compiles the dotNetRDF Lite Build" unless="${dotnetrdf.nocompile}" depends="projectgen-lite">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core.lite/dotNetRDF.Lite.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
   <target name="compile-mono" description="Compile the dotNetRDF Mono Build" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
-    <property name="nant.settings.currentframework" value="mono-3.5" />
+    <property name="nant.settings.currentframework" value="mono-4.0" />
     <setenv>
       <variable name="PATH">
         <path>
@@ -128,16 +144,26 @@
       </variable>
     </setenv>
     <exec program="Build/nant/mono-compile.bat">
-      
     </exec>
     <copy file="Libraries/core/bin/Debug/dotNetRDF.xml" tofile="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
   </target>
 
   <target name="compile-solution" description="Compile the whole dotNetRDF Solution" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="dotNetRDF.sln" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core.net35/dotNetRDF.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -177,18 +203,8 @@
     </exec>
   </target>
 
-  <target name="compile-linq" description="Compiles dotNetRDF.Linq which is the dotNetRDF port of LinqToRdf" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/linq/dotNetRDF.Linq.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-    </exec>
-  </target>
-
   <target name="compile-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="projectgen-clientprofile">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
@@ -198,8 +214,19 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="projectgen-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
@@ -209,8 +236,19 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly,projectgen-data-sql-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
@@ -220,11 +258,22 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly,projectgen-query-fulltext-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
