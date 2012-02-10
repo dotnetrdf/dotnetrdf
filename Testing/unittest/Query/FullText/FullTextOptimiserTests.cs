@@ -94,6 +94,14 @@ namespace VDS.RDF.Test.Query.FullText
             throw new NotImplementedException();
         }
 
+        public bool IsAutoSynced
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         #endregion
 
         #region IDisposable Members

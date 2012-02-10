@@ -90,6 +90,17 @@ namespace VDS.RDF.Query.Datasets
         }
 #endif
 
+        /// <summary>
+        /// Gets the underlying dataset
+        /// </summary>
+        public ISparqlDataset UnderlyingDataset
+        {
+            get
+            {
+                return this._dataset;
+            }
+        }
+
         #region ISparqlDataset Members
 
         public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)

@@ -34,11 +34,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Index;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
 using VDS.RDF;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.FullText.Indexing;
+using VDS.RDF.Query.FullText.Indexing.Lucene;
+using VDS.RDF.Query.FullText.Schema;
+using VDS.RDF.Query.FullText.Search;
+using VDS.RDF.Query.FullText.Search.Lucene;
+using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
@@ -47,18 +58,27 @@ namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsSparqlGui : Form
     {
-        private IInMemoryQueryableStore _store = new TripleStore();
+        private ISparqlDataset _dataset = new InMemoryQuadDataset();
+        private LeviathanQueryProcessor _processor;
         private IRdfWriter _rdfwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
         private ISparqlResultsWriter _resultswriter = new SparqlHtmlWriter();
         private String _rdfext = ".ttl";
         private String _resultsext = ".html";
         private bool _noDataWarning = true, _logExplain = false;
         private String _logfile;
+        private long _tripleCount = 0;
+
+        //Full Text Indexing stuff
+        private Lucene.Net.Store.Directory _ftIndex;
+        private IFullTextIndexer _ftIndexer;
+        private IFullTextSearchProvider _ftSearcher;
+        private FullTextOptimiser _ftOptimiser;
 
         public fclsSparqlGui()
         {
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
+            this._processor = new LeviathanQueryProcessor(this._dataset);
 
             //Enable UTF-8 BOM setting if user set
             Options.UseBomForUtf8 = false;
@@ -72,9 +92,9 @@ namespace VDS.RDF.Utilities.Sparql
             String sep = new String(new char[] { Path.DirectorySeparatorChar });
             if (!temp.EndsWith(sep)) temp += sep;
             temp = Path.Combine(temp, @"dotNetRDF\");
-            if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
+            if (!System.IO.Directory.Exists(temp)) System.IO.Directory.CreateDirectory(temp);
             temp = Path.Combine(temp, @"SparqlGUI\");
-            if (!Directory.Exists(temp)) Directory.CreateDirectory(temp);
+            if (!System.IO.Directory.Exists(temp)) System.IO.Directory.CreateDirectory(temp);
             this._logfile = Path.Combine(temp, "SparqlGui-" + DateTime.Now.ToString("MMM-yyyy") + ".log");
         }
 
@@ -118,7 +138,8 @@ namespace VDS.RDF.Utilities.Sparql
                     //Add to Store
                     try
                     {
-                        this._store.Add(g);
+                        this._tripleCount += g.Triples.Count;
+                        this._dataset.AddGraph(g);
                     }
                     catch (Exception ex)
                     {
@@ -133,11 +154,25 @@ namespace VDS.RDF.Utilities.Sparql
                     {
                         //Try and get a Store Parser and load
                         IStoreReader storeparser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this.txtSourceFile.Text)));
-                        int graphsBefore = this._store.Graphs.Count;
-                        int triplesBefore = this._store.Graphs.Sum(g => g.Triples.Count);
-                        storeparser.Load(this._store, new StreamParams(this.txtSourceFile.Text));
+                        TripleStore store = new TripleStore();
+                        storeparser.Load(store, new StreamParams(this.txtSourceFile.Text));
 
-                        this.LogImportSuccess(this.txtSourceFile.Text, this._store.Graphs.Count - graphsBefore, this._store.Graphs.Sum(g => g.Triples.Count) - triplesBefore);
+                        foreach (IGraph g in store.Graphs)
+                        {
+                            if (this._dataset.HasGraph(g.BaseUri))
+                            {
+                                int triplesBefore = this._dataset[g.BaseUri].Triples.Count;
+                                this._dataset[g.BaseUri].Merge(g);
+                                this._tripleCount += this._dataset[g.BaseUri].Triples.Count - triplesBefore;
+                            }
+                            else
+                            {
+                                this._dataset.AddGraph(g);
+                                this._tripleCount += g.Triples.Count;
+                            }
+                        }
+
+                        this.LogImportSuccess(this.txtSourceFile.Text, store.Graphs.Count, store.Graphs.Sum(g => g.Triples.Count));
                     }
                     catch (RdfParserSelectionException selEx)
                     {
@@ -159,8 +194,8 @@ namespace VDS.RDF.Utilities.Sparql
                     return;
                 }
 
-                this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-                this.stsTriples.Text = this._store.Graphs.Sum(g => g.Triples.Count) + " Triples";
+                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
+                this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "File Import Done");
             }
         }
@@ -180,7 +215,17 @@ namespace VDS.RDF.Utilities.Sparql
 
                     try
                     {
-                        this._store.Add(g);
+                        if (this._dataset.HasGraph(g.BaseUri))
+                        {
+                            int triplesBefore = this._dataset[g.BaseUri].Triples.Count;
+                            this._dataset[g.BaseUri].Merge(g);
+                            this._tripleCount += this._dataset[g.BaseUri].Triples.Count - triplesBefore;
+                        }
+                        else
+                        {
+                            this._dataset.AddGraph(g);
+                            this._tripleCount += g.Triples.Count;
+                        }
 
                         this.LogImportSuccess(new Uri(this.txtSourceUri.Text), 1, g.Triples.Count);
                     }
@@ -201,18 +246,20 @@ namespace VDS.RDF.Utilities.Sparql
                     MessageBox.Show("An error occurred while loading RDF from the given URI:\n" + ex.Message, "URI Import Error");
                     return;
                 }
-                this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-                this.stsTriples.Text = this._store.Graphs.Sum(x => x.Triples.Count) + " Triples";
+                this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
+                this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "URI Import Done");
             }
         }
 
         private void btnClearDataset_Click(object sender, EventArgs e)
         {
-            this._store.Dispose();
-            this._store = new TripleStore();
-            this.stsGraphs.Text = this._store.Graphs.Count + " Graphs";
-            this.stsTriples.Text = this._store.Graphs.Sum(g => g.Triples.Count) + " Triples";
+            this._dataset = new InMemoryQuadDataset();
+            this._processor = new LeviathanQueryProcessor(this._dataset);
+            if (this.chkFullTextIndexing.Checked) this.EnableFullTextIndex();
+            this._tripleCount = 0;
+            this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
+            this.stsTriples.Text = this._tripleCount + " Triples";
         }
 
         private void btnQuery_Click(object sender, EventArgs e)
@@ -224,7 +271,7 @@ namespace VDS.RDF.Utilities.Sparql
                 query.Timeout = (long)this.numTimeout.Value;
                 query.PartialResultsOnTimeout = this.chkPartialResults.Checked;
 
-                if (this._store.Graphs.Count == 0 && this._noDataWarning)
+                if (this._tripleCount == 0 && this._noDataWarning)
                 {
                     switch (MessageBox.Show("You have no data loaded to query over - do you wish to run this query anyway?  Press Abort if you'd like to load data first, Retry to continue anyway or Ignore to continue anyway and suppress this message during this session", "Continue Query without Data", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Question))
                     {
@@ -248,7 +295,7 @@ namespace VDS.RDF.Utilities.Sparql
                 {
                     using (StreamWriter writer = new StreamWriter(this._logfile, true, Encoding.UTF8))
                     {
-                        ExplainQueryProcessor explainer = new ExplainQueryProcessor(this._store, (ExplanationLevel.OutputToTrace | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll ) ^ ExplanationLevel.ShowThreadID);
+                        ExplainQueryProcessor explainer = new ExplainQueryProcessor(this._dataset, (ExplanationLevel.OutputToTrace | ExplanationLevel.ShowAll | ExplanationLevel.AnalyseAll ) ^ ExplanationLevel.ShowThreadID);
                         TextWriterTraceListener listener = new TextWriterTraceListener(writer, "SparqlGUI");
                         Trace.Listeners.Add(listener);
                         try
@@ -265,7 +312,7 @@ namespace VDS.RDF.Utilities.Sparql
                 }
                 else
                 {
-                    results = this._store.ExecuteQuery(query);
+                    results = this._processor.ProcessQuery(query);
                 }
 
                 //Process the Results
@@ -368,35 +415,11 @@ namespace VDS.RDF.Utilities.Sparql
         {
             if (this.chkWebDemand.Checked)
             {
-                if (this._store is WebDemandTripleStore)
-                {
-                    //Nothing to do
-                }
-                else
-                {
-                    WebDemandTripleStore store = new WebDemandTripleStore();
-                    foreach (IGraph g in this._store.Graphs)
-                    {
-                        store.Add(g);
-                    }
-                    this._store = store;
-                }
+                this.EnableWebDemand();
             }
             else
             {
-                if (this._store is TripleStore)
-                {
-                    //Nothing to do
-                }
-                else
-                {
-                    TripleStore store = new TripleStore();
-                    foreach (IGraph g in this._store.Graphs)
-                    {
-                        store.Add(g);
-                    }
-                    this._store = store;
-                }
+                this.DisableWebDemand();
             }
         }
 
@@ -730,5 +753,75 @@ namespace VDS.RDF.Utilities.Sparql
                 MessageBox.Show("Query failed:\n" + ex.Message + "\n" + ex.StackTrace, "Query Failed");
             }
         }
+
+        private void chkFullTextIndexing_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.chkFullTextIndexing.Checked)
+            {
+                this.EnableFullTextIndex();
+            }
+            else
+            {
+                this.DisableFullTextIndex();
+            }
+        }
+
+        #region Feature Configuration
+
+        private void EnableFullTextIndex()
+        {
+            if (this._dataset is FullTextIndexedDataset)
+            {
+                //Nothing to do
+            }
+            else
+            {
+                //Create and ensure index ready for use
+                this._ftIndex = new RAMDirectory();
+                IndexWriter writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), IndexWriter.MaxFieldLength.UNLIMITED);
+                writer.Close();
+
+                //Create Indexer and wrap dataset
+                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), new DefaultIndexSchema());
+                this._dataset = new FullTextIndexedDataset(this._dataset, this._ftIndexer, true);
+
+                //Create and Register Optimizer
+                this._ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.Version.LUCENE_29, this._ftIndex);
+                this._ftOptimiser = new FullTextOptimiser(this._ftSearcher);
+                SparqlOptimiser.AddOptimiser(this._ftOptimiser);
+            }
+        }
+
+        private void DisableFullTextIndex()
+        {
+            if (this._dataset is FullTextIndexedDataset)
+            {
+                SparqlOptimiser.RemoveOptimiser(this._ftOptimiser);
+                this._ftOptimiser = null;
+                this._ftSearcher.Dispose();
+                this._ftSearcher = null;
+                this._dataset = ((FullTextIndexedDataset)this._dataset).UnderlyingDataset;
+                this._ftIndexer.Dispose();
+                this._ftIndexer = null;
+                this._ftIndex.Close();
+                this._ftIndex = null;
+            }
+            else
+            {
+                //Nothing to do
+            }
+        }
+
+        private void EnableWebDemand()
+        {
+            //TODO: Re-implement this functionality
+        }
+
+        private void DisableWebDemand()
+        {
+            //TODO: Re-implement this functionality
+        }
+
+        #endregion
     }
 }

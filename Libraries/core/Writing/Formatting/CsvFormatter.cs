@@ -76,6 +76,10 @@ namespace VDS.RDF.Writing.Formatting
             {
                 return '"' + value.Replace("\"", "\"\"") + '"';
             }
+            else if (value.Equals(String.Empty))
+            {
+                return "\"\"";
+            }
             else
             {
                 return value;
