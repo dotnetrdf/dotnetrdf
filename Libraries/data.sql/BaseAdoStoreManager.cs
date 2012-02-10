@@ -730,7 +730,7 @@ namespace VDS.RDF.Storage
                 case 0:
                     return factory.CreateBlankNode(value.Substring(2));
                 case 1:
-                    return factory.CreateUriNode(new Uri(value));
+                    return factory.CreateUriNode(UriFactory.Create(value));
                 case 2:
                     if (meta == null)
                     {
@@ -742,7 +742,7 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        return factory.CreateLiteralNode(value, new Uri(meta));
+                        return factory.CreateLiteralNode(value, UriFactory.Create(meta));
                     }
                 default:
                     throw new NotSupportedException("Only Blank, URI and Literal Nodes are currently supported");
@@ -978,7 +978,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(g, new Uri(graphUri));
+                this.LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -995,7 +995,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(handler, new Uri(graphUri));
+                this.LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -1174,7 +1174,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.UpdateGraph(new Uri(graphUri), additions, removals);
+                this.UpdateGraph(UriFactory.Create(graphUri), additions, removals);
             }
         }
 
@@ -1221,7 +1221,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.DeleteGraph(new Uri(graphUri));
+                this.DeleteGraph(UriFactory.Create(graphUri));
             }
         }
 
@@ -1265,7 +1265,7 @@ namespace VDS.RDF.Storage
                             }
                             else
                             {
-                                uris.Add(new Uri(u));
+                                uris.Add(UriFactory.Create(u));
                             }
                         }
                         table.Dispose();
@@ -1286,7 +1286,7 @@ namespace VDS.RDF.Storage
                             }
                             else
                             {
-                                uris.Add(new Uri(u));
+                                uris.Add(UriFactory.Create(u));
                             }
                         }
                         reader.Close();
@@ -1506,7 +1506,7 @@ namespace VDS.RDF.Storage
                     }
                     else
                     {
-                        Uri u = new Uri((String)res);
+                        Uri u = UriFactory.Create((String)res);
                         this._graphUris.Add(graphID, u);
                         return u;
                     }

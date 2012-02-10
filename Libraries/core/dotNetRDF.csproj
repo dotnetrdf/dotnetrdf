@@ -793,7 +793,7 @@
     <Compile Include="Writing\GenericWriter.cs" />
     <None Include="VDSOpenSourceKey.pfx" />
     <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd" />
-    <Content Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
+    <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>

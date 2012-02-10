@@ -16,7 +16,7 @@ namespace ExportCoreContentsToTemplate
             {
                 Console.WriteLine("dotNetRDF Build Tools - Export Core Library Contents to Template");
                 Console.WriteLine();
-                Console.WriteLine("This tool is used to export the compilable contents of the dotNetRDF library to a Template Project file to create an up to date Project file for building dotNetRDF targetted at a specific platform");
+                Console.WriteLine("This tool is used to export the compilable contents of the some Core/Base Project to a Template Project file to create an up to date Project file for building the templated project targetted at a specific platform");
                 Console.WriteLine("Usage is ExportCoreContentsToTemplate CoreProject.csproj Target.csproj.template Output.csproj [relPath]");
                 Console.WriteLine("Relative Path is ..\\core\\ by default");
                 return;
@@ -24,7 +24,7 @@ namespace ExportCoreContentsToTemplate
 
             try
             {
-                Console.WriteLine("dotNetRDF Build Tools: Attempting to generate Project " + args[2] + " using Template " + args[1] + " from Project " + args[1]);
+                Console.WriteLine("dotNetRDF Build Tools: Attempting to generate Project " + args[2] + " using Template " + args[1] + " from Project " + args[0]);
 
                 //Load Core Project
                 XmlDocument coreProject = new XmlDocument();
@@ -44,7 +44,7 @@ namespace ExportCoreContentsToTemplate
 
                     foreach (XmlNode compile in itemGroup.ChildNodes)
                     {
-                        if (compile.Name.Equals("Compile") && compile.Attributes.GetNamedItem("Include") != null)
+                        if ((compile.Name.Equals("Compile") || compile.Name.Equals("EmbeddedResource")) && compile.Attributes.GetNamedItem("Include") != null)
                         {
                             //Never include Compiled files which are themselves linked from another project
                             if (compile.HasChildNodes)
@@ -57,7 +57,7 @@ namespace ExportCoreContentsToTemplate
                                 if (!ok) continue;
                             }
 
-                            XmlElement newCompile = template.CreateElement("Compile", MSBuildNamespace);
+                            XmlElement newCompile = template.CreateElement(compile.Name, MSBuildNamespace);
                             XmlAttribute include = template.CreateAttribute("Include");//, MSBuildNamespace);
                             String includeFile = compile.Attributes["Include"].Value;
 

@@ -234,7 +234,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(g, new Uri(graphUri));
+                this.LoadGraph(g, UriFactory.Create(graphUri));
             }
         }
 
@@ -251,7 +251,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.LoadGraph(handler, new Uri(graphUri));
+                this.LoadGraph(handler, UriFactory.Create(graphUri));
             }
         }
 
@@ -346,7 +346,7 @@ namespace VDS.RDF.Storage
                 else if (lit.StrType != null)
                 {
                     //Data Typed Literal
-                    temp = factory.CreateLiteralNode(n.ToString(), new Uri(lit.StrType));
+                    temp = factory.CreateLiteralNode(n.ToString(), UriFactory.Create(lit.StrType));
                 }
                 else
                 {
@@ -555,7 +555,7 @@ namespace VDS.RDF.Storage
         /// <param name="removals">Triples to be removed</param>
         public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            Uri u = (graphUri.Equals(String.Empty)) ? null : new Uri(graphUri);
+            Uri u = (graphUri.Equals(String.Empty)) ? null : UriFactory.Create(graphUri);
             this.UpdateGraph(u, additions, removals);
         }
 
@@ -864,7 +864,7 @@ namespace VDS.RDF.Storage
                             //Parseable Integer so Aggregate SELECT Query Results
                             if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                             Set s = new Set();
-                            s.Add("Result", resultsHandler.CreateLiteralNode(r.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                            s.Add("Result", r.ToLiteral(resultsHandler));
                             if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                         }
                         else if (Single.TryParse(results.Rows[0][0].ToString(), out rflt))
@@ -874,7 +874,7 @@ namespace VDS.RDF.Storage
                             //Parseable Single so Aggregate SELECT Query Results
                             if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                             Set s = new Set();
-                            s.Add("Result", resultsHandler.CreateLiteralNode(rflt.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeFloat)));
+                            s.Add("Result", rflt.ToLiteral(resultsHandler));
                             if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                         }
                         else if (Double.TryParse(results.Rows[0][0].ToString(), out rdbl))
@@ -884,7 +884,7 @@ namespace VDS.RDF.Storage
                             //Parseable Double so Aggregate SELECT Query Results
                             if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                             Set s = new Set();
-                            s.Add("Result", resultsHandler.CreateLiteralNode(rdbl.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+                            s.Add("Result", rdbl.ToLiteral(resultsHandler));
                             if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                         }
                         else if (Decimal.TryParse(results.Rows[0][0].ToString(), out rdec))
@@ -892,7 +892,7 @@ namespace VDS.RDF.Storage
                             //Parseable Decimal so Aggregate SELECT Query Results
                             if (!resultsHandler.HandleVariable("Result")) ParserHelper.Stop();
                             Set s = new Set();
-                            s.Add("Result", resultsHandler.CreateLiteralNode(rdec.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
+                            s.Add("Result", rdec.ToLiteral(resultsHandler));
                             if (!resultsHandler.HandleResult(new SparqlResult(s))) ParserHelper.Stop();
                         }
                         else
@@ -1099,7 +1099,7 @@ namespace VDS.RDF.Storage
                                 else if (temp.NodeType == NodeType.Literal)
                                 {
                                     //HACK: Virtuoso wrongly returns Literals instead of URIs in the results for the above query prior to Virtuoso 6.1.3
-                                    graphs.Add(new Uri(((ILiteralNode)temp).Value));
+                                    graphs.Add(UriFactory.Create(((ILiteralNode)temp).Value));
                                 }
                             }
                             catch
@@ -1322,9 +1322,9 @@ namespace VDS.RDF.Storage
 
             //Then serialize the actual configuration
             INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
-            INode rdfType = context.Graph.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode manager = context.NextSubject;
-            INode rdfsLabel = context.Graph.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode genericManager = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassGenericManager);
             INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
             
