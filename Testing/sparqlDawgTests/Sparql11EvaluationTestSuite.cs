@@ -98,6 +98,9 @@ namespace dotNetRDFTest
                 this._earl.NamespaceMap.AddNamespace("dawg", UriFactory.Create("http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"));
                 this._earl.NamespaceMap.AddNamespace("doap", UriFactory.Create("http://usefulinc.com/ns/doap#"));
 
+                this._earl.Assert(this._lvn, this._earl.CreateUriNode("doap:name"), this._earl.CreateLiteralNode("Leviathan (dotNetRDF)"));
+                this._earl.Assert(this._lvn, this._earl.CreateUriNode("doap:homepage"), this._earl.CreateUriNode(UriFactory.Create("http://www.dotnetrdf.org")));
+
                 if (Directory.Exists("sparql11_tests"))
                 {
                     foreach (String dir in Directory.GetDirectories("sparql11_tests"))
