@@ -85,7 +85,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-clientprofile" unless="${dotnetrdf.nocomiple}">
+  <target name="projectgen-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-clientprofile" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile .Net 3.5 project file with the Client Profile project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
@@ -94,7 +94,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
+  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
@@ -103,7 +103,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
+  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
