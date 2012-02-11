@@ -100,6 +100,7 @@
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj.template" />
       <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
+      <arg value="..\query.fulltext\" />
     </exec>
   </target>
 
@@ -109,6 +110,7 @@
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
       <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj.template" />
       <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
+      <arg value="..\data.sql\" />
     </exec>
   </target>
   
@@ -195,7 +197,7 @@
   </target>
 
   <target name="compile-buildtools" description="Compiles Build Tools needed by the compile and build process" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
