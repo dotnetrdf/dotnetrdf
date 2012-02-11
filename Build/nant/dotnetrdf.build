@@ -103,7 +103,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
+  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" unless="${dotnetrdf.nocomiple}">
     <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
@@ -118,7 +118,8 @@
     <property name="dotnetrdf.nocompile" value="true" />
   </target>
 
-  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" depends="compile-solution,compile-silverlight,compile-lite,compile-mono,compile-windowsphone,compile-clientprofile,compile-data-sql,compile-data-virtuoso,compile-query-fulltext">
+  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
+          depends="compile-solution,compile-silverlight,compile-mono,compile-windowsphone,compile-clientprofile,compile-data-sql,compile-data-virtuoso,compile-query-fulltext,compile-net35,compile-clientprofile-net35,compile-data-sql-net35,compile-query-fulltext-net35">
 
   </target>
 
@@ -286,7 +287,7 @@
     <property name="dotnetrdf.nobuild" value="true" />
   </target>
   
-  <target name="build" description="Build dotNetRDF Core and associated library (does not update the stable build in the bin directory, use build-release for that)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-lite,build-mono,build-linq,build-clientprofile,build-windowsphone,build-data-sql,build-data-virtuoso,build-query-fulltext">
+  <target name="build" description="Build dotNetRDF Core and associated library (does not update the stable build in the bin directory, use build-release for that)" unless="${dotnetrdf.nobuild}" depends="build-nightly,build-silverlight,build-mono,build-clientprofile,build-windowsphone,build-data-sql,build-data-virtuoso,build-query-fulltext">
     
   </target>
   
@@ -299,29 +300,22 @@
   </target>
 
   <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-silverlight">
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.dll" />
-    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.Silverlight.xml" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
     <copy overwrite="true" todir="../bin/silverlight-nightly" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-windowsphone">
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.dll" />
-    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.WindowsPhone.xml" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/windowsphone-nightly" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
-  <target name="build-lite" description="Copy the latest Lite build to the Lite Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-lite">
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/dotNetRDF.Lite.xml" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/lite-nightly" file="Libraries/core.lite/bin/Debug/Newtonsoft.Json.dll" />
-  </target>
-
   <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.dll" />
-    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.ClientProfile.xml" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/clientprofile-nightly" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
   </target>
@@ -331,16 +325,6 @@
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/dotNetRDF.Mono.xml" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/mono-nightly" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
-  </target>
-
-  <target name="build-linq" description="Copy the latest Linq build to the Linq Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-linq">
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.Linq.xml" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/log4net.dll" />
-    <copy overwrite="true" todir="../bin/linq-nightly" file="Libraries/linq/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
