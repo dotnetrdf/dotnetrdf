@@ -113,6 +113,16 @@
       <arg value="..\data.sql\" />
     </exec>
   </target>
+
+  <target name="projectgen-data-virtuoso-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
+      <arg value="Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj.template" />
+      <arg value="Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
+      <arg value="..\data.virtuoso\" />
+    </exec>
+  </target>
   
   <!-- Compile Targets which Compile the Code -->
 
@@ -121,11 +131,11 @@
   </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-solution,compile-silverlight,compile-mono,compile-windowsphone,compile-clientprofile,compile-data-sql,compile-data-virtuoso,compile-query-fulltext,compile-net35,compile-clientprofile-net35,compile-data-sql-net35,compile-query-fulltext-net35">
+          depends="compile-solution,compile-core,compile-silverlight,compile-mono,compile-windowsphone,compile-clientprofile,compile-data-sql,compile-data-virtuoso,compile-query-fulltext,compile-core-net35,compile-clientprofile-net35,compile-data-sql-net35,compile-query-fulltext-net35">
 
   </target>
 
-  <target name="compile-nightly" description="Compiles just the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
+  <target name="compile-core" description="Compiles just the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -136,7 +146,18 @@
     </exec>
   </target>
 
-  <target name="compile-mono" description="Compile the dotNetRDF Mono Build" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/core.net35/dotNetRDF.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-mono" description="Compile the dotNetRDF Mono Build" unless="${dotnetrdf.nocompile}" depends="compile-core">
     <property name="nant.settings.currentframework" value="mono-4.0" />
     <setenv>
       <variable name="PATH">
@@ -156,17 +177,6 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="dotNetRDF.sln" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/core.net35/dotNetRDF.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -217,7 +227,7 @@
     </exec>
   </target>
 
-  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-clientprofile-net35">
+  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -228,7 +238,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -239,7 +249,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-data-sql-net35">
+  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-data-sql-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -250,7 +260,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -261,7 +271,18 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="compile-nightly">
+  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-data-virtuoso-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -272,7 +293,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-net35,projectgen-query-fulltext-net35">
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-query-fulltext-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -293,7 +314,7 @@
     
   </target>
   
-  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-nightly">
+  <target name="build-nightly" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightly" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
