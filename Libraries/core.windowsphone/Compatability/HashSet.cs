@@ -51,6 +51,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections;
 using System.Collections.Generic;
+using VDS.Common;
 
 namespace VDS.RDF
 {
@@ -60,38 +61,44 @@ namespace VDS.RDF
     /// <remarks>
     /// Code taken from http://social.msdn.microsoft.com/Forums/en-US/windowsphone7series/thread/e1dd3571-dfb8-4abe-b63a-62106d6a4965/
     /// </remarks>
-    public class HashSet<T> : ICollection<T>
+    public class HashSet<T> 
+        : ICollection<T>
     {
-        private Dictionary<T, short> MyDict;
+        private HashTable<int, T> _table;
 
         public HashSet()
         {
-            MyDict = new Dictionary<T, short>();
+            this._table = new HashTable<int, T>(HashTableBias.Enumeration);
         }
 
-        public HashSet(IEnumerable enumer)
+        public HashSet(IEnumerable<T> items)
+            : this()
         {
-            MyDict = new Dictionary<T, short>();
-            foreach (T item in enumer)
+            foreach (T item in items)
             {
-                MyDict.Add(item,0);
+                if (!this._table.Contains(item.GetHashCode(), item))
+                {
+                    this._table.Add(item.GetHashCode(), item);
+                }
             }
         }
         // Methods
         public void Add(T item)
         {
-            // We don't care for the value in dictionary, Keys matter.
-            MyDict.Add(item, 0);
+            if (!this._table.Contains(item.GetHashCode(), item))
+            {
+                this._table.Add(item.GetHashCode(), item);
+            }
         }
 
         public void Clear()
         {
-            MyDict.Clear();
+            this._table.Clear();
         }
 
         public bool Contains(T item)
         {
-            return MyDict.ContainsKey(item);
+            return this._table.Contains(item.GetHashCode(), item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -101,40 +108,46 @@ namespace VDS.RDF
 
         public bool Remove(T item)
         {
-            return MyDict.Remove(item);
+            this._table.Remove(item.GetHashCode(), item);
+            return true;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this._table.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return this.GetEnumerator();
         }
 
         public void UnionWith(IEnumerable<T> other)
         {
             foreach (T item in other)
             {
-                try
+                if (!this._table.Contains(item.GetHashCode(), item))
                 {
-                    MyDict.Add(item, 0);
+                    this._table.Add(item.GetHashCode(), item);
                 }
-                catch (ArgumentException) { }
             }
         }
 
         // Properties
         public int Count
         {
-            get { return MyDict.Keys.Count; }
+            get
+            {
+                return this._table.Count;
+            }
         }
 
         public bool IsReadOnly
         {
-            get { return false; }
+            get
+            { 
+                return false;
+            }
         }
     }
 

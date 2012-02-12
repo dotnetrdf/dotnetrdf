@@ -215,6 +215,8 @@ namespace VDS.Common
         }
     }
 
+#if !SILVERLIGHT
+
     class SetSlot<T>
         : IHashSlot<T>
     {
@@ -282,4 +284,6 @@ namespace VDS.Common
             return this._values.Remove(item);
         }
     }
+
+#endif
 }

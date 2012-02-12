@@ -1272,6 +1272,8 @@ namespace VDS.RDF
             : base(HashTableBias.Compactness, 1) { }
     }
 
+#if !SILVERLIGHT
+
     public class IOIndexedTripleCollection
         : IndexedTripleCollection
     {
@@ -1285,5 +1287,7 @@ namespace VDS.RDF
         public HybridIndexedTripleCollecton()
             : base(HashTableBias.IO, HashTableBias.Compactness, HashTableBias.Enumeration) { }
     }
+
+#endif
 
 }

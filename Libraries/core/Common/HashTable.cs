@@ -54,10 +54,12 @@ namespace VDS.Common
         /// Bias towards Compactness i.e. memory usage should be minimised
         /// </summary>
         Compactness,
+#if !SILVERLIGHT
         /// <summary>
         /// Bias towards IO i.e. will be more performant in scenarios with lots of adds, removes and contains
         /// </summary>
         IO,
+#endif
         /// <summary>
         /// Bias towards Enumeration i.e. will be more performant for scenarios with lots of enumerating over the data (Default)
         /// </summary>
@@ -157,8 +159,10 @@ namespace VDS.Common
             {
                 case HashTableBias.Compactness:
                     return new CompactSlot<TValue>(value);
+#if !SILVERLIGHT
                 case HashTableBias.IO:
                     return new SetSlot<TValue>(value);
+#endif
                 case HashTableBias.Enumeration:
                 default:
                     return new ListSlot<TValue>(value, capacity);
@@ -171,8 +175,10 @@ namespace VDS.Common
             {
                 case HashTableBias.Compactness:
                     return new CompactSlot<TValue>();
+#if !SILVERLIGHT
                 case HashTableBias.IO:
                     return new SetSlot<TValue>();
+#endif
                 case HashTableBias.Enumeration:
                 default:
                     return new ListSlot<TValue>(capacity);
