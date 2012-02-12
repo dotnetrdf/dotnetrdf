@@ -129,7 +129,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFTest", "Testing\testsuite\dotNetRDFTest.csproj", "{EBCF6F50-7879-4C91-9021-67E0DA05564C}"
 EndProject
-Project("{00000000-0000-0000-0000-000000000000}") = "BSBM", "Utilities\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Utilities\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testing\unittest\dotNetRDFUnitTests.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
 EndProject
@@ -139,7 +139,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtuosoSample", "Samples\v
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SparqlGUI", "Utilities\SparqlGUI\SparqlGUI.csproj", "{BBD4CD30-FCB8-45B5-8AEF-F1D4192BC8B2}"
 EndProject
-Project("{00000000-0000-0000-0000-000000000000}") = "WebDemos", "Samples\WebDemos\WebDemos.csproj", "{A94A8072-04EB-4D9B-96A8-82C3C3CA21CD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDemos", "Samples\WebDemos\WebDemos.csproj", "{A94A8072-04EB-4D9B-96A8-82C3C3CA21CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfConvert", "Utilities\rdfConvert\rdfConvert.csproj", "{A33041FF-1521-4CA0-BF53-AFB1C1BBF086}"
 EndProject
@@ -186,6 +186,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServer", "Utilities\rdfServer\rdfServer.csproj", "{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServerGUI", "Utilities\rdfServerGUI\rdfServerGUI.csproj", "{BB0C0B98-00F9-4244-87DF-B4B808FF69F1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data.Virtuoso 3.5", "Data.Virtuoso 3.5", "{1702A1F1-6A2C-447B-AB9A-756E71C3BF37}"
+	ProjectSection(SolutionItems) = preProject
+		Libraries\data.virtuoso.net35\Properties\AssemblyInfo.cs = Libraries\data.virtuoso.net35\Properties\AssemblyInfo.cs
+		Libraries\data.virtuoso.net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template = Libraries\data.virtuoso.net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -505,6 +511,7 @@ Global
 		{954B6783-7ECC-4FC0-9022-76A618D6F5B8} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{646D9EC4-D09D-4FF5-8798-FB7E16BF21B7} = {1456B530-FB7E-41E2-9831-80691A61B85A}
+		{1702A1F1-6A2C-447B-AB9A-756E71C3BF37} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{09097771-84FD-4DC8-A259-1CB0591714EA} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 	EndGlobalSection
 EndGlobal
