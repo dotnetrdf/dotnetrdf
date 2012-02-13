@@ -40,7 +40,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     else
                     {
 #if SILVERLIGHT
-                        return new LiteralNode(null, u.Uri.Segments().Last());
+                        return new StringNode(null, u.Uri.Segments().Last());
 #else
                         return new StringNode(null, u.Uri.Segments.Last());
 #endif

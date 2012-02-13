@@ -75,6 +75,8 @@ namespace VDS.RDF.Query
             }
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Creates a new Pellet Query Processor
         /// </summary>
@@ -82,6 +84,8 @@ namespace VDS.RDF.Query
         /// <param name="kbName">Knowledge Base Name</param>
         public PelletQueryProcessor(Uri serverUri, String kbName)
             : this(new PelletServer(serverUri), kbName) { }
+
+#endif
 
         /// <summary>
         /// Processes a SPARQL Query

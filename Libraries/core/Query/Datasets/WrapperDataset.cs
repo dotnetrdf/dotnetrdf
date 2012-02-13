@@ -279,7 +279,11 @@ namespace VDS.RDF.Query.Datasets
                 INode usingDataset = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUsingDataset);
                 INode innerDataset = context.Graph.CreateBlankNode();
 
+#if !SILVERLIGHT
                 String assm = Assembly.GetAssembly(this.GetType()).FullName;
+#else
+                String assm = this.GetType().Assembly.FullName;
+#endif
                 if (assm.Contains(",")) assm = assm.Substring(0, assm.IndexOf(','));
                 String effectiveType = this.GetType().FullName + (assm.Equals("dotNetRDF") ? String.Empty : ", " + assm);
 

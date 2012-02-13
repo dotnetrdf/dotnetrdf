@@ -801,7 +801,11 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     throw Error("Encountered a % character in a Local Name but the required two hex digits were not present after it, please use \\% if you wish to represent the percent character");
                 }
+#if !SILVERLIGHT
                 else if (!Uri.IsHexEncoding(localOutput.ToString(), 0))
+#else
+                else if (SilverlightExtensions.IsHexEncoding(localOutput.ToString(), 0))
+#endif
                 {
                     throw Error("Invalid % encoded character encountered");
                 }

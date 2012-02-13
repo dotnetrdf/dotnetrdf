@@ -1028,7 +1028,11 @@ namespace VDS.RDF.Query
                         }
                         else
                         {
+#if !SILVERLIGHT
                             output.Append(Uri.HexUnescape(value, ref i));
+#else
+                            output.Append(SilverlightExtensions.HexUnescape(value, ref i));
+#endif
                             i--;
                         }
                     }

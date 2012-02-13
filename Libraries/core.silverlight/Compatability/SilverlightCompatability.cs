@@ -4,7 +4,6 @@ Copyright Robert Vesse 2009-10
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
-
 This file is part of dotNetRDF.
 
 dotNetRDF is free software: you can redistribute it and/or modify
@@ -33,7 +32,7 @@ terms.
 
 */
 
-//#define SILVERLIGHT
+#define SILVERLIGHT
 
 #if SILVERLIGHT
 
@@ -45,6 +44,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using HtmlAgilityPack;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
@@ -126,6 +126,20 @@ namespace VDS.RDF
         public static String PathAndQuery(this Uri u)
         {
             return u.AbsolutePath + u.Query;
+        }
+
+        public static bool IsHexEncoding(String value, int index)
+        {
+            if (index + 2 >= value.Length) return false;
+            return value[0] == '%' && SparqlSpecsHelper.IsHex(value[1]) && SparqlSpecsHelper.IsHex(value[2]);
+        }
+
+        public static char HexUnescape(String value, ref int index)
+        {
+            if (index + 2 >= value.Length) throw new RdfParseException("Malformed Percent Encoded Escape");
+            if (value[index] != '%') throw new RdfParseException("Malformed Percent Encoded Escape");
+            index = index + 3;
+            return UnicodeSpecsHelper.ConvertToChar(value.Substring(index + 1, 2));
         }
 
         /// <summary>

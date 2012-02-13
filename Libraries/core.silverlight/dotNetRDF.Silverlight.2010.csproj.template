@@ -32,7 +32,7 @@
     <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\dotNetRDF.Silverlight.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
     <NoStdLib>true</NoStdLib>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <NoWarn>0659,1574,0067,0419,0628</NoWarn>
@@ -74,28 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\core\Parsing\trix-1.0.xsd">
-      <Link>Parsing\trix-1.0.xsd</Link>
-    </None>
     <None Include="VDSOpenSourceKey.pfx" />
-    <Resource Include="..\core\Storage\CreateMSSQLStoreTables.sql">
-      <Link>Storage\CreateMSSQLStoreTables.sql</Link>
-    </Resource>
-    <Resource Include="..\core\Storage\CreateMySQLStoreTables.sql">
-      <Link>Storage\CreateMySQLStoreTables.sql</Link>
-    </Resource>
-    <Resource Include="..\core\Storage\DropMSSQLStoreTables.sql">
-      <Link>Storage\DropMSSQLStoreTables.sql</Link>
-    </Resource>
-    <Resource Include="..\core\Storage\DropMySQLStoreTables.sql">
-      <Link>Storage\DropMySQLStoreTables.sql</Link>
-    </Resource>
-    <Resource Include="..\core\Storage\UpgradeMSSQLStore_010_011.sql">
-      <Link>Storage\UpgradeMSSQLStore_010_011.sql</Link>
-    </Resource>
-    <Resource Include="..\core\Query\Expressions\Functions\LeviathanFunctionLibrary.ttl">
-      <Link>Query\Expressions\Functions\LeviathanFunctionLibrary.ttl</Link>
-    </Resource>
   </ItemGroup>
 
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
