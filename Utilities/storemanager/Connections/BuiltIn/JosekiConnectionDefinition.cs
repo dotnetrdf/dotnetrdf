@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class JosekiConnectionDefinition
-        : BaseConnectionDefinition
+        : BaseHttpConnectionDefinition
     {
         public JosekiConnectionDefinition()
             : base("Joseki", "Connect to a Joseki Server which exposes SPARQL based access to any Jena based stores e.g. SDB and TDB.") { }
@@ -74,7 +74,14 @@ DefaultValue("http://localhost:2020")]
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new JosekiConnector(this.Server, this.QueryPath, (String.IsNullOrEmpty(this.UpdatePath) ? null : this.UpdatePath));
+            if (this.UseProxy)
+            {
+                return new JosekiConnector(this.Server, this.QueryPath, (String.IsNullOrEmpty(this.UpdatePath) ? null : this.UpdatePath), this.GetProxy());
+            }
+            else
+            {
+                return new JosekiConnector(this.Server, this.QueryPath, (String.IsNullOrEmpty(this.UpdatePath) ? null : this.UpdatePath));
+            }
         }
     }
 }

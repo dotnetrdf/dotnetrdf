@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class StardogConnectionDefinition
-        : BaseServerConnectionDefinition
+        : BaseHttpServerConnectionDefinition
     {
         public StardogConnectionDefinition()
             : base("Stardog", "Connect to a Stardog database exposed via the Stardog HTTP server") { }
@@ -103,11 +103,25 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         {
             if (this.UseAnonymousAccount)
             {
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser);
+                if (this.UseProxy)
+                {
+                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser, this.GetProxy());
+                }
+                else
+                {
+                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, StardogConnector.AnonymousUser, StardogConnector.AnonymousUser);
+                }
             }
             else
             {
-                return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                if (this.UseProxy)
+                {
+                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password, this.GetProxy());
+                }
+                else
+                {
+                    return new StardogConnector(this.Server, this.StoreID, this.ReasoningMode, this.Username, this.Password);
+                }
             }
         }
     }

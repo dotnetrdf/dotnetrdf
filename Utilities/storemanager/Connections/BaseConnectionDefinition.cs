@@ -176,5 +176,6 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             return this.GetEnumerator();
         }
+
     }
 }

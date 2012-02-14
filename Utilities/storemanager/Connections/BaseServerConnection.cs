@@ -37,12 +37,62 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections
 {
+    public abstract class BaseHttpConnectionDefinition
+        : BaseConnectionDefinition
+    {
+        public BaseHttpConnectionDefinition(String storeName, String storeDescrip)
+            : base(storeName, storeDescrip) { }
+
+        [Connection(DisplayName = "Proxy Server", DisplayOrder = 20, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String)]
+        public String ProxyServer
+        {
+            get;
+            set;
+        }
+
+        [Connection(DisplayName = "Proxy Username", DisplayOrder = 21, IsRequired = false, AllowEmptyString = false, Type = ConnectionSettingType.String)]
+        public String ProxyUsername
+        {
+            get;
+            set;
+        }
+
+        [Connection(DisplayName = "Proxy Password", DisplayOrder = 22, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password)]
+        public String ProxyPassword
+        {
+            get;
+            set;
+        }
+
+        protected bool UseProxy
+        {
+            get
+            {
+                return this.ProxyServer != null && !this.ProxyServer.Equals(String.Empty);
+            }
+        }
+
+        protected WebProxy GetProxy()
+        {
+            if (this.UseProxy)
+            {
+                WebProxy proxy = new WebProxy(this.ProxyServer);
+                if (this.ProxyUsername != null && this.ProxyPassword != null && !this.ProxyUsername.Equals(String.Empty))
+                {
+                    proxy.Credentials = new NetworkCredential(this.ProxyUsername, this.ProxyPassword);
+                }
+            }
+            return null;
+        }
+    }
+
     public abstract class BaseServerConnectionDefinition
         : BaseConnectionDefinition
     {
@@ -55,6 +105,55 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get;
             set;
+        }
+    }
+
+    public abstract class BaseHttpServerConnectionDefinition
+        : BaseServerConnectionDefinition
+    {
+        public BaseHttpServerConnectionDefinition(String storeName, String storeDescrip)
+            : base(storeName, storeDescrip) { }
+
+        [Connection(DisplayName = "Proxy Server", DisplayOrder = 20, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String)]
+        public String ProxyServer
+        {
+            get;
+            set;
+        }
+
+        [Connection(DisplayName = "Proxy Username", DisplayOrder = 21, IsRequired = false, AllowEmptyString = false, Type = ConnectionSettingType.String)]
+        public String ProxyUsername
+        {
+            get;
+            set;
+        }
+
+        [Connection(DisplayName = "Proxy Password", DisplayOrder = 22, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password)]
+        public String ProxyPassword
+        {
+            get;
+            set;
+        }
+
+        protected bool UseProxy
+        {
+            get
+            {
+                return this.ProxyServer != null && !this.ProxyServer.Equals(String.Empty);
+            }
+        }
+
+        protected WebProxy GetProxy()
+        {
+            if (this.UseProxy)
+            {
+                WebProxy proxy = new WebProxy(this.ProxyServer);
+                if (this.ProxyUsername != null && this.ProxyPassword != null && !this.ProxyUsername.Equals(String.Empty))
+                {
+                    proxy.Credentials = new NetworkCredential(this.ProxyUsername, this.ProxyPassword);
+                }
+            }
+            return null;
         }
     }
 
@@ -103,6 +202,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     public abstract class BaseHttpCredentialsRequiredServerConnectionDefinition
         : BaseCredentialsRequiredServerConnectionDefinition
     {
+        public BaseHttpCredentialsRequiredServerConnectionDefinition(String storeName, String storeDescrip)
+            : base(storeName, storeDescrip) { }
+
         [Connection(DisplayName="Proxy Server", DisplayOrder=20, IsRequired=false, AllowEmptyString=true, Type=ConnectionSettingType.String)]
         public String ProxyServer
         {
@@ -111,14 +213,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         [Connection(DisplayName = "Proxy Username", DisplayOrder = 21, IsRequired = false, AllowEmptyString = false, Type = ConnectionSettingType.String)]
-        public String Username
+        public String ProxyUsername
         {
             get;
             set;
         }
 
         [Connection(DisplayName = "Proxy Password", DisplayOrder = 22, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password)]
-        public String Password
+        public String ProxyPassword
         {
             get;
             set;
@@ -128,6 +230,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
     public abstract class BaseHttpCredentialsOptionalServerConnectionDefinition
     : BaseCredentialsOptionalServerConnectionDefinition
     {
+
+        public BaseHttpCredentialsOptionalServerConnectionDefinition(String storeName, String storeDescrip)
+            : base(storeName, storeDescrip) { }
+
         [Connection(DisplayName = "Proxy Server", DisplayOrder = 20, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.String)]
         public String ProxyServer
         {
@@ -136,17 +242,38 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         [Connection(DisplayName = "Proxy Username", DisplayOrder = 21, IsRequired = false, AllowEmptyString = false, Type = ConnectionSettingType.String)]
-        public String Username
+        public String ProxyUsername
         {
             get;
             set;
         }
 
         [Connection(DisplayName = "Proxy Password", DisplayOrder = 22, IsRequired = false, AllowEmptyString = true, Type = ConnectionSettingType.Password)]
-        public String Password
+        public String ProxyPassword
         {
             get;
             set;
+        }
+
+        protected bool UseProxy
+        {
+            get
+            {
+                return this.ProxyServer != null && !this.ProxyServer.Equals(String.Empty);
+            }
+        }
+
+        protected WebProxy GetProxy()
+        {
+            if (this.UseProxy)
+            {
+                WebProxy proxy = new WebProxy(this.ProxyServer);
+                if (this.ProxyUsername != null && this.ProxyPassword != null && !this.ProxyUsername.Equals(String.Empty))
+                {
+                    proxy.Credentials = new NetworkCredential(this.ProxyUsername, this.ProxyPassword);
+                }
+            }
+            return null;
         }
     }
 }

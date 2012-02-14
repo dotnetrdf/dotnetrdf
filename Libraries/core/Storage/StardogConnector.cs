@@ -124,17 +124,16 @@ namespace VDS.RDF.Storage
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
         public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning)
-        {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._kb = kbID;
-            this._reasoning = reasoning;
+            : this(baseUri, kbID, reasoning, null) { }
 
-            //Prep the writer
-            this._writer.HighSpeedModePermitted = true;
-            this._writer.CompressionLevel = WriterCompressionLevel.None;
-            this._writer.UseMultiThreadedWriting = false;
-        }
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
+            : this(baseUri, kbID, reasoning, null, null, proxy) { }
 
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -152,9 +151,20 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
-        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, reasoning)
         {
+            this._baseUri = baseUri;
+            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            this._kb = kbID;
+            this._reasoning = reasoning;
+            this.Proxy = proxy;
+
+            //Prep the writer
+            this._writer.HighSpeedModePermitted = true;
+            this._writer.CompressionLevel = WriterCompressionLevel.None;
+            this._writer.UseMultiThreadedWriting = false;
+
             this._username = username;
             this._pwd = password;
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
@@ -168,7 +178,37 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         public StardogConnector(String baseUri, String kbID, String username, String password)
-            : this(baseUri, kbID, StardogReasoningMode.None, username, password) { }
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        public StardogConnector(String baseUri, String kbID, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="reasoning">Reasoning Mode</param>
+        public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password)
+            : this(baseUri, kbID, reasoning, username, password, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Stardog Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        public StardogConnector(String baseUri, String kbID, String username, String password, WebProxy proxy)
+            : this(baseUri, kbID, StardogReasoningMode.None, username, password, proxy) { }
 
         /// <summary>
         /// Gets the Base URI of the Stardog server

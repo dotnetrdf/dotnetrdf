@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class SesameConnectionDefinition
-        : BaseCredentialsOptionalServerConnectionDefinition
+        : BaseHttpCredentialsOptionalServerConnectionDefinition
     {
         public SesameConnectionDefinition()
             : base("Sesame", "Connect to any Sesame based store which is exposed via a Sesame HTTP Server e.g. Sesame Native, BigOWLIM") { }
@@ -71,7 +71,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password);
+            if (this.UseProxy)
+            {
+                return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
+            }
+            else
+            {
+                return new SesameHttpProtocolConnector(this.Server, this.StoreID, this.Username, this.Password);
+            }
         }
     }
 }

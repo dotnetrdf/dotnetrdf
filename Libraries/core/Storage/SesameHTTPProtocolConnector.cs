@@ -115,11 +115,26 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Store</param>
         /// <param name="storeID">Store ID</param>
         public BaseSesameHttpProtocolConnector(String baseUri, String storeID)
-        {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            this._store = storeID;
-        }
+            : this(baseUri, storeID, null, null) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, WebProxy proxy)
+            : this(baseUri, storeID, null, null, proxy) { }
+
+                /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
+            : this(baseUri, storeID, username, password, null) { }
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -128,12 +143,16 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <param name="username">Username to use for requests that require authentication</param>
         /// <param name="password">Password to use for requests that require authentication</param>
-        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
-            : this(baseUri, storeID)
+        /// <param name="proxy">Proxy Server</param>
+        public BaseSesameHttpProtocolConnector(String baseUri, String storeID, String username, String password, WebProxy proxy)
         {
+            this._baseUri = baseUri;
+            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            this._store = storeID;
             this._username = username;
             this._pwd = password;
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+            this.Proxy = proxy;
         }
 
         /// <summary>
@@ -894,6 +913,26 @@ namespace VDS.RDF.Storage
         public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password)
             : base(baseUri, storeID, username, password) { }
 
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public SesameHttpProtocolConnector(String baseUri, String storeID, WebProxy proxy)
+            : base(baseUri, storeID, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        /// <param name="proxy">Proxy Server</param>
+        public SesameHttpProtocolConnector(String baseUri, String storeID, String username, String password, WebProxy proxy)
+            : base(baseUri, storeID, username, password, proxy) { }
+
     }
 
     /// <summary>
@@ -919,6 +958,26 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password to use for requests that require authentication</param>
         public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, String username, String password)
             : base(baseUri, storeID, username, password) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, WebProxy proxy)
+            : base(baseUri, storeID, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        /// <param name="proxy">Proxy Server</param>
+        public SesameHttpProtocolVersion5Connector(String baseUri, String storeID, String username, String password, WebProxy proxy)
+            : base(baseUri, storeID, username, password, proxy) { }
     }
 
     /// <summary>
@@ -944,6 +1003,24 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password to use for requests that require authentication</param>
         public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password)
             : base(baseUri, storeID, username, password) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, WebProxy proxy)
+            : base(baseUri, storeID, proxy) { }
+
+        /// <summary>
+        /// Creates a new connection to a Sesame HTTP Protocol supporting Store
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username to use for requests that require authentication</param>
+        /// <param name="password">Password to use for requests that require authentication</param>
+        public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password, WebProxy proxy)
+            : base(baseUri, storeID, username, password, proxy) { }
 
         /// <summary>
         /// Makes a SPARQL Update request to the Sesame server

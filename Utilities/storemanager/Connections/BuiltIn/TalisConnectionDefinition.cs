@@ -42,7 +42,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class TalisConnectionDefinition
-        : BaseConnectionDefinition
+        : BaseHttpConnectionDefinition
     {
         public TalisConnectionDefinition()
             : base("Talis", "Connect to a store hosted on the Talis Platform") { }
@@ -70,7 +70,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new TalisPlatformConnector(this.StoreID, this.Username, this.Password);
+            if (this.UseProxy)
+            {
+                return new TalisPlatformConnector(this.StoreID, this.Username, this.Password, this.GetProxy());
+            }
+            else
+            {
+                return new TalisPlatformConnector(this.StoreID, this.Username, this.Password);
+            }
         }
     }
 }

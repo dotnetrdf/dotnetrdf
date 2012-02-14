@@ -35,12 +35,13 @@ terms.
 
 using System;
 using System.ComponentModel;
+using System.Net;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class FusekiConnectionDefinition
-        : BaseConnectionDefinition
+        : BaseHttpConnectionDefinition
     {
         public FusekiConnectionDefinition()
             : base("Fuseki", "Connect to a Fuseki Server which exposes SPARQL based access to any Jena based stores e.g. SDB and TDB.  The Server URI must be the /data URI of your dataset e.g. http://localhost:3030/dataset/data") { }
@@ -55,7 +56,14 @@ DefaultValue("http://localhost:3030/dataset/data")]
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new FusekiConnector(this.Server);
+            if (this.UseProxy)
+            {
+                return new FusekiConnector(this.Server, this.GetProxy());
+            }
+            else
+            {
+                return new FusekiConnector(this.Server);
+            }
         }
     }
 }

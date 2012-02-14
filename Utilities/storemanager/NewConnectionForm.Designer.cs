@@ -60,7 +60,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.73034F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 84.26966F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(710, 267);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(717, 337);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // panel1
@@ -72,7 +72,7 @@
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.tableLayoutPanel1.SetRowSpan(this.panel1, 2);
-            this.panel1.Size = new System.Drawing.Size(147, 261);
+            this.panel1.Size = new System.Drawing.Size(147, 331);
             this.panel1.TabIndex = 0;
             // 
             // lstStoreTypes
@@ -82,7 +82,7 @@
             this.lstStoreTypes.FormattingEnabled = true;
             this.lstStoreTypes.Location = new System.Drawing.Point(3, 9);
             this.lstStoreTypes.Name = "lstStoreTypes";
-            this.lstStoreTypes.Size = new System.Drawing.Size(142, 251);
+            this.lstStoreTypes.Size = new System.Drawing.Size(142, 316);
             this.lstStoreTypes.TabIndex = 0;
             this.lstStoreTypes.SelectedIndexChanged += new System.EventHandler(this.lstStoreTypes_SelectedIndexChanged);
             // 
@@ -90,10 +90,10 @@
             // 
             this.lblDescrip.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblDescrip.Location = new System.Drawing.Point(156, 10);
+            this.lblDescrip.Location = new System.Drawing.Point(158, 10);
             this.lblDescrip.Margin = new System.Windows.Forms.Padding(3, 10, 3, 0);
             this.lblDescrip.Name = "lblDescrip";
-            this.lblDescrip.Size = new System.Drawing.Size(551, 30);
+            this.lblDescrip.Size = new System.Drawing.Size(556, 30);
             this.lblDescrip.TabIndex = 1;
             this.lblDescrip.Text = "To create a New Connection please select a Store Type from the list on the left h" +
     "and side.";
@@ -106,9 +106,9 @@
             this.grpConnectionSettings.Controls.Add(this.chkForceReadOnly);
             this.grpConnectionSettings.Controls.Add(this.btnConnect);
             this.grpConnectionSettings.Controls.Add(this.tblSettings);
-            this.grpConnectionSettings.Location = new System.Drawing.Point(156, 45);
+            this.grpConnectionSettings.Location = new System.Drawing.Point(158, 56);
             this.grpConnectionSettings.Name = "grpConnectionSettings";
-            this.grpConnectionSettings.Size = new System.Drawing.Size(551, 219);
+            this.grpConnectionSettings.Size = new System.Drawing.Size(556, 278);
             this.grpConnectionSettings.TabIndex = 2;
             this.grpConnectionSettings.TabStop = false;
             this.grpConnectionSettings.Text = "Connection Settings";
@@ -117,7 +117,7 @@
             // 
             this.chkForceReadOnly.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkForceReadOnly.AutoSize = true;
-            this.chkForceReadOnly.Location = new System.Drawing.Point(6, 198);
+            this.chkForceReadOnly.Location = new System.Drawing.Point(6, 257);
             this.chkForceReadOnly.Name = "chkForceReadOnly";
             this.chkForceReadOnly.Size = new System.Drawing.Size(189, 17);
             this.chkForceReadOnly.TabIndex = 1;
@@ -127,7 +127,7 @@
             // btnConnect
             // 
             this.btnConnect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnConnect.Location = new System.Drawing.Point(470, 192);
+            this.btnConnect.Location = new System.Drawing.Point(475, 251);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(75, 23);
             this.btnConnect.TabIndex = 2;
@@ -145,7 +145,7 @@
             this.tblSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80.11152F));
             this.tblSettings.Location = new System.Drawing.Point(6, 14);
             this.tblSettings.Name = "tblSettings";
-            this.tblSettings.RowCount = 8;
+            this.tblSettings.RowCount = 10;
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
@@ -154,7 +154,9 @@
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.tblSettings.Size = new System.Drawing.Size(539, 179);
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblSettings.Size = new System.Drawing.Size(544, 238);
             this.tblSettings.TabIndex = 0;
             // 
             // NewConnectionForm
@@ -162,7 +164,7 @@
             this.AcceptButton = this.btnConnect;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(712, 271);
+            this.ClientSize = new System.Drawing.Size(719, 341);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;

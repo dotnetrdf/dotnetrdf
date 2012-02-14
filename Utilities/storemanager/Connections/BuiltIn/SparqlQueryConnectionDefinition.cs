@@ -38,12 +38,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class SparqlQueryConnectionDefinition
-        : BaseConnectionDefinition
+        : BaseHttpConnectionDefinition
     {
         public SparqlQueryConnectionDefinition()
             : base("SPARQL Query", "Connect to any SPARQL Query endpoint as a read-only connection") { }
@@ -73,7 +74,12 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new SparqlConnector(new Uri(this.EndpointUri), this.LoadMode);
+            SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.DefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.EndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.EndpointUri), this.DefaultGraphUri);
+            if (this.UseProxy)
+            {
+                endpoint.Proxy = this.GetProxy();
+            }
+            return new SparqlConnector(endpoint, this.LoadMode);
         }
     }
 }

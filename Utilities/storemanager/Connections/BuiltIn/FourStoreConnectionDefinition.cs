@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class FourStoreConnectionDefinition
-        : BaseServerConnectionDefinition
+        : BaseHttpServerConnectionDefinition
     {
         public FourStoreConnectionDefinition()
             : base("4store", "Connect to a 4store server") { }
@@ -58,7 +58,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new FourStoreConnector(this.Server, this.EnableUpdates);
+            if (this.UseProxy)
+            {
+                return new FourStoreConnector(this.Server, this.EnableUpdates, this.GetProxy());   
+            }
+            else
+            {
+                return new FourStoreConnector(this.Server, this.EnableUpdates);
+            }
         }
     }
 }

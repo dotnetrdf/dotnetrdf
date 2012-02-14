@@ -91,6 +91,22 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Creates a new connection to a Joseki server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the Server</param>
+        /// <param name="queryServicePath">Path to the Query Service</param>
+        /// <param name="updateServicePath">Path to the Update Service</param>
+        /// <param name="proxy">Proxy Server</param>
+        /// <remarks>
+        /// For example the Base Uri might be <strong>http://example.org:8080/</strong> with a Query Service path of <strong>sparql</strong> and an Update Service path of <strong>update</strong>
+        /// </remarks>
+        public JosekiConnector(String baseUri, String queryServicePath, String updateServicePath, WebProxy proxy)
+            : this(baseUri, queryServicePath, updateServicePath)
+        {
+            this.Proxy = proxy;
+        }
+
+        /// <summary>
         /// Creates a new read only connection to a Joseki server
         /// </summary>
         /// <param name="baseUri">Base Uri of the server</param>
@@ -99,7 +115,19 @@ namespace VDS.RDF.Storage
         /// For example the Base Uri might be <strong>http://example.org:8080/</strong> with a Query Service path of <strong>sparql</strong>
         /// </remarks>
         public JosekiConnector(String baseUri, String queryServicePath)
-            : this(baseUri, queryServicePath, null) { }
+            : this(baseUri, queryServicePath, (String)null) { }
+
+        /// <summary>
+        /// Creates a new read only connection to a Joseki server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the server</param>
+        /// <param name="queryServicePath">Path to the Query Service</param>
+        /// <param name="proxy">Proxy Server</param>
+        /// <remarks>
+        /// For example the Base Uri might be <strong>http://example.org:8080/</strong> with a Query Service path of <strong>sparql</strong>
+        /// </remarks>
+        public JosekiConnector(String baseUri, String queryServicePath, WebProxy proxy)
+            : this(baseUri, queryServicePath, null, proxy) { }
 
         /// <summary>
         /// Loads a Graph from the Joseki store

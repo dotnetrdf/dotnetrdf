@@ -43,7 +43,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class AllegroGraphConnectionDefinition
-        : BaseCredentialsOptionalServerConnectionDefinition
+        : BaseHttpCredentialsOptionalServerConnectionDefinition
     {
         public AllegroGraphConnectionDefinition()
             : base("Allegro Graph", "Connect to Franz AllegroGraph, Version 3.x and 4.x are supported") { }
@@ -87,11 +87,26 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         {
             if (this.UseRootCatalog)
             {
-                return new AllegroGraphConnector(this.Server, this.StoreID, this.Username, this.Password);
+                if (this.UseProxy)
+                {
+                    return new AllegroGraphConnector(this.Server, this.StoreID, this.Username, this.Password, this.GetProxy());
+                }
+                else
+                {
+                    return new AllegroGraphConnector(this.Server, this.StoreID, this.Username, this.Password);
+                }
             }
             else
             {
-                return new AllegroGraphConnector(this.Server, this.CatalogID, this.StoreID, this.Username, this.Password);
+                if (this.UseProxy)
+                {
+                    return new AllegroGraphConnector(this.Server, this.CatalogID, this.StoreID, this.GetProxy());
+                }
+                else
+                {
+                    return new AllegroGraphConnector(this.Server, this.CatalogID, this.StoreID, this.Username, this.Password);
+                }
+                
             }
         }
     }

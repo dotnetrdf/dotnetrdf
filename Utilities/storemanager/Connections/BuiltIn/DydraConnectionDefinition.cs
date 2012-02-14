@@ -37,13 +37,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 {
     public class DydraConnectionDefinition
-        : BaseConnectionDefinition
+        : BaseHttpConnectionDefinition
     {
         public DydraConnectionDefinition()
             : base("Dydra", "Connect to a repository hosted on Dydra the RDF database in the cloud") { }
@@ -71,7 +72,14 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
 
         protected override IGenericIOManager OpenConnectionInternal()
         {
-            return new DydraConnector(this.AccountID, this.StoreID, this.ApiKey);
+            if (this.UseProxy)
+            {
+                return new DydraConnector(this.AccountID, this.StoreID, this.ApiKey, this.GetProxy());
+            }
+            else
+            {
+                return new DydraConnector(this.AccountID, this.StoreID, this.ApiKey);
+            }
         }
     }
 }

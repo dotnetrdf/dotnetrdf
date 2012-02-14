@@ -71,18 +71,17 @@ namespace VDS.RDF.Storage
         /// <param name="catalogID">Catalog ID</param>
         /// <param name="storeID">Store ID</param>
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID)
-            : base(baseUri, storeID)
-        {
-            this._baseUri = baseUri;
-            if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
-            if (catalogID != null)
-            {
-                this._baseUri += "catalogs/" + catalogID + "/";
-            }
-            this._store = storeID;
-            this._catalog = catalogID;
-            this.CreateStore(storeID);
-        }
+            : this(baseUri, storeID, catalogID, (String)null, (String)null) { }
+
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="catalogID">Catalog ID</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, WebProxy proxy)
+            : this(baseUri, catalogID, storeID, null, null, proxy) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
@@ -93,6 +92,15 @@ namespace VDS.RDF.Storage
             : this(baseUri, null, storeID) { }
 
         /// <summary>
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public AllegroGraphConnector(String baseUri, String storeID, WebProxy proxy)
+            : this(baseUri, null, storeID, proxy) { }
+
+        /// <summary>
         /// Creates a new Connection to an AllegroGraph store
         /// </summary>
         /// <param name="baseUri">Base Uri for the Store</param>
@@ -101,7 +109,18 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password)
-            : base(baseUri, storeID, username, password)
+            : this(baseUri, catalogID, storeID, username, password, null) { }
+
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="catalogID">Catalog ID</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username for connecting to the Store</param>
+        /// <param name="password">Password for connecting to the Store</param>
+        public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, WebProxy proxy)
+            : base(baseUri, storeID, username, password, proxy)
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
@@ -123,6 +142,16 @@ namespace VDS.RDF.Storage
         /// <param name="password">Password for connecting to the Store</param>
         public AllegroGraphConnector(String baseUri, String storeID, String username, String password)
             : this(baseUri, null, storeID, username, password) { }
+
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
+        /// </summary>
+        /// <param name="baseUri">Base Uri for the Store</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="username">Username for connecting to the Store</param>
+        /// <param name="password">Password for connecting to the Store</param>
+        public AllegroGraphConnector(String baseUri, String storeID, String username, String password, WebProxy proxy)
+            : this(baseUri, null, storeID, username, password, proxy) { }
 
         /// <summary>
         /// Gets the Catalog under which the repository you are connected to is located
@@ -304,7 +333,7 @@ namespace VDS.RDF.Storage
         protected override HttpWebRequest CreateRequest(string servicePath, string accept, string method, Dictionary<string, string> queryParams)
         {
             //Remove JSON Mime Types from supported Accept types
-            //This is a compatability issue with Allegro having a weird custom Json serialisation
+            //This is a compatability issue with Allegro having a weird custom JSON serialisation
             if (accept.Contains("application/json"))
             {
                 accept = accept.Replace("application/json,", String.Empty);
