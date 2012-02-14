@@ -190,6 +190,10 @@ namespace VDS.RDF.Query.Algebra
                         }
                         else
                         {
+                            //The result of the HasGraph() call is ignored we just make it so datasets with any kind of 
+                            //load on demand behaviour work properly
+                            context.Data.HasGraph(currGraphUri);
+                            //All we actually care about is setting the active graph
                             context.Data.SetActiveGraph(currGraphUri);
                         }
                         datasetOk = true;

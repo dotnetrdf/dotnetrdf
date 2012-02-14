@@ -102,7 +102,7 @@ namespace VDS.RDF.Query
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
-                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, nodeMeta), score);
+                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, nodeMeta.Substring(1)), score);
                         }
                         else
                         {

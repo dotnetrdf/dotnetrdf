@@ -152,24 +152,14 @@ namespace VDS.RDF.Query
                 try
                 {
                     //Set up the Default and Active Graphs
-                    //IGraph defGraph;
                     if (query.DefaultGraphs.Any())
                     {
-                        //Default Graph is the Merge of all the Graphs specified by FROM clauses
-                        //Graph g = new Graph();
-                        //foreach (Uri u in query.DefaultGraphs)
-                        //{
-                        //    if (this._dataset.HasGraph(u))
-                        //    {
-                        //        g.Merge(this._dataset[u], true);
-                        //    }
-                        //    else
-                        //    {
-                        //        throw new RdfQueryException("A Graph with URI '" + u.ToString() + "' does not exist in this Triple Store, this URI cannot be used in a FROM clause in SPARQL queries to this Triple Store");
-                        //    }
-                        //}
-                        //defGraph = g;
-                        //this._dataset.SetDefaultGraph(defGraph);
+                        //Call HasGraph() on each Default Graph but ignore the results, we just do this
+                        //in case a dataset has any kind of load on demand behaviour
+                        foreach (Uri defGraphUri in query.DefaultGraphs)
+                        {
+                            this._dataset.HasGraph(defGraphUri);
+                        }
                         this._dataset.SetDefaultGraph(query.DefaultGraphs);
                         defGraphOk = true;
                     }
@@ -178,14 +168,6 @@ namespace VDS.RDF.Query
                         //No FROM Clauses but one/more FROM NAMED means the Default Graph is the empty graph
                         this._dataset.SetDefaultGraph(Enumerable.Empty<Uri>());
                     }
-                    //Q: Was the following actually in any way needed?
-                    //else
-                    //{
-                    //    defGraph = this._dataset.DefaultGraph;
-                    //    this._dataset.SetDefaultGraph(defGraph);
-                    //}
-                    //defGraphOk = true;
-                    //this._dataset.SetActiveGraph(defGraph);
                     this._dataset.SetActiveGraph(this._dataset.DefaultGraphUris);
                     datasetOk = true;
 
@@ -196,7 +178,7 @@ namespace VDS.RDF.Query
                     {
                         context.StartExecution();
                         ISparqlAlgebra algebra = query.ToAlgebra();
-                        result = context.Evaluate(algebra);//query.Evaluate(context);
+                        result = context.Evaluate(algebra);
 
                         context.EndExecution();
                         query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);

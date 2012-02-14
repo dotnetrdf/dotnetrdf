@@ -774,6 +774,13 @@ namespace VDS.RDF.Utilities.Sparql
             {
                 //Nothing to do
             }
+            else if (this._dataset is WebDemandDataset)
+            {
+                WebDemandDataset ds = (WebDemandDataset)this._dataset;
+                this._dataset = ds.UnderlyingDataset;
+                this.EnableFullTextIndex();
+                this._dataset = new WebDemandDataset(this._dataset);
+            }
             else
             {
                 //Create and ensure index ready for use
@@ -783,18 +790,37 @@ namespace VDS.RDF.Utilities.Sparql
 
                 //Create Indexer and wrap dataset
                 this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), new DefaultIndexSchema());
-                this._dataset = new FullTextIndexedDataset(this._dataset, this._ftIndexer, true);
+                if (this._dataset is WebDemandDataset)
+                {
+                    //Web Demand needs to go around Full Text as we want to index on demand loaded content
+                    this._dataset = new WebDemandDataset(new FullTextIndexedDataset(((WebDemandDataset)this._dataset).UnderlyingDataset, this._ftIndexer, true));
+                }
+                else
+                {
+                    this._dataset = new FullTextIndexedDataset(this._dataset, this._ftIndexer, true);
+                }
 
                 //Create and Register Optimizer
                 this._ftSearcher = new LuceneSearchProvider(Lucene.Net.Util.Version.LUCENE_29, this._ftIndex);
                 this._ftOptimiser = new FullTextOptimiser(this._ftSearcher);
                 SparqlOptimiser.AddOptimiser(this._ftOptimiser);
             }
+            this._processor = new LeviathanQueryProcessor(this._dataset);
         }
 
         private void DisableFullTextIndex()
         {
-            if (this._dataset is FullTextIndexedDataset)
+            if (this._dataset is WebDemandDataset)
+            {
+                WebDemandDataset ds = (WebDemandDataset)this._dataset;
+                if (ds.UnderlyingDataset is FullTextIndexedDataset)
+                {
+                    this._dataset = ds.UnderlyingDataset;
+                    this.DisableFullTextIndex();
+                    this._dataset = new WebDemandDataset(this._dataset);
+                }
+            }
+            else if (this._dataset is FullTextIndexedDataset)
             {
                 SparqlOptimiser.RemoveOptimiser(this._ftOptimiser);
                 this._ftOptimiser = null;
@@ -806,20 +832,30 @@ namespace VDS.RDF.Utilities.Sparql
                 this._ftIndex.Close();
                 this._ftIndex = null;
             }
-            else
-            {
-                //Nothing to do
-            }
+            this._processor = new LeviathanQueryProcessor(this._dataset);
         }
 
         private void EnableWebDemand()
         {
-            //TODO: Re-implement this functionality
+            if (this._dataset is WebDemandDataset)
+            {
+                //Nothing to do
+            }
+            else
+            {
+                //Wrap dataset in a WebDemandDataset
+                this._dataset = new WebDemandDataset(this._dataset);
+            }
+            this._processor = new LeviathanQueryProcessor(this._dataset);
         }
 
         private void DisableWebDemand()
         {
-            //TODO: Re-implement this functionality
+            if (this._dataset is WebDemandDataset)
+            {
+                this._dataset = ((WebDemandDataset)this._dataset).UnderlyingDataset;
+            }
+            this._processor = new LeviathanQueryProcessor(this._dataset);
         }
 
         #endregion
