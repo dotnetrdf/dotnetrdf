@@ -119,42 +119,17 @@ namespace VDS.RDF.Utilities.Convert
                     else
                     {
                         //Use the fast WriteThroughHandler where possible
-                        if (writer is RdfJsonWriter || writer is RdfXmlWriter || writer is FastRdfXmlWriter || writer is PrettyRdfXmlWriter)
+                        if (writer is IFormatterBasedWriter)
+                        {
+                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion with formatter " + ((IFormatterBasedWriter)writer).TripleFormatterType.Name);
+                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, ((IFormatterBasedWriter)writer).TripleFormatterType);
+                        }
+                        else
                         {
                             //Can't use it in this case
                             if (this._verbose) Console.WriteLine("rdfConvert: Warning: Target Format not suitable for streaming conversion, input data will be loaded into memory prior to conversion");
                             input.ConversionHandler = new SaveOnCompletionHandler(writer, new StreamWriter(outFile, false, graphDef.Encoding));
                         } 
-                        else if (writer is CompressingTurtleWriter || writer is TurtleWriter)
-                        {
-                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to Turtle");
-                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TurtleFormatter));
-                        }
-                        else if (writer is CsvWriter)
-                        {
-                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to CSV");
-                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(CsvFormatter));
-                        }
-                        else if (writer is Notation3Writer)
-                        {
-                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to Notation 3");
-                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(Notation3Formatter));
-                        }
-                        else if (writer is NTriplesWriter)
-                        {
-                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to NTriples");
-                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NTriplesFormatter));
-                        }
-                        else if (writer is TsvWriter)
-                        {
-                            if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to TSV");
-                            input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(TsvFormatter));
-                        }
-                        else
-                        {
-                            Console.Error.WriteLine("rdfConvert: Warning: Skipping Conversion of Input " + input.ToString() + " as unable to determine how to convert it");
-                            continue;
-                        }
                     }
                 }
                 else
@@ -185,10 +160,10 @@ namespace VDS.RDF.Utilities.Convert
                         else
                         {
                             //Use the fast WriteThroughHandler where possible
-                            if (writer is NQuadsWriter)
+                            if (writer is IFormatterBasedWriter)
                             {
-                                if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion to NQuads");
-                                input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, typeof(NQuadsFormatter));
+                                if (this._verbose) Console.WriteLine("rdfConvert: Using Streaming Conversion with formatter " + ((IFormatterBasedWriter)writer).TripleFormatterType.Name);
+                                input.ConversionHandler = new WriteToFileHandler(outFile, graphDef.Encoding, ((IFormatterBasedWriter)writer).TripleFormatterType);
                             }
                             else
                             {
