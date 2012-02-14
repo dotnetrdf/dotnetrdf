@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
@@ -45,7 +46,8 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
-    class ExportTask : CancellableTask<TaskResult>
+    class ExportTask
+        : CancellableTask<TaskResult>
     {
         private String _file;
         private IGenericIOManager _manager;
@@ -102,31 +104,55 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                 int graphCount = 0, tripleCount = 0;
                 foreach (Uri u in this.ListGraphs())
                 {
-                    FileStream stream = new FileStream(this._file, FileMode.Append);
-
-                    //Load Graph into memory
-                    Graph g = new Graph();
-                    g.BaseUri = u;
-                    this.Information = "Loading Graph " + (u != null ? u.ToString() : "Default");
-                    this._manager.LoadGraph(g, u);
-                    g.BaseUri = u;
-
-                    if (this.HasBeenCancelled)
+                    using (FileStream stream = new FileStream(this._file, FileMode.Append))
                     {
-                        stream.Close();
-                        this.Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
-                        return new TaskResult(true);
+                        if (writer is IFormatterBasedWriter)
+                        {
+                            //Stream via a WriteThroughHandler
+                            this.Information = "Stream Exporting Graph " + (u != null ? u.ToString() : "Default");
+                            WriteThroughHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
+                            ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
+                            this._manager.LoadGraph(progHandler, u);
+                            graphCount++;
+                            tripleCount += progHandler.TripleCount;
+
+                            this.Information = "Finished Stream Exporting Graph " + (u != null ? u.ToString() : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                        }
+                        else
+                        {
+                            //Load Graph into memory
+                            Graph g = new Graph();
+                            g.BaseUri = u;
+                            this.Information = "Loading Graph " + (u != null ? u.ToString() : "Default");
+                            this._manager.LoadGraph(g, u);
+                            g.BaseUri = u;
+
+                            if (this.HasBeenCancelled)
+                            {
+                                stream.Close();
+                                this.Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
+                                return new TaskResult(true);
+                            }
+
+                            graphCount++;
+                            tripleCount += g.Triples.Count;
+
+                            //Save it
+                            store.Add(g);
+                            writer.Save(store, new StreamParams(stream, def.Encoding));
+                            store.Remove(u);
+
+                            this.Information = "Exporting Data graph by graph, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                        }
+
+                        //Check for cancellation
+                        if (this.HasBeenCancelled)
+                        {
+                            stream.Close();
+                            this.Information = "Export Cancelled, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
+                            return new TaskResult(true);
+                        }
                     }
-
-                    graphCount++;
-                    tripleCount += g.Triples.Count;
-
-                    //Save it
-                    store.Add(g);
-                    writer.Save(store, new StreamParams(stream, def.Encoding));
-                    store.Remove(u);
-
-                    this.Information = "Exporting Data graph by graph, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                 }
                 this.Information = "Exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s)";
             }
@@ -164,6 +190,78 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             else
             {
                 throw new RdfStorageException("Store does not support listing Graphs so unable to do a Graph by Graph export");
+            }
+        }
+    }
+
+    class ExportProgressHandler
+        : BaseRdfHandler, IWrappingRdfHandler
+    {
+        private IRdfHandler _handler;
+        private ExportTask _task;
+        private int _count = 0;
+
+        public ExportProgressHandler(IRdfHandler handler, ExportTask task, int initCount)
+        {
+            this._handler = handler;
+            this._task = task;
+            this._count = initCount;
+        }
+
+        public IEnumerable<IRdfHandler> InnerHandlers
+        {
+            get
+            {
+                return this._handler.AsEnumerable();
+            }
+        }
+
+        public override bool AcceptsAll
+        {
+            get 
+            {
+                return false; 
+            }
+        }
+
+        protected override void StartRdfInternal()
+        {
+            base.StartRdf();
+            this._handler.StartRdf();
+        }
+
+        protected override void EndRdfInternal(bool ok)
+        {
+            this._handler.EndRdf(ok);
+            base.EndRdfInternal(ok);
+        }
+
+        protected override bool HandleBaseUriInternal(Uri baseUri)
+        {
+            return this._handler.HandleBaseUri(baseUri);
+        }
+
+        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+        {
+            return this._handler.HandleNamespace(prefix, namespaceUri);
+        }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            this._count++;
+            if (this._count % 1000 == 0)
+            {
+                if (this._task.HasBeenCancelled) return false;
+                this._task.Information = "Exported " + this._count + " triples so far...";
+            }
+            return this._handler.HandleTriple(t);
+        }
+
+        public int TripleCount
+        {
+            get
+            {
+                return this._count;
             }
         }
     }
