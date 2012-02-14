@@ -5,7 +5,7 @@ A Toolkit of command line utilities and GUI tools for working with RDF data
 
 Version 0.5.0 Beta
 
-Robert Vesse 2009-11
+Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 Usage

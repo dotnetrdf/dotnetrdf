@@ -3,9 +3,9 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.5.0 Beta
+Version 0.6.0 Beta
 
-Robert Vesse 2009-11
+Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 License
@@ -25,12 +25,10 @@ To use this library first unzip to a directory on your computer.
 
 Then in Visual Studio select Add a Reference and use the Browse tab to find the directory where you unzipped the archive.
 In this directory you will find a directory named Core which contains several different builds of the library depending
-on your target platform:
+on your target platform.  Note that the build is always called dotNetRDF.dll as this gives optimum compatibility with
+package management systems like NuGet.
 
-- .Net 3.5 and Mono -> Core/net35/dotNetRDF.dll
-- .Net 3.5 Client Profile -> Core/net35-client/dotNetRDF.ClientProfile.dll
-- Silverlight 4 -> Core/sl4/dotNetRDF.Silverlight.dll
-- Silverlight 4 for Windows Phone 7 -> Core/sl4-wp/dotNetRDF.WindowsPhone.dll
+Please see ReadMe.txt for a complete listing of available builds of the core library
 
 dotNetRDF includes intellisense for all classes providing that the relevant XML documentation file from the appropriate build
 is located in the same directory as the DLL file.
@@ -51,15 +49,17 @@ Plugin Library Usage
 
 This package also contains several plugin libraries which provide additional optional features.
 
-There are two data providers that can be used to access specific storage backends in conjunction
+There are two data providers found under the Data directory that can be used to access specific storage backends in conjunction
 with the dotNetRDF API.  These are as follows:
 
-- OpenLink Virtuoso -> Data/Virtuoso/dotNetRDF.Data.Virtuoso.dll
-- Microsoft SQL Server and SQL Azure -> Data/Sql/dotNetRDF.Data.Sql.dll
+- OpenLink Virtuoso -> dotNetRDF.Data.Virtuoso.dll
+- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll
 
-There is a single query plugin that provides full text query support using Lucene.Net:
+There is a single query plugin found under the Query directory that provides full text query support using Lucene.Net:
 
-- Full Text Query -> Query/FullText/dotNetRDF.Query.FullText.dll
+- Full Text Query -> dotNetRDF.Query.FullText.dll
+
+Please see ReadMe.txt for a complete listing of available builds of these plugin libraries.
 
 Note: Whichever of these plugin libraries you use you should also include the dependencies of that library to ensure it functions correctly.
 Dependencies for each library can be found in the directory with the build.
@@ -69,11 +69,10 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 and you may need to install/have available the 
 following third party libraries:
-- MySQL Connector.Net 6.0.3 which can be obtained from http://dev.mysql.com/downloads/connector/net/
-- JSON.Net 4.0r2 which can be obtained from http://www.codeplex.com/Json
+- JSON.Net 4.0r8 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
 
-The relevant DLLs (HtmlAgilityPack.dll, MySql.Data.dll and Newtonsoft.Json.Net35.dll) are included with
+The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.Net35.dll) are included with
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
 
@@ -88,16 +87,12 @@ Known Issues
 We are aware of the following issues with the library.  Please remember that this is an Beta release and so
 there are things that may be buggy still and the API is subject to change at our discretion or based upon
 user feedback.
+
+Parsing
+- RDFa 1.1 support does not currently meet the latest version of the specification
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- The SPARQL CSV/TSV results formats which we support do not currently match the official recommendations, this
-  will be addressed in the next release
-
-Storage
-- Old SQL Stores are officially deprecated, a new SQL store is available as a separate library dotNetRDF.Data.Sql.dll
-- Virtuoso support has been moved into a separate library to reduce dependencies in the core library, existing users
-  who use dotNetRDF with Virtuoso must now use dotNetRDF.Data.Virtuoso.dll in addition to the core library
  
 Change History
 --------------
@@ -136,6 +131,10 @@ Release History
 9/9/2011 - Release of Version 0.5.0 Beta (Build 0.5.0.20572)
 
 23/9/2011 - Rerelease of Version 0.5.0 Beta (Build 0.5.0.20572) to include the Query.FullText library
+
+30/11/2011 - Release of Version 0.5.1 Beta (Build 0.5.1.17871)
+
+?/2/2012 - Release of Version 0.6.0 Beta (Build 0.6.0.?)
 
 Acknowledgements
 ----------------

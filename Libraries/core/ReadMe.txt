@@ -3,22 +3,24 @@ dotNetRDF
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-This package contains the Core Library for the following four .Net profiles:
+This package contains the Core Library for the following .Net profiles:
+- .Net 4.0
+- .Net 4.0 Client Profile
 - .Net 3.5
 - .Net 3.5 Client Profile
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
 
-It also contains the following Data providers for .Net 3.5 only:
+It also contains the following Data providers for .Net 3.5 and .Net 4.0:
 - Sql - provides our ADO Store backend
 - Virtuoso - provides support for OpenLink Virtuoso
 
-And it contains the following Query plugins for .Net 3.5 only:
+And it contains the following Query plugins for .Net 3.5 and .Net 4.0:
 - FullText - provides full text SPARQL query support
 
 Please see the Release Notes for usage details and Known Issues
 
-Robert Vesse 2009-11
+Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 License
@@ -34,7 +36,7 @@ alternative terms
 Security
 --------
 
-This Project creates a Strong Name signed assembly for the Core Library only.
+This Project creates a Strong Name signed assembly for the .Net 4.0 build only
 
 The Key file for this requires a Password which is as follows: VDSOpenSource2009
 

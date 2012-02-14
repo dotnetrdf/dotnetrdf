@@ -33,9 +33,11 @@ Changed
  - Constructors for BlockingTextReader are now private, use BlockingTextReader.Create() static instead
 - Query
  - Major refactor of SPARQL expression evaluation to make it more efficient and maintainable
+ - Updated to latest SPARQL 1.1 specifications
  - Replaced the Join algorithm with a new algorithm which is significantly faster
  - Improved selectivity of TriplePattern.GetTriples()
  - Some refactoring of ISparqlDataset interface
+ - A WebDemandDataset for creating a dataset with load on demand capabilities
 - Update
  - GenericUpdateProcessor is more intelligent in determining whether a command can be applied to stores that don't have native SPARQL Update support
 - Writing
@@ -46,7 +48,7 @@ Removed
 - Legacy SQL Store support
 - Obsolete BlockingStreamReader class
 - Obsolete QueryText method on SparqlParameterizedString
-
+- Dependency on MySql.Data is no longer required by any library in the release
    
 
 
