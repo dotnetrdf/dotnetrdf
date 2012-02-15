@@ -110,6 +110,16 @@
     </exec>
   </target>
 
+  <target name="projectgen-data-sql-clientprofile" description="Generates the dotNetRDF Data.Sql .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Data.Sql .Net 4.0 Client Profile project file with the Data.Sql project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
+      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj.template" />
+      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj" />
+      <arg value="..\data.sql\" />
+    </exec>
+  </target>
+
   <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
@@ -117,6 +127,26 @@
       <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj.template" />
       <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
       <arg value="..\data.sql\" />
+    </exec>
+  </target>
+
+  <target name="projectgen-data-sql-clientprofile-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
+      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj.template" />
+      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj" />
+      <arg value="..\data.sql\" />
+    </exec>
+  </target>
+
+  <target name="projectgen-data-virtuoso-clientprofile" description="Generates the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
+      <arg value="Libraries/data.virtuoso.clientprofile/dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template" />
+      <arg value="Libraries/data.virtuoso.clientprofile/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
+      <arg value="..\data.virtuoso\" />
     </exec>
   </target>
 
@@ -250,6 +280,17 @@
     </exec>
   </target>
 
+  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile,projectgen-data-sql-clientprofile">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
   <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-data-sql-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
@@ -261,11 +302,33 @@
     </exec>
   </target>
 
+  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
   <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile,projectgen-data-virtuoso-clientprofile">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/data.virtuoso.clientprofile/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
