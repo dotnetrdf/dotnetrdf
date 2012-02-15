@@ -283,10 +283,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="page_edit.ico" />
+    <Resource Include="page_edit.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="package_editors.ico" />
+    <Resource Include="package_editors.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
