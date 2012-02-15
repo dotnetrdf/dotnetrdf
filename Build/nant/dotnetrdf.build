@@ -37,7 +37,7 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectgen-net35" description="Generates the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-core-net35" description="Generates the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -46,7 +46,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectgen-core-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -55,7 +55,7 @@
     </exec>    
   </target>
 
-  <target name="projectgen-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectgen-core-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-core-silverlight" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -70,7 +70,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-silverlight" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-core-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-core-silverlight" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -85,7 +85,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-net35,projectgen-clientprofile" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-core-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-core-net35,projectgen-core-clientprofile" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->    
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
@@ -100,12 +100,32 @@
     </exec>
   </target>
 
+  <target name="projectgen-query-fulltext-clientprofile" description="Generates the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
+      <arg value="Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj.template" />
+      <arg value="Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj" />
+      <arg value="..\query.fulltext\" />
+    </exec>
+  </target>
+
   <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj.template" />
       <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
+      <arg value="..\query.fulltext\" />
+    </exec>
+  </target>
+
+  <target name="projectgen-query-fulltext-clientprofile-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
+    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+      <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
+      <arg value="Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template" />
+      <arg value="Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
       <arg value="..\query.fulltext\" />
     </exec>
   </target>
@@ -178,13 +198,13 @@
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
           depends="compile-solution,
-		   compile-core,compile-core-net35,
-		   compile-silverlight,
-		   compile-windowsphone,
-		   compile-clientprofile,compile-clientprofile-net35,
-		   compile-data-sql,compile-data-sql-clientprofile,compile-data-sql-net35,compile-data-sql-clientprofile-net35,
-		   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
-		   compile-query-fulltext,compile-query-fulltext-net35">
+                   compile-core,compile-core-net35,
+                   compile-core-silverlight,
+                   compile-core-windowsphone,
+                   compile-core-clientprofile,compile-core-clientprofile-net35,
+                   compile-data-sql,compile-data-sql-clientprofile,compile-data-sql-net35,compile-data-sql-clientprofile-net35,
+                   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
+                   compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
 
   </target>
 
@@ -199,7 +219,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-net35">
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-core-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -221,7 +241,7 @@
     </exec>
   </target>
 
-  <target name="compile-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-silverlight">
+  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -232,7 +252,7 @@
     </exec>
   </target>
 
-  <target name="compile-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="projectgen-windowsphone">
+  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="projectgen-core-windowsphone">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
@@ -254,7 +274,7 @@
     </exec>
   </target>
 
-  <target name="compile-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="projectgen-clientprofile">
+  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="projectgen-core-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -265,7 +285,7 @@
     </exec>
   </target>
 
-  <target name="compile-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-clientprofile-net35">
+  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-core-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -287,7 +307,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile,projectgen-data-sql-clientprofile">
+  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-data-sql-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -309,7 +329,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
+  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -331,7 +351,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile,projectgen-data-virtuoso-clientprofile">
+  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-data-virtuoso-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -353,7 +373,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-clientprofile-net35,projectgen-data-virtuoso-clientprofile-net35">
+  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-data-virtuoso-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -375,11 +395,33 @@
     </exec>
   </target>
 
+  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-query-fulltext-clientprofile">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
   <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-query-fulltext-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-query-fulltext-clientprofile-net35">
+    <property name="nant.settings.currentframework" value="net-3.5" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -392,7 +434,14 @@
     <property name="dotnetrdf.nobuild" value="true" />
   </target>
   
-  <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" depends="build-core,build-core-net35,build-silverlight,build-clientprofile,build-clientprofile-net35,build-windowsphone,build-data-sql,build-data-sql-net35,build-data-virtuoso,build-data-virtuoso-net35,build-query-fulltext,build-query-fulltext-net35">
+  <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" 
+          depends="build-core,build-core-net35,
+                   build-core-silverlight,
+                   build-core-clientprofile,build-core-clientprofile-net35,
+                   build-core-windowsphone,
+                   build-data-sql,build-data-sql-net35,build-data-sql-clientprofile,build-data-sql-clientprofile-net35,
+                   build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
+                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35">
     
   </target>
   
@@ -410,28 +459,28 @@
     <copy overwrite="true" todir="../bin/nightlies/Core/net35/" file="Libraries/core.net35/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
-  <target name="build-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-silverlight">
+  <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
-  <target name="build-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-windowsphone">
+  <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
-  <target name="build-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile">
+  <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
     <copy overwrite="true" todir="../bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
-  <target name="build-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-clientprofile-net35">
+  <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
@@ -488,10 +537,22 @@
     <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
   </target>
 
+  <target name="build-query-fulltext-clientprofile" description="Copy the latest Query.FullText build to the Query.FullText Client Profile nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile">
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
+  </target>
+
   <target name="build-query-fulltext-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-net35">
     <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
+  </target>
+
+  <target name="build-query-fulltext-clientprofile-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile-net35">
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
 
   <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
@@ -533,25 +594,47 @@
     <!-- Data.Sql 4.0 Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
+    <!-- Data.Sql 4.0 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.xml" />
     <!-- Data.Sql 3.5 Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
+    <!-- Data.Sql 3.5 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
     <!-- Data.Virtuoso 4.0 Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <!-- Data.Virtuoso 4.0 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Data.Virtuoso 3.5 Build -->
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <!-- Data.Virtuoso 3.5 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Query.FullText 4.0 Build -->
-    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
+    <!-- Query.FullText 4.0 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
     <!-- Query.FullText 3.5 Build -->
     <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
     <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
     <copy overwrite="true" todir="../bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
+    <!-- Query.FullText 3.5 Client Profile Build -->
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="../bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
@@ -657,6 +740,16 @@
   <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
+      <fileset basedir="Build/nuget/Core/lib/net40/">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Core/lib/net40-client/">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
       <fileset basedir="Build/nuget/Core/lib/net35/">
         <include name="*" />
       </fileset>
@@ -677,6 +770,16 @@
       </fileset>
     </delete>
     <!-- Then create the Core library package -->
+    <copy todir="Build/nuget/Core/lib/net40/">
+      <fileset basedir="../bin/stable/Core/net40/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Core/lib/net40-client/">
+      <fileset basedir="../bin/stable/Core/net40-client/">
+        <include name="*" />
+      </fileset>
+    </copy>
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="../bin/stable/Core/net35/">
         <include name="*" />
@@ -708,15 +811,44 @@
   <target name="dist-nuget-data-sql" description="Creates the Data.Sql NuGet package" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
+      <fileset basedir="Build/nuget/Data.Sql/lib/net40">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Sql/lib/net40-client">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
       <fileset basedir="Build/nuget/Data.Sql/lib/net35">
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Sql/lib/net35-client">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Data.Sql package -->
+    <copy todir="Build/nuget/Data.Sql/lib/net40/">
+      <fileset basedir="../bin/stable/Data/Sql/net40/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Data.Sql/lib/net40-client/">
+      <fileset basedir="../bin/stable/Data/Sql/net40-client/">
+        <include name="*" />
+      </fileset>
+    </copy>
     <copy todir="Build/nuget/Data.Sql/lib/net35/">
       <fileset basedir="../bin/stable/Data/Sql/net35/">
-        <include name="dotNetRDF.Data.Sql.dll" />
-        <include name="dotNetRDF.Data.Sql.xml" />
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Data.Sql/lib/net35-client/">
+      <fileset basedir="../bin/stable/Data/Sql/net35-client/">
+        <include name="*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
@@ -730,16 +862,44 @@
   <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40-client">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35-client">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Data.Virtuoso package -->
+    <copy todir="Build/nuget/Data.Virtuoso/lib/net40/">
+      <fileset basedir="../bin/stable/Data/Virtuoso/net40/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Data.Virtuoso/lib/net40-client/">
+      <fileset basedir="../bin/stable/Data/Virtuoso/net40-client/">
+        <include name="*" />
+      </fileset>
+    </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
       <fileset basedir="../bin/stable/Data/Virtuoso/net35/">
-        <include name="dotNetRDF.Data.Virtuoso.dll" />
-        <include name="dotNetRDF.Data.Virtuoso.xml" />
-        <include name="OpenLink.Data.Virtuoso.dll" />
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Data.Virtuoso/lib/net35-client/">
+      <fileset basedir="../bin/stable/Data/Virtuoso/net35-client/">
+        <include name="*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
@@ -753,16 +913,44 @@
   <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release">
     <!-- Firstly clean out the relevant directories -->
     <delete>
+      <fileset basedir="Build/nuget/Query.FullText/lib/net40">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Query.FullText/lib/net40-client">
+        <include name="*" />
+      </fileset>
+    </delete>
+    <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net35">
         <include name="*" />
       </fileset>
     </delete>
+    <delete>
+      <fileset basedir="Build/nuget/Query.FullText/lib/net35-client">
+        <include name="*" />
+      </fileset>
+    </delete>
     <!-- Then create the Query.FullText package -->
+    <copy todir="Build/nuget/Query.FullText/lib/net40/">
+      <fileset basedir="../bin/stable/Query/FullText/net40/">
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
+      <fileset basedir="../bin/stable/Query/FullText/net40-client/">
+        <include name="*" />
+      </fileset>
+    </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="../bin/stable/Query/FullText/net35/">
-        <include name="dotNetRDF.Query.FullText.dll" />
-        <include name="dotNetRDF.Query.FullText.xml" />
-        <include name="Lucene.Net.dll" />
+        <include name="*" />
+      </fileset>
+    </copy>
+    <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
+      <fileset basedir="../bin/stable/Query/FullText/net35-client/">
+        <include name="*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->

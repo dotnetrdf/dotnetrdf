@@ -11,12 +11,19 @@ This package contains the Core Library for the following .Net profiles:
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
 
-It also contains the following Data providers for .Net 3.5 and .Net 4.0:
-- Sql - provides our ADO Store backend
-- Virtuoso - provides support for OpenLink Virtuoso
+It also contains the following Data plugins for our SQL backend and OpenLink Virtuoso, builds
+are provided for the following .Net profiles:
+- .Net 4.0
+- .Net 4.0 Client Profile
+- .Net 3.5
+- .Net 3.5 Client Profile
 
-And it contains the following Query plugins for .Net 3.5 and .Net 4.0:
-- FullText - provides full text SPARQL query support
+And it contains the a Query plugin for Full Text indexing support, builds are provided
+for the following .Net profiles:
+- .Net 4.0
+- .Net 4.0 Client Profile
+- .Net 3.5
+- .Net 3.5 Client Profile
 
 Please see the Release Notes for usage details and Known Issues
 
@@ -36,11 +43,8 @@ alternative terms
 Security
 --------
 
-This Project creates a Strong Name signed assembly for the .Net 4.0 build only
-
-The Key file for this requires a Password which is as follows: VDSOpenSource2009
-
-For security conscious deployment scenarios we suggest that you build the project from source and use your own key file
+As of the 0.6.0 release the library is no longer strong named, if you need it strong named then you
+should build it form source using your own key.
 
 Acknowledgements
 ----------------

@@ -12,8 +12,9 @@
     <AssemblyName>dotNetRDF</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>VDSOpenSourceKey.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -815,7 +816,6 @@
     <Compile Include="Writing\TsvWriter.cs" />
     <Compile Include="Writing\TurtleWriter.cs" />
     <Compile Include="Writing\GenericWriter.cs" />
-    <None Include="VDSOpenSourceKey.pfx" />
     <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd" />
     <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
