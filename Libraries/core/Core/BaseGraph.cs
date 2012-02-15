@@ -71,6 +71,7 @@ namespace VDS.RDF
         /// <summary>
         /// Collection of Subject &amp; Object Nodes in the Graph
         /// </summary>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         protected BaseNodeCollection _nodes;
         /// <summary>
         /// Namespace Mapper
@@ -99,6 +100,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
         /// <param name="nodeCollection">Node Collection to use</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         protected BaseGraph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
         {
             this._triples = tripleCollection;
@@ -119,6 +121,11 @@ namespace VDS.RDF
         protected BaseGraph(BaseTripleCollection tripleCollection)
             : this(tripleCollection, new HashedNodeCollection()) { }
 
+        /// <summary>
+        /// Creates a new Base Graph which uses the given Node Collection and the default <see cref="IndexedTripleColection">IndexedTripleCollection</see> as the Triple Collection
+        /// </summary>
+        /// <param name="nodeCollection"></param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         protected BaseGraph(BaseNodeCollection nodeCollection)
             : this(new IndexedTripleCollection(), nodeCollection) { }
 
@@ -165,6 +172,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the set of Nodes which make up this Graph
         /// </summary>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public virtual BaseNodeCollection Nodes
         {
             get

@@ -212,6 +212,7 @@ namespace VDS.RDF
     /// The union consists of a <em>Base</em> collection which is the collection that Nodes can actually be added to and deleted from and any number of additional collections which are read-only as far as the union is concerned (this does not mean they cannot be altered elsewhere by other code)
     /// </para>
     /// </remarks>
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class UnionNodeCollection : BaseNodeCollection
     {
         private BaseNodeCollection _baseCollection;
@@ -222,6 +223,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="baseNodes">Base Collection</param>
         /// <param name="additionalNodes">Additional Collection</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public UnionNodeCollection(BaseNodeCollection baseNodes, BaseNodeCollection additionalNodes)
         {
             if (baseNodes == null) throw new ArgumentNullException("baseNodes");
@@ -236,6 +238,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="baseNodes">Base Collection</param>
         /// <param name="additionalNodes">Additional Collection(s)</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public UnionNodeCollection(BaseNodeCollection baseNodes, IEnumerable<BaseNodeCollection> additionalNodes)
         {
             if (baseNodes == null) throw new ArgumentNullException("baseNodes");

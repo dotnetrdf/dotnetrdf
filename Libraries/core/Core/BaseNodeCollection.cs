@@ -44,6 +44,7 @@ namespace VDS.RDF
     /// Abstract Base Class for Node Collections
     /// </summary>
     /// <remarks>Designed to allow the underlying storage of a Node Collection to be changed at a later date without affecting classes that use it</remarks>
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public abstract class BaseNodeCollection
         : IEnumerable<INode>, IDisposable
     {

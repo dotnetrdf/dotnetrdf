@@ -33,6 +33,7 @@ terms.
 
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -43,6 +44,7 @@ namespace VDS.RDF
     /// <summary>
     /// Basic Node Collection
     /// </summary>
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class NodeCollection
         : BaseNodeCollection, IEnumerable<INode>
     {
@@ -241,6 +243,7 @@ namespace VDS.RDF
     /// <summary>
     /// Thread Safe Node Collection
     /// </summary>
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class ThreadSafeNodeCollection 
         : NodeCollection, IEnumerable<INode>
     {
@@ -439,6 +442,7 @@ namespace VDS.RDF
     /// <summary>
     /// Node Collection backed by a Hash Table
     /// </summary>
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class HashedNodeCollection
         : BaseNodeCollection, IEnumerable<INode>
     {
@@ -541,6 +545,7 @@ namespace VDS.RDF
         #endregion
     }
 
+    [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class EmptyNodeCollection
         : BaseNodeCollection
     {

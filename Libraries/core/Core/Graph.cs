@@ -87,6 +87,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="nodeCollection">Node Collection</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
             : base(tripleCollection, nodeCollection) { }
 
@@ -107,6 +108,7 @@ namespace VDS.RDF
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="nodeCollection">Node Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection, bool emptyNamespaceMap)
             : base(tripleCollection, nodeCollection) 
         {

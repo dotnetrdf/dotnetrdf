@@ -85,6 +85,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Node Collection for the Graph
         /// </summary>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         BaseNodeCollection Nodes 
         {
             get;
