@@ -150,6 +150,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             g = new Graph();
                             handler = new GraphHandler(g);
                         }
+                        handler = new CopyMoveProgressHandler(handler, this, "Moving", this._target.UpdateSupported);
                         this._canceller = new CancellableHandler(handler);
                         if (this.HasBeenCancelled) this._canceller.Cancel();
 
@@ -175,7 +176,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         }
                         else
                         {
-                            this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target.ToString()) + ".  Please note that as the Source Triple Store does not support deleting Graphs the Graph remains present in the Source Store";
+                            this.Information = "Copy completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'" + (ReferenceEquals(this._source, this._target) ? String.Empty : " on " + this._target.ToString()) + ".  Please note that as the Source Triple Store does not support deleting Graphs so the Graph remains present in the Source Store";
                         }
                     }
 
@@ -226,6 +227,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             g = new Graph();
                             handler = new GraphHandler(g);
                         }
+                        handler = new CopyMoveProgressHandler(handler, this, "Copying", this._target.UpdateSupported);
                         this._canceller = new CancellableHandler(handler);
                         if (this.HasBeenCancelled) this._canceller.Cancel();
 
@@ -255,6 +257,77 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 this._canceller.Cancel();
             }
+        }
+    }
+
+    class CopyMoveProgressHandler
+        : BaseRdfHandler, IWrappingRdfHandler
+    {
+        private IRdfHandler _handler;
+        private CopyMoveTask _task;
+        private String _action;
+        private bool _streaming;
+        private int _count = 0;
+
+        public CopyMoveProgressHandler(IRdfHandler handler, CopyMoveTask task, String action, bool streaming)
+        {
+            this._handler = handler;
+            this._task = task;
+            this._action = action;
+            this._streaming = streaming;
+        }
+
+        public override bool AcceptsAll
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public IEnumerable<IRdfHandler> InnerHandlers
+        {
+            get
+            {
+                return this._handler.AsEnumerable();
+            }
+        }
+
+        protected override void StartRdfInternal()
+        {
+            this._handler.StartRdf();
+        }
+
+        protected override void EndRdfInternal(bool ok)
+        {
+            this._handler.EndRdf(ok);
+        }
+
+        protected override bool HandleBaseUriInternal(Uri baseUri)
+        {
+            return this._handler.HandleBaseUri(baseUri);
+        }
+
+        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+        {
+            return this._handler.HandleNamespace(prefix, namespaceUri);
+        }
+
+        protected override bool HandleTripleInternal(Triple t)
+        {
+            this._count++;
+            if (this._count % 1000 == 0)
+            {
+                if (this._streaming)
+                {
+                    this._task.Information = this._action + " " + this._count + " triples so far...";
+                }
+                else
+                {
+                    this._task.Information = "Read " + this._count + " triples into memory so far, no " + this._action + " has yet taken place...";
+                }
+            }
+            return this._handler.HandleTriple(t);
         }
     }
 }
