@@ -98,6 +98,7 @@
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\httpserver\VDS.Web.Server.csproj">
       <Project>{EEDC2947-D637-4A46-BFBC-BB64BAEC4500}</Project>

@@ -75,12 +75,6 @@
     <Compile Include="VirtuosoTripleStore.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\core\dotNetRDF.csproj">
-      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
-      <Name>dotNetRDF</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -96,6 +90,13 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\core\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
