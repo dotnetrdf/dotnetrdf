@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF (Silverlight Build)")]
-[assembly: AssemblyDescription("API for manipulating RDF data (slimmed down Silverlight build)")]
+[assembly: AssemblyTitle("dotNetRDF.Core")]
+[assembly: AssemblyDescription("API for manipulating RDF data (Silverlight 4)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.Silverlight")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-11")]
+[assembly: AssemblyProduct("dotNetRDF.Core.Silverlight")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

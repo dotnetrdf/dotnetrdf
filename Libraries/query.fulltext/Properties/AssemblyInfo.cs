@@ -5,8 +5,8 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF Full Text SPARQL")]
-[assembly: AssemblyDescription("Provides full text SPARQL capabilities using Lucene.Net to dotNetRDF's query engine")]
+[assembly: AssemblyTitle("dotNetRDF.Query.FullText")]
+[assembly: AssemblyDescription("Provides full text SPARQL capabilities using Lucene.Net to dotNetRDF's query engine (.Net 4.0)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Query.FullText")]

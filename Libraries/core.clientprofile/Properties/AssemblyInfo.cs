@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("dotNetRDF (Client Profile Build)")]
-[assembly: AssemblyDescription("API for manipulating RDF data (slimmed down Client Profile build)")]
+[assembly: AssemblyTitle("dotNetRDF.Core")]
+[assembly: AssemblyDescription("API for manipulating RDF data (.Net Client Profile 4.0)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.ClientProfile")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-11")]
+[assembly: AssemblyProduct("dotNetRDF.Core.ClientProfile")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

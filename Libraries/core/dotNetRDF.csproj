@@ -95,6 +95,7 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\GenericReader.cs" />
+    <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
     <Compile Include="Parsing\FolderStoreReader.cs" />
     <Compile Include="Parsing\RdfJsonParser.cs" />

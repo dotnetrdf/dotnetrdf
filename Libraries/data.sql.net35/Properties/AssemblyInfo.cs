@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.Data.Sql")]
-[assembly: AssemblyDescription("SQL Backend for dotNetRDF")]
+[assembly: AssemblyDescription("SQL Backend for dotNetRDF (.Net 3.5)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
-[assembly: AssemblyProduct("dotNetRDF.Data.Sql")]
+[assembly: AssemblyProduct("dotNetRDF.Data.Sql.Net35")]
 [assembly: AssemblyCopyright("Copyright © Robert Vesse 2011-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("dotNetRDF.Data.Sql")]
-[assembly: AssemblyDescription("SQL Backend for dotNetRDF")]
+[assembly: AssemblyDescription("SQL Backend for dotNetRDF (.Net 4.0)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Data.Sql")]

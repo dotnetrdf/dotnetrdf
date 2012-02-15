@@ -13,8 +13,9 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>dotNetRDFTest.TestSuite</StartupObject>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>VDSOpenSourceKey.pfx</AssemblyOriginatorKeyFile>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
@@ -421,7 +422,6 @@
     <None Include="turtle_tests\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="VDSOpenSourceKey.pfx" />
     <None Include="xmlrdf_tests\amp-in-url\test001.nt" />
     <None Include="xmlrdf_tests\amp-in-url\test001.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
