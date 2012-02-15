@@ -177,7 +177,14 @@
   </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-solution,compile-core,compile-core-net35,compile-silverlight,compile-windowsphone,compile-clientprofile,compile-clientprofile-net35,compile-data-sql,compile-data-sql-net35,compile-data-virtuoso,compile-data-virtuoso-net35,compile-query-fulltext,compile-query-fulltext-net35">
+          depends="compile-solution,
+		   compile-core,compile-core-net35,
+		   compile-silverlight,
+		   compile-windowsphone,
+		   compile-clientprofile,compile-clientprofile-net35,
+		   compile-data-sql,compile-data-sql-clientprofile,compile-data-sql-net35,compile-data-sql-clientprofile-net35,
+		   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
+		   compile-query-fulltext,compile-query-fulltext-net35">
 
   </target>
 
@@ -436,9 +443,19 @@
     <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
   </target>
 
+  <target name="build-data-sql-clientprofile" description="Copy the latest Data.Sql Client Profile build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-clientprofile">
+    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.xml" />
+  </target>
+
   <target name="build-data-sql-net35" description="Copy the latest Data.Sql 3.5 build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-net35">
     <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
+  </target>
+
+  <target name="build-data-sql-clientprofile-net35" description="Copy the latest Data.Sql 3.5 Client Profile build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-clientprofile-net35">
+    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
@@ -447,10 +464,22 @@
     <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
-  <target name="build-data-virtuoso-net35" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-net35">
+  <target name="build-data-virtuoso-clientprofile" description="Copy the latest Data.Virtuoso Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile">
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+  </target>
+
+  <target name="build-data-virtuoso-net35" description="Copy the latest Data.Virtuoso 3.5 build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-net35">
     <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+  </target>
+
+  <target name="build-data-virtuoso-clientprofile-net35" description="Copy the latest Data.Virtuoso 3.5 Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile-net35">
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="../bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-query-fulltext" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext">
@@ -465,7 +494,7 @@
     <copy overwrite="true" todir="../bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
   </target>
 
-  <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}"  depends="compile">
+  <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
     <!-- Documentation -->
     <copy overwrite="true" todir="../bin/stable/" file="../Acknowledgments.txt" />
     <copy overwrite="true" todir="../bin/stable/" file="Libraries/core/ChangeLog.txt" />
