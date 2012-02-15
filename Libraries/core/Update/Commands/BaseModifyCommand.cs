@@ -121,7 +121,7 @@ namespace VDS.RDF.Update.Commands
         /// Adds a new USING URI
         /// </summary>
         /// <param name="u">URI</param>
-        internal void AddUsingUri(Uri u)
+        public void AddUsingUri(Uri u)
         {
             if (this._usingUris == null) this._usingUris = new List<Uri>();
             this._usingUris.Add(u);
@@ -131,7 +131,7 @@ namespace VDS.RDF.Update.Commands
         /// Adds a new USING NAMED URI
         /// </summary>
         /// <param name="u">URI</param>
-        internal void AddUsingNamedUri(Uri u)
+        public void AddUsingNamedUri(Uri u)
         {
             if (this._usingNamedUris == null) this._usingNamedUris = new List<Uri>();
             this._usingNamedUris.Add(u);

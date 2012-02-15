@@ -127,6 +127,7 @@ namespace VDS.RDF.Query.Optimisation
                    && !q.HasDistinctModifier
                    && (q.OrderBy == null || q.IsOptimisableOrderBy)
                    && q.GroupBy == null && q.Having == null
+                   && !q.IsAggregate
                    && q.Bindings == null;
         }
 

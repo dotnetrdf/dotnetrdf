@@ -43,6 +43,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
+using VDS.RDF.Update.Commands;
 using VDS.RDF.Web.Configuration.Server;
 using VDS.RDF.Writing;
 using VDS.Web;
@@ -142,11 +143,29 @@ namespace VDS.RDF.Utilities.Server
                 return;
             }
 
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+                //TODO: Support Service Description?
+                ////OPTIONS requests always result in the Service Description document
+                //IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                //HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                //return;
+            }
+
             //See if there has been an query submitted
             String queryText = context.Request.QueryString["query"];
             if (queryText == null || queryText.Equals(String.Empty))
             {
-                queryText = form["query"];
+                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                {
+                    queryText = form["query"];
+                }
+                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
+                {
+                    queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                }
             }
 
             //If no Query sent either show Query Form or give a HTTP 400 response
@@ -223,11 +242,13 @@ namespace VDS.RDF.Utilities.Server
             try
             {
                 //Now we're going to parse the Query
-                SparqlQueryParser parser = new SparqlQueryParser();
+                SparqlQueryParser parser = new SparqlQueryParser(this._config.QuerySyntax);
                 parser.ExpressionFactories = this._config.ExpressionFactories;
+                parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
+                query.AlgebraOptimisers = this._config.AlgebraOptimisers;
 
-                //Q: Support authentication?
+                //TODO: Support Authentication?
                 ////Check whether we need to use authentication
                 ////If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 //bool isAuth = true, requireActionAuth = false;
@@ -238,7 +259,7 @@ namespace VDS.RDF.Utilities.Server
                 //    requireActionAuth = true;
                 //}
                 //if (!isAuth) return;
-                //
+
                 ////Is this user allowed to make this kind of query?
                 //if (requireActionAuth) HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetQueryPermissionAction(query));
 
@@ -250,7 +271,7 @@ namespace VDS.RDF.Utilities.Server
                     {
                         if (!userDefaultGraph.Equals(String.Empty))
                         {
-                            query.AddDefaultGraph(new Uri(userDefaultGraph));
+                            query.AddDefaultGraph(UriFactory.Create(userDefaultGraph));
                         }
                     }
                 }
@@ -259,7 +280,7 @@ namespace VDS.RDF.Utilities.Server
                     //Only applies if the Query doesn't specify any Default Graph
                     if (!query.DefaultGraphs.Any())
                     {
-                        query.AddDefaultGraph(new Uri(this._config.DefaultGraphURI));
+                        query.AddDefaultGraph(UriFactory.Create(this._config.DefaultGraphURI));
                     }
                 }
 
@@ -270,7 +291,7 @@ namespace VDS.RDF.Utilities.Server
                     {
                         if (!userNamedGraph.Equals(String.Empty))
                         {
-                            query.AddNamedGraph(new Uri(userNamedGraph));
+                            query.AddNamedGraph(UriFactory.Create(userNamedGraph));
                         }
                     }
                 }
@@ -305,7 +326,7 @@ namespace VDS.RDF.Utilities.Server
             }
             catch (RdfQueryException queryEx)
             {
-                HandleQueryErrors(context, "Update Error", queryText, queryEx);
+                HandleQueryErrors(context, "Query Error", queryText, queryEx);
             }
             catch (RdfWriterSelectionException writerSelEx)
             {
@@ -392,11 +413,26 @@ namespace VDS.RDF.Utilities.Server
                 return;
             }
 
+            if (context.Request.HttpMethod.Equals("OPTIONS"))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotImplemented;
+                return;
+                //TODO: Support Service Description?
+                ////OPTIONS requests always result in the Service Description document
+                //IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                //HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                //return;
+            }
+
             //See if there has been an update submitted
-            String updateText = context.Request.QueryString["update"];
-            if (updateText == null || updateText.Equals(String.Empty))
+            String updateText = null;
+            if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
             {
                 updateText = form["update"];
+            }
+            else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
+            {
+                updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
             }
 
             //If no Update sent either show Update Form or give a HTTP 400 response
@@ -414,6 +450,29 @@ namespace VDS.RDF.Utilities.Server
                 }
             }
 
+            //Get Other options associated with this update
+            List<String> userDefaultGraphs = new List<String>();
+            List<String> userNamedGraphs = new List<String>();
+
+            //Get the USING URIs (if any)
+            if (context.Request.QueryString["using-graph-uri"] != null)
+            {
+                userDefaultGraphs.AddRange(context.Request.QueryString.GetValues("using-graph-uri"));
+            }
+            else if (form["using-graph-uri"] != null)
+            {
+                userDefaultGraphs.AddRange(form.GetValues("using-graph-uri"));
+            }
+            //Get the USING NAMED URIs (if any)
+            if (context.Request.QueryString["using-named-graph-uri"] != null)
+            {
+                userNamedGraphs.AddRange(context.Request.QueryString.GetValues("using-named-graph-uri"));
+            }
+            else if (form["using-named-graph-uri"] != null)
+            {
+                userNamedGraphs.AddRange(form.GetValues("using-named-graph-uri"));
+            }
+
             try
             {
                 //Now we're going to parse the Updates
@@ -421,7 +480,7 @@ namespace VDS.RDF.Utilities.Server
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlUpdateCommandSet commands = parser.ParseFromString(updateText);
 
-                //Q: Support authentication?
+                //TODO: Support Authentication?
                 ////Check whether we need to use authentication
                 ////If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
                 //bool isAuth = true, requireActionAuth = false;
@@ -433,7 +492,40 @@ namespace VDS.RDF.Utilities.Server
                 //}
                 //if (!isAuth) return;
 
-                //Process Command Set
+                //First check actions to see whether they are all permissible and apply USING/USING NAMED paramaters
+                foreach (SparqlUpdateCommand cmd in commands.Commands)
+                {
+                    //TODO: Support Authentication?
+                    ////Authenticate each action
+                    //bool actionAuth = true;
+                    //if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetUpdatePermissionAction(cmd));
+                    //if (!actionAuth)
+                    //{
+                    //    throw new SparqlUpdatePermissionException("You are not authorised to perform the " + this.GetUpdatePermissionAction(cmd) + " action");
+                    //}
+
+                    //Check whether we need to (and are permitted to) apply USING/USING NAMED parameters
+                    if (userDefaultGraphs.Count > 0 || userNamedGraphs.Count > 0)
+                    {
+                        BaseModificationCommand modify = cmd as BaseModificationCommand;
+                        if (modify != null)
+                        {
+                            if (modify.GraphUri != null || modify.UsingUris.Any() || modify.UsingNamedUris.Any())
+                            {
+                                //Invalid if a command already has a WITH/USING/USING NAMED
+                                throw new SparqlUpdateMalformedException("A command in your update request contains a WITH/USING/USING NAMED clause but you have also specified one/both of the using-graph-uri or using-named-graph-uri parameters which is not permitted by the SPARQL Protocol");
+                            }
+                            else
+                            {
+                                //Otherwise go ahead and apply
+                                userDefaultGraphs.ForEach(u => modify.AddUsingUri(UriFactory.Create(u)));
+                                userNamedGraphs.ForEach(u => modify.AddUsingNamedUri(UriFactory.Create(u)));
+                            }
+                        }
+                    }
+                }
+
+                //Then assuming we got here this means all our actions are permitted so now we can process the updates
                 this._config.UpdateProcessor.ProcessCommandSet(commands);
 
                 //Flush outstanding changes
@@ -441,7 +533,15 @@ namespace VDS.RDF.Utilities.Server
             }
             catch (RdfParseException parseEx)
             {
-                HandleUpdateErrors(context, "Parsing Error", updateText, parseEx);
+                HandleUpdateErrors(context, "Parsing Error", updateText, parseEx, (int)HttpStatusCode.BadRequest);
+            }
+            catch (SparqlUpdatePermissionException permEx)
+            {
+                HandleUpdateErrors(context, "Permissions Error", updateText, permEx, (int)HttpStatusCode.Forbidden);
+            }
+            catch (SparqlUpdateMalformedException malEx)
+            {
+                HandleUpdateErrors(context, "Malformed Update Error", updateText, malEx, (int)HttpStatusCode.BadRequest);
             }
             catch (SparqlUpdateException updateEx)
             {
@@ -579,6 +679,19 @@ namespace VDS.RDF.Utilities.Server
         protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex)
         {
             HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex);
+        }
+
+        /// <summary>
+        /// Handles errors in processing SPARQL Update Requests
+        /// </summary>
+        /// <param name="context">Context of the HTTP Request</param>
+        /// <param name="title">Error title</param>
+        /// <param name="update">SPARQL Update</param>
+        /// <param name="ex">Error</param>
+        /// <param name="statusCode">HTTP Status code to return</param>
+        protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex, int statusCode)
+        {
+            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex, statusCode);
         }
 
         #endregion
