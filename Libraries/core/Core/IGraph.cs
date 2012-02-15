@@ -216,6 +216,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<INode> GetNodes(ISelector<INode> selector);
 
         /// <summary>
@@ -224,6 +225,7 @@ namespace VDS.RDF
         /// <param name="firstSelector">First Selector in the Chain</param>
         /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain);
 
         /// <summary>
@@ -231,6 +233,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selectorChain">Chain of Independent Selectors</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain);
 
         /// <summary>
@@ -245,6 +248,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriples(ISelector<Triple> selector);
 
         /// <summary>
@@ -266,6 +270,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector);
 
         /// <summary>
@@ -294,6 +299,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector);
 
         /// <summary>
@@ -315,6 +321,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector);
 
         /// <summary>
@@ -360,6 +367,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         bool TriplesExist(ISelector<Triple> selector);
 
         /// <summary>

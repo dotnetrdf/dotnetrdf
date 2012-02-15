@@ -45,6 +45,7 @@ namespace VDS.RDF
     /// Interface for defining arbitrary Selectors for Selecting Nodes and Triples from Graphs
     /// </summary>
     /// <typeparam name="T">Type to perform Selection upon</typeparam>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release",false)]
     public interface ISelector<T>
     {
         /// <summary>
@@ -59,6 +60,7 @@ namespace VDS.RDF
     /// Interface for defining arbitrary Selectors which are dependant on the Results of a previous Selector
     /// </summary>
     /// <typeparam name="T">Type to perform Selection upon</typeparam>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release",false)]
     public interface IDependentSelector<T> : ISelector<T>
     {
         /// <summary>

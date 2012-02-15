@@ -492,6 +492,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Node Selector</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<INode> GetNodes(ISelector<INode> selector)
         {
             return this._g.GetNodes(selector);
@@ -504,6 +505,7 @@ namespace VDS.RDF
         /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
         /// <returns>Zero/More Triples</returns>
         /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
         {
             return this._g.GetTriples(firstSelector, selectorChain);
@@ -515,6 +517,7 @@ namespace VDS.RDF
         /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
         /// <returns>Zero/More Triples</returns>
         /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
         {
             return this._g.GetTriples(selectorChain);
@@ -535,6 +538,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triple</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
         {
             return this._g.GetTriples(selector);
@@ -565,6 +569,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
         {
             return this._g.GetTriplesWithObject(selector);
@@ -605,6 +610,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
         {
             return this._g.GetTriplesWithPredicate(selector);
@@ -635,6 +641,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
         {
             return this._g.GetTriplesWithSubject(selector);
@@ -698,6 +705,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector Class which performs the Selection</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public bool TriplesExist(ISelector<Triple> selector)
         {
             return this._g.TriplesExist(selector);

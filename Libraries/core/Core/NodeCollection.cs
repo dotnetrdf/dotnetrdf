@@ -540,4 +540,54 @@ namespace VDS.RDF
 
         #endregion
     }
+
+    public class EmptyNodeCollection
+        : BaseNodeCollection
+    {
+
+        protected internal override void Add(INode n)
+        {
+            //Nothing to do
+        }
+
+        public override IEnumerable<IBlankNode> BlankNodes
+        {
+            get { return Enumerable.Empty<IBlankNode>(); }
+        }
+
+        public override bool Contains(INode n)
+        {
+            return true;
+        }
+
+        public override int Count
+        {
+            get { return 0; }
+        }
+
+        public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
+        {
+            get { return Enumerable.Empty<IGraphLiteralNode>(); }
+        }
+
+        public override IEnumerable<ILiteralNode> LiteralNodes
+        {
+            get { return Enumerable.Empty<ILiteralNode>(); }
+        }
+
+        public override IEnumerable<IUriNode> UriNodes
+        {
+            get { return Enumerable.Empty<IUriNode>(); }
+        }
+
+        public override void Dispose()
+        {
+            //Nothing to do
+        }
+
+        public override IEnumerator<INode> GetEnumerator()
+        {
+            return Enumerable.Empty<INode>().GetEnumerator();
+        }
+    }
 }

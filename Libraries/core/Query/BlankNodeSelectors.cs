@@ -43,6 +43,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples containing the given Blank Node
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class CommonBlankNodeSelector : ISelector<Triple>
     {
 
@@ -78,6 +79,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples not involving a Blank Node
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class NonBlankSelector : ISelector<Triple>
     {
 
@@ -102,6 +104,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Nodes which aren't Blank
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class NonBlankNodeSelector : ISelector<INode>
     {
 
@@ -119,6 +122,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples involving a Blank Node
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasBlankSelector : ISelector<Triple>
     {
         /// <summary>

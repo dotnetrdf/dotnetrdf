@@ -47,6 +47,8 @@
             this.grpTestCases = new System.Windows.Forms.GroupBox();
             this.btnRemoveTestCase = new System.Windows.Forms.Button();
             this.lstTestCases = new System.Windows.Forms.ListBox();
+            this.chkUseNodeDefault = new System.Windows.Forms.CheckBox();
+            this.lstNodeCollectionImpl = new System.Windows.Forms.ListBox();
             this.grpToTest.SuspendLayout();
             this.grpOptions.SuspendLayout();
             this.grpTestSet.SuspendLayout();
@@ -56,6 +58,8 @@
             // 
             // grpToTest
             // 
+            this.grpToTest.Controls.Add(this.lstNodeCollectionImpl);
+            this.grpToTest.Controls.Add(this.chkUseNodeDefault);
             this.grpToTest.Controls.Add(this.btnAddTestCase);
             this.grpToTest.Controls.Add(this.lstTripleCollectionImpl);
             this.grpToTest.Controls.Add(this.chkUseDefault);
@@ -63,14 +67,14 @@
             this.grpToTest.Controls.Add(this.lblIGraphImpl);
             this.grpToTest.Location = new System.Drawing.Point(12, 12);
             this.grpToTest.Name = "grpToTest";
-            this.grpToTest.Size = new System.Drawing.Size(341, 272);
+            this.grpToTest.Size = new System.Drawing.Size(341, 330);
             this.grpToTest.TabIndex = 0;
             this.grpToTest.TabStop = false;
             this.grpToTest.Text = "Implementation to Test";
             // 
             // btnAddTestCase
             // 
-            this.btnAddTestCase.Location = new System.Drawing.Point(227, 245);
+            this.btnAddTestCase.Location = new System.Drawing.Point(227, 301);
             this.btnAddTestCase.Name = "btnAddTestCase";
             this.btnAddTestCase.Size = new System.Drawing.Size(108, 23);
             this.btnAddTestCase.TabIndex = 4;
@@ -82,16 +86,16 @@
             // 
             this.lstTripleCollectionImpl.Enabled = false;
             this.lstTripleCollectionImpl.FormattingEnabled = true;
-            this.lstTripleCollectionImpl.Location = new System.Drawing.Point(6, 170);
+            this.lstTripleCollectionImpl.Location = new System.Drawing.Point(6, 153);
             this.lstTripleCollectionImpl.Name = "lstTripleCollectionImpl";
             this.lstTripleCollectionImpl.ScrollAlwaysVisible = true;
-            this.lstTripleCollectionImpl.Size = new System.Drawing.Size(329, 69);
+            this.lstTripleCollectionImpl.Size = new System.Drawing.Size(329, 56);
             this.lstTripleCollectionImpl.TabIndex = 3;
             // 
             // chkUseDefault
             // 
             this.chkUseDefault.AutoSize = true;
-            this.chkUseDefault.Location = new System.Drawing.Point(9, 147);
+            this.chkUseDefault.Location = new System.Drawing.Point(9, 130);
             this.chkUseDefault.Name = "chkUseDefault";
             this.chkUseDefault.Size = new System.Drawing.Size(256, 17);
             this.chkUseDefault.TabIndex = 2;
@@ -105,7 +109,7 @@
             this.lstIGraphImpl.Location = new System.Drawing.Point(6, 42);
             this.lstIGraphImpl.Name = "lstIGraphImpl";
             this.lstIGraphImpl.ScrollAlwaysVisible = true;
-            this.lstIGraphImpl.Size = new System.Drawing.Size(329, 95);
+            this.lstIGraphImpl.Size = new System.Drawing.Size(329, 82);
             this.lstIGraphImpl.TabIndex = 1;
             this.lstIGraphImpl.SelectedIndexChanged += new System.EventHandler(this.lstIGraphImpl_SelectedIndexChanged);
             // 
@@ -129,7 +133,7 @@
             this.grpOptions.Controls.Add(this.lblTestData);
             this.grpOptions.Location = new System.Drawing.Point(577, 12);
             this.grpOptions.Name = "grpOptions";
-            this.grpOptions.Size = new System.Drawing.Size(295, 272);
+            this.grpOptions.Size = new System.Drawing.Size(295, 330);
             this.grpOptions.TabIndex = 2;
             this.grpOptions.TabStop = false;
             this.grpOptions.Text = "Test Options";
@@ -138,7 +142,7 @@
             // 
             this.grpTestSet.Controls.Add(this.radLoadAndMem);
             this.grpTestSet.Controls.Add(this.radStandard);
-            this.grpTestSet.Location = new System.Drawing.Point(9, 182);
+            this.grpTestSet.Location = new System.Drawing.Point(9, 238);
             this.grpTestSet.Name = "grpTestSet";
             this.grpTestSet.Size = new System.Drawing.Size(280, 57);
             this.grpTestSet.TabIndex = 5;
@@ -169,7 +173,7 @@
             // 
             // btnRun
             // 
-            this.btnRun.Location = new System.Drawing.Point(214, 245);
+            this.btnRun.Location = new System.Drawing.Point(214, 301);
             this.btnRun.Name = "btnRun";
             this.btnRun.Size = new System.Drawing.Size(75, 23);
             this.btnRun.TabIndex = 6;
@@ -180,7 +184,7 @@
             // lblIterations2
             // 
             this.lblIterations2.AutoSize = true;
-            this.lblIterations2.Location = new System.Drawing.Point(6, 166);
+            this.lblIterations2.Location = new System.Drawing.Point(6, 217);
             this.lblIterations2.Name = "lblIterations2";
             this.lblIterations2.Size = new System.Drawing.Size(49, 13);
             this.lblIterations2.TabIndex = 4;
@@ -193,7 +197,7 @@
             0,
             0,
             0});
-            this.numIterations.Location = new System.Drawing.Point(209, 146);
+            this.numIterations.Location = new System.Drawing.Point(209, 197);
             this.numIterations.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -216,7 +220,7 @@
             // 
             // lblIterations
             // 
-            this.lblIterations.Location = new System.Drawing.Point(6, 148);
+            this.lblIterations.Location = new System.Drawing.Point(6, 199);
             this.lblIterations.Name = "lblIterations";
             this.lblIterations.Size = new System.Drawing.Size(209, 18);
             this.lblIterations.TabIndex = 2;
@@ -228,7 +232,7 @@
             this.lstTestData.Location = new System.Drawing.Point(9, 42);
             this.lstTestData.Name = "lstTestData";
             this.lstTestData.ScrollAlwaysVisible = true;
-            this.lstTestData.Size = new System.Drawing.Size(280, 95);
+            this.lstTestData.Size = new System.Drawing.Size(280, 147);
             this.lstTestData.TabIndex = 1;
             // 
             // lblTestData
@@ -246,14 +250,14 @@
             this.grpTestCases.Controls.Add(this.lstTestCases);
             this.grpTestCases.Location = new System.Drawing.Point(359, 12);
             this.grpTestCases.Name = "grpTestCases";
-            this.grpTestCases.Size = new System.Drawing.Size(212, 272);
+            this.grpTestCases.Size = new System.Drawing.Size(212, 330);
             this.grpTestCases.TabIndex = 1;
             this.grpTestCases.TabStop = false;
             this.grpTestCases.Text = "Test Cases";
             // 
             // btnRemoveTestCase
             // 
-            this.btnRemoveTestCase.Location = new System.Drawing.Point(98, 245);
+            this.btnRemoveTestCase.Location = new System.Drawing.Point(104, 301);
             this.btnRemoveTestCase.Name = "btnRemoveTestCase";
             this.btnRemoveTestCase.Size = new System.Drawing.Size(108, 23);
             this.btnRemoveTestCase.TabIndex = 1;
@@ -267,14 +271,35 @@
             this.lstTestCases.Location = new System.Drawing.Point(6, 19);
             this.lstTestCases.Name = "lstTestCases";
             this.lstTestCases.ScrollAlwaysVisible = true;
-            this.lstTestCases.Size = new System.Drawing.Size(200, 212);
+            this.lstTestCases.Size = new System.Drawing.Size(200, 277);
             this.lstTestCases.TabIndex = 0;
+            // 
+            // chkUseNodeDefault
+            // 
+            this.chkUseNodeDefault.AutoSize = true;
+            this.chkUseNodeDefault.Location = new System.Drawing.Point(9, 217);
+            this.chkUseNodeDefault.Name = "chkUseNodeDefault";
+            this.chkUseNodeDefault.Size = new System.Drawing.Size(256, 17);
+            this.chkUseNodeDefault.TabIndex = 5;
+            this.chkUseNodeDefault.Text = "Use following Node Collection instead of Default:";
+            this.chkUseNodeDefault.UseVisualStyleBackColor = true;
+            this.chkUseNodeDefault.CheckedChanged += new System.EventHandler(this.chkUseNodeDefault_CheckedChanged);
+            // 
+            // lstNodeCollectionImpl
+            // 
+            this.lstNodeCollectionImpl.Enabled = false;
+            this.lstNodeCollectionImpl.FormattingEnabled = true;
+            this.lstNodeCollectionImpl.Location = new System.Drawing.Point(6, 240);
+            this.lstNodeCollectionImpl.Name = "lstNodeCollectionImpl";
+            this.lstNodeCollectionImpl.ScrollAlwaysVisible = true;
+            this.lstNodeCollectionImpl.Size = new System.Drawing.Size(329, 56);
+            this.lstNodeCollectionImpl.TabIndex = 6;
             // 
             // fclsGraphBenchmarker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 289);
+            this.ClientSize = new System.Drawing.Size(884, 354);
             this.Controls.Add(this.grpTestCases);
             this.Controls.Add(this.grpOptions);
             this.Controls.Add(this.grpToTest);
@@ -314,6 +339,8 @@
         private System.Windows.Forms.GroupBox grpTestSet;
         private System.Windows.Forms.RadioButton radLoadAndMem;
         private System.Windows.Forms.RadioButton radStandard;
+        private System.Windows.Forms.ListBox lstNodeCollectionImpl;
+        private System.Windows.Forms.CheckBox chkUseNodeDefault;
     }
 }
 

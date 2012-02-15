@@ -127,6 +127,7 @@ namespace dotNetRDFTest
             output.Close();
         }
 
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         private static void Test(IGraph g, ISelector<Triple> testsel)
         {
             foreach (Triple t in g.GetTriples(testsel))
@@ -135,6 +136,7 @@ namespace dotNetRDFTest
             }
         }
 
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         private static void Test(IInMemoryQueryableStore store, ISelector<Triple> testsel)
         {
             foreach (Triple t in store.GetTriples(testsel))

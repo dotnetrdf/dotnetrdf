@@ -90,6 +90,7 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="selector">Selector to apply</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> Subset(this IEnumerable<Triple> ts, ISelector<Triple> selector) {
             return (from t in ts
                     where selector.Accepts(t)
@@ -102,6 +103,7 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="subject">Subject to match</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithSubject(this IEnumerable<Triple> ts, INode subject)
         {
             return (from t in ts
@@ -115,6 +117,7 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="predicate">Predicate to match</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithPredicate(this IEnumerable<Triple> ts, INode predicate)
         {
             return (from t in ts
@@ -128,6 +131,7 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="obj">Object to match</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithObject(this IEnumerable<Triple> ts, INode obj)
         {
             return (from t in ts

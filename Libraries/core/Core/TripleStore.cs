@@ -96,6 +96,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<INode> GetNodes(ISelector<INode> selector)
         {
             return (from g in this._graphs
@@ -110,6 +111,7 @@ namespace VDS.RDF
         /// <param name="firstSelector">First Selector in the Chain</param>
         /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -140,6 +142,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selectorChain">Chain of Independent Selectors</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -176,6 +179,7 @@ namespace VDS.RDF
         /// <param name="triples">Subset of Triples</param>
         /// <param name="selector">Selector Class to perform the Selection</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         private IEnumerable<Triple> GetTriples(IEnumerable<Triple> triples, ISelector<Triple> selector)
         {
             IEnumerable<Triple> ts = from t in triples
@@ -205,6 +209,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
         {
             return (from g in this._graphs
@@ -241,6 +246,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
         {
             return (from g in this._graphs
@@ -288,6 +294,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
         {
             return (from g in this._graphs
@@ -323,6 +330,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
         {
             return (from g in this._graphs
@@ -336,6 +344,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public bool TriplesExist(ISelector<Triple> selector)
         {
             return (this.GetTriples(selector).Any());
@@ -390,6 +399,7 @@ namespace VDS.RDF
         /// <param name="selector">A Selector on Nodes</param>
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<INode> GetNodes(List<Uri> graphUris, ISelector<INode> selector)
         {
             IEnumerable<INode> ns = from g in this._graphs
@@ -408,6 +418,7 @@ namespace VDS.RDF
         /// <param name="firstSelector">First Selector in the Chain</param>
         /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -439,6 +450,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selectorChain">Chain of Independent Selectors</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, List<ISelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -494,6 +506,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, ISelector<Triple> selector)
         {
             IEnumerable<Triple> ts = from g in this._graphs
@@ -547,6 +560,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from g in this._graphs
@@ -617,6 +631,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from g in this._graphs
@@ -670,6 +685,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selector">A Selector on Nodes</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from g in this._graphs
@@ -687,6 +703,7 @@ namespace VDS.RDF
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
         /// <param name="selector">A Selector on Triples</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public bool TriplesExist(List<Uri> graphUris, ISelector<Triple> selector)
         {
             return (this.GetTriples(graphUris, selector).Count() > 0);

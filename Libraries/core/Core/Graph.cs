@@ -79,6 +79,9 @@ namespace VDS.RDF
         public Graph(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+        public Graph(BaseNodeCollection nodeCollection)
+            : base(nodeCollection) { }
+
         /// <summary>
         /// Creates a new instance of a Graph using the given Triple and Node Collections
         /// </summary>
@@ -341,6 +344,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Nodes</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release",false)]
         public override IEnumerable<INode> GetNodes(ISelector<INode> selector)
         {
             IEnumerable<INode> ns = from n in this._nodes
@@ -383,6 +387,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triple</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
         {
             IEnumerable<Triple> ts = from t in this._triples
@@ -417,6 +422,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from t in this._triples
@@ -451,6 +457,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from t in this._triples
@@ -485,6 +492,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Triples</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
         {
             IEnumerable<Triple> ts = from t in this._triples
@@ -500,6 +508,7 @@ namespace VDS.RDF
         /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
         /// <returns>Zero/More Triples</returns>
         /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -537,6 +546,7 @@ namespace VDS.RDF
         /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
         /// <returns>Zero/More Triples</returns>
         /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
         {
             if (selectorChain.Count == 0)
@@ -568,6 +578,7 @@ namespace VDS.RDF
         /// <param name="triples">Subset of Triples</param>
         /// <param name="selector">Selector Class to perform the Selection</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         private IEnumerable<Triple> GetTriples(IEnumerable<Triple> triples, ISelector<Triple> selector)
         {
             IEnumerable<Triple> ts = from t in triples
@@ -619,6 +630,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector Class which performs the Selection</param>
         /// <returns></returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public override bool TriplesExist(ISelector<Triple> selector)
         {
             IEnumerable<Triple> ts = from t in this._triples

@@ -44,6 +44,7 @@ namespace VDS.RDF.Query
     /// Selector which Selects All Objects
     /// </summary>
     /// <typeparam name="T">Type you are performing Selection upon</typeparam>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class AllSelector<T> : ISelector<T>
     {
         /// <summary>
@@ -62,6 +63,7 @@ namespace VDS.RDF.Query
     /// Selector which Selects No Objects
     /// </summary>
     /// <typeparam name="T">Type you are performing Selection upon</typeparam>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class NoneSelector<T> : ISelector<T>
     {
 
@@ -83,6 +85,7 @@ namespace VDS.RDF.Query
     /// Selector which performs Not on the underlying Selectors results
     /// </summary>
     /// <typeparam name="T">Type you are performing selection upon</typeparam>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class NotSelector<T> : ISelector<T>
     {
         private ISelector<T> _selector;
@@ -91,6 +94,7 @@ namespace VDS.RDF.Query
         /// Creates a new Not Selector using the given Selector
         /// </summary>
         /// <param name="selector">The Selector whose results you wish to Not</param>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public NotSelector(ISelector<T> selector) {
             this._selector = selector;
         }

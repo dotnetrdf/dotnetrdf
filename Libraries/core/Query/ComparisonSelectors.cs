@@ -43,6 +43,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples where the Predicate is a given Property and the Value is less than a given Value
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertyLessThanSelector : ISelector<Triple>
     {
         private INode _pred, _value;
@@ -82,6 +83,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples where the Predicate is a given Property and the Value is less than or equal to a given Value
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertyLessThanOrEqualToSelector : ISelector<Triple>
     {
         private INode _pred, _value;
@@ -121,6 +123,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples where the Predicate is a given Property and the Value is greater than a given Value
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertyGreaterThanSelector : ISelector<Triple>
     {
         private INode _pred, _value;
@@ -160,6 +163,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds all Triples where the Predicate is a given Property and the Value is greater than or equal to a given Value
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertyGreaterThanOrEqualToSelector : ISelector<Triple>
     {
         private INode _pred, _value;

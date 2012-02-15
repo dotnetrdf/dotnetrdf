@@ -44,6 +44,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples where the Subject is of a given Class
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class ExactClassSelector : ISelector<Triple>
     {
         private IUriNode _targetclass;
@@ -83,6 +84,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples which define SubClasses of the given Class
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class SubClassSelector : ISelector<Triple>
     {
         private IUriNode _targetclass;
@@ -122,6 +124,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples where define SuperClasses of the given Class
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class SuperClassSelector : ISelector<Triple>
     {
         private IUriNode _targetclass;
@@ -164,6 +167,7 @@ namespace VDS.RDF.Query
     /// <remarks>
     /// This Class will not automatically apply the standard RDF Schema class hierarchy unless it has been defined in the Graph explicitly
     /// </remarks>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class ClassSelector : ISelector<Triple>
     {
         private List<IUriNode> _classes = new List<IUriNode>();
@@ -245,6 +249,7 @@ namespace VDS.RDF.Query
     /// <remarks>
     /// This Class will not automatically apply the standard RDF Schema class hierarchy unless it has been defined in the Graph explicitly
     /// </remarks>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class WideningClassSelector : ISelector<Triple>
     {
         private List<IUriNode> _classes = new List<IUriNode>();
@@ -323,6 +328,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples where the Predicate is a given Property
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasExactPropertySelector : ISelector<Triple>
     {
         private IUriNode _targetproperty;
@@ -352,6 +358,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples where the Subject is defined as a SubProperty of a given Property
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class SubPropertySelector : ISelector<Triple>
     {
         private IUriNode _targetproperty;
@@ -391,6 +398,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Selector which finds all Triples where the Predicate is a given Property (or subproperty thereof)
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertySelector : ISelector<Triple>
     {
         private List<IUriNode> _properties = new List<IUriNode>();

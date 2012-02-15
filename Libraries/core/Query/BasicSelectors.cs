@@ -44,6 +44,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples which have a given value for a given Property
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasPropertyValueSelector : ISelector<Triple>
     {
         private INode _prop, _value;
@@ -82,6 +83,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples which have a given Property which does not match the given Value
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class HasNonMatchingPropertyValueSelector : ISelector<Triple>
     {
         private INode _prop, _value;
@@ -120,6 +122,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples where a given Subject has a given Property
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class SubjectHasPropertySelector : ISelector<Triple>
     {
         private INode _subj, _prop;
@@ -156,7 +159,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples which have a given Subject
     /// </summary>
-    [Obsolete("Deprecated since using the GetTriplesWithSubject method should be far faster as it is typically indexed")]
+    [Obsolete("Deprecated since using the GetTriplesWithSubject method should be far faster as it is typically indexed", true)]
     public class SubjectIsSelector : ISelector<Triple>
     {
         private INode _subj;
@@ -184,7 +187,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples which have a given Predicate
     /// </summary>
-    [Obsolete("Deprecated since using the GetTriplesWithPredicate method should be far faster as it is typically indexed")]
+    [Obsolete("Deprecated since using the GetTriplesWithPredicate method should be far faster as it is typically indexed", true)]
     public class PredicateIsSelector : ISelector<Triple>
     {
         private INode _pred;
@@ -212,7 +215,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Selector which finds Triples which have a given Object
     /// </summary>
-    [Obsolete("Deprecated since using the GetTriplesWithObject method should be far faster as it is typically indexed")]
+    [Obsolete("Deprecated since using the GetTriplesWithObject method should be far faster as it is typically indexed", true)]
     public class ObjectIsSelector : ISelector<Triple>
     {
         private INode _obj;
@@ -240,6 +243,7 @@ namespace VDS.RDF.Query
     /// <summary>
     /// A Dependent Selector Wrapper which accepts Triples accepted by the underlying Selector if their Subject is the Subject of one of the Triples the Dependent Wrapper was initialised with
     /// </summary>
+    [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
     public class SubjectDependentWrapperSelector : IDependentSelector<Triple>
     {
 
@@ -250,6 +254,7 @@ namespace VDS.RDF.Query
         /// Creates a new SubjectDependentWrapperSelector using the given Selector
         /// </summary>
         /// <param name="selector"></param>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public SubjectDependentWrapperSelector(ISelector<Triple> selector)
         {
             this._innerSelector = selector;

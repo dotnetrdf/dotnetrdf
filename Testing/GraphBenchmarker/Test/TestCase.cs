@@ -10,7 +10,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 {
     public class TestCase
     {
-        private Type _graphType, _tripleCollectionType;
+        private Type _graphType, _tripleCollectionType, _nodeCollectionType;
         private IGraph _instance;
         private BindingList<TestResult> _results = new BindingList<TestResult>();
         private long _initMemory = 0;
@@ -26,6 +26,12 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             this._tripleCollectionType = tripleCollectionType;
         }
 
+        public TestCase(Type graphType, Type tripleCollectionType, Type nodeCollectionType)
+            : this(graphType, tripleCollectionType)
+        {
+            this._nodeCollectionType = nodeCollectionType;
+        }
+
         public IGraph Instance
         {
             get
@@ -34,7 +40,18 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
                 {
                     if (this._tripleCollectionType != null)
                     {
-                        this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType) });
+                        if (this._nodeCollectionType != null)
+                        {
+                            this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType) });
+                        }
+                        else
+                        {
+                            this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType), Activator.CreateInstance(this._nodeCollectionType) });
+                        }
+                    }
+                    else if (this._nodeCollectionType != null)
+                    {
+                        this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._nodeCollectionType) });
                     }
                     else
                     {
@@ -80,11 +97,22 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
         {
             if (this._tripleCollectionType != null)
             {
-                return this._graphType.FullName + " with " + this._tripleCollectionType.FullName;
+                if (this._nodeCollectionType != null)
+                {
+                    return this._graphType.Name + " with " + this._tripleCollectionType.Name + " and " + this._nodeCollectionType.Name;
+                }
+                else
+                {
+                    return this._graphType.Name + " with " + this._tripleCollectionType.Name;
+                }
+            }
+            else if (this._nodeCollectionType != null)
+            {
+                return this._graphType.Name + " with " + this._nodeCollectionType.Name;
             }
             else
             {
-                return this._graphType.FullName;
+                return this._graphType.Name;
             }
         }
     }
