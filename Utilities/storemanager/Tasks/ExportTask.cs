@@ -114,7 +114,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
                             this._manager.LoadGraph(progHandler, u);
                             graphCount++;
-                            tripleCount += progHandler.TripleCount;
+                            tripleCount = progHandler.TripleCount;
 
                             this.Information = "Finished Stream Exporting Graph " + (u != null ? u.ToString() : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                         }
@@ -226,14 +226,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
         protected override void StartRdfInternal()
         {
-            base.StartRdf();
             this._handler.StartRdf();
         }
 
         protected override void EndRdfInternal(bool ok)
         {
             this._handler.EndRdf(ok);
-            base.EndRdfInternal(ok);
         }
 
         protected override bool HandleBaseUriInternal(Uri baseUri)

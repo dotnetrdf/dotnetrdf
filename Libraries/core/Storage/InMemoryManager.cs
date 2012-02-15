@@ -69,14 +69,14 @@ namespace VDS.RDF.Storage
         /// Creates a new In-Memory Manager which is a wrapper around a new empty in-memory store
         /// </summary>
         public InMemoryManager()
-            : this(new InMemoryQuadDataset()) { }
+            : this(new InMemoryQuadDataset(false)) { }
 
         /// <summary>
         /// Creates a new In-Memory Manager which is a wrapper around an in-memory store
         /// </summary>
         /// <param name="store">Triple Store</param>
         public InMemoryManager(IInMemoryQueryableStore store)
-            : this(new InMemoryQuadDataset(store)) { }
+            : this(new InMemoryQuadDataset(store, false)) { }
 
         /// <summary>
         /// Creates a new In-Memory Manager which is a wrapper around a SPARQL Dataset
