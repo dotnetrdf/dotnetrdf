@@ -11,6 +11,7 @@ using VDS.RDF.Test.Update;
 
 namespace VDS.RDF.Test.Storage
 {
+    [TestClass]
     public class AdoTransactionalUpdateTests : TransactionalUpdateTests
     {
         private MicrosoftAdoManager _manager;

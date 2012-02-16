@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -46,7 +45,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Having Clause
     /// </summary>
-    public class Having : IUnaryOperator
+    public class Having
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlFilter _having;
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Having(this._pattern, this._having);
+            return new Having(optimiser.Optimise(this._pattern), this._having);
         }
     }
 }

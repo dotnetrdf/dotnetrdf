@@ -74,7 +74,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Abstract Base Class for Path Operators
     /// </summary>
-    public abstract class BasePathOperator : IPathOperator
+    public abstract class BasePathOperator 
+        : IPathOperator
     {
         private PatternItem _start, _end;
         private ISparqlPath _path;

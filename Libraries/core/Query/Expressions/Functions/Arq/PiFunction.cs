@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 }

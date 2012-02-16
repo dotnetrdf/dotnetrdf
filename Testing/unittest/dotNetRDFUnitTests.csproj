@@ -108,6 +108,7 @@
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
+    <Compile Include="Sparql\VariableSubstitutionTests.cs" />
     <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestTools.cs" />
     <Compile Include="Update\UpdateTests.cs" />

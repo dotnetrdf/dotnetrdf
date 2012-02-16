@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 }

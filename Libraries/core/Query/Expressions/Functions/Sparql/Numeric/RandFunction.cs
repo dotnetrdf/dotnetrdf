@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return transformer.Transform(this);
+            return this;
         }
     }
 }

@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -46,7 +45,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a GRAPH clause
     /// </summary>
-    public class Graph : IUnaryOperator
+    public class Graph 
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private IToken _graphSpecifier;
@@ -336,7 +336,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Graph(this._pattern, this._graphSpecifier);
+            return new Graph(optimiser.Optimise(this._pattern), this._graphSpecifier);
         }
     }
 }

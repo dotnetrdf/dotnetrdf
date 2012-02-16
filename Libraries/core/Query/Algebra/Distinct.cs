@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 
@@ -45,7 +44,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Distinct modifier on a SPARQL Query
     /// </summary>
-    public class Distinct : IUnaryOperator
+    public class Distinct
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 
@@ -166,14 +166,15 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Distinct(this._pattern);
+            return new Distinct(optimiser.Optimise(this._pattern));
         }
     }
 
     /// <summary>
     /// Represents a Reduced modifier on a SPARQL Query
     /// </summary>
-    public class Reduced : IUnaryOperator
+    public class Reduced 
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
 
@@ -300,7 +301,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Reduced(this._pattern);
+            return new Reduced(optimiser.Optimise(this._pattern));
         }
     }
 }

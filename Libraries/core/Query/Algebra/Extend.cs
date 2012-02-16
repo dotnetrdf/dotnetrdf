@@ -110,7 +110,14 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Extend(optimiser.Optimise(this._inner), this._expr, this._var);
+            if (optimiser is IExpressionTransformer)
+            {
+                return new Extend(optimiser.Optimise(this._inner), ((IExpressionTransformer)optimiser).Transform(this._expr), this._var);
+            }
+            else
+            {
+                return new Extend(optimiser.Optimise(this._inner), this._expr, this._var);
+            }
         }
 
         /// <summary>

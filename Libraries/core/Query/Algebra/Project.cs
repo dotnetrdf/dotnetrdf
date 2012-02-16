@@ -296,7 +296,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Project(this._pattern, this._variables);
+            return new Project(optimiser.Optimise(this._pattern), this._variables);
         }
     }
 
@@ -453,7 +453,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Select(this._pattern, this._variables);
+            return new Select(optimiser.Optimise(this._pattern), this._variables);
         }
     }
 
@@ -571,7 +571,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new Ask(this._pattern);
+            return new Ask(optimiser.Optimise(this._pattern));
         }
     }
 }

@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
@@ -46,7 +45,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Grouping
     /// </summary>
-    public class GroupBy : IUnaryOperator
+    public class GroupBy
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlGroupBy _grouping;
@@ -159,7 +159,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new GroupBy(this._pattern, this._grouping);
+            return new GroupBy(optimiser.Optimise(this._pattern), this._grouping);
         }
     }
 }

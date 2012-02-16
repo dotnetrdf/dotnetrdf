@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
@@ -46,7 +45,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents an Order By clause
     /// </summary>
-    public class OrderBy : IUnaryOperator
+    public class OrderBy
+        : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
         private ISparqlOrderBy _ordering;
@@ -163,7 +163,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new OrderBy(this._pattern, this._ordering);
+            return new OrderBy(optimiser.Optimise(this._pattern), this._ordering);
         }
     }
 }

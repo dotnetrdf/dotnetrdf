@@ -63,7 +63,6 @@
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -95,7 +94,7 @@
     <ProjectReference Include="..\core\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
