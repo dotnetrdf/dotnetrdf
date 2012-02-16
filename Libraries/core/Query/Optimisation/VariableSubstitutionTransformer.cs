@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
@@ -54,6 +55,7 @@ namespace VDS.RDF.Query.Optimisation
         private String _findVar;
         private PatternItem _replaceItem;
         private ISparqlExpression _replaceExpr;
+        private IToken _replaceToken;
 
         /// <summary>
         /// Create a transform that replaces one variable with another
@@ -65,6 +67,7 @@ namespace VDS.RDF.Query.Optimisation
             this._findVar = findVar;
             this._replaceItem = new VariablePattern("?" + replaceVar);
             this._replaceExpr = new VariableTerm(replaceVar);
+            this._replaceToken = new VariableToken("?" + replaceVar, 0, 0, 0);
         }
 
         /// <summary>
@@ -77,6 +80,10 @@ namespace VDS.RDF.Query.Optimisation
             this._findVar = findVar;
             this._replaceItem = new NodeMatchPattern(replaceTerm);
             this._replaceExpr = new ConstantTerm(replaceTerm);
+            if (replaceTerm is IUriNode)
+            {
+                this._replaceToken = new UriToken("<" + ((IUriNode)replaceTerm).Uri.ToString() + ">", 0, 0, 0);
+            }
         }
 
         /// <summary>
@@ -144,6 +151,25 @@ namespace VDS.RDF.Query.Optimisation
             else if (algebra is IPathOperator)
             {
                 throw new RdfQueryException("Cannot do variable substitution when a property path is present");
+            }
+            else if (algebra is Algebra.Graph)
+            {
+                Algebra.Graph g = (Algebra.Graph)((IUnaryOperator)algebra).Transform(this);
+                if (g.GraphSpecifier is VariableToken && g.GraphSpecifier.Value.Equals("?" + this._findVar))
+                {
+                    if (this._replaceToken != null)
+                    {
+                        return new Algebra.Graph(g.InnerAlgebra, this._replaceToken);
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("Cannot do a variable substitution when the variable is used for a GRAPH specifier and the replacement term is not a URI");
+                    }
+                }
+                else
+                {
+                    return g;
+                }
             }
             else if (algebra is IUnaryOperator)
             {

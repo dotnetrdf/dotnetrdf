@@ -305,6 +305,14 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        public override bool HasNoBlankVariables
+        {
+            get
+            {
+                return !(this._matchVar is BlankNodePattern) && !(this._scoreVar is BlankNodePattern);
+            }
+        }
+
         /// <summary>
         /// Gets the String representation of the Triple Pattern
         /// </summary>

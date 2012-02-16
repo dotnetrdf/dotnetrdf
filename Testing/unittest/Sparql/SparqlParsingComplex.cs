@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Update;
+
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
@@ -442,6 +444,60 @@ namespace VDS.RDF.Test.Sparql
             {
                 Assert.Fail("Expected a SPARQL Result Set");
             }
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingSubqueries1()
+        {
+            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            Console.WriteLine("Parsed original input OK");
+
+            String query2 = q.ToString();
+            SparqlQuery q2 = parser.ParseFromString(query2);
+            Console.WriteLine("Parsed reserialized input OK");
+        }
+
+        [TestMethod]
+        public void SparqlParsingSubqueries2()
+        {
+            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            Console.WriteLine("Parsed original input OK");
+
+            String query2 = q.ToString();
+            SparqlQuery q2 = parser.ParseFromString(query2);
+            Console.WriteLine("Parsed reserialized input OK");
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingSubqueries3()
+        {
+            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } . }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            Console.WriteLine("Parsed original input OK");
+
+            SparqlFormatter formatter = new SparqlFormatter();
+            String query2 = formatter.Format(q);
+            SparqlQuery q2 = parser.ParseFromString(query2);
+            Console.WriteLine("Parsed reserialized input OK");
+        }
+
+        [TestMethod]
+        public void SparqlParsingSubqueries4()
+        {
+            String query = "SELECT * WHERE { { SELECT * WHERE { ?s ?p ?o } } }";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+            Console.WriteLine("Parsed original input OK");
+
+            SparqlFormatter formatter = new SparqlFormatter();
+            String query2 = formatter.Format(q);
+            SparqlQuery q2 = parser.ParseFromString(query2);
+            Console.WriteLine("Parsed reserialized input OK");
         }
     }
 }

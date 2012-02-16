@@ -76,6 +76,9 @@ namespace VDS.RDF.Query.Optimisation
                     List<ITriplePattern> ps = new List<ITriplePattern>(current.TriplePatterns.ToList());
                     for (int i = 0; i < current.PatternCount; i++)
                     {
+                        //Can't split the BGP if there are Blank Nodes present
+                        if (!ps[i].HasNoBlankVariables) return current;
+
                         if (!(ps[i] is TriplePattern))
                         {
                             //First ensure that if we've found any other Triple Patterns up to this point

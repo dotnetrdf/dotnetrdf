@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Interface for Triple Patterns
     /// </summary>
-    public interface ITriplePattern : IComparable<ITriplePattern>
+    public interface ITriplePattern
+        : IComparable<ITriplePattern>
     {
         /// <summary>
         /// Evaluates the Triple Pattern in the given Evaluation Context
@@ -88,13 +89,19 @@ namespace VDS.RDF.Query.Patterns
         {
             get;
         }
+
+        bool HasNoBlankVariables
+        {
+            get;
+        }
         
     }
 
     /// <summary>
     /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern
     /// </summary>
-    public interface IConstructTriplePattern : ITriplePattern
+    public interface IConstructTriplePattern 
+        : ITriplePattern
     {
         /// <summary>
         /// Constructs a Triple from a Set based on this Triple Pattern
@@ -142,20 +149,13 @@ namespace VDS.RDF.Query.Patterns
         {
             get;
         }
-
-        /// <summary>
-        /// Gets whether the Pattern contains no Blank Node Variables (i.e. Explicit Variables are ignored)
-        /// </summary>
-        bool HasNoBlankVariables
-        {
-            get;
-        }
     }
 
     /// <summary>
     /// Interface for Triple Patterns that represent Assignment operators
     /// </summary>
-    public interface IAssignmentPattern : ITriplePattern, IComparable<IAssignmentPattern>
+    public interface IAssignmentPattern
+        : ITriplePattern, IComparable<IAssignmentPattern>
     {
         /// <summary>
         /// Gets the Assignment Expression that is used

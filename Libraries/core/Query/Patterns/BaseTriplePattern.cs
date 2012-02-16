@@ -43,7 +43,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Base class for representing all types of Triple Patterns in SPARQL queries
     /// </summary>
-    public abstract class BaseTriplePattern : ITriplePattern
+    public abstract class BaseTriplePattern 
+        : ITriplePattern
     {
         /// <summary>
         /// Stores the Index Type for the Triple Pattern
@@ -169,6 +170,14 @@ namespace VDS.RDF.Query.Patterns
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Gets whether the Pattern has no blank variables
+        /// </summary>
+        public abstract bool HasNoBlankVariables
+        {
+            get;
         }
 
         /// <summary>

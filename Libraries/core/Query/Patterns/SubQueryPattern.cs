@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing Sub-queries which occur as part of a SPARQL query
     /// </summary>
-    public class SubQueryPattern : BaseTriplePattern
+    public class SubQueryPattern 
+        : BaseTriplePattern
     {
         private SparqlQuery _subquery;
 
@@ -157,6 +158,14 @@ namespace VDS.RDF.Query.Patterns
             get
             {
                 return this._subquery.UsesDefaultDataset;
+            }
+        }
+
+        public override bool HasNoBlankVariables
+        {
+            get 
+            {
+                return true;
             }
         }
 

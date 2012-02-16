@@ -49,7 +49,8 @@ namespace VDS.RDF.Query.Patterns
     /// <remarks>
     /// A Filter Pattern is any FILTER clause that can be executed during the process of executing Triple Patterns rather than after all the Triple Patterns and Child Graph Patterns have been executed
     /// </remarks>
-    public class FilterPattern : BaseTriplePattern
+    public class FilterPattern 
+        : BaseTriplePattern
     {
         private ISparqlFilter _filter;
 
@@ -134,6 +135,14 @@ namespace VDS.RDF.Query.Patterns
             get
             {
                 return this._filter.Expression.UsesDefaultDataset();
+            }
+        }
+
+        public override bool HasNoBlankVariables
+        {
+            get
+            {
+                return true;
             }
         }
 

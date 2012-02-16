@@ -70,13 +70,24 @@ namespace VDS.RDF.Query.Optimisation
                     bool equals = false;
                     if (this.IsIdentityExpression(f.SparqlFilter.Expression, out var, out term, out equals))
                     {
-                        if (equals)
+                        try
                         {
-                            return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                            //Try to use the extend style optimization
+                            VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(var, term);
+                            ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
+                            return new Extend(extAlgebra, new ConstantTerm(term), var);
                         }
-                        else
+                        catch
                         {
-                            return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                            //Fall back to simpler Identity Filter
+                            if (equals)
+                            {
+                                return new IdentityFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                            }
+                            else
+                            {
+                                return new SameTermFilter(this.Optimise(f.InnerAlgebra), var, new ConstantTerm(term));
+                            }
                         }
                     }
                     else

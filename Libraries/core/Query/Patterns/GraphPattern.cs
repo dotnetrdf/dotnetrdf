@@ -760,7 +760,7 @@ namespace VDS.RDF.Query.Patterns
                         output.Append(lines[i]);
                         if (i < lines.Length - 1) output.AppendLine();
                     }
-                    output.Append(" . ");
+                    if (!(tp is SubQueryPattern)) output.Append(" . ");
                     if (linebreaks) output.AppendLine();
                 }
                 else

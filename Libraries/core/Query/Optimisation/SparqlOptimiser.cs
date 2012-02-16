@@ -48,9 +48,8 @@ namespace VDS.RDF.Query.Optimisation
         {
             new AskBgpOptimiser(),
             new LazyBgpOptimiser(),
-            //These optimisers can be used but currently don't seem to result in any overall performance boost
-            /*new StrictAlgebraOptimiser(),
-            new IdentityFilterOptimiser()*/
+            new StrictAlgebraOptimiser(),
+            new IdentityFilterOptimiser()
         };
 
         /// <summary>

@@ -47,7 +47,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing property patterns in SPARQL Queries
     /// </summary>
-    public class PropertyPathPattern : BaseTriplePattern
+    public class PropertyPathPattern
+        : BaseTriplePattern
     {
         private PatternItem _subj, _obj;
         private ISparqlPath _path;
@@ -161,6 +162,14 @@ namespace VDS.RDF.Query.Patterns
             get 
             {
                 return false; 
+            }
+        }
+
+        public override bool HasNoBlankVariables
+        {
+            get
+            {
+                return false;
             }
         }
 

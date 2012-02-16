@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Class for representing Triple Patterns in SPARQL Queries
     /// </summary>
-    public class TriplePattern : BaseTriplePattern, IConstructTriplePattern
+    public class TriplePattern
+        : BaseTriplePattern, IConstructTriplePattern
     {
         private PatternItem _subj, _pred, _obj;
 
@@ -596,7 +597,7 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Gets whether the Pattern contains no Explicit Variables (i.e. Blank Node Variables are ignored)
         /// </summary>
-        public bool HasNoBlankVariables
+        public override bool HasNoBlankVariables
         {
             get
             {
