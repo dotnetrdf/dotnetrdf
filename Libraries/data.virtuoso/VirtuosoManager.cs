@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------
@@ -89,14 +89,8 @@ namespace VDS.RDF.Storage
         private VirtuosoTransaction _dbtrans;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
-        /// <summary>
-        /// Variables for Database Connection Properties
-        /// </summary>
-        protected String _dbserver, _dbname, _dbuser, _dbpwd;
-        /// <summary>
-        /// Database Port
-        /// </summary>
-        protected int _dbport;
+        private String _dbserver, _dbname, _dbuser, _dbpwd;
+        private int _dbport, _timeout = 0;
 
         /// <summary>
         /// Indicates whether the Database Connection is currently being kept open
@@ -112,7 +106,11 @@ namespace VDS.RDF.Storage
         /// <param name="db">Database Name</param>
         /// <param name="user">Username</param>
         /// <param name="password">Password</param>
-        public VirtuosoManager(String server, int port, String db, String user, String password)
+        /// <param name="timeout">Connection Timeout in Seconds</param>
+        /// <remarks>
+        /// Timeouts less than equal to zero are ignored and treated as using the default timeout which is dictated by the underlying Virtuoso ADO.Net provider
+        /// </remarks>
+        public VirtuosoManager(String server, int port, String db, String user, String password, int timeout)
         {
             //Set the Connection Properties
             this._dbserver = server;
@@ -120,10 +118,52 @@ namespace VDS.RDF.Storage
             this._dbuser = user;
             this._dbpwd = password;
             this._dbport = port;
+            this._timeout = timeout;
+
+            StringBuilder connString = new StringBuilder();
+            connString.Append("Server=");
+            connString.Append(this._dbserver);
+            connString.Append(":");
+            connString.Append(this._dbport);
+            connString.Append(";Database=");
+            connString.Append(this._dbname);
+            connString.Append(";uid=");
+            connString.Append(this._dbuser);
+            connString.Append(";pwd=");
+            connString.Append(this._dbpwd);
+            connString.Append(";Charset=utf-8");
+            if (this._timeout >= 0)
+            {
+                connString.Append(";Connection Timeout=" + this._timeout);
+            }
 
             //Create the Connection Object
-            this._db = new VirtuosoConnection("Server=" + this._dbserver + ":" + this._dbport + ";Database=" + this._dbname + ";uid=" + this._dbuser + ";pwd=" + this._dbpwd + ";Charset=utf-8");
+            this._db = new VirtuosoConnection(connString.ToString());
         }
+
+        /// <summary>
+        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// </summary>
+        /// <param name="server">Server</param>
+        /// <param name="port">Port</param>
+        /// <param name="db">Database Name</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        public VirtuosoManager(String server, int port, String db, String user, String password)
+            : this(server, port, db, user, password, 0) { }
+
+        /// <summary>
+        /// Creates a Manager for a Virtuoso Native Quad Store
+        /// </summary>
+        /// <param name="db">Database Name</param>
+        /// <param name="user">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="timeout">Connection Timeout in Seconds</param>
+        /// <remarks>
+        /// Assumes the Server is on the localhost and the port is the default installation port of 1111
+        /// </remarks>
+        public VirtuosoManager(String db, String user, String password, int timeout) 
+            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, timeout) { }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -134,8 +174,8 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Assumes the Server is on the localhost and the port is the default installation port of 1111
         /// </remarks>
-        public VirtuosoManager(String db, String user, String password) 
-            : this("localhost", VirtuosoManager.DefaultPort, db, user, password) { }
+        public VirtuosoManager(String db, String user, String password)
+            : this("localhost", VirtuosoManager.DefaultPort, db, user, password, 0) { }
 
         /// <summary>
         /// Creates a Manager for a Virtuoso Native Quad Store
@@ -1304,7 +1344,6 @@ namespace VDS.RDF.Storage
                 return "[Virtuoso] " + this._dbserver + ":" + this._dbport;
             }
         }
-
 
         /// <summary>
         /// Serializes the connection's configuration
