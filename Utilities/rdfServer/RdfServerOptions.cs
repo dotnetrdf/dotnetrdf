@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using VDS.RDF;
@@ -305,7 +306,10 @@ namespace VDS.RDF.Utilities.Server
             //Add MIME Type Mappings for RDF File Types
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                server.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
+                if (definition.FileExtensions.Any())
+                {
+                    server.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
+                }
             }
 
             //Setup Logging appropriately

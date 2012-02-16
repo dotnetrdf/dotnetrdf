@@ -158,13 +158,20 @@ namespace VDS.RDF.Utilities.Server
             String queryText = context.Request.QueryString["query"];
             if (queryText == null || queryText.Equals(String.Empty))
             {
-                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                if (context.Request.ContentType != null)
+                {
+                    if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                    {
+                        queryText = form["query"];
+                    }
+                    else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
+                    {
+                        queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                    }
+                }
+                else
                 {
                     queryText = form["query"];
-                }
-                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
-                {
-                    queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
                 }
             }
 
@@ -426,13 +433,20 @@ namespace VDS.RDF.Utilities.Server
 
             //See if there has been an update submitted
             String updateText = null;
-            if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+            if (context.Request.ContentType != null)
+            {
+                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                {
+                    updateText = form["update"];
+                }
+                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
+                {
+                    updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                }
+            }
+            else
             {
                 updateText = form["update"];
-            }
-            else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
-            {
-                updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
             }
 
             //If no Update sent either show Update Form or give a HTTP 400 response

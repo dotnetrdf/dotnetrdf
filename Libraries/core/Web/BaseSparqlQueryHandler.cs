@@ -95,13 +95,20 @@ namespace VDS.RDF.Web
             String queryText = context.Request.QueryString["query"];
             if (queryText == null || queryText.Equals(String.Empty))
             {
-                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                if (context.Request.ContentType != null)
+                {
+                    if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                    {
+                        queryText = context.Request.Form["query"];
+                    }
+                    else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
+                    {
+                        queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                    }
+                }
+                else
                 {
                     queryText = context.Request.Form["query"];
-                }
-                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlQuery))
-                {
-                    queryText = new StreamReader(context.Request.InputStream).ReadToEnd();
                 }
             }
 

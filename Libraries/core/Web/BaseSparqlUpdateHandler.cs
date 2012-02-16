@@ -94,13 +94,20 @@ namespace VDS.RDF.Web
 
             //See if there has been an update submitted
             String updateText = null;
-            if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+            if (context.Request.ContentType != null)
+            {
+                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                {
+                    updateText = context.Request.Form["update"];
+                }
+                else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
+                {
+                    updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
+                }
+            }
+            else
             {
                 updateText = context.Request.Form["update"];
-            }
-            else if (context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
-            {
-                updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
             }
 
             //If no Update sent either show Update Form or give a HTTP 400 response
