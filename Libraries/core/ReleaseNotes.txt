@@ -76,10 +76,13 @@ The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.Net35.dll) are includ
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
 
-To use either the Data.Sql or Data.Virtuoso library you must inlude the Core library and its dependencies
+To use either the Data.Sql or Data.Virtuoso library you must include the Core library and its dependencies
 
 If you wish to use the optional Data.Virtuoso library that is also included you will need the additional
 OpenLink Virtuoso ADO.Net provider which can be found in the folder with the Data.Virtuoso library
+
+If you wish to use the optional Query.FullText library that is also included you will need the additional
+Lucene.Net library which can be found in the folder with the Query.FullText library
 
 Known Issues
 ------------
@@ -134,7 +137,7 @@ Release History
 
 30/11/2011 - Release of Version 0.5.1 Beta (Build 0.5.1.17871)
 
-?/2/2012 - Release of Version 0.6.0 Beta (Build 0.6.0.?)
+19/2/2012 - Release of Version 0.6.0 Beta (Build 0.6.0.2145)
 
 Acknowledgements
 ----------------
