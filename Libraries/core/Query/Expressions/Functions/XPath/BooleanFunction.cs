@@ -54,6 +54,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath
         public BooleanFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             return new BooleanNode(null, this._expr.Evaluate(context, bindingID).AsSafeBoolean());

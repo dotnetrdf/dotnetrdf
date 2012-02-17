@@ -454,41 +454,72 @@ namespace VDS.RDF
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a String
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to an integer
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a decimal
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a float
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a double
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a boolean
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Throws an error as a Blank Node cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Unable to cast a Blank Node to a type");
         }
 
+        /// <summary>
+        /// Gets the Numeric Type of the Node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get 

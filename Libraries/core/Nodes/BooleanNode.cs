@@ -43,55 +43,100 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Nodes
 {
+    /// <summary>
+    /// Valued Node representing boolean values
+    /// </summary>
     public class BooleanNode
         : LiteralNode, IValuedNode
     {
         private bool _value;
 
+        /// <summary>
+        /// Creates a new boolean valued node
+        /// </summary>
+        /// <param name="g">Graph the node belong to</param>
+        /// <param name="value">Boolean Value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
         public BooleanNode(IGraph g, bool value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new boolean valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Boolean Value</param>
         public BooleanNode(IGraph g, bool value)
             : this(g, value, value.ToString().ToLower()) { }
 
+        /// <summary>
+        /// Gets the string value of the boolean
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             return this.Value;
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to integers
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to decimals
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to floats
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to doubles
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Gets the boolean value
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             return this._value;
         }
 
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to date times
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get 

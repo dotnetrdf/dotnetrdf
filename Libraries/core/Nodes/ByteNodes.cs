@@ -34,30 +34,45 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Nodes
 {
+    /// <summary>
+    /// Valued node representing a byte (8-bit unsigned integer)
+    /// </summary>
     public class ByteNode
         : NumericNode
     {
         private byte _value;
 
+        /// <summary>
+        /// Creates a new byte valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Byte value</param>
+        /// <param name="lexicalValue">Lexical value</param>
         public ByteNode(IGraph g, byte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte), SparqlNumericType.Integer)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new byte valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Byte value</param>
         public ByteNode(IGraph g, byte value)
             : this(g, value, value.ToString()) { }
 
-
+        
+        /// <summary>
+        /// Gets the integer value of the byte
+        /// </summary>
+        /// <returns></returns>
         public override long AsInteger()
         {
             try
@@ -70,6 +85,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the decimal value of the byte
+        /// </summary>
+        /// <returns></returns>
         public override decimal AsDecimal()
         {
             try
@@ -82,6 +101,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value of the byte
+        /// </summary>
+        /// <returns></returns>
         public override float AsFloat()
         {
             try
@@ -94,6 +117,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value of the double
+        /// </summary>
+        /// <returns></returns>
         public override double AsDouble()
         {
             try
@@ -107,20 +134,38 @@ namespace VDS.RDF.Nodes
         }
     }
 
+    /// <summary>
+    /// Value node representing a signed byte (8-bit signed integer)
+    /// </summary>
     public class SignedByteNode
         : NumericNode
     {
         private sbyte _value;
 
+        /// <summary>
+        /// Creates a new signed byte node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Signed Byte value</param>
+        /// <param name="lexicalValue">Lexical value</param>
         public SignedByteNode(IGraph g, sbyte value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte), SparqlNumericType.Integer)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new signed byte node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Signed Byte value</param>
         public SignedByteNode(IGraph g, sbyte value)
             : this(g, value, value.ToString()) { }
 
+        /// <summary>
+        /// Gets the integer value of the signed byte
+        /// </summary>
+        /// <returns></returns>
         public override long AsInteger()
         {
             try
@@ -133,6 +178,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the decimal value of the signed byte
+        /// </summary>
+        /// <returns></returns>
         public override decimal AsDecimal()
         {
             try
@@ -145,6 +194,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value of the signed byte
+        /// </summary>
+        /// <returns></returns>
         public override float AsFloat()
         {
             try
@@ -157,6 +210,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the double value of the signed byte
+        /// </summary>
+        /// <returns></returns>
         public override double AsDouble()
         {
             try

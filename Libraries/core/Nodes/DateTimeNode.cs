@@ -34,36 +34,65 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Nodes
 {
+    /// <summary>
+    /// Valued Node representing a Date Time value
+    /// </summary>
     public class DateTimeNode
         : LiteralNode, IValuedNode
     {
         private DateTimeOffset _value;
 
-
+        /// <summary>
+        /// Creates a new Date Time valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="datatype">Datatype URI</param>
         protected DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new Date Time valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
+        /// <param name="datatype">Datatype URI</param>
         protected DateTimeNode(IGraph g, DateTimeOffset value, Uri datatype)
             : this(g, value, GetStringForm(value, datatype), datatype) { }
 
+        /// <summary>
+        /// Creates a new Date Time valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
         public DateTimeNode(IGraph g, DateTimeOffset value)
             : this(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
+        /// <summary>
+        /// Creates a new Date Time valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
         public DateTimeNode(IGraph g, DateTimeOffset value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime)) { }
 
+        /// <summary>
+        /// Gets the String form of the Date Time
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <param name="datatype">Datatype URI</param>
+        /// <returns></returns>
         private static String GetStringForm(DateTimeOffset value, Uri datatype)
         {
             switch (datatype.ToString())
@@ -77,41 +106,72 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the date time value as a string
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             return this.Value;
         }
 
+        /// <summary>
+        /// Throws an error as date times cannot be converted to integers
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");
         }
 
+        /// <summary>
+        /// Throws an error as date times cannot be converted to decimals
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");
         }
 
+        /// <summary>
+        /// Throws an error as date times cannot be converted to floats
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");
         }
 
+        /// <summary>
+        /// Throws an error as date times cannot be converted to doubles
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");
         }
 
+        /// <summary>
+        /// Throws an error as date times cannot be converted to booleans
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");
         }
 
+        /// <summary>
+        /// Gets the date time value of the node
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             return this._value;
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get 
@@ -121,12 +181,26 @@ namespace VDS.RDF.Nodes
         }
     }
 
+    /// <summary>
+    /// Valued Node representing a Date value
+    /// </summary>
     public class DateNode
         : DateTimeNode
     {
+        /// <summary>
+        /// Creates a new Date valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
         public DateNode(IGraph g, DateTimeOffset value)
             : base(g, value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
 
+        /// <summary>
+        /// Creates a new Date valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Date Time value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
         public DateNode(IGraph g, DateTimeOffset value, String lexicalValue)
             : base(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate)) { }
     }

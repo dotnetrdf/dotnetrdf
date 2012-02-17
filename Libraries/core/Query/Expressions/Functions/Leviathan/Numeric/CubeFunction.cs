@@ -19,6 +19,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         public CubeFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = this._expr.Evaluate(context, bindingID);

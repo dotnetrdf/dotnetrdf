@@ -80,11 +80,21 @@ namespace VDS.RDF.Writing
             this._compressionLevel = compressionLevel;
         }
 
+        /// <summary>
+        /// Creates a new compressing Turtle writer using the given syntax level
+        /// </summary>
+        /// <param name="syntax">Syntax Level</param>
         public CompressingTurtleWriter(TurtleSyntax syntax)
         {
             this._syntax = syntax;
         }
 
+        /// <summary>
+        /// Creates a new Compressing Turtle Writer which uses the given Compression Level and Syntax Level
+        /// </summary>
+        /// <param name="compressionLevel">Desired Compression Level</param>
+        /// <param name="syntax">Syntax Level</param>
+        /// <remarks>See Remarks for this classes <see cref="CompressingTurtleWriter.CompressionLevel">CompressionLevel</see> property to see what effect different compression levels have</remarks>
         public CompressingTurtleWriter(int compressionLevel, TurtleSyntax syntax)
             : this(compressionLevel)
         {

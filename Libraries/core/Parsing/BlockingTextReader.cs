@@ -100,7 +100,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a new Blocking Text Reader
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="input">Text Reader to wrap</param>
         /// <param name="bufferSize">Buffer Size</param>
         /// <remarks>
         /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
@@ -114,7 +114,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a new Blocking Text Reader
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="input">Text Reader to wrap</param>
         /// <remarks>
         /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
         /// </remarks>

@@ -138,9 +138,19 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         }
     }
 
+    /// <summary>
+    /// Class representing the SPARQL Datatype() function in SPARQL 1.1
+    /// </summary>
+    /// <remarks>
+    /// This is required because the changes to the function in SPARQL 1.1 are not backwards compatible with SPARQL 1.0
+    /// </remarks>
     public class DataType11Function
         : DataTypeFunction
     {
+        /// <summary>
+        /// Creates a new DataType function
+        /// </summary>
+        /// <param name="expr">Expression</param>
         public DataType11Function(ISparqlExpression expr)
             : base(expr) { }
 

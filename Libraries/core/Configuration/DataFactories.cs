@@ -304,7 +304,6 @@ namespace VDS.RDF.Configuration
 
             ITripleStore store = null;
             INode subObj;
-            bool isAsync;
             Object temp;
 
             //Get Property Nodes we need
