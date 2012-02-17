@@ -448,11 +448,18 @@ namespace VDS.RDF
     {
         private HashTable<int, INode> _nodes = new HashTable<int, INode>(HashTableBias.Enumeration, 2);
 
+        /// <summary>
+        /// Adds a Node to the collection
+        /// </summary>
+        /// <param name="n">Node</param>
         protected internal override void Add(INode n)
         {
             this._nodes.Add(n.GetHashCode(), n);
         }
 
+        /// <summary>
+        /// Gets the Blank Nodes in the collection
+        /// </summary>
         public override IEnumerable<IBlankNode> BlankNodes
         {
             get 
@@ -463,11 +470,19 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the collection contains a Node
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
         public override bool Contains(INode n)
         {
             return this._nodes.Contains(n.GetHashCode(), n);
         }
 
+        /// <summary>
+        /// Gets the number of nodes in the collection
+        /// </summary>
         public override int Count
         {
             get
@@ -476,6 +491,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Graph Literal Nodes from the collection
+        /// </summary>
         public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         {
             get 
@@ -486,6 +504,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Literal Nodes from the collection
+        /// </summary>
         public override IEnumerable<ILiteralNode> LiteralNodes
         {
             get 
@@ -496,6 +517,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the URI Nodes from the collection
+        /// </summary>
         public override IEnumerable<IUriNode> UriNodes
         {
             get 
@@ -545,51 +569,87 @@ namespace VDS.RDF
         #endregion
     }
 
+    /// <summary>
+    /// A Node collection that does not store nodes, use if you don't intend to ever use the Nodes collection
+    /// </summary>
     [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
     public class EmptyNodeCollection
         : BaseNodeCollection
     {
-
+        /// <summary>
+        /// Adds a Node to the collection
+        /// </summary>
+        /// <param name="n">Nodes</param>
         protected internal override void Add(INode n)
         {
             //Nothing to do
         }
 
+        /// <summary>
+        /// Gets the Blank Nodes from the collection
+        /// </summary>
         public override IEnumerable<IBlankNode> BlankNodes
         {
             get { return Enumerable.Empty<IBlankNode>(); }
         }
 
+        /// <summary>
+        /// Returns true as the empty node collection is considered to contain all nodes
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This is primarily an optimisation hack
+        /// </remarks>
         public override bool Contains(INode n)
         {
             return true;
         }
 
+        /// <summary>
+        /// Returns zero
+        /// </summary>
         public override int Count
         {
             get { return 0; }
         }
 
+        /// <summary>
+        /// Gets the Graph Literal Nodes for the collection
+        /// </summary>
         public override IEnumerable<IGraphLiteralNode> GraphLiteralNodes
         {
             get { return Enumerable.Empty<IGraphLiteralNode>(); }
         }
 
+        /// <summary>
+        /// Gets the Literal Nodes for the collection
+        /// </summary>
         public override IEnumerable<ILiteralNode> LiteralNodes
         {
             get { return Enumerable.Empty<ILiteralNode>(); }
         }
 
+        /// <summary>
+        /// Gets the URI Nodes for the collection
+        /// </summary>
         public override IEnumerable<IUriNode> UriNodes
         {
             get { return Enumerable.Empty<IUriNode>(); }
         }
 
+        /// <summary>
+        /// Disposes of the collection
+        /// </summary>
         public override void Dispose()
         {
             //Nothing to do
         }
 
+        /// <summary>
+        /// Gets an enumerator for the collection
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerator<INode> GetEnumerator()
         {
             return Enumerable.Empty<INode>().GetEnumerator();

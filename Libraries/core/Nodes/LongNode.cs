@@ -34,9 +34,6 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -51,26 +48,49 @@ namespace VDS.RDF.Nodes
     {
         private long _value;
 
+        /// <summary>
+        /// Creates a new long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Long value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
         public LongNode(IGraph g, long value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger), SparqlNumericType.Integer)
-        {
-            this._value = value;
-        }
+            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)) { }
 
+        /// <summary>
+        /// Creates a new long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Long value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="datatype">Datatype URI</param>
         public LongNode(IGraph g, long value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Long value</param>
         public LongNode(IGraph g, long value)
             : this(g, value, value.ToString()) { }
 
+        /// <summary>
+        /// Gets the long value
+        /// </summary>
+        /// <returns></returns>
         public override long AsInteger()
         {
             return this._value;
         }
 
+        /// <summary>
+        /// Gets the decimal value of the long
+        /// </summary>
+        /// <returns></returns>
         public override decimal AsDecimal()
         {
             try
@@ -83,6 +103,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value of the long
+        /// </summary>
+        /// <returns></returns>
         public override float AsFloat()
         {
             try
@@ -95,6 +119,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the double value of the long
+        /// </summary>
+        /// <returns></returns>
         public override double AsDouble()
         {
             try
@@ -109,28 +137,47 @@ namespace VDS.RDF.Nodes
     }
 
     /// <summary>
-    /// A Valued Node with a Long value
+    /// A Valued Node with a unsigned long value
     /// </summary>
     public class UnsignedLongNode
         : NumericNode
     {
         private ulong _value;
 
+        /// <summary>
+        /// Creates a new unsigned long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Unsigned Long value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
         public UnsignedLongNode(IGraph g, ulong value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt), SparqlNumericType.Integer)
-        {
-            this._value = value;
-        }
+            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt)) { }
 
+        /// <summary>
+        /// Creates a new unsigned long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Unsigned Long value</param>
+        /// <param name="lexicalValue">Lexical Value</param>
+        /// <param name="datatype">Datatype URI</param>
         public UnsignedLongNode(IGraph g, ulong value, String lexicalValue, Uri datatype)
             : base(g, lexicalValue, datatype, SparqlNumericType.Integer)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new usigned long valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Unsigned Long value</param>
         public UnsignedLongNode(IGraph g, ulong value)
             : this(g, value, value.ToString()) { }
 
+        /// <summary>
+        /// Gets the long value of the ulong
+        /// </summary>
+        /// <returns></returns>
         public override long AsInteger()
         {
             try
@@ -143,6 +190,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the decimal value of the ulong
+        /// </summary>
+        /// <returns></returns>
         public override decimal AsDecimal()
         {
             try
@@ -155,6 +206,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value of the ulong
+        /// </summary>
+        /// <returns></returns>
         public override float AsFloat()
         {
             try
@@ -167,6 +222,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the double value of the ulong
+        /// </summary>
+        /// <returns></returns>
         public override double AsDouble()
         {
             try

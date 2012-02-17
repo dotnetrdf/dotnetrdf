@@ -81,8 +81,16 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         void SetActiveGraph(Uri graphUri);
 
+        /// <summary>
+        /// Sets the Default Graph to be the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         void SetDefaultGraph(Uri graphUri);
 
+        /// <summary>
+        /// Sets the Default Graph to be the merge of the Graphs with the given URIs
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         void SetDefaultGraph(IEnumerable<Uri> graphUris);
 
         /// <summary>

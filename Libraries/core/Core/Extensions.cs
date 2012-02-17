@@ -301,7 +301,6 @@ namespace VDS.RDF
         /// <summary>
         /// Asserts a list as a RDF collection and returns the node that represents the root of the RDF collection
         /// </summary>
-        /// <typeparam name="T">Type of Objects</typeparam>
         /// <param name="g">Graph to assert in</param>
         /// <param name="objects">Objects to place in the collection</param>
         /// <returns>
@@ -315,7 +314,6 @@ namespace VDS.RDF
         /// <summary>
         /// Asserts a list as a RDF collection using an existing node as the list root
         /// </summary>
-        /// <typeparam name="T">Type of Objects</typeparam>
         /// <param name="g">Graph to assert in</param>
         /// <param name="listRoot">Root Node for List</param>
         /// <param name="objects">Objects to place in the collection</param>

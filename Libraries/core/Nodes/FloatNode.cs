@@ -34,29 +34,44 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Nodes
 {
+    /// <summary>
+    /// A Valued Node representing float values
+    /// </summary>
     public class FloatNode
         : NumericNode
     {
         private float _value;
 
+        /// <summary>
+        /// Creates a new Float valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Float value</param>
+        /// <param name="lexicalValue">Lexical value</param>
         public FloatNode(IGraph g, float value, String lexicalValue)
             : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
         {
             this._value = value;
         }
 
+        /// <summary>
+        /// Creates a new Float valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Float value</param>
         public FloatNode(IGraph g, float value)
             : this(g, value, value.ToString()) { }
 
+        /// <summary>
+        /// Gets the integer value of the float
+        /// </summary>
+        /// <returns></returns>
         public override long AsInteger()
         {
             try
@@ -69,6 +84,10 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the decimal value of the float
+        /// </summary>
+        /// <returns></returns>
         public override decimal AsDecimal()
         {
             try
@@ -81,11 +100,19 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Gets the float value
+        /// </summary>
+        /// <returns></returns>
         public override float AsFloat()
         {
             return this._value;
         }
 
+        /// <summary>
+        /// Gets the double value of the float
+        /// </summary>
+        /// <returns></returns>
         public override double AsDouble()
         {
             try

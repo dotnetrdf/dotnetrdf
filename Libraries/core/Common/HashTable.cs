@@ -85,7 +85,7 @@ namespace VDS.Common
         private HashTableBias _bias = HashTableBias.Enumeration;
 
         /// <summary>
-        /// Creates a new HashTable
+        /// Creates a new Hash Table
         /// </summary>
         /// <remarks>
         /// Use this constructor if you expect to use this primarily as a dictionary i.e. there is a mostly 1:1 mapping of keys to values with minimal collisions
@@ -95,13 +95,20 @@ namespace VDS.Common
 
         }
 
+        /// <summary>
+        /// Creates a new Hash Table with the given bias
+        /// </summary>
+        /// <param name="bias">Bias</param>
+        /// <remarks>
+        /// The bias controls what the underlying storage of the table is, different biases have different performance characteristics and allow you to tailor the table to your intended usage
+        /// </remarks>
         public HashTable(HashTableBias bias)
         {
             this._bias = bias;
         }
 
         /// <summary>
-        /// Creates a new HashTable
+        /// Creates a new Hash Table
         /// </summary>
         /// <param name="emptyKeys">Whether Keys are allowed to have no values associated with them</param>
         public HashTable(bool emptyKeys)
@@ -109,6 +116,14 @@ namespace VDS.Common
             this._emptyKeys = emptyKeys;
         }
 
+        /// <summary>
+        /// Creates a new Hash Table with the given bias
+        /// </summary>
+        /// <param name="bias">Bias</param>
+        /// <param name="emptyKeys">Whether Keys are allowed to have no values associated with them</param>
+        /// <remarks>
+        /// The bias controls what the underlying storage of the table is, different biases have different performance characteristics and allow you to tailor the table to your intended usage
+        /// </remarks>
         public HashTable(HashTableBias bias, bool emptyKeys)
             : this(emptyKeys)
         {
@@ -116,7 +131,7 @@ namespace VDS.Common
         }
 
         /// <summary>
-        /// Creates a new HashTable where the initial capacity at each key is specified
+        /// Creates a new Hash Table where the initial capacity at each key is specified
         /// </summary>
         /// <param name="capacity">Initial Capacity at each Key</param>
         /// <remarks>
@@ -127,6 +142,19 @@ namespace VDS.Common
             if (capacity >= 1) this._capacity = capacity;
         }
 
+        /// <summary>
+        /// Creates a new Hash Table with the given bias
+        /// </summary>
+        /// <param name="bias">Bias</param>
+        /// <param name="capacity">Initial Capacity at each Key</param>
+        /// <remarks>
+        /// <para>
+        /// Use this if you expect to use this as a true Hash Table i.e. there is a 1:Many mapping of keys to values.  Choose a capcity value that seems reasonable for the data you expect to store.
+        /// </para>
+        /// <para>
+        /// The bias controls what the underlying storage of the table is, different biases have different performance characteristics and allow you to tailor the table to your intended usage
+        /// </para>
+        /// </remarks>
         public HashTable(HashTableBias bias, int capacity)
             : this(capacity)
         {
@@ -134,10 +162,10 @@ namespace VDS.Common
         }
 
         /// <summary>
-        /// Creates a new HashTable where the initial capacity at each key is specified
+        /// Creates a new Hash Table where the initial capacity at each key is specified
         /// </summary>
         /// <param name="capacity">Initial Capacity at each Key</param>
-        /// <param name="emptyKeys">Empty Keys</param>
+        /// <param name="emptyKeys">Whether keys are allowed to have no values associated with them</param>
         /// <remarks>
         /// Use this if you expect to use this as a true HashTable i.e. there is a 1:Many mapping of keys to values.  Choose a capcity value that seems reasonable for the data you expect to store.
         /// </remarks>
@@ -147,6 +175,20 @@ namespace VDS.Common
             if (capacity >= 1) this._capacity = capacity;
         }
 
+        /// <summary>
+        /// Creates a new Hash Table with the given bias
+        /// </summary>
+        /// <param name="bias">Bias</param>
+        /// <param name="capacity">Initial Capacity at each Key</param>
+        /// <param name="emptyKeys">Whether keys are allowed to have no values associated with them</param>
+        /// <remarks>
+        /// <para>
+        /// Use this if you expect to use this as a true Hash Table i.e. there is a 1:Many mapping of keys to values.  Choose a capcity value that seems reasonable for the data you expect to store.
+        /// </para>
+        /// <para>
+        /// The bias controls what the underlying storage of the table is, different biases have different performance characteristics and allow you to tailor the table to your intended usage
+        /// </para>
+        /// </remarks>
         public HashTable(HashTableBias bias, int capacity, bool emptyKeys)
             : this(capacity, emptyKeys)
         {

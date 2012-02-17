@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         /// Gets the String representation of the function
         /// </summary>
         /// <returns></returns>
-        public string ToString()
+        public override string ToString()
         {
             return "<" + ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.E + ">()";
         }

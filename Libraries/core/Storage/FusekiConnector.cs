@@ -93,6 +93,7 @@ namespace VDS.RDF.Storage
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
+        /// <param name="proxy">Proxy Server</param>
         public FusekiConnector(String serviceUri, WebProxy proxy)
             : base(serviceUri, proxy)
         {

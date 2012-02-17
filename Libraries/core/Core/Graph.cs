@@ -79,6 +79,11 @@ namespace VDS.RDF
         public Graph(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+        /// <summary>
+        /// Creates a new instance of a Graph using the given Node Collection
+        /// </summary>
+        /// <param name="nodeCollection">Node Collection</param>
+        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
         public Graph(BaseNodeCollection nodeCollection)
             : base(nodeCollection) { }
 

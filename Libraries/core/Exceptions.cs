@@ -542,7 +542,8 @@ namespace VDS.RDF.Update
     /// <summary>
     /// Class for representing Timeout errors that occur while updating RDF using SPARQL
     /// </summary>
-    public class SparqlUpdateTimeoutException : SparqlUpdateException
+    public class SparqlUpdateTimeoutException
+        : SparqlUpdateException
     {
         /// <summary>
         /// Creates a new SPARQL Update Timeout Exception
@@ -552,23 +553,49 @@ namespace VDS.RDF.Update
             : base(errorMsg) { }
     }
 
-
+    /// <summary>
+    /// Class for representing Permissions errors with SPARQL Updates
+    /// </summary>
     public class SparqlUpdatePermissionException
         : SparqlUpdateException
     {
+        /// <summary>
+        /// Creates a new Permission Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
         public SparqlUpdatePermissionException(String message)
             : base(message) { }
 
+        /// <summary>
+        /// Creates a new Permission Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this exception to be thrown</param>
         public SparqlUpdatePermissionException(String message, Exception cause)
             : base(message, cause) { }
     }
 
+    /// <summary>
+    /// Class for representing malformed SPARQL Updates
+    /// </summary>
+    /// <remarks>
+    /// This is distinct from a <see cref="RdfParseException">RdfParseException</see> as it is possible for an update to be syntactically valid but semantically malformed
+    /// </remarks>
     public class SparqlUpdateMalformedException
         : SparqlUpdateException
     {
+        /// <summary>
+        /// Creates a new Malformed Update Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
         public SparqlUpdateMalformedException(String message)
             : base(message) { }
 
+        /// <summary>
+        /// Creates a new Malformed Update Exception
+        /// </summary>
+        /// <param name="message">Error Message</param>
+        /// <param name="cause">Exception that caused this exception to be thrown</param>
         public SparqlUpdateMalformedException(String message, Exception cause)
             : base(message, cause) { }
     }

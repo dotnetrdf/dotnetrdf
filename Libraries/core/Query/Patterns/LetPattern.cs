@@ -176,6 +176,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns true as a LET can never contain Blank Nodes
+        /// </summary>
         public override bool HasNoBlankVariables
         {
             get 

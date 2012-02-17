@@ -1,8 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VDS.RDF.Parsing;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
@@ -20,94 +50,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public IsNumericFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="bindingID"></param>
+        /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            try
-            {
-                //TODO: This new approach relies on AsValuedNode() correctly validating numeric types which it doesn't yet do for all types here
-                IValuedNode result = this._expr.Evaluate(context, bindingID);
-                return new BooleanNode(null, result.NumericType != SparqlNumericType.NaN);
-
-                ////While we could use NumericType or NumericValue for Numeric Expressions we can't guarantee that
-                ////this would work properly
-
-                //INode temp = this._expr.Value(context, bindingID);
-                //if (temp.NodeType == NodeType.Literal)
-                //{
-                //    ILiteralNode lit = (ILiteralNode)temp;
-
-                //    //No DatatType means not numeric
-                //    if (lit.DataType == null) return false;
-
-                //    //Get the Numeric Type from the DataType URI
-                //    SparqlNumericType type = SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(lit.DataType);
-
-                //    //Now check the lexical value
-                //    switch (type)
-                //    {
-                //        case SparqlNumericType.Decimal:
-                //            //Decimal - just regex on lexical form
-                //            return SparqlSpecsHelper.IsDecimal(lit.Value);
-
-                //        case SparqlNumericType.Double:
-                //        case SparqlNumericType.Float:
-                //            //Double/Float just regex on lexical form
-                //            return SparqlSpecsHelper.IsDouble(lit.Value);
-
-                //        case SparqlNumericType.Integer:
-                //            //Integer Type so could be any of the supported types
-                //            switch (lit.DataType.ToString())
-                //            {
-                //                case XmlSpecsHelper.XmlSchemaDataTypeByte:
-                //                    //Byte - have to try parsing it
-                //                    SByte sb;
-                //                    return SByte.TryParse(lit.Value, out sb);
-
-                //                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte:
-                //                    //Unsigned Byte - have to try parsing it
-                //                    Byte b;
-                //                    return Byte.TryParse(lit.Value, out b) && b >= 0;
-
-                //                case XmlSpecsHelper.XmlSchemaDataTypeInt:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeInteger:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeLong:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeShort:
-                //                    //Standard Integer - can just regex on its lexical form
-                //                    return SparqlSpecsHelper.IsInteger(lit.Value);
-
-                //                case XmlSpecsHelper.XmlSchemaDataTypeNegativeInteger:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeNonPositiveInteger:
-                //                    //Negative Integer - can just regex on its lexical form
-                //                    //plus ensure that the value starts with a -
-                //                    return lit.Value.StartsWith("-") && SparqlSpecsHelper.IsInteger(lit.Value);
-
-                //                case XmlSpecsHelper.XmlSchemaDataTypeNonNegativeInteger:
-                //                case XmlSpecsHelper.XmlSchemaDataTypePositiveInteger:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedInt:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedLong:
-                //                case XmlSpecsHelper.XmlSchemaDataTypeUnsignedShort:
-                //                    //Positive Integer - can just regex on its lexical form
-                //                    //plus ensure that the value doesn't start with a -
-                //                    return !lit.Value.StartsWith("-") && SparqlSpecsHelper.IsInteger(lit.Value);
-
-                //                default:
-                //                    //Otherwise not numeric
-                //                    return false;
-                //            }
-
-                //        default:
-                //            return false;
-                //    }
-                //}
-                //else
-                //{
-                //    return false;
-                //}
-            }
-            catch (RdfQueryException)
-            {
-                return new BooleanNode(null, false);
-            }
+            IValuedNode result = this._expr.Evaluate(context, bindingID);
+            return new BooleanNode(null, result.NumericType != SparqlNumericType.NaN);
         }
 
         /// <summary>

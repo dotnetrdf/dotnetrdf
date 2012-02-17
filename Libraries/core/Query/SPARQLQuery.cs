@@ -567,52 +567,6 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets how long the Query took in Milliseconds
-        /// </summary>
-        [Obsolete("Use the QueryExecutionTime property instead to get a Timespan which provides more detailed Timing information", false)]
-        public long QueryTime
-        {
-            get
-            {
-                if (this._queryTime > -1)
-                {
-                    return this._queryTime;
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot request the Query Time before a Query has completed");
-                }
-            }
-            internal set
-            {
-                this._queryTime = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets how long the Query took in Ticks
-        /// </summary>
-        [Obsolete("Use the QueryExecutionTime property instead to get a Timespan which provides more detailed Timing information", false)]
-        public long QueryTimeTicks
-        {
-            get
-            {
-                if (this._queryTimeTicks > -1)
-                {
-                    return this._queryTimeTicks;
-                }
-                else
-                {
-                    throw new RdfQueryException("Cannot request the Query Time before a Query has completed");
-                }
-            }
-            internal set
-            {
-                this._queryTimeTicks = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the Time taken to execute a Query
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown if you try and inspect the execution time before the Query has been executed</exception>

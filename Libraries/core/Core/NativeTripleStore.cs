@@ -53,7 +53,7 @@ namespace VDS.RDF
     /// No data is automatically loaded into this class when it is instantiated, it acts as a queryable view on some arbitrary Store accessed via some <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see>
     /// </para>
     /// </remarks>
-    [Obsolete("The NativeTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
+    [Obsolete("The NativeTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", true)]
     public class NativeTripleStore : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore
     {
         private IQueryableGenericIOManager _manager;

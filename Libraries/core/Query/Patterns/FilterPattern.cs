@@ -138,6 +138,12 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns true as a FILTER cannot contain blank variables
+        /// </summary>
+        /// <remarks>
+        /// Technically blank nodes may appear in a FILTER as part of an EXISTS/NOT EXISTS clause but in that case they would not be visible outside of the FILTER and so are not relevant
+        /// </remarks>
         public override bool HasNoBlankVariables
         {
             get

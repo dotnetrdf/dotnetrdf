@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Parsing
 {
@@ -148,6 +149,30 @@ namespace VDS.RDF.Test.Parsing
             {
                 //Options.HttpFullDebugging = false;
                 Options.UriLoaderTimeout = 15000;
+                Options.HttpDebugging = false;
+                Options.UriLoaderCaching = true;
+            }
+        }
+
+        [TestMethod]
+        public void ParsingUriLoaderDBPedia()
+        {
+            try
+            {
+                Options.HttpDebugging = true;
+                Options.UriLoaderCaching = false;
+
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Barack_Obama"));
+                NTriplesFormatter formatter = new NTriplesFormatter();
+                foreach (Triple t in g.Triples)
+                {
+                    Console.WriteLine(t.ToString(formatter));
+                }
+                Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
+            }
+            finally
+            {
                 Options.HttpDebugging = false;
                 Options.UriLoaderCaching = true;
             }

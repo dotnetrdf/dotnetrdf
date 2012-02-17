@@ -67,8 +67,6 @@ namespace VDS.RDF.Query
         public object ProcessQuery(SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -79,8 +77,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
 
@@ -93,8 +89,6 @@ namespace VDS.RDF.Query
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -104,8 +98,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
 
@@ -190,8 +182,6 @@ namespace VDS.RDF.Query
         public object ProcessQuery(SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -202,8 +192,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
 
@@ -216,8 +204,6 @@ namespace VDS.RDF.Query
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -227,8 +213,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
 
@@ -314,8 +298,6 @@ namespace VDS.RDF.Query
         {
 #if !SILVERLIGHT
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             Object temp;
             try
@@ -345,8 +327,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
 #else
             throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
@@ -363,8 +343,6 @@ namespace VDS.RDF.Query
         {
 #if !SILVERLIGHT
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -392,8 +370,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
 #else
             throw new NotSupportedException("Synchronous remote query is not supported under Silverlight/WP7 - please use one of the alternative overload of this methods which takes a callback");
@@ -410,8 +386,6 @@ namespace VDS.RDF.Query
         public void ProcessQuery(SparqlQuery query, GraphCallback rdfCallback, SparqlResultsCallback resultsCallback, Object state)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -439,8 +413,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
 
@@ -455,8 +427,6 @@ namespace VDS.RDF.Query
         public void ProcessQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query, QueryCallback callback, Object state)
         {
             query.QueryExecutionTime = null;
-            query.QueryTime = -1;
-            query.QueryTimeTicks = -1;
             DateTime start = DateTime.Now;
             try
             {
@@ -484,8 +454,6 @@ namespace VDS.RDF.Query
             {
                 TimeSpan elapsed = (DateTime.Now - start);
                 query.QueryExecutionTime = elapsed;
-                query.QueryTime = elapsed.Milliseconds;
-                query.QueryTimeTicks = elapsed.Ticks;
             }
         }
     }

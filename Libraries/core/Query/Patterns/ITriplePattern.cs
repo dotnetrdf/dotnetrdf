@@ -90,6 +90,9 @@ namespace VDS.RDF.Query.Patterns
             get;
         }
 
+        /// <summary>
+        /// Gets whether a Triple Pattern does not contain any Blank Variables
+        /// </summary>
         bool HasNoBlankVariables
         {
             get;

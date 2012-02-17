@@ -327,19 +327,7 @@ namespace VDS.RDF.Configuration
 #if !NO_STORAGE
 
                 case NativeTripleStore:
-                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propGenericManager);
-                    if (subObj == null) return false;
-
-                    temp = ConfigurationLoader.LoadObject(g, subObj);
-                    if (temp is IQueryableGenericIOManager)
-                    {
-                        store = new NativeTripleStore((IQueryableGenericIOManager)temp);
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load a Native Triple Store identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which could not be loaded as an object which implements the IQueryableGenericIOManager interface");
-                    }
-                    break;
+                    throw new DotNetRdfConfigurationException("The NativeTripleStore class is obsolete, please use a PersistentTripleStore instead which supercedes this class and provides more useful behaviour");
 
                 case PersistentTripleStore:
                     subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propGenericManager);

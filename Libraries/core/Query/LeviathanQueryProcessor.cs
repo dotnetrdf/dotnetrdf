@@ -144,8 +144,6 @@ namespace VDS.RDF.Query
 #endif
                 //Reset Query Timers
                 query.QueryExecutionTime = null;
-                query.QueryTime = -1;
-                query.QueryTimeTicks = -1;
 
                 bool datasetOk = false, defGraphOk = false;
 
@@ -182,23 +180,17 @@ namespace VDS.RDF.Query
 
                         context.EndExecution();
                         query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
-                        query.QueryTime = context.QueryTime;
-                        query.QueryTimeTicks = context.QueryTimeTicks;
                     }
                     catch (RdfQueryException)
                     {
                         context.EndExecution();
                         query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
-                        query.QueryTime = context.QueryTime;
-                        query.QueryTimeTicks = context.QueryTimeTicks;
                         throw;
                     }
                     catch
                     {
                         context.EndExecution();
                         query.QueryExecutionTime = new TimeSpan(context.QueryTimeTicks);
-                        query.QueryTime = context.QueryTime;
-                        query.QueryTimeTicks = context.QueryTimeTicks;
                         throw;
                     }
 
