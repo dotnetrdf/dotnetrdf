@@ -123,7 +123,7 @@ namespace VDS.RDF.Web.Configuration
         /// <param name="objNode">Object Node</param>
         /// <remarks>
         /// <para>
-        /// It is acceptable for the <paramref name="content">context</paramref> parameter to be null
+        /// It is acceptable for the <paramref name="context">context</paramref> parameter to be null
         /// </para>
         /// </remarks>
         public BaseHandlerConfiguration(HttpContext context, IGraph g, INode objNode)

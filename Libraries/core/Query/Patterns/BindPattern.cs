@@ -161,6 +161,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns true as a BIND can never contain a Blank Variable
+        /// </summary>
         public override bool HasNoBlankVariables
         {
             get

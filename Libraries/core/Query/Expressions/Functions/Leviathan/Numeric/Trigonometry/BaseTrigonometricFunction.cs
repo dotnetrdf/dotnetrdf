@@ -35,6 +35,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             this._func = func;
         }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode temp = this._expr.Evaluate(context, bindingID);
@@ -45,6 +51,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
             return new DoubleNode(null, this._func(temp.AsDouble()));
         }
 
+        /// <summary>
+        /// Gets the expression type
+        /// </summary>
         public override SparqlExpressionType Type
         {
             get 

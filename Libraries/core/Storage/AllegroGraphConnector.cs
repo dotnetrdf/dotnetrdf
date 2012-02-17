@@ -119,6 +119,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
+        /// <param name="proxy">Proxy Server</param>
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID, String username, String password, WebProxy proxy)
             : base(baseUri, storeID, username, password, proxy)
         {
@@ -150,6 +151,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <param name="username">Username for connecting to the Store</param>
         /// <param name="password">Password for connecting to the Store</param>
+        /// <param name="proxy">Proxy Server</param>
         public AllegroGraphConnector(String baseUri, String storeID, String username, String password, WebProxy proxy)
             : this(baseUri, null, storeID, username, password, proxy) { }
 
@@ -235,7 +237,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="combineIndices">Whether existing Indices should be combined with the newly generated ones</param>
         /// <remarks>
-        /// Setting <paramref name="CombineIndices"/> causes AllegroGraph to merge the new indices with existing indices which results in faster queries but may take significant extra time for the indexing to be done depending on the size of the Store.
+        /// Setting <paramref name="combineIndices"/> causes AllegroGraph to merge the new indices with existing indices which results in faster queries but may take significant extra time for the indexing to be done depending on the size of the Store.
         /// </remarks>
         public void IndexStore(bool combineIndices)
         {

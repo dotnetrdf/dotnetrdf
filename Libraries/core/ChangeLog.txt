@@ -29,6 +29,7 @@ Changed
  - Fixed a bug where QNames in RDF/XML output weren't fully validated against the latest revisions of the XML specs
  - Fixed a bug where Blank Node IDs in RDF/XML output could be invalid
  - Fixed a bug with some queries falsely being considered ASK queries and their results improperly handled for Sesame stores
+ - Fixed a bug with bad serialisation of sub-queries
 - Parsing
  - Constructors for BlockingTextReader are now private, use BlockingTextReader.Create() static instead
 - Query
@@ -38,6 +39,7 @@ Changed
  - Improved selectivity of TriplePattern.GetTriples()
  - Some refactoring of ISparqlDataset interface
  - A WebDemandDataset for creating a dataset with load on demand capabilities
+ - Enabled StrictAlgebraOptimiser and IdentityFilterOptimiser by default
 - Update
  - GenericUpdateProcessor is more intelligent in determining whether a command can be applied to stores that don't have native SPARQL Update support
 - Writing

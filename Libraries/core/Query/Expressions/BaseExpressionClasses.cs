@@ -62,6 +62,12 @@ namespace VDS.RDF.Query.Expressions
             this._expr = expr;
         }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluuation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>
@@ -138,6 +144,12 @@ namespace VDS.RDF.Query.Expressions
             this._rightExpr = rightExpr;
         }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public abstract IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID);
 
         /// <summary>

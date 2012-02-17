@@ -160,6 +160,10 @@ namespace VDS.RDF.Query.Datasets
             this._defaultGraph.Value = g;
         }
 
+        /// <summary>
+        /// Sets the Default Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public void SetDefaultGraph(Uri graphUri)
         {
             if (this.HasGraph(graphUri))
@@ -174,6 +178,10 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Sets the Default Graph
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         public void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
             if (!graphUris.Any())
@@ -307,6 +315,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Default Graph URIs
+        /// </summary>
         public IEnumerable<Uri> DefaultGraphUris
         {
             get
@@ -322,6 +333,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Active Graph URIs
+        /// </summary>
         public IEnumerable<Uri> ActiveGraphUris
         {
             get

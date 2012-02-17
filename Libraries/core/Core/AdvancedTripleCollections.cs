@@ -804,6 +804,9 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// An indexed Triple Collection which uses Tries for the indexes
+    /// </summary>
     public class TrieIndexedTripleCollection
         : BaseTripleCollection, IEnumerable<Triple>
     {
@@ -813,6 +816,9 @@ namespace VDS.RDF
                            _osIndex = new TripleTrie(TripleTrie.KeyMapperOS),
                            _soIndex = new TripleTrie(TripleIndexType.SubjectObject);
 
+        /// <summary>
+        /// Creates a new Trie indexed triple collection
+        /// </summary>
         public TrieIndexedTripleCollection()
         {
             this._triples = new HashTable<int, Triple>(1);
@@ -1093,6 +1099,9 @@ namespace VDS.RDF
         }
     }
 
+    /// <summary>
+    /// Trie for Triples
+    /// </summary>
     class TripleTrie
         : Trie<Triple, INode, List<Triple>>
     {
