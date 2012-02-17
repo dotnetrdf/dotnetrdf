@@ -34,6 +34,7 @@
   <property name="dotnetrdf.libzip" value="dotNetRDF_library_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
   <property name="dotnetrdf.srczip" value="dotNetRDF_library_source_${dotnetrdf.version}_${dotnetrdf.releasetype}.zip" />
   <property name="dotnetrdf.toolkitzip" value="dotNetRDF_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}.zip" />
+  <property name="dotnetrdf.toolkitinstaller" value="dotNetRDF_tools_${dotnetrdf.toolsversion}_${dotnetrdf.toolsreleasetype}_installer.zip" />
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
@@ -637,6 +638,16 @@
     <copy overwrite="true" todir="../bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
   
+  <!-- Clean Targets -->
+
+  <target name="clean" description="Cleans the bin/ directories of all projects causing a rebuild to be necessary">
+    <delete>
+      <fileset>
+        <include name="**/bin/**/*" />
+      </fileset>
+    </delete>
+  </target>
+  
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
   <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit,dist-nuget">
@@ -730,6 +741,14 @@
         <exclude name="*.pdb" />
         <exclude name="*.vshost.*" />
         <exclude name="temp.*" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="dist-toolkit-installer" description="Creates the Toolkit Installer ZIP" depends="build">
+    <zip zipfile="${dotnetrdf.toolkitinstaller}" ziplevel="9">
+      <fileset basedir="Build/ToolkitInstaller/Debug/" failonempty="true">
+        <include name="*" />
       </fileset>
     </zip>
   </target>
