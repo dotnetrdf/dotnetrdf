@@ -78,10 +78,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphCollection">Graph Collection</param>
         public TripleStore(BaseGraphCollection graphCollection)
-            : base(graphCollection)
-        {
-            this._processor = new LeviathanQueryProcessor(this);
-        }
+            : base(graphCollection) { }
 
         #region Selection
 
@@ -741,7 +738,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual Object ExecuteQuery(SparqlQuery query)
         {
-            //Invoke Query's Evaluate method
+            if (this._processor == null) this._processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
             return this._processor.ProcessQuery(query);
         }
 
@@ -769,6 +766,7 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query as unparsed String</param>
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
+            if (this._processor == null) this._processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(this));
             this._processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 

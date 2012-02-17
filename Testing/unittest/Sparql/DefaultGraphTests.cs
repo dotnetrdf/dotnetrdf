@@ -29,7 +29,7 @@ namespace VDS.RDF.Test.Sparql
             Object results = store.ExecuteQuery("ASK WHERE { GRAPH ?g { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
-                Assert.IsTrue(((SparqlResultSet)results).Result);
+                Assert.IsFalse(((SparqlResultSet)results).Result);
             }
             else
             {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Sparql
             Object results = store.ExecuteQuery("ASK WHERE { GRAPH <dotnetrdf:default-graph> { ?s ?p ?o }}");
             if (results is SparqlResultSet)
             {
-                Assert.IsTrue(((SparqlResultSet)results).Result);
+                Assert.IsFalse(((SparqlResultSet)results).Result);
             }
             else
             {

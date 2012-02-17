@@ -23,7 +23,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
                 Graph h = new Graph();
-                h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+                h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
                 store.Add(h);
 
                 store.SaveToFile(testFile);
@@ -62,7 +62,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -92,7 +92,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
@@ -139,7 +139,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
@@ -166,7 +166,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -200,7 +200,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -230,7 +230,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -255,7 +255,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");
@@ -289,7 +289,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -319,7 +319,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
@@ -344,7 +344,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             Graph lvnOrig = new Graph();
-            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
 
             Assert.AreEqual(2, counter.GraphCount, "Expected 2 Graphs to be counted");
             Assert.AreEqual(configOrig.Triples.Count + lvnOrig.Triples.Count, counter.TripleCount, "Expected Triple Count to be sum of Triple Counts in two input Graphs");

@@ -91,7 +91,7 @@ namespace VDS.RDF.Writing
             }
             set
             {
-                this._indent = value;
+                this._indent = (value >= 0 ? value : 0);
             }
         }
 
@@ -242,7 +242,7 @@ namespace VDS.RDF.Writing
         {
             if (this._tags.Count > 0)
             {
-                this._indent--;
+                if (this._indent > 0) this._indent--;
                 if (!this._newline) this._writer.WriteLine();
                 this._writer.Write(new String('\t', this._indent));
                 this._writer.WriteLine("</" + this._tags.Pop().ToLower() + ">");

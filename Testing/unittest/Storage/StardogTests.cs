@@ -164,7 +164,7 @@ namespace VDS.RDF.Test.Storage
                 Assert.AreEqual(g, h, "Retrieved Graph should be equal to the Saved Graph");
 
                 Graph i = new Graph();
-                i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+                i.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
                 i.BaseUri = new Uri("http://example.org/namedGraph");
                 stardog.SaveGraph(i);
 

@@ -767,12 +767,16 @@ namespace VDS.RDF.Utilities.Server
             output.AddAttribute(HtmlTextWriterAttribute.Name, "query");
             output.AddAttribute(HtmlTextWriterAttribute.Rows, "15");
             output.AddAttribute(HtmlTextWriterAttribute.Cols, "100");
+            int currIndent = output.Indent;
+            output.Indent = 0;
             output.RenderBeginTag(HtmlTextWriterTag.Textarea);
+            output.Indent = 0;
             if (!this._config.DefaultQuery.Equals(String.Empty))
             {
                 output.WriteEncodedText(this._config.DefaultQuery);
             }
             output.RenderEndTag();
+            output.Indent = currIndent;
             output.WriteBreak();
 
             output.WriteEncodedText("Default Graph URI: ");
@@ -877,9 +881,16 @@ namespace VDS.RDF.Utilities.Server
             output.AddAttribute(HtmlTextWriterAttribute.Name, "update");
             output.AddAttribute(HtmlTextWriterAttribute.Rows, "15");
             output.AddAttribute(HtmlTextWriterAttribute.Cols, "100");
+            int currIndent = output.Indent;
+            output.Indent = 0;
             output.RenderBeginTag(HtmlTextWriterTag.Textarea);
-            output.WriteEncodedText(this._config.DefaultUpdate);
+            output.Indent = 0;
+            if (!this._config.DefaultUpdate.Equals(String.Empty))
+            {
+                output.WriteEncodedText(this._config.DefaultUpdate);
+            }
             output.RenderEndTag();
+            output.Indent = currIndent;
             output.WriteBreak();
 
             //output.WriteEncodedText("Default Graph URI: ");

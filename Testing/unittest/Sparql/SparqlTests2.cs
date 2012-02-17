@@ -59,7 +59,7 @@ namespace VDS.RDF.Test
             SparqlQuery q = parser.ParseFromString(query);
 
             Console.WriteLine(q.ToAlgebra().ToString());
-            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Assert.IsFalse(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should not have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
@@ -94,7 +94,7 @@ namespace VDS.RDF.Test
             SparqlQuery q = parser.ParseFromString(query);
 
             Console.WriteLine(q.ToAlgebra().ToString());
-            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Assert.IsFalse(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should not have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
@@ -129,7 +129,7 @@ namespace VDS.RDF.Test
             SparqlQuery q = parser.ParseFromString(query);
 
             Console.WriteLine(q.ToAlgebra().ToString());
-            Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
+            Assert.IsFalse(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should not have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
@@ -275,33 +275,6 @@ namespace VDS.RDF.Test
             {
                 TestTools.ReportError("Unexpected Error", ex, false);
                 Assert.Fail("Did not get a RdfParseException/RdfQueryException as expected");
-            }
-        }
-
-        [TestMethod]
-        public void SparqlBindToExistingVariableNested()
-        {
-            String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT * WHERE { ?s ?p ?o .{ BIND(?s AS ?p)} }";
-
-            TripleStore store = new TripleStore();
-            Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
-            store.Add(g);
-
-            SparqlQueryParser parser = new SparqlQueryParser();
-            try
-            {
-                SparqlQuery q = parser.ParseFromString(query);
-                store.ExecuteQuery(q);
-                Assert.Fail("Expected a RdfQueryException to be thrown");
-            }
-            catch (RdfQueryException)
-            {
-                Console.WriteLine("Error thrown as expected");
-            }
-            catch
-            {
-                Assert.Fail("Expected a RdfQueryException");
             }
         }
 

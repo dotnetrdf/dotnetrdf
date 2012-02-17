@@ -120,7 +120,7 @@ namespace VDS.RDF.Test.Sparql
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             Graph h = new Graph();
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
 
             dataset.AddGraph(g);
@@ -164,7 +164,7 @@ namespace VDS.RDF.Test.Sparql
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri("http://example.org/1");
             Graph h = new Graph();
-            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.Functions.LeviathanFunctionLibrary.ttl");
+            h.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
             h.BaseUri = new Uri("http://example.org/2");
             Graph i = new Graph();
             i.BaseUri = new Uri("http://example.org/3");
