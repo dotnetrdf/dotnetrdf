@@ -165,6 +165,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns false a property path may always contain implicit blank variables
+        /// </summary>
         public override bool HasNoBlankVariables
         {
             get

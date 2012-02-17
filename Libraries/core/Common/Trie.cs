@@ -129,6 +129,7 @@ namespace VDS.Common
         /// Finds and returns a Node for the given Key using the given Key to Key Bit mapping function
         /// </summary>
         /// <param name="key">Key</param>
+        /// <param name="keyMapper">Function to map keys to key bits</param>
         /// <returns>Null if the Key does not map to a Node</returns>
         /// <remarks>
         /// The ability to provide a custom mapping function allows you to do custom lookups into the Trie.  For example you might want to only match some portion of the key rather than the entire key

@@ -667,6 +667,13 @@ namespace VDS.RDF.Query
 
         }
 
+        /// <summary>
+        /// Makes a Query asynchronously where the expected Result is a <see cref="SparqlResultSet">SparqlResultSet</see> i.e. SELECT and ASK Queries
+        /// </summary>
+        /// <param name="query">SPARQL Query String</param>
+        /// <param name="handler">Results Handler</param>
+        /// <param name="callback">Callback to invoke when the query completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultSet(ISparqlResultsHandler handler, String query, QueryCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);
@@ -783,6 +790,13 @@ namespace VDS.RDF.Query
             }, null);
         }
 
+        /// <summary>
+        /// Makes a Query asynchronously where the expected Result is an RDF Graph ie. CONSTRUCT and DESCRIBE Queries
+        /// </summary>
+        /// <param name="query">SPARQL Query String</param>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="callback">Callback to invoke when the query completes</param>
+        /// <param name="state">State to pass to the callback</param>
         public void QueryWithResultGraph(IRdfHandler handler, String query, QueryCallback callback, Object state)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this.Uri);

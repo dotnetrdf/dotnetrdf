@@ -178,6 +178,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Determines whether a QName is valid for use in RDF/XML
+        /// </summary>
+        /// <param name="qname">QName</param>
+        /// <returns></returns>
         public static bool IsValidQName(String qname)
         {
             if (qname.Contains(":"))

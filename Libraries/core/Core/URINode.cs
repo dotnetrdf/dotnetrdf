@@ -448,41 +448,72 @@ namespace VDS.RDF
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Gets the value of the node as a string
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             return this._uri.ToString();
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to a boolean
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
-
+        
+        /// <summary>
+        /// Gets the numeric type of the expression
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get 

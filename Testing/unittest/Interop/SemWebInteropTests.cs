@@ -244,56 +244,6 @@ namespace VDS.RDF.Test.Interop
                 Console.WriteLine(t.ToString());
             }
         }
-
-        [TestMethod]
-        public void InteropSemWebNativeStore()
-        {
-            //Get the Talis Connection
-            TalisPlatformConnector talis = new TalisPlatformConnector("rvesse-dev1", "rvesse", "4kn478wj");
-            Assert.IsNotNull(talis);
-
-            //Create a Talis Triple Store
-            TalisTripleStore store = new TalisTripleStore(talis);
-
-            //Create the Native Store Source
-            NativeStoreSource source = new NativeStoreSource(store);
-
-            Console.WriteLine("All Statements in the Store");
-            source.Select(new SemWebConsolePrinter());
-            Console.WriteLine();
-
-            Console.Write("Does a FordFiesta exist in the Store? ");
-            Console.WriteLine(source.Contains(new Entity("http://example.org/vehicles/FordFiesta")));
-            Console.WriteLine();
-
-            Console.Write("Does a Monkey exist in the Store? ");
-            Console.WriteLine(source.Contains(new Entity("http://example.org/Monkey")));
-            Console.WriteLine();
-
-            Console.Write("Do any Cars exist in the Store? ");
-            Statement cars = new Statement(null, new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/vehicles/Car"));
-            Console.WriteLine(source.Contains(cars));
-            Console.WriteLine();
-
-            Console.Write("Do any Gorillas exist in the Store?");
-            Statement gorillas = new Statement(null, new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/Gorilla"));
-            Console.WriteLine(source.Contains(gorillas));
-            Console.WriteLine();
-
-            Console.WriteLine("What Cars exists in the Store?");
-            source.Select(new Statement(null, new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/vehicles/Car")), new SemWebConsolePrinter());
-            Console.WriteLine();
-
-            Console.WriteLine("Cars are their Speeds from the Store?");
-            Variable car = new Variable("car");
-            Statement[] pattern = new Statement[] 
-            {
-                new Statement(car, new Entity(RdfSpecsHelper.RdfType), new Entity("http://example.org/vehicles/Car")),
-                new Statement(car, new Entity("http://example.org/vehicles/Speed"), new Variable("speed"))
-            };
-            source.Query(pattern, new QueryOptions(), new SemWebResultsConsolePrinter());
-            Console.WriteLine();
-        }
     }
 
     class SemWebConsolePrinter : StatementSink

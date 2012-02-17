@@ -455,6 +455,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="selector">Selector class which performs the Selection</param>
         /// <returns>Zero/More Nodes</returns>
+        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public abstract IEnumerable<INode> GetNodes(ISelector<INode> selector);
 
         /// <summary>

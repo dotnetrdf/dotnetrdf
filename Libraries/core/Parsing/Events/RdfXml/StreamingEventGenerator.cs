@@ -133,9 +133,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if SILVERLIGHT
+#if SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;
-            //settings.XmlResolver = new Xml
 #else
             settings.ProhibitDtd = false;
 #endif

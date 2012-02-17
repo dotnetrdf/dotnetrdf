@@ -28,7 +28,8 @@ namespace VDS.RDF.Test
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -61,7 +62,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -95,7 +97,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -129,7 +132,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -314,7 +318,8 @@ namespace VDS.RDF.Test
             SparqlQueryParser parser = new SparqlQueryParser(SparqlQuerySyntax.Extended);
             SparqlQuery q = parser.ParseFromString(query);
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -538,7 +543,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -571,7 +577,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -604,7 +611,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -637,7 +645,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -670,7 +679,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -703,7 +713,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -736,7 +747,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -773,7 +785,8 @@ namespace VDS.RDF.Test
             Console.WriteLine();
 
             timer.Start();
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to execute when Optimised");
             timer.Reset();
@@ -794,7 +807,7 @@ namespace VDS.RDF.Test
             //Then do without optimisation
             Options.AlgebraOptimisation = false;
             timer.Start();
-            results = q.Evaluate(store);
+            results = processor.ProcessQuery(q);
             timer.Stop();
             Console.WriteLine("Took " + timer.Elapsed + " to execute when Unoptimised");
             if (results is SparqlResultSet)
@@ -830,7 +843,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -863,7 +877,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -897,7 +912,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -936,7 +952,8 @@ namespace VDS.RDF.Test
                 Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
                 Console.WriteLine();
 
-                Object results = q.Evaluate(store);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+                Object results = processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
@@ -974,7 +991,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -1009,7 +1027,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -1048,7 +1067,8 @@ namespace VDS.RDF.Test
             Assert.IsTrue(q2.ToAlgebra().ToString().Contains("LazyBgp"), "Should have been optimised to use a Lazy BGP");
             Console.WriteLine();
 
-            Object results = q.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -1058,7 +1078,7 @@ namespace VDS.RDF.Test
                 }
                 Assert.IsTrue(rset.Count == 3, "Expected exactly 3 results");
 
-                Object results2 = q2.Evaluate(store);
+                Object results2 = processor.ProcessQuery(q2);
                 if (results2 is SparqlResultSet)
                 {
                     SparqlResultSet rset2 = (SparqlResultSet)results2;

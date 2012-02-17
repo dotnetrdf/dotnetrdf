@@ -354,6 +354,11 @@ namespace VDS.RDF.Writing.Formatting
         protected TurtleW3CFormatter(String formatName, QNameOutputMapper qnameMapper)
             : base(formatName, qnameMapper) { }
 
+        /// <summary>
+        /// Gets whether a QName is valid in Turtle as specified by the W3C
+        /// </summary>
+        /// <param name="value">QName</param>
+        /// <returns></returns>
         protected override bool IsValidQName(string value)
         {
             return TurtleSpecsHelper.IsValidQName(value, TurtleSyntax.W3C);

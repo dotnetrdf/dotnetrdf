@@ -49,7 +49,8 @@ namespace VDS.RDF.Interop.SemWeb
     /// <summary>
     /// Provides a dotNetRDF In-memory store to SemWeb as both a StatementSource and a StatementSink
     /// </summary>
-    public class InMemoryStoreSource : StatementSink, StatementSource, SelectableSource, ModifiableSource, QueryableSource
+    public class InMemoryStoreSource
+        : StatementSink, StatementSource, SelectableSource, ModifiableSource, QueryableSource
     {
         private IInMemoryQueryableStore _store;
         private Dictionary<int, SemWebMapping> _mappings = new Dictionary<int, SemWebMapping>();

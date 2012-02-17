@@ -184,7 +184,7 @@ namespace VDS.RDF.Test.Sparql
             try
             {
                 AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
-                NativeTripleStore store = new NativeTripleStore(agraph);
+                PersistentTripleStore store = new PersistentTripleStore(agraph);
 
                 //Load a Graph into the Store to ensure there is some data for the view to retrieve
                 Graph g = new Graph();

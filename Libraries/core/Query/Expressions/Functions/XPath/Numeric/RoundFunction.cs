@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         /// <summary>
         /// Creates a new XPath Round function
         /// </summary>
-        /// <param name="expr">Expression</param
+        /// <param name="expr">Expression</param>
         public RoundFunction(ISparqlExpression expr)
             : base(expr) { }
 

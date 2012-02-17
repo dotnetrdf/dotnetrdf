@@ -76,117 +76,113 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 try
                 {
-                    do
+                    //Reading has started
+                    this.StartNewToken();
+
+                    //Check for EOF
+                    if (this._in.EndOfStream)
                     {
-                        //Reading has started
-                        this.StartNewToken();
-
-                        //Check for EOF
-                        if (this._in.EndOfStream)
+                        if (this.Length == 0)
                         {
-                            if (this.Length == 0)
-                            {
-                                //We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                            }
-                            else
-                            {
-                                //We're at the End of the Stream and part-way through reading a Token
-                                //Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
+                            //We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
                         }
-
-                        char next = this.Peek();
-
-                        //Always need to do a check for End of Stream after Peeking to handle empty files OK
-                        if (next == Char.MaxValue && this._in.EndOfStream)
+                        else
                         {
-                            if (this.Length == 0)
-                            {
-                                //We're at the End of the Stream and not part-way through reading a Token
-                                return new EOFToken(this.CurrentLine, this.CurrentPosition);
-                            }
-                            else
-                            {
-                                //We're at the End of the Stream and part-way through reading a Token
-                                //Raise an error
-                                throw UnexpectedEndOfInput("Token");
-                            }
+                            //We're at the End of the Stream and part-way through reading a Token
+                            //Raise an error
+                            throw UnexpectedEndOfInput("Token");
                         }
+                    }
 
-                        if (Char.IsDigit(next) || next == '+' || next == '-')
+                    char next = this.Peek();
+
+                    //Always need to do a check for End of Stream after Peeking to handle empty files OK
+                    if (next == Char.MaxValue && this._in.EndOfStream)
+                    {
+                        if (this.Length == 0)
                         {
+                            //We're at the End of the Stream and not part-way through reading a Token
+                            return new EOFToken(this.CurrentLine, this.CurrentPosition);
+                        }
+                        else
+                        {
+                            //We're at the End of the Stream and part-way through reading a Token
+                            //Raise an error
+                            throw UnexpectedEndOfInput("Token");
+                        }
+                    }
+
+                    if (Char.IsDigit(next) || next == '+' || next == '-')
+                    {
+                        return this.TryGetNumericLiteral();
+                    }
+
+                    switch (next)
+                    {
+                        case '\t':
+                            //Tab
+                            this.ConsumeCharacter();
+                            this.LastTokenType = Token.TAB;
+                            return new TabToken(this.StartLine, this.StartPosition);
+
+                        case '\r':
+                        case '\n':
+                            //New Line
+                            this.ConsumeNewLine(true);
+                            this.LastTokenType = Token.EOL;
+                            return new EOLToken(this.StartLine, this.StartPosition);
+
+                        case '.':
+                            //Dot
+                            this.ConsumeCharacter();
                             return this.TryGetNumericLiteral();
-                        }
 
-                        switch (next)
-                        {
-                            case '\t':
-                                //Tab
+                        case '@':
+                            //Start of a Keyword or Language Specifier
+                            return this.TryGetLangSpec();
+
+                        case '?':
+                            //Start of a Variable
+                            return this.TryGetVariable();
+
+                        case '<':
+                            //Start of a Uri
+                            return this.TryGetUri();
+
+                        case '_':
+                            //Start of a  QName
+                            return this.TryGetQName();
+
+                        case '"':
+                            //Start of a Literal
+                            return this.TryGetLiteral();
+
+                        case '^':
+                            //Data Type Specifier
+                            this.ConsumeCharacter();
+                            next = this.Peek();
+                            if (next == '^')
+                            {
                                 this.ConsumeCharacter();
-                                this.LastTokenType = Token.TAB;
-                                return new TabToken(this.StartLine, this.StartPosition);
+                                //Try and get the Datatype
+                                this.StartNewToken();
+                                return this.TryGetDataType();
+                            }
+                            else
+                            {
+                                throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
+                            }
 
-                            case '\r':
-                            case '\n':
-                                //New Line
-                                this.ConsumeNewLine(true);
-                                this.LastTokenType = Token.EOL;
-                                return new EOLToken(this.StartLine, this.StartPosition);
+                        case 't':
+                        case 'f':
+                            //Plain Literal?
+                            return this.TryGetPlainLiteral();
 
-                            case '.':
-                                //Dot
-                                this.ConsumeCharacter();
-                                return this.TryGetNumericLiteral();
-
-                            case '@':
-                                //Start of a Keyword or Language Specifier
-                                return this.TryGetLangSpec();
-
-                            case '?':
-                                //Start of a Variable
-                                return this.TryGetVariable();
-
-                            case '<':
-                                //Start of a Uri
-                                return this.TryGetUri();
-
-                            case '_':
-                                //Start of a  QName
-                                return this.TryGetQName();
-
-                            case '"':
-                                //Start of a Literal
-                                return this.TryGetLiteral();
-
-                            case '^':
-                                //Data Type Specifier
-                                this.ConsumeCharacter();
-                                next = this.Peek();
-                                if (next == '^')
-                                {
-                                    this.ConsumeCharacter();
-                                    //Try and get the Datatype
-                                    this.StartNewToken();
-                                    return this.TryGetDataType();
-                                }
-                                else
-                                {
-                                    throw UnexpectedCharacter(next, "the second ^ as part of a ^^ Data Type Specifier");
-                                }
-
-                            case 't':
-                            case 'f':
-                                //Plain Literal?
-                                return this.TryGetPlainLiteral();
-
-                            default:
-                                //Unexpected Character
-                                throw this.UnexpectedCharacter(next, String.Empty);
-                        }
-                    } while (true);
-
+                        default:
+                            //Unexpected Character
+                            throw this.UnexpectedCharacter(next, String.Empty);
+                    }
                 }
                 catch (IOException)
                 {

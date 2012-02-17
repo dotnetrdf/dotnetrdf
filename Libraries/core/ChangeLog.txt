@@ -53,6 +53,7 @@ Removed
 - Dependency on MySql.Data is no longer required by any library in the release
 - Obsolete NativeTripleStore marked as unusable
 - Obsolete QueryTime and QueryTimeTicks properties removed - use QueryExecutionTime instead
+- Obsolete SparqlQuery.Evaluate() marked as unusable
    
 
 

@@ -30,7 +30,7 @@ namespace VDS.RDF.Interop.Sesame
                 Object results = this._processor.ProcessQuery(q);
                 if (results is IGraph)
                 {
-                    if (q.QueryTime > this._evalTime) this._evalTime = q.QueryTime;
+                    if (q.QueryExecutionTime.Value.Milliseconds > this._evalTime) this._evalTime = q.QueryExecutionTime.Value.Milliseconds;
                     return (IGraph)results;
                 }
                 else
@@ -90,7 +90,7 @@ namespace VDS.RDF.Interop.Sesame
                 Object results = this._processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
-                    if (q.QueryTime > this._evalTime) this._evalTime = q.QueryTime;
+                    if (q.QueryExecutionTime.Value.Milliseconds > this._evalTime) this._evalTime = q.QueryExecutionTime.Value.Milliseconds;
                     return (SparqlResultSet)results;
                 }
                 else
@@ -148,7 +148,7 @@ namespace VDS.RDF.Interop.Sesame
                 Object results = this._processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
-                    if (q.QueryTime > this._evalTime) this._evalTime = q.QueryTime;
+                    if (q.QueryExecutionTime.Value.Milliseconds > this._evalTime) this._evalTime = q.QueryExecutionTime.Value.Milliseconds;
                     return (SparqlResultSet)results;
                 }
                 else

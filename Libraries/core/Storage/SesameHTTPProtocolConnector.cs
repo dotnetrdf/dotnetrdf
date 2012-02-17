@@ -1009,6 +1009,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Store</param>
         /// <param name="storeID">Store ID</param>
+        /// <param name="proxy">Proxy Server</param>
         public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, WebProxy proxy)
             : base(baseUri, storeID, proxy) { }
 
@@ -1019,6 +1020,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <param name="username">Username to use for requests that require authentication</param>
         /// <param name="password">Password to use for requests that require authentication</param>
+        /// <param name="proxy">Proxy Server</param>
         public SesameHttpProtocolVersion6Connector(String baseUri, String storeID, String username, String password, WebProxy proxy)
             : base(baseUri, storeID, username, password, proxy) { }
 

@@ -23,6 +23,11 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
         public RoundHalfToEvenFunction(ISparqlExpression expr)
             : base(expr) { }
 
+        /// <summary>
+        /// Creates a new XPath RoundHalfToEven function
+        /// </summary>
+        /// <param name="expr">Expression</param>
+        /// <param name="precision">Precision</param>
         public RoundHalfToEvenFunction(ISparqlExpression expr, ISparqlExpression precision)
             : this(expr)
         {

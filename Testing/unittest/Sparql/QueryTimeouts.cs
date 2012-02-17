@@ -88,7 +88,7 @@ namespace VDS.RDF.Test.Sparql
                     {
                         SparqlResultSet rset = (SparqlResultSet)results;
 
-                        Console.WriteLine("Requested Timeout: " + t + " - Actual Timeout: " + expected + "ms - Results: " + rset.Count + " - Query Time: " + q.QueryTime + "ms");
+                        Console.WriteLine("Requested Timeout: " + t + " - Actual Timeout: " + expected + "ms - Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
                         Assert.IsTrue(rset.Count <= expectedResults, "Results should be <= expected");
                     }
                     else
@@ -297,7 +297,7 @@ namespace VDS.RDF.Test.Sparql
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
-                    Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryTime + "ms");
+                    Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
                     Assert.AreEqual(g.Triples.Count * g.Triples.Count, rset.Count);
                 }
                 else
@@ -334,7 +334,7 @@ namespace VDS.RDF.Test.Sparql
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
-                    Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryTime + "ms");
+                    Console.WriteLine("Results: " + rset.Count + " - Query Time: " + q.QueryExecutionTime);
                     Assert.IsTrue(rset.Count < (g.Triples.Count * g.Triples.Count));
                 }
                 else

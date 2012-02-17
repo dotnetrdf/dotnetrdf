@@ -28,7 +28,6 @@ terms.
 
 */
 
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +48,9 @@ namespace VDS.RDF.Interop.SemWeb
     /// <summary>
     /// Provides a dotNetRDF Natively Queryable Store as a StatementSource
     /// </summary>
-    public class NativeStoreSource : StatementSource, QueryableSource
+    [Obsolete("No longer supported", true)]
+    public class NativeStoreSource
+        : StatementSource, QueryableSource
     {
         private Graph _g = new Graph();
         private INativelyQueryableStore _store;

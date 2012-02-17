@@ -112,9 +112,6 @@ namespace VDS.RDF.Storage
         private StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
         private String _activeTrans = null;
-
-        private StringBuilder _output = new StringBuilder();
-        private SparqlFormatter _sparqlFormatter = new SparqlFormatter();
         private TriGWriter _writer = new TriGWriter();
 
         /// <summary>
@@ -132,6 +129,7 @@ namespace VDS.RDF.Storage
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
         /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
         public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, WebProxy proxy)
             : this(baseUri, kbID, reasoning, null, null, proxy) { }
 
@@ -151,6 +149,7 @@ namespace VDS.RDF.Storage
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
         /// <param name="reasoning">Reasoning Mode</param>
+        /// <param name="proxy">Proxy Server</param>
         public StardogConnector(String baseUri, String kbID, StardogReasoningMode reasoning, String username, String password, WebProxy proxy)
             : this(baseUri, kbID, reasoning)
         {
@@ -185,6 +184,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="baseUri">Base Uri of the Server</param>
         /// <param name="kbID">Knowledge Base (i.e. Database) ID</param>
+        /// <param name="proxy">Proxy Server</param>
         public StardogConnector(String baseUri, String kbID, WebProxy proxy)
             : this(baseUri, kbID, StardogReasoningMode.None, proxy) { }
 

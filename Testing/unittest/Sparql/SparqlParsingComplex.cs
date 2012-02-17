@@ -167,7 +167,8 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("UNION Clause Only");
             Console.WriteLine(formatter.Format(unionQuery));
 
-            results = unionQuery.Evaluate(dataset);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            results = processor.ProcessQuery(unionQuery);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -188,7 +189,7 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("OPTIONAL Clause Only");
             Console.WriteLine(formatter.Format(optionalQuery));
 
-            results = optionalQuery.Evaluate(dataset);
+            results = processor.ProcessQuery(optionalQuery);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -209,7 +210,7 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("Full Query as a SELECT *");
             Console.WriteLine(formatter.Format(q2));
 
-            results = q2.Evaluate(dataset);
+            results = processor.ProcessQuery(q2);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -225,7 +226,7 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("Full Query");
             Console.WriteLine(formatter.Format(q));
 
-            results = q.Evaluate(dataset);
+            results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -283,7 +284,8 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine("Full Query");
             Console.WriteLine(formatter.Format(q));
 
-            results = q.Evaluate(dataset);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+            results = processor.ProcessQuery(q);
             if (results is SparqlResultSet)
             {
                 SparqlResultSet rset = (SparqlResultSet)results;
@@ -415,7 +417,8 @@ namespace VDS.RDF.Test.Sparql
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("multiple-optionals.rq");
 
-            Object results = query.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(query);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);
@@ -435,7 +438,8 @@ namespace VDS.RDF.Test.Sparql
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery query = parser.ParseFromFile("multiple-optionals-alternate.rq");
 
-            Object results = query.Evaluate(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            Object results = processor.ProcessQuery(query);
             if (results is SparqlResultSet)
             {
                 TestTools.ShowResults(results);

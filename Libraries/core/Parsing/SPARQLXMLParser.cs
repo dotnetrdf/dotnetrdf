@@ -150,7 +150,7 @@ namespace VDS.RDF.Parsing
         private XmlReaderSettings GetSettings()
         {
             XmlReaderSettings settings = new XmlReaderSettings();
-#if SILVERLIGHT
+#if SILVERLIGHT || NET40
             settings.DtdProcessing = DtdProcessing.Parse;
 #else
             settings.ProhibitDtd = false;

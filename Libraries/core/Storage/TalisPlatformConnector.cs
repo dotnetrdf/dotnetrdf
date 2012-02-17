@@ -128,6 +128,7 @@ namespace VDS.RDF.Storage
         /// <param name="storeName">Name of the Store</param>
         /// <param name="username">Username</param>
         /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
         /// <remarks>This Constructor creates a Connector which provides authentication details when making requests to the Talis Platform.  Note that this does not guarentee that operations suceed since the account you apply requires certain capabilities in order for operations to be permitted.</remarks>
         public TalisPlatformConnector(String storeName, String username, String password, WebProxy proxy)
             : this(storeName, username, password)
@@ -151,6 +152,7 @@ namespace VDS.RDF.Storage
         /// Creates a new Talis Platform Connector which manages access to the services provided by the Talis platform
         /// </summary>
         /// <param name="storeName">Name of the Store</param>
+        /// <param name="proxy">Proxy Server</param>
         /// <remarks>This Constructor creates a Connector which does not provide authentication details when making requests to the Talis Platform.  This means that any operations that require capabilities not available to unauthenticated users will fail.</remarks>
         public TalisPlatformConnector(String storeName, WebProxy proxy)
             : this(storeName)

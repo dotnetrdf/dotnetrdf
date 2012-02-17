@@ -30,8 +30,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.Common
 {
@@ -43,6 +41,9 @@ namespace VDS.Common
         : Trie<String, char, T>
         where T : class
     {
+        /// <summary>
+        /// Creates a new String Trie
+        /// </summary>
         public StringTrie()
             : base(StringTrie<T>.KeyMapper) { }
 

@@ -554,13 +554,63 @@ namespace VDS.RDF
         public IndexedTripleCollection(int capacity)
             : this(HashTableBias.Enumeration, capacity) { }
 
-
+        /// <summary>
+        /// Creates a new Indexed Triple Collection
+        /// </summary>
+        /// <param name="bias">Bias</param>
+        /// <param name="capacity">Initial Capacity of Index Slots</param>
+        /// <remarks>
+        /// <para>
+        /// Bias is used to control the underlying data structures of the indices, you may wish to change the bias depending on your data or intended use of this class
+        /// </para>
+        /// <para>
+        /// Indexes are stored using our <see cref="HashTable">HashTable</see> structure which is in effect a Dictionary where each Key can have multiple values.  The capacity is the initial number of value slots assigned to each Key, value slots grow automatically as desired but setting an appropriate capacity will allow you to tailor memory usage to your data and may make it possible to store data which would cause <see cref="OutOfMemoryException">OutOfMemoryException</see>'s with the default settings.
+        /// </para>
+        /// <para>
+        /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures themselves.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.  For example if you just want to do simple things with the data like validate it, count it etc you may be better using a <see cref="IRdfHandler">IRdfHandler</see> to process your data.
+        /// </para>
+        /// </remarks>
         public IndexedTripleCollection(HashTableBias bias, int capacity)
             : this(bias, bias, bias, capacity) { }
 
+        /// <summary>
+        /// Creates a new Indexed Triple Collection
+        /// </summary>
+        /// <param name="bias">Bias for core storage</param>
+        /// <param name="indexBias">Bias for simple index storage (S, P and O)</param>
+        /// <param name="compoundIndexBias">Bias for compound index storage (SP, PO and SO)</param>
+        /// <remarks>
+        /// <para>
+        /// Biasese are used to control the underlying data structures of the indices, you may wish to change the bias depending on your data or intended use of this class
+        /// </para>
+        /// </remarks>
         public IndexedTripleCollection(HashTableBias bias, HashTableBias indexBias, HashTableBias compoundIndexBias)
             : this(bias, indexBias, compoundIndexBias, 10) { }
 
+        /// <summary>
+        /// Creates a new Indexed Triple Collection
+        /// </summary>
+        /// <param name="bias">Bias for core storage</param>
+        /// <param name="indexBias">Bias for simple index storage (S, P and O)</param>
+        /// <param name="compoundIndexBias">Bias for compound index storage (SP, PO and SO)</param>
+        /// <param name="capacity">Initial Capacity of Index Slots</param>
+        /// <remarks>
+        /// <para>
+        /// Bias is used to control the underlying data structures of the indices, you may wish to change the bias depending on your data or intended use of this class
+        /// </para>
+        /// <para>
+        /// Indexes are stored using our <see cref="HashTable">HashTable</see> structure which is in effect a Dictionary where each Key can have multiple values.  The capacity is the initial number of value slots assigned to each Key, value slots grow automatically as desired but setting an appropriate capacity will allow you to tailor memory usage to your data and may make it possible to store data which would cause <see cref="OutOfMemoryException">OutOfMemoryException</see>'s with the default settings.
+        /// </para>
+        /// <para>
+        /// For example if you have 1 million triples where no Triples share any Nodes in common then the memory needing to be allocated would be 1,000,000 * 6 * 10 * 4 bytes just for the object references without taking into account all the overhead for the data structures themselves.  Whereas if you set the capacity to 1 you reduce your memory requirements by a factor of 10 instantly.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> Always remember that if you have large quantities of triples (1 million plus) then you are often better not loading them directly into memory and there many be better ways of processing the RDF depending on your application.  For example if you just want to do simple things with the data like validate it, count it etc you may be better using a <see cref="IRdfHandler">IRdfHandler</see> to process your data.
+        /// </para>
+        /// </remarks>
         public IndexedTripleCollection(HashTableBias bias, HashTableBias indexBias, HashTableBias compoundIndexBias, int capacity)
         {
             this._triples = new HashTable<int, Triple>(bias);
@@ -1265,25 +1315,54 @@ namespace VDS.RDF
 
 #endif
 
+    /// <summary>
+    /// An Indexed Triple collection biased towards compact indexes
+    /// </summary>
     public class CompactIndexedTripleCollection
         : IndexedTripleCollection
     {
+        /// <summary>
+        /// Creates a new compact biased indexed triple collection
+        /// </summary>
         public CompactIndexedTripleCollection()
             : base(HashTableBias.Compactness, 1) { }
     }
 
 #if !SILVERLIGHT
 
+    /// <summary>
+    /// An Indexed Triple collection biased towards efficient IO indexes i.e. add, remove and contains calls should be faster
+    /// </summary>
+    /// <remarks>
+    /// Not available under Silverlight/Windows Phone 7
+    /// </remarks>
     public class IOIndexedTripleCollection
         : IndexedTripleCollection
     {
+        /// <summary>
+        /// Creates a new IO biased indexed triple collection
+        /// </summary>
         public IOIndexedTripleCollection()
             : base(HashTableBias.IO, 1) { }
     }
 
+    /// <summary>
+    /// An Indexed Triple collection that uses different biases for each storage level
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Uses IO bias for core storage, compactness for simple indexes and enumeration for compound indexes
+    /// </para>
+    /// <para>
+    /// Not available under Silverlight/Windows Phone 7
+    /// </para>
+    /// </remarks>
     public class HybridIndexedTripleCollecton
         : IndexedTripleCollection
     {
+        /// <summary>
+        /// Creates a new hybrid indexed triple collection
+        /// </summary>
         public HybridIndexedTripleCollecton()
             : base(HashTableBias.IO, HashTableBias.Compactness, HashTableBias.Enumeration) { }
     }

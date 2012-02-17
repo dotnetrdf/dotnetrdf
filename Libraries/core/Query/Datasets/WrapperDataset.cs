@@ -103,36 +103,61 @@ namespace VDS.RDF.Query.Datasets
 
         #region ISparqlDataset Members
 
+        /// <summary>
+        /// Sets the Active Graph for the dataset
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         public virtual void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             this._dataset.SetActiveGraph(graphUris);
         }
 
+        /// <summary>
+        /// Sets the Active Graph for the dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public virtual void SetActiveGraph(Uri graphUri)
         {
             this._dataset.SetActiveGraph(graphUri);
         }
 
+        /// <summary>
+        /// Sets the Default Graph for the dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public virtual void SetDefaultGraph(Uri graphUri)
         {
             this._dataset.SetDefaultGraph(graphUri);
         }
 
+        /// <summary>
+        /// Sets the Default Graph for the dataset
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         public virtual void SetDefaultGraph(IEnumerable<Uri> graphUris)
         {
             this._dataset.SetDefaultGraph(graphUris);
         }
 
+        /// <summary>
+        /// Resets the Active Graph
+        /// </summary>
         public virtual void ResetActiveGraph()
         {
             this._dataset.ResetActiveGraph();
         }
 
+        /// <summary>
+        /// Resets the Default Graph
+        /// </summary>
         public virtual void ResetDefaultGraph()
         {
             this._dataset.ResetDefaultGraph();
         }
 
+        /// <summary>
+        /// Gets the Default Graph URIs
+        /// </summary>
         public virtual IEnumerable<Uri> DefaultGraphUris
         {
             get
@@ -141,6 +166,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the Active Graph URIs
+        /// </summary>
         public virtual IEnumerable<Uri> ActiveGraphUris
         {
             get
@@ -149,6 +177,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets whether the default graph is the union of all graphs
+        /// </summary>
         public virtual bool UsesUnionDefaultGraph
         {
             get
@@ -157,21 +188,37 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Adds a Graph to the dataset
+        /// </summary>
+        /// <param name="g">Graph</param>
         public virtual void AddGraph(IGraph g)
         {
             this._dataset.AddGraph(g);
         }
 
+        /// <summary>
+        /// Removes a Graph from the dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         public virtual void RemoveGraph(Uri graphUri)
         {
             this._dataset.RemoveGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets whether the dataset contains a given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual bool HasGraph(Uri graphUri)
         {
             return this._dataset.HasGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets the Graphs in the dataset
+        /// </summary>
         public virtual IEnumerable<IGraph> Graphs
         {
             get 
@@ -180,6 +227,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets the URIs of Graphs in the dataset
+        /// </summary>
         public virtual IEnumerable<Uri> GraphUris
         {
             get 
@@ -188,6 +238,11 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets a Graph from the dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual IGraph this[Uri graphUri]
         {
             get
@@ -196,11 +251,19 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets a modifiable graph from the dataset
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual IGraph GetModifiableGraph(Uri graphUri)
         {
             return this._dataset.GetModifiableGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets whether the dataset has any triples
+        /// </summary>
         public virtual bool HasTriples
         {
             get 
@@ -209,11 +272,19 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets whether the dataset contains a given triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public virtual bool ContainsTriple(Triple t)
         {
             return this._dataset.ContainsTriple(t);
         }
 
+        /// <summary>
+        /// Gets all triples from the dataset
+        /// </summary>
         public virtual IEnumerable<Triple> Triples
         {
             get
@@ -222,41 +293,80 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
+        /// <summary>
+        /// Gets triples with a given subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubject(INode subj)
         {
             return this._dataset.GetTriplesWithSubject(subj);
         }
 
+        /// <summary>
+        /// Gets triples with a given predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
         {
             return this._dataset.GetTriplesWithPredicate(pred);
         }
 
+        /// <summary>
+        /// Gets triples with a given object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             return this._dataset.GetTriplesWithObject(obj);
         }
 
+        /// <summary>
+        /// Gets triples with a given subject and predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
         {
             return this._dataset.GetTriplesWithSubjectPredicate(subj, pred);
         }
 
+        /// <summary>
+        /// Gets triples with a given subject and object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
         {
             return this._dataset.GetTriplesWithSubjectObject(subj, obj);
         }
 
+        /// <summary>
+        /// Gets triples with a given predicate and object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public virtual IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             return this._dataset.GetTriplesWithPredicateObject(pred, obj);
         }
 
+        /// <summary>
+        /// Flushes any changes to the dataset
+        /// </summary>
         public virtual void Flush()
         {
             this._dataset.Flush();
         }
 
+        /// <summary>
+        /// Discards any changes to the dataset
+        /// </summary>
         public virtual void Discard()
         {
             this._dataset.Discard();

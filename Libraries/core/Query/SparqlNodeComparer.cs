@@ -35,8 +35,6 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Nodes;
@@ -174,6 +172,12 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Compares two valued Nodes
+        /// </summary>
+        /// <param name="x">Node</param>
+        /// <param name="y">Node</param>
+        /// <returns></returns>
         public virtual int Compare(IValuedNode x, IValuedNode y)
         {
             //TODO: Reverse the logic here so that we do comparisons using our ready to go valued nodes

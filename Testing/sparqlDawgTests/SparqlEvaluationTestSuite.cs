@@ -505,7 +505,8 @@ namespace dotNetRDFTest
             Object results = null;
             try
             {
-                results = query.Evaluate(dataset);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+                results = processor.ProcessQuery(query);
             }
             catch (RdfQueryException queryEx)
             {

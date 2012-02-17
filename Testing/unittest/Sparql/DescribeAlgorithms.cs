@@ -17,6 +17,7 @@ namespace VDS.RDF.Test.Sparql
 
         private SparqlQueryParser _parser;
         private InMemoryDataset _data;
+        private LeviathanQueryProcessor _processor;
 
         [TestInitialize]
         public void Setup()
@@ -27,6 +28,7 @@ namespace VDS.RDF.Test.Sparql
             FileLoader.Load(g, "describe-algos.ttl");
             store.Add(g);
             this._data = new InMemoryDataset(store);
+            this._processor = new LeviathanQueryProcessor(this._data);
         }
 
         [TestCleanup]
@@ -45,7 +47,7 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlQuery q = this.GetQuery();
             q.Describer = describer;
-            Object results = q.Evaluate(this._data);
+            Object results = this._processor.ProcessQuery(q);
             if (results is Graph)
             {
                 TestTools.ShowResults(results);

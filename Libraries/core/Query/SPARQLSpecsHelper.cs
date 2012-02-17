@@ -612,6 +612,7 @@ namespace VDS.RDF.Query
         /// Checks whether a given QName is valid in Sparql
         /// </summary>
         /// <param name="value">QName to check</param>
+        /// <param name="syntax">SPARQL Syntax</param>
         /// <returns></returns>
         public static bool IsValidQName(String value, SparqlQuerySyntax syntax)
         {
@@ -761,6 +762,7 @@ namespace VDS.RDF.Query
         /// Checks whether a given String matches the PN_LOCAL rule from the Sparql Specification
         /// </summary>
         /// <param name="cs">String as character array</param>
+        /// <param name="syntax">SPARQL Syntax</param>
         /// <returns></returns>
         public static bool IsPNLocal(char[] cs, SparqlQuerySyntax syntax)
         {
@@ -835,7 +837,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a given String matches the PN_PREFIX rule from the Sparql Specification
+        /// Checks whether a given String matches the PN_PREFIX rule from the SPARQL Specification
         /// </summary>
         /// <param name="cs">String as character array</param>
         /// <returns></returns>
@@ -878,6 +880,13 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Checks whether a given String matches the PLX rule from the SPARQL Specification
+        /// </summary>
+        /// <param name="cs">String as character array</param>
+        /// <param name="startIndex">Start Index</param>
+        /// <param name="endIndex">Resulting End Index</param>
+        /// <returns></returns>
         public static bool IsPLX(char[] cs, int startIndex, out int endIndex)
         {
             endIndex = startIndex;
@@ -950,6 +959,11 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Gets whether a character is a Hex character
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public static bool IsHex(char c)
         {
             if (Char.IsDigit(c))
@@ -978,6 +992,11 @@ namespace VDS.RDF.Query
             }
         }
 
+        /// <summary>
+        /// Unescapes SPARQL 1.1 QNames
+        /// </summary>
+        /// <param name="value">Value to unescape</param>
+        /// <returns></returns>
         public static String UnescapeQName(String value)
         {
             if (value.Contains('\\') || value.Contains('%'))

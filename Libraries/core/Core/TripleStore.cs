@@ -49,7 +49,8 @@ namespace VDS.RDF
     /// <summary>
     /// Class for representing Triple Stores which are collections of RDF Graphs
     /// </summary>
-    public class TripleStore : BaseTripleStore, IInMemoryQueryableStore, IInferencingTripleStore, IUpdateableTripleStore
+    public class TripleStore
+        : BaseTripleStore, IInMemoryQueryableStore, IInferencingTripleStore, IUpdateableTripleStore
     {
         /// <summary>
         /// List of Reasoners that are applied to Graphs as they are added to the Triple Store
@@ -64,18 +65,23 @@ namespace VDS.RDF
         /// </summary>
         protected Uri _inferenceGraphUri = UriFactory.Create("dotNetRDF:inference-graph");
 
+        private LeviathanQueryProcessor _processor;
+
         /// <summary>
         /// Creates a new Triple Store using a new empty Graph collection
         /// </summary>
         public TripleStore()
-            : base(new GraphCollection()) { }
+            : this(new GraphCollection()) { }
 
         /// <summary>
         /// Creates a new Triple Store using the given Graph collection which may be non-empty
         /// </summary>
         /// <param name="graphCollection">Graph Collection</param>
         public TripleStore(BaseGraphCollection graphCollection)
-            : base(graphCollection) { }
+            : base(graphCollection)
+        {
+            this._processor = new LeviathanQueryProcessor(this);
+        }
 
         #region Selection
 
@@ -736,7 +742,7 @@ namespace VDS.RDF
         public virtual Object ExecuteQuery(SparqlQuery query)
         {
             //Invoke Query's Evaluate method
-            return query.Evaluate(this);
+            return this._processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -763,7 +769,7 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query as unparsed String</param>
         public virtual void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            query.Evaluate(rdfHandler, resultsHandler, this);
+            this._processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
         #endregion

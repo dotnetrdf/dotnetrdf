@@ -161,6 +161,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns true as while a sub-query may contain blank node variables they will not be in scope here
+        /// </summary>
         public override bool HasNoBlankVariables
         {
             get 

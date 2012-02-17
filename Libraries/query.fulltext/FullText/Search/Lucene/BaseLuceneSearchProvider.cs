@@ -116,7 +116,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
-            return (from doc in docs.scoreDocs
+            return (from doc in docs.ScoreDocs
                     where doc.score > scoreThreshold
                     select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
         }
@@ -148,7 +148,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
-            return (from doc in docs.scoreDocs
+            return (from doc in docs.ScoreDocs
                     select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
         }
 

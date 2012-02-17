@@ -89,6 +89,7 @@ namespace VDS.RDF.Parsing
         /// Determines whether a given String is a valid Plain Literal
         /// </summary>
         /// <param name="value">String to test</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <returns></returns>
         public static bool IsValidPlainLiteral(String value, TurtleSyntax syntax)
         {
@@ -108,6 +109,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">Value</param>
         /// <param name="dt">Datatype</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <returns></returns>
         public static bool IsValidPlainLiteral(String value, Uri dt, TurtleSyntax syntax)
         {
@@ -164,6 +166,11 @@ namespace VDS.RDF.Parsing
             return _validDouble.IsMatch(value);
         }
 
+        /// <summary>
+        /// Gets whether a QName is valid in Turtle (assumes Turtle as originally specified by Dave Beckett)
+        /// </summary>
+        /// <param name="value">QName</param>
+        /// <returns></returns>
         public static bool IsValidQName(String value)
         {
             return IsValidQName(value, TurtleSyntax.Original);
@@ -173,6 +180,7 @@ namespace VDS.RDF.Parsing
         /// Determines whether a given String is a valid QName
         /// </summary>
         /// <param name="value">String to test</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <returns></returns>
         public static bool IsValidQName(String value, TurtleSyntax syntax)
         {
@@ -273,6 +281,7 @@ namespace VDS.RDF.Parsing
         /// Infers the Type of a Plain Literal
         /// </summary>
         /// <param name="p">Plain Literal to infer the Type of</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal</returns>
         public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
         {
@@ -305,6 +314,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a character matches the PN_CHARS_BASE production from the Turtle specifications
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public static bool IsPNCharsBase(char c)
         {
             if (c >= 'a' && c <= 'z')
@@ -335,6 +349,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a character matches the PN_CHARS production from the Turtle specification
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns></returns>
         public static bool IsPNChars(char c)
         {
             if (IsPNCharsU(c))
@@ -367,6 +386,11 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Gets whether a character matches the PN_CHARS_U production from the Turtle specification
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public static bool IsPNCharsU(char c)
         {
             return c == '_' || IsPNCharsBase(c);

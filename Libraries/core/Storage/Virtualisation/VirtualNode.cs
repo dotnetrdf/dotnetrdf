@@ -848,41 +848,72 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get
@@ -1010,41 +1041,72 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literal nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get
@@ -1200,6 +1262,9 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Ensures that a strong value has been determined for this node
+        /// </summary>
         private void EnsureStrongValue()
         {
             if (this._strongValue == null)
@@ -1209,48 +1274,100 @@ namespace VDS.RDF.Storage.Virtualisation
             }
         }
 
+        /// <summary>
+        /// Gets the value as a string
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public string AsString()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsString();
         }
 
+        /// <summary>
+        /// Gets the value as an integer
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public long AsInteger()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsInteger();
         }
 
+        /// <summary>
+        /// Gets the value as a decimal
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public decimal AsDecimal()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsDecimal();
         }
 
+        /// <summary>
+        /// Gets the value as a float
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public float AsFloat()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsFloat();
         }
 
+        /// <summary>
+        /// Gets the value as a double
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public double AsDouble()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsDouble();
         }
 
+        /// <summary>
+        /// Gets the value as a boolean
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public bool AsBoolean()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsBoolean();
         }
 
+        /// <summary>
+        /// Gets the value as a date time
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public DateTimeOffset AsDateTime()
         {
             this.EnsureStrongValue();
             return this._strongValue.AsDateTime();
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get 
@@ -1379,41 +1496,71 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Gets the string value of the node
+        /// </summary>
         public string AsString()
         {
             return this.Uri.ToString();
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to numerics
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to a boolean
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URI nodes cannot be cast to a date time
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the expression
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get
@@ -1541,41 +1688,72 @@ namespace VDS.RDF.Storage.Virtualisation
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables nodes cannot be cast to types
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get

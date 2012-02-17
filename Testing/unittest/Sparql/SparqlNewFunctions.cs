@@ -59,7 +59,8 @@ namespace VDS.RDF.Test.Sparql
             Console.WriteLine(formatter.Format(q));
 
             TripleStore store = new TripleStore();
-            SparqlResultSet results = q.Evaluate(store) as SparqlResultSet;
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results != null)
             {
                 Assert.IsTrue(results.Result, "Result should be true");

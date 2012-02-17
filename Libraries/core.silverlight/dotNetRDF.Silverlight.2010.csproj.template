@@ -29,7 +29,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT,NET40,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
@@ -42,7 +42,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT,NET40,NO_ASP,NO_WEB,NO_DATA,NO_STORAGE,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>

@@ -58,8 +58,15 @@ namespace VDS.RDF.Writing
         private bool _allowhispeed = false;
         private TurtleSyntax _syntax = TurtleSyntax.Original;
 
+        /// <summary>
+        /// Creates a new Turtle Writer
+        /// </summary>
         public TurtleWriter() { }
 
+        /// <summary>
+        /// Creates a new Turtle Writer
+        /// </summary>
+        /// <param name="syntax">Turtle Syntax</param>
         public TurtleWriter(TurtleSyntax syntax)
         {
             this._syntax = syntax;

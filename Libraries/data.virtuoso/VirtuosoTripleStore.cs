@@ -57,10 +57,10 @@ namespace VDS.RDF
     /// Currently Graphs added/removed from this Class do not affect the Virtuoso Store
     /// </para>
     /// <para>
-    /// If you wish to alter the Store you must manipulate the Store directly using the <see cref="VirtuosoManager">VirtuosoManager</see> or by issuing SPARQL Update commands using the <see cref="VirtuosoTripleStore.ExecuteUpdate()">ExecuteUpdate()</see> method.
+    /// If you wish to alter the Store you must manipulate the Store directly using the <see cref="VirtuosoManager">VirtuosoManager</see> or by issuing SPARQL Update commands using the <see cref="ExecuteUpdate(string)">ExecuteUpdate()</see> method.
     /// </para>
     /// </remarks>
-    [Obsolete("The VirtuosoTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", false)]
+    [Obsolete("The VirtuosoTripleStore is obsolete, please use the PersistentTripleStore instead which supercedes this class and provides more useful behaviour", true)]
     public class VirtuosoTripleStore 
         : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore
     {
@@ -106,10 +106,10 @@ namespace VDS.RDF
         /// </returns>
         /// <remarks>
         /// <para>
-        /// This method invokes the <see cref="VirtuosoManager.Query">Query</see> method of the <see cref="VirtuosoManager">VirtuosoManager</see> which executes the Sparql query against the store using SPASQL (Sparql+SQL).
+        /// This method invokes the <see cref="VirtuosoManager.Query(string)">Query</see> method of the <see cref="VirtuosoManager">VirtuosoManager</see> which executes the Sparql query against the store using SPASQL (Sparql+SQL).
         /// </para>
         /// <para>
-        /// You can use this method to issue SPARQL Update commands against the Store if the user account you are using to connect has the relevant privilege <strong>SPARQL_UPDATE</strong> granted to them, for new development we recommend you use the <see cref="VirtuosoTripleStore.ExecuteUpdate">ExecuteUpdate()</see> method instead.
+        /// You can use this method to issue SPARQL Update commands against the Store if the user account you are using to connect has the relevant privilege <strong>SPARQL_UPDATE</strong> granted to them, for new development we recommend you use the <see cref="ExecuteUpdate(String)">ExecuteUpdate()</see> method instead.
         /// </para>
         /// <para>
         /// <strong>Warning:</strong> In rare cases we have been able to crash Virtuoso by issuing malformed Sparql Update commands to it, this appears to be an issue with Virtuoso.
@@ -133,13 +133,13 @@ namespace VDS.RDF
         /// </returns>
         /// <remarks>
         /// <para>
-        /// This method invokes the <see cref="VirtuosoManager.Query">Query</see> method of the <see cref="VirtuosoManager">VirtuosoManager</see> which executes the SPARQL query against the store using SPASQL (Sparql+SQL).
+        /// This method invokes the <see cref="VirtuosoManager.Query(string)">Query</see> method of the <see cref="VirtuosoManager">VirtuosoManager</see> which executes the SPARQL query against the store using SPASQL (Sparql+SQL).
         /// </para>
         /// <para>
-        /// You can use this method to issue SPARQL Update commands against the Store if the user account you are using to connect has the relevant privilege <strong>SPARQL_UPDATE</strong> granted to them, for new development we recommend you use the <see cref="VirtuosoTripleStore.ExecuteUpdate()">ExecuteUpdate()</see> method instead.
+        /// You can use this method to issue SPARQL Update commands against the Store if the user account you are using to connect has the relevant privilege <strong>SPARQL_UPDATE</strong> granted to them, for new development we recommend you use the <see cref="ExecuteUpdate(string)">ExecuteUpdate()</see> method instead.
         /// </para>
         /// <para>
-        /// <strong>Warning:</strong> In rare cases we have been able to crash Virtuoso by issuing malformed Sparql Update commands to it, this appears to be an issue with Virtuoso.
+        /// <strong>Warning:</strong> In rare cases we have been able to crash Virtuoso by issuing malformed SPARQL Update commands to it, this appears to be an issue with Virtuoso.
         /// </para>
         /// </remarks>
         /// <exception cref="RdfQueryException">Thrown if the query is malformed or the results cannot be processed</exception>

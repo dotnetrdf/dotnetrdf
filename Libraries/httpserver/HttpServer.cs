@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -904,10 +905,12 @@ namespace VDS.Web
             if (!this._listener.IsListening)
             {
                 this._listener.Start();
+                Console.WriteLine("HttpServer Starting on " + this._host + ":" + this._port);
                 while (!this._listener.IsListening)
                 {
                     //Wait for listener to start
                 }
+                Console.WriteLine("HttpServer Started");
             }
         }
 
@@ -918,6 +921,7 @@ namespace VDS.Web
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
 
+            Console.WriteLine("HttpServer Restarting...");
             this.Stop();
             this.Start();
         }
@@ -932,29 +936,43 @@ namespace VDS.Web
             //Only Stop if Listener is starting
             if (this._listener.IsListening)
             {
+                Console.WriteLine("HttpServer Stopping...");
                 this._listener.Stop();
+                Console.WriteLine("HttpServer Stopped");
             }
         }
 
         /// <summary>
-        /// Shuts down the server and optionally kills the process in which it is running
+        /// Shuts down the server and optionally stops the process in which it is running
         /// </summary>
-        /// <param name="killProcess">Whether to kill the containing process</param>
+        /// <param name="stopProcess">Whether to stop the containing process</param>
+        /// <param name="force">Whether to force the containing process to stop by killing it</param>
         /// <remarks>
         /// <para>
         /// After a Server has been shut down it's methods and properties cannot be accessed
         /// </para>
         /// </remarks>
-        public void Shutdown(bool killProcess)
+        public void Shutdown(bool stopProcess, bool force)
         {
             if (this._disposed) throw new ObjectDisposedException("Cannot access the properties/methods of a HttpServer instance after it has been disposed of");
 
+            Console.WriteLine("HttpServer shutting down...");
             this.Dispose();
 
-            if (killProcess)
+            if (stopProcess)
             {
-                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                Process p = System.Diagnostics.Process.GetCurrentProcess();
+                Console.WriteLine("HttpServer " + (force ? "killing" : "closing") + " containing process...");
+                if (force)
+                {
+                    p.Kill();
+                }
+                else
+                {
+                    p.Close();
+                }
             }
+            Console.WriteLine("HttpServer shut down");
         }
 
         #endregion
@@ -1217,7 +1235,7 @@ namespace VDS.Web
                 if (this._listener.IsListening) this._listener.Stop();
             }
             this._shouldTerminate = true;
-            while (this._serverThread.ThreadState != ThreadState.Stopped)
+            while (this._serverThread.ThreadState != System.Threading.ThreadState.Stopped)
             {
                 Thread.Sleep(10);
             }

@@ -69,7 +69,7 @@ namespace VDS.Web.Handlers
                         case "stop":
                             context.Response.StatusCode = (int)HttpStatusCode.Accepted;
                             context.Response.Close();
-                            context.Server.Shutdown(true);
+                            context.Server.Shutdown(true, false);
                             break;
                         case "restart":
                             context.Response.StatusCode = (int)HttpStatusCode.Accepted;

@@ -171,6 +171,8 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._dataset is IConfigurationSerializable)
             {
+                context.EnsureObjectFactory(typeof(FullTextObjectFactory));
+
                 INode dataset = context.NextSubject;
                 context.NextSubject = dataset;
 

@@ -57,6 +57,7 @@ namespace VDS.Common
         /// Create an empty node with no children and null value
         /// </summary>
         /// <param name="parent">Parent node of this node</param>
+        /// <param name="key">Key Bit</param>
         public TrieNode(TrieNode<TKeyBit, TValue> parent, TKeyBit key)
         {
             this.KeyBit = key;

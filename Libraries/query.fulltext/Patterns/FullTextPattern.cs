@@ -305,6 +305,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Returns whether the pattern has any blank node variables present
+        /// </summary>
         public override bool HasNoBlankVariables
         {
             get

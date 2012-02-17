@@ -425,8 +425,8 @@ namespace dotNetRDFTest
                 }
             }
             Console.WriteLine();
-            Console.WriteLine("Query reports execution time of " + query.QueryTime + "ms (" + query.QueryTimeTicks + " Ticks)");
-            Console.WriteLine("Total Query Execution took " + watch.ElapsedMilliseconds + "ms (" + watch.ElapsedTicks + " Ticks)");
+            Console.WriteLine("Query reports execution time of " + query.QueryExecutionTime);
+            Console.WriteLine("Total Query Execution took " + watch.ElapsedMilliseconds + "ms");
             Console.WriteLine();
             Console.WriteLine(new String('-', 150));
 

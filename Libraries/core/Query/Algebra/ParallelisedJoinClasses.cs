@@ -46,7 +46,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents a Union which will be evaluated in parallel
     /// </summary>
-    public class ParallelUnion : IUnion
+    public class ParallelUnion 
+        : IUnion
     {
         private ISparqlAlgebra _lhs, _rhs;
 
@@ -68,8 +69,6 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            throw new NotSupportedException("Currently not supported pending ISparqlDataset related refactorings in 0.6.0");
-
             //Create a copy of the evaluation context for the RHS
             SparqlEvaluationContext context2 = new SparqlEvaluationContext(context.Query, context.Data, context.Processor);
             if (!(context.InputMultiset is IdentityMultiset))

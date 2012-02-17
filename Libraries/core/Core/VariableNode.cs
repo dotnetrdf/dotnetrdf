@@ -401,41 +401,72 @@ namespace VDS.RDF
 
         #region IValuedNode Members
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public long AsInteger()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public decimal AsDecimal()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public float AsFloat()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public double AsDouble()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be converted to types
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the expression
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get

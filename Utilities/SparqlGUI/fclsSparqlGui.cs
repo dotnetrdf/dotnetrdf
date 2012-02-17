@@ -350,7 +350,7 @@ namespace VDS.RDF.Utilities.Sparql
                 {
                     throw new RdfException("Unexpected Result Type");
                 }
-                this.stsLastQuery.Text = "Last Query took " + query.QueryTime + " ms";
+                this.stsLastQuery.Text = "Last Query took " + query.QueryExecutionTime;
             }
             catch (RdfParseException parseEx)
             {
@@ -668,7 +668,7 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void LogEndQuery(SparqlQuery q, IGraph g)
         {
-            this.Log("QUERY END", "Query Finished in " + q.QueryTime + " producing a Graph contaning " + g.Triples.Count + " Triples");
+            this.Log("QUERY END", "Query Finished in " + q.QueryExecutionTime + " producing a Graph contaning " + g.Triples.Count + " Triples");
         }
 
         private String GetFullErrorTrace(Exception ex)

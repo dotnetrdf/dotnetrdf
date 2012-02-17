@@ -174,6 +174,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             }
         }
 
+        /// <summary>
+        /// Evaluates the expression
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingID">Binding ID</param>
+        /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             //Configure Options

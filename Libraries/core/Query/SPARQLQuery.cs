@@ -166,8 +166,6 @@ namespace VDS.RDF.Query
         private int _offset = 0;
         private long _timeout = Options.QueryExecutionTimeout;
         private TimeSpan? _executionTime = null;
-        private long _queryTime = -1;
-        private long _queryTimeTicks = -1;
         private bool _partialResultsOnTimeout = false;
         private bool _optimised = false;
         private bool? _optimisableOrdering;
@@ -757,7 +755,7 @@ namespace VDS.RDF.Query
         /// <returns>
         /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the type of query executed
         /// </returns>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public Object Evaluate(IInMemoryQueryableStore data)
         {
             return this.Evaluate(new InMemoryDataset(data));
@@ -769,7 +767,7 @@ namespace VDS.RDF.Query
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="data">Triple Store</param>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, IInMemoryQueryableStore data)
         {
             this.Evaluate(rdfHandler, resultsHandler, new InMemoryDataset(data));
@@ -782,7 +780,7 @@ namespace VDS.RDF.Query
         /// <returns>
         /// Either a <see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="IGraph">IGraph</see> depending on the type of query executed
         /// </returns>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public Object Evaluate(ISparqlDataset dataset)
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
@@ -795,7 +793,7 @@ namespace VDS.RDF.Query
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="dataset">Dataset</param>
-        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",false)]
+        [Obsolete("This method is considered obsolete, you should create an ISparqlQueryProcessor instance and invoke the ProcessQuery() method instead",true)]
         public void Evaluate(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, ISparqlDataset dataset)
         {
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);

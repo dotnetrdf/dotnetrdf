@@ -50,25 +50,56 @@ namespace VDS.RDF.Nodes
     {
         private SparqlNumericType _numType = SparqlNumericType.NaN;
 
+        /// <summary>
+        /// Creates a new numeric valued node
+        /// </summary>
+        /// <param name="g">Graph the node belongs to</param>
+        /// <param name="value">Lexical Value</param>
+        /// <param name="datatype">Datatype URI</param>
+        /// <param name="numType">SPARQL Numeric Type</param>
         public NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
             : base(g, value, datatype) 
         {
             this._numType = numType;
         }
 
+        /// <summary>
+        /// Gets the string value of the node
+        /// </summary>
+        /// <returns></returns>
         public string AsString()
         {
             return this.Value;
         }
 
+        /// <summary>
+        /// Gets the integer value
+        /// </summary>
+        /// <returns></returns>
         public abstract long AsInteger();
 
+        /// <summary>
+        /// Gets the decimal value
+        /// </summary>
+        /// <returns></returns>
         public abstract decimal AsDecimal();
 
+        /// <summary>
+        /// Gets the float value
+        /// </summary>
+        /// <returns></returns>
         public abstract float AsFloat();
 
+        /// <summary>
+        /// Gets the double value
+        /// </summary>
+        /// <returns></returns>
         public abstract double AsDouble();
 
+        /// <summary>
+        /// Gets the boolean value
+        /// </summary>
+        /// <returns></returns>
         public bool AsBoolean()
         {
             switch (this._numType)
@@ -86,11 +117,18 @@ namespace VDS.RDF.Nodes
             }
         }
 
+        /// <summary>
+        /// Throws an error as numerics cannot be converted to date times
+        /// </summary>
+        /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
             throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
         }
 
+        /// <summary>
+        /// Gets the numeric type of the node
+        /// </summary>
         public SparqlNumericType NumericType
         {
             get
