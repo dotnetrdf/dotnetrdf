@@ -150,6 +150,7 @@ namespace VDS.RDF.Test.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
+                LuceneTestHarness.Index.Close();
             }
         }
 
@@ -224,6 +225,7 @@ namespace VDS.RDF.Test.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
+                LuceneTestHarness.Index.Close();
             }
         }
 
@@ -298,6 +300,7 @@ namespace VDS.RDF.Test.Query.FullText
             finally
             {
                 if (indexer != null) indexer.Dispose();
+                LuceneTestHarness.Index.Close();
             }
         }
     }

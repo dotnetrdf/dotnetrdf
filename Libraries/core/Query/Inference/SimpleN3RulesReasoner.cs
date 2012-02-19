@@ -171,7 +171,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Subject))
                         {
-                            variableMap.Add(x.Subject, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Subject]));
@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Predicate))
                         {
-                            variableMap.Add(x.Predicate, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Predicate]));
@@ -199,7 +199,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Object))
                         {
-                            variableMap.Add(x.Object, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Object]));
@@ -230,7 +230,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Subject))
                         {
-                            variableMap.Add(x.Subject, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Subject, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Subject]));
@@ -244,7 +244,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Predicate))
                         {
-                            variableMap.Add(x.Predicate, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Predicate, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Predicate]));
@@ -258,7 +258,7 @@ namespace VDS.RDF.Query.Inference
                     {
                         if (!variableMap.ContainsKey(x.Object))
                         {
-                            variableMap.Add(x.Object, new VariableNode(null, "auto-rule-var-" + nextVarID));
+                            variableMap.Add(x.Object, new VariableNode(null, "autoRuleVar" + nextVarID));
                             nextVarID++;
                         }
                         output.Append(this._formatter.Format(variableMap[x.Object]));

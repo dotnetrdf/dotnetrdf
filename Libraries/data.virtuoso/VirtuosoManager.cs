@@ -132,7 +132,7 @@ namespace VDS.RDF.Storage
             connString.Append(";pwd=");
             connString.Append(this._dbpwd);
             connString.Append(";Charset=utf-8");
-            if (this._timeout >= 0)
+            if (this._timeout > 0)
             {
                 connString.Append(";Connection Timeout=" + this._timeout);
             }
@@ -1381,6 +1381,11 @@ namespace VDS.RDF.Storage
             {
                 INode db = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyDatabase);
                 context.Graph.Assert(new Triple(manager, db, context.Graph.CreateLiteralNode(this._dbname)));
+            }
+            if (this._timeout > 0)
+            {
+                INode timeout = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyTimeout);
+                context.Graph.Assert(new Triple(manager, timeout, this._timeout.ToLiteral(context.Graph)));
             }
             if (this._dbuser != null && this._dbpwd != null)
             {

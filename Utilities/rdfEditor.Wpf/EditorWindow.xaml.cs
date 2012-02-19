@@ -38,6 +38,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             InitializeComponent();
 
+            //rdfEditor must disable URI interning otherwise it will eat memory as the user edits lots of files
+            Options.InternUris = false;
+
             //Generate Filename Filters
             FileFilterRdf = MimeTypesHelper.GetFilenameFilter(true, false, false, false, false, true);
             FileFilterSparql = MimeTypesHelper.GetFilenameFilter(false, false, true, false, false, true);

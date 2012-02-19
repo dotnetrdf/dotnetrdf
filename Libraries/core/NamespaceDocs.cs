@@ -33,6 +33,17 @@ terms.
 
 */
 
+namespace VDS.Common
+{
+    /// <summary>
+    /// Top Level Namespace for common data structures that are using throughout the dotNetRDF library but are not necessarily RDF specific
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF
 {
     /// <summary>
@@ -52,6 +63,7 @@ namespace VDS.RDF
     /// <para>For communicating with arbitrary Triple Stores we have a dedicated <see cref="VDS.RDF.Storage">Storage</see> namespace.  As of this release we support the following Triple Stores:
     /// <ul>
     ///     <li>AllegroGraph</li>
+    ///     <li>Dydra</li>
     ///     <li>4store</li>
     ///     <li>Fuseki</li>
     ///     <li>Joseki</li>
@@ -67,7 +79,7 @@ namespace VDS.RDF
     /// Prior to the 0.5.0 release we provided an SQL backend henceforth referred to as the Legacy format, this has been officially deprecated for some time and was only ever recommended for small scale prototyping and testing.
     /// </para>
     /// <para>
-    /// The 0.5.0 release includes a new SQL backend called the ADO Store provided in a separate library <strong>dotNetRDF.Data.Sql.dll</strong> - for information on how to migrate from the old format to the new format please see the <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">Migration guide</a>
+    /// From 0.5.0 onwards the release includes a new SQL backend called the ADO Store provided in a separate library <strong>dotNetRDF.Data.Sql.dll</strong> - for information on how to migrate from the old format to the new format please see the <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">Migration guide</a>
     /// </para>
     /// <h3>ASP.Net Integration</h3>
     /// <para>
@@ -88,6 +100,10 @@ namespace VDS.RDF
     /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
     /// </para>
     /// <h4>Breaking Changes</h4>
+    /// <h5>0.6.x vs 0.5.x API</h5>
+    /// <para>
+    /// The 0.6.x release has limited breaking changes and these are primarily in the internals of the SPARQL engine and so should only affect advanced users of the API.  Specifically the <see cref="VDS.RDF.Query.Dataset.ISparqlDataset"/> interface was updated and the <see cref="VDS.RDF.Query.Expressions.ISparqlExpression"/> interface refactored in terms of the new <see cref="IValuedNode"/> interface.  A variety of methods and classes previously marked obsolete are not either removed or marked obsolete unusable.
+    /// </para>
     /// <h5>0.5.x vs 0.4.x API</h5>
     /// <para>
     /// The 0.5.x release has limited breaking changes vs the 0.4.x API and these are mostly just in terms of additional methods so only those who have implemented custom implementations of a few interfaces will be affected by this.  The only serious breaking change is a major refactor of the <see cref="VDS.RDF.Query.Describe.ISparqlDescribe">ISparqlDescribe</see> interface but this should affect relatively few users.
@@ -95,26 +111,10 @@ namespace VDS.RDF
     /// <para>
     /// The other major change from the 0.4.x API is that Virtuoso support is now in a separate library <strong>dotNetRDF.Data.Virtuoso.dll</strong> which helps reduce dependencies in the Core library.  Also our new SQL backend referred to as the ADO Store can be found in a new separate library <strong>dotNetRDF.Data.Sql.dll</strong>
     /// </para>
-    /// <h5>0.4.1 Release vs 0.4.0 API</h5>
-    /// <para>
-    /// The 0.4.1 release makes some significant breaking changes to the API though these are mostly fixable with simple find and replace.  Essentially it introduces interfaces for each of the Node Types (e.g. <see cref="IUriNode">IUriNode</see>) are encourages use of these instead of the concrete implementations.  There is a blog post detailing the change and how to adjust your code <a href="http://www.dotnetrdf.org/blogitem.asp?blogID=43">here</a>.
-    /// </para>
-    /// <h5>0.4.x Releases vs 0.3.x API</h5>
-    /// <para>
-    /// The 0.4.x release makes some breaking changes vs the 0.3.x API though mostly these are internal changes or exposure of previously private information in the public API:
-    /// </para>
-    /// <ul>
-    ///     <li>Addition of <see cref="IGraph.Difference">Difference()</see> and <see cref="IGraph.ToDataTable">ToDataTable()</see> methods for <see cref="IGraph">IGraph</see></li>
-    ///     <li>Exposure of much more SPARQL Query and Update information publicly via the various interfaces involved</li>
-    ///     <li>Introduction of the <see cref="VDS.RDF.Query.Datasets.ISparqlDataset">ISparqlDataset</see> abstraction into the SPARQL engine and resultant removal of dataset management methods from IInMemoryQueryableTripleStore</li>
-    ///     <li>Complete removal of the final remnants of the old Labyrinth SPARQL engine</li>
-    ///     <li>Complete removal of the pre-0.3.x <see cref="System.Web.IHttpHandler">IHttpHandler</see> implementations</li>
-    ///     <li>All SQL based classes are marked as obsolete (though still usable) and will be removed/replaced with alternatives in future releases</li>
-    /// </ul>
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>
     /// <para>
-    /// From the 0.4.1 release there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
+    /// From the 0.4.1 release onwards there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
     /// </para>
     /// <h5>Client Profile Build</h5>
     /// <para>
@@ -174,6 +174,17 @@ namespace VDS.RDF.Configuration.Permissions
     /// <para>
     /// <strong>Warning:</strong> The API here is experimental and may changed/be removed in future releases
     /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Nodes
+{
+    /// <summary>
+    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are used internally in the SPARQL engine.
     /// </summary>
     class NamespaceDoc
     {
@@ -323,6 +334,39 @@ namespace VDS.RDF.Query.Aggregates
     }
 }
 
+namespace VDS.RDF.Query.Aggregates.Leviathan
+{
+    /// <summary>
+    /// Namespace for aggregates provided by the Leviathan function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Aggregates.Sparql
+{
+    /// <summary>
+    /// Namespace for the built-in SPARQL aggregates
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Aggregates.XPath
+{
+    /// <summary>
+    /// Namespace for aggregates provided by the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF.Query.Algebra
 {
     /// <summary>
@@ -389,12 +433,254 @@ namespace VDS.RDF.Query.Expressions
     }
 }
 
+namespace VDS.RDF.Query.Expression.Arithmetic
+{
+    /// <summary>
+    /// Namespace containing expression classes pertaining to arithmetic operations
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expression.Comparison
+{
+    /// <summary>
+    /// Namespace containing expression classes pertaining to comparison operations
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expression.Conditional
+{
+    /// <summary>
+    /// Namespace containing expression classes pertaining to conditional operations
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF.Query.Expressions.Functions
 {
     /// <summary>
     /// <para>
-    /// Namespace containing Expression classes which model functions in SPARQL expressions
+    /// Namespace containing expression classes which model functions in SPARQL expressions
     /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Arq
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the ARQ function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the Leviathan function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Hash
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the hash functions from the Leviathan function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the numeric functions from the Leviathan function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric.Trigonometry
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the trigonometric functions from the Leviathan function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions which have boolean results
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions which construct new terms
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.DateTime
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to date times
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to hash algorithms
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in numeric functions
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to sets (IN and NOT IN)
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide the SPARQL built-in functions pertaining to string manipulation
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.XPath
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide functions from the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide cast functions from the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide date time functions from the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.XPath.Numeric
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide numeric functions from the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expressions.Functions.XPath.String
+{
+    /// <summary>
+    /// Namespace containing expression classes which provide string functions from the XPath function library
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Expression.Primary
+{
+    /// <summary>
+    /// Namespace containing expression classes representing primary constructs in SPARQL expression trees i.e. constants, modifiers and variables
     /// </summary>
     class NamespaceDoc
     {

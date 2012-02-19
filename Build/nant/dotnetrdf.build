@@ -712,6 +712,12 @@
         <exclude name="*.vshost.*" />
         <exclude name="temp.*" />
       </fileset>
+      <fileset basedir="Utilities/rdfServer/bin/Debug">
+        <include name="*" />
+        <exclude name="*.pdb" />
+        <exclude name="*.vshost.*" />
+        <exclude name="temp.*" />
+      </fileset>
       <fileset basedir="Utilities/rdfSqlStorage/bin/Debug">
         <include name="*" />
         <exclude name="*.pdb" />

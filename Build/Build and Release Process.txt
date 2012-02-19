@@ -1,0 +1,110 @@
+Build Process
+=============
+
+This document covers the steps required to build dotNetRDF and build a release (if so desired)
+
+Prerequisites
+-------------
+
+There are several ways to build dotNetRDF depending on what you want to build.
+
+To build only the standard builds of libraries and tools you need the following:
+ - Visual Studio 2010 OR NAnt and .Net 4.0 SDK
+ - Silverlight 4 for VS2010
+ - Windows Phone 7 Developer Tools for VS2010
+
+To build all versions of the libraries you need the following:
+- NAnt
+- .Net 4.0 SDK
+- .Net 3.5 SDK
+- Silverlight 4 SDK
+- Windows Phone 7 Developer Tools
+
+Standard (Visual Studio) Build
+------------------------------
+
+The standard build is very simple, load dotNetRDF.sln into Visual Studio and simply do a Build All
+
+Alternatively to build via nant run the following command:
+
+nant compile-solution
+
+Advanced Build
+--------------
+
+To run the advanced builds you can use any of the relevant nant targets depending on what you want to build.
+
+To build everything simply run the following:
+
+nant build
+
+This will build all the libraries and copy them to the bin/nightlies directory, the entire solution will be
+compiled so you can also find the tools built in their individual bin/Debug directories
+
+Release Process
+===============
+
+To make a release you must perform the following steps:
+
+Prerequisites
+-------------
+
+As build process but nuget may also be needed if you intended to make NuGet packages
+
+1 - Test
+--------
+
+Run all relevant unit tests and other tests suites (e.g. SPARQL DAWG) to ensure that no regressions or breaking
+changes have crept in.  In the case of breaking changes you may need to update unit tests to reflect new
+code/behaviour
+
+2 - Build
+---------
+
+Make all the builds using the advanced build process outlined above, test the compiled binaries as desired
+
+Then use the following nant command once you are happy with the generated nightlies:
+
+nant no-compile build-release
+
+This command takes the existing nightly builds and copies them to the bin/stable directory
+
+If you know the code is good you can just run the following:
+
+nant build-release
+
+This will rebuild all the nightlies and then copy them to the bin/stable directory
+
+3 - Create ZIP Distributions
+----------------------------
+
+Before you create distributions check the properties set at the start of the dotnetrdf.build file to ensure that
+the versions and release types are correct.
+
+You can then run the following nant command:
+
+nant no-build dist-release dist-toolkit dist-toolkit-installer
+
+This will generate you four ZIP files comprising the libraries, source code, toolkit and toolkit installer
+
+4 - Upload ZIP Distributions
+----------------------------
+
+Upload ZIPs to desired distribution locations, for official releases the following locations should be used:
+
+- dotnetrdf.org
+- sourceforge.net
+- codeplex.com
+
+5 - Update NuGet Packages
+-------------------------
+
+For official releases the NuGet packages should be generated and uploaded.
+
+First check that the property for nuspec version is up to date in the dotnetrdf.build file, also ensure that the
+versions given in the nuspec files match the version being released especially for dependencies.
+
+You can then upload the NuGet packages using the following nant command:
+
+nant no-build upload-nuget
+

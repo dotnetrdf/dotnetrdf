@@ -59,7 +59,7 @@ namespace VDS.RDF.Configuration
             obj = null;
 
             String server, port, db, user, pwd;
-            int p = -1;
+            int p = -1, timeout = 0;
 
             //Create the URI Nodes we're going to use to search for things
             INode propServer = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer),
@@ -75,6 +75,9 @@ namespace VDS.RDF.Configuration
             port = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPort));
             if (!Int32.TryParse(port, out p)) p = VirtuosoManager.DefaultPort;
 
+            //Get timeout
+            timeout = ConfigurationLoader.GetConfigurationInt32(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyTimeout), timeout);
+
             //Get user credentials
             ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
             if (user == null || pwd == null) return false;
@@ -87,7 +90,7 @@ namespace VDS.RDF.Configuration
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
 
-                    obj = new VirtuosoManager(server, p, db, user, pwd);
+                    obj = new VirtuosoManager(server, p, db, user, pwd, timeout);
 
                     break;
             }

@@ -33,6 +33,9 @@ namespace VDS.RDF.Test.Parsing
                     writer.Close();
                 }
             }
+
+            //Force a GC prior to each of these tests
+            GC.GetTotalMemory(true);
         }
 
         private void CalculateSpeed(int triples, Stopwatch watch)
@@ -44,158 +47,230 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingSpeedTurtle10Thousand()
         {
-            EnsureTestData(10000, "10thou.ttl", new TurtleFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(10000, "10thou.ttl", new TurtleFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            TurtleParser parser = new TurtleParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                TurtleParser parser = new TurtleParser();
 
-            watch.Start();
-            parser.Load(g, "10thou.ttl");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "10thou.ttl");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(10000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(10000, watch);
+            } 
+            finally 
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedTurtle100Thousand()
         {
-            EnsureTestData(100000, "100thou.ttl", new TurtleFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(100000, "100thou.ttl", new TurtleFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            TurtleParser parser = new TurtleParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                TurtleParser parser = new TurtleParser();
 
-            watch.Start();
-            parser.Load(g, "100thou.ttl");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "100thou.ttl");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(100000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(100000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedTurtle500Thousand()
         {
-            EnsureTestData(500000, "500thou.ttl", new TurtleFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(500000, "500thou.ttl", new TurtleFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            TurtleParser parser = new TurtleParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                TurtleParser parser = new TurtleParser();
 
-            watch.Start();
-            parser.Load(g, "500thou.ttl");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "500thou.ttl");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(500000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(500000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedTurtle10ThousandCountOnly()
         {
-            EnsureTestData(10000, "10thou.ttl", new TurtleFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(10000, "10thou.ttl", new TurtleFormatter());
 
-            CountHandler handler = new CountHandler();
-            Stopwatch watch = new Stopwatch();
-            TurtleParser parser = new TurtleParser();
+                CountHandler handler = new CountHandler();
+                Stopwatch watch = new Stopwatch();
+                TurtleParser parser = new TurtleParser();
 
-            watch.Start();
-            parser.Load(handler, "10thou.ttl");
-            watch.Stop();
+                watch.Start();
+                parser.Load(handler, "10thou.ttl");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(10000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(10000, watch);
 
-            Assert.AreEqual(10000, handler.Count);
+                Assert.AreEqual(10000, handler.Count);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedTurtle100ThousandCountOnly()
         {
-            EnsureTestData(100000, "100thou.ttl", new TurtleFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(100000, "100thou.ttl", new TurtleFormatter());
 
-            CountHandler handler = new CountHandler();
-            Stopwatch watch = new Stopwatch();
-            TurtleParser parser = new TurtleParser();
+                CountHandler handler = new CountHandler();
+                Stopwatch watch = new Stopwatch();
+                TurtleParser parser = new TurtleParser();
 
-            watch.Start();
-            parser.Load(handler, "100thou.ttl");
-            watch.Stop();
+                watch.Start();
+                parser.Load(handler, "100thou.ttl");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(100000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(100000, watch);
 
-            Assert.AreEqual(100000, handler.Count);
+                Assert.AreEqual(100000, handler.Count);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedNTriples10Thousand()
         {
-            EnsureTestData(10000, "10thou.nt", new NTriplesFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(10000, "10thou.nt", new NTriplesFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            NTriplesParser parser = new NTriplesParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                NTriplesParser parser = new NTriplesParser();
 
-            watch.Start();
-            parser.Load(g, "10thou.nt");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "10thou.nt");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(10000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(10000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedNTriples100Thousand()
         {
-            EnsureTestData(100000, "100thou.nt", new NTriplesFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(100000, "100thou.nt", new NTriplesFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            NTriplesParser parser = new NTriplesParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                NTriplesParser parser = new NTriplesParser();
 
-            watch.Start();
-            parser.Load(g, "100thou.nt");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "100thou.nt");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(100000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(100000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedNTriples500Thousand()
         {
-            EnsureTestData(500000, "500thou.nt", new NTriplesFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(500000, "500thou.nt", new NTriplesFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            NTriplesParser parser = new NTriplesParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                NTriplesParser parser = new NTriplesParser();
 
-            watch.Start();
-            parser.Load(g, "500thou.nt");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "500thou.nt");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(500000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(500000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
 
         [TestMethod]
         public void ParsingSpeedNTriples1Million()
         {
-            EnsureTestData(1000000, "million.nt", new NTriplesFormatter());
+            try
+            {
+                Options.InternUris = false;
+                EnsureTestData(1000000, "million.nt", new NTriplesFormatter());
 
-            Graph g = new Graph(new IndexedTripleCollection(1));
-            Stopwatch watch = new Stopwatch();
-            NTriplesParser parser = new NTriplesParser();
+                Graph g = new Graph(new IndexedTripleCollection(1));
+                Stopwatch watch = new Stopwatch();
+                NTriplesParser parser = new NTriplesParser();
 
-            watch.Start();
-            parser.Load(g, "million.nt");
-            watch.Stop();
+                watch.Start();
+                parser.Load(g, "million.nt");
+                watch.Stop();
 
-            Console.WriteLine(watch.Elapsed);
-            this.CalculateSpeed(1000000, watch);
+                Console.WriteLine(watch.Elapsed);
+                this.CalculateSpeed(1000000, watch);
+            }
+            finally
+            {
+                Options.InternUris = true;
+            }
         }
     }
 }

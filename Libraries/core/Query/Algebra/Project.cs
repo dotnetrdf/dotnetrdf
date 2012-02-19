@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Algebra
                     //Can only project a variable if it's used in the GROUP OR if it was assigned by a GROUP BY expression
                     if (context.Query != null)
                     {
-                        if (!groupSet.ContainsVariable(v.Name) && !context.Query.GroupBy.Variables.Contains(v.Name))
+                        if (!groupSet.ContainsVariable(v.Name) && !context.Query.GroupBy.Variables.Contains(v.Name) && !context.Query.GroupBy.ProjectableVariables.Contains(v.Name))
                         {
                             throw new RdfQueryException("Cannot project the variable ?" + v.Name + " since this Query contains Grouping(s) but the given Variable is not in the GROUP BY - use the SAMPLE aggregate if you need to sample this Variable");
                         }
