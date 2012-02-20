@@ -78,6 +78,18 @@ dnr-ft:buildIndexWith a rdf:Property ;
 					  rdfs:comment "Used to state that when a search provider is loaded it should ensure that the index is built from one or more data sources using the specified Indexer first" ;
 					  rdfs:range dnr-ft:Indexer ;
 					  rdfs:domain dnr-ft:Searcher .
+
+dnr-ft:indexNow a rdf:Property ;
+				rdfs:label "Index Now" ;
+				rdfs:comment "Used to state that a dataset should be indexed immediately on initialization" ;
+				rdfs:range xsd:boolean ;
+				rdfs:domain dnr:SparqlDataset .
+
+dnr-ft:indexSync a rdf:Property ;
+				 rdfs:label "Index Sync" ;
+				 rdfs:comment "Used to state whether a searcher should always search the latest version of the index" ;
+				 rdfs:range xsd:boolean ;
+				 rdfs:domain dnr-ft:Searcher .
 					 
 				   
 				   

@@ -89,10 +89,6 @@ dnr:TripleStore a rdfs:Class ;
 dnr:Graph a rdfs:Class ;
 		  rdfs:label "Class of Graphs" ;
 		  rdfs:comment "A Graph is any class which implements the IGraph interface.  A Graph is used to define a Graph which may be composed of data from single/multiple sources, in the case of multiple sources the resulting Graph is the merge of all those sources." .
-		  
-dnr:SqlIOManager a rdfs:Class ;
-				 rdfs:label "Class of SQL IO Managers" ;
-				 rdfs:comment "A SQL IO Manager is any class which implements the ISqlIOManager interface for providing read/write access to a SQL backed store.  Define SQL IO Managers in order to define connections to SQL backed stores." .
 				 
 dnr:GenericIOManager a rdfs:Class ;
 					 rdfs:label "Class of Generic IO Managers" ;
@@ -188,46 +184,39 @@ dnr:server a rdf:Property ;
 		   rdfs:label "Server" ;
 		   rdfs:comment "This property is used to define the server for a connection." ;
 		   rdfs:domain dnr:GenericIOManager ;
-		   rdfs:domain dnr:SqlIOManager ;
 		   rdfs:domain dnr:SparqlQueryProcessor ;
 		   rdfs:domain dnr:Proxy .
 		   
 dnr:port a rdf:Property ;
 		 rdfs:label "Port" ;
 		 rdfs:comment "This property is used to define the port for a connection." ;
-		 rdfs:domain dnr:GenericIOManager ;
-		 rdfs:domain dnr:SqlIOManager .
+		 rdfs:domain dnr:GenericIOManager .
 		 
 dnr:database a rdf:Property ;
 			 rdfs:label "Database" ;
 			 rdfs:comment "This property is used to define the database for a connection." ;
-		     rdfs:domain dnr:GenericIOManager ;
-		     rdfs:domain dnr:SqlIOManager .
+		     rdfs:domain dnr:GenericIOManager .
 			 
 dnr:catalogID a rdf:Property ;
 			  rdfs:label "Catalog ID" ;
 			  rdfs:comment "This property is used to define the catalog for a connection." ;
-		      rdfs:domain dnr:GenericIOManager ;
-		      rdfs:domain dnr:SqlIOManager .
+		      rdfs:domain dnr:GenericIOManager .
 			  
 dnr:storeID a rdf:Property ;
 			rdfs:label "Store ID" ;
 			rdfs:comment "This property is used to define the store for a connection." ;
 		    rdfs:domain dnr:GenericIOManager ;
-		    rdfs:domain dnr:SqlIOManager ;
 		    rdfs:domain dnr:SparqlQueryProcessor .
 			
 dnr:queryPath a rdf:Property ;
 			  rdfs:label "Query Path" ;
 			  rdfs:comment "This property is used to define the path to the query service relative to the base URI specified with the dnr:server property." ;
-		      rdfs:domain dnr:GenericIOManager ;
-		      rdfs:domain dnr:SqlIOManager .
+		      rdfs:domain dnr:GenericIOManager .
 			  
 dnr:updatePath a rdf:Property ;
 			   rdfs:label "Update Path" ;
 			   rdfs:comment "This property is used to define the path to the update service relative to the base URI specified with the dnr:server property." ;
-		       rdfs:domain dnr:GenericIOManager ;
-		       rdfs:domain dnr:SqlIOManager .
+		       rdfs:domain dnr:GenericIOManager .
 			     
 dnr:readOnly a rdf:Property ;
 			 rdfs:label "Read Only" ;
@@ -245,7 +234,6 @@ dnr:async a rdf:Property ;
 		  rdfs:label "Asynchronous" ;
 		  rdfs:comment "This property indicates whether a connection should be opened in asynchronous mode." ;
 		  rdfs:domain dnr:GenericIOManager ;
-		  rdfs:domain dnr:SqlIOManager ;
 		  rdfs:range xsd:boolean .
 		  
 dnr:loadMode a rdf:Property ;
@@ -266,11 +254,6 @@ dnr:genericManager a rdf:Property ;
 				   rdfs:label "Generic Manager" ;
 				   rdfs:comment "This property associates a Generic IO Manager with an object." ;
 				   rdfs:range dnr:GenericIOManager .
-				   
-dnr:sqlManager a rdf:Property ;
-			   rdfs:label "SQL Manager" ;
-			   rdfs:comment "This property associates a SQL IO Manager with an object." ;
-			   rdfs:range dnr:SqlIOManager .
 			   
 # Properties to associate SPARQL processors with other objects
 
@@ -335,12 +318,6 @@ dnr:fromString a rdf:Property ;
 			   rdfs:label "From String" ;
 			   rdfs:comment "This property states that data is parsed from a String fragment using heuristic format detection parsing." ;
 			   rdfs:domain dnr:Graph .
-			   
-dnr:fromDatabase a rdf:Property ;
-				 rdfs:label "From Database" ;
-				 rdfs:comment "This property states that data is retrieved from a database connection." ;
-				 rdfs:domain dnr:Graph ;
-				 rdfs:range dnr:SqlIOManager .
 				 
 dnr:fromStore a rdf:Property ;
 			  rdfs:label "From Store" ;
