@@ -317,6 +317,7 @@ namespace VDS.RDF.Storage
             }
 
             VirtuosoCommand cmd = this._db.CreateCommand();
+            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
             cmd.CommandText = getTriples;
 
             VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
@@ -472,8 +473,9 @@ namespace VDS.RDF.Storage
 
                 //Make a call to the TTLP() Virtuoso function
                 VirtuosoCommand cmd = new VirtuosoCommand();
+                cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                 cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
-                 cmd.Parameters.Add("data", VirtDbType.VarChar);
+                cmd.Parameters.Add("data", VirtDbType.VarChar);
                 cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
                 String baseUri = g.BaseUri.ToSafeString();
                 cmd.Parameters.Add("base", VirtDbType.VarChar);
@@ -522,6 +524,7 @@ namespace VDS.RDF.Storage
                     if (removals.Any())
                     {
                         VirtuosoCommand deleteCmd = new VirtuosoCommand();
+                        deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
                         StringBuilder delete = new StringBuilder();
                         delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
                         if (graphUri != null)
@@ -553,6 +556,7 @@ namespace VDS.RDF.Storage
                     if (additions.Any())
                     {
                         VirtuosoCommand insertCmd = new VirtuosoCommand();
+                        insertCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : insertCmd.CommandTimeout);
                         StringBuilder insert = new StringBuilder();
                         insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
                         if (graphUri != null)
@@ -734,6 +738,7 @@ namespace VDS.RDF.Storage
 
                         //Make the Query against Virtuoso
                         VirtuosoCommand cmd = this._db.CreateCommand();
+                        cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                         cmd.CommandText = "SPARQL " + sparqlQuery;
                         VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
                         adapter.Fill(results);
@@ -860,6 +865,7 @@ namespace VDS.RDF.Storage
 
                     //Make the Query against Virtuoso
                     VirtuosoCommand cmd = this._db.CreateCommand();
+                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                     cmd.CommandText = "SPARQL " /*define output:format '_JAVA_' "*/ + sparqlQuery;
                     VirtuosoDataAdapter adapter = new VirtuosoDataAdapter(cmd);
                     adapter.Fill(results);
@@ -1042,6 +1048,7 @@ namespace VDS.RDF.Storage
                 {
                     //Make the Update against Virtuoso
                     VirtuosoCommand cmd = this._db.CreateCommand();
+                    cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                     cmd.CommandText = "SPARQL " + command.ToString();
                     cmd.ExecuteNonQuery();
                 }
@@ -1052,6 +1059,7 @@ namespace VDS.RDF.Storage
             {
                 //Ignore failed parsing and attempt to execute anyway
                 VirtuosoCommand cmd = this._db.CreateCommand();
+                cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
                 cmd.CommandText = "SPARQL " + sparqlUpdate;
                 cmd.ExecuteNonQuery();
 
@@ -1263,6 +1271,7 @@ namespace VDS.RDF.Storage
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
+            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
             if (this._dbtrans != null)
             {
                 //Add to the Transaction if required
@@ -1282,6 +1291,7 @@ namespace VDS.RDF.Storage
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
+            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
             if (this._dbtrans != null)
             {
                 //Add to the Transaction if required
@@ -1305,6 +1315,7 @@ namespace VDS.RDF.Storage
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
+            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
             if (this._dbtrans != null)
             {
                 //Add to the Transaction if required
