@@ -219,8 +219,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISet Join(ISet other)
         {
-            return new Set(this, other);
-            //return new JoinedSet(other, this);
+            //return new Set(this, other);
+            return new JoinedSet(other, this);
         }
 
         /// <summary>
@@ -269,103 +269,6 @@ namespace VDS.RDF.Query.Algebra
             return this.ToString().GetHashCode();
         }
     }
-
-//#if UNFINISHED
-
-    // <summary>
-    // Represents one possible set of values which is a solution to the query where those values are the result of joining two possible sets
-    // </summary>
-    //public sealed class JoinedSet 
-    //    : BaseSet, IEquatable<JoinedSet>
-    //{
-    //    private ISet _lhs, _rhs;
-
-    //    public JoinedSet(ISet x, ISet y)
-    //    {
-    //        this._lhs = new Set(x);
-    //        this._rhs = y;
-    //    }
-
-    //    public override void Add(string variable, INode value)
-    //    {
-    //        Joined Sets are left associative so always add to the LHS set
-    //        this._lhs.Add(variable, value);
-    //    }
-
-    //    public override bool ContainsVariable(string variable)
-    //    {
-    //        return this._lhs.ContainsVariable(variable) || this._rhs.ContainsVariable(variable);
-    //    }
-
-    //    public override bool IsCompatibleWith(ISet s, IEnumerable<string> vars)
-    //    {
-    //        return vars.All(v => this[v] == null || s[v] == null || this[v].Equals(s[v]));
-    //    }
-
-    //    public override void Remove(string variable)
-    //    {
-    //        this._lhs.Remove(variable);
-    //        this._rhs.Remove(variable);
-    //    }
-
-    //    public override INode this[string variable]
-    //    {
-    //        get 
-    //        {
-    //            INode temp = this._lhs[variable];
-    //            return (temp != null ? temp : this._rhs[variable]);
-    //        }
-    //    }
-
-    //    public override IEnumerable<INode> Values
-    //    {
-    //        get 
-    //        {
-    //            return (from v in this.Variables
-    //                    select this[v]);
-    //        }
-    //    }
-
-    //    public override IEnumerable<string> Variables
-    //    {
-    //        get 
-    //        {
-    //            return this._lhs.Variables.Concat(this._rhs.Variables).Distinct();
-    //        }
-    //    }
-
-    //    public override ISet Join(ISet other)
-    //    {
-    //        return new JoinedSet(other, this);
-    //    }
-
-    //    public override ISet Copy()
-    //    {
-    //        return new Set(this);
-    //        return new CopiedSet(this);
-    //    }
-
-    //    public override int GetHashCode()
-    //    {
-    //        return this.ToString().GetHashCode();
-    //    }
-
-    //    public override string ToString()
-    //    {
-    //        StringBuilder output = new StringBuilder();
-    //        foreach (String v in this.Variables)
-    //        {
-    //            if (output.Length > 0) output.Append(" , ");
-    //            output.Append("?" + v + " = " + this[v].ToSafeString());
-    //        }
-    //        return output.ToString();
-    //    }
-
-    //    public bool Equals(JoinedSet other)
-    //    {
-    //        return this.Equals((ISet)other);
-    //    }
-    //}
 
     /// <summary>
     /// Represents one possible set of values which is a solution to the query where those values are the result of joining one or more possible sets
@@ -474,7 +377,7 @@ namespace VDS.RDF.Query.Algebra
                     temp = this._sets[i][variable];
                     if (temp != null) return temp;
                     i++;
-                } while (i < this._sets.Count - 1);
+                } while (i < this._sets.Count);
 
                 //Return null if no sets have a value for the variable
                 return null;
@@ -513,8 +416,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISet Join(ISet other)
         {
-            return new Set(this, other);
-            //return new JoinedSet(other, this._sets);
+            //return new Set(this, other);
+            return new JoinedSet(other, this._sets);
         }
 
         /// <summary>
@@ -523,8 +426,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISet Copy()
         {
-            return new Set(this);
-            //return new JoinedSet(this);
+            //return new Set(this);
+            return new JoinedSet(this);
         }
 
         /// <summary>
