@@ -291,7 +291,7 @@ namespace VDS.RDF.Query.Algebra
                             if (expr.Evaluate(context, id).AsSafeBoolean())
                             {
                                 resultsFound++;
-                                context.OutputMultiset.Add(context.InputMultiset[id]);
+                                context.OutputMultiset.Add(context.InputMultiset[id].Copy());
 
                                 //Recurse unless we're the last pattern
                                 if (pattern < this._triplePatterns.Count - 1)

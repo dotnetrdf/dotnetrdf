@@ -477,7 +477,7 @@ namespace VDS.RDF.Query.Algebra
                             if (filterExpr.Evaluate(context, id).AsSafeBoolean())
                             {
                                 //If evaluates to true then add to output
-                                context.OutputMultiset.Add(context.InputMultiset[id]);
+                                context.OutputMultiset.Add(context.InputMultiset[id].Copy());
                             }
                         } 
                         catch (RdfQueryException)
@@ -539,7 +539,7 @@ namespace VDS.RDF.Query.Algebra
                         {
                             //Equivalent to no assignment but the solution is preserved
                         }
-                        context.OutputMultiset.Add(x);
+                        context.OutputMultiset.Add(x.Copy());
                     }
 
                     //Remember to check for Timeouts during Lazy Evaluation

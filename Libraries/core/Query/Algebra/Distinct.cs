@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Algebra
                 IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
                 foreach (ISet s in context.InputMultiset.Sets.Distinct())
                 {
-                    context.OutputMultiset.Add(s);
+                    context.OutputMultiset.Add(s.Copy());
                 }
                 return context.OutputMultiset;
             }
@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Algebra
                     context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
                     foreach (ISet s in context.InputMultiset.Sets.Distinct())
                     {
-                        context.OutputMultiset.Add(s);
+                        context.OutputMultiset.Add(s.Copy());
                     }
                 }
                 else

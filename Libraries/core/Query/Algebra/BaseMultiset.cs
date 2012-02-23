@@ -136,7 +136,7 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Sorts the Multiset
         /// </summary>
-        /// <param name="comparer"></param>
+        /// <param name="comparer">Sorting Comparer</param>
         public virtual void Sort(IComparer<ISet> comparer)
         {
             //Sorting does nothing by default

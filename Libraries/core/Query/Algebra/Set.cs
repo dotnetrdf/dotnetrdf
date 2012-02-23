@@ -57,43 +57,52 @@ namespace VDS.RDF.Query.Algebra
             this._values = new Dictionary<string, INode>();
         }
 
-        /// <summary>
-        /// Creates a new Set which is the Join of the two Sets
-        /// </summary>
-        /// <param name="x">A Set</param>
-        /// <param name="y">A Set</param>
-        internal Set(ISet x, ISet y)
+        ///// <summary>
+        ///// Creates a new Set which is the Join of the two Sets
+        ///// </summary>
+        ///// <param name="x">A Set</param>
+        ///// <param name="y">A Set</param>
+        //internal Set(ISet x, ISet y)
+        //{
+        //    this._values = new Dictionary<string, INode>();
+        //    foreach (String var in x.Variables)
+        //    {
+        //        this._values.Add(var, x[var]);
+        //    }
+        //    foreach (String var in y.Variables)
+        //    {
+        //        if (!this._values.ContainsKey(var))
+        //        {
+        //            this._values.Add(var, y[var]);
+        //        }
+        //        else if (this._values[var] == null)
+        //        {
+        //            this._values[var] = y[var];
+        //        }
+        //    }
+        //}
+
+        internal Set(JoinedSet x)
         {
             this._values = new Dictionary<string, INode>();
             foreach (String var in x.Variables)
             {
                 this._values.Add(var, x[var]);
-            }
-            foreach (String var in y.Variables)
-            {
-                if (!this._values.ContainsKey(var))
-                {
-                    this._values.Add(var, y[var]);
-                }
-                else if (this._values[var] == null)
-                {
-                    this._values[var] = y[var];
-                }
             }
         }
 
-        /// <summary>
-        /// Creates a new Set which is a copy of an existing Set
-        /// </summary>
-        /// <param name="x">Set to copy</param>
-        internal Set(ISet x)
-        {
-            this._values = new Dictionary<string, INode>();
-            foreach (String var in x.Variables)
-            {
-                this._values.Add(var, x[var]);
-            }
-        }
+        ///// <summary>
+        ///// Creates a new Set which is a copy of an existing Set
+        ///// </summary>
+        ///// <param name="x">Set to copy</param>
+        //internal Set(ISet x)
+        //{
+        //    this._values = new Dictionary<string, INode>();
+        //    foreach (String var in x.Variables)
+        //    {
+        //        this._values.Add(var, x[var]);
+        //    }
+        //}
 
         /// <summary>
         /// Creates a new Set from a SPARQL Result
@@ -229,8 +238,8 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public override ISet Copy()
         {
-            return new Set(this);
-            //return new CopiedSet(this);
+            //return new Set(this);
+            return new JoinedSet(this);
         }
 
         /// <summary>
@@ -278,6 +287,7 @@ namespace VDS.RDF.Query.Algebra
     {
         private List<ISet> _sets = new List<ISet>();
         private bool _added = false;
+        private Dictionary<String, INode> _cache = new Dictionary<string, INode>();
 
         /// <summary>
         /// Creates a Joined Set
@@ -288,6 +298,13 @@ namespace VDS.RDF.Query.Algebra
         {
             this._sets.Add(x);
             this._sets.Add(y);
+        }
+
+        public JoinedSet(ISet x, JoinedSet y)
+        {
+            this._sets.Add(x);
+            this._sets.AddRange(y._sets);
+            this._cache = y._cache;
         }
 
         /// <summary>
@@ -302,12 +319,22 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Creates a Joined Set which is simply a copy of another set
+        /// </summary>
+        /// <param name="x">Set</param>
+        internal JoinedSet(ISet x)
+        {
+            this._sets.Add(x);
+        }
+
+        /// <summary>
         /// Creates a Joined Set
         /// </summary>
         /// <param name="x">Set</param>
         internal JoinedSet(JoinedSet x)
         {
             this._sets.AddRange(x._sets);
+            this._cache = x._cache;
         }
 
         /// <summary>
@@ -323,10 +350,12 @@ namespace VDS.RDF.Query.Algebra
             if (!this._added)
             {
                 this._sets.Insert(0, new Set());
+                //this._sets.Add(new Set());
                 this._added = true;
             }
             //Joined Sets are thus left associative so always add to the leftmost set
             this._sets[0].Add(variable, value);
+            //this._sets[this._sets.Count - 1].Add(variable, value);
         }
 
         /// <summary>
@@ -369,18 +398,31 @@ namespace VDS.RDF.Query.Algebra
             get
             {
                 INode temp = null;
-                int i = 0;
 
-                //Find the first set that has a value for the variable and return it
-                do
+                if (this._cache.TryGetValue(variable, out temp))
                 {
-                    temp = this._sets[i][variable];
-                    if (temp != null) return temp;
-                    i++;
-                } while (i < this._sets.Count);
+                    //Use cache wherever possible
+                    return temp;
+                }
+                else
+                {
+                    int i = 0;
 
-                //Return null if no sets have a value for the variable
-                return null;
+                    //Find the first set that has a value for the variable and return it
+                    do
+                    {
+                        temp = this._sets[i][variable];
+                        if (temp != null)
+                        {
+                            this._cache.Add(variable, temp);
+                            return temp;
+                        }
+                        i++;
+                    } while (i < this._sets.Count);
+
+                    //Return null if no sets have a value for the variable
+                    return null;
+                }
             }
         }
 
@@ -417,7 +459,15 @@ namespace VDS.RDF.Query.Algebra
         public override ISet Join(ISet other)
         {
             //return new Set(this, other);
-            return new JoinedSet(other, this._sets);
+            //if (this._sets.Count > 3)
+            //{
+            //    //After a certain point it is better to flatten
+            //    return new JoinedSet(other, new Set(this));
+            //}
+            //else
+            //{
+                return new JoinedSet(other, this);
+            //}
         }
 
         /// <summary>

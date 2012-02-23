@@ -149,7 +149,7 @@ namespace VDS.RDF.Query.Algebra
                     //No assignment if there's an error
                     s.Add(this._var, null);
                 }
-                context.OutputMultiset.Add(s);
+                context.OutputMultiset.Add(s.Copy());
             }
             else
             {

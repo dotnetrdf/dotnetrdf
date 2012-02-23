@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Algebra
             }
             foreach (ISet s in multiset.Sets)
             {
-                this.Add(s);
+                this.Add(s.Copy());
             }
         }
 
@@ -279,7 +279,7 @@ namespace VDS.RDF.Query.Algebra
                             standalone = true;
                         }
                     }
-                    if (standalone) joinedSet.Add(x);
+                    if (standalone) joinedSet.Add(x.Copy());
                 }
             }
             else
@@ -408,7 +408,7 @@ namespace VDS.RDF.Query.Algebra
                 //Finally add in unmatched sets from LHS
                 foreach (int id in this.SetIDs)
                 {
-                    if (!matched[id] || standalone.Contains(id)) joinedSet.Add(this._sets[id]);
+                    if (!matched[id] || standalone.Contains(id)) joinedSet.Add(this._sets[id].Copy());
                 }
             }
             return joinedSet;
@@ -569,14 +569,14 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (exists.Contains(x.ID))
                         {
-                            joinedSet.Add(x);
+                            joinedSet.Add(x.Copy());
                         }
                     }
                     else
                     {
                         if (!exists.Contains(x.ID))
                         {
-                            joinedSet.Add(x);
+                            joinedSet.Add(x.Copy());
                         }
                     }
                 }
@@ -702,7 +702,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (!toMinus.Contains(x.ID))
                     {
-                        joinedSet.Add(x);
+                        joinedSet.Add(x.Copy());
                     }
                 }
             }
@@ -745,7 +745,7 @@ namespace VDS.RDF.Query.Algebra
 
             foreach (ISet s in other.Sets)
             {
-                this.Add(s);
+                this.Add(s.Copy());
             }
             return this;
         }
