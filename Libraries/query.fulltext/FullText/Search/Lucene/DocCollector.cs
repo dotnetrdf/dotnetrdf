@@ -81,6 +81,17 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         }
 
         /// <summary>
+        /// Gets the number of collected documents
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return this._docs.Count;
+            }
+        }
+
+        /// <summary>
         /// Returns that documents are accepted out of order
         /// </summary>
         /// <returns></returns>

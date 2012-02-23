@@ -41,12 +41,13 @@ using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
+using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Util;
-using LucSearch = Lucene.Net.Search;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.FullText.Schema;
+using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Query.FullText.Indexing.Lucene
@@ -63,7 +64,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         private IndexWriter _writer;
         private IFullTextIndexSchema _schema;
         private NTriplesFormatter _formatter = new NTriplesFormatter();
-        private LucSearch.IndexSearcher _searcher;
+        private IndexReader _reader;
 
         /// <summary>
         /// Creates a new Simple Lucene Indexer
@@ -80,7 +81,6 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             this._analyzer = analyzer;
             this._schema = schema;
             this._writer = new IndexWriter(indexDir, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-            this._searcher = new LucSearch.IndexSearcher(this._indexDir, true);
         }
 
         /// <summary>
@@ -94,6 +94,47 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             }
         }
 
+        private void EnsureWriterOpen()
+        {
+            if (this._writer == null)
+            {
+                this._writer = new IndexWriter(this._indexDir, this._analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+            }
+        }
+
+        private void EnsureWriterClosed()
+        {
+            if (this._writer != null)
+            {
+                this._writer.Commit();
+                this._writer.Close();
+                this._writer = null;
+            }
+        }
+
+        private void EnsureReaderOpen()
+        {
+            if (this._reader == null)
+            {
+                this._reader = IndexReader.Open(this._indexDir, false);
+            }
+            else if (!this._reader.IsCurrent())
+            {
+                this._reader.Close();
+                this._reader = IndexReader.Open(this._indexDir, false);
+            }
+        }
+
+        private void EnsureReaderClosed()
+        {
+            if (this._reader != null)
+            {
+                this._reader.Commit();
+                this._reader.Close();
+                this._reader = null;
+            }
+        }
+
         /// <summary>
         /// Indexes a Node and some full text as a Lucene document
         /// </summary>
@@ -102,6 +143,8 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         protected override void Index(INode n, string text)
         {
             Document doc = this.CreateDocument(n, text);
+            this.EnsureReaderClosed();
+            this.EnsureWriterOpen();
             this._writer.AddDocument(doc);
         }
 
@@ -112,8 +155,22 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// <param name="text">Full Text</param>
         protected override void Unindex(INode n, string text)
         {
-            LucSearch.TermQuery query = new LucSearch.TermQuery(new Term(this._schema.HashField, this.GetHash(n, text)));
-            this._writer.DeleteDocuments(query);
+            TermQuery query = new TermQuery(new Term(this._schema.HashField, this.GetHash(n, text)));
+
+            //Close the existing writer
+            this.EnsureWriterClosed();
+
+            //Create a read/write Index Reader to modify the index
+            this.EnsureReaderOpen();
+            IndexSearcher searcher = new IndexSearcher(this._reader);
+            DocCollector collector = new DocCollector();
+            searcher.Search(query, collector);
+
+            //Delete at most one instance
+            if (collector.Count > 0)
+            {
+                this._reader.DeleteDocument(collector.Documents.First().Key);
+            }
         }
 
         /// <summary>
@@ -170,7 +227,14 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// </summary>
         public override void Flush()
         {
-            this._writer.Commit();
+            if (this._writer != null)
+            {
+                this._writer.Commit();
+            }
+            else if (this._reader != null)
+            {
+                this._reader.Commit();
+            }
         }
 
         /// <summary>
@@ -178,9 +242,11 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
         /// </summary>
         protected override void DisposeInternal()
         {
-            this._writer.Commit();
-            this._searcher.Close();
-            if (this._indexDir.isOpen_ForNUnit) this._writer.Close();
+            if (this._writer != null)
+            {
+                this._writer.Commit();
+                if (this._indexDir.isOpen_ForNUnit) this._writer.Close();
+            }
         }
 
         /// <summary>

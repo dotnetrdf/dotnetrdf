@@ -8,6 +8,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Indexing;
 using VDS.RDF.Query.FullText.Indexing.Lucene;
+using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search.Lucene;
 
 namespace VDS.RDF.Test.Query.FullText
@@ -301,6 +302,39 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 if (indexer != null) indexer.Dispose();
                 LuceneTestHarness.Index.Close();
+            }
+        }
+
+        [TestMethod]
+        public void FullTextIndexMultiOccurrenceRemoval()
+        {
+            IFullTextIndexer indexer = null;
+            try
+            {
+                indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, new DefaultIndexSchema());
+                
+                Graph g = new Graph();
+                INode example = g.CreateLiteralNode("This is an example node which we'll index multiple times");
+
+                for (int i = 0; i < 10; i++)
+                {
+                    g.Assert(new Triple(g.CreateBlankNode(), g.CreateUriNode(UriFactory.Create("ex:predicate")), example));
+                }
+                indexer.Index(g);
+
+                LuceneSearchProvider searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+                Assert.AreEqual(10, searcher.Match("example").Count(), "Expected 10 Results");
+
+                for (int i = 9; i >= 0; i--)
+                {
+                    indexer.Unindex(g.Triples.First());
+                    indexer.Flush();
+                    Assert.AreEqual(i, searcher.Match("example").Count(), "Expected " + i + " Results as only one occurrence should have been unindexed");
+                }
+            }
+            finally
+            {
+                if (indexer != null) indexer.Dispose();
             }
         }
     }
