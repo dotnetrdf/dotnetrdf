@@ -7,7 +7,7 @@
     </assemblies>
     <documenters>
         <documenter name="MSDN">
-            <property name="OutputDirectory" value="E:\Misc\dotnetrdf_ndoc_output\" />
+            <property name="OutputDirectory" value="D:\Misc\dotnetrdf_ndoc_output\" />
             <property name="HtmlHelpName" value="dotNetRDF API Documentation" />
             <property name="Title" value="dotNetRDF API Documentation" />
             <property name="OutputTarget" value="Web" />
