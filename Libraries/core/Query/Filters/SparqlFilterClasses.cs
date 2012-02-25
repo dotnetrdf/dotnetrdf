@@ -128,19 +128,35 @@ namespace VDS.RDF.Query.Filters
                 return;
             }
 
-            foreach (int id in context.InputMultiset.SetIDs.ToList())
+#if NET40
+            if (Options.UsePLinqEvaluation)
             {
-                try
+                context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
+            }
+            else
+            {
+#endif
+                foreach (int id in context.InputMultiset.SetIDs.ToList())
                 {
-                    if (this._arg.Evaluate(context, id) == null)
-                    {
-                        context.InputMultiset.Remove(id);
-                    }
+                    this.EvalFilter(context, id);
                 }
-                catch
+#if NET40
+            }
+#endif
+        }
+
+        private void EvalFilter(SparqlEvaluationContext context, int id)
+        {
+            try
+            {
+                if (this._arg.Evaluate(context, id) == null)
                 {
                     context.InputMultiset.Remove(id);
                 }
+            }
+            catch
+            {
+                context.InputMultiset.Remove(id);
             }
         }
 
@@ -157,7 +173,8 @@ namespace VDS.RDF.Query.Filters
     /// <summary>
     /// Generic Filter for Filters which take a single sub-expression as an argument
     /// </summary>
-    public class UnaryExpressionFilter : BaseUnaryFilter
+    public class UnaryExpressionFilter
+        : BaseUnaryFilter
     {
         /// <summary>
         /// Creates a new Unary Expression Filter which filters on the basis of a single sub-expression
@@ -200,20 +217,36 @@ namespace VDS.RDF.Query.Filters
             }
             else
             {
-                foreach (int id in context.InputMultiset.SetIDs.ToList())
+#if NET40
+                if (Options.UsePLinqEvaluation)
                 {
-                    try
-                    {
-                        if (!this._arg.Evaluate(context, id).AsSafeBoolean())
-                        {
-                            context.InputMultiset.Remove(id);
-                        }
-                    }
-                    catch
-                    {
-                        context.InputMultiset.Remove(id);
-                    }
+                    context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
                 }
+                else
+                {
+#endif
+                    foreach (int id in context.InputMultiset.SetIDs.ToList())
+                    {
+                        this.EvalFilter(context, id);
+                    }
+#if NET40
+                }
+#endif
+            }
+        }
+
+        private void EvalFilter(SparqlEvaluationContext context, int id)
+        {
+            try
+            {
+                if (!this._arg.Evaluate(context, id).AsSafeBoolean())
+                {
+                    context.InputMultiset.Remove(id);
+                }
+            }
+            catch
+            {
+                context.InputMultiset.Remove(id);
             }
         }
 

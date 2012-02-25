@@ -97,11 +97,15 @@ namespace VDS.RDF
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
 
-        #if DEBUG
+#if NET40
+        private static bool _usePLinq = true;
+#endif
+
+#if DEBUG
         //Debug Build Only
         private static bool _httpDebug = false;
         private static bool _httpFullDebug = false;
-        #endif
+#endif
 
         /// <summary>
         /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
@@ -237,6 +241,25 @@ namespace VDS.RDF
                 _queryAllowUnknownFunctions = value;
             }
         }
+
+#if NET40
+
+        /// <summary>
+        /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel
+        /// </summary>
+        public static bool UsePLinqEvaluation
+        {
+            get
+            {
+                return _usePLinq;
+            }
+            set
+            {
+                _usePLinq = value;
+            }
+        }
+
+#endif
 
         ///// <summary>
         ///// Controls whether rigorours query evaluation should be used

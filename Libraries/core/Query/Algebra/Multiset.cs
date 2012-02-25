@@ -189,49 +189,67 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-            //Then do a pass over the RHS and work out the intersections
-            foreach (ISet y in other.Sets)
+#if NET40
+            if (Options.UsePLinqEvaluation)
             {
-                IEnumerable<int> possMatches = null;
-                int i = 0;
-                foreach (String var in joinVars)
+                //Use a paralllel join
+                other.Sets.AsParallel().ForAll(y => EvalJoin(y, joinVars, values, nulls, joinedSet));
+            }
+            else
+            {
+#endif
+                //Use a serial join
+                //Then do a pass over the RHS and work out the intersections
+                foreach (ISet y in other.Sets)
                 {
-                    INode value = y[var];
-                    if (value != null)
+                    this.EvalJoin(y, joinVars, values, nulls, joinedSet);
+                }
+#if NET40
+            }
+#endif
+
+            return joinedSet;
+        }
+
+        private void EvalJoin(ISet y, List<String> joinVars, List<HashTable<INode, int>> values, List<List<int>> nulls, BaseMultiset joinedSet)
+        {
+            IEnumerable<int> possMatches = null;
+            int i = 0;
+            foreach (String var in joinVars)
+            {
+                INode value = y[var];
+                if (value != null)
+                {
+                    if (values[i].ContainsKey(value))
                     {
-                        if (values[i].ContainsKey(value))
-                        {
-                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
-                        }
-                        else
-                        {
-                            possMatches = Enumerable.Empty<int>();
-                            break;
-                        }
+                        possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
                     }
                     else
                     {
-                        //Don't forget that a null will be potentially compatible with everything
-                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                        possMatches = Enumerable.Empty<int>();
+                        break;
                     }
-                    i++;
                 }
-                if (possMatches == null) continue;
-
-                //Now do the actual joins for the current set
-                //Note - We access the dictionary directly here because going through the this[int id] method
-                //incurs a Contains() call each time and we know the IDs must exist because they came from
-                //our dictionary originally!
-                foreach (int poss in possMatches)
+                else
                 {
-                    if (this._sets[poss].IsCompatibleWith(y, joinVars))
-                    {
-                        joinedSet.Add(this._sets[poss].Join(y));
-                    }
+                    //Don't forget that a null will be potentially compatible with everything
+                    possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                }
+                i++;
+            }
+            if (possMatches == null) return;
+
+            //Now do the actual joins for the current set
+            //Note - We access the dictionary directly here because going through the this[int id] method
+            //incurs a Contains() call each time and we know the IDs must exist because they came from
+            //our dictionary originally!
+            foreach (int poss in possMatches)
+            {
+                if (this._sets[poss].IsCompatibleWith(y, joinVars))
+                {
+                    joinedSet.Add(this._sets[poss].Join(y));
                 }
             }
-
-            return joinedSet;
         }
 
         /// <summary>
@@ -807,9 +825,28 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="s">Set</param>
         public override void Add(ISet s)
         {
-            this._counter++;
-            this._sets.Add(this._counter, s);
-            s.ID = this._counter;
+            int id;
+#if NET40
+            if (Options.UsePLinqEvaluation)
+            {
+                lock (this._sets)
+                {
+                    this._counter++;
+                    id = this._counter;
+                    this._sets.Add(id, s);
+                    s.ID = id;
+                }
+            }
+            else
+            {
+#endif
+                id = this._counter++;
+                this._sets.Add(id, s);
+                s.ID = id;
+#if NET40
+            }
+#endif
+            
             foreach (String var in s.Variables)
             {
                 if (!this._variables.Contains(var)) this._variables.Add(var);
@@ -832,15 +869,22 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID</param>
         public override void Remove(int id)
         {
-            if (this._sets.ContainsKey(id))
+#if NET40
+            lock (this._sets)
             {
-                this._sets.Remove(id);
-                if (this._orderedIDs != null)
+#endif
+                if (this._sets.ContainsKey(id))
                 {
-                    this._orderedIDs.Remove(id);
+                    this._sets.Remove(id);
+                    if (this._orderedIDs != null)
+                    {
+                        this._orderedIDs.Remove(id);
+                    }
+                    this._cacheInvalid = true;
                 }
-                this._cacheInvalid = true;
+#if NET40
             }
+#endif
         }
 
         /// <summary>
