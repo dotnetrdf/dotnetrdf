@@ -97,7 +97,7 @@ namespace VDS.RDF
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
 
-#if NET40
+#if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
 #endif
 
@@ -242,7 +242,7 @@ namespace VDS.RDF
             }
         }
 
-#if NET40
+#if NET40 && !SILVERLIGHT
 
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel

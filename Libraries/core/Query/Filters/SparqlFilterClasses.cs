@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Filters
                 return;
             }
 
-#if NET40
+#if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
                 context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
@@ -140,7 +140,7 @@ namespace VDS.RDF.Query.Filters
                 {
                     this.EvalFilter(context, id);
                 }
-#if NET40
+#if NET40 && !SILVERLIGHT
             }
 #endif
         }
@@ -217,7 +217,7 @@ namespace VDS.RDF.Query.Filters
             }
             else
             {
-#if NET40
+#if NET40 && !SILVERLIGHT
                 if (Options.UsePLinqEvaluation)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
@@ -229,7 +229,7 @@ namespace VDS.RDF.Query.Filters
                     {
                         this.EvalFilter(context, id);
                     }
-#if NET40
+#if NET40 && !SILVERLIGHT
                 }
 #endif
             }

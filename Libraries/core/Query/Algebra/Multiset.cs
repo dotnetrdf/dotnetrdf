@@ -189,7 +189,7 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
-#if NET40
+#if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
                 //Use a paralllel join
@@ -204,7 +204,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     this.EvalJoin(y, joinVars, values, nulls, joinedSet);
                 }
-#if NET40
+#if NET40 && !SILVERLIGHT
             }
 #endif
 
@@ -342,7 +342,7 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 //First do a pass over the LHS Result to find all possible values for joined variables
-                Dictionary<int, bool> matched = new Dictionary<int, bool>();
+                HashSet<int> matched = new HashSet<int>();
                 HashSet<int> standalone = new HashSet<int>();
                 foreach (ISet x in this.Sets)
                 {
@@ -360,7 +360,6 @@ namespace VDS.RDF.Query.Algebra
                         }
                         i++;
                     }
-                    matched.Add(x.ID, false);
                 }
 
                 //Then do a pass over the RHS and work out the intersections
@@ -411,7 +410,7 @@ namespace VDS.RDF.Query.Algebra
                                 }
                                 else
                                 {
-                                    matched[poss] = true;
+                                    matched.Add(poss);
                                 }
                             }
                             catch
@@ -426,7 +425,7 @@ namespace VDS.RDF.Query.Algebra
                 //Finally add in unmatched sets from LHS
                 foreach (int id in this.SetIDs)
                 {
-                    if (!matched[id] || standalone.Contains(id)) joinedSet.Add(this._sets[id].Copy());
+                    if (!matched.Contains(id) || standalone.Contains(id)) joinedSet.Add(this._sets[id].Copy());
                 }
             }
             return joinedSet;
@@ -826,7 +825,7 @@ namespace VDS.RDF.Query.Algebra
         public override void Add(ISet s)
         {
             int id;
-#if NET40
+#if NET40 && !SILVERLIGHT
             if (Options.UsePLinqEvaluation)
             {
                 lock (this._sets)
@@ -843,7 +842,7 @@ namespace VDS.RDF.Query.Algebra
                 id = this._counter++;
                 this._sets.Add(id, s);
                 s.ID = id;
-#if NET40
+#if NET40 && !SILVERLIGHT
             }
 #endif
             
@@ -869,7 +868,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="id">Set ID</param>
         public override void Remove(int id)
         {
-#if NET40
+#if NET40 && !SILVERLIGHT
             lock (this._sets)
             {
 #endif
@@ -882,7 +881,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                     this._cacheInvalid = true;
                 }
-#if NET40
+#if NET40 && !SILVERLIGHT
             }
 #endif
         }

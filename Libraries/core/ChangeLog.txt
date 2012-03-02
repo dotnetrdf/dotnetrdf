@@ -1,7 +1,7 @@
 ﻿dotNetRDF
 =========
 
-A Library for RDF manipulation and parsing in .Net using C# 3.0
+A Library for RDF manipulation and parsing in .Net using C#
 
 Robert Vesse 2009-11
 rvesse@vdesign-studios.com
@@ -9,51 +9,18 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.6.0 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.6.1 release of dotNetRDF
 
 Added
-- Core
- - URIs are now interned to reduce memory usage and speed up equality comparisons
- - Improved configurability of HashTable so perfomance can be tailored to usage
-- Parsing
- - Support for parsing W3C standard Turtle (allows for more QNames, case insensitive boolean literals and single quoted literals)
- - Registered text/boolean parser for SPARQL Results
-- Storage
- - All HTTP based storage now supports HTTP proxying
 
 Changed
 - Bug Fixes
- - Fixed a bug with long URIs and SparqlRemoteUpdateEndpoint
- - Critical bug where connecting to an AllegroGraph 4.x repository cleared existing data
- - Fixed a bug whereby Blank Node IDs in NTriples output could be invalid
- - Fixed a bug where QNames in RDF/XML output weren't fully validated against the latest revisions of the XML specs
- - Fixed a bug where Blank Node IDs in RDF/XML output could be invalid
- - Fixed a bug with some queries falsely being considered ASK queries and their results improperly handled for Sesame stores
- - Fixed a bug with bad serialisation of sub-queries
-- Parsing
- - Constructors for BlockingTextReader are now private, use BlockingTextReader.Create() static instead
+ - Fixed an inadvertent StackOverFlowException in the StardogConnector constructor
 - Query
- - Major refactor of SPARQL expression evaluation to make it more efficient and maintainable
- - Updated to latest SPARQL 1.1 specifications
- - Replaced the Join algorithm with a new algorithm which is significantly faster
- - Improved selectivity of TriplePattern.GetTriples()
- - Some refactoring of ISparqlDataset interface
- - A WebDemandDataset for creating a dataset with load on demand capabilities
- - Enabled StrictAlgebraOptimiser and IdentityFilterOptimiser by default
-- Update
- - GenericUpdateProcessor is more intelligent in determining whether a command can be applied to stores that don't have native SPARQL Update support
-- Writing
- - Support for outputting W3C standard Turtle (allows for more URIs to be compressed to QNames)
- - WriteThroughHandler periodically flushes the output stream
+ - Enabled PLINQ optimisation of query evaluation for .Net 4.0 builds
 
 Removed
-- Legacy SQL Store support
-- Obsolete BlockingStreamReader class
-- Obsolete QueryText method on SparqlParameterizedString
-- Dependency on MySql.Data is no longer required by any library in the release
-- Obsolete NativeTripleStore marked as unusable
-- Obsolete QueryTime and QueryTimeTicks properties removed - use QueryExecutionTime instead
-- Obsolete SparqlQuery.Evaluate() marked as unusable
+
    
 
 
