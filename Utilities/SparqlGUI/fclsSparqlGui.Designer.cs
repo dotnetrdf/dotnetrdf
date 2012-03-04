@@ -41,16 +41,17 @@
             this.lblSourceFile = new System.Windows.Forms.Label();
             this.lblDataset = new System.Windows.Forms.Label();
             this.grpQuery = new System.Windows.Forms.GroupBox();
+            this.btnQuery = new System.Windows.Forms.Button();
+            this.txtQuery = new System.Windows.Forms.TextBox();
             this.btnExplain = new System.Windows.Forms.Button();
             this.btnClearLog = new System.Windows.Forms.Button();
             this.btnViewLog = new System.Windows.Forms.Button();
             this.btnSaveQuery = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.btnInspect = new System.Windows.Forms.Button();
-            this.btnQuery = new System.Windows.Forms.Button();
-            this.txtQuery = new System.Windows.Forms.TextBox();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkFullTextIndexing = new System.Windows.Forms.CheckBox();
             this.chkLogExplanation = new System.Windows.Forms.CheckBox();
             this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
             this.chkViewResultsInApp = new System.Windows.Forms.CheckBox();
@@ -77,11 +78,10 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.ttpTips = new System.Windows.Forms.ToolTip(this.components);
-            this.chkFullTextIndexing = new System.Windows.Forms.CheckBox();
             this.grpQueryTools = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -203,6 +203,28 @@
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
             // 
+            // btnQuery
+            // 
+            this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnQuery.Location = new System.Drawing.Point(236, 254);
+            this.btnQuery.Name = "btnQuery";
+            this.btnQuery.Size = new System.Drawing.Size(111, 23);
+            this.btnQuery.TabIndex = 1;
+            this.btnQuery.Text = "Run &Query";
+            this.btnQuery.UseVisualStyleBackColor = true;
+            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
+            // 
+            // txtQuery
+            // 
+            this.txtQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.txtQuery.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtQuery.Location = new System.Drawing.Point(6, 19);
+            this.txtQuery.Multiline = true;
+            this.txtQuery.Name = "txtQuery";
+            this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtQuery.Size = new System.Drawing.Size(566, 229);
+            this.txtQuery.TabIndex = 0;
+            // 
             // btnExplain
             // 
             this.btnExplain.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
@@ -269,27 +291,6 @@
             this.btnInspect.UseVisualStyleBackColor = true;
             this.btnInspect.Click += new System.EventHandler(this.btnInspect_Click);
             // 
-            // btnQuery
-            // 
-            this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(236, 254);
-            this.btnQuery.Name = "btnQuery";
-            this.btnQuery.Size = new System.Drawing.Size(111, 23);
-            this.btnQuery.TabIndex = 1;
-            this.btnQuery.Text = "Run &Query";
-            this.btnQuery.UseVisualStyleBackColor = true;
-            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
-            // 
-            // txtQuery
-            // 
-            this.txtQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.txtQuery.Location = new System.Drawing.Point(6, 19);
-            this.txtQuery.Multiline = true;
-            this.txtQuery.Name = "txtQuery";
-            this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtQuery.Size = new System.Drawing.Size(566, 229);
-            this.txtQuery.TabIndex = 0;
-            // 
             // ofdBrowse
             // 
             this.ofdBrowse.Title = "Import RDF from File";
@@ -314,6 +315,17 @@
             this.grpQueryOptions.TabIndex = 5;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkFullTextIndexing
+            // 
+            this.chkFullTextIndexing.AutoSize = true;
+            this.chkFullTextIndexing.Location = new System.Drawing.Point(189, 127);
+            this.chkFullTextIndexing.Name = "chkFullTextIndexing";
+            this.chkFullTextIndexing.Size = new System.Drawing.Size(145, 17);
+            this.chkFullTextIndexing.TabIndex = 9;
+            this.chkFullTextIndexing.Text = "Enable Full Text Indexing";
+            this.chkFullTextIndexing.UseVisualStyleBackColor = true;
+            this.chkFullTextIndexing.CheckedChanged += new System.EventHandler(this.chkFullTextIndexing_CheckedChanged);
             // 
             // chkLogExplanation
             // 
@@ -607,17 +619,6 @@
             this.sfdQuery.Filter = "SPARQL Query Files|*.rq|All Files|*.*";
             this.sfdQuery.Title = "Load SPARQL Query";
             // 
-            // chkFullTextIndexing
-            // 
-            this.chkFullTextIndexing.AutoSize = true;
-            this.chkFullTextIndexing.Location = new System.Drawing.Point(189, 127);
-            this.chkFullTextIndexing.Name = "chkFullTextIndexing";
-            this.chkFullTextIndexing.Size = new System.Drawing.Size(145, 17);
-            this.chkFullTextIndexing.TabIndex = 9;
-            this.chkFullTextIndexing.Text = "Enable Full Text Indexing";
-            this.chkFullTextIndexing.UseVisualStyleBackColor = true;
-            this.chkFullTextIndexing.CheckedChanged += new System.EventHandler(this.chkFullTextIndexing_CheckedChanged);
-            // 
             // grpQueryTools
             // 
             this.grpQueryTools.Controls.Add(this.label3);
@@ -636,14 +637,14 @@
             this.grpQueryTools.TabStop = false;
             this.grpQueryTools.Text = "Query Tools";
             // 
-            // label1
+            // label3
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 24);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Manage Queries:";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 82);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(59, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Query Log:";
             // 
             // label2
             // 
@@ -654,14 +655,14 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Explain Queries:";
             // 
-            // label3
+            // label1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 82);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 13);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Query Log:";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Manage Queries:";
             // 
             // fclsSparqlGui
             // 

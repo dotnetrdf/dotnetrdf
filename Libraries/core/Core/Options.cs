@@ -98,7 +98,7 @@ namespace VDS.RDF
         private static bool _internUris = true;
 
 #if NET40 && !SILVERLIGHT
-        private static bool _usePLinq = true;
+        private static bool _usePLinq = false;
 #endif
 
 #if DEBUG
@@ -247,6 +247,9 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel
         /// </summary>
+        /// <remarks>
+        /// For the 0.6.1 maintenance release this is an experimental feature and disabled by default, for the 0.6.2 release it will be enabled by default
+        /// </remarks>
         public static bool UsePLinqEvaluation
         {
             get

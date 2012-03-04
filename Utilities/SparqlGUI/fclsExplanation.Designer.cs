@@ -49,6 +49,7 @@
             // 
             // txtQuery
             // 
+            this.txtQuery.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtQuery.Location = new System.Drawing.Point(6, 19);
             this.txtQuery.Multiline = true;
             this.txtQuery.Name = "txtQuery";
@@ -69,6 +70,7 @@
             // 
             // txtExplanation
             // 
+            this.txtExplanation.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtExplanation.Location = new System.Drawing.Point(10, 19);
             this.txtExplanation.Multiline = true;
             this.txtExplanation.Name = "txtExplanation";
@@ -86,7 +88,7 @@
             this.lblParseTime.TabIndex = 0;
             this.lblParseTime.Text = "Took ?ms to parse";
             // 
-            // fclsInspect
+            // fclsExplanation
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -96,7 +98,7 @@
             this.Controls.Add(this.grpQuery);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.Name = "fclsInspect";
+            this.Name = "fclsExplanation";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Query Explanation (Simulated Evaluation)";
             this.grpQuery.ResumeLayout(false);

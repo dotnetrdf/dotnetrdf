@@ -35,7 +35,7 @@
             this.lblGraphListUnavailable = new System.Windows.Forms.Label();
             this.btnGraphRefresh = new System.Windows.Forms.Button();
             this.lvwGraphs = new System.Windows.Forms.ListView();
-            this.colGraphURI = new System.Windows.Forms.ColumnHeader();
+            this.colGraphURI = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mnuGraphs = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuViewGraph = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuPreviewGraph = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,13 +85,16 @@
             this.txtExportFile = new System.Windows.Forms.TextBox();
             this.lblExportFile = new System.Windows.Forms.Label();
             this.lblExport = new System.Windows.Forms.Label();
+            this.tabInfo = new System.Windows.Forms.TabPage();
+            this.propInfo = new System.Windows.Forms.PropertyGrid();
+            this.lblInfo = new System.Windows.Forms.Label();
             this.tabTasks = new System.Windows.Forms.TabPage();
             this.chkRemoveOldTasks = new System.Windows.Forms.CheckBox();
             this.lvwTasks = new System.Windows.Forms.ListView();
-            this.colID = new System.Windows.Forms.ColumnHeader();
-            this.colTask = new System.Windows.Forms.ColumnHeader();
-            this.colState = new System.Windows.Forms.ColumnHeader();
-            this.colInfo = new System.Windows.Forms.ColumnHeader();
+            this.colID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colTask = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colState = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colInfo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.mnuTasks = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.mnuViewDetail = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuViewResults = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,9 +109,6 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-            this.tabInfo = new System.Windows.Forms.TabPage();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.propInfo = new System.Windows.Forms.PropertyGrid();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -122,10 +122,10 @@
             this.grpImport.SuspendLayout();
             this.tabExport.SuspendLayout();
             this.grpExport.SuspendLayout();
+            this.tabInfo.SuspendLayout();
             this.tabTasks.SuspendLayout();
             this.mnuTasks.SuspendLayout();
             this.stsStatus.SuspendLayout();
-            this.tabInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabFunctions
@@ -374,6 +374,7 @@
             // 
             // txtSparqlQuery
             // 
+            this.txtSparqlQuery.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSparqlQuery.Location = new System.Drawing.Point(6, 69);
             this.txtSparqlQuery.Multiline = true;
             this.txtSparqlQuery.Name = "txtSparqlQuery";
@@ -426,6 +427,7 @@
             // 
             // txtSparqlUpdate
             // 
+            this.txtSparqlUpdate.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSparqlUpdate.Location = new System.Drawing.Point(6, 61);
             this.txtSparqlUpdate.Multiline = true;
             this.txtSparqlUpdate.Name = "txtSparqlUpdate";
@@ -487,7 +489,7 @@
             0});
             this.numBatchSize.Location = new System.Drawing.Point(253, 14);
             this.numBatchSize.Maximum = new decimal(new int[] {
-            50000,
+            100000,
             0,
             0,
             0});
@@ -501,7 +503,7 @@
             this.numBatchSize.TabIndex = 1;
             this.numBatchSize.ThousandsSeparator = true;
             this.numBatchSize.Value = new decimal(new int[] {
-            1000,
+            10000,
             0,
             0,
             0});
@@ -700,6 +702,33 @@
             this.lblExport.TabIndex = 9;
             this.lblExport.Text = resources.GetString("lblExport.Text");
             // 
+            // tabInfo
+            // 
+            this.tabInfo.Controls.Add(this.propInfo);
+            this.tabInfo.Controls.Add(this.lblInfo);
+            this.tabInfo.Location = new System.Drawing.Point(4, 22);
+            this.tabInfo.Name = "tabInfo";
+            this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInfo.Size = new System.Drawing.Size(514, 308);
+            this.tabInfo.TabIndex = 6;
+            this.tabInfo.Text = "Information";
+            this.tabInfo.UseVisualStyleBackColor = true;
+            // 
+            // propInfo
+            // 
+            this.propInfo.Location = new System.Drawing.Point(6, 57);
+            this.propInfo.Name = "propInfo";
+            this.propInfo.Size = new System.Drawing.Size(502, 245);
+            this.propInfo.TabIndex = 2;
+            // 
+            // lblInfo
+            // 
+            this.lblInfo.Location = new System.Drawing.Point(3, 12);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(505, 52);
+            this.lblInfo.TabIndex = 1;
+            this.lblInfo.Text = resources.GetString("lblInfo.Text");
+            // 
             // tabTasks
             // 
             this.tabTasks.Controls.Add(this.chkRemoveOldTasks);
@@ -849,7 +878,7 @@
             // 
             this.ofdQuery.DefaultExt = "rq";
             this.ofdQuery.FileName = "ofdQuery";
-            this.ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
+            this.ofdQuery.Filter = "All Supported Files|*.rq|SPARQL Query Files|*.rq|All Files|*.*";
             this.ofdQuery.Title = "Open SPARQL Query";
             // 
             // sfdQuery
@@ -860,33 +889,6 @@
             // sfdExport
             // 
             this.sfdExport.Title = "Export Store As...";
-            // 
-            // tabInfo
-            // 
-            this.tabInfo.Controls.Add(this.propInfo);
-            this.tabInfo.Controls.Add(this.lblInfo);
-            this.tabInfo.Location = new System.Drawing.Point(4, 22);
-            this.tabInfo.Name = "tabInfo";
-            this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInfo.Size = new System.Drawing.Size(514, 308);
-            this.tabInfo.TabIndex = 6;
-            this.tabInfo.Text = "Information";
-            this.tabInfo.UseVisualStyleBackColor = true;
-            // 
-            // lblInfo
-            // 
-            this.lblInfo.Location = new System.Drawing.Point(3, 12);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(505, 52);
-            this.lblInfo.TabIndex = 1;
-            this.lblInfo.Text = resources.GetString("lblInfo.Text");
-            // 
-            // propInfo
-            // 
-            this.propInfo.Location = new System.Drawing.Point(6, 57);
-            this.propInfo.Name = "propInfo";
-            this.propInfo.Size = new System.Drawing.Size(502, 245);
-            this.propInfo.TabIndex = 2;
             // 
             // StoreManagerForm
             // 
@@ -920,12 +922,12 @@
             this.tabExport.ResumeLayout(false);
             this.grpExport.ResumeLayout(false);
             this.grpExport.PerformLayout();
+            this.tabInfo.ResumeLayout(false);
             this.tabTasks.ResumeLayout(false);
             this.tabTasks.PerformLayout();
             this.mnuTasks.ResumeLayout(false);
             this.stsStatus.ResumeLayout(false);
             this.stsStatus.PerformLayout();
-            this.tabInfo.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

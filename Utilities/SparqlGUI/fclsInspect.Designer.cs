@@ -60,6 +60,7 @@
             // 
             // txtQuery
             // 
+            this.txtQuery.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtQuery.Location = new System.Drawing.Point(6, 19);
             this.txtQuery.Multiline = true;
             this.txtQuery.Name = "txtQuery";
@@ -80,6 +81,7 @@
             // 
             // txtAlgebra
             // 
+            this.txtAlgebra.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAlgebra.Location = new System.Drawing.Point(10, 19);
             this.txtAlgebra.Multiline = true;
             this.txtAlgebra.Name = "txtAlgebra";
