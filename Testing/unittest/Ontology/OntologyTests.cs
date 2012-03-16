@@ -207,7 +207,36 @@ namespace VDS.RDF.Test.Ontology
         }
 
         [TestMethod]
-        public void OntologyDomainAndRangeOfClass()
+        public void OntologyDomainAndRangeOfClassProperties()
+        {
+            OntologyGraph g = new OntologyGraph();
+            //Load your data into the Graph from somewhere...
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the Class of interest
+            OntologyClass cls = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+
+            //Find Triples where Predicate is rdfs:range or rdfs:domain and the Object is the Class
+            List<OntologyProperty> ranges = cls.IsRangeOf.ToList();
+            List<OntologyProperty> domains = cls.IsDomainOf.ToList();
+
+            //Do whatever you want with the Ranges and Domains...
+
+            Console.WriteLine("Ranges");
+            foreach (OntologyProperty range in ranges)
+            {
+                Console.WriteLine(range.ToString());
+            }
+            Console.WriteLine();
+            Console.WriteLine("Domains");
+            foreach (OntologyProperty domain in domains)
+            {
+                Console.WriteLine(domain.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void OntologyDomainAndRangeOfClassManual()
         {
             OntologyGraph g = new OntologyGraph();
             //Load your data into the Graph from somewhere...

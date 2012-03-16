@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Ontology
 {
@@ -48,7 +47,8 @@ namespace VDS.RDF.Ontology
     /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
     /// </para>
     /// </remarks>
-    public class OntologyClass : OntologyResource
+    public class OntologyClass
+        : OntologyResource
     {
         private const String PropertyDerivedClass = "derivedClass";
 
@@ -559,6 +559,32 @@ namespace VDS.RDF.Ontology
             {
                 return (from t in this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyType)), this._resource)
                         select new OntologyResource(t.Subject, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the properties which have this class as a domain
+        /// </summary>
+        public IEnumerable<OntologyProperty> IsDomainOf
+        {
+            get
+            {
+                INode domain = this._graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "domain"));
+                return (from t in this._graph.GetTriplesWithPredicateObject(domain, this._resource)
+                        select new OntologyProperty(t.Subject, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the properties which have this class as a range
+        /// </summary>
+        public IEnumerable<OntologyProperty> IsRangeOf
+        {
+            get
+            {
+                INode range = this._graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
+                return (from t in this._graph.GetTriplesWithPredicateObject(range, this._resource)
+                        select new OntologyProperty(t.Subject, this._graph));
             }
         }
 

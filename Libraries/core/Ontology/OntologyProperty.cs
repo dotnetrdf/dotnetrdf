@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Ontology
 {
@@ -48,7 +47,8 @@ namespace VDS.RDF.Ontology
     /// See <a href="http://www.dotnetrdf.org/content.asp?pageID=Ontology%20API">Using the Ontology API</a> for some informal documentation on the use of the Ontology namespace
     /// </para>
     /// </remarks>
-    public class OntologyProperty : OntologyResource
+    public class OntologyProperty 
+        : OntologyResource
     {
         private const String PropertyDerivedProperty = "derivedProperty";
 
