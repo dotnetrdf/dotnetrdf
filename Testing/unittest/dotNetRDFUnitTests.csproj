@@ -107,6 +107,7 @@
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sparql\ResultAccessTests.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
     <Compile Include="Sparql\VariableSubstitutionTests.cs" />
     <Compile Include="Storage\TalisTest.cs" />

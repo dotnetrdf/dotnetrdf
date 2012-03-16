@@ -146,6 +146,46 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Tries to get a value (which may be null) for the variable
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <param name="value">Value</param>
+        /// <returns>True if the variable was present (even it was unbound) and false otherwise</returns>
+        public bool TryGetValue(String variable, out INode value)
+        {
+            if (this.HasValue(variable))
+            {
+                value = this[variable];
+                return true;
+            }
+            else
+            {
+                value = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Tries to get a non-null value for the variable
+        /// </summary>
+        /// <param name="variable">Variable</param>
+        /// <param name="value">Value</param>
+        /// <returns>True if the variable was present and bound, false otherwise</returns>
+        public bool TryGetBoundValue(String variable, out INode value)
+        {
+            if (this.HasValue(variable))
+            {
+                value = this[variable];
+                return value != null;
+            }
+            else
+            {
+                value = null;
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets the number of Variables for which this Result contains Bindings
         /// </summary>
         public int Count
