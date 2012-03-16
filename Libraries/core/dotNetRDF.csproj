@@ -93,6 +93,7 @@
     <Compile Include="Core\TalisTripleStore.cs" />
     <Compile Include="Core\ThreadSafeGraph.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\GenericReader.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />

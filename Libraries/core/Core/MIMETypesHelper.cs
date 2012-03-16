@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
@@ -83,7 +84,8 @@ namespace VDS.RDF
                 _mimeTypes = new List<MimeTypeDefinition>();
                 
                 //Define RDF/XML
-                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));                
+                _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), null, null, null, null, null));
 
                 //Define NTriples
                 MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
@@ -91,12 +93,19 @@ namespace VDS.RDF
                 ntriples.Encoding = Encoding.ASCII;
 #endif
                 _mimeTypes.Add(ntriples);
+                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), null, null, null, null, null);
+#if !SILVERLIGHT
+                ntriplesGZipped.Encoding = Encoding.ASCII;
+#endif
+                _mimeTypes.Add(ntriplesGZipped);
 
                 //Define Turtle
                 _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), null, null, typeof(CompressingTurtleWriter), null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), null, null, null, null, null));
 
                 //Define Notation 3
                 _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), null, null, typeof(Notation3Writer), null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), null, null, null, null, null));
 
                 //Define NQuads
                 _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, null, typeof(NQuadsParser), null, null, typeof(NQuadsWriter), null));
@@ -119,6 +128,7 @@ namespace VDS.RDF
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/JSON", Json, new String[] { DefaultRdfJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfJsonParser), null, null, null, null, null));
 
                 //Define CSV
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
@@ -128,6 +138,7 @@ namespace VDS.RDF
 
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped HTML", Html, new String[] { DefaultHtmlExtension + "." + DefaultGZipExtension, DefaultXHtmlExtension + "." + DefaultGZipExtension, ".htm." + DefaultGZipExtension }, typeof(GZippedRdfAParser), null, null, null, null, null));
 
                 //Define GraphViz DOT
                 _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));
@@ -640,6 +651,18 @@ namespace VDS.RDF
         /// Default File Extension for SPARQL Updates
         /// </summary>
         public const String DefaultSparqlUpdateExtension = "ru";
+        /// <summary>
+        /// Default File Extension for GZip
+        /// </summary>
+        public const String DefaultGZipExtension = "gz";
+
+        /// <summary>
+        /// Extensions which are considered stackable
+        /// </summary>
+        private static String[] AllowedStackableExtensions = new String[] 
+        {
+            DefaultGZipExtension
+        };
 
         #endregion
 
@@ -1480,10 +1503,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetMimeType(String fileExt)
         {
-            //Only use the last bit of the extension
-            if (fileExt.Contains("."))
+            //Remove leading "."
+            if (fileExt.StartsWith("."))
             {
-                fileExt = fileExt.Substring(fileExt.LastIndexOf(".") + 1);
+                fileExt = fileExt.Substring(1);
             }
 
             if (!_init) Init();
@@ -1506,10 +1529,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<String> GetMimeTypes(String fileExt)
         {
-            //Only use the last bit of the extension
-            if (fileExt.Contains("."))
+            //Remove leading "."
+            if (fileExt.StartsWith("."))
             {
-                fileExt = fileExt.Substring(fileExt.LastIndexOf(".") + 1);
+                fileExt = fileExt.Substring(1);
             }
 
             if (!_init) Init();
@@ -1532,6 +1555,48 @@ namespace VDS.RDF
         #endregion
 
         #region File Extension Selection
+
+        /// <summary>
+        /// Gets the true file extension for a filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// This is an alternative to using <see cref="Path.GetExtension()"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example <strong>.gz</strong>
+        /// </para>
+        /// <para>
+        /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
+        /// </para>
+        /// <para>
+        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong>
+        /// </para>
+        /// </remarks>
+        public static String GetTrueFileExtension(String filename)
+        {
+            String actualFilename = Path.GetFileName(filename);
+            int extIndex = actualFilename.IndexOf('.');
+
+            //If no extension(s) return standard method
+            if (extIndex == -1) return Path.GetExtension(filename);
+
+            //Otherwise get the detected extension and then check for double extensions
+            String stdExt = Path.GetExtension(actualFilename);
+
+            //Only proceed to do double extension checking if the extension is known to be stackable
+            if (!AllowedStackableExtensions.Contains(stdExt.Substring(1))) return stdExt;
+
+            int stdIndex = actualFilename.Length - stdExt.Length;
+
+            //If the indexes match then the standard method returned the only extension present
+            if (extIndex == stdIndex) return stdExt;
+
+            //Otherwise we have a double extension
+            actualFilename = actualFilename.Substring(0, stdIndex);
+            String realExt = Path.GetExtension(actualFilename);
+
+            return realExt + stdExt;
+        }
 
         /// <summary>
         /// Selects the appropriate File Extension for the given MIME Type
