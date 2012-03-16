@@ -711,7 +711,17 @@ namespace VDS.RDF.Storage
                     //Change made in response to a bug report by Aleksandr A. Zaripov [zaripov@tpu.ru]
                     SparqlQueryParser parser = new SparqlQueryParser();
                     parser.SyntaxMode = SparqlQuerySyntax.Sparql_1_1;
-                    SparqlQuery query = parser.ParseFromString(sparqlQuery);
+                    SparqlQuery query;
+                    try
+                    {
+                        query = parser.ParseFromString(sparqlQuery);
+                    }
+                    catch (RdfException rdfEx)
+                    {
+                        //Need to re-wrap errors during parsing so we fall into correct catch branch, can't generally re-wrap as we might
+                        //get RdfException's from other places which would indicate unrecoverable errors
+                        throw new RdfParseException("RDF exception generated in query parsing", rdfEx);
+                    }
 
                     switch (query.QueryType)
                     {

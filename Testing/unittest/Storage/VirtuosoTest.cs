@@ -531,6 +531,61 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
+        public void StorageVirtuosoNativeQueryBifContains1()
+        {
+            try
+            {
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                Object result = null;
+
+                //Try an ASK query
+                result = manager.Query("ASK { ?s ?p ?o . ?o bif:contains 'example' }");
+                CheckQueryResult(result, true);
+
+                manager.Dispose();
+            }
+            catch (RdfQueryException queryEx)
+            {
+                TestTools.ReportError("RDF Query Error", queryEx, true);
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Other Error", ex, true);
+            }
+        }
+
+        [TestMethod]
+        public void StorageVirtuosoNativeQueryBifContains2()
+        {
+            try
+            {
+                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                Assert.IsNotNull(manager);
+
+                Console.WriteLine("Got the Virtuoso Manager OK");
+
+                Object result = null;
+
+                //Try an ASK query
+                result = manager.Query("PREFIX bif: <http://example.org/> ASK { ?s ?p ?o . ?o bif:contains 'example' }");
+                CheckQueryResult(result, true);
+
+                manager.Dispose();
+
+                Assert.Fail("Did not hit error as expected");
+            }
+            catch (RdfQueryException queryEx)
+            {
+                //Passed OK
+                Console.WriteLine("Got error as expected");
+            }
+        }
+
+        [TestMethod]
         public void StorageVirtuosoNativeUpdate()
         {
             try
