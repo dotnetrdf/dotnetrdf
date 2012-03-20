@@ -85,7 +85,7 @@ namespace VDS.RDF
                 
                 //Define RDF/XML
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/XML", W3CFormatsNamespace + "RDF_XML", RdfXml, new String[] { DefaultRdfXmlExtension, "owl" }, typeof(RdfXmlParser), null, null, typeof(RdfXmlWriter), null, null));
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), null, null, null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/XML", RdfXml, new String[] { DefaultRdfXmlExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfXmlParser), null, null, typeof(GZippedRdfXmlWriter), null, null));
 
                 //Define NTriples
                 MimeTypeDefinition ntriples = new MimeTypeDefinition("NTriples", W3CFormatsNamespace + "N-Triples", NTriples, new String[] { DefaultNTriplesExtension }, typeof(NTriplesParser), null, null, typeof(NTriplesWriter), null, null);
@@ -93,7 +93,7 @@ namespace VDS.RDF
                 ntriples.Encoding = Encoding.ASCII;
 #endif
                 _mimeTypes.Add(ntriples);
-                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), null, null, null, null, null);
+                MimeTypeDefinition ntriplesGZipped = new MimeTypeDefinition("GZipped NTriples", NTriples, new String[] { DefaultNTriplesExtension + "." + DefaultGZipExtension }, typeof(GZippedNTriplesParser), null, null, typeof(GZippedNTriplesWriter), null, null);
 #if !SILVERLIGHT
                 ntriplesGZipped.Encoding = Encoding.ASCII;
 #endif
@@ -101,11 +101,11 @@ namespace VDS.RDF
 
                 //Define Turtle
                 _mimeTypes.Add(new MimeTypeDefinition("Turtle", W3CFormatsNamespace + "Turtle", Turtle, new String[] { DefaultTurtleExtension }, typeof(TurtleParser), null, null, typeof(CompressingTurtleWriter), null, null));
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), null, null, null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Turtle", Turtle, new String[] { DefaultTurtleExtension + "." + DefaultGZipExtension }, typeof(GZippedTurtleParser), null, null, typeof(GZippedTurtleWriter), null, null));
 
                 //Define Notation 3
                 _mimeTypes.Add(new MimeTypeDefinition("Notation 3", W3CFormatsNamespace + "N3", Notation3, new String[] { DefaultNotation3Extension }, typeof(Notation3Parser), null, null, typeof(Notation3Writer), null, null));
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), null, null, null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped Notation 3", Notation3, new String[] { DefaultNotation3Extension + "." + DefaultGZipExtension }, typeof(GZippedNotation3Parser), null, null, typeof(GZippedNotation3Writer), null, null));
 
                 //Define NQuads
                 _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, null, typeof(NQuadsParser), null, null, typeof(NQuadsWriter), null));
@@ -128,7 +128,7 @@ namespace VDS.RDF
                 //Define RDF/JSON - include SPARQL Parsers to support servers that send back incorrect MIME Type for SPARQL JSON Results
                 //We define this after SPARQL Results JSON to ensure we favour the correct MIME type for it
                 _mimeTypes.Add(new MimeTypeDefinition("RDF/JSON", Json, new String[] { DefaultRdfJsonExtension, DefaultJsonExtension }, typeof(RdfJsonParser), null, typeof(SparqlJsonParser), typeof(RdfJsonWriter), null, typeof(SparqlJsonWriter)));
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/JSON", Json, new String[] { DefaultRdfJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfJsonParser), null, null, null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped RDF/JSON", Json, new String[] { DefaultRdfJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, typeof(GZippedRdfJsonParser), null, null, typeof(GZippedRdfJsonWriter), null, null));
 
                 //Define CSV
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
@@ -138,7 +138,7 @@ namespace VDS.RDF
 
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));
-                _mimeTypes.Add(new MimeTypeDefinition("GZipped HTML", Html, new String[] { DefaultHtmlExtension + "." + DefaultGZipExtension, DefaultXHtmlExtension + "." + DefaultGZipExtension, ".htm." + DefaultGZipExtension }, typeof(GZippedRdfAParser), null, null, null, null, null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped HTML", Html, new String[] { DefaultHtmlExtension + "." + DefaultGZipExtension, DefaultXHtmlExtension + "." + DefaultGZipExtension, ".htm." + DefaultGZipExtension }, typeof(GZippedRdfAParser), null, null, typeof(GZippedRdfAWriter), null, null));
 
                 //Define GraphViz DOT
                 _mimeTypes.Add(new MimeTypeDefinition("GraphViz DOT", new String[] { "text/vnd.graphviz" }, new String[] { ".gv", ".dot" }, null, null, null, typeof(GraphVizWriter), null, null));

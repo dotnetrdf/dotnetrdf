@@ -143,6 +143,7 @@
     <Compile Include="Storage\Params\IStoreParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
     <Compile Include="Web\HandlerConstants.cs" />
+    <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\FolderStoreWriter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
