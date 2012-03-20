@@ -9,17 +9,21 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.6.1 maintenance release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.6.2 release of dotNetRDF
 
 Added
 
 Changed
 - Bug Fixes
- - Fixed an inadvertent StackOverFlowException in the StardogConnector constructor
-- Configuration
- - Updated vocabularies to reflect new properties in 0.6.x releases and remove defunct properties
+ - Fix for an issue with bif:contains and other special constructs in SPARQL queries to Virtuoso
+ - Fix for a bug with CREATE GRAPH and GenericUpdateProcessor behaviour for stores that don't support empty graphs
+- Parsing
+ - Explicit support for direct parsing of GZipped inputs (e.g. example.ttl.gz)
+- Ontology API
+ - Added IsDomainOf and IsRangeOf properties to OntologyClass
 - Query
- - Experimental PLINQ optimisation of query evaluation for .Net 4.0 builds (disabled by default)
+ - Added TryGetValue() and TryGetBoundValue() methods to SparqlResult class
+ - PLINQ optimisation of query evaluation for .Net 4.0 builds now enabled
 
 Removed
 

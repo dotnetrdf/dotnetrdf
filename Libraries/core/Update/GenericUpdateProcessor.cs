@@ -310,7 +310,9 @@ namespace VDS.RDF.Update
 
                 try
                 {
-                    if ((this._manager.IOBehaviour & IOBehaviour.ExplicitEmptyGraphs) == 0) throw new SparqlUpdateException("The underlying store does not provide support for an explicit unnamed Default Graph required to process this command");
+                    //As Khalil Ahmed pointed out the behaviour when the store doesn't support empty graphs the behaviour should be to act as if the operation succeeded
+                    if ((this._manager.IOBehaviour & IOBehaviour.ExplicitEmptyGraphs) == 0) return;
+
                     this._manager.SaveGraph(g);
                 }
                 catch

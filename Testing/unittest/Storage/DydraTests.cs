@@ -32,6 +32,8 @@ namespace VDS.RDF.Test.Storage
                         this._apiKey = reader.ReadToEnd();
                         reader.Close();
                     }
+
+                    Console.WriteLine("API Key:" + this._apiKey);
                 }
                 else
                 {
@@ -181,6 +183,7 @@ namespace VDS.RDF.Test.Storage
                 orig.BaseUri = new Uri("http://example.org/dydra/tests/counting");
 
                 DydraConnector dydra = this.GetConnection();
+                dydra.DeleteGraph("http://example.org/dydra/tests/counting");
                 dydra.SaveGraph(orig);
 
                 CountHandler handler = new CountHandler();
