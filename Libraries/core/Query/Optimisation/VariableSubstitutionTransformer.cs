@@ -56,6 +56,8 @@ namespace VDS.RDF.Query.Optimisation
         private PatternItem _replaceItem;
         private ISparqlExpression _replaceExpr;
         private IToken _replaceToken;
+        private bool _canReplaceObjects;
+        private bool _canReplaceCustom = false;
 
         /// <summary>
         /// Create a transform that replaces one variable with another
@@ -68,6 +70,7 @@ namespace VDS.RDF.Query.Optimisation
             this._replaceItem = new VariablePattern("?" + replaceVar);
             this._replaceExpr = new VariableTerm(replaceVar);
             this._replaceToken = new VariableToken("?" + replaceVar, 0, 0, 0);
+            this._canReplaceObjects = false;
         }
 
         /// <summary>
@@ -84,6 +87,28 @@ namespace VDS.RDF.Query.Optimisation
             {
                 this._replaceToken = new UriToken("<" + ((IUriNode)replaceTerm).Uri.ToString() + ">", 0, 0, 0);
             }
+            this._canReplaceObjects = true;
+        }
+
+        /// <summary>
+        /// Gets/Sets whethe the Transformer is allowed to replace objects
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The transformer will intelligently select this depending on whether it is replacing with a constant (defaults to true) or a variable (defaults to false),  when replacing a variable the behaviour changes automatically.  If you set it explicitly the transformer will respect your setting regardless.
+        /// </para>
+        /// </remarks>
+        public bool CanReplaceObjects
+        {
+            get
+            {
+                return this._canReplaceObjects;
+            }
+            set
+            {
+                this._canReplaceObjects = value;
+                this._canReplaceCustom = true;
+            }
         }
 
         /// <summary>
@@ -93,6 +118,11 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
+            //By default we are only safe to replace objects in a scope if we are replacing with a constant
+            //Note that if we also make a replace in a subject/predicate position for a variable replace then
+            //that makes object replacement safe for that scope only
+            bool canReplaceObjects = (this._canReplaceCustom ? this._canReplaceObjects : this._replaceItem is NodeMatchPattern);
+
             if (algebra is IBgp)
             {
                 IBgp bgp = (IBgp)algebra;
@@ -106,8 +136,11 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         TriplePattern tp = (TriplePattern)p;
                         PatternItem subj = tp.Subject.VariableName != null && tp.Subject.VariableName.Equals(this._findVar) ? this._replaceItem : tp.Subject;
+                        if (ReferenceEquals(subj, this._replaceItem)) canReplaceObjects = (this._canReplaceCustom ? this._canReplaceObjects : true);
                         PatternItem pred = tp.Predicate.VariableName != null && tp.Predicate.VariableName.Equals(this._findVar) ? this._replaceItem : tp.Predicate;
+                        if (ReferenceEquals(pred, this._replaceItem)) canReplaceObjects = (this._canReplaceCustom ? this._canReplaceObjects : true);
                         PatternItem obj = tp.Object.VariableName != null && tp.Object.VariableName.Equals(this._findVar) ? this._replaceItem : tp.Object;
+                        if (ReferenceEquals(obj, this._replaceItem) && !canReplaceObjects) throw new Exception("Unable to substitute a variable into the object position in this scope");
                         ps.Add(new TriplePattern(subj, pred, obj));
                     }
                     else if (p is FilterPattern)

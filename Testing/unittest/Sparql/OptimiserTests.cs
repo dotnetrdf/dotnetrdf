@@ -261,5 +261,108 @@ SELECT * WHERE
             Assert.IsTrue(algebra.Contains("LazyBgp("), "Algebra should be optimised to use LazyBgp()'s");
             Assert.IsTrue(algebra.Contains("LazyUnion("), "Algebra should be optimised to use LazyUnion()'s");
         }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinSimple1()
+        {
+            String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(?x = ?y) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
+            Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinSimple2()
+        {
+            String query = "SELECT * WHERE { ?x a ?type . ?y a ?type . FILTER(SAMETERM(?x, ?y)) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
+            Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinSimple3()
+        {
+            String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(?a = ?b) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
+            Assert.IsTrue(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinSimple4()
+        {
+            String query = "SELECT * WHERE { ?x a ?a . ?y a ?b . FILTER(SAMETERM(?a, ?b)) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
+            Assert.IsFalse(algebra.Contains("Filter("), "Algebra should not be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinComplex1()
+        {
+            String query = "SELECT * WHERE { ?x a ?type . { SELECT ?y WHERE { ?y a ?type } }. FILTER(?x = ?y) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplicitJoinComplex2()
+        {
+            String query = "SELECT * WHERE { ?x a ?type . OPTIONAL { ?y a ?type } . FILTER(?x = ?y) }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsTrue(algebra.Contains("Extend("), "Algebra should be optimised to use Extend");
+            Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraImplictJoinComplex3()
+        {
+            String query = @"SELECT ?s ?v ?z
+WHERE
+{
+  ?z a ?type .
+  {    ?s a ?v .    FILTER(?v = ?z)  }
+}";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
+            Assert.IsTrue(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
     }
 }

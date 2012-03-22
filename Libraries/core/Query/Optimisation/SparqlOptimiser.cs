@@ -49,7 +49,8 @@ namespace VDS.RDF.Query.Optimisation
             new AskBgpOptimiser(),
             new LazyBgpOptimiser(),
             new StrictAlgebraOptimiser(),
-            new IdentityFilterOptimiser()
+            new IdentityFilterOptimiser(),
+            new ImplicitJoinOptimiser()
         };
 
         /// <summary>
