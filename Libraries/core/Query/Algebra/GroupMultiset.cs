@@ -47,7 +47,7 @@ namespace VDS.RDF.Query.Algebra
     public class GroupMultiset : Multiset
     {
         private BaseMultiset _contents;
-        private List<BindingGroup> _groups;
+        private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
 
         /// <summary>
         /// Creates a new Group Multiset
@@ -57,7 +57,6 @@ namespace VDS.RDF.Query.Algebra
         public GroupMultiset(BaseMultiset contents, List<BindingGroup> groups)
         {
             this._contents = contents;
-            this._groups = groups;
 
             bool first = true;
             foreach (BindingGroup group in groups)
@@ -70,6 +69,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 first = false;
                 base.Add(s);
+                this._groups.Add(s.ID, group);
             }
         }
 
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._groups;
+                return this._groups.Values;
             }
         }
 
@@ -91,7 +91,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public IEnumerable<int> GroupSetIDs(int id)
         {
-            return this._groups[id-1].BindingIDs;
+            return this._groups[id].BindingIDs;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BindingGroup Group(int id)
         {
-            return this._groups[id - 1];
+            return this._groups[id];
         }
 
         /// <summary>

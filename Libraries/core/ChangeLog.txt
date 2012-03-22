@@ -17,6 +17,7 @@ Changed
 - Bug Fixes
  - Fix for an issue with bif:contains and other special constructs in SPARQL queries to Virtuoso
  - Fix for a bug with CREATE GRAPH and GenericUpdateProcessor behaviour for stores that don't support empty graphs
+ - Fix for some regressions in SPARQL 1.1 support introduced by internal data structure changes in the 0.6.1 release
 - Parsing
  - Explicit support for direct parsing of GZipped inputs (e.g. example.ttl.gz)
 - Ontology API
