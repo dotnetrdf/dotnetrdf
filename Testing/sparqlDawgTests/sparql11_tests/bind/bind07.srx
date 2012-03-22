@@ -17,9 +17,6 @@
       <binding name="o">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
       </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
-      </binding>
     </result>
     <result>
       <binding name="s">
@@ -31,9 +28,6 @@
       <binding name="o">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
       </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">6</literal>
-      </binding>
     </result>
     <result>
       <binding name="s">
@@ -45,9 +39,6 @@
       <binding name="o">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
       </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
-      </binding>
     </result>
     <result>
       <binding name="s">
@@ -57,23 +48,6 @@
         <uri>http://example.org/p</uri>
       </binding>
       <binding name="o">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
-      </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
-      </binding>
-    </result>
-    <result>
-      <binding name="s">
-        <uri>http://example.org/s2</uri>
-      </binding>
-      <binding name="p">
-        <uri>http://example.org/p</uri>
-      </binding>
-      <binding name="o">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
-      </binding>
-      <binding name="z">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
       </binding>
     </result>
@@ -87,21 +61,15 @@
       <binding name="o">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
       </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
-      </binding>
     </result>
     <result>
       <binding name="s">
-        <uri>http://example.org/s1</uri>
+        <uri>http://example.org/s2</uri>
       </binding>
       <binding name="p">
         <uri>http://example.org/p</uri>
       </binding>
       <binding name="o">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
-      </binding>
-      <binding name="z">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
       </binding>
     </result>
@@ -115,8 +83,16 @@
       <binding name="o">
         <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
       </binding>
-      <binding name="z">
-        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+    </result>
+    <result>
+      <binding name="s">
+        <uri>http://example.org/s1</uri>
+      </binding>
+      <binding name="p">
+        <uri>http://example.org/p</uri>
+      </binding>
+      <binding name="o">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
       </binding>
     </result>
   </results>

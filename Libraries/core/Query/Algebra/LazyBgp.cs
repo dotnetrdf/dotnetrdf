@@ -674,6 +674,9 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
+            if (this._lhs is Extend || this._rhs is Extend) initialInput = new IdentityMultiset();
+
+            context.InputMultiset = initialInput;
             BaseMultiset lhsResult = context.Evaluate(this._lhs);//this._lhs.Evaluate(context);
             context.CheckTimeout();
 
