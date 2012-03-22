@@ -121,9 +121,11 @@ namespace VDS.RDF
 
                 //Define SPARQL Results XML
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL Results XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlXmlParser), null, null, typeof(GZippedSparqlXmlWriter)));
 
                 //Define SPARQL Results JSON
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results JSON", W3CFormatsNamespace + "SPARQL_Results_JSON", SparqlResultsJson, new String[] { DefaultSparqlJsonExtension, DefaultJsonExtension }, null, null, typeof(SparqlJsonParser), null, null, typeof(SparqlJsonWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL Results JSON", SparqlResultsJson, new String[] { DefaultSparqlJsonExtension + "." + DefaultGZipExtension, DefaultJsonExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlJsonParser), null, null, typeof(GZippedSparqlJsonWriter)));
 
                 //Define SPARQL Boolean
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Boolean Result", SparqlResultsBoolean, Enumerable.Empty<String>(), null, null, typeof(SparqlBooleanParser), null, null, null));
@@ -135,9 +137,11 @@ namespace VDS.RDF
 
                 //Define CSV
                 _mimeTypes.Add(new MimeTypeDefinition("CSV", Csv, new String[] { DefaultCsvExtension }, null, null, typeof(SparqlCsvParser), typeof(CsvWriter), typeof(CsvStoreWriter), typeof(SparqlCsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped SPARQL CSV", Csv, new String[] { DefaultCsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlCsvParser), null, null, typeof(GZippedSparqlCsvWriter)));
 
                 //Define TSV
                 _mimeTypes.Add(new MimeTypeDefinition("TSV", Tsv, new String[] { DefaultTsvExtension }, null, null, typeof(SparqlTsvParser), typeof(TsvWriter), typeof(TsvStoreWriter), typeof(SparqlTsvWriter)));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TSV", Tsv, new String[] { DefaultTsvExtension + "." + DefaultGZipExtension }, null, null, typeof(GZippedSparqlTsvParser), null, null, typeof(GZippedSparqlTsvWriter)));
 
                 //Define HTML
                 _mimeTypes.Add(new MimeTypeDefinition("HTML", W3CFormatsNamespace + "RDFa", Html, new String[] { DefaultHtmlExtension, DefaultXHtmlExtension, ".htm" }, typeof(RdfAParser), null, null, typeof(HtmlWriter), null, typeof(SparqlHtmlWriter)));

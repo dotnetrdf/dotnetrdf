@@ -96,6 +96,7 @@
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
+    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
     <Compile Include="Parsing\GenericReader.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
+    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
     <Compile Include="Writing\FolderStoreWriter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
     <Compile Include="Writing\GraphVizWriter.cs" />

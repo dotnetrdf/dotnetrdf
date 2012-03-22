@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Test.Parsing
@@ -14,16 +15,20 @@ namespace VDS.RDF.Test.Parsing
     public class GZipTests
     {
         private IGraph _g;
+        private SparqlResultSet _results;
         private List<String> _manualTestFiles = new List<String>();
         private List<String> _autoTestFiles = new List<String>();
         private List<String> _manualDatasetTestFiles = new List<String>();
         private List<String> _autoDatasetTestFiles = new List<String>();
+        private List<String> _manualResultsTestFiles = new List<String>();
+        private List<String> _autoResultsTestFiles = new List<String>();
 
         [TestInitialize]
         public void Setup()
         {
             this._g = new Graph();
             this._g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            this._results = this._g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.Definitions)
             {
@@ -76,6 +81,30 @@ namespace VDS.RDF.Test.Parsing
                         writer.Save(store, new StreamParams(new FileStream(filename, FileMode.Create, FileAccess.Write)));
 
                         this._autoDatasetTestFiles.Add(filename);
+                    }
+                }
+                else if (def.CanParseSparqlResults && def.CanWriteSparqlResults)
+                {
+                    ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
+
+                    bool isManual = !def.CanonicalFileExtension.EndsWith(".gz");
+                    String filename = "gzip-tests-results" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
+
+                    if (isManual)
+                    {
+                        using (StreamWriter output = new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)))
+                        {
+                            writer.Save(this._results, output);
+                            output.Close();
+                        }
+
+                        this._manualResultsTestFiles.Add(filename);
+                    }
+                    else
+                    {
+                        writer.Save(this._results, new StreamWriter(filename));
+
+                        this._autoResultsTestFiles.Add(filename);
                     }
                 }
             }
@@ -330,6 +359,120 @@ namespace VDS.RDF.Test.Parsing
                 reader.Load(store, new StreamParams(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByFilenameManual()
+        {
+            foreach (String filename in this._manualResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, filename);
+
+                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByStreamManual()
+        {
+            foreach (String filename in this._manualResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, new StreamReader(filename));
+
+                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByGZipStreamManual()
+        {
+            foreach (String filename in this._manualResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+
+                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByFilenameAuto()
+        {
+            foreach (String filename in this._autoResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, filename);
+
+                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByStreamAuto()
+        {
+            foreach (String filename in this._autoResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, new StreamReader(filename));
+
+                Assert.AreEqual(this._results, results, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByGZipStreamAuto()
+        {
+            foreach (String filename in this._autoResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+
+                Assert.AreEqual(this._results, results, "Graphs for file " + filename + " were not equal");
             }
         }
     }
