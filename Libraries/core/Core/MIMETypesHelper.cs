@@ -109,12 +109,15 @@ namespace VDS.RDF
 
                 //Define NQuads
                 _mimeTypes.Add(new MimeTypeDefinition("NQuads", NQuads, new String[] { DefaultNQuadsExtension }, null, typeof(NQuadsParser), null, null, typeof(NQuadsWriter), null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped NQuads", NQuads, new String[] { DefaultNQuadsExtension + "." + DefaultGZipExtension }, null, typeof(GZippedNQuadsParser), null, null, typeof(GZippedNQuadsWriter), null));
 
                 //Define TriG
                 _mimeTypes.Add(new MimeTypeDefinition("TriG", TriG, new String[] { DefaultTriGExtension }, null, typeof(TriGParser), null, null, typeof(TriGWriter), null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriG", TriG, new String[] { DefaultTriGExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTriGParser), null, null, typeof(GZippedTriGWriter), null));
 
                 //Define TriX
                 _mimeTypes.Add(new MimeTypeDefinition("TriX", TriX, new String[] { DefaultTriXExtension }, null, typeof(TriXParser), null, null, typeof(TriXWriter), null));
+                _mimeTypes.Add(new MimeTypeDefinition("GZipped TriX", TriX, new String[] { DefaultTriXExtension + "." + DefaultGZipExtension }, null, typeof(GZippedTriXParser), null, null, typeof(GZippedTriXWriter), null));
 
                 //Define SPARQL Results XML
                 _mimeTypes.Add(new MimeTypeDefinition("SPARQL Results XML", W3CFormatsNamespace + "SPARQL_Results_XML", SparqlResultsXml, new String[] { DefaultSparqlXmlExtension }, null, null, typeof(SparqlXmlParser), null, null, typeof(SparqlXmlWriter)));
@@ -1664,6 +1667,5 @@ namespace VDS.RDF
         }
 
         #endregion
-
    }
 }

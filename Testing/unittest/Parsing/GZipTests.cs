@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Test.Parsing
 {
@@ -15,6 +16,8 @@ namespace VDS.RDF.Test.Parsing
         private IGraph _g;
         private List<String> _manualTestFiles = new List<String>();
         private List<String> _autoTestFiles = new List<String>();
+        private List<String> _manualDatasetTestFiles = new List<String>();
+        private List<String> _autoDatasetTestFiles = new List<String>();
 
         [TestInitialize]
         public void Setup()
@@ -44,6 +47,35 @@ namespace VDS.RDF.Test.Parsing
                     else
                     {
                         writer.Save(this._g, filename);
+
+                        this._autoTestFiles.Add(filename);
+                    }
+                }
+                else if (def.CanParseRdfDatasets && def.CanWriteRdfDatasets)
+                {
+                    IStoreWriter writer = def.GetRdfDatasetWriter();
+
+                    bool isManual = !def.CanonicalFileExtension.EndsWith(".gz");
+                    String filename = "gzip-tests-datasets" + (isManual ? String.Empty : "-auto") + "." + def.CanonicalFileExtension + (isManual ? ".gz" : String.Empty);
+
+                    TripleStore store = new TripleStore();
+                    store.Add(this._g);
+
+                    if (isManual)
+                    {
+                        using (Stream output = new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress))
+                        {
+                            writer.Save(store, new StreamParams(output));
+                            output.Close();
+                        }
+
+                        this._manualDatasetTestFiles.Add(filename);
+                    }
+                    else
+                    {
+                        writer.Save(store, new StreamParams(new FileStream(filename, FileMode.Create, FileAccess.Write)));
+
+                        this._autoDatasetTestFiles.Add(filename);
                     }
                 }
             }
@@ -222,6 +254,82 @@ namespace VDS.RDF.Test.Parsing
                 reader.Load(g, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipDatasetByStreamManual()
+        {
+            foreach (String filename in this._manualDatasetTestFiles)
+            {
+                TripleStore store = new TripleStore();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                IStoreReader reader = def.GetRdfDatasetParser();
+                reader.Load(store, new StreamParams(new FileStream(filename, FileMode.Open, FileAccess.Read)));
+
+                Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipDatasetByGZipStreamManual()
+        {
+            foreach (String filename in this._manualDatasetTestFiles)
+            {
+                TripleStore store = new TripleStore();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                IStoreReader reader = def.GetRdfDatasetParser();
+                reader.Load(store, new StreamParams(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+
+                Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipDatasetByStreamAuto()
+        {
+            foreach (String filename in this._autoDatasetTestFiles)
+            {
+                TripleStore store = new TripleStore();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                IStoreReader reader = def.GetRdfDatasetParser();
+                reader.Load(store, new StreamParams(new FileStream(filename, FileMode.Open, FileAccess.Read)));
+
+                Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipDatasetByGZipStreamAuto()
+        {
+            foreach (String filename in this._autoDatasetTestFiles)
+            {
+                TripleStore store = new TripleStore();
+
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
+
+                IStoreReader reader = def.GetRdfDatasetParser();
+                reader.Load(store, new StreamParams(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+
+                Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
             }
         }
     }
