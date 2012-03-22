@@ -126,7 +126,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                         {
                             h.GetStats(g);
                         }
-                        IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._file)));
+                        IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._file)));
                         if (writer is ICompressingWriter)
                         {
                             ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;
@@ -272,7 +272,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                 {
                     //All Files with a given Extension
                     String ext = arg.Substring(arg.LastIndexOf("*.") + 1);
-                    this._inputs.AddRange(Directory.GetFiles(dir).Where(f => ext.Equals(Path.GetExtension(f))));
+                    this._inputs.AddRange(Directory.GetFiles(dir).Where(f => ext.Equals(MimeTypesHelper.GetTrueFileExtension(f))));
                     return true;
                 }
                 else

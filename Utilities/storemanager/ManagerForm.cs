@@ -227,7 +227,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
                             try
                             {
-                                IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(Path.GetExtension(this.sfdConnection.FileName)));
+                                IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this.sfdConnection.FileName)));
                                 writer.Save(context.Graph, this.sfdConnection.FileName);
                             }
                             catch (RdfWriterSelectionException)

@@ -69,7 +69,7 @@ namespace VDS.RDF.Utilities.Web.Deploy
             IRdfWriter writer;
             try
             {
-                writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(Path.GetExtension(args[1])));
+                writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(args[1])));
             }
             catch (RdfWriterSelectionException)
             {

@@ -210,5 +210,40 @@ namespace VDS.RDF.Test.Parsing
 
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
         }
+
+        [TestMethod]
+        public void ParsingUriLoaderGraphIntoTripleStore()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromUri(new Uri("http://www.dotnetrdf.org/demos/leviathan/?query=CONSTRUCT WHERE { ?s ?p ?o }"));
+
+            Assert.IsTrue(store.Triples.Count() > 0);
+            Assert.AreEqual(1, store.Graphs.Count);
+        }
+
+        [TestMethod]
+        public void ParsingEmbeddedResourceLoaderGraphIntoTripleStore()
+        {
+            TripleStore store = new TripleStore();
+            store.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            Assert.IsTrue(store.Triples.Count() > 0);
+            Assert.AreEqual(1, store.Graphs.Count);
+        }
+
+        [TestMethod]
+        public void ParsingFileLoaderGraphIntoTripleStore()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.SaveToFile("fileloader-graph-to-store.ttl");
+
+            TripleStore store = new TripleStore();
+            store.LoadFromFile("fileloader-graph-to-store.ttl");
+
+            Assert.IsTrue(store.Triples.Count() > 0);
+            Assert.AreEqual(1, store.Graphs.Count);
+        }
+       
     }
 }

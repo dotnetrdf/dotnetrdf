@@ -651,12 +651,24 @@ namespace VDS.RDF.Parsing
                             parser.Warning += RaiseStoreWarning;
                             parser.Load(handler, new StreamParams(httpResponse.GetResponseStream()));
                         }
-                        catch (RdfParserSelectionException selEx)
+                        catch (RdfParserSelectionException)
                         {
-                            String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
-                            parser = StringParser.GetDatasetParser(data);
-                            parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                            RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + httpResponse.ContentType + " - seeing if the content is an RDF Graph instead");
+
+                            try
+                            {
+                                //If not a RDF Dataset format see if it is a Graph
+                                IRdfReader rdfParser = MimeTypesHelper.GetParser(httpResponse.ContentType);
+                                rdfParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+                            }
+                            catch (RdfParserSelectionException)
+                            {
+                                //Finally fall back to assuming a dataset and trying format guessing
+                                String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
+                                parser = StringParser.GetDatasetParser(data);
+                                parser.Warning += RaiseStoreWarning;
+                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                            }
                         }
                     }
                     else

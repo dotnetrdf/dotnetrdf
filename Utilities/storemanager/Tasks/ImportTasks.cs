@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             try
             {
                 //Assume a RDF Graph
-                IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._file)));
+                IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._file)));
                 FileLoader.Load(handler, this._file, reader);
             }
             catch (RdfParserSelectionException)

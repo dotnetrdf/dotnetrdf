@@ -103,7 +103,7 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                IStoreReader reader = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+                IStoreReader reader = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
                 reader.Load(this._store, new StreamParams(filename));
 
                 this._ready = true;

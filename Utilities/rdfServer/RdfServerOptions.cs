@@ -362,7 +362,7 @@ namespace VDS.RDF.Utilities.Server
                     }
                     else
                     {
-                        IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(Path.GetExtension(this._configFile)));
+                        IRdfReader reader = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this._configFile)));
                         g = new Graph();
                         reader.Load(g, new StreamReader(stream));
                     }

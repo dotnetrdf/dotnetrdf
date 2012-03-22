@@ -152,7 +152,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(Path.GetExtension(filename)));
+                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(filename)));
                     RaiseWarning("Selected Parser " + parser.ToString() + " based on file extension, if this is incorrect consider specifying the parser explicitly");
                 }
                 catch (RdfParserSelectionException)
@@ -244,12 +244,25 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(Path.GetExtension(filename)));
+                    parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
                 }
                 catch (RdfParserSelectionException)
                 {
                     //If error then we couldn't determine MIME Type from the File Extension
-                    RaiseWarning("Unable to select a parser by determining MIME Type from the File Extension");
+                    RaiseWarning("Unable to select a dataset parser by determining MIME Type from the File Extension");
+
+                    //Try selecting a RDF parser instead
+                    try
+                    {
+                        IRdfReader rdfParser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
+                        Graph g = new Graph();
+                        rdfParser.Load(handler, filename);
+                        return;
+                    }
+                    catch (RdfParserSelectionException)
+                    {
+                        //Ignore this, will try and use format guessing and assume is a dataset format
+                    }
                 }
             }
             if (parser == null)

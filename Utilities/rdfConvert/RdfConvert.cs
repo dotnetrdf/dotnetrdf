@@ -399,7 +399,7 @@ namespace VDS.RDF.Utilities.Convert
                 if (this._inputs.Count == 1 && !this._outputFilename.Equals(String.Empty))
                 {
                     //If only 1 input and an output filename can detect the output format from that filename
-                    this._outFormats.AddRange(MimeTypesHelper.GetMimeTypes(Path.GetExtension(this._outputFilename)));
+                    this._outFormats.AddRange(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._outputFilename)));
                 }
                 else
                 {

@@ -310,16 +310,26 @@ namespace VDS.RDF.Parsing
                         }
                         else
                         {
-                            //Resource did not have a file extension or we didn't have a parser associated with the extension
-                            //Try using StringParser instead
-                            String data;
-                            using (StreamReader reader = new StreamReader(s))
+                            //See if the format was actually an RDF graph instead
+                            def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdf);
+                            if (def != null)
                             {
-                                data = reader.ReadToEnd();
-                                reader.Close();
+                                IRdfReader rdfParser = def.GetRdfParser();
+                                rdfParser.Load(handler, new StreamReader(s));
                             }
-                            parser = StringParser.GetDatasetParser(data);
-                            parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                            else
+                            {
+                                //Resource did not have a file extension or we didn't have a parser associated with the extension
+                                //Try using StringParser instead
+                                String data;
+                                using (StreamReader reader = new StreamReader(s))
+                                {
+                                    data = reader.ReadToEnd();
+                                    reader.Close();
+                                }
+                                parser = StringParser.GetDatasetParser(data);
+                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                            }
                         }
                     }
                 }

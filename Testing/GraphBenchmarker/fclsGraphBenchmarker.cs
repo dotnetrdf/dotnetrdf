@@ -76,7 +76,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             {
                 foreach (String file in Directory.GetFiles(dir))
                 {
-                    String ext = Path.GetExtension(file);
+                    String ext = MimeTypesHelper.GetTrueFileExtension(file);
                     if (ext.StartsWith(".")) ext = ext.Substring(1);
                     if (MimeTypesHelper.Definitions.Any(d => d.FileExtensions.Contains(ext)))
                     {

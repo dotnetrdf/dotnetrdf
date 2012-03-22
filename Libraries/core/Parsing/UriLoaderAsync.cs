@@ -423,12 +423,23 @@ namespace VDS.RDF.Parsing
                                 parser.Warning += RaiseWarning;
                                 parser.Load(handler, new StreamParams(response.GetResponseStream()));
                             }
-                            catch (RdfParserSelectionException selEx)
+                            catch (RdfParserSelectionException)
                             {
-                                String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
-                                parser = StringParser.GetDatasetParser(data);
-                                parser.Warning += RaiseStoreWarning;
-                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                                RaiseStoreWarning("Unable to select a RDF Dataset parser based on Content-Type: " + response.ContentType + " - seeing if the content is an RDF Graph instead");
+
+                                try
+                                {
+                                    //If not a RDF Dataset format see if it is a Graph
+                                    IRdfReader rdfParser = MimeTypesHelper.GetParser(response.ContentType);
+                                    rdfParser.Load(handler, new StreamReader(response.GetResponseStream()));
+                                }
+                                catch (RdfParserSelectionException)
+                                {
+                                    String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                                    parser = StringParser.GetDatasetParser(data);
+                                    parser.Warning += RaiseStoreWarning;
+                                    parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                                }
                             }
                         }
                         else
