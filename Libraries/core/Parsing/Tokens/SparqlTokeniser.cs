@@ -792,11 +792,8 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-//#if !NO_NORM
-//            String value = this.Value.Normalize();
-//#else
             String value = this.Value;
-//#endif
+
             //Backtrack if necessary
             if (value.EndsWith("."))
             {
@@ -877,11 +874,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-//#if !NO_NORM
-//            value = this.Value.Normalize();
-//#else
             value = this.Value;
-//#endif
 
             //Backtrack if necessary
             if (value.EndsWith("."))
@@ -1456,11 +1449,7 @@ namespace VDS.RDF.Parsing.Tokens
                 next = this.Peek();
             }
 
-//#if !NO_NORM
-//            String value = this.Value.Normalize();
-//#else
             String value = this.Value;
-//#endif
 
             //Backtrack if necessary
             if (value.EndsWith("."))

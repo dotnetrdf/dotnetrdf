@@ -81,7 +81,7 @@ namespace VDS.RDF
     public static class Options
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
-        private static bool _litNormalization = true;//, _uriNormalization = true;
+        private static bool _litNormalization = false;
         private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
@@ -92,7 +92,6 @@ namespace VDS.RDF
         private static bool _uriLoaderCaching = true;
         private static int _uriLoaderTimeout = 15000;
         private static bool _utf8Bom = false;
-        //private static bool _rigorousQuery = false;
         private static bool _useDTDs = true;
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
@@ -136,29 +135,6 @@ namespace VDS.RDF
                 _litNormalization = value;
             }
         }
-
-        ///// <summary>
-        ///// Gets/Sets whether URI Values should be normalized
-        ///// </summary>
-        ///// <remarks>
-        ///// <para>
-        ///// <strong>Warning:</strong> It is strongly recommended that you do not turn this option off unless your data is poorly normalized and you cannot fix the data
-        ///// </para>
-        ///// <para>
-        ///// This Option only applies to URIs parsed from data not to URIs created by direct calls to <see cref="IGraph.CreateUriNode">CreateUriNode()</see>
-        ///// </para>
-        ///// </remarks>
-        //public static bool UriNormalization
-        //{
-        //    get
-        //    {
-        //        return _uriNormalization;
-        //    }
-        //    set
-        //    {
-        //        _uriNormalization = value;
-        //    }
-        //}
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for SPARQL Query Execution (in milliseconds)
@@ -263,26 +239,6 @@ namespace VDS.RDF
         }
 
 #endif
-
-        ///// <summary>
-        ///// Controls whether rigorours query evaluation should be used
-        ///// </summary>
-        ///// <remarks>
-        ///// <para>
-        ///// Rigorous Query Evaluation essentially introduces more value checking into the Query Engine which has a certain performance penalty associated with it.  Most of the time this setting is not needed (it is disabled by default) but if you have data that generates a lot of hash code collisions you may get incorrect results in your queries due to the default operation of our indexes.
-        ///// </para>
-        ///// </remarks>
-        //public static bool RigorousQueryEvaluation
-        //{
-        //    get
-        //    {
-        //        return _rigorousQuery;
-        //    }
-        //    set
-        //    {
-        //        _rigorousQuery = value;
-        //    }
-        //}
 
         /// <summary>
         /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds)
