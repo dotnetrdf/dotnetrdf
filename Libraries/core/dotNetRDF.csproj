@@ -83,14 +83,11 @@
     <Compile Include="Core\BaseGraphCollection.cs" />
     <Compile Include="Core\BaseNodeCollection.cs" />
     <Compile Include="Core\BaseTripleStore.cs" />
-    <Compile Include="Core\StoreGraph.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\ISparqlResultsReader.cs" />
     <Compile Include="Core\ISparqlResultsWriter.cs" />
     <Compile Include="Core\BaseTripleCollection.cs" />
     <Compile Include="Core\Options.cs" />
-    <Compile Include="Core\TalisGraph.cs" />
-    <Compile Include="Core\TalisTripleStore.cs" />
     <Compile Include="Core\ThreadSafeGraph.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
@@ -106,7 +103,6 @@
     <Compile Include="Parsing\SparqlJsonParser.cs" />
     <Compile Include="Parsing\SparqlXmlParser.cs" />
     <Compile Include="Parsing\StringParser.cs" />
-    <Compile Include="Parsing\TalisReader.cs" />
     <Compile Include="Parsing\Tokens\BaseTokeniser.cs" />
     <Compile Include="Parsing\TriGParser.cs" />
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
@@ -145,7 +141,6 @@
     <Compile Include="Storage\Params\StreamParams.cs" />
     <Compile Include="Storage\Params\IStoreParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
-    <Compile Include="Web\HandlerConstants.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
@@ -183,7 +178,6 @@
     <Compile Include="Writing\SparqlXmlWriter.cs" />
     <Compile Include="Core\TripleStore.cs" />
     <Compile Include="Writing\StringWriter.cs" />
-    <Compile Include="Writing\TalisWriter.cs" />
     <Compile Include="Writing\TriGWriter.cs" />
     <Compile Include="Writing\NTriplesWriter.cs" />
     <Compile Include="Core\Tools.cs" />
@@ -249,7 +243,6 @@
     <Compile Include="Core\VariableNode.cs" />
     <Compile Include="Core\VariableContext.cs" />
     <Compile Include="Core\WebDemandTripleStore.cs" />
-    <Compile Include="Core\NativeTripleStore.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Common\HashTable.cs" />
     <Compile Include="Indexing.cs" />

@@ -154,8 +154,6 @@ namespace VDS.RDF.Query
         }
     }
 
-#if !NO_STORAGE
-
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IGenericIOManager.Query">Query()</see> method of an <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see>
     /// </summary>
@@ -268,8 +266,6 @@ namespace VDS.RDF.Query
             }, state);
         }
     }
-
-#endif
 
     /// <summary>
     /// A SPARQL Query Processor where the query is processed by passing it to a remote SPARQL endpoint

@@ -43,12 +43,11 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Configuration
 {
-#if !NO_STORAGE
-
     /// <summary>
     /// Factory class for producing <see cref="IGenericIOManager">IGenericIOManager</see> instances from Configuration Graphs
     /// </summary>
-    public class GenericManagerFactory : IObjectFactory
+    public class GenericManagerFactory
+        : IObjectFactory
     {
         private const String AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
@@ -95,6 +94,7 @@ namespace VDS.RDF.Configuration
 
             switch (targetType.FullName)
             {
+#if !NO_SYNC_HTTP
                 case AllegroGraph:
                     //Get the Server, Catalog and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -115,6 +115,7 @@ namespace VDS.RDF.Configuration
                         manager = new AllegroGraphConnector(server, catalog, store);
                     }
                     break;
+#endif
 
                 case DatasetFile:
                     //Get the Filename and whether the loading should be done asynchronously
@@ -125,6 +126,7 @@ namespace VDS.RDF.Configuration
                     manager = new DatasetFileManager(file, isAsync);
                     break;
 
+#if !NO_SYNC_HTTP
                 case Dydra:
                     //Get the Account Name and Store
                     String account = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
@@ -159,6 +161,7 @@ namespace VDS.RDF.Configuration
                     if (server == null) return false;
                     manager = new FusekiConnector(server);
                     break;
+#endif
 
                 case InMemory:
                     //Get the Dataset/Store
@@ -199,6 +202,8 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
+#if !NO_SYNC_HTTP
+
                 case Joseki:
                     //Get the Query and Update URIs
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
@@ -215,6 +220,8 @@ namespace VDS.RDF.Configuration
                         manager = new JosekiConnector(server, queryService, updateService);
                     }
                     break;
+
+#endif
 
                 case ReadOnly:
                     //Get the actual Manager we are wrapping
@@ -243,6 +250,8 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load the Queryable Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IQueryableGenericIOManager interface");
                     }
                     break;
+
+#if !NO_SYNC_HTTP
 
                 case Sesame:
                 case SesameV5:
@@ -376,8 +385,11 @@ namespace VDS.RDF.Configuration
                         manager = new TalisPlatformConnector(store);
                     }
                     break;
+
+#endif
             }
 
+#if !NO_PROXY
             //Check whether this is a proxyable manager and if we need to load proxy settings
             if (manager is BaseHttpConnector)
             {
@@ -395,6 +407,7 @@ namespace VDS.RDF.Configuration
                     }
                 }
             }
+#endif
 
             obj = manager;
             return (manager != null);
@@ -431,6 +444,4 @@ namespace VDS.RDF.Configuration
             }
         }
     }
-
-#endif
 }

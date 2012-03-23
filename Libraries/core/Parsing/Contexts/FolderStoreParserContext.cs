@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +46,7 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Parser Context for Folder Store parsers
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in the 0.7.x releases", false)]
     public class FolderStoreParserContext : BaseStoreParserContext
     {
         private Queue<String> _loadList = new Queue<String>();
@@ -223,5 +222,3 @@ namespace VDS.RDF.Parsing.Contexts
         }
     }
 }
-
-#endif

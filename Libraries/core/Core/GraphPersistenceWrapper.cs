@@ -1441,8 +1441,6 @@ namespace VDS.RDF
 #endif
     }
 
-#if !NO_STORAGE
-
     /// <summary>
     /// The Store Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to an underlying store via a provided <see cref="IGenericIOManger">IGenericIOManager</see> implementation
     /// </summary>
@@ -1587,8 +1585,6 @@ namespace VDS.RDF
             this._manager.SaveGraph(this);
         }
     }
-
-#endif
 
     /// <summary>
     /// The File Graph Persistence Wrapper is a wrapper around antoher Graph that will be persisted to a file

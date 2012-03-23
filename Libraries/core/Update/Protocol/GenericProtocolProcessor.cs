@@ -33,7 +33,7 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP && !NO_STORAGE
+#if !NO_WEB && !NO_ASP
 
 using System;
 using System.Linq;
@@ -50,7 +50,8 @@ namespace VDS.RDF.Update.Protocol
     /// <summary>
     /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IGenericIOManager">IGenericIOManager</see> is available
     /// </summary>
-    public class GenericProtocolProcessor : BaseProtocolProcessor
+    public class GenericProtocolProcessor
+        : BaseProtocolProcessor
     {
         private IGenericIOManager _manager;
 

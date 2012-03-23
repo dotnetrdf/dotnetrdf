@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1131,6 +1129,8 @@ namespace VDS.RDF.Update
                         if ((this._manager.IOBehaviour & IOBehaviour.CanUpdateAddTriples) == 0 && (this._manager.IOBehaviour & IOBehaviour.OverwriteNamed) == 0) throw new SparqlUpdateException("The underlying store does not support the required IO Behaviour to implement this command");
                     }
 
+#if !NO_SYNC_HTTP
+
                     Graph g = new Graph();
                     if (!this._manager.UpdateSupported) this._manager.LoadGraph(g, cmd.TargetUri);
                     UriLoader.Load(g, cmd.SourceUri);
@@ -1143,6 +1143,9 @@ namespace VDS.RDF.Update
                     {
                         this._manager.SaveGraph(g);
                     }
+#else
+                    throw new SparqlUpdateException("Executing the LOAD command requires synchronous HTTP requests which are not supported on your platform currently");
+#endif
                 }
                 catch
                 {
@@ -1560,5 +1563,3 @@ namespace VDS.RDF.Update
         }
     }
 }
-
-#endif

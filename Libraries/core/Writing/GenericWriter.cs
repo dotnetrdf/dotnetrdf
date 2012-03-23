@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +44,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for writing RDF Graphs to an arbitrary Store from an arbitrary Graphs
     /// </summary>
-    [Obsolete("The GenericWriter is considered obsolete - use the SaveGraph() method of an IGenericIOManager directly instead", false)]
+    [Obsolete("The GenericWriter is considered obsolete - use the SaveGraph() method of an IGenericIOManager directly instead", true)]
     public class GenericWriter
     {
         private IGenericIOManager _manager;
@@ -70,5 +68,3 @@ namespace VDS.RDF.Writing
         }
     }
 }
-
-#endif

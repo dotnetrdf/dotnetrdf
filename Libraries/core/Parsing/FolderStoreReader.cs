@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +48,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for reading Triple Stores that are saved on disk as a set of files in a Folder
     /// </summary>
-    //[Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
+    [Obsolete("This class is obsoleted and will be removed in the 0.7.x releases", false)]
     public class FolderStoreReader : IStoreReader
     {
         /// <summary>
@@ -238,5 +236,3 @@ namespace VDS.RDF.Parsing
         public event StoreReaderWarning Warning;
     }
 }
-
-#endif

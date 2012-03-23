@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -377,5 +375,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

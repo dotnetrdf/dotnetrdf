@@ -135,15 +135,14 @@ namespace VDS.RDF.Writing.Contexts
         }
     }
 
-#if !NO_STORAGE
-
     /// <summary>
     /// Writer Context for Store Writers which write using a <see cref="IGenericIOManager">IGenericIOManager</see>
     /// </summary>
     /// <remarks>
     /// Provides a queue for queuing the URIs of Graphs from the Store that need writing and a thread safe way of retrieving the next Uri to be written from the Queue
     /// </remarks>
-    public class GenericStoreWriterContext : IStoreWriterContext
+    public class GenericStoreWriterContext
+        : IStoreWriterContext
     {
         private Queue<Uri> _writeList = new Queue<Uri>();
         private GenericIOParams _params;
@@ -235,6 +234,4 @@ namespace VDS.RDF.Writing.Contexts
             return temp;
         }
     }
-
-#endif
 }

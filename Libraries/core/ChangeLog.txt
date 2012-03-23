@@ -12,6 +12,8 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.6.2 release of dotNetRDF
 
 Added
+- Query
+ - Added an implicit join optimiser
 
 Changed
 - Bug Fixes
@@ -25,9 +27,15 @@ Changed
 - Query
  - Added TryGetValue() and TryGetBoundValue() methods to SparqlResult class
  - PLINQ optimisation of query evaluation for .Net 4.0 builds now enabled
+- Storage
+ - Storage API outline now available on Silverlight/Windows Phone 7 though many implementations are not available on those platforms
 
 Removed
-
+- All Talis specific classes except TalisPlatformConnector
+- Obsolete NativeTripleStore and StoreGraph
+- Obsolete HandlerConstants
+- Marked all legacy FolderStore classes as deprecated but usable
+- Marked old GenericReader/GenericWriter classes as deprecated unusable
    
 
 

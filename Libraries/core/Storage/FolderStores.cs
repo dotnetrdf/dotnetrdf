@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 namespace VDS.RDF.Storage
 {
     /// <summary>
@@ -60,5 +58,3 @@ namespace VDS.RDF.Storage
         RdfXml = 2
     }
 }
-
-#endif

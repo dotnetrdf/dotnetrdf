@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +43,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Parameters for Folder Stores
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in the 0.7.x releases", false)]
     public class FolderStoreParams : IStoreParams
     {
         private String _folder;
@@ -121,5 +120,3 @@ namespace VDS.RDF.Storage.Params
         }
     }
 }
-
-#endif

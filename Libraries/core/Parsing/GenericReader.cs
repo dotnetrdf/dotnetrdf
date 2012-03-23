@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +44,7 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Class for reading RDF Graphs from an arbitrary Store into arbitrary Graphs
     /// </summary>
-    [Obsolete("The GenericReader is considered obsolete - use the LoadGraph() method of an IGenericIOManager directly instead", false)]
+    [Obsolete("The GenericReader is considered obsolete - use the LoadGraph() method of an IGenericIOManager directly instead", true)]
     public class GenericReader
     {
         private IGenericIOManager _manager;
@@ -81,5 +79,3 @@ namespace VDS.RDF.Parsing
         }
     }
 }
-
-#endif

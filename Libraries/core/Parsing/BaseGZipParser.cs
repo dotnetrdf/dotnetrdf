@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_COMPRESSION
+
 using System;
 using System.IO.Compression;
 using System.IO;
@@ -154,3 +156,5 @@ namespace VDS.RDF.Parsing
             : base(new RdfAParser()) { }
     }
 }
+
+#endif

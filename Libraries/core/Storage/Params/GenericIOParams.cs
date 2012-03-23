@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,6 +43,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Store Parameters for Readers &amp; Writers which communicate with arbitrary stores which are connected to using an <see cref="IGenericIOManager">IGenericIOManager</see>
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in the 0.7.x releases", false)]
     public class GenericIOParams : IStoreParams
     {
         /// <summary>
@@ -126,5 +125,3 @@ namespace VDS.RDF.Storage.Params
         }
     }
 }
-
-#endif

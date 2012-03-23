@@ -33,6 +33,7 @@ terms.
 
 */
 
+#if !NO_COMPRESSION
 
 using System;
 using System.Collections.Generic;
@@ -117,3 +118,5 @@ namespace VDS.RDF.Parsing
             : base(new TriXParser()) { }
     }
 }
+
+#endif

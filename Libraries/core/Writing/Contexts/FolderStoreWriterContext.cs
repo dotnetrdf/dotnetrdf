@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +46,7 @@ namespace VDS.RDF.Writing.Contexts
     /// <summary>
     /// Writer Context for Store Writers which write to multiple files in a folder
     /// </summary>
+    [Obsolete("This class is obsolete and will be removed in the 0.7.x releases", false)]
     public class FolderStoreWriterContext : IStoreWriterContext
     {
         private Queue<Uri> _writeList = new Queue<Uri>();
@@ -176,5 +175,3 @@ namespace VDS.RDF.Writing.Contexts
         }
     }
 }
-
-#endif

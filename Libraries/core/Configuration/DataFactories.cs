@@ -135,8 +135,6 @@ namespace VDS.RDF.Configuration
 
             IEnumerable<Object> connections;
 
-#if !NO_STORAGE
-
             //Load from Stores
             IEnumerable<INode> stores = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromStore));
             stores.All(s => !ConfigurationLoader.CheckCircularReference(objNode, s, "dnr:fromStore"));
@@ -181,8 +179,6 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from a Store for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromStore property points to an Object which cannot be loaded as an object which implements either the IGenericIOManager/ITripleStore interface");
                 }
             }
-
-#endif
 
             //Finally load from Remote URIs
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromUri));
@@ -324,8 +320,6 @@ namespace VDS.RDF.Configuration
                     break;
 #endif
 
-#if !NO_STORAGE
-
                 case NativeTripleStore:
                     throw new DotNetRdfConfigurationException("The NativeTripleStore class is obsolete, please use a PersistentTripleStore instead which supercedes this class and provides more useful behaviour");
 
@@ -343,9 +337,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IGenericIOManager interface");
                     }
                     break;
-
-#endif
-
             }
             
             //Read in additional data to be added to the Store

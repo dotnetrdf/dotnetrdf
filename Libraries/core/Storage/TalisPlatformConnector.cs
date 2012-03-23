@@ -28,6 +28,8 @@ terms.
 
 */
 
+#if !NO_SYNC_HTTP
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,8 +40,6 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
-
-#if !NO_STORAGE
 
 namespace VDS.RDF.Storage
 {

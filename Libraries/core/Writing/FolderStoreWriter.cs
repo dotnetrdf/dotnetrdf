@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,7 +49,7 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for storing entire Triple Stores into disk based storage as a set of files in a Folder
     /// </summary>
-    [Obsolete("This class is deprecated in favour of using the Alexandria Filesystem store provided by the dotNetRDF.Alexandria library", false)]
+    [Obsolete("This class is obsolete and will be removed in the 0.7.x releases", false)]
     public class FolderStoreWriter : IStoreWriter
     {
 
@@ -228,5 +226,3 @@ namespace VDS.RDF.Writing
         }
     }
 }
-
-#endif

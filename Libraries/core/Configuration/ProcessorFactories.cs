@@ -116,8 +116,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_STORAGE
-
                 case GenericQueryProcessor:
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
@@ -131,8 +129,6 @@ namespace VDS.RDF.Configuration
                         throw new DotNetRdfConfigurationException("Unable to load the Generic Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IQueryableGenericIOManager interface");
                     }
                     break;
-
-#endif
 
 #if !SILVERLIGHT
                 case RemoteQueryProcessor:
@@ -256,8 +252,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_STORAGE
-
                 case GenericUpdateProcessor:
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
@@ -272,7 +266,6 @@ namespace VDS.RDF.Configuration
                     }
 
                     break;
-#endif
             }
 
             obj = processor;
@@ -383,7 +376,7 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_STORAGE
+#if !NO_WEB && !NO_ASP
 
                 case GenericProtocolProcessor:
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));

@@ -16,6 +16,10 @@ SILVERLIGHT
 
 Compile for Silverlight runtime
 
+WINDOWS_PHONE
+
+Compile for Windows Phone 7 runtime, if you define this you should also define SILVERLIGHT
+
 
 Feature Symbols
 ---------------
@@ -25,6 +29,10 @@ These symbols are used to disabled various features of the library, these are us
 NO_ASP
 
 Compile without building the VDS.RDF.Web namespace which provides the ASP.Net integration.  Using NO_WEB will also cause these features to be excluded
+
+NO_COMPRESSIOn
+
+Compile without using any System.IO.Compression dependencies.  Will exclude GZip related functionality
 
 NO_DATA
 
@@ -46,9 +54,9 @@ NO_RWLOCK
 
 Compile without any use of ReaderWriterLockSlim - use in conjunction with profiles like SILVERLIGHT where it is not supported.  Will cause all thread safe classes that depend on this to be excluded from the build
 
-NO_STORAGE
+NO_SYNC_HTTP
 
-Compile with most of the VDS.RDF.Storage namespace exlcuded which provides integration with 3rd party Triple Stores.
+Compile without support for features that require synchronous HTTP which is not supported on profiles like SILVERLIGHT
 
 NO_STOPWATCH
 

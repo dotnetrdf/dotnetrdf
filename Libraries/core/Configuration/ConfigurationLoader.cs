@@ -202,9 +202,7 @@ namespace VDS.RDF.Configuration
             new GraphFactory(),
             new StoreFactory(),
             //Default Manager Factories
-#if !NO_STORAGE
             new GenericManagerFactory(),
-#endif
             new DatasetFactory(),
             //Endpoint Factories
             new SparqlEndpointFactory(),

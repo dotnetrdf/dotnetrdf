@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_STORAGE
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,8 +47,9 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for writing Triple Stores to an arbitrary store using any <see cref="IGenericIOManager">IGenericIOManager</see> implementation
     /// </summary>
-    [Obsolete("The GenericStoreWriter is considered obsolete - use the SaveGraph() method of an IGenericIOManager directly instead", false)]
-    public class GenericStoreWriter : IStoreWriter
+    [Obsolete("The GenericStoreWriter is considered obsolete - use the SaveGraph() method of an IGenericIOManager directly instead", true)]
+    public class GenericStoreWriter
+        : IStoreWriter
     {
         /// <summary>
         /// Saves the given Triple Store to an arbitrary store
@@ -151,5 +150,3 @@ namespace VDS.RDF.Writing
         public event StoreWriterWarning Warning;
     }
 }
-
-#endif

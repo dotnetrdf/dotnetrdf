@@ -33,7 +33,7 @@ terms.
 
 */
 
-#if !NO_DATA && !NO_STORAGE
+#if !NO_SYNC_HTTP
 
 using System;
 using System.Collections.Generic;

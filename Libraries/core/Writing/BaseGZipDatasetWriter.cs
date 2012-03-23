@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !NO_COMPRESSION
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -73,3 +75,5 @@ namespace VDS.RDF.Writing
             : base(new TriXWriter()) { }
     }
 }
+
+#endif
