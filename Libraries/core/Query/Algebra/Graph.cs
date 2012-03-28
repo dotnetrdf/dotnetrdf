@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Algebra
                                 {
                                     //If the Graph is explicitly specified and there are FROM NAMED present then the Graph 
                                     //URI must be in the graphs specified by a FROM NAMED or the result is null
-                                    if (context.Query != null &&
+                                    if (context.Query == null ||
                                         ((!context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
                                          || context.Query.DefaultGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u))
                                          || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))

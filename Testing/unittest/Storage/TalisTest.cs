@@ -20,13 +20,10 @@ namespace VDS.RDF.Test.Storage
                 //Get the Talis Connection
                 TalisPlatformConnector talis = new TalisPlatformConnector("rvesse-dev1", "rvesse", "4kn478wj");
                 Assert.IsNotNull(talis);
-                
-                //Create a Talis Triple Store
-                TalisTripleStore store = new TalisTripleStore(talis);
 
                 //Try a SELECT *
                 String selectAll = "SELECT * {?s ?p ?o}";
-                Object results = store.ExecuteQuery(selectAll);
+                Object results = talis.Query(selectAll);
                 Assert.IsNotNull(results, "Expected some kind of results from the Query");
                 TestTools.ShowResults(results);
                 Console.WriteLine("SELECT query OK");
@@ -34,7 +31,7 @@ namespace VDS.RDF.Test.Storage
 
                 //Try a DESCRIBE
                 String describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
-                results = store.ExecuteQuery(describe);
+                results = talis.Query(describe);
                 Assert.IsNotNull(results, "Expected some kind of results from the Query");
                 TestTools.ShowResults(results);
                 Console.WriteLine("DESCRIBE query OK");
@@ -42,7 +39,7 @@ namespace VDS.RDF.Test.Storage
 
                 //Try an ASK
                 String ask = "ASK {?s ?p ?o}";
-                results = store.ExecuteQuery(ask);
+                results = talis.Query(ask);
                 Assert.IsNotNull(results, "Expected some kind of results from the Query");
                 TestTools.ShowResults(results);
                 Console.WriteLine("ASK query OK");
@@ -50,7 +47,7 @@ namespace VDS.RDF.Test.Storage
 
                 //Try another ASK
                 ask = "ASK {?s <http://example.org/nosuchthing> ?o}";
-                results = store.ExecuteQuery(ask);
+                results = talis.Query(ask);
                 Assert.IsNotNull(results, "Expected some kind of results from the Query");
                 TestTools.ShowResults(results);
                 Console.WriteLine("ASK query OK");

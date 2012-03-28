@@ -1,0 +1,21 @@
+﻿# This is the template for Configuration Data for Unit Tests
+# The format is simply Key=Value
+
+Storage.AllegroGraph.Server=
+Storage.AllegroGraph.Catalog=
+Storage.AllegroGraph.Store=
+
+Storage.Dydra.Account=
+Storage.Dydra.Repository=
+Storage.Dydra.GraphUri=http://example.org/dydraTest
+
+Storage.FourStore.Server=
+
+Storage.Fuseki.Server=
+
+Storage.Joseki.Server=
+
+Storage.Sesame.Server=
+Storage.Sesame.Repository=
+
+Storage.Stardog.Server=

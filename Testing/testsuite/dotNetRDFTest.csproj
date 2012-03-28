@@ -95,7 +95,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SortingTests.cs" />
     <Compile Include="RemoteSparqlTestSuite.cs" />
-    <Compile Include="TalisTests.cs" />
     <Compile Include="TestSuite.cs" />
     <Compile Include="ThreadSafeGraphTest.cs" />
     <Compile Include="TriGTestSuite.cs" />

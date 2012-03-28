@@ -68,7 +68,6 @@
   <ItemGroup>
     <Compile Include="SemWeb\EnumerationSink.cs" />
     <Compile Include="SemWeb\GraphSource.cs" />
-    <Compile Include="SemWeb\NativeStoreSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SemWeb\SemWebConverter.cs" />
     <Compile Include="SemWeb\SemWebGraph.cs" />

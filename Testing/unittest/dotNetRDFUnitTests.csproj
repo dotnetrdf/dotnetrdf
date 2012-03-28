@@ -112,6 +112,7 @@
     <Compile Include="Sparql\SparqlTests.cs" />
     <Compile Include="Sparql\VariableSubstitutionTests.cs" />
     <Compile Include="Storage\TalisTest.cs" />
+    <Compile Include="TestConfigManager.cs" />
     <Compile Include="TestTools.cs" />
     <Compile Include="Update\UpdateTests.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
@@ -417,6 +418,7 @@
     <Content Include="resources\multiple-optionals.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="resources\UnitTestConfig.template" />
     <Content Include="resources\writetostore.nq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
