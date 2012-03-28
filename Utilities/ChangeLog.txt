@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 0.5.1 Beta
+Version 0.5.2 Beta
 
 Robert Vesse 2009-12
 rvesse@vdesign-studios.com
@@ -19,17 +19,18 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
+- Support for GZipped IO
 
 rdfEditor (Not available under Mono)
  
 rdfOptStats
    
 rdfQuery
+- Pick up some bug fixes to SPARQL support
 
 rdfServer
 
 rdfServerGUI
-- Changed font of monitor box to be Consolas
 
 rdfSqlStorage
  
@@ -38,9 +39,7 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Changed fonts of various text boxes to be Consolas
+- Pick up some bug fixes to SPARQL support
 
 StoreManager
-- Pick up critical bug fix related to Stardog support
-- Changed font of Query and Update box to be Consolas
-- Changed default import batch size to 10,000 and upped maximum to 100,000
+- Pick up some bug fixes to Virtuoso support

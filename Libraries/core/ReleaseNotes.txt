@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.6.1 Beta
+Version 0.6.2 Beta
 
 Robert Vesse 2009-12
 rvesse@vdesign-studios.com
@@ -140,6 +140,8 @@ Release History
 19/2/2012 - Release of Version 0.6.0 Beta (Build 0.6.0.2145)
 
 3/3/2012 - Maintenance Release of Version 0.6.1 Beta (Build 0.6.1.2156)
+
+31/3/2012 - Release of Version 0.6.2 Beta (Build 0.6.2.2???)
 
 Acknowledgements
 ----------------

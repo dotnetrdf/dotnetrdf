@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C#
 
-Robert Vesse 2009-11
+Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 Change Log
@@ -20,13 +20,16 @@ Changed
  - Fix for an issue with bif:contains and other special constructs in SPARQL queries to Virtuoso
  - Fix for a bug with CREATE GRAPH and GenericUpdateProcessor behaviour for stores that don't support empty graphs
  - Fix for some regressions in SPARQL 1.1 support introduced by internal data structure changes in the 0.6.1 release
+ - Fix for corner case logic flaw in GRAPH clause evaluation
+ - Fix for proper configurable timeouts for Virtuoso
+ - Fix for some Virtuoso extensions causing queries to be rejected
 - Parsing
  - Explicit support for direct parsing of GZipped inputs (e.g. example.ttl.gz)
+ - More intelligent format detection on loading into TripleStore instances
 - Ontology API
  - Added IsDomainOf and IsRangeOf properties to OntologyClass
 - Query
  - Added TryGetValue() and TryGetBoundValue() methods to SparqlResult class
- - PLINQ optimisation of query evaluation for .Net 4.0 builds now enabled
 - Storage
  - Storage API outline now available on Silverlight/Windows Phone 7 though many implementations are not available on those platforms
 

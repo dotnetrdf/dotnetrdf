@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Query.FullText</id>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <authors>RobVesse</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
