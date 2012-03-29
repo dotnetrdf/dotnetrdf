@@ -243,6 +243,10 @@ namespace VDS.RDF.Update.Commands
                 //URIs available to it which it gets from the Query property of the Context
                 //object
                 SparqlQuery query = new SparqlQuery();
+                foreach (Uri u in this.UsingUris)
+                {
+                    query.AddDefaultGraph(u);
+                }
                 foreach (Uri u in this.UsingNamedUris)
                 {
                     query.AddNamedGraph(u);

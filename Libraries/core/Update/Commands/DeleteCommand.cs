@@ -214,7 +214,7 @@ namespace VDS.RDF.Update.Commands
                     where = context.Commands.ApplyAlgebraOptimisers(where);
                 }
 
-                //Set Active Graph for the WHERE
+                //Set Active Graph for the WHERE based upon the WITH clause
                 //Don't bother if there are USING URIs as these would override any Active Graph we set here
                 //so we can save ourselves the effort of doing this
                 if (!this.UsingUris.Any())
@@ -232,10 +232,14 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 //We need to make a dummy SparqlQuery object since if the Command has used any 
-                //USING NAMEDs along with GRAPH clauses then the algebra needs to have the
+                //USING/USING NAMEDs along with GRAPH clauses then the algebra needs to have the
                 //URIs available to it which it gets from the Query property of the Context
                 //object
                 SparqlQuery query = new SparqlQuery();
+                foreach (Uri u in this.UsingUris)
+                {
+                    query.AddDefaultGraph(u);
+                }
                 foreach (Uri u in this.UsingNamedUris)
                 {
                     query.AddNamedGraph(u);
