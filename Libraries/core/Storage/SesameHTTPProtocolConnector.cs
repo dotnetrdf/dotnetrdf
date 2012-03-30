@@ -213,15 +213,27 @@ namespace VDS.RDF.Storage
             {
                 //Pre-parse the query to determine what the Query Type is
                 bool isAsk = false;
+                SparqlQuery q;
                 try
                 {
-                    SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
+                    q = this._parser.ParseFromString(sparqlQuery);
                     isAsk = q.QueryType == SparqlQueryType.Ask;
                 }
                 catch
                 {
                     //If parsing error fallback to naive detection
                     isAsk = Regex.IsMatch(sparqlQuery, "ASK", RegexOptions.IgnoreCase);
+                }
+
+                //Select Accept Header
+                String accept;
+                if (q != null)
+                {
+                    accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader);
+                }
+                else
+                {
+                    accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
                 }
 
                 HttpWebRequest request;
@@ -232,11 +244,11 @@ namespace VDS.RDF.Storage
                 {
                     queryParams.Add("query", EscapeQuery(sparqlQuery));
 
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "GET", queryParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
                 }
                 else
                 {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, MimeTypesHelper.HttpRdfOrSparqlAcceptHeader, "POST", queryParams);
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
                     //Build the Post Data and add to the Request Body
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
