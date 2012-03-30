@@ -291,7 +291,15 @@ namespace VDS.RDF.Storage
 
                         //Is the Content Type referring to a RDF format?
                         IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                        rdfreader.Load(rdfHandler, data);
+                        if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
+                        {
+                            SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
+                            resreader.Load(resultsHandler, data);
+                        }
+                        else
+                        {
+                            rdfreader.Load(rdfHandler, data);
+                        }
                         response.Close();
                     }
                 }
