@@ -1,6 +1,6 @@
 ﻿/*
 
-Copyright Robert Vesse 2009-10
+Copyright Robert Vesse 2009-12
 rvesse@vdesign-studios.com
 
 ------------------------------------------------------------------------

@@ -213,7 +213,7 @@ namespace VDS.RDF.Storage
             {
                 //Pre-parse the query to determine what the Query Type is
                 bool isAsk = false;
-                SparqlQuery q;
+                SparqlQuery q = null;
                 try
                 {
                     q = this._parser.ParseFromString(sparqlQuery);
