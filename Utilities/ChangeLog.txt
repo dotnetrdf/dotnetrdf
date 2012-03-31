@@ -43,3 +43,4 @@ SparqlGUI
 
 StoreManager
 - Pick up some bug fixes to Virtuoso support
+- Pick up a bug fix to Sesame support

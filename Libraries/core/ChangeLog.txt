@@ -23,6 +23,7 @@ Changed
  - Fix for corner case logic flaw in GRAPH clause evaluation
  - Fix for proper configurable timeouts for Virtuoso
  - Fix for some Virtuoso extensions causing queries to be rejected
+ - Fix for incorrect parser selection when talking to some Sesame based servers
 - Parsing
  - Explicit support for direct parsing of GZipped inputs (e.g. example.ttl.gz)
  - More intelligent format detection on loading into TripleStore instances

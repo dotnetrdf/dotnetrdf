@@ -141,7 +141,7 @@ Release History
 
 3/3/2012 - Maintenance Release of Version 0.6.1 Beta (Build 0.6.1.2156)
 
-31/3/2012 - Release of Version 0.6.2 Beta (Build 0.6.2.2???)
+1/4/2012 - Release of Version 0.6.2 Beta (Build 0.6.2.2180)
 
 Acknowledgements
 ----------------
