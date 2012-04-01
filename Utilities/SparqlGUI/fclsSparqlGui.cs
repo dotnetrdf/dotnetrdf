@@ -96,6 +96,9 @@ namespace VDS.RDF.Utilities.Sparql
             temp = Path.Combine(temp, @"SparqlGUI\");
             if (!System.IO.Directory.Exists(temp)) System.IO.Directory.CreateDirectory(temp);
             this._logfile = Path.Combine(temp, "SparqlGui-" + DateTime.Now.ToString("MMM-yyyy") + ".log");
+
+            this.ofdBrowse.Filter = MimeTypesHelper.GetFilenameFilter(true, true, false, false, false, true);
+            this.ofdQuery.Filter = MimeTypesHelper.GetFilenameFilter(false, false, false, true, false, true);
         }
 
         private void fclsSparqlGui_Load(object sender, EventArgs e)

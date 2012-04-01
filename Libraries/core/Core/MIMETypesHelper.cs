@@ -1020,7 +1020,7 @@ namespace VDS.RDF
                     || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
                     || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
                 {
-                    exts.AddRange(def.FileExtensions);
+                    exts.AddRange(def.FileExtensions/*.Where(e => !e.Contains("."))*/);
                     filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
                 }
             }
