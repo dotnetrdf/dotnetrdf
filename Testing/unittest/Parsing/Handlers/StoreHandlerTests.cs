@@ -49,10 +49,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.nq");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.nq", Encoding.ASCII);
 
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(store, ps);
+            parser.Load(store, "test.nq");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -79,10 +78,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.nq");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.nq", Encoding.ASCII);
 
             NQuadsParser parser = new NQuadsParser();
-            parser.Load(new StoreHandler(store), ps);
+            parser.Load(new StoreHandler(store), "test.nq");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -108,11 +106,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
         {
             this.EnsureTestData("test.nq");
 
-            StreamParams ps = new StreamParams("test.nq", Encoding.ASCII);
-
             NQuadsParser parser = new NQuadsParser();
             StoreCountHandler counter = new StoreCountHandler();
-            parser.Load(counter, ps);
+            parser.Load(counter, "test.nq");
 
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -187,10 +183,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.trig");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.trig", Encoding.ASCII);
 
             TriGParser parser = new TriGParser();
-            parser.Load(store, ps);
+            parser.Load(store, "test.trig");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -217,10 +212,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.trig");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.trig", Encoding.ASCII);
 
             TriGParser parser = new TriGParser();
-            parser.Load(new StoreHandler(store), ps);
+            parser.Load(new StoreHandler(store), "test.trig");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -246,11 +240,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
         {
             this.EnsureTestData("test.trig");
 
-            StreamParams ps = new StreamParams("test.trig", Encoding.ASCII);
-
             TriGParser parser = new TriGParser();
             StoreCountHandler counter = new StoreCountHandler();
-            parser.Load(counter, ps);
+            parser.Load(counter, "test.trig");
 
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -276,10 +268,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.xml");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.xml", Encoding.ASCII);
 
             TriXParser parser = new TriXParser();
-            parser.Load(store, ps);
+            parser.Load(store, "test.xml");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -306,10 +297,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
             this.EnsureTestData("test.xml");
 
             TripleStore store = new TripleStore();
-            StreamParams ps = new StreamParams("test.xml", Encoding.ASCII);
 
             TriXParser parser = new TriXParser();
-            parser.Load(new StoreHandler(store), ps);
+            parser.Load(new StoreHandler(store), "test.xml");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
@@ -335,11 +325,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
         {
             this.EnsureTestData("test.xml");
 
-            StreamParams ps = new StreamParams("test.xml", Encoding.ASCII);
-
             TriXParser parser = new TriXParser();
             StoreCountHandler counter = new StoreCountHandler();
-            parser.Load(counter, ps);
+            parser.Load(counter, "test.xml");
 
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");

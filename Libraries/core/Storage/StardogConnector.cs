@@ -509,7 +509,7 @@ namespace VDS.RDF.Storage
                 //Save the Data as TriG to the Request Stream
                 TripleStore store = new TripleStore();
                 store.Add(g);
-                this._writer.Save(store, new StreamParams(request.GetRequestStream()));
+                this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -614,7 +614,7 @@ namespace VDS.RDF.Storage
                         g.Assert(removals);
                         g.BaseUri = graphUri;
                         store.Add(g);
-                        this._writer.Save(store, new StreamParams(request.GetRequestStream()));
+                        this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                         using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {
@@ -637,7 +637,7 @@ namespace VDS.RDF.Storage
                         g.Assert(additions);
                         g.BaseUri = graphUri;
                         store.Add(g);
-                        this._writer.Save(store, new StreamParams(request.GetRequestStream()));
+                        this._writer.Save(store, new StreamWriter(request.GetRequestStream()));
 
                         using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                         {

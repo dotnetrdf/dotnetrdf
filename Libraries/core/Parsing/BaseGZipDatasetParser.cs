@@ -75,6 +75,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Store Parameters</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -86,6 +87,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Store Parameters</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new RdfParseException("Cannot parse RDF Dataset using a null Handler");
@@ -93,22 +95,54 @@ namespace VDS.RDF.Parsing
 
             if (parameters is StreamParams)
             {
-                StreamParams sp = (StreamParams)parameters;
-                StreamReader input = sp.StreamReader;
-
-                if (input.BaseStream is GZipStream)
-                {
-                    this._parser.Load(handler, sp);
-                }
-                else
-                {
-                    //Force the inner stream to be GZipped
-                    this._parser.Load(handler, new StreamParams(new GZipStream(input.BaseStream, CompressionMode.Decompress)));
-                }
+                this.Load(handler, ((StreamParams)parameters).StreamReader);
             }
             else
             {
                 throw new RdfParseException("GZip Dataset Parsers can only read from StreamParams instances");
+            }
+        }
+
+        public void Load(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+        }
+
+        public void Load(ITripleStore store, TextReader input)
+        {
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            this.Load(new StoreHandler(store), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(handler, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+
+            if (input is StreamReader)
+            {
+                StreamReader reader = (StreamReader)input;
+                if (reader.BaseStream is GZipStream)
+                {
+                    this._parser.Load(handler, input);
+                }
+                else
+                {
+                    //Force the inner stream to be GZipped
+                    this._parser.Load(handler, new StreamReader(new GZipStream(reader.BaseStream, CompressionMode.Decompress)));
+                }
+            }
+            else
+            {
+                throw new RdfParseException("GZip Dataset Parsers can only read from StreamReader instances");
             }
         }
 

@@ -35,9 +35,9 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
@@ -48,7 +48,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// Class for serialzing Triple Stores in the TriX format
     /// </summary>
-    public class TriXWriter : IStoreWriter
+    public class TriXWriter
+        : IStoreWriter
     {
         private XmlWriterSettings GetSettings()
         {
@@ -70,58 +71,67 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="parameters">Parameters indicating a Stream to write to</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
             //Try and get the TextWriter to output to
-            TextWriter output = null;
             if (parameters is StreamParams)
             {
-                output = ((StreamParams)parameters).StreamWriter;
+                this.Save(store, ((StreamParams)parameters).StreamWriter);
             } 
             else if (parameters is TextWriterParams)
             {
-                output = ((TextWriterParams)parameters).TextWriter;
-            }
-
-            if (output != null)
-            {
-                try
-                {
-                    //Setup the XML document
-                    XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
-                    writer.WriteStartAttribute("xmlns");
-                    writer.WriteRaw(TriXParser.TriXNamespaceURI);
-                    writer.WriteEndAttribute();
-
-                    //Output Graphs as XML <graph> elements
-                    foreach (IGraph g in store.Graphs) 
-                    {
-                        this.GraphToTriX(g, writer);
-                    }
-
-                    //Save the XML to disk
-                    writer.WriteEndDocument();
-                    writer.Close();
-                    output.Close();
-                }
-                catch
-                {
-                    try
-                    {
-                        output.Close();
-                    }
-                    catch
-                    {
-                        //Just cleaning up
-                    }
-                    throw;
-                }
+                this.Save(store, ((TextWriterParams)parameters).TextWriter);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the TriXWriter must be of the type StreamParams/TextWriterParams");
+            }
+        }
+
+        public void Save(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
+            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+        }
+
+        public void Save(ITripleStore store, TextWriter output)
+        {
+            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
+            if (output == null) throw new RdfOutputException("Cannot output to a null writer");
+
+            try
+            {
+                //Setup the XML document
+                XmlWriter writer = XmlWriter.Create(output, this.GetSettings());
+                writer.WriteStartDocument();
+                writer.WriteStartElement("TriX", TriXParser.TriXNamespaceURI);
+                writer.WriteStartAttribute("xmlns");
+                writer.WriteRaw(TriXParser.TriXNamespaceURI);
+                writer.WriteEndAttribute();
+
+                //Output Graphs as XML <graph> elements
+                foreach (IGraph g in store.Graphs)
+                {
+                    this.GraphToTriX(g, writer);
+                }
+
+                //Save the XML to disk
+                writer.WriteEndDocument();
+                writer.Close();
+                output.Close();
+            }
+            catch
+            {
+                try
+                {
+                    output.Close();
+                }
+                catch
+                {
+                    //Just cleaning up
+                }
+                throw;
             }
         }
 

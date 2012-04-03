@@ -34,7 +34,7 @@ namespace VDS.RDF.Test.Parsing
              }
 
              TripleStore store = new TripleStore();
-             reader.Load(store, new VDS.RDF.Storage.Params.StreamParams("empty.test"));
+             reader.Load(store, "empty.test");
 
              Assert.AreEqual(0, store.Graphs.Count, "Store should have no Graphs");
          }

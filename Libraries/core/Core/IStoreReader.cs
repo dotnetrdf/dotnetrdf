@@ -33,6 +33,8 @@ terms.
 
 */
 
+using System;
+using System.IO;
 using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF
@@ -48,6 +50,7 @@ namespace VDS.RDF
         /// <param name="store">Triple Store</param>
         /// <param name="parameters">Parameters indicating where the Reader should read from</param>
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         void Load(ITripleStore store, IStoreParams parameters);
 
         /// <summary>
@@ -56,7 +59,16 @@ namespace VDS.RDF
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Parameters indicating where the Reader should read from</param>
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         void Load(IRdfHandler handler, IStoreParams parameters);
+
+        void Load(ITripleStore store, String filename);
+
+        void Load(ITripleStore store, TextReader input);
+
+        void Load(IRdfHandler handler, String filename);
+
+        void Load(IRdfHandler handler, TextReader input);
 
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed

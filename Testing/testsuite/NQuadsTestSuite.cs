@@ -43,20 +43,20 @@ namespace dotNetRDFTest
                         {
                             TriGParser parser = new TriGParser();
                             TripleStore store = new TripleStore();
-                            parser.Load(store, new StreamParams(file));
+                            parser.Load(store, file);
 
                             Console.WriteLine("Parsed OK");
 
                             NQuadsWriter writer = new NQuadsWriter();
                             String outfile = "nquads_tests/" + Path.GetFileNameWithoutExtension(file) + ".nq";
-                            writer.Save(store, new StreamParams(outfile));
+                            writer.Save(store, outfile);
 
                             Console.WriteLine("Serialized OK");
 
                             NQuadsParser nqparser = new NQuadsParser();
                             nqparser.TraceTokeniser = true;
                             TripleStore store2 = new TripleStore();
-                            nqparser.Load(store2, new StreamParams(outfile));
+                            nqparser.Load(store2, outfile);
 
                             Console.WriteLine("Parsed serialized NQuads OK");
 

@@ -57,7 +57,8 @@ namespace VDS.RDF.Writing
     /// </para>
     /// </remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call <see cref="TriGWriter.Save">Save()</see> from several threads with no issue.  See Remarks for potential performance impact of this.</threadsafety>
-    public class TriGWriter : IStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
+    public class TriGWriter 
+        : IStoreWriter, IHighSpeedWriter, IPrettyPrintingWriter, ICompressingWriter, IMultiThreadedWriter
     {
         private int _threads = 4;
         private const int PollInterval = 50;
@@ -150,138 +151,149 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="parameters">Parameters indicating a Stream to write to</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
             //Try and determine the TextWriter to output to
-            TriGWriterContext context = null;
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
                 ((StreamParams)parameters).Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-                context = new TriGWriterContext(store, ((StreamParams)parameters).StreamWriter, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
+                this.Save(store, ((StreamParams)parameters).StreamWriter);
             } 
             else if (parameters is TextWriterParams)
             {
-                context = new TriGWriterContext(store, ((TextWriterParams)parameters).TextWriter, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
-            }
-
-            if (context != null)
-            {
-                //Check there's something to do
-                if (context.Store.Graphs.Count == 0) 
-                {
-                    context.Output.Close();
-                    return;
-                }
-
-                //Write the Header of the File
-                foreach (IGraph g in context.Store.Graphs)
-                {
-                    context.NamespaceMap.Import(g.NamespaceMap);
-                }
-                if (context.CompressionLevel > WriterCompressionLevel.None)
-                {
-                    //Only add @prefix declarations if compression is enabled
-                    context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
-                    foreach (String prefix in context.NamespaceMap.Prefixes)
-                    {
-                        if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
-                        {
-                            context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
-                        }
-                    }
-                    context.Output.WriteLine();
-                }
-                else
-                {
-                    context.QNameMapper = new ThreadSafeQNameOutputMapper(new NamespaceMapper(true));
-                }
-
-                if (this._useMultiThreading)
-                {
-                    //Standard Multi-Threaded Writing
-
-                    //Queue the Graphs to be written
-                    foreach (IGraph g in context.Store.Graphs)
-                    {
-                        if (g.BaseUri == null)
-                        {
-                            context.Add(UriFactory.Create(GraphCollection.DefaultGraphUri));
-                        }
-                        else
-                        {
-                            context.Add(g.BaseUri);
-                        }
-                    }
-
-                    //Start making the async calls
-                    List<IAsyncResult> results = new List<IAsyncResult>();
-                    SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
-                    for (int i = 0; i < this._threads; i++)
-                    {
-                        results.Add(d.BeginInvoke(context, null, null));
-                    }
-
-                    //Wait for all the async calls to complete
-                    WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                    RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
-                    foreach (IAsyncResult result in results)
-                    {
-                        try
-                        {
-                            d.EndInvoke(result);
-                        }
-                        catch (Exception ex)
-                        {
-                            outputEx.AddException(ex);
-                        }
-                    }
-                    //Make sure to close the output
-                    context.Output.Close();
-
-                    //If there were any errors we'll throw an RdfThreadedOutputException now
-                    if (outputEx.InnerExceptions.Any()) throw outputEx;
-                }
-                else
-                {
-                    try
-                    {
-                        //Optional Single Threaded Writing
-                        foreach (IGraph g in store.Graphs)
-                        {
-                            TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
-                            if (context.CompressionLevel > WriterCompressionLevel.None)
-                            {
-                                graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
-                            }
-                            else
-                            {
-                                graphContext.NodeFormatter = new UncompressedTurtleFormatter();
-                            }
-                            context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
-                        }
-                        
-                        //Make sure to close the output
-                        context.Output.Close();
-                    }
-                    catch
-                    {
-                        try
-                        {
-                            //Close the output
-                            context.Output.Close();
-                        }
-                        catch
-                        {
-                            //No catch actions, just cleaning up the output stream
-                        }
-                        throw;
-                    }
-                }
+                this.Save(store, ((TextWriterParams)parameters).TextWriter);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the TriGWriter must be of the type StreamParams/TextWriterParams");
+            }
+        }
+
+        public void Save(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
+            this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
+        }
+
+        public void Save(ITripleStore store, TextWriter writer)
+        {
+            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
+            if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
+
+            TriGWriterContext context = new TriGWriterContext(store, writer, this._prettyprint, this._allowHiSpeed, this._compressionLevel, this._n3compat);
+
+            //Check there's something to do
+            if (context.Store.Graphs.Count == 0)
+            {
+                context.Output.Close();
+                return;
+            }
+
+            //Write the Header of the File
+            foreach (IGraph g in context.Store.Graphs)
+            {
+                context.NamespaceMap.Import(g.NamespaceMap);
+            }
+            if (context.CompressionLevel > WriterCompressionLevel.None)
+            {
+                //Only add @prefix declarations if compression is enabled
+                context.QNameMapper = new ThreadSafeQNameOutputMapper(context.NamespaceMap);
+                foreach (String prefix in context.NamespaceMap.Prefixes)
+                {
+                    if (TurtleSpecsHelper.IsValidQName(prefix + ":"))
+                    {
+                        context.Output.WriteLine("@prefix " + prefix + ": <" + context.FormatUri(context.NamespaceMap.GetNamespaceUri(prefix)) + ">.");
+                    }
+                }
+                context.Output.WriteLine();
+            }
+            else
+            {
+                context.QNameMapper = new ThreadSafeQNameOutputMapper(new NamespaceMapper(true));
+            }
+
+            if (this._useMultiThreading)
+            {
+                //Standard Multi-Threaded Writing
+
+                //Queue the Graphs to be written
+                foreach (IGraph g in context.Store.Graphs)
+                {
+                    if (g.BaseUri == null)
+                    {
+                        context.Add(UriFactory.Create(GraphCollection.DefaultGraphUri));
+                    }
+                    else
+                    {
+                        context.Add(g.BaseUri);
+                    }
+                }
+
+                //Start making the async calls
+                List<IAsyncResult> results = new List<IAsyncResult>();
+                SaveGraphsDelegate d = new SaveGraphsDelegate(this.SaveGraphs);
+                for (int i = 0; i < this._threads; i++)
+                {
+                    results.Add(d.BeginInvoke(context, null, null));
+                }
+
+                //Wait for all the async calls to complete
+                WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
+                RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("TriG"));
+                foreach (IAsyncResult result in results)
+                {
+                    try
+                    {
+                        d.EndInvoke(result);
+                    }
+                    catch (Exception ex)
+                    {
+                        outputEx.AddException(ex);
+                    }
+                }
+                //Make sure to close the output
+                context.Output.Close();
+
+                //If there were any errors we'll throw an RdfThreadedOutputException now
+                if (outputEx.InnerExceptions.Any()) throw outputEx;
+            }
+            else
+            {
+                try
+                {
+                    //Optional Single Threaded Writing
+                    foreach (IGraph g in store.Graphs)
+                    {
+                        TurtleWriterContext graphContext = new TurtleWriterContext(g, new System.IO.StringWriter(), context.PrettyPrint, context.HighSpeedModePermitted);
+                        if (context.CompressionLevel > WriterCompressionLevel.None)
+                        {
+                            graphContext.NodeFormatter = new TurtleFormatter(context.QNameMapper);
+                        }
+                        else
+                        {
+                            graphContext.NodeFormatter = new UncompressedTurtleFormatter();
+                        }
+                        context.Output.WriteLine(this.GenerateGraphOutput(context, graphContext));
+                    }
+
+                    //Make sure to close the output
+                    context.Output.Close();
+                }
+                catch
+                {
+                    try
+                    {
+                        //Close the output
+                        context.Output.Close();
+                    }
+                    catch
+                    {
+                        //No catch actions, just cleaning up the output stream
+                    }
+                    throw;
+                }
             }
         }
 

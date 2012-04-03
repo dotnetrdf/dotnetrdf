@@ -158,7 +158,7 @@ namespace VDS.RDF.Utilities.Sparql
                         //Try and get a Store Parser and load
                         IStoreReader storeparser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text)));
                         TripleStore store = new TripleStore();
-                        storeparser.Load(store, new StreamParams(this.txtSourceFile.Text));
+                        storeparser.Load(store, this.txtSourceFile.Text);
 
                         foreach (IGraph g in store.Graphs)
                         {

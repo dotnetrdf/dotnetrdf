@@ -44,7 +44,9 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Parameters for Store Readers and Writers which read/write using a Stream
     /// </summary>
-    public class StreamParams : IStoreParams
+    [Obsolete("This class is obsolete and will be removed in future versions since it is no longer required due to the new methods on IStoreReader and IStoreWriter", false)]
+    public class StreamParams
+        : IStoreParams
     {
         private Stream _input = null;
         private String _filename;
@@ -151,7 +153,9 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Parameters for Store Readers which read using a TextReader
     /// </summary>
-    public class TextReaderParams : IStoreParams
+    [Obsolete("This class is obsolete and will be removed in future versions since it is no longer required due to the new methods on IStoreReader and IStoreWriter", false)]
+    public class TextReaderParams
+        : IStoreParams
     {
         private TextReader _reader;
 
@@ -180,7 +184,9 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Parameters for Store Writers which write using a TextWriter
     /// </summary>
-    public class TextWriterParams : IStoreParams
+    [Obsolete("This class is obsolete and will be removed in future versions since it is no longer required due to the new methods on IStoreReader and IStoreWriter", false)]
+    public class TextWriterParams
+        : IStoreParams
     {
         private TextWriter _writer;
 

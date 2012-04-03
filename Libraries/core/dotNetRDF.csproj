@@ -93,10 +93,8 @@
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
     <Compile Include="Parsing\BaseGZipResultsParser.cs" />
-    <Compile Include="Parsing\GenericReader.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
-    <Compile Include="Parsing\FolderStoreReader.cs" />
     <Compile Include="Parsing\RdfJsonParser.cs" />
     <Compile Include="Parsing\RdfSpecsHelper.cs" />
     <Compile Include="Parsing\SparqlJsonParser.cs" />
@@ -133,7 +131,6 @@
     <Compile Include="Core\GraphLiteralNode.cs" />
     <Compile Include="Storage\FolderStores.cs" />
     <Compile Include="Storage\IGenericIOManager.cs" />
-    <Compile Include="Storage\Params\FolderStoreParams.cs" />
     <Compile Include="Storage\Params\StreamParams.cs" />
     <Compile Include="Storage\Params\IStoreParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
@@ -141,7 +138,6 @@
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
     <Compile Include="Writing\BaseGZipResultsWriter.cs" />
-    <Compile Include="Writing\FolderStoreWriter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
     <Compile Include="Writing\GraphVizWriter.cs" />
     <Compile Include="Core\IGraph.cs" />
@@ -259,7 +255,6 @@
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
-    <Compile Include="Parsing\Contexts\FolderStoreParserContext.cs" />
     <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
     <Compile Include="Parsing\Contexts\IParserContext.cs" />
     <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
@@ -658,7 +653,6 @@
     <Compile Include="Storage\DatasetFileManager.cs" />
     <Compile Include="Storage\FusekiConnector.cs" />
     <Compile Include="Storage\InMemoryManager.cs" />
-    <Compile Include="Storage\Params\GenericIOParams.cs" />
     <Compile Include="Storage\ReadOnlyConnector.cs" />
     <Compile Include="Storage\SparqlConnector.cs" />
     <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
@@ -745,7 +739,6 @@
     <Compile Include="Storage\BatchTriple.cs" />
     <Compile Include="Storage\JosekiConnector.cs" />
     <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
-    <Compile Include="Writing\Contexts\FolderStoreWriterContext.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
     <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
@@ -779,7 +772,6 @@
     <Compile Include="Writing\HtmlWriter.cs" />
     <Compile Include="Writing\CsvWriter.cs" />
     <Compile Include="Writing\FastRdfXmlWriter.cs" />
-    <Compile Include="Writing\GenericStoreWriter.cs" />
     <Compile Include="Writing\Notation3Writer.cs" />
     <Compile Include="Writing\NQuadsWriter.cs" />
     <Compile Include="Writing\RdfJsonWriter.cs" />
@@ -793,7 +785,6 @@
     <Compile Include="Writing\TriXWriter.cs" />
     <Compile Include="Writing\TsvWriter.cs" />
     <Compile Include="Writing\TurtleWriter.cs" />
-    <Compile Include="Writing\GenericWriter.cs" />
     <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd" />
     <EmbeddedResource Include="Query\Expressions\LeviathanFunctionLibrary.ttl" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />

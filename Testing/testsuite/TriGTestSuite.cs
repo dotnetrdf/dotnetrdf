@@ -35,7 +35,7 @@ namespace dotNetRDFTest
                             TriGParser parser = new TriGParser();
                             TripleStore store = new TripleStore();
                             //parser.TraceTokeniser = true;
-                            parser.Load(store, new StreamParams(file));
+                            parser.Load(store, file);
 
                             //Output the Triples
                             Console.WriteLine("# Parsed OK");
@@ -49,11 +49,11 @@ namespace dotNetRDFTest
                             //Write out
                             TriGWriter writer = new TriGWriter();
                             writer.HighSpeedModePermitted = false;
-                            writer.Save(store, new StreamParams(file + ".out"));
+                            writer.Save(store, file + ".out");
 
                             //Parse back in again
                             TripleStore store2 = new TripleStore();
-                            parser.Load(store2, new StreamParams(file + ".out"));
+                            parser.Load(store2, file + ".out");
 
                             Console.WriteLine("# Parsed back in again");
                             if (store.Graphs.Count == store2.Graphs.Count)

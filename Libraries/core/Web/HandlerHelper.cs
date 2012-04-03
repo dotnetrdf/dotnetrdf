@@ -305,11 +305,11 @@ namespace VDS.RDF.Web
                 if (definition != null) 
                 {
                     context.Response.ContentEncoding = definition.Encoding;
-                    storeWriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream, definition.Encoding));
+                    storeWriter.Save((ITripleStore)result, new StreamWriter(context.Response.OutputStream, definition.Encoding));
                 } 
                 else
                 {
-                    storeWriter.Save((ITripleStore)result, new VDS.RDF.Storage.Params.StreamParams(context.Response.OutputStream));
+                    storeWriter.Save((ITripleStore)result, new StreamWriter(context.Response.OutputStream));
                 }
             }
             else if (result is ISparqlDataset)

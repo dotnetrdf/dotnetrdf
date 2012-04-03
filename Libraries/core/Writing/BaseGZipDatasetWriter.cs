@@ -74,28 +74,48 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="parameters">Storage Parameters</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
-            if (store == null) throw new RdfOutputException("Cannot output a new Triple Store");
+            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
             if (parameters == null) throw new RdfOutputException("Cannot output using null parameters");
 
             if (parameters is StreamParams)
             {
-                StreamParams sp = (StreamParams)parameters;
-                StreamWriter output = sp.StreamWriter;
-
-                if (output.BaseStream is GZipStream)
-                {
-                    this._writer.Save(store, sp);
-                }
-                else
-                {
-                    this._writer.Save(store, new StreamParams(new GZipStream(output.BaseStream, CompressionMode.Compress)));
-                }
+                this.Save(store, ((StreamParams)parameters).StreamWriter);
             }
             else
             {
                 throw new RdfOutputException("GZip Dataset Writers can only write to StreamParams instances");
+            }
+        }
+
+        public void Save(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfOutputException("Cannot output to a null file");
+            this.Save(store, new StreamWriter(new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress)));
+        }
+
+        public void Save(ITripleStore store, TextWriter output)
+        {
+            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
+            if (output == null) throw new RdfOutputException("Cannot output to a null writer");
+
+            if (output is StreamWriter)
+            {
+                StreamWriter writer = (StreamWriter)output;
+                if (writer.BaseStream is GZipStream)
+                {
+                    this._writer.Save(store, writer);
+                }
+                else
+                {
+                    this._writer.Save(store, new StreamWriter(new GZipStream(writer.BaseStream, CompressionMode.Compress)));
+                }
+            }
+            else
+            {
+                throw new RdfOutputException("GZip Dataset Writers can only write to StreamWriter instances");
             }
         }
 

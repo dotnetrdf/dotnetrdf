@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
@@ -85,8 +86,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                     IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                     TripleStore store = new TripleStore();
-                    StreamParams parameters = new StreamParams(response.GetResponseStream());
-                    parser.Load(store, parameters);
+                    parser.Load(store, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
                     return store;
@@ -136,8 +136,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
 #endif
                         IStoreReader parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                         TripleStore store = new TripleStore();
-                        StreamParams parameters = new StreamParams(response.GetResponseStream());
-                        parser.Load(store, parameters);
+                        parser.Load(store, new StreamReader(response.GetResponseStream()));
 
                         response.Close();
                         callback(store, state);

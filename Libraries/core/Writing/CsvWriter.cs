@@ -186,65 +186,76 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Triple Store to save</param>
         /// <param name="parameters">A set of <see cref="StreamParams">StreamParams</see></param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
-            ThreadedStoreWriterContext context = null;
             if (parameters is StreamParams)
             {
                 //Create a new Writer Context
-                context = new ThreadedStoreWriterContext(store, ((StreamParams)parameters).StreamWriter);
+                this.Save(store, ((StreamParams)parameters).StreamWriter);
             } 
             else if (parameters is TextWriterParams)
             {
-                context = new ThreadedStoreWriterContext(store, ((TextWriterParams)parameters).TextWriter);
-            }
-
-            if (context != null)
-            {
-                //Check there's something to do
-                if (context.Store.Graphs.Count == 0)
-                {
-                    context.Output.Close();
-                    return;
-                }
-
-                //Queue the Graphs to be written
-                foreach (IGraph g in context.Store.Graphs)
-                {
-                    context.Add(g.BaseUri);
-                }
-
-                //Start making the async calls
-                List<IAsyncResult> results = new List<IAsyncResult>();
-                SaveGraphsDeletegate d = new SaveGraphsDeletegate(this.SaveGraphs);
-                for (int i = 0; i < this._threads; i++)
-                {
-                    results.Add(d.BeginInvoke(context, null, null));
-                }
-
-                //Wait for all the async calls to complete
-                WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
-                RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("CSV"));
-                foreach (IAsyncResult result in results)
-                {
-                    try
-                    {
-                        d.EndInvoke(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        outputEx.AddException(ex);
-                    }
-                }
-                context.Output.Close();
-
-                //If there were any errors we'll throw an RdfThreadedOutputException now
-                if (outputEx.InnerExceptions.Any()) throw outputEx;
+                this.Save(store, ((TextWriterParams)parameters).TextWriter);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the CsvStoreWriter must be of the type StreamParams/TextWriterParams");
             }
+        }
+
+        public void Save(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfOutputException("Cannot write to a null file");
+            this.Save(store, new StreamWriter(filename));
+        }
+
+        public void Save(ITripleStore store, TextWriter writer)
+        {
+            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
+            if (writer == null) throw new RdfOutputException("Cannot output to a null writer");
+
+            ThreadedStoreWriterContext context = new ThreadedStoreWriterContext(store, writer);
+
+            //Check there's something to do
+            if (context.Store.Graphs.Count == 0)
+            {
+                context.Output.Close();
+                return;
+            }
+
+            //Queue the Graphs to be written
+            foreach (IGraph g in context.Store.Graphs)
+            {
+                context.Add(g.BaseUri);
+            }
+
+            //Start making the async calls
+            List<IAsyncResult> results = new List<IAsyncResult>();
+            SaveGraphsDeletegate d = new SaveGraphsDeletegate(this.SaveGraphs);
+            for (int i = 0; i < this._threads; i++)
+            {
+                results.Add(d.BeginInvoke(context, null, null));
+            }
+
+            //Wait for all the async calls to complete
+            WaitHandle.WaitAll(results.Select(r => r.AsyncWaitHandle).ToArray());
+            RdfThreadedOutputException outputEx = new RdfThreadedOutputException(WriterErrorMessages.ThreadedOutputFailure("CSV"));
+            foreach (IAsyncResult result in results)
+            {
+                try
+                {
+                    d.EndInvoke(result);
+                }
+                catch (Exception ex)
+                {
+                    outputEx.AddException(ex);
+                }
+            }
+            context.Output.Close();
+
+            //If there were any errors we'll throw an RdfThreadedOutputException now
+            if (outputEx.InnerExceptions.Any()) throw outputEx;
         }
 
         /// <summary>

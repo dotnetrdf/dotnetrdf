@@ -82,11 +82,11 @@ namespace VDS.RDF.Utilities.Convert
             {
                 if (this._textWriter != null)
                 {
-                    this._writer.Save(this.Store, new TextWriterParams(this._textWriter));
+                    this._writer.Save(this.Store, this._textWriter);
                 }
                 else
                 {
-                    this._writer.Save(this.Store, new StreamParams(this._file));
+                    this._writer.Save(this.Store, this._file);
                 }
             }
         }

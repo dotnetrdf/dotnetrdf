@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Validation
             try
             {
                 StoreCountHandler handler = new StoreCountHandler();
-                this._parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                this._parser.Load(handler, new StringReader(data));
 
                 message = "Valid RDF Dataset - " + handler.GraphCount + " Graphs with " + handler.TripleCount + " Triples - Parser: " + this._parser.GetType().Name;
                 return new SyntaxValidationResults(true, message, handler);

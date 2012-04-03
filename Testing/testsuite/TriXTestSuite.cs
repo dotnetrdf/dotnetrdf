@@ -34,7 +34,7 @@ namespace dotNetRDFTest
                             //Parse in
                             TriXParser parser = new TriXParser();
                             TripleStore store = new TripleStore();
-                            parser.Load(store, new StreamParams(file));
+                            parser.Load(store, file);
 
                             Console.WriteLine("# Parsed OK");
                             Console.WriteLine();
@@ -48,14 +48,14 @@ namespace dotNetRDFTest
                             Console.WriteLine("# Attempting reserialization");
 
                             TriXWriter writer = new TriXWriter();
-                            writer.Save(store, new StreamParams(file + ".out"));
+                            writer.Save(store, file + ".out");
 
                             Console.WriteLine("# Serialized OK");
                             Console.WriteLine();
 
                             //Now Parse back in
                             TripleStore store2 = new TripleStore();
-                            parser.Load(store2, new StreamParams(file + ".out"));
+                            parser.Load(store2, file + ".out");
 
                             Console.WriteLine("# Parsed back in again");
                             if (store.Graphs.Count == store2.Graphs.Count)

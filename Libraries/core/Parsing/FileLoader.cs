@@ -275,12 +275,12 @@ namespace VDS.RDF.Parsing
                 parser = StringParser.GetDatasetParser(data);
                 RaiseWarning("Used the StringParser to guess the parser to use - it guessed " + parser.GetType().Name);
                 parser.Warning += RaiseStoreWarning;
-                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                parser.Load(handler, new StringReader(data));
             }
             else
             {
                 parser.Warning += RaiseStoreWarning;
-                parser.Load(handler, new StreamParams(filename));
+                parser.Load(handler, filename);
             }
         }
 

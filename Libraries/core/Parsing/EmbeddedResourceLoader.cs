@@ -295,7 +295,7 @@ namespace VDS.RDF.Parsing
                     //Do we have a predefined Parser?
                     if (parser != null)
                     {
-                        parser.Load(handler, new StreamParams(s));
+                        parser.Load(handler, new StreamReader(s));
                     }
                     else
                     {
@@ -306,7 +306,7 @@ namespace VDS.RDF.Parsing
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
                             parser = def.GetRdfDatasetParser();
-                            parser.Load(handler, new StreamParams(s));
+                            parser.Load(handler, new StreamReader(s));
                         }
                         else
                         {
@@ -328,7 +328,7 @@ namespace VDS.RDF.Parsing
                                     reader.Close();
                                 }
                                 parser = StringParser.GetDatasetParser(data);
-                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                                parser.Load(handler, new StringReader(data));
                             }
                         }
                     }

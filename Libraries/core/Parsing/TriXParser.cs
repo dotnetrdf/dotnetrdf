@@ -65,7 +65,8 @@ namespace VDS.RDF.Parsing
     /// TriX permits Graphs to be named with Blank Node IDs, since the library only supports Graphs named with URIs these are converted to URIs of the form <strong>trix:local:ID</strong>
     /// </para>
     /// </remarks>
-    public class TriXParser : IStoreReader
+    public class TriXParser 
+        : IStoreReader
     {
         /// <summary>
         /// Default Graph Uri for default graphs parsed from TriX input
@@ -83,6 +84,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Parameters indicating the input to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
@@ -94,114 +96,137 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Parameters indicating the input to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
             if (parameters == null) throw new ArgumentNullException("parameters", "Cannot parse an RDF Dataset using null Parameters");
 
             //Try and get the Input from the parameters
-            TextReader input = null;
             if (parameters is StreamParams)
             {
                 //Get Input Stream
-                input = ((StreamParams)parameters).StreamReader;
+                TextReader input = ((StreamParams)parameters).StreamReader;
 
                 //Issue a Warning if the Encoding of the Stream is not UTF-8
                 if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
                 {
                     this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                 }
+                this.Load(handler, input);
             } 
             else if (parameters is TextReaderParams)
             {
-                input = ((TextReaderParams)parameters).TextReader;
-            }
-
-            if (input != null)
-            {
-                //First try and load as XML and apply any stylesheets
-                try
-                {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(input);
-
-                    input.Close();
-
-                    XmlDocument inputDoc = new XmlDocument();
-                    bool inputReady = false;
-
-                    //If XSL isn't supported we can't apply it
-#if !NO_XSL
-
-                    //Try and apply any stylesheets (which are used to extend TriX) to get basic TriX syntax
-                    foreach (XmlNode child in doc.ChildNodes)
-                    {
-                        if (child.NodeType == XmlNodeType.ProcessingInstruction)
-                        {
-                            if (child.Name == "xml-stylesheet")
-                            {
-                                //Load in the XML a 2nd time so we can transform it properly if needed
-                                if (!inputReady)
-                                {
-                                    inputDoc.LoadXml(doc.OuterXml);
-                                    inputReady = true;
-                                }
-
-                                Regex getStylesheetURI = new Regex("href=\"([^\"]+)\"");
-                                String stylesheetUri = getStylesheetURI.Match(child.Value).Groups[1].Value;
-
-                                //Load the Transform
-                                XslCompiledTransform transform = new XslCompiledTransform();
-                                XsltSettings settings = new XsltSettings();
-                                transform.Load(stylesheetUri, settings, null);
-
-                                //Apply the Transform
-                                MemoryStream temp = new MemoryStream();
-                                transform.Transform(inputDoc, XmlWriter.Create(temp));
-                                temp.Flush();
-                                temp.Seek(0, SeekOrigin.Begin);
-                                inputDoc.Load(temp);
-                            }
-                        }
-                    }
-
-#endif
-
-                    //Start parsing
-                    if (!inputReady) inputDoc = doc;
-                    this.TryParseGraphset(inputDoc, handler);
-
-                    input.Close();
-                }
-                catch (XmlException xmlEx)
-                {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions - just cleaning up
-                    }
-                    //Wrap in a RDF Parse Exception
-                    throw new RdfParseException("Unable to Parse this TriX since System.Xml was unable to parse the document into a DOM Tree, see the inner exception for details", xmlEx);
-                }
-                catch
-                {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions - just cleaning up
-                    }
-                    throw;
-                }
+                this.Load(handler, ((TextReaderParams)parameters).TextReader);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the TriXParser must be of the type StreamParams/TextReaderParams");
+            }
+        }
+
+        public void Load(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(store, new StreamReader(filename, Encoding.UTF8));
+        }
+
+        public void Load(ITripleStore store, TextReader input)
+        {
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            this.Load(new StoreHandler(store), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+
+            //First try and load as XML and apply any stylesheets
+            try
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(input);
+
+                input.Close();
+
+                XmlDocument inputDoc = new XmlDocument();
+                bool inputReady = false;
+
+                //If XSL isn't supported we can't apply it
+#if !NO_XSL
+
+                //Try and apply any stylesheets (which are used to extend TriX) to get basic TriX syntax
+                foreach (XmlNode child in doc.ChildNodes)
+                {
+                    if (child.NodeType == XmlNodeType.ProcessingInstruction)
+                    {
+                        if (child.Name == "xml-stylesheet")
+                        {
+                            //Load in the XML a 2nd time so we can transform it properly if needed
+                            if (!inputReady)
+                            {
+                                inputDoc.LoadXml(doc.OuterXml);
+                                inputReady = true;
+                            }
+
+                            Regex getStylesheetURI = new Regex("href=\"([^\"]+)\"");
+                            String stylesheetUri = getStylesheetURI.Match(child.Value).Groups[1].Value;
+
+                            //Load the Transform
+                            XslCompiledTransform transform = new XslCompiledTransform();
+                            XsltSettings settings = new XsltSettings();
+                            transform.Load(stylesheetUri, settings, null);
+
+                            //Apply the Transform
+                            MemoryStream temp = new MemoryStream();
+                            transform.Transform(inputDoc, XmlWriter.Create(temp));
+                            temp.Flush();
+                            temp.Seek(0, SeekOrigin.Begin);
+                            inputDoc.Load(temp);
+                        }
+                    }
+                }
+
+#endif
+
+                //Start parsing
+                if (!inputReady) inputDoc = doc;
+                this.TryParseGraphset(inputDoc, handler);
+
+                input.Close();
+            }
+            catch (XmlException xmlEx)
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions - just cleaning up
+                }
+                //Wrap in a RDF Parse Exception
+                throw new RdfParseException("Unable to Parse this TriX since System.Xml was unable to parse the document into a DOM Tree, see the inner exception for details", xmlEx);
+            }
+            catch
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions - just cleaning up
+                }
+                throw;
             }
         }
 

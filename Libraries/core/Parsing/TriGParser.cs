@@ -50,7 +50,8 @@ namespace VDS.RDF.Parsing
     /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax into a Triple Store
     /// </summary>
     /// <remarks>The Default Graph (if any) will be given the special Uri <strong>trig:default-graph</strong></remarks>
-    public class TriGParser : IStoreReader, ITraceableTokeniser
+    public class TriGParser
+        : IStoreReader, ITraceableTokeniser
     {
         private bool _tracetokeniser = false;
 
@@ -79,6 +80,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Parameters indicating the input to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
@@ -90,17 +92,17 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Parameters indicating the input to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
             if (parameters == null) throw new ArgumentNullException("parameters", "Cannot parse an RDF Dataset using null Parameters");
 
             //Try and get the Input from the parameters
-            TextReader input = null;
             if (parameters is StreamParams)
             {
                 //Get Input Stream
-                input = ((StreamParams)parameters).StreamReader;
+                TextReader input = ((StreamParams)parameters).StreamReader;
 
                 //Issue a Warning if the Encoding of the Stream is not UTF-8
                 if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
@@ -111,39 +113,62 @@ namespace VDS.RDF.Parsing
                 this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
 #endif
                 }
+                this.Load(handler, input);
             } 
             else if (parameters is TextReaderParams)
             {
-                input = ((TextReaderParams)parameters).TextReader;
-            }
-
-            if (input != null)
-            {
-                try
-                {
-                    //Create the Parser Context and Invoke the Parser
-                    TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
-                    this.Parse(context);
-                }
-                catch
-                {
-                    throw;
-                }
-                finally
-                {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions just cleaning up
-                    }
-                }
+                this.Load(handler, ((TextReaderParams)parameters).TextReader);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the TriGParser must be of the type StreamParams/TextReaderParams");
+            }
+        }
+
+        public void Load(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(store, new StreamReader(filename, Encoding.UTF8));
+        }
+
+        public void Load(ITripleStore store, TextReader input)
+        {
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            this.Load(new StoreHandler(store), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+
+            try
+            {
+                //Create the Parser Context and Invoke the Parser
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
+                this.Parse(context);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions just cleaning up
+                }
             }
         }
 

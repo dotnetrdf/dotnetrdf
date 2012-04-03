@@ -63,7 +63,8 @@ namespace VDS.RDF.Parsing
     /// In these URIs the numbers are the libraries hash codes for the node used as the Context.
     /// </para>
     /// </remarks>
-    public class NQuadsParser : IStoreReader, ITraceableTokeniser
+    public class NQuadsParser 
+        : IStoreReader, ITraceableTokeniser
     {
         private bool _tracetokeniser = false;
 
@@ -92,6 +93,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Parameters indicating the Stream to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
@@ -104,17 +106,17 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Parameters indicating the Stream to read from</param>
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
             if (parameters == null) throw new ArgumentNullException("parameters", "Cannot parse an RDF Dataset using null Parameters");
 
             //Try and get the Input from the parameters
-            TextReader input = null;
             if (parameters is StreamParams)
             {
                 //Get Input Stream
-                input = ((StreamParams)parameters).StreamReader;
+                TextReader input = ((StreamParams)parameters).StreamReader;
 
 #if !SILVERLIGHT
                 //Issue a Warning if the Encoding of the Stream is not ASCII
@@ -123,46 +125,77 @@ namespace VDS.RDF.Parsing
                     this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
                 }
 #endif
+                this.Load(handler, input);
             } 
             else if (parameters is TextReaderParams)
             {
-                input = ((TextReaderParams)parameters).TextReader;
-            }
-
-            if (input != null)
-            {
-                try
-                {
-                    //Setup Token Queue and Tokeniser
-                    NTriplesTokeniser tokeniser = new NTriplesTokeniser(input);
-                    tokeniser.NQuadsMode = true;
-                    TokenQueue tokens = new TokenQueue();
-                    tokens.Tokeniser = tokeniser;
-                    tokens.Tracing = this._tracetokeniser;
-                    tokens.InitialiseBuffer();
-
-                    //Invoke the Parser
-                    this.Parse(handler, tokens);
-                }
-                catch
-                {
-                    throw;
-                }
-                finally
-                {
-                    try
-                    {
-                        input.Close();
-                    }
-                    catch
-                    {
-                        //No catch actions - just cleaning up
-                    }
-                }
+                this.Load(handler, ((TextReaderParams)parameters).TextReader);
             }
             else
             {
                 throw new RdfStorageException("Parameters for the NQuadsParser must be of the type StreamParams/TextReaderParams");
+            }
+        }
+
+        public void Load(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+#if !SILVERLIGHT
+            this.Load(store, new StreamReader(filename, Encoding.ASCII));
+#else
+            this.Load(store, new StreamReader(filename));
+#endif
+        }
+
+        public void Load(ITripleStore store, TextReader input)
+        {
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            this.Load(new StoreHandler(store), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+#if !SILVERLIGHT
+            this.Load(handler, new StreamReader(filename, Encoding.ASCII));
+#else
+            this.Load(handler, new StreamReader(filename));
+#endif
+        }
+
+        public void Load(IRdfHandler handler, TextReader input)
+        {
+            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+
+            try
+            {
+                //Setup Token Queue and Tokeniser
+                NTriplesTokeniser tokeniser = new NTriplesTokeniser(input);
+                tokeniser.NQuadsMode = true;
+                TokenQueue tokens = new TokenQueue();
+                tokens.Tokeniser = tokeniser;
+                tokens.Tracing = this._tracetokeniser;
+                tokens.InitialiseBuffer();
+
+                //Invoke the Parser
+                this.Parse(handler, tokens);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                try
+                {
+                    input.Close();
+                }
+                catch
+                {
+                    //No catch actions - just cleaning up
+                }
             }
         }
 

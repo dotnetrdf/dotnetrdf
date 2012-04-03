@@ -192,7 +192,7 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    reader.Load(store, new TextReaderParams(new StringReader(data)));
+                    reader.Load(store, new StringReader(data));
                 }
                 catch
                 {

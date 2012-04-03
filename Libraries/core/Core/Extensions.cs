@@ -1239,7 +1239,7 @@ namespace VDS.RDF
             }
             else
             {
-                writer.Save(store, new VDS.RDF.Storage.Params.StreamParams(file));
+                writer.Save(store, file);
             }
         }
 
@@ -1251,7 +1251,7 @@ namespace VDS.RDF
         public static void SaveToFile(this ITripleStore store, String file)
         {
             IStoreWriter writer = MimeTypesHelper.GetStoreWriter(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(file)));
-            writer.Save(store, new VDS.RDF.Storage.Params.StreamParams(file));
+            writer.Save(store, file);
         }
     }
 

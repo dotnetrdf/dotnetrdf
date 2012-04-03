@@ -35,14 +35,14 @@ namespace VDS.RDF.Test.Writing
                 ((IMultiThreadedWriter)writer).UseMultiThreadedWriting = useMultiThreaded;
             }
             System.IO.StringWriter strWriter = new System.IO.StringWriter();
-            writer.Save(store, new TextWriterParams(strWriter));
+            writer.Save(store, strWriter);
 
             Console.WriteLine(strWriter.ToString());
 
             Assert.IsFalse(strWriter.ToString().Equals(String.Empty));
 
             TripleStore store2 = new TripleStore();
-            reader.Load(store2, new TextReaderParams(new System.IO.StringReader(strWriter.ToString())));
+            reader.Load(store2, new System.IO.StringReader(strWriter.ToString()));
 
             foreach (IGraph graph in store.Graphs)
             {

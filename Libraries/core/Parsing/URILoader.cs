@@ -649,7 +649,7 @@ namespace VDS.RDF.Parsing
                         {
                             parser = MimeTypesHelper.GetStoreParser(httpResponse.ContentType);
                             parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new StreamParams(httpResponse.GetResponseStream()));
+                            parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                         }
                         catch (RdfParserSelectionException)
                         {
@@ -667,7 +667,7 @@ namespace VDS.RDF.Parsing
                                 String data = new StreamReader(httpResponse.GetResponseStream()).ReadToEnd();
                                 parser = StringParser.GetDatasetParser(data);
                                 parser.Warning += RaiseStoreWarning;
-                                parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                                parser.Load(handler, new StringReader(data));
                             }
                         }
                     }

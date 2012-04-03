@@ -93,7 +93,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     }
                 }
                 this.Information = "Exporting Data all at once, have " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s) to export...";
-                writer.Save(store, new StreamParams(this._file));
+                writer.Save(store, new StreamWriter(this._file));
                 this.Information = "Exported " + store.Graphs.Sum(x => x.Triples.Count) + " Triple(s) in " + store.Graphs.Count + " Graph(s)";
             }
             else
@@ -139,7 +139,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 
                             //Save it
                             store.Add(g);
-                            writer.Save(store, new StreamParams(stream, def.Encoding));
+                            writer.Save(store, new StreamWriter(stream, def.Encoding));
                             store.Remove(u);
 
                             this.Information = "Exporting Data graph by graph, exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";

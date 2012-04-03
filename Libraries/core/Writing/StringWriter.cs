@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
         public static String Write(ITripleStore store, IStoreWriter writer)
         {
             System.IO.StringWriter sw = new System.IO.StringWriter();
-            writer.Save(store, new TextWriterParams(sw));
+            writer.Save(store, sw);
 
             return sw.ToString();
         }

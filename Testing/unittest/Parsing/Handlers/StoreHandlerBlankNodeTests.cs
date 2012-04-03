@@ -79,7 +79,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             TriGParser parser = new TriGParser();
             TripleStore store = new TripleStore();
-            parser.Load(store, new StreamParams("test-bnodes.trig"));
+            parser.Load(store, "test-bnodes.trig");
 
             EnsureTestResults(store);
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             TriXParser parser = new TriXParser();
             TripleStore store = new TripleStore();
-            parser.Load(store, new StreamParams("test-bnodes.xml"));
+            parser.Load(store, "test-bnodes.xml");
 
             EnsureTestResults(store);
         }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
 
             NQuadsParser parser = new NQuadsParser();
             TripleStore store = new TripleStore();
-            parser.Load(store, new StreamParams("test-bnodes.nq"));
+            parser.Load(store, "test-bnodes.nq");
 
             EnsureTestResults(store);
         }

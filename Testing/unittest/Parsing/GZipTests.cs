@@ -70,7 +70,7 @@ namespace VDS.RDF.Test.Parsing
                     {
                         using (Stream output = new GZipStream(new FileStream(filename, FileMode.Create, FileAccess.Write), CompressionMode.Compress))
                         {
-                            writer.Save(store, new StreamParams(output));
+                            writer.Save(store, new StreamWriter(output));
                             output.Close();
                         }
 
@@ -78,7 +78,7 @@ namespace VDS.RDF.Test.Parsing
                     }
                     else
                     {
-                        writer.Save(store, new StreamParams(new FileStream(filename, FileMode.Create, FileAccess.Write)));
+                        writer.Save(store, new StreamWriter(new FileStream(filename, FileMode.Create, FileAccess.Write)));
 
                         this._autoDatasetTestFiles.Add(filename);
                     }
@@ -299,7 +299,7 @@ namespace VDS.RDF.Test.Parsing
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
-                reader.Load(store, new StreamParams(new FileStream(filename, FileMode.Open, FileAccess.Read)));
+                reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
                 Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
             }
@@ -318,7 +318,7 @@ namespace VDS.RDF.Test.Parsing
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
-                reader.Load(store, new StreamParams(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+                reader.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
             }
@@ -337,7 +337,7 @@ namespace VDS.RDF.Test.Parsing
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
-                reader.Load(store, new StreamParams(new FileStream(filename, FileMode.Open, FileAccess.Read)));
+                reader.Load(store, new StreamReader(new FileStream(filename, FileMode.Open, FileAccess.Read)));
 
                 Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
             }
@@ -356,7 +356,7 @@ namespace VDS.RDF.Test.Parsing
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
-                reader.Load(store, new StreamParams(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
+                reader.Load(store, new StreamReader(new GZipStream(new FileStream(filename, FileMode.Open, FileAccess.Read), CompressionMode.Decompress)));
 
                 Assert.AreEqual(this._g, store.Graphs.First(), "Graphs for file " + filename + " were not equal");
             }
