@@ -47,8 +47,6 @@
             this.grpTestCases = new System.Windows.Forms.GroupBox();
             this.btnRemoveTestCase = new System.Windows.Forms.Button();
             this.lstTestCases = new System.Windows.Forms.ListBox();
-            this.chkUseNodeDefault = new System.Windows.Forms.CheckBox();
-            this.lstNodeCollectionImpl = new System.Windows.Forms.ListBox();
             this.grpToTest.SuspendLayout();
             this.grpOptions.SuspendLayout();
             this.grpTestSet.SuspendLayout();
@@ -58,8 +56,6 @@
             // 
             // grpToTest
             // 
-            this.grpToTest.Controls.Add(this.lstNodeCollectionImpl);
-            this.grpToTest.Controls.Add(this.chkUseNodeDefault);
             this.grpToTest.Controls.Add(this.btnAddTestCase);
             this.grpToTest.Controls.Add(this.lstTripleCollectionImpl);
             this.grpToTest.Controls.Add(this.chkUseDefault);
@@ -86,16 +82,16 @@
             // 
             this.lstTripleCollectionImpl.Enabled = false;
             this.lstTripleCollectionImpl.FormattingEnabled = true;
-            this.lstTripleCollectionImpl.Location = new System.Drawing.Point(6, 153);
+            this.lstTripleCollectionImpl.Location = new System.Drawing.Point(6, 197);
             this.lstTripleCollectionImpl.Name = "lstTripleCollectionImpl";
             this.lstTripleCollectionImpl.ScrollAlwaysVisible = true;
-            this.lstTripleCollectionImpl.Size = new System.Drawing.Size(329, 56);
+            this.lstTripleCollectionImpl.Size = new System.Drawing.Size(329, 95);
             this.lstTripleCollectionImpl.TabIndex = 3;
             // 
             // chkUseDefault
             // 
             this.chkUseDefault.AutoSize = true;
-            this.chkUseDefault.Location = new System.Drawing.Point(9, 130);
+            this.chkUseDefault.Location = new System.Drawing.Point(9, 172);
             this.chkUseDefault.Name = "chkUseDefault";
             this.chkUseDefault.Size = new System.Drawing.Size(256, 17);
             this.chkUseDefault.TabIndex = 2;
@@ -109,7 +105,7 @@
             this.lstIGraphImpl.Location = new System.Drawing.Point(6, 42);
             this.lstIGraphImpl.Name = "lstIGraphImpl";
             this.lstIGraphImpl.ScrollAlwaysVisible = true;
-            this.lstIGraphImpl.Size = new System.Drawing.Size(329, 82);
+            this.lstIGraphImpl.Size = new System.Drawing.Size(329, 121);
             this.lstIGraphImpl.TabIndex = 1;
             this.lstIGraphImpl.SelectedIndexChanged += new System.EventHandler(this.lstIGraphImpl_SelectedIndexChanged);
             // 
@@ -274,27 +270,6 @@
             this.lstTestCases.Size = new System.Drawing.Size(200, 277);
             this.lstTestCases.TabIndex = 0;
             // 
-            // chkUseNodeDefault
-            // 
-            this.chkUseNodeDefault.AutoSize = true;
-            this.chkUseNodeDefault.Location = new System.Drawing.Point(9, 217);
-            this.chkUseNodeDefault.Name = "chkUseNodeDefault";
-            this.chkUseNodeDefault.Size = new System.Drawing.Size(256, 17);
-            this.chkUseNodeDefault.TabIndex = 5;
-            this.chkUseNodeDefault.Text = "Use following Node Collection instead of Default:";
-            this.chkUseNodeDefault.UseVisualStyleBackColor = true;
-            this.chkUseNodeDefault.CheckedChanged += new System.EventHandler(this.chkUseNodeDefault_CheckedChanged);
-            // 
-            // lstNodeCollectionImpl
-            // 
-            this.lstNodeCollectionImpl.Enabled = false;
-            this.lstNodeCollectionImpl.FormattingEnabled = true;
-            this.lstNodeCollectionImpl.Location = new System.Drawing.Point(6, 240);
-            this.lstNodeCollectionImpl.Name = "lstNodeCollectionImpl";
-            this.lstNodeCollectionImpl.ScrollAlwaysVisible = true;
-            this.lstNodeCollectionImpl.Size = new System.Drawing.Size(329, 56);
-            this.lstNodeCollectionImpl.TabIndex = 6;
-            // 
             // fclsGraphBenchmarker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -339,8 +314,6 @@
         private System.Windows.Forms.GroupBox grpTestSet;
         private System.Windows.Forms.RadioButton radLoadAndMem;
         private System.Windows.Forms.RadioButton radStandard;
-        private System.Windows.Forms.ListBox lstNodeCollectionImpl;
-        private System.Windows.Forms.CheckBox chkUseNodeDefault;
     }
 }
 

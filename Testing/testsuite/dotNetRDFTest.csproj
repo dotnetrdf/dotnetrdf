@@ -87,7 +87,6 @@
     <Compile Include="HashCodeTests.cs" />
     <Compile Include="GraphBuildingExample.cs" />
     <Compile Include="GraphBuildingExample2.cs" />
-    <Compile Include="InferenceTest.cs" />
     <Compile Include="MergeTest.cs" />
     <Compile Include="Notation3TestSuite.cs" />
     <Compile Include="NTriplesTestSuite.cs" />

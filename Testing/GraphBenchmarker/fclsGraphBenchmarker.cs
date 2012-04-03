@@ -16,7 +16,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
     {
         private BindingList<Type> _graphTypes = new BindingList<Type>();
         private BindingList<Type> _tripleCollectionTypes = new BindingList<Type>();
-        private BindingList<Type> _nodeCollectionTypes = new BindingList<Type>();
         private BindingList<TestCase> _testCases = new BindingList<TestCase>();
         private BindingList<String> _dataFiles = new BindingList<string>();
 
@@ -28,8 +27,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             this.lstIGraphImpl.DisplayMember = "FullName";
             this.lstTripleCollectionImpl.DataSource = this._tripleCollectionTypes;
             this.lstTripleCollectionImpl.DisplayMember = "FullName";
-            this.lstNodeCollectionImpl.DataSource = this._nodeCollectionTypes;
-            this.lstNodeCollectionImpl.DisplayMember = "FullName";
             this.lstTestCases.DataSource = this._testCases;
             this.lstTestData.DataSource = this._dataFiles;
 
@@ -41,7 +38,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
         {
             Type igraph = typeof(IGraph);
             Type tcol = typeof(BaseTripleCollection);
-            Type ncol = typeof(BaseNodeCollection);
 
             foreach (Type t in assm.GetTypes())
             {
@@ -52,10 +48,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
                 else if (t.IsSubclassOf(tcol))
                 {
                     if (this.IsTestableCollectionType(t)) this._tripleCollectionTypes.Add(t);
-                }
-                else if (t.IsSubclassOf(ncol))
-                {
-                    if (this.IsTestableCollectionType(t)) this._nodeCollectionTypes.Add(t);
                 }
             }
         }
@@ -130,18 +122,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             {
                 if (this.chkUseDefault.Checked && this.lstTripleCollectionImpl.SelectedItem != null)
                 {
-                    if (this.chkUseNodeDefault.Checked && this.lstNodeCollectionImpl.SelectedItem != null)
-                    {
-                        this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem, (Type)this.lstTripleCollectionImpl.SelectedItem, (Type)this.lstNodeCollectionImpl.SelectedItem));
-                    }
-                    else
-                    {
-                        this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem, (Type)this.lstTripleCollectionImpl.SelectedItem));
-                    }
-                }
-                else if (this.chkUseNodeDefault.Checked && this.lstNodeCollectionImpl.SelectedItem != null)
-                {
-                    this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem, null, (Type)this.lstNodeCollectionImpl.SelectedItem));
+                    this._testCases.Add(new TestCase((Type)this.lstIGraphImpl.SelectedItem, (Type)this.lstTripleCollectionImpl.SelectedItem));
                 }
                 else
                 {
@@ -179,36 +160,6 @@ namespace VDS.RDF.Utilities.GraphBenchmarker
             else
             {
                 MessageBox.Show("Please create one/more Test Cases...", "Test Case(s) Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void chkUseNodeDefault_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.chkUseNodeDefault.Checked)
-            {
-                //Check whether it can be enabled
-                if (this.lstIGraphImpl.SelectedItem != null)
-                {
-                    Type t = (Type)this.lstIGraphImpl.SelectedItem;
-                    if (t.GetConstructors().Any(c => (c.GetParameters().Length == 1 && c.GetParameters()[0].ParameterType.Equals(typeof(BaseNodeCollection))) || (c.GetParameters().Length == 2 && c.GetParameters()[0].ParameterType.Equals(typeof(BaseTripleCollection)) && c.GetParameters()[1].ParameterType.Equals(typeof(BaseNodeCollection)))))
-                    {
-                        this.lstNodeCollectionImpl.Enabled = true;
-                    }
-                    else
-                    {
-                        this.chkUseNodeDefault.Checked = false;
-                        this.lstNodeCollectionImpl.Enabled = false;
-                    }
-                }
-                else
-                {
-                    this.chkUseNodeDefault.Checked = false;
-                    this.lstNodeCollectionImpl.Enabled = false;
-                }
-            }
-            else
-            {
-                this.lstNodeCollectionImpl.Enabled = false;
             }
         }
     }

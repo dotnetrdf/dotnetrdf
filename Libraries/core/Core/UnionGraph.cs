@@ -28,10 +28,20 @@ namespace VDS.RDF
         /// <param name="defaultGraph">Default Graph of the Union</param>
         /// <param name="graphs">Other Graphs in the Union</param>
         public UnionGraph(IGraph defaultGraph, IEnumerable<IGraph> graphs)
-            : base(new UnionTripleCollection(defaultGraph.Triples, graphs.Where(g => !ReferenceEquals(defaultGraph, g)).Select(g => g.Triples)), new UnionNodeCollection(defaultGraph.Nodes, graphs.Where(g => !ReferenceEquals(defaultGraph, g)).Select(g => g.Nodes)))
+            : base(new UnionTripleCollection(defaultGraph.Triples, graphs.Where(g => !ReferenceEquals(defaultGraph, g)).Select(g => g.Triples)))
         {
             this._default = defaultGraph;
             this._graphs = graphs.Where(g => !ReferenceEquals(defaultGraph, g)).ToList();
+        }
+
+        public override IEnumerable<INode> Nodes
+        {
+            get
+            {
+                return this._default.Nodes.Concat(from g in this._graphs
+                                                  from n in g.Nodes
+                                                  select n);
+            }
         }
 
         /// <summary>

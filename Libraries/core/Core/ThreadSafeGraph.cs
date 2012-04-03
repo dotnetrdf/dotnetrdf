@@ -59,11 +59,8 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Thread Safe Graph
         /// </summary>
-        public ThreadSafeGraph() 
-            : base(new IndexedThreadSafeTripleCollection()) 
-        {
-            this._nodes = new ThreadSafeNodeCollection();
-        }
+        public ThreadSafeGraph()
+            : base(new IndexedThreadSafeTripleCollection()) { }
 
         #region Triple Assertion and Retraction
 
@@ -347,27 +344,6 @@ namespace VDS.RDF
             return u;
         }
 
-        /// <summary>
-        /// Gets all the Nodes according to some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Nodes</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<INode> GetNodes(ISelector<INode> selector)
-        {
-            List<INode> nodes = new List<INode>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                nodes = base.GetNodes(selector).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return nodes;
-        }
-
         #endregion
 
         #region Triple Selection
@@ -384,72 +360,6 @@ namespace VDS.RDF
             {
                 this._lockManager.EnterReadLock();
                 triples = base.GetTriples(n).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by the final Selector in the Chain (where the results of each Selector are used to initialise the next Selector in the chain and selection applied to the whole Graph each time)
-        /// </summary>
-        /// <param name="firstSelector">Selector Class which does the initial Selection</param>
-        /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriples(firstSelector, selectorChain).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples which meet some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triple</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriples(selector).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by all the Selectors in the Chain (with the Selectors applied in order to the result set of the previous Selector)
-        /// </summary>
-        /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriples(selectorChain).ToList();
             }
             finally
             {
@@ -499,27 +409,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with an Object matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithObject(selector).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
         /// Gets all the Triples with the given Uri as the Object
         /// </summary>
         /// <param name="u">The Uri to find Triples with it as the Object</param>
@@ -551,27 +440,6 @@ namespace VDS.RDF
             {
                 this._lockManager.EnterReadLock();
                 triples = base.GetTriplesWithPredicate(n).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
-        /// Gets all the Triples with a Predicate matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithPredicate(selector).ToList();
             }
             finally
             {
@@ -621,27 +489,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with a Subject matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
-        {
-            List<Triple> triples = new List<Triple>();
-            try
-            {
-                this._lockManager.EnterReadLock();
-                triples = base.GetTriplesWithSubject(selector).ToList();
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return triples;
-        }
-
-        /// <summary>
         /// Gets all the Triples with the given Uri as the Subject
         /// </summary>
         /// <param name="u">The Uri to find Triples with it as the Subject</param>
@@ -659,27 +506,6 @@ namespace VDS.RDF
                 this._lockManager.ExitReadLock();
             }
             return triples;
-        }
-
-        /// <summary>
-        /// Checks whether any Triples Exist which match a given Selector
-        /// </summary>
-        /// <param name="selector">Selector Class which performs the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override bool TriplesExist(ISelector<Triple> selector)
-        {
-            bool exist = false;
-            try
-            {
-                this._lockManager.EnterReadLock();
-                exist = base.TriplesExist(selector);
-            }
-            finally
-            {
-                this._lockManager.ExitReadLock();
-            }
-            return exist;
         }
 
         #endregion

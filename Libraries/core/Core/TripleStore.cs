@@ -95,104 +95,6 @@ namespace VDS.RDF
         #region Selection over Entire Triple Store
 
         /// <summary>
-        /// Selects all Nodes that meet the criteria of a given ISelector from all the Query Triples
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<INode> GetNodes(ISelector<INode> selector)
-        {
-            return (from g in this._graphs
-                    from n in g.Nodes
-                    where selector.Accepts(n)
-                    select n);           
-        }
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors from all the Query Triples
-        /// </summary>
-        /// <param name="firstSelector">First Selector in the Chain</param>
-        /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Just return the Result of using the first Selector
-                return this.GetTriples(firstSelector);
-            }
-            else
-            {
-                //Chain the Dependant Selectors together
-                IEnumerable<Triple> ts = this.GetTriples(firstSelector);
-
-                for (int i = 0; i < selectorChain.Count(); i++)
-                {
-                    //Initialise the Next Selector
-                    selectorChain[i].Initialise(ts);
-                    //Run the Next Selector
-                    ts = this.GetTriples(selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors from all the Query Triples
-        /// </summary>
-        /// <param name="selectorChain">Chain of Independent Selectors</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Use the None Selector to give an empty enumeration
-                return Enumerable.Empty<Triple>();
-            }
-            else if (selectorChain.Count == 1)
-            {
-                //Only 1 Selector
-                return this.GetTriples(selectorChain[0]);
-            }
-            else
-            {
-                //Multiple Selectors
-
-                //Use 1st to get an initial enumeration
-                IEnumerable<Triple> ts = this.GetTriples(selectorChain[0]);
-
-                //Chain the subsequent Selectors
-                for (int i = 1; i < selectorChain.Count(); i++)
-                {
-                    ts = this.GetTriples(ts, selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
-        /// Internal Helper method for applying a Selector to a subset of the Triples in the Triple Store
-        /// </summary>
-        /// <param name="triples">Subset of Triples</param>
-        /// <param name="selector">Selector Class to perform the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        private IEnumerable<Triple> GetTriples(IEnumerable<Triple> triples, ISelector<Triple> selector)
-        {
-            IEnumerable<Triple> ts = from t in triples
-                                     where selector.Accepts(t)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
         /// Selects all Triples which have a Uri Node with the given Uri from all the Query Triples
         /// </summary>
         /// <param name="uri">Uri</param>
@@ -205,20 +107,6 @@ namespace VDS.RDF
                    where t.Involves(u)
                    select t;
 
-        }
-
-        /// <summary>
-        /// Selects all Triples which meet the criteria of an ISelector from all the Query Triples
-        /// </summary>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
-        {
-            return (from g in this._graphs
-                    from t in g.Triples
-                    where selector.Accepts(t)
-                    select t);
         }
 
         /// <summary>
@@ -242,20 +130,6 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
             return this.GetTriplesWithObject(new UriNode(null, u));
-        }
-
-        /// <summary>
-        /// Selects all Triples where the Object Node meets the criteria of an ISelector from all Graphs in the Triple Store
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
-        {
-            return (from g in this._graphs
-                    from t in g.Triples
-                    where selector.Accepts(t.Object)
-                    select t);
         }
 
         /// <summary>
@@ -293,20 +167,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects all Triples where the Predicate meets the criteria of an ISelector from all Graphs in the Triple Store
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
-        {
-            return (from g in this._graphs
-                    from t in g.Triples
-                    where selector.Accepts(t.Predicate)
-                    select t);
-        }
-
-        /// <summary>
         /// Selects all Triples where the Subject is a given Node from all Graphs in the Triple Store
         /// </summary>
         /// <param name="n">Node</param>
@@ -326,31 +186,6 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
             return this.GetTriplesWithSubject(new UriNode(null, u));
-        }
-
-        /// <summary>
-        /// Selects all Triples where the Subject meets the criteria of an ISelector from all Graphs in the Triple Store
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
-        {
-            return (from g in this._graphs
-                    from t in g.Triples
-                    where selector.Accepts(t.Subject)
-                    select t);
-        }
-
-        /// <summary>
-        /// Checks whether any Triples meeting the criteria of an ISelector can be found from all Graphs in the Triple Store
-        /// </summary>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public bool TriplesExist(ISelector<Triple> selector)
-        {
-            return (this.GetTriples(selector).Any());
         }
 
         /// <summary>
@@ -397,94 +232,6 @@ namespace VDS.RDF
         #region Selection over Subset of Triple Store
 
         /// <summary>
-        /// Selects all Nodes that meet the criteria of a given ISelector from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<INode> GetNodes(List<Uri> graphUris, ISelector<INode> selector)
-        {
-            IEnumerable<INode> ns = from g in this._graphs
-                                    where graphUris.Contains(g.BaseUri)
-                                    from n in g.Nodes
-                                    where selector.Accepts(n)
-                                    select n;
-
-            return ns;
-        }
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors from a Subset of Graphs in the Triple Store where the results of each Selector influence the next selector and selection at each stage is over the selected subset of Graphs
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="firstSelector">First Selector in the Chain</param>
-        /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(List<Uri> graphUris, ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Just return the Result of using the first Selector
-                return this.GetTriples(graphUris, firstSelector);
-            }
-            else
-            {
-                //Chain the Dependant Selectors together
-                IEnumerable<Triple> ts = this.GetTriples(graphUris, firstSelector);
-
-                for (int i = 0; i < selectorChain.Count(); i++)
-                {
-                    //Initialise the Next Selector
-                    selectorChain[i].Initialise(ts);
-                    //Run the Next Selector
-                    ts = this.GetTriples(graphUris, selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors from a Subset of Graphs in the Triple Store where each Selector is independent and selection at each stage is over the results of the previous selection stages
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selectorChain">Chain of Independent Selectors</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(List<Uri> graphUris, List<ISelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Use the None Selector to give an empty enumeration
-                return this.GetTriples(new NoneSelector<Triple>());
-            }
-            else if (selectorChain.Count == 1)
-            {
-                //Only 1 Selector
-                return this.GetTriples(graphUris, selectorChain[0]);
-            }
-            else
-            {
-                //Multiple Selectors
-
-                //Use 1st to get an initial enumeration
-                IEnumerable<Triple> ts = this.GetTriples(graphUris, selectorChain[0]);
-
-                //Chain the subsequent Selectors
-                for (int i = 1; i < selectorChain.Count(); i++)
-                {
-                    ts = this.GetTriples(ts, selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
         /// Selects all Triples which have a Uri Node with the given Uri from a Subset of Graphs in the Triple Store
         /// </summary>
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
@@ -498,24 +245,6 @@ namespace VDS.RDF
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
                                      where t.Involves(u)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
-        /// Selects all Triples which meet the criteria of an ISelector from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(List<Uri> graphUris, ISelector<Triple> selector)
-        {
-            IEnumerable<Triple> ts = from g in this._graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.Triples
-                                     where selector.Accepts(t)
                                      select t;
 
             return ts;
@@ -552,24 +281,6 @@ namespace VDS.RDF
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
                                      where t.HasObject(uri)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
-        /// Selects all Triples where the Object Node meets the criteria of an ISelector from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from g in this._graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.Triples
-                                     where selector.Accepts(t.Object)
                                      select t;
 
             return ts;
@@ -629,24 +340,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects all Triples where the Predicate meets the criteria of an ISelector from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from g in this._graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.Triples
-                                     where selector.Accepts(t.Predicate)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
         /// Selects all Triples where the Subject is a given Node from a Subset of Graphs in the Triple Store
         /// </summary>
         /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
@@ -680,36 +373,6 @@ namespace VDS.RDF
                                      select t;
 
             return ts;
-        }
-
-        /// <summary>
-        /// Selects all Triples where the Subject meets the criteria of an ISelector from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from g in this._graphs
-                                     where graphUris.Contains(g.BaseUri)
-                                     from t in g.Triples
-                                     where selector.Accepts(t.Subject)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
-        /// Checks whether any Triples meeting the criteria of an ISelector can be found from a Subset of Graphs in the Triple Store
-        /// </summary>
-        /// <param name="graphUris">List of the Graph URIs of Graphs you want to select over</param>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public bool TriplesExist(List<Uri> graphUris, ISelector<Triple> selector)
-        {
-            return (this.GetTriples(graphUris, selector).Count() > 0);
         }
 
         #endregion

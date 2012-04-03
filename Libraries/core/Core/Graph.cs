@@ -80,42 +80,12 @@ namespace VDS.RDF
             : base(tripleCollection) { }
 
         /// <summary>
-        /// Creates a new instance of a Graph using the given Node Collection
-        /// </summary>
-        /// <param name="nodeCollection">Node Collection</param>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        public Graph(BaseNodeCollection nodeCollection)
-            : base(nodeCollection) { }
-
-        /// <summary>
-        /// Creates a new instance of a Graph using the given Triple and Node Collections
-        /// </summary>
-        /// <param name="tripleCollection">Triple Collection</param>
-        /// <param name="nodeCollection">Node Collection</param>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
-            : base(tripleCollection, nodeCollection) { }
-
-        /// <summary>
         /// Creates a new instance of a Graph using the given Triple Collection and an optionally empty Namespace Map
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
         public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
-        {
-            if (emptyNamespaceMap) this._nsmapper.Clear();
-        }
-
-        /// <summary>
-        /// Creates a new instance of a Graph using the given Triple and Node Collections
-        /// </summary>
-        /// <param name="tripleCollection">Triple Collection</param>
-        /// <param name="nodeCollection">Node Collection</param>
-        /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        public Graph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection, bool emptyNamespaceMap)
-            : base(tripleCollection, nodeCollection) 
         {
             if (emptyNamespaceMap) this._nsmapper.Clear();
         }
@@ -145,26 +115,6 @@ namespace VDS.RDF
             {
                 //Already asserted so exit
                 return;
-            }
-
-            //Retrieve the Nodes from the Triple
-            INode subj, pred, obj;
-            subj = t.Subject;
-            pred = t.Predicate;
-            obj = t.Object;
-
-            //Add to Node Collection if required
-            if (!this._nodes.Contains(subj))
-            {
-                this._nodes.Add(subj);
-            }
-
-            //Don't add Predicates to Nodes collection as they are only considered Nodes if they occur
-            //elsewhere as the Subject or Object or a Triple
-
-            if (!this._nodes.Contains(obj))
-            {
-                this._nodes.Add(obj);
             }
 
             //Add to Triples Collection
@@ -267,7 +217,7 @@ namespace VDS.RDF
         public override IUriNode GetUriNode(Uri uri)
         {
             IUriNode test = new UriNode(this, uri);
-            IEnumerable<IUriNode> us = from u in this._nodes.UriNodes
+            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
                                           where u.Equals(test)
                                           select u;
             return us.FirstOrDefault();
@@ -281,7 +231,7 @@ namespace VDS.RDF
         public override IUriNode GetUriNode(String qname)
         {
             IUriNode test = new UriNode(this, qname);
-            IEnumerable<IUriNode> us = from u in this._nodes.UriNodes
+            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
                                       where u.Equals(test)
                                       select u;
             return us.FirstOrDefault();
@@ -296,7 +246,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal)
         {
             ILiteralNode test = new LiteralNode(this, literal);
-            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
+            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -311,7 +261,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
             ILiteralNode test = new LiteralNode(this, literal, langspec);
-            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
+            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -326,7 +276,7 @@ namespace VDS.RDF
         public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
             ILiteralNode test = new LiteralNode(this, literal, datatype);
-            IEnumerable<ILiteralNode> ls = from l in this._nodes.LiteralNodes
+            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
                                           where l.Equals(test)
                                           select l;
             return ls.FirstOrDefault();
@@ -339,26 +289,11 @@ namespace VDS.RDF
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
         public override IBlankNode GetBlankNode(String nodeId)
         {
-            IEnumerable<IBlankNode> bs = from b in this._nodes.BlankNodes
+            IEnumerable<IBlankNode> bs = from b in this.Nodes.BlankNodes()
                                         where b.InternalID.Equals(nodeId)
                                         select b;
 
             return bs.FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Gets all the Nodes according to some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Nodes</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release",false)]
-        public override IEnumerable<INode> GetNodes(ISelector<INode> selector)
-        {
-            IEnumerable<INode> ns = from n in this._nodes
-                                    where selector.Accepts(n)
-                                    select n;
-
-            return ns;
         }
 
         #endregion
@@ -389,20 +324,6 @@ namespace VDS.RDF
             return ts;
         }
 
-        /// <summary>
-        /// Gets all the Triples which meet some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triple</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
-        {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where selector.Accepts(t)
-                                     select t;
-
-            return ts;
-        }
 
         /// <summary>
         /// Gets all the Triples with the given Node as the Subject
@@ -422,21 +343,6 @@ namespace VDS.RDF
         public override IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
             return this._triples.WithSubject(this.CreateUriNode(u));
-        }
-
-        /// <summary>
-        /// Gets all the Triples with a Subject matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where selector.Accepts(t.Subject)
-                                     select t;
-
-            return ts;
         }
 
         /// <summary>
@@ -460,21 +366,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with a Predicate matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where selector.Accepts(t.Predicate)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
         /// Gets all the Triples with the given Node as the Object
         /// </summary>
         /// <param name="n">The Node to find Triples with it as the Object</param>
@@ -492,107 +383,6 @@ namespace VDS.RDF
         public override IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
             return this._triples.WithObject(this.CreateUriNode(u));
-        }
-
-        /// <summary>
-        /// Gets all the Triples with an Object matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
-        {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where selector.Accepts(t.Object)
-                                     select t;
-
-            return ts;
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by all the Selectors in the Chain (with the Selectors applied in order to the result set of the previous Selector)
-        /// </summary>
-        /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Use the None Selector to give an empty enumeration
-                return this.GetTriples(new NoneSelector<Triple>());
-            }
-            else if (selectorChain.Count == 1)
-            {
-                //Only 1 Selector
-                return this.GetTriples(selectorChain[0]);
-            }
-            else
-            {
-                //Multiple Selectors
-
-                //Use 1st to get an initial enumeration
-                IEnumerable<Triple> ts = this.GetTriples(selectorChain[0]);
-
-                //Chain the subsequent Selectors
-                for (int i = 1; i < selectorChain.Count(); i++)
-                {
-                    ts = this.GetTriples(ts, selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by the final Selector in the Chain (where the results of each Selector are used to initialise the next Selector in the chain and selection applied to the whole Graph each time)
-        /// </summary>
-        /// <param name="firstSelector">Selector Class which does the initial Selection</param>
-        /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
-        {
-            if (selectorChain.Count == 0)
-            {
-                //Just return the Result of using the first Selector
-                return this.GetTriples(firstSelector);
-            }
-            else
-            {
-                //Chain the Dependant Selectors together
-                IEnumerable<Triple> ts = this.GetTriples(firstSelector);
-
-                for (int i = 0; i < selectorChain.Count(); i++)
-                {
-                    //Initialise the Next Selector
-                    selectorChain[i].Initialise(ts);
-                    //Run the Next Selector
-                    ts = this.GetTriples(selectorChain[i]);
-                }
-
-                //Return the end results
-                return ts;
-            }
-        }
-
-        /// <summary>
-        /// Internal Helper method for applying a Selector to a subset of the Triples in the Graph
-        /// </summary>
-        /// <param name="triples">Subset of Triples</param>
-        /// <param name="selector">Selector Class to perform the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        private IEnumerable<Triple> GetTriples(IEnumerable<Triple> triples, ISelector<Triple> selector)
-        {
-            IEnumerable<Triple> ts = from t in triples
-                                     where selector.Accepts(t)
-                                     select t;
-
-            return ts;
         }
 
         /// <summary>
@@ -626,24 +416,6 @@ namespace VDS.RDF
         public override IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
         {
             return this._triples.WithPredicateObject(pred, obj);
-        }
-
-        #endregion
-
-        #region Triple Existence
-
-        /// <summary>
-        /// Checks whether any Triples Exist which match a given Selector
-        /// </summary>
-        /// <param name="selector">Selector Class which performs the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public override bool TriplesExist(ISelector<Triple> selector)
-        {
-            IEnumerable<Triple> ts = from t in this._triples
-                                     where selector.Accepts(t)
-                                     select t;
-            return ts.Any();
         }
 
         #endregion

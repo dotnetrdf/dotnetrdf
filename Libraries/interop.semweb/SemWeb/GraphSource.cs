@@ -383,7 +383,6 @@ namespace VDS.RDF.Interop.SemWeb
         public void Clear()
         {
             this._g.Triples.Dispose();
-            this._g.Nodes.Dispose();
         }
 
         /// <summary>

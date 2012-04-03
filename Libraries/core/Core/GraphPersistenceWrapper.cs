@@ -196,10 +196,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Node Collection for the Graph
+        /// Gets the Nodes of the Graph
         /// </summary>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        public BaseNodeCollection Nodes
+        public IEnumerable<INode> Nodes
         {
             get 
             { 
@@ -489,42 +488,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Nodes that are accepted by the given selector
-        /// </summary>
-        /// <param name="selector">Node Selector</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<INode> GetNodes(ISelector<INode> selector)
-        {
-            return this._g.GetNodes(selector);
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by the final Selector in the Chain (where the results of each Selector are used to initialise the next Selector in the chain and selection applied to the whole Graph each time)
-        /// </summary>
-        /// <param name="firstSelector">Selector Class which does the initial Selection</param>
-        /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain)
-        {
-            return this._g.GetTriples(firstSelector, selectorChain);
-        }
-
-        /// <summary>
-        /// Gets all Triples which are selected by all the Selectors in the Chain (with the Selectors applied in order to the result set of the previous Selector)
-        /// </summary>
-        /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain)
-        {
-            return this._g.GetTriples(selectorChain);
-        }
-
-        /// <summary>
         /// Gets all the Triples involving the given URI
         /// </summary>
         /// <param name="uri">The URI to find Triples involving</param>
@@ -532,17 +495,6 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
             return this._g.GetTriples(uri);
-        }
-
-        /// <summary>
-        /// Gets all the Triples which meet some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triple</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriples(ISelector<Triple> selector)
-        {
-            return this._g.GetTriples(selector);
         }
 
         /// <summary>
@@ -563,17 +515,6 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
             return this._g.GetTriplesWithObject(u);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with an Object matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector)
-        {
-            return this._g.GetTriplesWithObject(selector);
         }
 
         /// <summary>
@@ -607,17 +548,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets all the Triples with a Predicate matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector)
-        {
-            return this._g.GetTriplesWithPredicate(selector);
-        }
-
-        /// <summary>
         /// Gets all the Triples with the given Node as the Subject
         /// </summary>
         /// <param name="n">The Node to find Triples with it as the Subject</param>
@@ -635,17 +565,6 @@ namespace VDS.RDF
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
             return this._g.GetTriplesWithSubject(u);
-        }
-
-        /// <summary>
-        /// Gets all the Triples with a Subject matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector)
-        {
-            return this._g.GetTriplesWithSubject(selector);
         }
 
         /// <summary>
@@ -699,17 +618,6 @@ namespace VDS.RDF
         public IUriNode GetUriNode(Uri uri)
         {
             return this._g.GetUriNode(uri);
-        }
-
-        /// <summary>
-        /// Checks whether any Triples Exist which match a given Selector
-        /// </summary>
-        /// <param name="selector">Selector Class which performs the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public bool TriplesExist(ISelector<Triple> selector)
-        {
-            return this._g.TriplesExist(selector);
         }
 
         /// <summary>

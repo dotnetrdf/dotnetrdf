@@ -149,7 +149,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             manager.LoadGraph(g, TestBNodeUri);
 
             Assert.AreEqual(3, g.Triples.Count, "Should be 3 Triples");
-            List<IBlankNode> nodes = g.Nodes.BlankNodes.ToList();
+            List<IBlankNode> nodes = g.Nodes.BlankNodes().ToList();
             for (int i = 0; i < nodes.Count; i++)
             {
                 for (int j = 0; j < nodes.Count; j++)

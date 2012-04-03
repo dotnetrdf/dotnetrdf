@@ -83,10 +83,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Node Collection for the Graph
+        /// Gets the Nodes of the Graph
         /// </summary>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        BaseNodeCollection Nodes 
+        IEnumerable<INode> Nodes 
         {
             get;
         }
@@ -213,44 +212,11 @@ namespace VDS.RDF
         ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
-        /// Selects all Nodes that meet the criteria of a given ISelector
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<INode> GetNodes(ISelector<INode> selector);
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors where the results of each Selector influence the next selector and selection at each stage is over the entire Graph
-        /// </summary>
-        /// <param name="firstSelector">First Selector in the Chain</param>
-        /// <param name="selectorChain">Dependent Selectors which form the rest of the Chain</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain);
-
-        /// <summary>
-        /// Selects all Triples which are selected by a chain of Selectors where each Selector is independent and selection at each stage is over the results of the previous selection stages
-        /// </summary>
-        /// <param name="selectorChain">Chain of Independent Selectors</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain);
-
-        /// <summary>
         /// Selects all Triples which have a Uri Node with the given Uri
         /// </summary>
         /// <param name="uri">Uri</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(Uri uri);
-
-        /// <summary>
-        /// Selects all Triples which meet the criteria of an ISelector
-        /// </summary>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriples(ISelector<Triple> selector);
 
         /// <summary>
         /// Selects all Triples which contain the given Node
@@ -265,14 +231,6 @@ namespace VDS.RDF
         /// <param name="u">Uri</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithObject(Uri u);
-
-        /// <summary>
-        /// Selects all Triples where the Object Node meets the criteria of an ISelector
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector);
 
         /// <summary>
         /// Selects all Triples where the Object is a given Node
@@ -296,14 +254,6 @@ namespace VDS.RDF
         IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
 
         /// <summary>
-        /// Selects all Triples where the Predicate meets the criteria of an ISelector
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector);
-
-        /// <summary>
         /// Selects all Triples where the Subject is a given Node
         /// </summary>
         /// <param name="n">Node</param>
@@ -316,14 +266,6 @@ namespace VDS.RDF
         /// <param name="u">Uri</param>
         /// <returns></returns>
         IEnumerable<Triple> GetTriplesWithSubject(Uri u);
-
-        /// <summary>
-        /// Selects all Triples where the Subject meets the criteria of an ISelector
-        /// </summary>
-        /// <param name="selector">A Selector on Nodes</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector);
 
         /// <summary>
         /// Selects all Triples with the given Subject and Predicate
@@ -362,14 +304,6 @@ namespace VDS.RDF
         /// <param name="uri">Uri</param>
         /// <returns></returns>
         IUriNode GetUriNode(Uri uri);
-
-        /// <summary>
-        /// Checks whether any Triples meeting the criteria of an ISelector can be found
-        /// </summary>
-        /// <param name="selector">A Selector on Triples</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        bool TriplesExist(ISelector<Triple> selector);
 
         /// <summary>
         /// Gets whether a given Triple is in this Graph

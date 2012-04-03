@@ -96,7 +96,6 @@ namespace VDS.RDF.Ontology
             }
             //Set the Triple and Node Collections to be Union Collections
             this._triples = new UnionTripleCollection(this._triples, this._baseGraph.Triples);
-            this._nodes = new UnionNodeCollection(this._nodes, this._baseGraph.Nodes);
         }
 
         /// <summary>

@@ -85,25 +85,11 @@ namespace VDS.RDF
         #region Triple Selection Extensions
 
         /// <summary>
-        /// Gets the Subset of Triples from an existing Enumerable that are accepted by a given Selector
-        /// </summary>
-        /// <param name="ts">Enumerable of Triples</param>
-        /// <param name="selector">Selector to apply</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public static IEnumerable<Triple> Subset(this IEnumerable<Triple> ts, ISelector<Triple> selector) {
-            return (from t in ts
-                    where selector.Accepts(t)
-                    select t);
-        }
-
-        /// <summary>
         /// Gets the Subset of Triples from an existing Enumerable that have a given Subject
         /// </summary>
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="subject">Subject to match</param>
         /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithSubject(this IEnumerable<Triple> ts, INode subject)
         {
             return (from t in ts
@@ -117,7 +103,6 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="predicate">Predicate to match</param>
         /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithPredicate(this IEnumerable<Triple> ts, INode predicate)
         {
             return (from t in ts
@@ -131,12 +116,40 @@ namespace VDS.RDF
         /// <param name="ts">Enumerable of Triples</param>
         /// <param name="obj">Object to match</param>
         /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
         public static IEnumerable<Triple> WithObject(this IEnumerable<Triple> ts, INode obj)
         {
             return (from t in ts
                     where t.Object.Equals(obj)
                     select t);
+        }
+
+        #endregion
+
+        #region Node Collection replacement extensions
+
+        public static IEnumerable<IBlankNode> BlankNodes(this IEnumerable<INode> ns)
+        {
+            return ns.OfType<IBlankNode>();
+        }
+
+        public static IEnumerable<IGraphLiteralNode> GraphLiteralNodes(this IEnumerable<INode> ns)
+        {
+            return ns.OfType<IGraphLiteralNode>();
+        }
+
+        public static IEnumerable<ILiteralNode> LiteralNodes(this IEnumerable<INode> ns)
+        {
+            return ns.OfType<ILiteralNode>();
+        }
+
+        public static IEnumerable<IUriNode> UriNodes(this IEnumerable<INode> ns)
+        {
+            return ns.OfType<IUriNode>();
+        }
+
+        public static IEnumerable<IVariableNode> VariableNodes(this IEnumerable<INode> ns)
+        {
+            return ns.OfType<IVariableNode>();
         }
 
         #endregion

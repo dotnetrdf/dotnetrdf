@@ -69,11 +69,6 @@ namespace VDS.RDF
         /// </summary>
         protected BaseTripleCollection _triples;
         /// <summary>
-        /// Collection of Subject &amp; Object Nodes in the Graph
-        /// </summary>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        protected BaseNodeCollection _nodes;
-        /// <summary>
         /// Namespace Mapper
         /// </summary>
         protected NamespaceMapper _nsmapper;
@@ -99,12 +94,9 @@ namespace VDS.RDF
         /// Creates a new Base Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
-        /// <param name="nodeCollection">Node Collection to use</param>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        protected BaseGraph(BaseTripleCollection tripleCollection, BaseNodeCollection nodeCollection)
+        protected BaseGraph(BaseTripleCollection tripleCollection)
         {
             this._triples = tripleCollection;
-            this._nodes = nodeCollection;
             this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
 
@@ -115,22 +107,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Base Graph which uses the given Triple Collection and the default <see cref="HashedNodeCollection">HashedNodeCollection</see> as the Node Collection
-        /// </summary>
-        /// <param name="tripleCollection">Triple Collection to use</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection)
-            : this(tripleCollection, new HashedNodeCollection()) { }
-
-        /// <summary>
-        /// Creates a new Base Graph which uses the given Node Collection and the default <see cref="IndexedTripleColection">IndexedTripleCollection</see> as the Triple Collection
-        /// </summary>
-        /// <param name="nodeCollection"></param>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        protected BaseGraph(BaseNodeCollection nodeCollection)
-            : this(new IndexedTripleCollection(), nodeCollection) { }
-
-        /// <summary>
-        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection and the default <see cref="NodeCollection">NodeCollection</see> as the Node Collection
+        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection
         /// </summary>
         protected BaseGraph()
             : this(new IndexedTripleCollection()) { }
@@ -172,12 +149,13 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the set of Nodes which make up this Graph
         /// </summary>
-        [Obsolete("BaseNodeCollection is considered obsolete as all information provided can be obtained by other means, it is proposed to remove it in the 0.7.0 release", false)]
-        public virtual BaseNodeCollection Nodes
+        public virtual IEnumerable<INode> Nodes
         {
             get
             {
-                return this._nodes;
+                return (from t in this._triples
+                        select t.Subject).Concat(from t in this._triples
+                                                 select t.Object).Distinct();
             }
         }
 
@@ -451,14 +429,6 @@ namespace VDS.RDF
         public abstract ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
-        /// Gets all the Nodes according to some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Nodes</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<INode> GetNodes(ISelector<INode> selector);
-
-        /// <summary>
         /// Returns the UriNode with the given QName if it exists
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
@@ -477,38 +447,11 @@ namespace VDS.RDF
         #region Triple Selection
 
         /// <summary>
-        /// Gets all Triples which are selected by the final Selector in the Chain (where the results of each Selector are used to initialise the next Selector in the chain and selection applied to the whole Graph each time)
-        /// </summary>
-        /// <param name="firstSelector">Selector Class which does the initial Selection</param>
-        /// <param name="selectorChain">Chain of Dependent Selectors to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filter is applied to the entire Graph but is initialised with the results of the previous Selector in the chain.  This means that something eliminated in a given step can potentially be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriples(ISelector<Triple> firstSelector, List<IDependentSelector<Triple>> selectorChain);
-
-        /// <summary>
-        /// Gets all Triples which are selected by all the Selectors in the Chain (with the Selectors applied in order to the result set of the previous Selector)
-        /// </summary>
-        /// <param name="selectorChain">Chain of Selector Classes to perform the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        /// <remarks>This method is used to apply a series of Selectors where each filters the results of the previous.  Each application of a Selector potentially reduces the results set, anything eliminated in a given step cannot possibly be selected by a later Selector in the Chain.</remarks>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriples(List<ISelector<Triple>> selectorChain);
-
-        /// <summary>
         /// Gets all the Triples involving the given Uri
         /// </summary>
         /// <param name="uri">The Uri to find Triples involving</param>
         /// <returns>Zero/More Triples</returns>
         public abstract IEnumerable<Triple> GetTriples(Uri uri);
-
-        /// <summary>
-        /// Gets all the Triples which meet some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triple</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriples(ISelector<Triple> selector);
 
         /// <summary>
         /// Gets all the Triples involving the given Node
@@ -523,14 +466,6 @@ namespace VDS.RDF
         /// <param name="u">The Uri to find Triples with it as the Object</param>
         /// <returns>Zero/More Triples</returns>
         public abstract IEnumerable<Triple> GetTriplesWithObject(Uri u);
-
-        /// <summary>
-        /// Gets all the Triples with an Object matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriplesWithObject(ISelector<INode> selector);
 
         /// <summary>
         /// Gets all the Triples with the given Node as the Object
@@ -554,14 +489,6 @@ namespace VDS.RDF
         public abstract IEnumerable<Triple> GetTriplesWithPredicate(Uri u);
 
         /// <summary>
-        /// Gets all the Triples with a Predicate matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriplesWithPredicate(ISelector<INode> selector);
-
-        /// <summary>
         /// Gets all the Triples with the given Node as the Subject
         /// </summary>
         /// <param name="n">The Node to find Triples with it as the Subject</param>
@@ -574,14 +501,6 @@ namespace VDS.RDF
         /// <param name="u">The Uri to find Triples with it as the Subject</param>
         /// <returns>Zero/More Triples</returns>
         public abstract IEnumerable<Triple> GetTriplesWithSubject(Uri u);
-
-        /// <summary>
-        /// Gets all the Triples with a Subject matching some arbitrary criteria as embodied in a Selector
-        /// </summary>
-        /// <param name="selector">Selector class which performs the Selection</param>
-        /// <returns>Zero/More Triples</returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract IEnumerable<Triple> GetTriplesWithSubject(ISelector<INode> selector);
 
         /// <summary>
         /// Selects all Triples with the given Subject and Predicate
@@ -606,14 +525,6 @@ namespace VDS.RDF
         /// <param name="obj">Object</param>
         /// <returns></returns>
         public abstract IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
-
-        /// <summary>
-        /// Checks whether any Triples Exist which match a given Selector
-        /// </summary>
-        /// <param name="selector">Selector Class which performs the Selection</param>
-        /// <returns></returns>
-        [Obsolete("ISelector interface is considered obsolete and will be removed in the 0.7.0 release", false)]
-        public abstract bool TriplesExist(ISelector<Triple> selector);
 
         /// <summary>
         /// Gets whether a given Triple exists in this Graph

@@ -505,7 +505,8 @@ namespace VDS.RDF.Writing
             //using Blank Node syntax [p1 o1; p2 o2; p3 o3]
             if (mode == CollectionSearchMode.All || mode == CollectionSearchMode.ExplicitOnly)
             {
-                foreach (IBlankNode b in context.Graph.Nodes.BlankNodes)
+                List<IBlankNode> bnodes = context.Graph.Nodes.BlankNodes().ToList();
+                foreach (IBlankNode b in bnodes)
                 {
                     if (context.Collections.ContainsKey(b)) continue;
 

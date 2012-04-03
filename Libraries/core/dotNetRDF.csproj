@@ -81,7 +81,6 @@
     <Compile Include="Core\BackgroundPersistedGraph.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Core\BaseGraphCollection.cs" />
-    <Compile Include="Core\BaseNodeCollection.cs" />
     <Compile Include="Core\BaseTripleStore.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\ISparqlResultsReader.cs" />
@@ -124,11 +123,8 @@
     <Compile Include="Query\SparqlVariable.cs" />
     <Compile Include="Parsing\Events\BaseEvent.cs" />
     <Compile Include="Parsing\Tokens\BaseToken.cs" />
-    <Compile Include="Query\BasicSelectors.cs" />
     <Compile Include="Core\BlankNode.cs" />
-    <Compile Include="Query\BlankNodeSelectors.cs" />
     <Compile Include="Parsing\Tokens\BufferedTokenQueue.cs" />
-    <Compile Include="Query\ComparisonSelectors.cs" />
     <Compile Include="Query\SparqlQuery.cs" />
     <Compile Include="Parsing\SparqlQueryParser.cs" />
     <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
@@ -153,7 +149,6 @@
     <Compile Include="Core\IRdfReader.cs" />
     <Compile Include="Core\IRdfWriter.cs" />
     <Compile Include="Parsing\Events\IRdfXmlEvent.cs" />
-    <Compile Include="Core\ISelector.cs" />
     <Compile Include="Core\IStoreReader.cs" />
     <Compile Include="Core\IStoreWriter.cs" />
     <Compile Include="Parsing\Tokens\IToken.cs" />
@@ -162,14 +157,12 @@
     <Compile Include="Core\ITripleContext.cs" />
     <Compile Include="Core\ITripleStore.cs" />
     <Compile Include="Core\LiteralNode.cs" />
-    <Compile Include="Query\LogicalSelectors.cs" />
     <Compile Include="Core\MimeTypesHelper.cs" />
     <Compile Include="NamespaceDocs.cs" />
     <Compile Include="Core\NamespaceMapper.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
     <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
     <Compile Include="Writing\InternalXmlWriter.cs" />
-    <Compile Include="Query\RdfSchemaInferenceSelectors.cs" />
     <Compile Include="Query\SparqlRemoteEndpoint.cs" />
     <Compile Include="Query\SparqlResultSet.cs" />
     <Compile Include="Query\SparqlSpecsHelper.cs" />
@@ -186,7 +179,6 @@
     <Compile Include="Parsing\UnicodeSpecsHelper.cs" />
     <Compile Include="Parsing\UriLoader.cs" />
     <Compile Include="Core\UriNode.cs" />
-    <Compile Include="Core\NodeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Triple.cs" />
     <Compile Include="Core\TripleCollection.cs" />

@@ -70,7 +70,7 @@ namespace dotNetRDFTest
                             }
                         }
                         Console.WriteLine("Currently there are " + count + " Triples in the Graph produced by Thread #" + t.ManagedThreadId);
-                        Console.WriteLine("Currently there are " + this._g.Nodes.Count + " Nodes in the Graph");
+                        Console.WriteLine("Currently there are " + this._g.Nodes.Count() + " Nodes in the Graph");
                     }
 
                     if (activeThreads > 0)
