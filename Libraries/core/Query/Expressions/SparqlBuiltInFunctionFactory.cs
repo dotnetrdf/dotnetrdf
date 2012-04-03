@@ -332,15 +332,19 @@ namespace VDS.RDF.Query.Expressions
                         }
                         break;
                     case SparqlSpecsHelper.SparqlKeywordMD5:
+#if !SILVERLIGHT
                         if (args.Count == 1)
                         {
                             sparqlFunc = new MD5HashFunction(args.First());
                         }
                         else
                         {
-                            throw new RdfParseException("Incorrect number of arguments for the SPARQL CONTAINS() function");
+                            throw new RdfParseException("Incorrect number of arguments for the SPARQL MD5() function");
                         }
                         break;
+#else
+                        throw new RdfParseException("MD5 function not supported under Silverlight/Windows Phone 7");
+#endif
                     case SparqlSpecsHelper.SparqlKeywordMin:
                         if (args.Count == 1)
                         {
@@ -456,6 +460,7 @@ namespace VDS.RDF.Query.Expressions
                         }
                         break;
                     case SparqlSpecsHelper.SparqlKeywordSha384:
+#if !SILVERLIGHT
                         if (args.Count == 1)
                         {
                             sparqlFunc = new Sha384HashFunction(args.First());
@@ -465,7 +470,11 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the SPARQL SHA384() function");
                         }
                         break;
+#else
+                        throw new RdfParseException("SHA384 function not supported under Silverlight/Windows Phone 7");
+#endif
                     case SparqlSpecsHelper.SparqlKeywordSha512:
+#if !SILVERLIGHT
                         if (args.Count == 1)
                         {
                             sparqlFunc = new Sha512HashFunction(args.First());
@@ -475,6 +484,9 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the SPARQL SHA512() function");
                         }
                         break;
+#else
+                        throw new RdfParseException("SHA512 function not supported under Silverlight/Windows Phone 7");
+#endif
                     case SparqlSpecsHelper.SparqlKeywordStr:
                         if (args.Count == 1)
                         {

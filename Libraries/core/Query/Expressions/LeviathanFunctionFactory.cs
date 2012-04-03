@@ -296,6 +296,7 @@ namespace VDS.RDF.Query.Expressions
                         }
                         break;
                     case LeviathanFunctionFactory.MD5Hash:
+#if !SILVERLIGHT
                         if (args.Count == 1)
                         {
                             lvnFunc = new MD5HashFunction(args.First());
@@ -305,6 +306,9 @@ namespace VDS.RDF.Query.Expressions
                             throw new RdfParseException("Incorrect number of arguments for the Leviathan md5hash() function");
                         }
                         break;
+#else
+                        throw new RdfParseException("MD5 function not supported under Silverlight/Windows Phone 7");
+#endif
                     case LeviathanFunctionFactory.Median:
                         if (args.Count == 1)
                         {

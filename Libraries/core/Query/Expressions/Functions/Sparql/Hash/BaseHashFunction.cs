@@ -38,7 +38,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
-using HashLib;
 using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
@@ -112,84 +111,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
             }
 
             return output.ToString();
-        }
-
-        /// <summary>
-        /// Gets the String representation of the function
-        /// </summary>
-        /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the Type of the Expression
-        /// </summary>
-        public override SparqlExpressionType Type
-        {
-            get
-            {
-                return SparqlExpressionType.Function;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Abstract base class for Hash Functions that use the parts of the HashLib that are integrated into dotNetRDF
-    /// </summary>
-    public abstract class BaseHashLibFunction : BaseUnaryExpression
-    {
-        private HashCryptoNotBuildIn _crypto;
-
-        /// <summary>
-        /// Creates a new Hash function
-        /// </summary>
-        /// <param name="expr">Expression</param>
-        /// <param name="hash">Hash Algorithm to use</param>
-        public BaseHashLibFunction(ISparqlExpression expr, HashCryptoNotBuildIn hash)
-            : base(expr)
-        {
-            this._crypto = hash;
-        }
-
-        /// <summary>
-        /// Gets the value of the function in the given Evaluation Context for the given Binding ID
-        /// </summary>
-        /// <param name="context">Evaluation Context</param>
-        /// <param name="bindingID">Binding ID</param>
-        /// <returns></returns>
-        public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
-        {
-            IValuedNode temp = this._expr.Evaluate(context, bindingID);
-            if (temp != null)
-            {
-                switch (temp.NodeType)
-                {
-                    case NodeType.Blank:
-                        throw new RdfQueryException("Cannot calculate the Hash of a Blank Node");
-                    case NodeType.GraphLiteral:
-                        throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
-                    case NodeType.Literal:
-                        return new StringNode(null, this.Hash(((ILiteralNode)temp).Value));
-                    case NodeType.Uri:
-                        return new StringNode(null, this.Hash(temp.AsString()));
-                    default:
-                        throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
-                }
-            }
-            else
-            {
-                throw new RdfQueryException("Cannot calculate the SHA 1 Sum of a null");
-            }
-        }
-
-        /// <summary>
-        /// Computes Hashes
-        /// </summary>
-        /// <param name="input">Input String</param>
-        /// <returns></returns>
-        protected virtual string Hash(string input)
-        {
-            HashResult r = this._crypto.ComputeString(input, Encoding.UTF8);
-            return r.ToString().Replace("-","").ToLower();
         }
 
         /// <summary>
