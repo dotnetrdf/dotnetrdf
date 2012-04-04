@@ -131,6 +131,7 @@
     <Compile Include="Core\GraphLiteralNode.cs" />
     <Compile Include="Storage\FolderStores.cs" />
     <Compile Include="Storage\IGenericIOManager.cs" />
+    <Compile Include="Storage\IStorageProvider.cs" />
     <Compile Include="Storage\Params\StreamParams.cs" />
     <Compile Include="Storage\Params\IStoreParams.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />

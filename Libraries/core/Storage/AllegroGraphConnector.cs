@@ -324,6 +324,16 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public IEnumerable<String> ListStores()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IStorageProvider GetStore(String storeID)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
