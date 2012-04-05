@@ -294,26 +294,39 @@ namespace VDS.RDF.Storage
     public interface IAsyncStorageProvider
         : IStorageCapabilities, IDisposable
     {
-        void LoadGraph(IGraph g, Uri graphUri, GraphCallback callback, Object state);
+        void LoadGraph(IGraph g, Uri graphUri, LoadGraphCallback callback, Object state);
 
-        void LoadGraph(IGraph g, String graphUri, GraphCallback callback, Object state);
+        void LoadGraph(IGraph g, String graphUri, LoadGraphCallback callback, Object state);
 
-        void LoadGraph(IRdfHandler handler, Uri graphUri, RdfHandlerCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, Uri graphUri, LoadHandlerCallback callback, Object state);
 
-        void LoadGraph(IRdfHandler handler, String graphUri, RdfHandlerCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, String graphUri, LoadHandlerCallback callback, Object state);
 
+        void SaveGraph(IGraph g, SaveGraphCallback callback, Object state);
+
+        void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state);
+
+        void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state);
+
+        void DeleteGraph(Uri graphUri, DeleteGraphCallback callback, Object state);
+
+        void DeleteGraph(String graphUri, DeleteGraphCallback callback, Object state);
+
+        void ListGraphs(ListGraphsCallback callback, Object state);
     }
 
     public interface IAsyncQueryableStorage
         : IAsyncStorageProvider
     {
+        void Query(String sparqlQuery, SparqlQueryCallback callback, Object state);
 
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, SparqlQueryHandlerCallback callback, Object state);
     }
 
     public interface IAsyncUpdateableStorage
         : IAsyncStorageProvider
     {
-
+        void Update(String sparqlUpdates, SparqlUpdateCallback callback, Object state);
     }
 
     /// <summary>
@@ -348,5 +361,31 @@ namespace VDS.RDF.Storage
         /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this
         /// </remarks>
         IStorageProvider GetStore(string storeID);
+    }
+
+    /// <summary>
+    /// Interface for storage providers which have controllable transactions
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It is up to the implementation whether transactions are per-thread or global and how transactions interact with operations performed on the storage provider.  Please see individual implementations for notes on how transactions are implemented.
+    /// </para>
+    /// </remarks>
+    public interface ITransactionalStorage
+    {
+        /// <summary>
+        /// Begins a transaction
+        /// </summary>
+        void Begin();
+
+        /// <summary>
+        /// Commits a transaction
+        /// </summary>
+        void Commit();
+
+        /// <summary>
+        /// Rolls back a transaction
+        /// </summary>
+        void Rollback();
     }
 }

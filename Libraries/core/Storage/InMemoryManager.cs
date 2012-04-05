@@ -55,7 +55,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class InMemoryManager 
-        : IUpdateableGenericIOManager, IConfigurationSerializable
+        : BaseAsyncSafeConnector, IQueryableStorage, IUpdateableStorage, IAsyncQueryableStorage, IAsyncUpdateableStorage, IConfigurationSerializable, IGenericIOManager
     {
         private ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;
@@ -85,14 +85,14 @@ namespace VDS.RDF.Storage
             this._dataset = dataset;
         }
 
-        #region IGenericIOManager Members
+        #region IStorageProvider Members
 
         /// <summary>
         /// Loads a Graph from the Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Graph URI to load</param>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public override void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">Graph URI to load</param>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
             if (this._dataset.HasGraph(graphUri))
@@ -117,7 +117,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">Graph URI to load</param>
-        public void LoadGraph(IGraph g, string graphUri)
+        public override void LoadGraph(IGraph g, string graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -134,7 +134,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">Graph URI to load</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public override void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -150,7 +150,7 @@ namespace VDS.RDF.Storage
         /// Saves a Graph to the Store
         /// </summary>
         /// <param name="g">Graph</param>
-        public void SaveGraph(IGraph g)
+        public override void SaveGraph(IGraph g)
         {
             if (this._dataset.HasGraph(g.BaseUri))
             {
@@ -163,11 +163,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the IO Behaviour for In-Memory stores
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public override IOBehaviour IOBehaviour
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.ExplicitEmptyGraphs;
             }
         }
 
@@ -177,7 +177,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to Update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (!this._dataset.HasGraph(graphUri))
             {
@@ -202,7 +202,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to Update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             if (graphUri == null)
             {
@@ -221,7 +221,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Triple level updates are supported
         /// </summary>
-        public bool UpdateSupported
+        public override bool UpdateSupported
         {
             get 
             {
@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(Uri graphUri)
+        public override void DeleteGraph(Uri graphUri)
         {
             if (graphUri == null)
             {
@@ -252,7 +252,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(string graphUri)
+        public override void DeleteGraph(string graphUri)
         {
             if (graphUri == null)
             {
@@ -271,7 +271,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Graph Deletion is supported
         /// </summary>
-        public bool DeleteSupported
+        public override bool DeleteSupported
         {
             get 
             {
@@ -283,7 +283,7 @@ namespace VDS.RDF.Storage
         /// Lists the URIs of Graphs in the Store
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Uri> ListGraphs()
+        public override IEnumerable<Uri> ListGraphs()
         {
             return this._dataset.GraphUris;
         }
@@ -291,7 +291,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing graphs is supported
         /// </summary>
-        public bool ListGraphsSupported
+        public override bool ListGraphsSupported
         {
             get
             {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Store is ready
         /// </summary>
-        public bool IsReady
+        public override bool IsReady
         {
             get 
             {
@@ -313,7 +313,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Store is not read-only
         /// </summary>
-        public bool IsReadOnly
+        public override bool IsReadOnly
         {
             get 
             {
@@ -366,12 +366,31 @@ namespace VDS.RDF.Storage
 
         #endregion
 
+        #region Async Members
+
+        public void Query(string sparqlQuery, SparqlQueryCallback callback, object state)
+        {
+            this.AsyncQuery(sparqlQuery, callback, state);
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, SparqlQueryHandlerCallback callback, object state)
+        {
+            this.AsyncQueryHandlers(sparqlQuery, rdfHandler, resultsHandler, callback, state);
+        }
+
+        public void Update(string sparqlUpdates, SparqlUpdateCallback callback, object state)
+        {
+            this.AsyncUpdate(sparqlUpdates, callback, state);
+        }
+
+        #endregion
+
         #region IDisposable Members
 
         /// <summary>
         /// Disposes of the Manager
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             this._dataset.Flush();
         }
