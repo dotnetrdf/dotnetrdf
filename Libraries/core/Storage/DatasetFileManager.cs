@@ -53,7 +53,7 @@ namespace VDS.RDF.Storage
     /// Allows you to treat an RDF Dataset File - NQuads, TriG or TriX - as a read-only generic store
     /// </summary>
     public class DatasetFileManager 
-        : IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseAsyncSafeConnector, IGenericIOManager, IQueryableGenericIOManager, IConfigurationSerializable
     {
         private TripleStore _store = new TripleStore();
         private bool _ready = false;
@@ -138,7 +138,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public override void LoadGraph(IGraph g, Uri graphUri)
         {
             this.LoadGraph(new GraphHandler(g), graphUri);
         }
@@ -148,7 +148,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             IGraph g = null;
             if (graphUri == null)
@@ -182,7 +182,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IGraph g, String graphUri)
+        public override void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
             {
@@ -199,7 +199,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to load</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public override void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri.Equals(String.Empty))
             {
@@ -216,7 +216,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to save</param>
         /// <exception cref="RdfStorageException">Always thrown since this Manager provides a read-only connection</exception>
-        public void SaveGraph(IGraph g)
+        public override void SaveGraph(IGraph g)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -224,7 +224,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the Save Behaviour of the Store
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public override IOBehaviour IOBehaviour
         {
             get
             {
@@ -238,7 +238,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -249,7 +249,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph URI</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -257,7 +257,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that Updates are not supported since this is a read-only connection
         /// </summary>
-        public bool UpdateSupported
+        public override bool UpdateSupported
         {
             get 
             {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
-        public void DeleteGraph(Uri graphUri)
+        public override void DeleteGraph(Uri graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -280,7 +280,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
         /// <exception cref="RdfStorageException">Thrown since you cannot delete a Graph from a read-only connection</exception>
-        public void DeleteGraph(String graphUri)
+        public override void DeleteGraph(String graphUri)
         {
             throw new RdfStorageException("The DatasetFileManager provides a read-only connection");
         }
@@ -288,7 +288,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting graphs is not supported
         /// </summary>
-        public bool DeleteSupported
+        public override bool DeleteSupported
         {
             get
             {
@@ -299,7 +299,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Manager is ready if the underlying file has been loaded
         /// </summary>
-        public bool IsReady
+        public override bool IsReady
         {
             get
             {
@@ -310,7 +310,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Manager is read-only
         /// </summary>
-        public bool IsReadOnly
+        public override bool IsReadOnly
         {
             get
             {
@@ -322,7 +322,7 @@ namespace VDS.RDF.Storage
         /// Gets the list of URIs of Graphs in the Store
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Uri> ListGraphs()
+        public override IEnumerable<Uri> ListGraphs()
         {
             return this._store.Graphs.GraphUris;
         }
@@ -330,7 +330,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing graphs is supported
         /// </summary>
-        public bool ListGraphsSupported
+        public override bool ListGraphsSupported
         {
             get
             {
@@ -341,7 +341,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Manager
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             this._store.Dispose();
         }
