@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +57,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 
-        : BaseHttpConnector, IGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IConfigurationSerializable, IAsyncStorageProvider
+#if !NO_SYNC_HTTP
+        , IStorageProvider, IGenericIOManager
+#endif
     {
         /// <summary>
         /// URI of the Protocol Server
@@ -103,6 +104,74 @@ namespace VDS.RDF.Storage
         /// <param name="proxy">Proxy Server</param>
         public SparqlHttpProtocolConnector(Uri serviceUri, WebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
+
+        /// <summary>
+        /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateAddTriples;
+            }
+        }
+
+        /// <summary>
+        /// Gets that Updates are supported
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that deleting Graphs is supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that listing Graphs is not supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets that the Store is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets that the Store is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the Protocol Server
@@ -331,17 +400,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores
-        /// </summary>
-        public virtual IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteDefault | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateAddTriples;
-            }
-        }
-
-        /// <summary>
         /// Updates a Graph on the Protocol Server
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update</param>
@@ -424,17 +482,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets that Updates are supported
-        /// </summary>
-        public virtual bool UpdateSupported
-        {
-            get 
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Deletes a Graph from the store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
@@ -502,17 +549,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting Graphs is supported
-        /// </summary>
-        public virtual bool DeleteSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Throws an exception as listing graphs in a SPARQL Graph Store HTTP Protocol does not support listing graphs
         /// </summary>
         /// <returns></returns>
@@ -522,43 +558,190 @@ namespace VDS.RDF.Storage
             throw new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing Graphs");
         }
 
+#endif
+
         /// <summary>
-        /// Returns that listing Graphs is not supported
+        /// Loads a Graph from the Protocol Server
         /// </summary>
-        public virtual bool ListGraphsSupported
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        public override void LoadGraph(IGraph g, String graphUri, LoadGraphCallback callback, Object state)
         {
-            get
+            Uri origUri = g.BaseUri;
+            if (origUri == null && g.IsEmpty && graphUri != null && !graphUri.Equals(String.Empty))
             {
-                return false;
+                origUri = UriFactory.Create(graphUri);
             }
+            this.LoadGraph(new GraphHandler(g), graphUri, (sender, handler, error, st) =>
+                {
+                    callback(sender, g, error, st);
+                }, state);
+            g.BaseUri = origUri;
         }
 
         /// <summary>
-        /// Gets that the Store is ready
+        /// Loads a Graph from the Protocol Server
         /// </summary>
-        public virtual bool IsReady
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        public override void LoadGraph(IRdfHandler handler, String graphUri, LoadHandlerCallback callback, Object state)
         {
-            get 
+            String retrievalUri = this._serviceUri;
+            if (graphUri != null && !graphUri.Equals(String.Empty))
             {
-                return true;
+                retrievalUri += "?graph=" + Uri.EscapeDataString(graphUri);
             }
+            else
+            {
+                retrievalUri += "?default";
+            }
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(retrievalUri);
+            request.Method = "GET";
+            request.Accept = MimeTypesHelper.HttpAcceptHeader;
+            request = base.GetProxiedRequest(request);
+
+            this.LoadGraphAsync(request, handler, callback, state);
         }
 
         /// <summary>
-        /// Gets that the Store is not read-only
+        /// Saves a Graph to the Protocol Server
         /// </summary>
-        public virtual bool IsReadOnly
+        /// <param name="g">Graph to save</param>
+        public override void SaveGraph(IGraph g, SaveGraphCallback callback, Object state)
         {
-            get 
+            String saveUri = this._serviceUri;
+            if (g.BaseUri != null)
             {
-                return false;
+                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.ToString());
+            }
+            else
+            {
+                saveUri += "?default";
+            }
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
+                request.Method = "PUT";
+                request.ContentType = MimeTypesHelper.RdfXml[0];
+                request = base.GetProxiedRequest(request);
+
+                this.SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store asychronously", webEx), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, g, new RdfStorageException("Unexpected Error trying to save the Graph to the store asynchronously, see inner exception for details", ex), state);
+            }
+        }
+
+
+        /// <summary>
+        /// Updates a Graph on the Protocol Server
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// </remarks>
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state)
+        {
+            if (removals != null && removals.Any()) throw new RdfStorageException("Unable to Update a Graph since this update requests that Triples be removed from the Graph which the SPARQL Graph Store HTTP Protocol for Graph Management does not support");
+
+            if (additions == null || !additions.Any()) return;
+
+            String updateUri = this._serviceUri;
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                updateUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                updateUri += "?default";
+            }
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
+                request.Method = "POST";
+                request.ContentType = MimeTypesHelper.RdfXml[0];
+                request = base.GetProxiedRequest(request);
+
+                RdfXmlWriter writer = new RdfXmlWriter();
+
+                base.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex), state);
+            }
+        }
+
+        public override void ListGraphs(ListGraphsCallback callback, Object state)
+        {
+            callback(this, Enumerable.Empty<Uri>(), new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs"), state);
+        }
+
+        public override void DeleteGraph(String graphUri, DeleteGraphCallback callback, Object state)
+        {
+            String deleteUri = this._serviceUri;
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                deleteUri += "?graph=" + Uri.EscapeDataString(graphUri);
+            }
+            else
+            {
+                deleteUri += "?default";
+            }
+
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(deleteUri));
+                request.Method = "DELETE";
+                request = base.GetProxiedRequest(request);
+
+                base.DeleteGraphAsync(request, true, graphUri, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+
+                //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
+                {
+                    callback(this, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx), state);
+                }
             }
         }
 
         /// <summary>
         /// Disposes of the Connection
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
             //Nothing to dispose of
         }
@@ -594,5 +777,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

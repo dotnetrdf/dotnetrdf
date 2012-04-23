@@ -80,7 +80,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     [Obsolete("This interface is now a synonym for the IUpdateableStorage interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IUpdateableStorage instead", false)]
     public interface IUpdateableGenericIOManager
-        : IGenericIOManager, IUpdateableStorage
+        : IQueryableGenericIOManager, IUpdateableStorage
     {
 
     }

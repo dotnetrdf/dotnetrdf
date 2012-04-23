@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -97,7 +95,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class StardogConnector 
-        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IQueryableStorage, IQueryableGenericIOManager, ITransactionalStorage
+#endif
     {
         /// <summary>
         /// Constant for the default Anonymous user account and password used by Stardog if you have not supplied a shiro.ini file or otherwise disabled security
@@ -235,6 +236,63 @@ namespace VDS.RDF.Storage
                 this._reasoning = value;
             }
         }
+
+        /// <summary>
+        /// Gets the IO Behaviour of Stardog
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
+        /// Returns that listing Graphs is supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns that Updates are supported on Stardog Stores
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store using whatever reasoning mode is currently in-use
@@ -573,17 +631,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of Stardog
-        /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
-            }
-        }
-
-        /// <summary>
         /// Updates a Graph in the Stardog Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>
@@ -703,17 +750,6 @@ namespace VDS.RDF.Storage
             else
             {
                 this.UpdateGraph(UriFactory.Create(graphUri), additions, removals);
-            }
-        }
-
-        /// <summary>
-        /// Returns that Updates are supported on Stardog Stores
-        /// </summary>
-        public bool UpdateSupported
-        {
-            get 
-            {
-                return true;
             }
         }
 
@@ -856,38 +892,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Returns that listing Graphs is supported
-        /// </summary>
-        public bool ListGraphsSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is ready
-        /// </summary>
-        public bool IsReady
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is not read-only
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+#endif
 
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
@@ -953,6 +958,8 @@ namespace VDS.RDF.Storage
         }
 
         #region Stardog Transaction Support
+
+#if !NO_SYNC_HTTP
 
         private String BeginTransaction()
         {
@@ -1111,12 +1118,14 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         #endregion
 
         /// <summary>
         /// Disposes of the Connector
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             //No Dispose actions
         }
@@ -1187,5 +1196,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

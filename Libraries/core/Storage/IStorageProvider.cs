@@ -388,4 +388,13 @@ namespace VDS.RDF.Storage
         /// </summary>
         void Rollback();
     }
+
+    public interface IAsyncTransactionalStorage
+    {
+        void Begin(TransactionCallback callback, Object state);
+
+        void Commit(TransactionCallback callback, Object state);
+
+        void Rollback(TransactionCallback callback, Object state);
+    }
 }

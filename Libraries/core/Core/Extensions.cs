@@ -622,6 +622,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Turns a string into a safe URI
+        /// </summary>
+        /// <param name="str">String</param>
+        /// <returns>Either null if the string is null/empty or a URI otherwise</returns>
+        internal static Uri ToSafeUri(this String str)
+        {
+            return (String.IsNullOrEmpty(str) ? null : UriFactory.Create(str));
+        }
+
+        /// <summary>
         /// Gets the String representation of the URI formatted using the given Formatter
         /// </summary>
         /// <param name="u">URI</param>

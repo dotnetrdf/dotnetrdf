@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -67,7 +65,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class FourStoreConnector
-        : BaseHttpConnector, IQueryableGenericIOManager, IUpdateableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IQueryableGenericIOManager, IUpdateableGenericIOManager
+#endif
     {
         private String _baseUri;
         private SparqlRemoteEndpoint _endpoint;
@@ -154,6 +155,77 @@ namespace VDS.RDF.Storage
         {
             this.Proxy = proxy;
         }
+
+        /// <summary>
+        /// Returns whether this connector has been instantiated with update support or not
+        /// </summary>
+        /// <remarks>
+        /// If this property returns true it does not guarantee that the 4store instance actually supports updates it simply indicates that the user has enabled updates on the connector.  If Updates are enabled and the 4store server being connected to does not support updates then errors will occur.
+        /// </remarks>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets the IO Behaviour of 4store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.IsQuadStore | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
+        /// Returns that deleting Graph is supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that Listing Graphs is supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the 4store instance
@@ -295,17 +367,6 @@ namespace VDS.RDF.Storage
 #if !NO_RWLOCK
                 this._lockManager.ExitWriteLock();
 #endif
-            }
-        }
-
-        /// <summary>
-        /// Gets the IO Behaviour of 4store
-        /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.IsQuadStore | IOBehaviour.HasNamedGraphs | IOBehaviour.OverwriteNamed | IOBehaviour.CanUpdateTriples;
             }
         }
 
@@ -456,42 +517,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns whether this connector has been instantiated with update support or not
-        /// </summary>
-        /// <remarks>
-        /// If this property returns true it does not guarantee that the 4store instance actually supports updates it simply indicates that the user has enabled updates on the connector.  If Updates are enabled and the 4store server being connected to does not support updates then errors will occur.
-        /// </remarks>
-        public bool UpdateSupported
-        {
-            get 
-            {
-                return false; 
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is ready
-        /// </summary>
-        public bool IsReady
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is not read-only
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Makes a SPARQL Query against the underlying 4store Instance
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
@@ -629,17 +654,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting Graph is supported
-        /// </summary>
-        public bool DeleteSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Lists the Graphs in the Store
         /// </summary>
         /// <returns></returns>
@@ -676,17 +690,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Listing Graphs is supported
-        /// </summary>
-        public bool ListGraphsSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Applies a SPARQL Update against 4store
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update</param>
@@ -698,10 +701,12 @@ namespace VDS.RDF.Storage
             this._updateEndpoint.Update(sparqlUpdate);
         }
 
+#endif
+
         /// <summary>
         /// Disposes of a 4store connection
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             //No Dispose actions needed
         }
@@ -739,5 +744,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

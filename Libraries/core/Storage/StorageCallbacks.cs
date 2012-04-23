@@ -22,4 +22,6 @@ namespace VDS.RDF.Storage
     public delegate void SparqlQueryHandlerCallback(Object sender, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Exception e, Object state);
 
     public delegate void SparqlUpdateCallback(Object sender, String updates, Exception e, Object state);
+
+    public delegate void TransactionCallback(Object sender, Exception e, Object state);
 }

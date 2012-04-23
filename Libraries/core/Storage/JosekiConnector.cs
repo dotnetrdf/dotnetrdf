@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +66,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class JosekiConnector
-        : BaseHttpConnector, IUpdateableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IUpdateableGenericIOManager
+#endif
     {
         private String _baseUri, _queryService, _updateService;
         private SparqlFormatter _formatter = new SparqlFormatter();
@@ -128,6 +129,84 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public JosekiConnector(String baseUri, String queryServicePath, WebProxy proxy)
             : this(baseUri, queryServicePath, null, proxy) { }
+
+        /// <summary>
+        /// Gets the IO Behaviour of Joseki based stores
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                if (this._updateService == null)
+                {
+                    return IOBehaviour.ReadOnlyGraphStore;
+                }
+                else
+                {
+                    return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.AppendToDefault | IOBehaviour.AppendToNamed | IOBehaviour.CanUpdateTriples;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns whether Updates are supported by this Joseki connector
+        /// </summary>
+        /// <remarks>
+        /// If the connector was instantiated in read-only mode this returns false
+        /// </remarks>
+        public override bool UpdateSupported
+        {
+            get 
+            {
+                return (this._updateService != null);
+            }
+        }
+
+        /// <summary>
+        /// Returns that listed Graphs is supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the Connection was created in read-only mode
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return (this._updateService == null);
+            }
+        }
+
+        /// <summary>
+        /// Returns that delete is supported if this connection is not in read-only mode
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return (this._updateService != null);
+            }
+        }
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Loads a Graph from the Joseki store
@@ -275,24 +354,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of Joseki based stores
-        /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                if (this._updateService == null)
-                {
-                    return IOBehaviour.ReadOnlyGraphStore;
-                }
-                else
-                {
-                    return IOBehaviour.IsQuadStore | IOBehaviour.HasDefaultGraph | IOBehaviour.HasNamedGraphs | IOBehaviour.AppendToDefault | IOBehaviour.AppendToNamed | IOBehaviour.CanUpdateTriples;
-                }
-            }
-        }
-
-        /// <summary>
         /// Updates a Graph in the Joseki store
         /// </summary>
         /// <param name="graphUri">Graph Uri</param>
@@ -404,20 +465,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns whether Updates are supported by this Joseki connector
-        /// </summary>
-        /// <remarks>
-        /// If the connector was instantiated in read-only mode this returns false
-        /// </remarks>
-        public bool UpdateSupported
-        {
-            get 
-            {
-                return (this._updateService != null);
-            }
-        }
-
-        /// <summary>
         /// Deletes a Graph from the Store if the connection is not in read-only mode
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
@@ -436,17 +483,6 @@ namespace VDS.RDF.Storage
             if (graphUri.Equals(String.Empty)) return;
 
             this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">");
-        }
-
-        /// <summary>
-        /// Returns that delete is supported if this connection is not in read-only mode
-        /// </summary>
-        public bool DeleteSupported
-        {
-            get
-            {
-                return (this._updateService != null);
-            }
         }
 
         /// <summary>
@@ -482,39 +518,6 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
-            }
-        }
-
-        /// <summary>
-        /// Returns that listed Graphs is supported
-        /// </summary>
-        public bool ListGraphsSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is ready
-        /// </summary>
-        public bool IsReady
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns whether the Connection was created in read-only mode
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return (this._updateService == null);
             }
         }
 
@@ -689,6 +692,8 @@ namespace VDS.RDF.Storage
            }
         }
 
+#endif
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
@@ -730,7 +735,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of a connection to the Joseki store
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             //No Disposes actions
         }
@@ -773,5 +778,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

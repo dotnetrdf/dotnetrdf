@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -61,7 +59,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector 
-        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IQueryableStorage, IQueryableGenericIOManager
+#endif
     {
         /// <summary>
         /// Base Uri for the Store
@@ -176,6 +177,72 @@ namespace VDS.RDF.Storage
             get
             {
                 return this._store;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Save Behaviour of Stores that use the Sesame HTTP Protocol
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
+        /// Returns that Updates are supported on Sesame HTTP Protocol supporting Stores
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that deleting graphs from the Sesame store is supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that listing Graphs is supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
             }
         }
 
@@ -366,6 +433,8 @@ namespace VDS.RDF.Storage
             return output.ToString();
         }
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Loads a Graph from the Store
         /// </summary>
@@ -498,10 +567,6 @@ namespace VDS.RDF.Storage
                 NTriplesWriter ntwriter = new NTriplesWriter();
                 ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
-                //request.ContentType = MimeTypesHelper.RdfXml[0];
-                //RdfXmlWriter writer = new RdfXmlWriter();
-                //writer.Save(g, new StreamWriter(request.GetRequestStream()));
-
 #if DEBUG
                 if (Options.HttpDebugging)
                 {
@@ -529,17 +594,6 @@ namespace VDS.RDF.Storage
                 }
 #endif
                 throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
-            }
-        }
-
-        /// <summary>
-        /// Gets the Save Behaviour of Stores that use the Sesame HTTP Protocol
-        /// </summary>
-        public virtual IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
             }
         }
 
@@ -668,17 +722,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that Updates are supported on Sesame HTTP Protocol supporting Stores
-        /// </summary>
-        public virtual bool UpdateSupported
-        {
-            get 
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Deletes a Graph from the Sesame store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
@@ -741,17 +784,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting graphs from the Sesame store is supported
-        /// </summary>
-        public virtual bool DeleteSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Gets the list of Graphs in the Sesame store
         /// </summary>
         /// <returns></returns>
@@ -787,37 +819,228 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Returns that listing Graphs is supported
-        /// </summary>
-        public virtual bool ListGraphsSupported
+#endif
+
+        public override void SaveGraph(IGraph g, SaveGraphCallback callback, object state)
         {
-            get
+            try
             {
-                return true;
+                HttpWebRequest request;
+                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+
+                if (g.BaseUri != null)
+                {
+                    if (this._fullContextEncoding)
+                    {
+                        serviceParams.Add("context", "<" + g.BaseUri.ToString() + ">");
+                    }
+                    else
+                    {
+                        serviceParams.Add("context", g.BaseUri.ToString());
+                    }
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "PUT", serviceParams);
+                }
+                else
+                {
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
+                }
+
+                request.ContentType = MimeTypesHelper.NTriples[0];
+                NTriplesWriter ntwriter = new NTriplesWriter();
+
+                base.SaveGraphAsync(request, ntwriter, g, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx), state);
             }
         }
 
-        /// <summary>
-        /// Returns that the Connection is ready
-        /// </summary>
-        public virtual bool IsReady
+        public override void LoadGraph(IRdfHandler handler, string graphUri, LoadHandlerCallback callback, object state)
         {
-            get
+            try
             {
-                return true;
+                HttpWebRequest request;
+                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+
+                String requestUri = this._repositoriesPrefix + this._store + "/statements";
+                if (!graphUri.Equals(String.Empty))
+                {
+                    serviceParams.Add("context", "<" + graphUri + ">");
+                }
+
+                request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
+
+                base.LoadGraphAsync(request, handler, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx), state);
             }
         }
 
-        /// <summary>
-        /// Returns that the Connection is not read-only
-        /// </summary>
-        public virtual bool IsReadOnly
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, object state)
         {
-            get
+            try
             {
-                return false;
+                HttpWebRequest request;
+                HttpWebResponse response;
+                Dictionary<String, String> serviceParams;
+                NTriplesWriter ntwriter = new NTriplesWriter();
+
+                if (removals != null)
+                {
+                    if (removals.Any())
+                    {
+                        //For Async deletes we need to build up a sequence of requests to send
+                        Queue<HttpWebRequest> requests = new Queue<HttpWebRequest>();
+
+                        //Have to do a DELETE for each individual Triple
+                        foreach (Triple t in removals.Distinct())
+                        {
+                            //Prep Service Params
+                            serviceParams = new Dictionary<String, String>();
+                            if (!graphUri.Equals(String.Empty))
+                            {
+                                serviceParams.Add("context", "<" + graphUri + ">");
+                            }
+                            else
+                            {
+                                serviceParams.Add("context", "null");
+                            }
+
+                            this._output.Remove(0, this._output.Length);
+                            serviceParams.Add("subj", this._formatter.Format(t.Subject));
+                            serviceParams.Add("pred", this._formatter.Format(t.Predicate));
+                            serviceParams.Add("obj", this._formatter.Format(t.Object));
+                            request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                            requests.Enqueue(request);
+                        }
+
+                        //Run all the requests, if any error make an error callback and abort
+                        while (requests.Count > 0)
+                        {
+                            request = requests.Dequeue();
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+                            request.BeginGetResponse(r =>
+                                {
+                                    try
+                                    {
+                                        response = (HttpWebResponse) request.EndGetResponse(r);
+
+                                        //This delete worked OK, close the response and carry on
+                                        response.Close();
+                                    }
+                                    catch (WebException webEx)
+                                    {
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        }
+#endif
+                                        callback(this, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx), state);
+                                        return;
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex), state);
+                                        return;
+                                    }
+                                }, state);
+                        }
+                    }
+                }
+
+                if (additions != null)
+                {
+                    if (additions.Any())
+                    {
+                        //Prep Service Params
+                        serviceParams = new Dictionary<string, string>();
+                        if (!graphUri.Equals(String.Empty))
+                        {
+                            serviceParams.Add("context", "<" + graphUri + ">");
+                        }
+                        else
+                        {
+                            serviceParams.Add("context", "null");
+                        }
+
+                        //Add the new Triples
+                        request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
+                        Graph h = new Graph();
+                        h.Assert(additions);
+                        request.ContentType = MimeTypesHelper.NTriples[0];
+
+                        //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
+                        base.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                    }
+                }
             }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
+            }
+        }
+
+        public override void DeleteGraph(string graphUri, DeleteGraphCallback callback, object state)
+        {
+            try
+            {
+                HttpWebRequest request;
+                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+
+                if (!graphUri.Equals(String.Empty))
+                {
+                    serviceParams.Add("context", "<" + graphUri + ">");
+                }
+                else
+                {
+                    serviceParams.Add("context", "null");
+                }
+
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                base.DeleteGraphAsync(request, false, graphUri, callback, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx), state);
+            }
+        }
+
+        public override void ListGraphs(ListGraphsCallback callback, object state)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -860,7 +1083,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Connector
         /// </summary>
-        public virtual void Dispose()
+        public override void Dispose()
         {
             //No Dispose actions
         }
@@ -1004,7 +1227,10 @@ namespace VDS.RDF.Storage
     /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 6 (i.e. includes SPARQL Update support)
     /// </summary>
     public class SesameHttpProtocolVersion6Connector
-        : SesameHttpProtocolVersion5Connector, IUpdateableGenericIOManager
+        : SesameHttpProtocolVersion5Connector
+#if !NO_SYNC_HTTP
+        , IUpdateableStorage, IUpdateableGenericIOManager
+#endif
     {
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -1124,5 +1350,3 @@ namespace VDS.RDF.Storage
     }
 
 }
-
-#endif

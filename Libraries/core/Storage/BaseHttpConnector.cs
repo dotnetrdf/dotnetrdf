@@ -34,9 +34,13 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using VDS.RDF.Parsing;
 using VDS.RDF.Configuration;
+using System.IO;
+using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Storage
 {
@@ -52,8 +56,8 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseHttpConnector
+        : IAsyncStorageProvider
     {
-
 #if !NO_PROXY
         private WebProxy _proxy;
         
@@ -222,5 +226,288 @@ namespace VDS.RDF.Storage
             }
 #endif
         }
+
+        public virtual void LoadGraph(IGraph g, Uri graphUri, LoadGraphCallback callback, Object state)
+        {
+            this.LoadGraph(g, graphUri.ToSafeString(), callback, state);
+        }
+
+        public virtual void LoadGraph(IGraph g, String graphUri, LoadGraphCallback callback, Object state)
+        {
+            this.LoadGraph(new GraphHandler(g), graphUri, (sender, handler, err, st) =>
+                {
+                    callback(sender, g, err, st);
+                }, state);
+        }
+
+        public virtual void LoadGraph(IRdfHandler handler, Uri graphUri, LoadHandlerCallback callback, Object state)
+        {
+            this.LoadGraph(handler, graphUri.ToSafeString(), callback, state);
+        }
+
+        public abstract void LoadGraph(IRdfHandler handler, String graphUri, LoadHandlerCallback callback, Object state);
+
+        protected void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, LoadHandlerCallback callback, Object state)
+        {
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+            request.BeginGetResponse(r =>
+            {
+                try
+                {
+                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //Parse the retrieved RDF
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                    //If we get here then it was OK
+                    response.Close();
+
+                    callback(this, handler, null, state);
+                }
+                catch (WebException webEx)
+                {
+                    if (webEx.Response != null)
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                        }
+#endif
+                    }
+                    callback(this, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx), state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, handler, new RdfStorageException("Unexpected error trying to load a graph from the store asynchronously, see inner exception for details", ex), state);
+                }
+            }, state);
+        }
+
+        public abstract void SaveGraph(IGraph g, SaveGraphCallback callback, Object state);
+
+        protected void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, SaveGraphCallback callback, Object state)
+        {
+            request.BeginGetRequestStream(r =>
+            {
+                try
+                {
+                    Stream reqStream = request.EndGetRequestStream(r);
+                    writer.Save(g, new StreamWriter(reqStream));
+
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+#endif
+                    
+                    request.BeginGetResponse(r2 =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            //If we get here then it was OK
+                            response.Close();
+                            callback(this, g, null, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+#endif
+                            callback(this, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store asynchronously", webEx), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, g, new RdfStorageException("Unexpected Error trying to save the Graph to the store asynchronously, see inner exception for details", ex), state);
+                        }
+                    }, state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, g, new RdfStorageException("Unexpected error writing the Graph to the store asynchronously, see inner exception for details", ex), state);
+                }
+            }, state);
+        }
+
+        public virtual void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state)
+        {
+            this.UpdateGraph(graphUri.ToSafeString(), additions, removals, callback, state);
+        }
+
+        public abstract void UpdateGraph(String graphUri, System.Collections.Generic.IEnumerable<Triple> additions, System.Collections.Generic.IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state);
+
+        protected void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, UpdateGraphCallback callback, Object state)
+        {
+            Graph g = new Graph();
+            g.Assert(ts);
+
+            request.BeginGetRequestStream(r =>
+            {
+                try
+                {
+                    Stream reqStream = request.EndGetRequestStream(r);
+                    writer.Save(g, new StreamWriter(reqStream));
+
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+#endif
+
+                    request.BeginGetResponse(r2 =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            //If we get here then it was OK
+                            response.Close();
+                            callback(this, graphUri, null, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+#endif
+                            callback(this, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex), state);
+                        }
+                    }, state);
+                }
+                catch (WebException webEx)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    callback(this, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx), state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex), state);
+                }
+            }, state);
+        }
+
+        public virtual void DeleteGraph(Uri graphUri, DeleteGraphCallback callback, Object state)
+        {
+            this.DeleteGraph(graphUri.ToSafeString(), callback, state);
+        }
+
+        public abstract void DeleteGraph(String graphUri, DeleteGraphCallback callback, Object state);
+
+        protected void DeleteGraphAsync(HttpWebRequest request, bool allow404, String graphUri, DeleteGraphCallback callback, Object state)
+        {
+#if DEBUG
+            if (Options.HttpDebugging)
+            {
+                Tools.HttpDebugRequest(request);
+            }
+#endif
+            request.BeginGetResponse(r =>
+                {
+                    try
+                    {
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+
+                        //Assume if returns to here we deleted the Graph OK
+                        response.Close();
+                        callback(this, graphUri.ToSafeUri(), null, state);
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                        }
+#endif
+                        //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
+                        if (webEx.Response == null || (webEx.Response != null && (!allow404 || ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound)))
+                        {
+                            callback(this, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store asynchronously", webEx), state);
+                        }
+                        else
+                        {
+                            //Consider a 404 as a success in some cases
+                            callback(this, graphUri.ToSafeUri(), null, state);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to delete a Graph from the Store asynchronously, see inner exception for details", ex), state);
+                    }
+                }, state);
+        }
+
+        public abstract void ListGraphs(ListGraphsCallback callback, Object state);
+
+        public abstract bool IsReady
+        {
+            get;
+        }
+
+        public abstract bool IsReadOnly
+        {
+            get;
+        }
+
+        public abstract IOBehaviour IOBehaviour
+        {
+            get;
+        }
+
+        public abstract bool UpdateSupported
+        {
+            get;
+        }
+
+        public abstract bool DeleteSupported
+        {
+            get;
+        }
+
+        public abstract bool ListGraphsSupported
+        {
+            get;
+        }
+
+        public abstract void Dispose();
     }
 }

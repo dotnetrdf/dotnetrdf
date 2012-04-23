@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +57,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class FusekiConnector 
-        : SparqlHttpProtocolConnector, IUpdateableGenericIOManager, IConfigurationSerializable
+        : SparqlHttpProtocolConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IQueryableStorage, IUpdateableStorage, IQueryableGenericIOManager, IUpdateableGenericIOManager
+#endif
     {
         private SparqlFormatter _formatter = new SparqlFormatter();
         private String _updateUri;
@@ -115,6 +116,30 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return base.IOBehaviour | IOBehaviour.CanUpdateDeleteTriples;
+            }
+        }
+
+        /// <summary>
+        /// Returns that Triple level updates are supported using Fuseki
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+#if !NO_SYNC_HTTP
+
+        /// <summary>
         /// Gets the List of Graphs from the store
         /// </summary>
         /// <returns></returns>
@@ -151,28 +176,6 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("An error occurred while trying to list graphs, see inner exception for details", ex);
-            }
-        }
-
-        /// <summary>
-        /// Gets the IO Behaviour of the Store
-        /// </summary>
-        public override IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return base.IOBehaviour | IOBehaviour.CanUpdateDeleteTriples;
-            }
-        }
-
-        /// <summary>
-        /// Returns that Triple level updates are supported using Fuseki
-        /// </summary>
-        public override bool UpdateSupported
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -440,6 +443,8 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         /// <summary>
         /// Gets a String which gives details of the Connection
         /// </summary>
@@ -473,5 +478,3 @@ namespace VDS.RDF.Storage
         #endregion
     }
 }
-
-#endif

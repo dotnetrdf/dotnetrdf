@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -61,7 +59,10 @@ namespace VDS.RDF.Storage
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
     public class DydraConnector
-        : BaseHttpConnector, IUpdateableGenericIOManager
+        : BaseHttpConnector
+#if !NO_SYNC_HTTP
+        , IUpdateableStorage, IUpdateableGenericIOManager
+#endif
     {
         private const String DydraBaseUri = "http://dydra.com/";
         private const String DydraApiKeyPassword = "X";
@@ -156,9 +157,20 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
         /// Gets whether the Store is ready
         /// </summary>
-        public bool IsReady
+        public override bool IsReady
         {
             get
             {
@@ -169,13 +181,48 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns false because Dydra stores are always read/write
         /// </summary>
-        public bool IsReadOnly
+        public override bool IsReadOnly
         {
             get
             {
                 return false;
             }
         }
+
+        /// <summary>
+        /// Returns true as listing graphs is supported by Dydra
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns true as Triple Level updates are supported by Dydra
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets that deleting Graphs is not supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Saves a Graph to the Store
@@ -220,17 +267,6 @@ namespace VDS.RDF.Storage
 #endif
                 //If we get here then operation completed OK
                 response.Close();
-            }
-        }
-
-        /// <summary>
-        /// Gets the IO Behaviour of the Store
-        /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
             }
         }
 
@@ -303,17 +339,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns true as listing graphs is supported by Dydra
-        /// </summary>
-        public bool ListGraphsSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Lists the Graphs from the Repository
         /// </summary>
         /// <returns></returns>
@@ -354,17 +379,6 @@ namespace VDS.RDF.Storage
             catch (Exception ex)
             {
                 throw new RdfStorageException("An error occurred while attempting to retrieve the Graph List from the Store, see inner exception for details", ex);
-            }
-        }
-
-        /// <summary>
-        /// Returns true as Triple Level updates are supported by Dydra
-        /// </summary>
-        public bool UpdateSupported
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -437,17 +451,6 @@ namespace VDS.RDF.Storage
             if (sparqlUpdate.Length > 0)
             {
                 this.Update(sparqlUpdate.ToString());
-            }
-        }
-
-        /// <summary>
-        /// Gets that deleting Graphs is not supported
-        /// </summary>
-        public bool DeleteSupported
-        {
-            get
-            {
-                return true;
             }
         }
 
@@ -651,6 +654,8 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
@@ -785,7 +790,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the connection
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             //No Dispose actions needed
         }
@@ -800,5 +805,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif
