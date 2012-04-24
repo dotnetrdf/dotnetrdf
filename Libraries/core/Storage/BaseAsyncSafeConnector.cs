@@ -60,56 +60,56 @@ namespace VDS.RDF.Storage
 
         public abstract void Dispose();
 
-        public void LoadGraph(IGraph g, Uri graphUri, LoadGraphCallback callback, object state)
+        public void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, object state)
         {
             this.AsyncLoadGraph(g, graphUri, callback, state);
         }
 
-        public void LoadGraph(IGraph g, string graphUri, LoadGraphCallback callback, object state)
+        public void LoadGraph(IGraph g, string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
             this.LoadGraph(g, u, callback, state);
         }
 
-        public void LoadGraph(IRdfHandler handler, Uri graphUri, LoadHandlerCallback callback, object state)
+        public void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, object state)
         {
             this.AsyncLoadGraph(handler, graphUri, callback, state);
         }
 
-        public void LoadGraph(IRdfHandler handler, string graphUri, LoadHandlerCallback callback, object state)
+        public void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
             this.LoadGraph(handler, u, callback, state);
         }
 
-        public void SaveGraph(IGraph g, SaveGraphCallback callback, object state)
+        public void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             this.AsyncSaveGraph(g, callback, state);
         }
 
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, object state)
+        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             this.AsyncUpdateGraph(graphUri, additions, removals, callback, state);
         }
 
-        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, object state)
+        public void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
             this.UpdateGraph(u, additions, removals, callback, state);
         }
 
-        public void DeleteGraph(Uri graphUri, DeleteGraphCallback callback, object state)
+        public void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, object state)
         {
             this.AsyncDeleteGraph(graphUri, callback, state);
         }
 
-        public void DeleteGraph(string graphUri, DeleteGraphCallback callback, object state)
+        public void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             Uri u = (String.IsNullOrEmpty(graphUri) ? null : UriFactory.Create(graphUri));
             this.DeleteGraph(u, callback, state);
         }
 
-        public void ListGraphs(ListGraphsCallback callback, object state)
+        public void ListGraphs(AsyncStorageCallback callback, object state)
         {
             this.AsyncListGraphs(callback, state);
         }

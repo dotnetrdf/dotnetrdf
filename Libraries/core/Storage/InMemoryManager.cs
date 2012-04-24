@@ -368,17 +368,17 @@ namespace VDS.RDF.Storage
 
         #region Async Members
 
-        public void Query(string sparqlQuery, SparqlQueryCallback callback, object state)
+        public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             this.AsyncQuery(sparqlQuery, callback, state);
         }
 
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, SparqlQueryHandlerCallback callback, object state)
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             this.AsyncQueryHandlers(sparqlQuery, rdfHandler, resultsHandler, callback, state);
         }
 
-        public void Update(string sparqlUpdates, SparqlUpdateCallback callback, object state)
+        public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             this.AsyncUpdate(sparqlUpdates, callback, state);
         }

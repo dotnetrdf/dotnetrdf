@@ -14,7 +14,7 @@ namespace VDS.RDF.Storage
             storage.LoadGraph(g, graphUri);
         }
 
-        internal static void AsyncLoadGraph(this IStorageProvider storage, IGraph g, Uri graphUri, LoadGraphCallback callback, Object state)
+        internal static void AsyncLoadGraph(this IStorageProvider storage, IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncLoadGraphDelegate d = new AsyncLoadGraphDelegate(LoadGraph);
             d.BeginInvoke(storage, g, graphUri, r =>
@@ -22,11 +22,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, g, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadGraph, g), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, g, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadGraph, g, e), state);
                     }
                 }, state);
         }
@@ -38,7 +38,7 @@ namespace VDS.RDF.Storage
             storage.LoadGraph(handler, graphUri);   
         }
 
-        internal static void AsyncLoadGraph(this IStorageProvider storage, IRdfHandler handler, Uri graphUri, LoadHandlerCallback callback, Object state)
+        internal static void AsyncLoadGraph(this IStorageProvider storage, IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncLoadGraphHandlersDelegate d = new AsyncLoadGraphHandlersDelegate(LoadGraph);
             d.BeginInvoke(storage, handler, graphUri, r =>
@@ -46,11 +46,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, handler, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, handler, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler, e), state);
                     }
                 }, state);
         }
@@ -62,7 +62,7 @@ namespace VDS.RDF.Storage
             storage.SaveGraph(g);
         }
 
-        internal static void AsyncSaveGraph(this IStorageProvider storage, IGraph g, SaveGraphCallback callback, Object state)
+        internal static void AsyncSaveGraph(this IStorageProvider storage, IGraph g, AsyncStorageCallback callback, Object state)
         {
             AsyncSaveGraphDelegate d = new AsyncSaveGraphDelegate(SaveGraph);
             d.BeginInvoke(storage, g, r =>
@@ -70,11 +70,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, g, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, g, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, e), state);
                     }
                 }, state);
         }
@@ -86,7 +86,7 @@ namespace VDS.RDF.Storage
             storage.UpdateGraph(graphUri, additions, removals);
         }
 
-        internal static void AsyncUpdateGraph(this IStorageProvider storage, Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state)
+        internal static void AsyncUpdateGraph(this IStorageProvider storage, Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
             AsyncUpdateGraphDelegate d = new AsyncUpdateGraphDelegate(UpdateGraph);
             d.BeginInvoke(storage, graphUri, additions, removals, r =>
@@ -94,11 +94,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, graphUri, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, graphUri, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, e), state);
                     }
                 }, state);
         }
@@ -110,7 +110,7 @@ namespace VDS.RDF.Storage
             storage.DeleteGraph(graphUri);
         }
 
-        internal static void AsyncDeleteGraph(this IStorageProvider storage, Uri graphUri, DeleteGraphCallback callback, Object state)
+        internal static void AsyncDeleteGraph(this IStorageProvider storage, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncDeleteGraphDelegate d = new AsyncDeleteGraphDelegate(DeleteGraph);
             d.BeginInvoke(storage, graphUri, r =>
@@ -118,11 +118,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, graphUri, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, graphUri, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri, e), state);
                     }
                 }, state);
         }
@@ -134,7 +134,7 @@ namespace VDS.RDF.Storage
             return storage.ListGraphs();
         }
 
-        internal static void AsyncListGraphs(this IStorageProvider storage, ListGraphsCallback callback, Object state)
+        internal static void AsyncListGraphs(this IStorageProvider storage, AsyncStorageCallback callback, Object state)
         {
             AsyncListGraphsDelegate d = new AsyncListGraphsDelegate(ListGraphs);
             d.BeginInvoke(storage, r =>
@@ -142,11 +142,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         IEnumerable<Uri> graphs = d.EndInvoke(r);
-                        callback(storage, graphs, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, graphs), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, null, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, e), state);
                     }
                 }, state);
         }
@@ -158,7 +158,7 @@ namespace VDS.RDF.Storage
             return storage.Query(query);
         }
 
-        internal static void AsyncQuery(this IQueryableStorage storage, String query, SparqlQueryCallback callback, Object state)
+        internal static void AsyncQuery(this IQueryableStorage storage, String query, AsyncStorageCallback callback, Object state)
         {
             AsyncQueryDelegate d = new AsyncQueryDelegate(Query);
             d.BeginInvoke(storage, query, r =>
@@ -166,11 +166,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Object results = d.EndInvoke(r);
-                        callback(storage, query, results, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, results), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, query, null, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, e), state);
                     }
                 }, state);
         }
@@ -182,7 +182,7 @@ namespace VDS.RDF.Storage
             storage.Query(rdfHandler, resultsHandler, query);
         }
 
-        internal static void AsyncQueryHandlers(this IQueryableStorage storage, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQueryHandlerCallback callback, Object state)
+        internal static void AsyncQueryHandlers(this IQueryableStorage storage, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, AsyncStorageCallback callback, Object state)
         {
             AsyncQueryHandlersDelegate d = new AsyncQueryHandlersDelegate(QueryHandlers);
             d.BeginInvoke(storage, query, rdfHandler, resultsHandler, r =>
@@ -190,11 +190,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, query, rdfHandler, resultsHandler, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, query, rdfHandler, resultsHandler), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, query, rdfHandler, resultsHandler, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, query, rdfHandler, resultsHandler, e), state);
                     }
                 }, state);
         }
@@ -206,7 +206,7 @@ namespace VDS.RDF.Storage
             storage.Update(updates);
         }
 
-        internal static void AsyncUpdate(this IUpdateableStorage storage, String updates, SparqlUpdateCallback callback, Object state)
+        internal static void AsyncUpdate(this IUpdateableStorage storage, String updates, AsyncStorageCallback callback, Object state)
         {
             AsyncUpdateDelegate d = new AsyncUpdateDelegate(Update);
             d.BeginInvoke(storage, updates, r =>
@@ -214,11 +214,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, updates, null, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, updates), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, updates, e, state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, updates, e), state);
                     }
                 }, state);
         }

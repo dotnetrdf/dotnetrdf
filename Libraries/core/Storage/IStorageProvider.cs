@@ -294,39 +294,39 @@ namespace VDS.RDF.Storage
     public interface IAsyncStorageProvider
         : IStorageCapabilities, IDisposable
     {
-        void LoadGraph(IGraph g, Uri graphUri, LoadGraphCallback callback, Object state);
+        void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state);
 
-        void LoadGraph(IGraph g, String graphUri, LoadGraphCallback callback, Object state);
+        void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state);
 
-        void LoadGraph(IRdfHandler handler, Uri graphUri, LoadHandlerCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state);
 
-        void LoadGraph(IRdfHandler handler, String graphUri, LoadHandlerCallback callback, Object state);
+        void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state);
 
-        void SaveGraph(IGraph g, SaveGraphCallback callback, Object state);
+        void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state);
 
-        void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state);
+        void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
-        void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, UpdateGraphCallback callback, Object state);
+        void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
-        void DeleteGraph(Uri graphUri, DeleteGraphCallback callback, Object state);
+        void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, Object state);
 
-        void DeleteGraph(String graphUri, DeleteGraphCallback callback, Object state);
+        void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state);
 
-        void ListGraphs(ListGraphsCallback callback, Object state);
+        void ListGraphs(AsyncStorageCallback callback, Object state);
     }
 
     public interface IAsyncQueryableStorage
         : IAsyncStorageProvider
     {
-        void Query(String sparqlQuery, SparqlQueryCallback callback, Object state);
+        void Query(String sparqlQuery, AsyncStorageCallback callback, Object state);
 
-        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, SparqlQueryHandlerCallback callback, Object state);
+        void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state);
     }
 
     public interface IAsyncUpdateableStorage
         : IAsyncStorageProvider
     {
-        void Update(String sparqlUpdates, SparqlUpdateCallback callback, Object state);
+        void Update(String sparqlUpdates, AsyncStorageCallback callback, Object state);
     }
 
     /// <summary>
@@ -391,10 +391,10 @@ namespace VDS.RDF.Storage
 
     public interface IAsyncTransactionalStorage
     {
-        void Begin(TransactionCallback callback, Object state);
+        void Begin(AsyncStorageCallback callback, Object state);
 
-        void Commit(TransactionCallback callback, Object state);
+        void Commit(AsyncStorageCallback callback, Object state);
 
-        void Rollback(TransactionCallback callback, Object state);
+        void Rollback(AsyncStorageCallback callback, Object state);
     }
 }
