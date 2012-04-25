@@ -28,8 +28,6 @@ terms.
 
 */
 
-#if !NO_SYNC_HTTP
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,7 +76,10 @@ namespace VDS.RDF.Storage
     /// The Talis platform automatically converts all Blank Nodes input into it into Uri nodes.  This means that data saved to Talis and then retrieved may lose it's Blank Nodes or have them assigned different IDs (different IDs is perfectly acceptable behaviour for any RDF based application since Blank Node IDs are only ever scoped to a given serialization).
     /// </remarks>
     public class TalisPlatformConnector
-        : BaseHttpConnector, IQueryableGenericIOManager, IConfigurationSerializable 
+        : BaseHttpConnector, IConfigurationSerializable
+#if !NO_SYNC_HTTP
+        , IQueryableGenericIOManager
+#endif
     {
         private String _storename, _username, _password;
         private String _baseuri;
@@ -890,6 +891,72 @@ namespace VDS.RDF.Storage
         #region Generic IO Manager Implementation
 
         /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.TripleStore | IOBehaviour.CanUpdateTriples;
+            }
+        }
+
+        /// <summary>
+        /// Indicates that Updates are supported by the Talis Platform
+        /// </summary>
+        public override bool UpdateSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that listing graphs is not supported
+        /// </summary>
+        public override bool ListGraphsSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is ready
+        /// </summary>
+        public override bool IsReady
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Returns that the Connection is not read-only
+        /// </summary>
+        public override bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns that deleting a Graph is not supported
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
         /// </summary>
         /// <param name="g">Graph to load into</param>
@@ -966,17 +1033,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets the IO Behaviour of the Store
-        /// </summary>
-        public IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return IOBehaviour.TripleStore | IOBehaviour.CanUpdateTriples;
-            }
-        }
-
-        /// <summary>
         /// Updates the Metabox of the Talis Store using unversioned update
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to update</param>
@@ -1009,17 +1065,6 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Indicates that Updates are supported by the Talis Platform
-        /// </summary>
-        public bool UpdateSupported
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
         /// Throws an exception since you cannot delete a Graph from a Talis Store as it is not a named graph store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
@@ -1040,56 +1085,12 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Returns that deleting a Graph is not supported
-        /// </summary>
-        public bool DeleteSupported
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// Throws an exception since listing graphs from the Talis Platform is not supported as it is not a named graph store
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("Talis Platform does not support listing Graphs");
-        }
-
-        /// <summary>
-        /// Returns that listing graphs is not supported
-        /// </summary>
-        public bool ListGraphsSupported
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is ready
-        /// </summary>
-        public bool IsReady
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// Returns that the Connection is not read-only
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
         }
 
         #endregion
@@ -1099,9 +1100,9 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Talis Platform Connector
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            //No dispose needed
+            //No dispose actions needed
         }
 
         #endregion
@@ -1114,7 +1115,6 @@ namespace VDS.RDF.Storage
         {
             return "[Talis] " + this._storename;
         }
-
 
         /// <summary>
         /// Serializes the connection's configuration
@@ -1146,5 +1146,3 @@ namespace VDS.RDF.Storage
         }
     }
 }
-
-#endif

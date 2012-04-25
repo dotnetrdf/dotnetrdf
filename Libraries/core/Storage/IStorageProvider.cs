@@ -324,7 +324,7 @@ namespace VDS.RDF.Storage
     }
 
     public interface IAsyncUpdateableStorage
-        : IAsyncStorageProvider
+        : IAsyncQueryableStorage
     {
         void Update(String sparqlUpdates, AsyncStorageCallback callback, Object state);
     }

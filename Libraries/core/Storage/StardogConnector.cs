@@ -292,6 +292,17 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue)
+        /// </summary>
+        public override bool DeleteSupported
+        {
+            get
+            {
+                return true;
+            }
+        }
+
 #if !NO_SYNC_HTTP
 
         /// <summary>
@@ -842,17 +853,6 @@ namespace VDS.RDF.Storage
                 }
 
                 throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
-            }
-        }
-
-        /// <summary>
-        /// Returns that deleting graphs from the Stardog store is not yet supported (due to a .Net specific issue)
-        /// </summary>
-        public bool DeleteSupported
-        {
-            get
-            {
-                return true;
             }
         }
 

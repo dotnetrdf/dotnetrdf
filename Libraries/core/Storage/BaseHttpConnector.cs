@@ -476,7 +476,29 @@ namespace VDS.RDF.Storage
                 }, state);
         }
 
-        public abstract void ListGraphs(AsyncStorageCallback callback, Object state);
+        public virtual void ListGraphs(AsyncStorageCallback callback, object state)
+        {
+            if (this is IAsyncQueryableStorage)
+            {
+                //Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
+                ListUrisHandler handler = new ListUrisHandler("g");
+                ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
+                {
+                    if (args.WasSuccessful)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, handler.Uris), state);
+                    }
+                    else
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, args.Error), state);
+                    }
+                }, state);
+            }
+            else
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method")), state);
+            }
+        }
 
         public abstract bool IsReady
         {

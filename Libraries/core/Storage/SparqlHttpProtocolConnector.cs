@@ -678,7 +678,7 @@ namespace VDS.RDF.Storage
 
                 RdfXmlWriter writer = new RdfXmlWriter();
 
-                base.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
+                this.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
             }
             catch (WebException webEx)
             {
@@ -719,7 +719,7 @@ namespace VDS.RDF.Storage
                 request.Method = "DELETE";
                 request = base.GetProxiedRequest(request);
 
-                base.DeleteGraphAsync(request, true, graphUri, callback, state);
+                this.DeleteGraphAsync(request, true, graphUri, callback, state);
             }
             catch (WebException webEx)
             {

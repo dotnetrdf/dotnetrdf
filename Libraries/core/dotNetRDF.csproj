@@ -94,6 +94,7 @@
     <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
     <Compile Include="Parsing\BaseGZipResultsParser.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
+    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
     <Compile Include="Parsing\RdfJsonParser.cs" />
     <Compile Include="Parsing\RdfSpecsHelper.cs" />

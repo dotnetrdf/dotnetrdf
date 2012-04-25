@@ -848,7 +848,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.NTriples[0];
                 NTriplesWriter ntwriter = new NTriplesWriter();
 
-                base.SaveGraphAsync(request, ntwriter, g, callback, state);
+                this.SaveGraphAsync(request, ntwriter, g, callback, state);
             }
             catch (WebException webEx)
             {
@@ -877,7 +877,7 @@ namespace VDS.RDF.Storage
 
                 request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
 
-                base.LoadGraphAsync(request, handler, callback, state);
+                this.LoadGraphAsync(request, handler, callback, state);
             }
             catch (WebException webEx)
             {
@@ -991,7 +991,7 @@ namespace VDS.RDF.Storage
                         request.ContentType = MimeTypesHelper.NTriples[0];
 
                         //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
-                        base.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                        this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
                     }
                 }
             }
@@ -1024,7 +1024,7 @@ namespace VDS.RDF.Storage
                 }
 
                 request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
-                base.DeleteGraphAsync(request, false, graphUri, callback, state);
+                this.DeleteGraphAsync(request, false, graphUri, callback, state);
             }
             catch (WebException webEx)
             {
@@ -1035,42 +1035,6 @@ namespace VDS.RDF.Storage
                 }
 #endif
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx)), state);
-            }
-        }
-
-        public override void ListGraphs(AsyncStorageCallback callback, object state)
-        {
-            //REQ Figure out how to implement this appropriately - should be easy once I've added the IAsyncQueryableStorage interface to this class
-            throw new NotImplementedException();
-
-            try
-            {
-                //TODO Define a ListUrisHandler and use it here
-                Object results = this.Query("SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }",);
-                if (results is SparqlResultSet)
-                {
-                    List<Uri> graphs = new List<Uri>();
-                    foreach (SparqlResult r in ((SparqlResultSet)results))
-                    {
-                        if (r.HasValue("g"))
-                        {
-                            INode temp = r["g"];
-                            if (temp.NodeType == NodeType.Uri)
-                            {
-                                graphs.Add(((IUriNode)temp).Uri);
-                            }
-                        }
-                    }
-                    return graphs;
-                }
-                else
-                {
-                    return Enumerable.Empty<Uri>();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
             }
         }
 
@@ -1122,21 +1086,12 @@ namespace VDS.RDF.Storage
 
                 HttpWebRequest request;
 
-                //Create the Request
+                //Create the Request, for simplicity async requests are always POST
                 Dictionary<String, String> queryParams = new Dictionary<string, string>();
-                if (sparqlQuery.Length < 2048 && !this._postAllQueries)
-                {
-                    queryParams.Add("query", EscapeQuery(sparqlQuery));
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
 
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "GET", queryParams);
-                }
-                else
-                {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + this._queryPath, accept, "POST", queryParams);
-
-                    //Build the Post Data and add to the Request Body
-                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
-                }
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -1144,162 +1099,88 @@ namespace VDS.RDF.Storage
                     Tools.HttpDebugRequest(request);
                 }
 #endif
-                if (request.Method.Equals("POST"))
-                {
-                    //POST the response which in async requires extra pain
-                    request.BeginGetRequestStream(r =>
-                        {
-                            try
-                            {
-                                Stream stream = request.EndGetRequestStream(r);
-
-                                StringBuilder postData = new StringBuilder();
-                                postData.Append("query=");
-                                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
-                                StreamWriter writer = new StreamWriter(stream);
-                                writer.Write(postData);
-                                writer.Close();
-
-                                request.BeginGetResponse(r2 =>
-                                    {
-                                        try
-                                        {
-                                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
-#if DEBUG
-                                            if (Options.HttpDebugging)
-                                            {
-                                                Tools.HttpDebugResponse(response);
-                                            }
-#endif
-                                            StreamReader data = new StreamReader(response.GetResponseStream());
-                                            String ctype = response.ContentType;
-                                            try
-                                            {
-                                                //Is the Content Type referring to a Sparql Result Set format?
-                                                ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
-                                                resreader.Load(resultsHandler, data);
-                                                response.Close();
-                                            }
-                                            catch (RdfParserSelectionException)
-                                            {
-                                                //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
-
-                                                //Is the Content Type referring to a RDF format?
-                                                IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                                                if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
-                                                {
-                                                    SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
-                                                    resreader.Load(resultsHandler, data);
-                                                }
-                                                else
-                                                {
-                                                    rdfreader.Load(rdfHandler, data);
-                                                }
-                                                response.Close();
-                                            }
-                                        }
-                                        catch (WebException webEx)
-                                        {
-                                            if (webEx.Response != null)
-                                            {
-#if DEBUG
-                                                if (Options.HttpDebugging)
-                                                {
-                                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                                }
-#endif
-                                                if (webEx.Response.ContentLength > 0)
-                                                {
-                                                    try
-                                                    {
-                                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                                    }
-                                                    catch
-                                                    {
-                                                        //Ignore and drop through to the generic error message
-                                                    }
-                                                }
-                                            }
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
-                                        }
-                                    }, state);
-                            }
-                            catch (WebException webEx)
-                            {
-                                if (webEx.Response != null)
-                                {
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
-                                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                    }
-#endif
-                                    if (webEx.Response.ContentLength > 0)
-                                    {
-                                        try
-                                        {
-                                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                        }
-                                        catch
-                                        {
-                                            //Ignore and drop through to the generic error message
-                                        }
-                                    }
-                                }
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
-                            }
-                            catch (Exception ex)
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
-                            }
-                        }, state);
-                }
-                else
-                {
-                    //GET the response
-                    request.BeginGetResponse(r =>
+                //POST the response which in async requires extra pain
+                request.BeginGetRequestStream(r =>
                     {
                         try
                         {
-                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                Tools.HttpDebugResponse(response);
-                            }
-#endif
-                            StreamReader data = new StreamReader(response.GetResponseStream());
-                            String ctype = response.ContentType;
-                            try
-                            {
-                                //Is the Content Type referring to a Sparql Result Set format?
-                                ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
-                                resreader.Load(resultsHandler, data);
-                                response.Close();
-                            }
-                            catch (RdfParserSelectionException)
-                            {
-                                //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+                            Stream stream = request.EndGetRequestStream(r);
 
-                                //Is the Content Type referring to a RDF format?
-                                IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
-                                if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
+                            StringBuilder postData = new StringBuilder();
+                            postData.Append("query=");
+                            postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
+                            StreamWriter writer = new StreamWriter(stream);
+                            writer.Write(postData);
+                            writer.Close();
+
+                            request.BeginGetResponse(r2 =>
                                 {
-                                    SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
-                                    resreader.Load(resultsHandler, data);
-                                }
-                                else
-                                {
-                                    rdfreader.Load(rdfHandler, data);
-                                }
-                                response.Close();
-                            }
+                                    try
+                                    {
+                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                        }
+#endif
+                                        StreamReader data = new StreamReader(response.GetResponseStream());
+                                        String ctype = response.ContentType;
+                                        try
+                                        {
+                                            //Is the Content Type referring to a Sparql Result Set format?
+                                            ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
+                                            resreader.Load(resultsHandler, data);
+                                            response.Close();
+                                        }
+                                        catch (RdfParserSelectionException)
+                                        {
+                                            //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                                            //Is the Content Type referring to a RDF format?
+                                            IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                            if (q != null && (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask))
+                                            {
+                                                SparqlRdfParser resreader = new SparqlRdfParser(rdfreader);
+                                                resreader.Load(resultsHandler, data);
+                                            }
+                                            else
+                                            {
+                                                rdfreader.Load(rdfHandler, data);
+                                            }
+                                            response.Close();
+                                        }
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null)
+                                        {
+#if DEBUG
+                                            if (Options.HttpDebugging)
+                                            {
+                                                Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                            }
+#endif
+                                            if (webEx.Response.ContentLength > 0)
+                                            {
+                                                try
+                                                {
+                                                    String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                                }
+                                                catch
+                                                {
+                                                    //Ignore and drop through to the generic error message
+                                                }
+                                            }
+                                        }
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                                    }
+                                }, state);
                         }
                         catch (WebException webEx)
                         {
@@ -1331,8 +1212,6 @@ namespace VDS.RDF.Storage
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
                         }
                     }, state);
-                }
-
             }
             catch (WebException webEx)
             {

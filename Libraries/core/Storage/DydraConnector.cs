@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     /// <strong>Warning: </strong> This support is experimental and unstable, Dydra has exhibited many API consistencies, transient HTTP errors and other problems in our testing and we do not recommend that you use our support for it in production.
     /// </remarks>
     public class DydraConnector
-        : BaseHttpConnector
+        : BaseHttpConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
         , IUpdateableStorage, IUpdateableGenericIOManager
 #endif
@@ -230,43 +230,56 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         public void SaveGraph(IGraph g)
         {
-            HttpWebRequest request;
-            Dictionary<String, String> requestParams = new Dictionary<string, string>();
-            if (g.BaseUri != null)
+            try
             {
-                requestParams.Add("context", g.BaseUri.ToString());
-                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
-            }
-            else
-            {
-                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "POST", requestParams);
-            }
+                HttpWebRequest request;
+                Dictionary<String, String> requestParams = new Dictionary<string, string>();
+                if (g.BaseUri != null)
+                {
+                    requestParams.Add("context", g.BaseUri.ToString());
+                    request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
+                }
+                else
+                {
+                    request = this.CreateRequest("/statements", MimeTypesHelper.Any, "POST", requestParams);
+                }
 
-            IRdfWriter rdfWriter = new RdfXmlWriter();
-            request.ContentType = MimeTypesHelper.RdfXml[0];
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
-            {
-                rdfWriter.Save(g, writer);
-                writer.Close();
-            }
+                IRdfWriter rdfWriter = new RdfXmlWriter();
+                request.ContentType = MimeTypesHelper.RdfXml[0];
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    rdfWriter.Save(g, writer);
+                    writer.Close();
+                }
 
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
 #if DEBUG
                 if (Options.HttpDebugging)
                 {
-                    Tools.HttpDebugResponse(response);
+                    Tools.HttpDebugRequest(request);
                 }
 #endif
-                //If we get here then operation completed OK
-                response.Close();
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get here then operation completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null)
+                {
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to Dydra, see inner exception for details", webEx);
             }
         }
 
@@ -307,34 +320,47 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the graph to load</param>
         public void LoadGraph(IRdfHandler handler, String graphUri)
         {
-            Dictionary<String, String> requestParams = new Dictionary<string, string>();
-            if (graphUri != null && !graphUri.Equals(String.Empty))
+            try
             {
-                requestParams.Add("context", "<" + graphUri + ">");
-            }
+                Dictionary<String, String> requestParams = new Dictionary<string, string>();
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    requestParams.Add("context", "<" + graphUri + ">");
+                }
 
-            HttpWebRequest request = this.CreateRequest("/statements", MimeTypesHelper.HttpAcceptHeader, "GET", requestParams);
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
+                HttpWebRequest request = this.CreateRequest("/statements", MimeTypesHelper.HttpAcceptHeader, "GET", requestParams);
 #if DEBUG
                 if (Options.HttpDebugging)
                 {
-                    Tools.HttpDebugResponse(response);
+                    Tools.HttpDebugRequest(request);
                 }
 #endif
 
-                //If we get here try and parse the response
-                IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
 
-                response.Close();
+                    //If we get here try and parse the response
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null)
+                {
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from Dydra, see inner exception for details", webEx);
             }
         }
 
@@ -407,50 +433,63 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
-            StringBuilder sparqlUpdate = new StringBuilder();
-
-            //Build the SPARQL Update Commands
-            if (removals != null && removals.Any())
+            try
             {
-                sparqlUpdate.AppendLine("DELETE DATA");
-                sparqlUpdate.AppendLine("{");
-                if (graphUri != null && !graphUri.Equals(String.Empty))
+                StringBuilder sparqlUpdate = new StringBuilder();
+
+                //Build the SPARQL Update Commands
+                if (removals != null && removals.Any())
                 {
-                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
-                }
-                foreach (Triple t in removals)
-                {
-                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
-                }
-                if (graphUri != null && !graphUri.Equals(String.Empty))
-                {
+                    sparqlUpdate.AppendLine("DELETE DATA");
+                    sparqlUpdate.AppendLine("{");
+                    if (graphUri != null && !graphUri.Equals(String.Empty))
+                    {
+                        sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                    }
+                    foreach (Triple t in removals)
+                    {
+                        sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                    }
+                    if (graphUri != null && !graphUri.Equals(String.Empty))
+                    {
+                        sparqlUpdate.AppendLine("}");
+                    }
                     sparqlUpdate.AppendLine("}");
                 }
-                sparqlUpdate.AppendLine("}");
-            }
-            if (additions != null && additions.Any())
-            {
-                sparqlUpdate.AppendLine("INSERT DATA");
-                sparqlUpdate.AppendLine("{");
-                if (graphUri != null && !graphUri.Equals(String.Empty))
+                if (additions != null && additions.Any())
                 {
-                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
-                }
-                foreach (Triple t in additions)
-                {
-                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
-                }
-                if (graphUri != null && !graphUri.Equals(String.Empty))
-                {
+                    sparqlUpdate.AppendLine("INSERT DATA");
+                    sparqlUpdate.AppendLine("{");
+                    if (graphUri != null && !graphUri.Equals(String.Empty))
+                    {
+                        sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                    }
+                    foreach (Triple t in additions)
+                    {
+                        sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                    }
+                    if (graphUri != null && !graphUri.Equals(String.Empty))
+                    {
+                        sparqlUpdate.AppendLine("}");
+                    }
                     sparqlUpdate.AppendLine("}");
                 }
-                sparqlUpdate.AppendLine("}");
-            }
 
-            //Send them to Dydra for processing
-            if (sparqlUpdate.Length > 0)
+                //Send them to Dydra for processing
+                if (sparqlUpdate.Length > 0)
+                {
+                    this.Update(sparqlUpdate.ToString());
+                }
+            }
+            catch (WebException webEx)
             {
-                this.Update(sparqlUpdate.ToString());
+#if DEBUG
+                if (webEx.Response != null)
+                {
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to Dydra, see inner exception for details", webEx);
             }
         }
 
@@ -626,35 +665,554 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlUpdates">SPARQL Updates</param>
         public void Update(String sparqlUpdates)
         {
-            HttpWebRequest request = this.CreateRequest("/sparql", MimeTypesHelper.HttpSparqlAcceptHeader, "POST", null);
+            try
+            {
+                HttpWebRequest request = this.CreateRequest("/sparql", MimeTypesHelper.HttpSparqlAcceptHeader, "POST", null);
 
-            using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
-            {
-                writer.Write("query=");
-                writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
-                writer.Close();
-            }
-#if DEBUG
-            if (Options.HttpDebugging)
-            {
-                Tools.HttpDebugRequest(request);
-            }
-#endif
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write("query=");
+                    writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
+                    writer.Close();
+                }
 #if DEBUG
                 if (Options.HttpDebugging)
                 {
-                    Tools.HttpDebugResponse(response);
+                    Tools.HttpDebugRequest(request);
                 }
 #endif
-                //If we get here then it completed OK
-                response.Close();
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get here then it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null)
+                {
+                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to make a SPARQL Update upon Dydra, see inner exception for details", webEx);
             }
         }
 
 #endif
+
+        /// <summary>
+        /// Saves a Graph to the Store
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        public override void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state)
+        {
+            HttpWebRequest request;
+            Dictionary<String, String> requestParams = new Dictionary<string, string>();
+            if (g.BaseUri != null)
+            {
+                requestParams.Add("context", g.BaseUri.ToString());
+                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
+            }
+            else
+            {
+                request = this.CreateRequest("/statements", MimeTypesHelper.Any, "POST", requestParams);
+            }
+
+            IRdfWriter rdfWriter = new RdfXmlWriter();
+            request.ContentType = MimeTypesHelper.RdfXml[0];
+
+            this.SaveGraphAsync(request, rdfWriter, g, callback, state);
+        }
+
+        /// <summary>
+        /// Loads a Graph from the Store
+        /// </summary>
+        /// <param name="handler">RDF Handler</param>
+        /// <param name="graphUri">URI of the graph to load</param>
+        public override void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state)
+        {
+            Dictionary<String, String> requestParams = new Dictionary<string, string>();
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                requestParams.Add("context", "<" + graphUri + ">");
+            }
+
+            HttpWebRequest request = this.CreateRequest("/statements", MimeTypesHelper.HttpAcceptHeader, "GET", requestParams);
+            this.LoadGraphAsync(request, handler, callback, state);
+        }
+
+        /// <summary>
+        /// Updates an existing Graph in the Store by adding and removing triples
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// Removals are processed before any additions, to force a specific order of additions and removals you should make multiple calls to this function specifying each set of additions or removals you wish to perform seperately
+        /// </remarks>
+        public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        {
+            StringBuilder sparqlUpdate = new StringBuilder();
+
+            //Build the SPARQL Update Commands
+            if (removals != null && removals.Any())
+            {
+                sparqlUpdate.AppendLine("DELETE DATA");
+                sparqlUpdate.AppendLine("{");
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                }
+                foreach (Triple t in removals)
+                {
+                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                }
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("}");
+                }
+                sparqlUpdate.AppendLine("}");
+            }
+            if (additions != null && additions.Any())
+            {
+                sparqlUpdate.AppendLine("INSERT DATA");
+                sparqlUpdate.AppendLine("{");
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("GRAPH <" + this._formatter.FormatUri(graphUri) + "> {");
+                }
+                foreach (Triple t in additions)
+                {
+                    sparqlUpdate.AppendLine(t.ToString(this._formatter));
+                }
+                if (graphUri != null && !graphUri.Equals(String.Empty))
+                {
+                    sparqlUpdate.AppendLine("}");
+                }
+                sparqlUpdate.AppendLine("}");
+            }
+
+            //Send them to Dydra for processing
+            if (sparqlUpdate.Length > 0)
+            {
+                this.Update(sparqlUpdate.ToString(), (sender, args, st) =>
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                    }, state);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, Object state)
+        {
+            if (graphUri != null && !graphUri.Equals(String.Empty))
+            {
+                this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">", (sender, args, st) =>
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
+                    }, state);
+            }
+            else
+            {
+                this.Update("DROP DEFAULT", (sender, args, st) =>
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
+                    }, state);
+            }
+        }
+
+        /// <summary>
+        /// Lists the Graphs from the Repository
+        /// </summary>
+        /// <returns></returns>
+        public override void ListGraphs(AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                //Use the /contexts method to get the Graph URIs
+                //HACK: Have to use SPARQL JSON as currently Dydra's SPARQL XML Results are malformed
+                HttpWebRequest request = this.CreateRequest("/contexts", MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlResultsJson), "GET", new Dictionary<string, string>());
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                            ListUrisHandler handler = new ListUrisHandler("contextID");
+                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                            response.Close();
+
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, handler.Uris), state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null)
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                }
+#endif
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("A HTTP Error occurred while trying to list graphs from the Store", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Unexpected error trying to list graphs from the store asynchronously, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("A HTTP Error occurred while trying to list graphs from the Store", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Unexpected error trying to list graphs from the store asynchronously, see inner exception for details", ex)), state);
+            }
+        }
+
+        public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
+                {
+                    if (results.ResultsType != SparqlResultsType.Unknown)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, sparqlQuery, results, args.Error), state);
+                    }
+                    else
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, sparqlQuery, g, args.Error), state);
+                    }
+                }, state);
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                //First off parse the Query to see what kind of query it is
+                SparqlQuery q;
+                try
+                {
+                    q = this._parser.ParseFromString(sparqlQuery);
+                }
+                catch (RdfParseException parseEx)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, parseEx), state);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while trying to parse the SPARQL Query prior to sending it to the Store, see inner exception for details", ex)), state);
+                    return;
+                }
+
+                //Now select the Accept Header based on the query type
+                String accept = (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask) ? MimeTypesHelper.HttpSparqlAcceptHeader : MimeTypesHelper.HttpAcceptHeader;
+
+                //Create the Request, for simplicity async requests are always POST
+                HttpWebRequest request;
+                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                request = this.CreateRequest("/sparql", accept, "POST", queryParams);
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(r);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(sparqlQuery));
+                                writer.Close();
+                            }
+
+                            request.BeginGetResponse(r2 =>
+                                {
+                                    //Get the Response and process based on the Content Type
+                                    try
+                                    {
+                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                        }
+#endif
+                                        StreamReader data = new StreamReader(response.GetResponseStream());
+                                        String ctype = response.ContentType;
+                                        if (SparqlSpecsHelper.IsSelectQuery(q.QueryType) || q.QueryType == SparqlQueryType.Ask)
+                                        {
+                                            //ASK/SELECT should return SPARQL Results
+                                            ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, q.QueryType == SparqlQueryType.Ask);
+                                            resreader.Load(resultsHandler, data);
+                                            response.Close();
+                                        }
+                                        else
+                                        {
+                                            //CONSTRUCT/DESCRIBE should return a Graph
+                                            IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                            rdfreader.Load(rdfHandler, data);
+                                            response.Close();
+                                        }
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null)
+                                        {
+#if DEBUG
+                                            if (Options.HttpDebugging)
+                                            {
+                                                Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                            }
+#endif
+                                            if (webEx.Response.ContentLength > 0)
+                                            {
+                                                try
+                                                {
+                                                    String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                                }
+                                                catch
+                                                {
+                                                    //Ignore and drop through to the generic error message
+                                                }
+                                            }
+                                        }
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                                    }
+                                }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null)
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                }
+#endif
+                                if (webEx.Response.ContentLength > 0)
+                                {
+                                    try
+                                    {
+                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                    }
+                                    catch
+                                    {
+                                        //Ignore and drop through to the generic error message
+                                    }
+                                }
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                        }
+                    }, state);               
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
+                        }
+                        catch
+                        {
+                            throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                        }
+                    }
+                    else
+                    {
+                        throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                    }
+                }
+                else
+                {
+                    throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                }
+            }
+        }
+
+        public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                HttpWebRequest request = this.CreateRequest("/sparql", MimeTypesHelper.HttpSparqlAcceptHeader, "POST", null);
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(r);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(sparqlUpdates));
+                                writer.Close();
+                            }
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            request.BeginGetResponse(r2 =>
+                                {
+                                    try
+                                    {
+                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                        }
+#endif
+                                        //If we get here then it completed OK
+                                        response.Close();
+                                    }
+                                    catch (WebException webEx)
+                                    {
+                                        if (webEx.Response != null)
+                                        {
+#if DEBUG
+                                            if (Options.HttpDebugging)
+                                            {
+                                                Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                            }
+#endif
+                                            if (webEx.Response.ContentLength > 0)
+                                            {
+                                                try
+                                                {
+                                                    String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                                }
+                                                catch
+                                                {
+                                                    //Ignore and drop through to the generic error message
+                                                }
+                                            }
+                                        }
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while updating the store, see inner exception for details", ex)), state);
+                                    }
+                                }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null)
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                }
+#endif
+                                if (webEx.Response.ContentLength > 0)
+                                {
+                                    try
+                                    {
+                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                    }
+                                    catch
+                                    {
+                                        //Ignore and drop through to the generic error message
+                                    }
+                                }
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while updating the store, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                        }
+                        catch
+                        {
+                            //Ignore and drop through to the generic error message
+                        }
+                    }
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while updating the store, see inner exception for details", ex)), state);
+            }
+        }
 
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
