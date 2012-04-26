@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage
     public class FourStoreConnector
         : BaseHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableGenericIOManager, IUpdateableGenericIOManager
+        , IQueryableStorage, IQueryableGenericIOManager, IUpdateableGenericIOManager
 #endif
     {
         private String _baseUri;
@@ -114,20 +114,6 @@ namespace VDS.RDF.Storage
         /// Creates a new 4store connector which manages access to the services provided by a 4store server
         /// </summary>
         /// <param name="baseUri">Base Uri of the 4store</param>
-        /// <param name="proxy">Proxy Server</param>
-        /// <remarks>
-        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
-        /// </remarks>
-        public FourStoreConnector(String baseUri, WebProxy proxy)
-            : this(baseUri)
-        {
-            this.Proxy = proxy;
-        }
-
-        /// <summary>
-        /// Creates a new 4store connector which manages access to the services provided by a 4store server
-        /// </summary>
-        /// <param name="baseUri">Base Uri of the 4store</param>
         /// <param name="enableUpdateSupport">Indicates to the connector that you are using a 4store instance that supports Triple level updates</param>
         /// <remarks>
         /// If you enable Update support but are using a 4store instance that does not support Triple level updates then you will almost certainly experience errors while using the connector.
@@ -136,6 +122,22 @@ namespace VDS.RDF.Storage
             : this(baseUri)
         {
             this._updatesEnabled = enableUpdateSupport;
+        }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new 4store connector which manages access to the services provided by a 4store server
+        /// </summary>
+        /// <param name="baseUri">Base Uri of the 4store</param>
+        /// <param name="proxy">Proxy Server</param>
+        /// <remarks>
+        /// <strong>Note:</strong> As of the 0.4.0 release 4store support defaults to Triple Level updates enabled as all recent 4store releases have supported this.  You can still optionally disable this with the two argument version of the constructor
+        /// </remarks>
+        public FourStoreConnector(String baseUri, WebProxy proxy)
+            : this(baseUri)
+        {
+            this.Proxy = proxy;
         }
 
         /// <summary>
@@ -152,6 +154,8 @@ namespace VDS.RDF.Storage
         {
             this.Proxy = proxy;
         }
+
+#endif
 
         /// <summary>
         /// Returns whether this connector has been instantiated with update support or not
@@ -791,7 +795,6 @@ namespace VDS.RDF.Storage
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, new RdfStorageException("Unexpected error while trying to send SPARQL Updates to 4store, see inner exception for details", ex)), state);
             }
         }
-
 
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {

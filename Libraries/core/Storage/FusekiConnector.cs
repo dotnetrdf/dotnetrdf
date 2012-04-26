@@ -79,6 +79,21 @@ namespace VDS.RDF.Storage
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
+        public FusekiConnector(String serviceUri)
+            : base(serviceUri) 
+        {
+            if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
+
+            this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
+            this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
+        }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to a Fuseki Server
+        /// </summary>
+        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
         public FusekiConnector(Uri serviceUri, WebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
@@ -87,22 +102,14 @@ namespace VDS.RDF.Storage
         /// Creates a new connection to a Fuseki Server
         /// </summary>
         /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
-        public FusekiConnector(String serviceUri)
-            : this(serviceUri, null) { }
-
-        /// <summary>
-        /// Creates a new connection to a Fuseki Server
-        /// </summary>
-        /// <param name="serviceUri">The /data URI of the Fuseki Server</param>
         /// <param name="proxy">Proxy Server</param>
         public FusekiConnector(String serviceUri, WebProxy proxy)
-            : base(serviceUri, proxy)
+            : this(serviceUri)
         {
-            if (!serviceUri.ToString().EndsWith("/data")) throw new ArgumentException("This does not appear to be a valid Fuseki Server URI, you must provide the URI that ends with /data", "serviceUri");
-
-            this._updateUri = serviceUri.Substring(0, serviceUri.Length - 4) + "update";
-            this._queryUri = serviceUri.Substring(0, serviceUri.Length - 4) + "query";
+            this.Proxy = proxy;
         }
+
+#endif
 
         /// <summary>
         /// Returns that Listing Graphs is supported

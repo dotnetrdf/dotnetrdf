@@ -89,18 +89,6 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="accountID">Account ID</param>
         /// <param name="repositoryID">Repository ID</param>
-        /// <param name="proxy">Proxy Server</param>
-        public DydraConnector(String accountID, String repositoryID, WebProxy proxy)
-            : this(accountID, repositoryID)
-        {
-            this.Proxy = proxy;
-        }
-
-        /// <summary>
-        /// Creates a new connection to Dydra
-        /// </summary>
-        /// <param name="accountID">Account ID</param>
-        /// <param name="repositoryID">Repository ID</param>
         /// <param name="apiKey">API Key</param>
         public DydraConnector(String accountID, String repositoryID, String apiKey)
             : this(accountID, repositoryID)
@@ -109,6 +97,20 @@ namespace VDS.RDF.Storage
             this._username = this._apiKey;
             this._pwd = DydraApiKeyPassword;
             this._hasCredentials = !String.IsNullOrEmpty(apiKey);
+        }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new connection to Dydra
+        /// </summary>
+        /// <param name="accountID">Account ID</param>
+        /// <param name="repositoryID">Repository ID</param>
+        /// <param name="proxy">Proxy Server</param>
+        public DydraConnector(String accountID, String repositoryID, WebProxy proxy)
+            : this(accountID, repositoryID)
+        {
+            this.Proxy = proxy;
         }
 
         /// <summary>
@@ -123,6 +125,8 @@ namespace VDS.RDF.Storage
         {
             this.Proxy = proxy;
         }
+
+#endif
 
         //public DydraConnector(String accountID, String repositoryID, String username, String password)
         //    : this(accountID, repositoryID)

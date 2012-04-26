@@ -83,6 +83,15 @@ namespace VDS.RDF.Storage
         /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
+        public SparqlHttpProtocolConnector(Uri serviceUri)
+            : this(serviceUri.ToSafeString()) { }
+
+#if !NO_PROXY
+
+        /// <summary>
+        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
+        /// </summary>
+        /// <param name="serviceUri">URI of the Protocol Server</param>
         /// <param name="proxy">Proxy Server</param>
         public SparqlHttpProtocolConnector(String serviceUri, WebProxy proxy)
             : this(serviceUri)
@@ -94,16 +103,11 @@ namespace VDS.RDF.Storage
         /// Creates a new SPARQL Graph Store HTTP Protocol Connector
         /// </summary>
         /// <param name="serviceUri">URI of the Protocol Server</param>
-        public SparqlHttpProtocolConnector(Uri serviceUri)
-            : this(serviceUri.ToSafeString()) { }
-
-        /// <summary>
-        /// Creates a new SPARQL Graph Store HTTP Protocol Connector
-        /// </summary>
-        /// <param name="serviceUri">URI of the Protocol Server</param>
         /// <param name="proxy">Proxy Server</param>
         public SparqlHttpProtocolConnector(Uri serviceUri, WebProxy proxy)
             : this(serviceUri.ToSafeString(), proxy) { }
+
+#endif
 
         /// <summary>
         /// Gets the IO Behaviour of SPARQL Graph Store protocol based stores

@@ -76,7 +76,7 @@ namespace VDS.RDF.Storage
     /// The Talis platform automatically converts all Blank Nodes input into it into Uri nodes.  This means that data saved to Talis and then retrieved may lose it's Blank Nodes or have them assigned different IDs (different IDs is perfectly acceptable behaviour for any RDF based application since Blank Node IDs are only ever scoped to a given serialization).
     /// </remarks>
     public class TalisPlatformConnector
-        : BaseHttpConnector, IConfigurationSerializable
+        : BaseHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IQueryableGenericIOManager
 #endif
@@ -127,20 +127,6 @@ namespace VDS.RDF.Storage
         /// Creates a new Talis Platform Connector which manages access to the services provided by the Talis platform
         /// </summary>
         /// <param name="storeName">Name of the Store</param>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy Server</param>
-        /// <remarks>This Constructor creates a Connector which provides authentication details when making requests to the Talis Platform.  Note that this does not guarentee that operations suceed since the account you apply requires certain capabilities in order for operations to be permitted.</remarks>
-        public TalisPlatformConnector(String storeName, String username, String password, WebProxy proxy)
-            : this(storeName, username, password)
-        {
-            this.Proxy = proxy;
-        }
-
-        /// <summary>
-        /// Creates a new Talis Platform Connector which manages access to the services provided by the Talis platform
-        /// </summary>
-        /// <param name="storeName">Name of the Store</param>
         /// <remarks>This Constructor creates a Connector which does not provide authentication details when making requests to the Talis Platform.  This means that any operations that require capabilities not available to unauthenticated users will fail.</remarks>
         public TalisPlatformConnector(String storeName)
         {
@@ -148,6 +134,8 @@ namespace VDS.RDF.Storage
             this._baseuri = TalisAPIBaseURI + this._storename + "/";
             this._hasCredentials = false;
         }
+
+#if !NO_PROXY
 
         /// <summary>
         /// Creates a new Talis Platform Connector which manages access to the services provided by the Talis platform
@@ -161,7 +149,25 @@ namespace VDS.RDF.Storage
             this.Proxy = proxy;
         }
 
+        /// <summary>
+        /// Creates a new Talis Platform Connector which manages access to the services provided by the Talis platform
+        /// </summary>
+        /// <param name="storeName">Name of the Store</param>
+        /// <param name="username">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="proxy">Proxy Server</param>
+        /// <remarks>This Constructor creates a Connector which provides authentication details when making requests to the Talis Platform.  Note that this does not guarentee that operations suceed since the account you apply requires certain capabilities in order for operations to be permitted.</remarks>
+        public TalisPlatformConnector(String storeName, String username, String password, WebProxy proxy)
+            : this(storeName, username, password)
+        {
+            this.Proxy = proxy;
+        }
+
+#endif
+
         #region Describe
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Gets the Graph describing the given resource from the Store
@@ -334,9 +340,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         #endregion
 
         #region Add
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Adds a Graph to the Store
@@ -412,9 +422,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         #endregion
 
         #region Update
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Updates the Store
@@ -538,6 +552,8 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
         /// <summary>
         /// Takes lists of Triples added and removed and generates a ChangeSet Batch Graph for these
         /// </summary>
@@ -630,6 +646,8 @@ namespace VDS.RDF.Storage
         #endregion
 
         #region Query
+
+#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a SPARQL query against the Talis Store Metabox using the Store SPARQL Service
@@ -807,6 +825,18 @@ namespace VDS.RDF.Storage
             }
         }
 
+#endif
+
+        public void Query(String query, AsyncStorageCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Helper Methods
@@ -956,6 +986,8 @@ namespace VDS.RDF.Storage
             }
         }
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Loads a Graph which is the Description of the given URI from the Metabox of the Talis Store
         /// </summary>
@@ -1091,6 +1123,33 @@ namespace VDS.RDF.Storage
         public IEnumerable<Uri> ListGraphs()
         {
             throw new NotSupportedException("Talis Platform does not support listing Graphs");
+        }
+
+#endif
+
+        public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ListGraphs(AsyncStorageCallback callback, object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Talis Platform does not support listing graphs")), state);
         }
 
         #endregion

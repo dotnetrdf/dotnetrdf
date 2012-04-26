@@ -51,7 +51,6 @@ using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 
-
 namespace VDS.RDF.Parsing
 {
     /// <summary>
@@ -77,7 +76,24 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
 
-#if !NO_XMLDOM
+        public void Load(ITripleStore store, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(store, new StreamReader(filename, Encoding.UTF8));
+        }
+
+        public void Load(ITripleStore store, TextReader input)
+        {
+            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
+            this.Load(new StoreHandler(store), input);
+        }
+
+        public void Load(IRdfHandler handler, String filename)
+        {
+            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
+            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
+        }
 
         /// <summary>
         /// Loads the RDF Dataset from the TriX input into the given Triple Store
@@ -111,10 +127,14 @@ namespace VDS.RDF.Parsing
                 //Issue a Warning if the Encoding of the Stream is not UTF-8
                 if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.UTF8))
                 {
+#if !SILVERLIGHT
                     this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
+#else
+                    this.RaiseWarning("Expected Input Stream to be encoded as UTF-8 but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.GetType().Name + " - Please be aware that parsing errors may occur as a result");
+#endif
                 }
                 this.Load(handler, input);
-            } 
+            }
             else if (parameters is TextReaderParams)
             {
                 this.Load(handler, ((TextReaderParams)parameters).TextReader);
@@ -125,24 +145,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
-        public void Load(ITripleStore store, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(store, new StreamReader(filename, Encoding.UTF8));
-        }
-
-        public void Load(ITripleStore store, TextReader input)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
-            this.Load(new StoreHandler(store), input);
-        }
-
-        public void Load(IRdfHandler handler, String filename)
-        {
-            if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
-            this.Load(handler, new StreamReader(filename, Encoding.UTF8));
-        }
+#if !NO_XMLDOM
 
         public void Load(IRdfHandler handler, TextReader input)
         {
@@ -488,33 +491,10 @@ namespace VDS.RDF.Parsing
             return settings;
         }
 
-        /// <summary>
-        /// Loads the named Graphs from the NQuads input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
-        /// <param name="parameters">Parameters indicating the Stream to read from</param>
-        public void Load(ITripleStore store, IStoreParams parameters)
+        public void Load(IRdfHandler handler, TextReader input)
         {
-            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
-            this.Load(new StoreHandler(store), parameters);
-        }
-
-        public void Load(IRdfHandler handler, IStoreParams parameters)
-        {
-            if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
-            if (parameters == null) throw new ArgumentNullException("parameters", "Cannot parse an RDF Dataset using null Parameters");
-
-            //Try and get the Input from the parameters
-            TextReader input = null;
-            if (parameters is StreamParams)
-            {
-                //Get Input Stream
-                input = ((StreamParams)parameters).StreamReader;
-            }
-            else if (parameters is TextReaderParams)
-            {
-                input = ((TextReaderParams)parameters).TextReader;
-            }
+            if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");
+            if (input == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null input");
 
             if (input != null)
             {
