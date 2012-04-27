@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector 
-        : BaseHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IQueryableStorage, IQueryableGenericIOManager
 #endif

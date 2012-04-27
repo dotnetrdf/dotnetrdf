@@ -42,6 +42,9 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -95,7 +98,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class StardogConnector 
-        : BaseHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IQueryableStorage, IQueryableGenericIOManager, ITransactionalStorage
 #endif
@@ -902,12 +905,240 @@ namespace VDS.RDF.Storage
 #endif
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            //Have to do the delete first as that requires a separate transaction
+            if (g.BaseUri != null)
+            {
+                try
+                {
+                    this.DeleteGraph(g.BaseUri, (sender, args, st) =>
+                        {
+                            this.SaveGraphAsync(g, callback, state);
+                        }, state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("Unable to save a Named Graph to the Store as this requires deleting any existing Named Graph with this name which failed, see inner exception for more detail", ex)), state);
+                    return;
+                }
+            }
+
+            this.SaveGraphAsync(g, callback, state);
+        }
+
+        private void SaveGraphAsync(IGraph g, AsyncStorageCallback callback, Object state)
+        {
+            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            if (this._activeTrans != null)
+            {
+                this.SaveGraphAsync(this._activeTrans, false, g, callback, state);
+            }
+            else
+            {
+                this.Begin((sender, args, st) =>
+                    {
+                        if (args.WasSuccessful)
+                        {
+                            this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, args.Error), state);
+                        }
+                    }, state);
+            }
+        }
+
+        private void SaveGraphAsync(String tID, bool autoCommit, IGraph g, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                request.ContentType = MimeTypesHelper.TriG[0];
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            //Save the Data as TriG to the Request Stream
+                            Stream stream = request.EndGetRequestStream(r);
+                            TripleStore store = new TripleStore();
+                            store.Add(g);
+                            this._writer.Save(store, new StreamWriter(stream));
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+                            request.BeginGetResponse(r2 =>
+                            {
+                                try
+                                {
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        Tools.HttpDebugResponse(response);
+                                    }
+#endif
+                                    //If we get here then it was OK
+                                    response.Close();
+
+                                    //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                    if (autoCommit)
+                                    {
+                                        this.Commit((sender, args, st) =>
+                                            {
+                                                if (args.WasSuccessful)
+                                                {
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g), state);
+                                                }
+                                                else
+                                                {
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, args.Error), state);
+                                                }
+                                            }, state);
+                                    }
+                                }
+                                catch (WebException webEx)
+                                {
+#if DEBUG
+                                    if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP Error occurred while trying to save a Graph, see inner exception for details", webEx)), state);
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while trying to save a Graph, see inner exception for details", ex)), state);
+                                }
+                            }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP Error occurred while trying to save a Graph, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while trying to save a Graph, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP Error occurred while trying to save a Graph, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while trying to save a Graph, see inner exception for details", ex)), state);
+            }
         }
 
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            try
+            {
+                HttpWebRequest request;
+                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+
+                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+                String requestUri = this._kb + tID + "/query";
+                SparqlParameterizedString construct = new SparqlParameterizedString();
+                if (!graphUri.Equals(String.Empty))
+                {
+                    construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { GRAPH @graph { ?s ?p ?o } }";
+                    construct.SetUri("graph", UriFactory.Create(graphUri));
+                }
+                else
+                {
+                    construct.CommandText = "CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o }";
+                }
+                serviceParams.Add("query", construct.ToString());
+
+                request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                            response.Close();
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, new RdfStorageException("An unexpected error occurred while trying to load a Graph, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, new RdfStorageException("An unexpected error occurred while trying to load a Graph, see inner exception for details", ex)), state);
+            }
         }
 
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
@@ -917,17 +1148,246 @@ namespace VDS.RDF.Storage
 
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            if (this._activeTrans != null)
+            {
+                this.DeleteGraphAsync(this._activeTrans, false, graphUri, callback, state);
+            }
+            else
+            {
+                this.Begin((sender, args, st) =>
+                    {
+                        if (args.WasSuccessful)
+                        {
+                            this.DeleteGraphAsync(this._activeTrans, true, graphUri, callback, state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
+                        }
+                    }, state);
+            }
+        }
+
+        private void DeleteGraphAsync(String tID, bool autoCommit, String graphUri, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                HttpWebRequest request;
+                if (!graphUri.Equals(String.Empty))
+                {
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                }
+                else
+                {
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=DEFAULT", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                }
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            //If we get here then the Delete worked OK
+                            response.Close();
+
+                            //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                            if (autoCommit)
+                            {
+                                this.Commit((sender, args, st) =>
+                                    {
+                                        if (args.WasSuccessful)
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri()), state);
+                                        }
+                                        else
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
+                                        }
+                                    }, state);
+                            }
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("An unexpected error occurred while trying to delete a Graph, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("An unexpected error occurred while trying to delete a Graph, see inner exception for details", ex)), state);
+            }
         }
 
         public void Query(String query, AsyncStorageCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), query, (sender, args, st) =>
+            {
+                if (results.ResultsType != SparqlResultsType.Unknown)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, results, args.Error), state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, g, args.Error), state);
+                }
+            }, state);
         }
 
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
         {
-            throw new NotImplementedException();
+            try
+            {
+                HttpWebRequest request;
+
+                String tID = (this._activeTrans == null) ? String.Empty : "/" + this._activeTrans;
+
+                //String accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                String accept = MimeTypesHelper.CustomHttpAcceptHeader(MimeTypesHelper.SparqlResultsXml.Concat(MimeTypesHelper.Definitions.Where(d => d.CanParseRdf).SelectMany(d => d.MimeTypes)));
+
+                //Create the Request, for simplicity async requests are always POST
+                Dictionary<String, String> queryParams = new Dictionary<string, string>();
+                request = this.CreateRequest(this._kb + tID + "/query", accept, "POST", queryParams);
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(r);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write("query=");
+                                writer.Write(HttpUtility.UrlEncode(query));
+                                writer.Close();
+                            }
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            //Get the Response and process based on the Content Type
+                            request.BeginGetResponse(r2 =>
+                                {
+                                    try
+                                    {
+                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                        }
+#endif
+                                        StreamReader data = new StreamReader(response.GetResponseStream());
+                                        String ctype = response.ContentType;
+                                        try
+                                        {
+                                            //Is the Content Type referring to a Sparql Result Set format?
+                                            ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, Regex.IsMatch(query, "ASK", RegexOptions.IgnoreCase));
+                                            resreader.Load(resultsHandler, data);
+                                            response.Close();
+                                        }
+                                        catch (RdfParserSelectionException)
+                                        {
+                                            //If we get a Parser Selection exception then the Content Type isn't valid for a Sparql Result Set
+
+                                            //Is the Content Type referring to a RDF format?
+                                            IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                            rdfreader.Load(rdfHandler, data);
+                                            response.Close();
+                                        }
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, query, rdfHandler, resultsHandler), state);
+                                    }
+                                    catch (WebException webEx)
+                                    {
+#if DEBUG
+                                        if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP Error occurred while trying to query the store, see inner exception for details", webEx)), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while trying to query the store, see inner exception for details", ex)), state);
+                                    }
+                                }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP Error occurred while trying to query the store, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while trying to query the store, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP Error occurred while trying to query the store, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while trying to query the store, see inner exception for details", ex)), state);
+            }
         }
 
         /// <summary>
@@ -1160,6 +1620,246 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+
+        public void Begin(AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                Monitor.Enter(this);
+                if (this._activeTrans != null)
+                {
+                    Monitor.Exit(this);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("Cannot start a new Transaction as there is already an active Transaction")), state);
+                }
+                else
+                {
+                    HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/begin", "text/plain"/*MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
+                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    try
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugRequest(request);
+                        }
+#endif
+                        request.BeginGetResponse(r =>
+                        {
+                            try
+                            {
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                                String tID;
+                                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                                {
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        Tools.HttpDebugResponse(response);
+                                    }
+#endif
+                                    tID = reader.ReadToEnd();
+                                    reader.Close();
+                                }
+                                response.Close();
+
+                                if (String.IsNullOrEmpty(tID))
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("Stardog failed to begin a transaction")), state);
+                                }
+                                else
+                                {
+                                    this._activeTrans = tID;
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin), state);
+                                }
+                            }
+                            catch (WebException webEx)
+                            {
+#if DEBUG
+                                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("A HTTP Error occurred while trying to start a Transaction, see inner exception for details", webEx)), state);
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details", ex)), state);
+                            }
+                            finally
+                            {
+                                Monitor.Exit(this);
+                            }
+                        }, state);
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("A HTTP Error occurred while trying to start a Transaction, see inner exception for details", webEx)), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details", ex)), state);
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("A HTTP Error occurred while trying to start a Transaction, see inner exception for details")), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details")), state);
+            }
+        }
+
+        public void Commit(AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                Monitor.Enter(this);
+                if (this._activeTrans == null)
+                {
+                    Monitor.Exit(this);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("Cannot commit a Transaction as there is currently no active Transaction")), state);
+                }
+                else
+                {
+                    HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/commit/" + this._activeTrans, "text/plain"/* MimeTypesHelper.Any*/, "POST", new Dictionary<string, string>());
+                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+        #if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
+        #endif
+                    try
+                    {
+                        request.BeginGetResponse(r =>
+                        {
+                            try
+                            {
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse(response);
+                                }
+#endif
+                                response.Close();
+                                this._activeTrans = null;
+                            }
+                            catch (WebException webEx)
+                            {
+#if DEBUG
+                                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("A HTTP Error occurred while trying to commit a Transaction, see inner exception for details", webEx)), state);
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("An unexpected error occurred while trying to commit a Transaction, see inner exception for details", ex)), state);
+                            }
+                            finally
+                            {
+                                Monitor.Exit(this);
+                            }
+                        }, state);
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("A HTTP Error occurred while trying to commit a Transaction, see inner exception for details", webEx)), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("An unexpected error occurred while trying to commit a Transaction, see inner exception for details", ex)), state);
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("A HTTP Error occurred while trying to commit a Transaction, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionCommit, new RdfStorageException("An unexpected error occurred while trying to commit a Transaction, see inner exception for details", ex)), state);
+            }
+        }
+
+        public void Rollback(AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                Monitor.Enter(this);
+                if (this._activeTrans == null)
+                {
+                    Monitor.Exit(this);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("Cannot rollback a Transaction on the as there is currently no active Transaction")), state);
+                }
+                else
+                {
+                    HttpWebRequest request = this.CreateRequest(this._kb + "/transaction/rollback/" + this._activeTrans, MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                    try
+                    {
+                        request.BeginGetResponse(r =>
+                            {
+                                try
+                                {
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                                    response.Close();
+                                    this._activeTrans = null;
+                                }
+                                catch (WebException webEx)
+                                {
+#if DEBUG
+                                    if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("A HTTP Error occurred while trying to rollback a Transaction, see inner exception for details", webEx)), state);
+                                }
+                                catch (Exception ex)
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("An unexpected error occurred while trying to rollback a Transaction, see inner exception for details", ex)), state);
+                                }
+                                finally
+                                {
+                                    Monitor.Exit(this);
+                                }
+                            }, state);
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("A HTTP Error occurred while trying to rollback a Transaction, see inner exception for details", webEx)), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("An unexpected error occurred while trying to rollback a Transaction, see inner exception for details", ex)), state);
+                    }
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("A HTTP Error occurred while trying to rollback a Transaction, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.TransactionRollback, new RdfStorageException("An unexpected error occurred while trying to rollback a Transaction, see inner exception for details", ex)), state);
+            }
+        }
 
         #endregion
 

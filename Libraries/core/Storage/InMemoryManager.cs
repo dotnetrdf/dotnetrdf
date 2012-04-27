@@ -55,7 +55,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class InMemoryManager 
-        : BaseAsyncSafeConnector, IQueryableStorage, IUpdateableStorage, IAsyncQueryableStorage, IAsyncUpdateableStorage, IConfigurationSerializable, IGenericIOManager
+        : BaseAsyncSafeConnector, IQueryableStorage, IUpdateableStorage, IAsyncQueryableStorage, IAsyncUpdateableStorage, IConfigurationSerializable, IUpdateableGenericIOManager
     {
         private ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;

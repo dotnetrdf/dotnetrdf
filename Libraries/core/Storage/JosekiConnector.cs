@@ -66,7 +66,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class JosekiConnector
-        : BaseHttpConnector, IConfigurationSerializable, IAsyncUpdateableStorage
+        : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
         , IUpdateableGenericIOManager
 #endif

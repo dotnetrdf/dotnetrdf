@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <returns></returns>
         protected char Peek()
         {
-            if (this._tempChar != null)
+            if (this._tempChar.HasValue)
             {
                 char c = (char)this._tempChar;
                 return c;
@@ -151,7 +151,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         protected void Backtrack()
         {
-            if (this._tempChar != null) throw Error("Cannot backtrack more than one character");
+            if (this._tempChar.HasValue) throw Error("Cannot backtrack more than one character");
             if (this._output.Length == 0) throw Error("Cannot backtrack when no characters have been consumed");
 
             this._tempChar = this._output[this._output.Length - 1];
@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing.Tokens
         {
             get
             {
-                return this._tempChar != null;
+                return this._tempChar.HasValue;
             }
         }
 
@@ -278,7 +278,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected void ConsumeCharacter()
         {
-            if (this._tempChar != null)
+            if (this._tempChar.HasValue)
             {
                 char c = (char)this._tempChar;
                 this._tempChar = null;
@@ -416,7 +416,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <exception cref="RdfParseException">Thrown if the caller tries to read beyond the end of the Stream</exception>
         protected char SkipCharacter()
         {
-            if (this._tempChar != null)
+            if (this._tempChar.HasValue)
             {
                 char c = (char)this._tempChar;
                 this._tempChar = null;

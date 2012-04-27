@@ -45,7 +45,7 @@ using VDS.RDF.Parsing.Handlers;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Abstract Base Class for HTTP based <see cref="IGenericIOManager">IGenericIOManager</see> implementations
+    /// Abstract Base Class for HTTP based <see cref="IStorageProvider">IStorageProvider</see> implementations
     /// </summary>
     /// <remarks>
     /// <para>
@@ -56,11 +56,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseHttpConnector
-        : IAsyncStorageProvider
     {
 #if !NO_PROXY
         private WebProxy _proxy;
-        
+
         /// <summary>
         /// Sets a Proxy Server to be used
         /// </summary>
@@ -226,6 +225,19 @@ namespace VDS.RDF.Storage
             }
 #endif
         }
+    }
+
+    /// <summary>
+    /// Abstract Base Class for HTTP Based <see cref="IAsyncStorageProivder">IAsyncStorageProvider</see> implementations
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// It is expected that most classes extending from this will also then implement <see cref="IStorageProvider"/> separately for their synchronous communication, this class purely provides partial helper implementations for the asynchronous communication
+    /// </para>
+    /// </remarks>
+    public abstract class BaseAsyncHttpConnector
+        : BaseHttpConnector, IAsyncStorageProvider
+    {
 
         public virtual void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {

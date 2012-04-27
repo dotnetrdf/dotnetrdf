@@ -28,6 +28,8 @@ terms.
 
 */
 
+#if !NO_SYNC_HTTP
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,10 +78,7 @@ namespace VDS.RDF.Storage
     /// The Talis platform automatically converts all Blank Nodes input into it into Uri nodes.  This means that data saved to Talis and then retrieved may lose it's Blank Nodes or have them assigned different IDs (different IDs is perfectly acceptable behaviour for any RDF based application since Blank Node IDs are only ever scoped to a given serialization).
     /// </remarks>
     public class TalisPlatformConnector
-        : BaseHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
-#if !NO_SYNC_HTTP
-        , IQueryableGenericIOManager
-#endif
+        : BaseHttpConnector, IQueryableStorage, IQueryableGenericIOManager, IConfigurationSerializable
     {
         private String _storename, _username, _password;
         private String _baseuri;
@@ -923,7 +922,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the IO Behaviour of the Store
         /// </summary>
-        public override IOBehaviour IOBehaviour
+        public IOBehaviour IOBehaviour
         {
             get
             {
@@ -934,7 +933,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Indicates that Updates are supported by the Talis Platform
         /// </summary>
-        public override bool UpdateSupported
+        public bool UpdateSupported
         {
             get
             {
@@ -945,7 +944,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing graphs is not supported
         /// </summary>
-        public override bool ListGraphsSupported
+        public bool ListGraphsSupported
         {
             get
             {
@@ -956,7 +955,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is ready
         /// </summary>
-        public override bool IsReady
+        public bool IsReady
         {
             get
             {
@@ -967,7 +966,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Connection is not read-only
         /// </summary>
-        public override bool IsReadOnly
+        public bool IsReadOnly
         {
             get
             {
@@ -978,7 +977,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting a Graph is not supported
         /// </summary>
-        public override bool DeleteSupported
+        public bool DeleteSupported
         {
             get
             {
@@ -1127,31 +1126,6 @@ namespace VDS.RDF.Storage
 
 #endif
 
-        public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void ListGraphs(AsyncStorageCallback callback, object state)
-        {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Talis Platform does not support listing graphs")), state);
-        }
-
         #endregion
 
         #region IDisposable Members
@@ -1159,7 +1133,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Talis Platform Connector
         /// </summary>
-        public override void Dispose()
+        public void Dispose()
         {
             //No dispose actions needed
         }
@@ -1205,3 +1179,5 @@ namespace VDS.RDF.Storage
         }
     }
 }
+
+#endif
