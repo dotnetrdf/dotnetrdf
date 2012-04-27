@@ -40,6 +40,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
@@ -58,20 +60,15 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector, IConfigurationSerializable
+        : BaseSesameHttpProtocolConnector, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IMultiStoreGenericIOManager
+        , IStorageServer, IMultiStoreGenericIOManager
 #endif
     {
+        private String _agraphBase;
         private String _catalog;
         private bool _ready = false;
-
-        /// <summary>
-        /// Creates a new Connection to an AllegroGraph store
-        /// </summary>
-        /// <param name="baseUri">Base Uri for the Store</param>
-        /// <param name="catalogID">Catalog ID</param>
-        /// <param name="storeID">Store ID</param>
+         
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID)
             : this(baseUri, storeID, catalogID, (String)null, (String)null) { }
 
@@ -96,6 +93,7 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            this._agraphBase = String.Copy(this._baseUri);
             if (catalogID != null)
             {
                 this._baseUri += "catalogs/" + catalogID + "/";
@@ -106,7 +104,10 @@ namespace VDS.RDF.Storage
 #if !NO_SYNC_HTTP
             this.CreateStore(storeID);
 #else
-            //TODO: Call CreateStore() async method
+            this.CreateStore(storeID, (sender, args, state) =>
+                {
+                    if (args.WasSuccessful) this._ready = true;
+                }, null);
 #endif
         }
 
@@ -181,6 +182,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets whether the Store is ready
+        /// </summary>
+        /// <remarks>
+        /// Usually just instantiating the class should make the store ready assuming the parameters given point to a valid AllegroGraph instance but in the case of an async only environment (Silverlight/Windows Phone 7) this will not be the case and it will be necessary to wait for the async store creation to complete
+        /// </remarks>
         public override bool IsReady
         {
             get
@@ -355,12 +362,267 @@ namespace VDS.RDF.Storage
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets a Store within the current catalog
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
+        /// </remarks>
         public IStorageProvider GetStore(String storeID)
         {
-            throw new NotImplementedException();
+            //Allowed to return self when given ID matches own ID
+            if (this._store.Equals(storeID)) return this;
+
+            //Otherwise return a new instance
+            return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
         }
 
 #endif
+        public void ListStores(AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+            try
+            {
+                HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                            String data;
+                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            {
+                                data = reader.ReadToEnd();
+                                reader.Close();
+                            }
+
+                            JArray json = JArray.Parse(data);
+                            List<String> stores = new List<string>();
+                            foreach (JToken token in json.Children())
+                            {
+                                JValue id = token["id"] as JValue;
+                                if (id != null)
+                                {
+                                    stores.Add(id.Value.ToString());
+                                }
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
+                        }
+                        catch (WebException webEx)
+                        {
+    #if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+    #endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while attempting to list Stores, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,  new RdfStorageException("An unexpected error occurred while attempting to list Stores, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while attempting to list Stores, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("An unexpected error occurred while attempting to list Stores, see inner exception for details", ex)), state);
+            }
+        }
+
+        public void CreateStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                Dictionary<String, String> createParams = new Dictionary<string, string>();
+                createParams.Add("override", "false");
+                HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", createParams);
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugResponse(response);
+                            }
+#endif
+                            response.Close();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null)
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                }
+#endif
+                                //Got a Response so we can analyse the Response Code
+                                HttpWebResponse response = (HttpWebResponse)webEx.Response;
+                                int code = (int)response.StatusCode;
+                                if (code == 400)
+                                {
+                                    //400 just means the store already exists so this is OK
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                                }
+                                else
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                                }
+                            }
+                            else
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    //Got a Response so we can analyse the Response Code
+                    HttpWebResponse response = (HttpWebResponse)webEx.Response;
+                    int code = (int)response.StatusCode;
+                    if (code == 400)
+                    {
+                        //400 just means the store already exists so this is OK
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                    }
+                    else
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                    }
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                }
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
+            }
+        }
+
+        public void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                HttpWebRequest request = this.CreateRequest("repositories/" + this._store, "*/*", "DELETE", new Dictionary<string, string>());
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetResponse(r =>
+                {
+                    try
+                    {
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        //If we get here then the operation completed OK
+                        response.Close();
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                        }
+#endif
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("A HTTP Error occurred while attempting to delete a Store, see inner exception for details", webEx)), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("An unexpected error occurred while attempting to delete a Store, see inner exception for details", ex)), state);
+                    }
+                }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("A HTTP Error occurred while attempting to delete a Store, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("An unexpected error occurred while attempting to delete a Store, see inner exception for details", ex)), state);
+            }
+        }
+
+        /// <summary>
+        /// Gets a Store within the current catalog asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
+        /// </remarks>
+        public void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            if (this._store.Equals(storeID))
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
+            }
+            else
+            {
+#if !NO_PROXY
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy)), state);
+#else
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd)), state);
+#endif
+            }
+        }
+        
 
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store

@@ -22,11 +22,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadGraph, g), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadGraph, g, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, e), state);
                     }
                 }, state);
         }
@@ -46,11 +46,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, e), state);
                     }
                 }, state);
         }
@@ -70,11 +70,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, e), state);
                     }
                 }, state);
         }
@@ -94,11 +94,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri, e), state);
                     }
                 }, state);
         }
@@ -118,11 +118,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri, e), state);
                     }
                 }, state);
         }
@@ -142,11 +142,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         IEnumerable<Uri> graphs = d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, graphs), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, graphs), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, e), state);
                     }
                 }, state);
         }
@@ -166,11 +166,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         Object results = d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, results), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, query, results), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, query, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, query, e), state);
                     }
                 }, state);
         }
@@ -190,11 +190,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, query, rdfHandler, resultsHandler), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, query, rdfHandler, resultsHandler), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, query, rdfHandler, resultsHandler, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, query, rdfHandler, resultsHandler, e), state);
                     }
                 }, state);
         }
@@ -214,11 +214,11 @@ namespace VDS.RDF.Storage
                     try
                     {
                         d.EndInvoke(r);
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, updates), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, updates), state);
                     }
                     catch (Exception e)
                     {
-                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, updates, e), state);
+                        callback(storage, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, updates, e), state);
                     }
                 }, state);
         }

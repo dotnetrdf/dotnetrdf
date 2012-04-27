@@ -358,9 +358,20 @@ namespace VDS.RDF.Storage
         /// <param name="storeID">Store ID</param>
         /// <returns></returns>
         /// <remarks>
-        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this
+        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
         /// </remarks>
         IStorageProvider GetStore(string storeID);
+    }
+
+    public interface IAsyncStorageServer
+    {
+        void ListStores(AsyncStorageCallback callback, Object state);
+
+        void CreateStore(String storeID, AsyncStorageCallback callback, Object state);
+
+        void DeleteStore(String storeID, AsyncStorageCallback callback, Object state);
+
+        void GetStore(String storeID, AsyncStorageCallback callback, Object state);
     }
 
     /// <summary>

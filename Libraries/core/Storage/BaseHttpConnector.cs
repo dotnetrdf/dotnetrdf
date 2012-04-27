@@ -248,7 +248,7 @@ namespace VDS.RDF.Storage
         {
             this.LoadGraph(new GraphHandler(g), graphUri, (sender, args, st) =>
                 {
-                    callback(sender, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadGraph, g, args.Error), st);
+                    callback(sender, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadGraph, g, args.Error), st);
                 }, state);
         }
 
@@ -285,7 +285,7 @@ namespace VDS.RDF.Storage
                     //If we get here then it was OK
                     response.Close();
 
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
                 }
                 catch (WebException webEx)
                 {
@@ -298,11 +298,11 @@ namespace VDS.RDF.Storage
                         }
 #endif
                     }
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx)), state);
                 }
                 catch (Exception ex)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.LoadWithHandler, handler, new RdfStorageException("Unexpected error trying to load a graph from the store asynchronously, see inner exception for details", ex)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, new RdfStorageException("Unexpected error trying to load a graph from the store asynchronously, see inner exception for details", ex)), state);
                 }
             }, state);
         }
@@ -338,7 +338,7 @@ namespace VDS.RDF.Storage
 #endif
                             //If we get here then it was OK
                             response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
                         }
                         catch (WebException webEx)
                         {
@@ -348,17 +348,17 @@ namespace VDS.RDF.Storage
                                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             }
 #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store asynchronously", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store asynchronously", webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, new RdfStorageException("Unexpected Error trying to save the Graph to the store asynchronously, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("Unexpected Error trying to save the Graph to the store asynchronously, see inner exception for details", ex)), state);
                         }
                     }, state);
                 }
                 catch (Exception ex)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g, new RdfStorageException("Unexpected error writing the Graph to the store asynchronously, see inner exception for details", ex)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("Unexpected error writing the Graph to the store asynchronously, see inner exception for details", ex)), state);
                 }
             }, state);
         }
@@ -402,7 +402,7 @@ namespace VDS.RDF.Storage
 #endif
                             //If we get here then it was OK
                             response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri), state);
                         }
                         catch (WebException webEx)
                         {
@@ -412,11 +412,11 @@ namespace VDS.RDF.Storage
                                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             }
 #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
                         }
                     }, state);
                 }
@@ -428,11 +428,11 @@ namespace VDS.RDF.Storage
                         if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     }
 #endif
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri, new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
                 }
                 catch (Exception ex)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri, new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
                 }
             }, state);
         }
@@ -460,7 +460,7 @@ namespace VDS.RDF.Storage
 
                         //Assume if returns to here we deleted the Graph OK
                         response.Close();
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri()), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
                     }
                     catch (WebException webEx)
                     {
@@ -473,17 +473,17 @@ namespace VDS.RDF.Storage
                         //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                         if (webEx.Response == null || (webEx.Response != null && (!allow404 || ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound)))
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store asynchronously", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store asynchronously", webEx)), state);
                         }
                         else
                         {
                             //Consider a 404 as a success in some cases
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri()), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
                         }
                     }
                     catch (Exception ex)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to delete a Graph from the Store asynchronously, see inner exception for details", ex)), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to delete a Graph from the Store asynchronously, see inner exception for details", ex)), state);
                     }
                 }, state);
         }
@@ -498,17 +498,17 @@ namespace VDS.RDF.Storage
                 {
                     if (args.WasSuccessful)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, handler.Uris), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, handler.Uris), state);
                     }
                     else
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, args.Error), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, args.Error), state);
                     }
                 }, state);
             }
             else
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.ListGraphs, new RdfStorageException("Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new RdfStorageException("Underlying store does not supported listing graphs asynchronously or has failed to appropriately override this method")), state);
             }
         }
 

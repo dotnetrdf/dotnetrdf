@@ -743,7 +743,7 @@ namespace VDS.RDF.Storage
 
                                         //If we get then it was OK
                                         response.Close();
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, g), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
                                     }
                                     catch (WebException webEx)
                                     {
@@ -753,11 +753,11 @@ namespace VDS.RDF.Storage
                                             if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                         }
 #endif
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
                                     }
                                     catch (Exception ex)
                                     {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
                                     }
                                 }, state);
                         }
@@ -769,11 +769,11 @@ namespace VDS.RDF.Storage
                                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             }
 #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
                         }
                     }, state);
             }
@@ -785,11 +785,11 @@ namespace VDS.RDF.Storage
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 #endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("A HTTP error occurred while communicating with the Joseki server", webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("An unexpected error occurred while communicating with the Joseki server, see inner exception for details", ex)), state);
             }
         }
 
@@ -814,7 +814,7 @@ namespace VDS.RDF.Storage
         {
             if (this._updateService == null) 
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("Unable to update a Graph in the Joseki store - the connector was created in read-only mode")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("Unable to update a Graph in the Joseki store - the connector was created in read-only mode")), state);
                 return;
             }
             //Build up the SPARUL MODIFY command
@@ -859,13 +859,13 @@ namespace VDS.RDF.Storage
             //If we didn't actually have any deletions or deletions to do we can exit here
             if (!modify.ToString().Contains("DELETE") && !modify.ToString().Contains("INSERT"))
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri.ToSafeUri()), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
             }
             else
             {
                 this.Update(modify.ToString(), (sender, args, st) =>
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                     }, state);
             }
         }
@@ -874,13 +874,13 @@ namespace VDS.RDF.Storage
         {
             if (String.IsNullOrEmpty(graphUri))
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("Cannot delete the default graph from Joseki")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("Cannot delete the default graph from Joseki")), state);
             }
             else
             {
                 this.Update("DROP GRAPH <" + this._formatter.FormatUri(graphUri) + ">", (sender, args, st) =>
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), args.Error), state);
                     }, state);
             }
         }
@@ -889,7 +889,7 @@ namespace VDS.RDF.Storage
         {
             if (this._updateService == null)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlUpdate, new RdfStorageException("Unable to perform SPARQL Updates on the Joseki store - the connector was created in read-only mode")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, new RdfStorageException("Unable to perform SPARQL Updates on the Joseki store - the connector was created in read-only mode")), state);
                 return;
             }
 
@@ -944,11 +944,11 @@ namespace VDS.RDF.Storage
                                         if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                     }
 #endif
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
                                 }
                                 catch (Exception ex)
                                 {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
                                 }
                             }, state);
                         }
@@ -960,11 +960,11 @@ namespace VDS.RDF.Storage
                                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             }
 #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
                         }
                     }, state);
             }
@@ -976,11 +976,11 @@ namespace VDS.RDF.Storage
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 #endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("A HTTP error occurred while updating the Store, see inner exception for details", webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfStorageException("An unexpected error occurred while updating the Store, see inner exception for details", ex)), state);
             }
         }
 
@@ -992,11 +992,11 @@ namespace VDS.RDF.Storage
             {
                 if (results.ResultsType != SparqlResultsType.Unknown)
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, sparqlQuery, results, args.Error), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, results, args.Error), state);
                 }
                 else
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQuery, sparqlQuery, g, args.Error), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, g, args.Error), state);
                 }
             }, state);
         }
@@ -1070,11 +1070,11 @@ namespace VDS.RDF.Storage
                                         if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                                     }
 #endif
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
                                 }
                                 catch (Exception ex)
                                 {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
                                 }
                             }, state);
                         }
@@ -1086,11 +1086,11 @@ namespace VDS.RDF.Storage
                                 if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                             }
 #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
                         }
                     }, state);
             }
@@ -1102,11 +1102,11 @@ namespace VDS.RDF.Storage
                     if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                 }
 #endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageAction.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store, see inner exception for details", ex)), state);
             }
         }
 
