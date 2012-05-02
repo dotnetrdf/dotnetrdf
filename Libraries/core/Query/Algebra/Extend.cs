@@ -159,24 +159,40 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 context.OutputMultiset.AddVariable(this._var);
-                foreach (int id in results.SetIDs.ToList())
+#if NET40 && !SILVERLIGHT
+                if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
                 {
-                    ISet s = results[id].Copy();
-                    try
-                    {
-                        //Make a new assignment
-                        INode temp = this._expr.Evaluate(context, id);
-                        s.Add(this._var, temp);
-                    }
-                    catch
-                    {
-                        //No assignment if there's an error but the solution is preserved
-                    }
-                    context.OutputMultiset.Add(s);
+                    results.SetIDs.AsParallel().ForAll(id => EvalExtend(context, results, id));
                 }
+                else
+                {
+#endif
+                    foreach (int id in results.SetIDs)
+                    {
+                        EvalExtend(context, results, id);
+                    }
+#if NET40 && !SILVERLIGHT
+                }
+#endif
             }
 
             return context.OutputMultiset;
+        }
+
+        private void EvalExtend(SparqlEvaluationContext context, BaseMultiset results, int id)
+        {
+            ISet s = results[id].Copy();
+            try
+            {
+                //Make a new assignment
+                INode temp = this._expr.Evaluate(context, id);
+                s.Add(this._var, temp);
+            }
+            catch
+            {
+                //No assignment if there's an error but the solution is preserved
+            }
+            context.OutputMultiset.Add(s);
         }
 
         /// <summary>

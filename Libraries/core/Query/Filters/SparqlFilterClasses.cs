@@ -129,6 +129,7 @@ namespace VDS.RDF.Query.Filters
             }
 
 #if NET40 && !SILVERLIGHT
+            //BOUND is always safe to parallelise
             if (Options.UsePLinqEvaluation)
             {
                 context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
