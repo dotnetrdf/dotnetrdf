@@ -244,6 +244,24 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                if (this._3d)
+                {
+                    return this._x1.CanParallelise && this._y1.CanParallelise && this._z1.CanParallelise && this._x1.CanParallelise && this._y2.CanParallelise && this._z2.CanParallelise;
+                }
+                else
+                {
+                    return this._x1.CanParallelise && this._y1.CanParallelise && this._x2.CanParallelise && this._y2.CanParallelise;
+                }
+            }
+        }
+
+        /// <summary>
         /// Transforms the Expression using the given Transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>

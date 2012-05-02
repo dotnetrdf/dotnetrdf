@@ -114,6 +114,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Applies a transformer to the expressions arguments
         /// </summary>
         /// <param name="transformer">Transformer</param>

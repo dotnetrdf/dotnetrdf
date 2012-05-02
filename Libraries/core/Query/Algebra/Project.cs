@@ -486,7 +486,7 @@ namespace VDS.RDF.Query.Algebra
         {
             try
             {
-                context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+                context.InputMultiset = context.Evaluate(this._pattern);
             }
             catch (RdfQueryTimeoutException)
             {

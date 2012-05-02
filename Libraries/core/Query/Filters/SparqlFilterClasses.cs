@@ -218,7 +218,8 @@ namespace VDS.RDF.Query.Filters
             else
             {
 #if NET40 && !SILVERLIGHT
-                if (Options.UsePLinqEvaluation)
+                //Remember that not all expressions are safe to parallelise
+                if (Options.UsePLinqEvaluation && this._arg.CanParallelise)
                 {
                     context.InputMultiset.SetIDs.ToList().AsParallel().ForAll(i => EvalFilter(context, i));
                 }

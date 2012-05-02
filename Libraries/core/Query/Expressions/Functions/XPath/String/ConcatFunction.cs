@@ -73,6 +73,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._exprs.All(e => e.CanParallelise);
+            }
+        }
+
+        /// <summary>
         /// Gets the Variables used in the function
         /// </summary>
         public IEnumerable<string> Variables

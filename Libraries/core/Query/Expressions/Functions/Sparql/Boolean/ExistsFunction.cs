@@ -47,7 +47,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 {
     /// <summary>
-    /// Represents an EXIST/NOT EXIST clause used as a Function in an Expression
+    /// Represents an EXIST/NOT EXISTS clause used as a Function in an Expression
     /// </summary>
     public class ExistsFunction 
         : ISparqlExpression
@@ -230,6 +230,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 return (from p in this._pattern.TriplePatterns
                         from v in p.Variables
                         select v).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return false;
             }
         }
 

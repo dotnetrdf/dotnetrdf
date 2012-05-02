@@ -66,7 +66,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
             if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
             {
-                this._node = new DateTimeNode(null, DateTime.Now);
+                lock (this)
+                {
+                    if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
+                    {
+                        this._node = new DateTimeNode(null, DateTime.Now);
+                    }
+                }
             }
             return this._node;
         }
@@ -90,6 +96,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             get
             {
                 return ArqFunctionFactory.ArqFunctionsNamespace + ArqFunctionFactory.Now;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return true;
             }
         }
 

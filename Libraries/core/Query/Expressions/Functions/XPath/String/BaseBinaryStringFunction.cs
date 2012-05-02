@@ -195,6 +195,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._expr.CanParallelise && this._arg.CanParallelise;
+            }
+        }
+
+        /// <summary>
         /// Transforms the Expression using the given Transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>

@@ -115,6 +115,17 @@ namespace VDS.RDF.Query.Expressions
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._expr.CanParallelise;
+            }
+        }
+
+        /// <summary>
         /// Transforms the arguments of the expression using the given transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>
@@ -193,6 +204,17 @@ namespace VDS.RDF.Query.Expressions
             get
             {
                 return new ISparqlExpression[] { this._leftExpr, this._rightExpr };
+            }
+        }
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._leftExpr.CanParallelise && this._rightExpr.CanParallelise;
             }
         }
 

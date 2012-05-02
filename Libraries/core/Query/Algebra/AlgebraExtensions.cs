@@ -58,13 +58,33 @@ namespace VDS.RDF.Query.Algebra
             if (other is NullMultiset) return other;
             if (other.IsEmpty) return new NullMultiset();
 
+            //If no timeout use default implementation
             if (timeout <= 0)
             {
                 return multiset.Product(other);
             }
 
-            //Invoke using an Async call
-            Multiset productSet = new Multiset();
+            //Otherwise Invoke using an Async call
+            BaseMultiset productSet;
+#if NET40 && !SILVERLIGHT
+            if (Options.UsePLinqEvaluation)
+            {
+                if (multiset.Count >= other.Count)
+                {
+                    productSet = new PartitionedMultiset(multiset.Count, other.Count);
+                }
+                else
+                {
+                    productSet = new PartitionedMultiset(other.Count, multiset.Count);
+                }
+            }
+            else
+            {
+#endif
+                productSet = new Multiset();
+#if NET40 && !SILVERLIGHT
+            }
+#endif
             StopToken stop = new StopToken();
             GenerateProductDelegate d = new GenerateProductDelegate(GenerateProduct);
             IAsyncResult r = d.BeginInvoke(multiset, other, productSet, stop, null, null);
@@ -98,16 +118,52 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="stop">Stop Token</param>
         private static void GenerateProduct(BaseMultiset multiset, BaseMultiset other, BaseMultiset target, StopToken stop)
         {
-            foreach (ISet x in multiset.Sets)
+#if NET40 && !SILVERLIGHT
+            if (Options.UsePLinqEvaluation)
             {
-                foreach (ISet y in other.Sets)
+                //Determine partition sizes so we can do a parallel product
+                //Want to parallelize over whichever side is larger
+                if (multiset.Count >= other.Count)
                 {
-                    target.Add(x.Join(y));
-                    //if (stop.ShouldStop) break;
+                    multiset.Sets.AsParallel().ForAll(x => EvalProduct(x, other, target as PartitionedMultiset, stop));
                 }
-                if (stop.ShouldStop) break;
+                else
+                {
+                    other.Sets.AsParallel().ForAll(y => EvalProduct(y, multiset, target as PartitionedMultiset, stop));
+                }
             }
+            else
+            {
+#endif
+                foreach (ISet x in multiset.Sets)
+                {
+                    foreach (ISet y in other.Sets)
+                    {
+                        target.Add(x.Join(y));
+                        //if (stop.ShouldStop) break;
+                    }
+                    if (stop.ShouldStop) break;
+                }
+#if NET40 && !SILVERLIGHT
+            }
+#endif
         }
+
+#if NET40 && !SILVERLIGHT
+        private static void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet, StopToken stop)
+        {
+            if (stop.ShouldStop) return;
+            int id = productSet.GetNextBaseID();
+            foreach (ISet y in other.Sets)
+            {
+                id++;
+                ISet z = x.Join(y);
+                z.ID = id;
+                productSet.Add(z);
+            }
+            if (stop.ShouldStop) return;
+        }
+#endif
     }
 
     /// <summary>

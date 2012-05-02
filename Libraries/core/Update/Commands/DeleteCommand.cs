@@ -67,9 +67,6 @@ namespace VDS.RDF.Update.Commands
             this._deletePattern = deletions;
             this._wherePattern = where;
             this._graphUri = graphUri;
-
-            //Optimise the WHERE
-            this._wherePattern.Optimise();
         }
 
         /// <summary>

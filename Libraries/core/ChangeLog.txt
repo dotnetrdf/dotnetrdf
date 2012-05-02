@@ -9,7 +9,7 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.6.2 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.7.0 release of dotNetRDF
 
 Added
 - Query
@@ -17,29 +17,26 @@ Added
 
 Changed
 - Bug Fixes
- - Fix for an issue with bif:contains and other special constructs in SPARQL queries to Virtuoso
- - Fix for a bug with CREATE GRAPH and GenericUpdateProcessor behaviour for stores that don't support empty graphs
- - Fix for some regressions in SPARQL 1.1 support introduced by internal data structure changes in the 0.6.1 release
- - Fix for corner case logic flaw in GRAPH clause evaluation
- - Fix for proper configurable timeouts for Virtuoso
- - Fix for some Virtuoso extensions causing queries to be rejected
- - Fix for incorrect parser selection when talking to some Sesame based servers
+ - Fix for a bug with FILTER and BIND in the WHERE clause of INSERT/DELETE causing incorrect behaviour due to an over optimization issue
 - Parsing
- - Explicit support for direct parsing of GZipped inputs (e.g. example.ttl.gz)
- - More intelligent format detection on loading into TripleStore instances
-- Ontology API
- - Added IsDomainOf and IsRangeOf properties to OntologyClass
+ - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
 - Query
- - Added TryGetValue() and TryGetBoundValue() methods to SparqlResult class
+ - Turned on PLinq Evaluation by default, following operations are parallelised currently:
+  - Join
+  - Product
+  - Filter
+  - Extend
 - Storage
- - Storage API outline now available on Silverlight/Windows Phone 7 though many implementations are not available on those platforms
+ - Major refactor and reorganisation of interfaces within Storage namespace to have more consistent naming
+ - Supports a standard async access API over almost all existing storage providers
+ - Adds a new IStorageServer interface for providers like Sesame and AllegroGraph which allow multiple stores to be managed
+- Serialization
+ - Refactored IStoreWriter API to be consistent with IRdfWriter and ISparqlResultsWriter
 
 Removed
-- All Talis specific classes except TalisPlatformConnector
-- Obsolete NativeTripleStore and StoreGraph
-- Obsolete HandlerConstants
-- Marked all legacy FolderStore classes as deprecated but usable
-- Marked old GenericReader/GenericWriter classes as deprecated unusable
+- Obsolete ISelector API removed
+- Removed any internal use of embedded HashLib code as it is no longer necessary
+- Removed the obsolete BaseNodeCollection API
    
 
 

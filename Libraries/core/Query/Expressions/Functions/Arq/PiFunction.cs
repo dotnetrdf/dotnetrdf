@@ -99,6 +99,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the type of the expression
         /// </summary>
         public SparqlExpressionType Type

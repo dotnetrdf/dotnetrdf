@@ -59,9 +59,9 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector 
-        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IQueryableGenericIOManager
+        , IQueryableStorage, IStorageServer, IQueryableGenericIOManager
 #endif
     {
         /// <summary>
@@ -871,6 +871,11 @@ namespace VDS.RDF.Storage
 #endif
                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx)), state);
             }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("Unexpected error while trying to save a Graph to the Store asynchronously, see inner exception for details", ex)), state);
+                return;
+            }
         }
 
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
@@ -1255,6 +1260,98 @@ namespace VDS.RDF.Storage
             }
         }
 
+#if !NO_SYNC_HTTP
+
+        public virtual void CreateStore(String storeID)
+        {
+            throw new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol");
+        }
+
+        public virtual void DeleteStore(String storeID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual IEnumerable<String> ListStores()
+        {
+            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+            ListStringsHandler handler = new ListStringsHandler("id");
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                SparqlXmlParser parser = new SparqlXmlParser();
+                parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                response.Close();
+            }
+            return handler.Strings;
+        }
+
+        public abstract IStorageProvider GetStore(String storeID);
+
+#endif
+        public virtual void CreateStore(String storeID, AsyncStorageCallback callback, Object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
+        }
+
+        public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
+        }
+
+        public virtual void ListStores(AsyncStorageCallback callback, Object state)
+        {
+            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+            ListStringsHandler handler = new ListStringsHandler("id");
+            try
+            {
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+                            SparqlXmlParser parser = new SparqlXmlParser();
+                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                            response.Close();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, handler.Strings), state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+#endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while trying list stores asynchronously", webEx)), state);
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("Unexpected error while trying to list stores asynchronously, see inner exception for details", ex)), state);
+                            return;
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while trying list stores asynchronously", webEx)), state);
+                return;
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("Unexpected error while trying to list stores asynchronously, see inner exception for details", ex)), state);
+                return;
+            }
+        }
+
+        public abstract void GetStore(String storeID, AsyncStorageCallback callback, Object state);
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
@@ -1392,6 +1489,18 @@ namespace VDS.RDF.Storage
 
 #endif
 
+        public override IStorageProvider GetStore(string storeID)
+        {
+            if (this._store.Equals(storeID))
+            {
+                return this;
+            }
+            else
+            {
+                return new SesameHttpProtocolConnector(this._baseUri, storeID);
+            }
+        }
+
     }
 
     /// <summary>
@@ -1441,6 +1550,23 @@ namespace VDS.RDF.Storage
             : base(baseUri, storeID, username, password, proxy) { }
 
 #endif
+
+        public override IStorageProvider GetStore(string storeID)
+        {
+            if (this._store.Equals(storeID))
+            {
+                return this;
+            }
+            else
+            {
+                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID);
+            }
+        }
+
+        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -1493,6 +1619,18 @@ namespace VDS.RDF.Storage
             : base(baseUri, storeID, username, password, proxy) { }
 
 #endif
+
+        public override IStorageProvider GetStore(string storeID)
+        {
+            if (this._store.Equals(storeID))
+            {
+                return this;
+            }
+            else
+            {
+                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID);
+            }
+        }
 
 #if !NO_SYNC_HTTP
 

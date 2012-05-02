@@ -608,16 +608,6 @@ namespace VDS.RDF.Query.Patterns
         #region Pattern Optimisation
 
         /// <summary>
-        /// Causes the Graph Pattern to be optimised if it isn't already
-        /// </summary>
-        /// <param name="variables">Variables that have occurred prior to this Pattern</param>
-        [Obsolete("This method represents the old fixed optimiser and is no longer used", true)]
-        internal void Optimise(IEnumerable<String> variables)
-        {
-            throw new NotSupportedException("The old fixed optimiser is no longer supported");
-        }
-
-        /// <summary>
         /// Optimises the Graph Pattern using the current global optimiser
         /// </summary>
         public void Optimise()
@@ -629,8 +619,17 @@ namespace VDS.RDF.Query.Patterns
         /// Optimises the Graph Pattern using the given optimiser
         /// </summary>
         /// <param name="optimiser">Query Optimiser</param>
+        /// <remarks>
+        /// <para>
+        /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
+        /// </para>
+        /// <para>
+        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary
+        /// </para>
+        /// </remarks>
         public void Optimise(IQueryOptimiser optimiser)
         {
+            if (this._isOptimised) return;
             optimiser.Optimise(this, Enumerable.Empty<String>());
         }
 
@@ -640,10 +639,19 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="optimiser">Query Optimiser</param>
         /// <param name="vars">Variables</param>
         /// <remarks>
+        /// <para>
+        /// <strong>Important:</strong> If a Pattern has already been optimized then calling this again is a no-op.
+        /// </para>
+        /// <para>
+        /// For finer grained control of what gets optimized you can use <see cref="Options.QueryOptimisation"/> to disable automatic optimisation and then manually call this method as necessary
+        /// </para>
+        /// <para>
         /// The <paramref name="vars">vars</paramref> parameter contains Variables mentioned in the parent Graph Pattern (if any) that can be used to guide optimisation of child graph patterns
+        /// </para>
         /// </remarks>
         public void Optimise(IQueryOptimiser optimiser, IEnumerable<String> vars)
         {
+            if (this._isOptimised) return;
             optimiser.Optimise(this, vars);
         }
 

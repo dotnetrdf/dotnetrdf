@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
     public class StrBeforeFunction
         : ISparqlExpression
     {
-        private ISparqlExpression _stringExpr, _startsExpr;
+        private ISparqlExpression _stringExpr, _endsExpr;
 
         /// <summary>
         /// Creates a new STRBEFORE Function
@@ -23,7 +23,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public StrBeforeFunction(ISparqlExpression stringExpr, ISparqlExpression startsExpr)
         {
             this._stringExpr = stringExpr;
-            this._startsExpr = startsExpr;
+            this._endsExpr = startsExpr;
         }
 
         /// <summary>
@@ -35,16 +35,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             ILiteralNode input = this.CheckArgument(this._stringExpr, context, bindingID);
-            ILiteralNode starts = this.CheckArgument(this._startsExpr, context, bindingID);
+            ILiteralNode ends = this.CheckArgument(this._endsExpr, context, bindingID);
 
-            if (!this.IsValidArgumentPair(input, starts)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
+            if (!this.IsValidArgumentPair(input, ends)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
-            Uri datatype = (input.DataType != null ? input.DataType : starts.DataType);
-            string lang = (!input.Language.Equals(string.Empty) ? input.Language : starts.Language);
+            Uri datatype = (input.DataType != null ? input.DataType : ends.DataType);
+            string lang = (!input.Language.Equals(string.Empty) ? input.Language : ends.Language);
 
-            if (input.Value.Contains(starts.Value))
+            if (input.Value.Contains(ends.Value))
             {
-                int endIndex = input.Value.IndexOf(starts.Value);
+                int endIndex = input.Value.IndexOf(ends.Value);
                 string resultValue = (endIndex == 0 ? string.Empty : input.Value.Substring(0, endIndex));
 
                 if (datatype != null)
@@ -198,7 +198,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return this._startsExpr.Variables.Concat(this._stringExpr.Variables);
+                return this._endsExpr.Variables.Concat(this._stringExpr.Variables);
             }
         }
 
@@ -231,7 +231,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         {
             get
             {
-                return new ISparqlExpression[] { this._stringExpr, this._startsExpr };
+                return new ISparqlExpression[] { this._stringExpr, this._endsExpr };
+            }
+        }
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._stringExpr.CanParallelise && this._endsExpr.CanParallelise;
             }
         }
 
@@ -242,7 +253,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public ISparqlExpression Transform(IExpressionTransformer transformer)
         {
-            return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._startsExpr));
+            return new StrBeforeFunction(transformer.Transform(this._stringExpr), transformer.Transform(this._endsExpr));
         }
 
         /// <summary>
@@ -251,7 +262,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         public override string ToString()
         {
-            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + this._stringExpr.ToString() + ", " + this._startsExpr.ToString() + ")";
+            return SparqlSpecsHelper.SparqlKeywordStrBefore + "(" + this._stringExpr.ToString() + ", " + this._endsExpr.ToString() + ")";
         }
     }
 }

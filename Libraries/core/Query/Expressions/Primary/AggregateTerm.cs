@@ -148,6 +148,17 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
+        /// Gets whether the expression can be parallelised
+        /// </summary>
+        public override bool CanParallelise
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Transforms the Expression using the given Transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>

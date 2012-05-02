@@ -158,5 +158,13 @@ namespace VDS.RDF.Query.Expressions
         /// <param name="transformer">Expression Transformer</param>
         /// <returns></returns>
         ISparqlExpression Transform(IExpressionTransformer transformer);
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        bool CanParallelise
+        {
+            get;
+        }
     }
 }

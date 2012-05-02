@@ -350,7 +350,7 @@ namespace VDS.RDF.Parsing
             } while (next.TokenType != Token.EOF);
 
             //Optimise the Command Set before returning it
-            context.CommandSet.Optimise();
+            if (Options.QueryOptimisation) context.CommandSet.Optimise();
             return context.CommandSet;
         }
 

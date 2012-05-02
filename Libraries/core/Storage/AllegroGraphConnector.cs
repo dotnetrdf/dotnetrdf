@@ -202,7 +202,7 @@ namespace VDS.RDF.Storage
         /// Creates a new Store (if it doesn't exist) and switches the connector to use that Store
         /// </summary>
         /// <param name="storeID">Store ID</param>
-        public void CreateStore(String storeID)
+        public override void CreateStore(String storeID)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -321,7 +321,7 @@ namespace VDS.RDF.Storage
         /// Requests that AllegroGraph deletes a Store
         /// </summary>
         /// <param name="storeID">Store ID</param>
-        public void DeleteStore(String storeID)
+        public override void DeleteStore(String storeID)
         {
             try
             {
@@ -357,9 +357,31 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public IEnumerable<String> ListStores()
+        public override IEnumerable<String> ListStores()
         {
-            throw new NotImplementedException();
+            HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
+            String data;
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    data = reader.ReadToEnd();
+                    reader.Close();
+                }
+                response.Close();
+            }
+
+            JArray json = JArray.Parse(data);
+            List<String> stores = new List<string>();
+            foreach (JToken token in json.Children())
+            {
+                JValue id = token["id"] as JValue;
+                if (id != null)
+                {
+                    stores.Add(id.Value.ToString());
+                }
+            }
+            return stores;
         }
 
         /// <summary>
@@ -370,7 +392,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
         /// </remarks>
-        public IStorageProvider GetStore(String storeID)
+        public override IStorageProvider GetStore(String storeID)
         {
             //Allowed to return self when given ID matches own ID
             if (this._store.Equals(storeID)) return this;
@@ -380,9 +402,8 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-        public void ListStores(AsyncStorageCallback callback, object state)
+        public override void ListStores(AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
             try
             {
                 HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
@@ -442,7 +463,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public void CreateStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void CreateStore(string storeID, AsyncStorageCallback callback, object state)
         {
             try
             {
@@ -539,7 +560,7 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             try
             {
@@ -607,7 +628,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
         /// </remarks>
-        public void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
             if (this._store.Equals(storeID))
             {

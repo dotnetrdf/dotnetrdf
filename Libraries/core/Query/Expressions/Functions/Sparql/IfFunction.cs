@@ -146,6 +146,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._condition.CanParallelise && this._ifBranch.CanParallelise && this._elseBranch.CanParallelise;
+            }
+        }
+
+        /// <summary>
         /// Transforms the Expression using the given Transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>

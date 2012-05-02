@@ -601,5 +601,105 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             Assert.IsFalse(ex.ContainsTriple(t), "Should not have the deleted Triple in the Named Graph");
 
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertWithBind()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("rvesse.ttl");
+            store.Add(g);
+
+            int origTriples = g.Triples.Count;
+
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            command.CommandText = "INSERT { ?x foaf:mbox_sha1sum ?hash } WHERE { ?x foaf:mbox ?email . BIND(SHA1(STR(?email)) AS ?hash) }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected new triples to have been added");
+            Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
+        }
+
+        [TestMethod]
+        public void SparqlUpdateInsertWithFilter()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("rvesse.ttl");
+            store.Add(g);
+
+            int origTriples = g.Triples.Count;
+
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            command.CommandText = "INSERT { ?x foaf:mbox_sha1sum ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected new triples to have been added");
+            Assert.IsTrue(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox_sha1sum"))).Any(), "Expected new triples to have been added");
+        }
+
+        [TestMethod]
+        public void SparqlUpdateDeleteWithBind()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("rvesse.ttl");
+            store.Add(g);
+
+            int origTriples = g.Triples.Count;
+
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            command.CommandText = "DELETE { ?x foaf:mbox ?y } WHERE { ?x foaf:mbox ?email . BIND(?email AS ?y) }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected triples to have been deleted");
+            Assert.IsFalse(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Any(), "Expected triples to have been deleted");
+        }
+
+        [TestMethod]
+        public void SparqlUpdateDeleteWithFilter()
+        {
+            TripleStore store = new TripleStore();
+            Graph g = new Graph();
+            g.LoadFromFile("rvesse.ttl");
+            store.Add(g);
+
+            int origTriples = g.Triples.Count;
+
+            SparqlParameterizedString command = new SparqlParameterizedString();
+            command.Namespaces.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            command.CommandText = "DELETE { ?x foaf:mbox ?email } WHERE { ?x foaf:mbox ?email . FILTER(REGEX(STR(?email), 'dotnetrdf\\.org')) }";
+
+            SparqlUpdateParser parser = new SparqlUpdateParser();
+            SparqlUpdateCommandSet cmds = parser.ParseFromString(command);
+
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreNotEqual(origTriples, g.Triples.Count, "Expected triples to have been deleted");
+            Assert.IsFalse(g.GetTriplesWithPredicate(g.CreateUriNode(new Uri("http://xmlns.com/foaf/0.1/mbox"))).Where(t => t.Object.ToString().Contains("dotnetrdf.org")).Any(), "Expected triples to have been deleted");
+        }
     }
 }

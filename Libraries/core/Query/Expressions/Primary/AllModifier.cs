@@ -85,5 +85,16 @@ namespace VDS.RDF.Query.Expressions.Primary
         {
             return this;
         }
+
+        /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public bool CanParallelise
+        {
+            get
+            {
+                return true;
+            }
+        }
     }
 }

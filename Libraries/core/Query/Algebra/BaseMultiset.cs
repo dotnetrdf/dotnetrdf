@@ -37,7 +37,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -47,51 +49,616 @@ namespace VDS.RDF.Query.Algebra
     public abstract class BaseMultiset
     {
         /// <summary>
-        /// Join combines two multisets that are not disjoint
+        /// List of IDs that is used to return the Sets in order if the Multiset has been sorted
         /// </summary>
-        /// <param name="other">Multiset to join with</param>
-        /// <returns></returns>
-        public abstract BaseMultiset Join(BaseMultiset other);
+        protected List<int> _orderedIDs = null;
 
         /// <summary>
-        /// Left Join combines two multisets where the join is predicated on an arbitrary expression
+        /// Joins this Multiset to another Multiset
         /// </summary>
-        /// <param name="other">Multiset to join with</param>
-        /// <param name="expr">Expression on which the Join is predicated</param>
+        /// <param name="other">Other Multiset</param>
         /// <returns></returns>
-        /// <remarks>
-        /// Used for doing OPTIONALs
-        /// </remarks>
-        public abstract BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr);
+        public virtual BaseMultiset Join(BaseMultiset other)
+        {
+            //If the Other is the Identity Multiset the result is this Multiset
+            if (other is IdentityMultiset) return this;
+            //If the Other is the Null Multiset the result is the Null Multiset
+            if (other is NullMultiset) return other;
+            //If the Other is Empty then the result is the Null Multiset
+            if (other.IsEmpty) return new NullMultiset();
+
+            //Find the First Variable from this Multiset which is in both Multisets
+            //If there is no Variable from this Multiset in the other Multiset then this
+            //should be a Product operation instead of a Join
+            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0) return this.Product(other);
+
+            //Start building the Joined Set
+            Multiset joinedSet = new Multiset();
+
+            //This is the new Join algorithm which is O(2n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
+            foreach (ISet x in this.Sets)
+            {
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
+                }
+            }
+
+#if NET40 && !SILVERLIGHT
+            if (Options.UsePLinqEvaluation)
+            {
+                //Use a paralllel join
+                other.Sets.AsParallel().ForAll(y => EvalJoin(y, joinVars, values, nulls, joinedSet));
+            }
+            else
+            {
+#endif
+                //Use a serial join
+                //Then do a pass over the RHS and work out the intersections
+                foreach (ISet y in other.Sets)
+                {
+                    this.EvalJoin(y, joinVars, values, nulls, joinedSet);
+                }
+#if NET40 && !SILVERLIGHT
+            }
+#endif
+
+            return joinedSet;
+        }
+
+        private void EvalJoin(ISet y, List<String> joinVars, List<HashTable<INode, int>> values, List<List<int>> nulls, BaseMultiset joinedSet)
+        {
+            IEnumerable<int> possMatches = null;
+            int i = 0;
+            foreach (String var in joinVars)
+            {
+                INode value = y[var];
+                if (value != null)
+                {
+                    if (values[i].ContainsKey(value))
+                    {
+                        possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                    }
+                    else
+                    {
+                        possMatches = Enumerable.Empty<int>();
+                        break;
+                    }
+                }
+                else
+                {
+                    //Don't forget that a null will be potentially compatible with everything
+                    possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                }
+                i++;
+            }
+            if (possMatches == null) return;
+
+            //Now do the actual joins for the current set
+            //Note - We access the dictionary directly here because going through the this[int id] method
+            //incurs a Contains() call each time and we know the IDs must exist because they came from
+            //our dictionary originally!
+            foreach (int poss in possMatches)
+            {
+                if (this[poss].IsCompatibleWith(y, joinVars))
+                {
+                    joinedSet.Add(this[poss].Join(y));
+                }
+            }
+        }
 
         /// <summary>
-        /// Exists Join is the equivalent of Left Join where the Join is predicated on the existence/non-existince of an appropriate join candidate in the other multiset
+        /// Does a Left Join of this Multiset to another Multiset where the Join is predicated on the given Expression
         /// </summary>
-        /// <param name="other">Multiset to join with</param>
-        /// <param name="mustExist">Whether a valid join candidate must exist in the other multiset for sets from this multiset to be kept</param>
+        /// <param name="other">Other Multiset</param>
+        /// <param name="expr">Expression</param>
         /// <returns></returns>
-        public abstract BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist);
+        public virtual BaseMultiset LeftJoin(BaseMultiset other, ISparqlExpression expr)
+        {
+            //If the Other is the Identity/Null Multiset the result is this Multiset
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+
+            Multiset joinedSet = new Multiset();
+            LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(joinedSet);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
+
+            //Find the First Variable from this Multiset which is in both Multisets
+            //If there is no Variable from this Multiset in the other Multiset then this
+            //should be a Join operation instead of a LeftJoin
+            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0)
+            {
+                //Calculate a Product filtering as we go
+                foreach (ISet x in this.Sets)
+                {
+                    bool standalone = false;
+                    foreach (ISet y in other.Sets)
+                    {
+                        ISet z = x.Join(y);
+                        try
+                        {
+                            joinedSet.Add(z);
+                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                            {
+                                joinedSet.Remove(z.ID);
+                                standalone = true;
+                            }
+                        }
+                        catch
+                        {
+                            joinedSet.Remove(z.ID);
+                            standalone = true;
+                        }
+                    }
+                    if (standalone) joinedSet.Add(x.Copy());
+                }
+            }
+            else
+            {
+                //This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
+                //Downside is that it does require more memory than the old algorithm
+                List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+                List<List<int>> nulls = new List<List<int>>();
+                foreach (String var in joinVars)
+                {
+                    values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                    nulls.Add(new List<int>());
+                }
+
+                //First do a pass over the LHS Result to find all possible values for joined variables
+                HashSet<int> matched = new HashSet<int>();
+                HashSet<int> standalone = new HashSet<int>();
+                foreach (ISet x in this.Sets)
+                {
+                    int i = 0;
+                    foreach (String var in joinVars)
+                    {
+                        INode value = x[var];
+                        if (value != null)
+                        {
+                            values[i].Add(value, x.ID);
+                        }
+                        else
+                        {
+                            nulls[i].Add(x.ID);
+                        }
+                        i++;
+                    }
+                }
+
+                //Then do a pass over the RHS and work out the intersections
+                foreach (ISet y in other.Sets)
+                {
+                    IEnumerable<int> possMatches = null;
+                    int i = 0;
+                    foreach (String var in joinVars)
+                    {
+                        INode value = y[var];
+                        if (value != null)
+                        {
+                            if (values[i].ContainsKey(value))
+                            {
+                                possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                            }
+                            else
+                            {
+                                possMatches = Enumerable.Empty<int>();
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            //Don't forget that a null will be potentially compatible with everything
+                            possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                        }
+                        i++;
+                    }
+                    if (possMatches == null) continue;
+
+                    //Now do the actual joins for the current set
+                    foreach (int poss in possMatches)
+                    {
+                        if (this[poss].IsCompatibleWith(y, joinVars))
+                        {
+                            ISet z = this[poss].Join(y);
+                            joinedSet.Add(z);
+                            try
+                            {
+                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                                {
+                                    joinedSet.Remove(z.ID);
+                                    standalone.Add(poss);
+                                }
+                                else
+                                {
+                                    matched.Add(poss);
+                                }
+                            }
+                            catch
+                            {
+                                joinedSet.Remove(z.ID);
+                                standalone.Add(poss);
+                            }
+                        }
+                    }
+                }
+
+                //Finally add in unmatched sets from LHS
+                foreach (int id in this.SetIDs)
+                {
+                    if (!matched.Contains(id) || standalone.Contains(id)) joinedSet.Add(this[id].Copy());
+                }
+            }
+            return joinedSet;
+        }
 
         /// <summary>
-        /// Minus Join is a special type of Join which only preserves sets from this Multiset which cannot be joined to the other Multiset
+        /// Does an Exists Join of this Multiset to another Multiset where the Join is predicated on the existence/non-existence of a joinable solution on the RHS
         /// </summary>
-        /// <param name="other">Multiset to join with</param>
+        /// <param name="other">Other Multiset</param>
+        /// <param name="mustExist">Whether a solution must exist in the Other Multiset for the join to be made</param>
         /// <returns></returns>
-        public abstract BaseMultiset MinusJoin(BaseMultiset other);
+        public virtual BaseMultiset ExistsJoin(BaseMultiset other, bool mustExist)
+        {
+            //For EXISTS and NOT EXISTS if the other is the Identity then it has no effect
+            if (other is IdentityMultiset) return this;
+            if (mustExist)
+            {
+                //If an EXISTS then Null/Empty Other results in Null
+                if (other is NullMultiset) return other;
+                if (other.IsEmpty) return new NullMultiset();
+            }
+            else
+            {
+                //If a NOT EXISTS then Null/Empty results in this
+                if (other is NullMultiset) return this;
+                if (other.IsEmpty) return this;
+            }
+
+            //Find the Variables that are to be used for Joining
+            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0)
+            {
+                //All Disjoint Solutions are compatible
+                if (mustExist)
+                {
+                    //If an EXISTS and disjoint then result is this
+                    return this;
+                }
+                else
+                {
+                    //If a NOT EXISTS and disjoint then result is null
+                    return new NullMultiset();
+                }
+            }
+
+            //Start building the Joined Set
+            Multiset joinedSet = new Multiset();
+
+            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
+            foreach (ISet x in this.Sets)
+            {
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
+                }
+            }
+
+            //Then do a pass over the RHS and work out the intersections
+            HashSet<int> exists = new HashSet<int>();
+            foreach (ISet y in other.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Look at possible matches, if is a valid match then mark the set as having an existing match
+                //Don't reconsider sets which have already been marked as having an existing match
+                foreach (int poss in possMatches)
+                {
+                    if (exists.Contains(poss)) continue;
+                    if (this[poss].IsCompatibleWith(y, joinVars))
+                    {
+                        exists.Add(poss);
+                    }
+                }
+            }
+
+            //Apply the actual exists
+            if (exists.Count == this.Count)
+            {
+                //If number of sets that have a match is equal to number of sets then we're either returning everything or nothing
+                if (mustExist)
+                {
+                    return this;
+                }
+                else
+                {
+                    return new NullMultiset();
+                }
+            }
+            else
+            {
+                //Otherwise iterate
+                foreach (ISet x in this.Sets)
+                {
+                    if (mustExist)
+                    {
+                        if (exists.Contains(x.ID))
+                        {
+                            joinedSet.Add(x.Copy());
+                        }
+                    }
+                    else
+                    {
+                        if (!exists.Contains(x.ID))
+                        {
+                            joinedSet.Add(x.Copy());
+                        }
+                    }
+                }
+            }
+
+            return joinedSet;
+        }
 
         /// <summary>
-        /// Product combines two multisets that are disjoint
+        /// Does a Minus Join of this Multiset to another Multiset where any joinable results are subtracted from this Multiset to give the resulting Multiset
         /// </summary>
-        /// <param name="other">Multiset to join with</param>
+        /// <param name="other">Other Multiset</param>
         /// <returns></returns>
-        public abstract BaseMultiset Product(BaseMultiset other);
+        public virtual BaseMultiset MinusJoin(BaseMultiset other)
+        {
+            //If the other Multiset is the Identity/Null Multiset then minus-ing it doesn't alter this set
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return this;
+            //If the other Multiset is disjoint then minus-ing it also doesn't alter this set
+            if (this.IsDisjointWith(other)) return this;
+
+            //Find the Variables that are to be used for Joining
+            List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
+            if (joinVars.Count == 0) return this.Product(other);
+
+            //Start building the Joined Set
+            Multiset joinedSet = new Multiset();
+
+            //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
+            //Downside is that it does require more memory than the old algorithm
+            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<List<int>> nulls = new List<List<int>>();
+            foreach (String var in joinVars)
+            {
+                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                nulls.Add(new List<int>());
+            }
+
+            //First do a pass over the LHS Result to find all possible values for joined variables
+            foreach (ISet x in this.Sets)
+            {
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = x[var];
+                    if (value != null)
+                    {
+                        values[i].Add(value, x.ID);
+                    }
+                    else
+                    {
+                        nulls[i].Add(x.ID);
+                    }
+                    i++;
+                }
+            }
+
+            //Then do a pass over the RHS and work out the intersections
+            HashSet<int> toMinus = new HashSet<int>();
+            foreach (ISet y in other.Sets)
+            {
+                IEnumerable<int> possMatches = null;
+                int i = 0;
+                foreach (String var in joinVars)
+                {
+                    INode value = y[var];
+                    if (value != null)
+                    {
+                        if (values[i].ContainsKey(value))
+                        {
+                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        }
+                        else
+                        {
+                            possMatches = Enumerable.Empty<int>();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        //Don't forget that a null will be potentially compatible with everything
+                        possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                    }
+                    i++;
+                }
+                if (possMatches == null) continue;
+
+                //Look at possible matches, if is a valid match then mark the matched set for minus'ing
+                //Don't reconsider sets which have already been marked for minusing
+                foreach (int poss in possMatches)
+                {
+                    if (toMinus.Contains(poss)) continue;
+                    if (this[poss].IsCompatibleWith(y, joinVars))
+                    {
+                        toMinus.Add(poss);
+                    }
+                }
+            }
+
+            //Apply the actual minus
+            if (toMinus.Count == this.Count)
+            {
+                //If number of sets to minus is equal to number of sets then we're minusing everything
+                return new NullMultiset();
+            }
+            else
+            {
+                //Otherwise iterate
+                foreach (ISet x in this.Sets)
+                {
+                    if (!toMinus.Contains(x.ID))
+                    {
+                        joinedSet.Add(x.Copy());
+                    }
+                }
+            }
+
+            return joinedSet;
+        }
 
         /// <summary>
-        /// Union combines two concatenates two mutlisets
+        /// Does a Product of this Multiset and another Multiset
         /// </summary>
-        /// <param name="other">Multiset to concatenate with</param>
+        /// <param name="other">Other Multiset</param>
         /// <returns></returns>
-        public abstract BaseMultiset Union(BaseMultiset other);
+        public virtual BaseMultiset Product(BaseMultiset other)
+        {
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return other;
+            if (other.IsEmpty) return new NullMultiset();
+
+#if NET40 && !SILVERLIGHT
+            if (Options.UsePLinqEvaluation)
+            {
+                //Determine partition sizes so we can do a parallel product
+                //Want to parallelize over whichever side is larger
+                PartitionedMultiset partitionedSet;
+                if (this.Count >= other.Count)
+                {
+                    partitionedSet = new PartitionedMultiset(this.Count, other.Count);
+                    this.Sets.AsParallel().ForAll(x => this.EvalProduct(x, other, partitionedSet));
+                }
+                else
+                {
+                    partitionedSet = new PartitionedMultiset(other.Count, this.Count);
+                    other.Sets.AsParallel().ForAll(y => this.EvalProduct(y, this, partitionedSet));
+                }
+                return partitionedSet;
+            }
+            else
+            {
+#endif
+                //Use serial calculation which is likely to really suck for big products
+                Multiset productSet = new Multiset();
+                foreach (ISet x in this.Sets)
+                {
+                    foreach (ISet y in other.Sets)
+                    {
+                        productSet.Add(x.Join(y));
+                    }
+                }
+                return productSet;
+#if NET40 && !SILVERLIGHT
+            }
+#endif
+        }
+
+#if NET40 && !SILVERLIGHT
+
+        private void EvalProduct(ISet x, BaseMultiset other, PartitionedMultiset productSet)
+        {
+            int id = productSet.GetNextBaseID();
+            foreach (ISet y in other.Sets)
+            {
+                id++;
+                ISet z = x.Join(y);
+                z.ID = id;
+                productSet.Add(z);
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Does a Union of this Multiset and another Multiset
+        /// </summary>
+        /// <param name="other">Other Multiset</param>
+        /// <returns></returns>
+        public virtual BaseMultiset Union(BaseMultiset other)
+        {
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+
+            foreach (ISet s in other.Sets)
+            {
+                this.Add(s.Copy());
+            }
+            return this;
+        }
 
         /// <summary>
         /// Determines whether the Multiset contains the given Value for the given Variable
@@ -134,12 +701,20 @@ namespace VDS.RDF.Query.Algebra
         public abstract void Remove(int id);
 
         /// <summary>
-        /// Sorts the Multiset
+        /// Sorts a Set based on the given Comparer
         /// </summary>
-        /// <param name="comparer">Sorting Comparer</param>
+        /// <param name="comparer">Comparer on Sets</param>
         public virtual void Sort(IComparer<ISet> comparer)
         {
-            //Sorting does nothing by default
+            if (comparer != null)
+            {
+                this._orderedIDs = (from s in this.Sets.OrderBy(x => x, comparer)
+                                    select s.ID).ToList();
+            }
+            else
+            {
+                this._orderedIDs = null;
+            }
         }
 
         /// <summary>

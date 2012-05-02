@@ -84,6 +84,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Set
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return this._expr.CanParallelise;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Expression
         /// </summary>
         /// <returns></returns>

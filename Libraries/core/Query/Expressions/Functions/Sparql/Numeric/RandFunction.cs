@@ -100,6 +100,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         }
 
         /// <summary>
+        /// Gets whether an expression can safely be evaluated in parallel
+        /// </summary>
+        public virtual bool CanParallelise
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the Functor of this Expression
         /// </summary>
         public string Functor
