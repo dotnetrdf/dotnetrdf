@@ -1284,6 +1284,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //StrStarts Function Keyword
                         this.LastTokenType = Token.STRSTARTS;
                         return new StrStartsKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordStrUUID:
+                        //StrUUID Function Keyword
+                        this.LastTokenType = Token.STRUUID;
+                        return new StrUUIDKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordSubStr:
                         //SubStr Function Keyword
                         this.LastTokenType = Token.SUBSTR;
@@ -1324,6 +1328,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Uri Keyword
                         this.LastTokenType = Token.URIFUNC;
                         return new UriKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordUUID:
+                        //UUID Function Keyword
+                        this.LastTokenType = Token.UUID;
+                        return new UUIDKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordUsing:
                         //Using Keyword
                         this.LastTokenType = Token.USING;

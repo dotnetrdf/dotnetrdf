@@ -192,6 +192,8 @@ namespace VDS.RDF.Parsing.Tokens
                           STRAFTER = 201,
                           STRBEFORE = 202,
                           REPLACE = 203,
+                          STRUUID = 204,
+                          UUID = 205,
 
                           PLUS = 250,
                           MINUS = 251,

@@ -782,11 +782,13 @@ namespace VDS.RDF.Parsing
                     case Token.STRLANG:
                     case Token.STRLEN:
                     case Token.STRSTARTS:
+                    case Token.STRUUID:
                     case Token.SUBSTR:
                     case Token.TIMEZONE:
                     case Token.TZ:
                     case Token.UCASE:
                     case Token.URIFUNC:
+                    case Token.UUID:
                     case Token.YEAR:
                         if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw new RdfParseException("Project Expressions are not supported in SPARQL 1.0");
 
@@ -2232,11 +2234,13 @@ namespace VDS.RDF.Parsing
                 case Token.STRLANG:
                 case Token.STRLEN:
                 case Token.STRSTARTS:
+                case Token.STRUUID:
                 case Token.SUBSTR:
                 case Token.TIMEZONE:
                 case Token.TZ:
                 case Token.UCASE:
                 case Token.URIFUNC:
+                case Token.UUID:
                 case Token.YEAR:
                     //Built-in functions
                     this.TryParseFilterBuiltInCall(context, next, p);
@@ -2678,11 +2682,13 @@ namespace VDS.RDF.Parsing
                     case Token.STRLANG:
                     case Token.STRLEN:
                     case Token.STRSTARTS:
+                    case Token.STRUUID:
                     case Token.SUBSTR:
                     case Token.TIMEZONE:
                     case Token.TZ:
                     case Token.UCASE:
                     case Token.URIFUNC:
+                    case Token.UUID:
                     case Token.YEAR:
                     case Token.QNAME:
                     case Token.URI:
@@ -2848,6 +2854,7 @@ namespace VDS.RDF.Parsing
                     case Token.STRLANG:
                     case Token.STRLEN:
                     case Token.STRSTARTS:
+                    case Token.STRUUID:
                     case Token.SUBSTR:
                     case Token.TIMEZONE:
                     case Token.TZ:
@@ -2855,6 +2862,7 @@ namespace VDS.RDF.Parsing
                     case Token.URIFUNC:
                     case Token.YEAR:
                     case Token.URI:
+                    case Token.UUID:
                     case Token.QNAME:
                         //Function Expression Group By
                         expr = this.TryParseFunctionExpression(context);
@@ -3010,6 +3018,7 @@ namespace VDS.RDF.Parsing
                 case Token.STRLANG:
                 case Token.STRLEN:
                 case Token.STRSTARTS:
+                case Token.STRUUID:
                 case Token.SUBSTR:
                 case Token.TIMEZONE:
                 case Token.TZ:
@@ -3017,6 +3026,7 @@ namespace VDS.RDF.Parsing
                 case Token.URIFUNC:
                 case Token.YEAR:
                 case Token.URI:
+                case Token.UUID:
                 case Token.QNAME:
                     //Built-in function/expression
                     context.ExpressionParser.AllowAggregates = true;
@@ -3232,11 +3242,13 @@ namespace VDS.RDF.Parsing
                             case Token.STRLANG:
                             case Token.STRLEN:
                             case Token.STRSTARTS:
+                            case Token.STRUUID:
                             case Token.SUBSTR:
                             case Token.TIMEZONE:
                             case Token.TZ:
                             case Token.UCASE:
                             case Token.URIFUNC:
+                            case Token.UUID:
                             case Token.YEAR:
                             case Token.URI:
                             case Token.QNAME:

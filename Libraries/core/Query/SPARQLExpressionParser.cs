@@ -436,11 +436,13 @@ namespace VDS.RDF.Query
                 case Token.STRLANG:
                 case Token.STRLEN:
                 case Token.STRSTARTS:
+                case Token.STRUUID:
                 case Token.SUBSTR:
                 case Token.TIMEZONE:
                 case Token.TZ:
                 case Token.UCASE:
                 case Token.URIFUNC:
+                case Token.UUID:
                 case Token.YEAR:
                     if (this._syntax == SparqlQuerySyntax.Sparql_1_0 && SparqlSpecsHelper.IsFunctionKeyword11(next.Value)) throw Error("The function " + next.Value + " is not supported in SPARQL 1.0", next);
                     return this.TryParseBuiltInCall(tokens);
@@ -700,18 +702,12 @@ namespace VDS.RDF.Query
 
                 case Token.NOW:
                     //Expect a () after the Keyword Token
-                    next = tokens.Dequeue();
-                    if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a NOW keyword to call the NOW() function", next);
-                    next = tokens.Dequeue();
-                    if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after NOW( since the NOW() function does not take any arguments", next);
+                    this.TryParseNoArgs(tokens, "NOW");
                     return new NowFunction();
 
                 case Token.RAND:
                     //Expect a () after the Keyword Token
-                    next = tokens.Dequeue();
-                    if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a RAND keyword to call the RAND() function", next);
-                    next = tokens.Dequeue();
-                    if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after RAND( since the RAND() function does not take any arguments", next);
+                    this.TryParseNoArgs(tokens, "RAND");
                     return new RandFunction();
 
                 case Token.REGEX:
@@ -768,6 +764,9 @@ namespace VDS.RDF.Query
                     return new StrLenFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.STRSTARTS:
                     return new StrStartsFunction(this.TryParseBrackettedExpression(tokens), this.TryParseBrackettedExpression(tokens, false));
+                case Token.STRUUID:
+                    this.TryParseNoArgs(tokens, "STRUUID");
+                    return new StrUUIDFunction();
 
                 case Token.SUBSTR:
                     //SUBSTR may have 2/3 arguments
@@ -789,6 +788,9 @@ namespace VDS.RDF.Query
                     return new TZFunction(this.TryParseBrackettedExpression(tokens));
                 case Token.UCASE:
                     return new UCaseFunction(this.TryParseBrackettedExpression(tokens));
+                case Token.UUID:
+                    this.TryParseNoArgs(tokens, "UUID");
+                    return new UUIDFunction();
                 case Token.YEAR:
                     return new YearFunction(this.TryParseBrackettedExpression(tokens));
 
@@ -826,6 +828,14 @@ namespace VDS.RDF.Query
                 default:
                     throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered while trying to parse a Built-in Function call", next);
             }
+        }
+
+        private void TryParseNoArgs(Queue<IToken> tokens, String function)
+        {
+            IToken next = tokens.Dequeue();
+            if (next.TokenType != Token.LEFTBRACKET) throw Error("Expected a Left Bracket after a " + function + " keyword to call the " + function + "() function", next);
+            next = tokens.Dequeue();
+            if (next.TokenType != Token.RIGHTBRACKET) throw Error("Expected a Right Bracket after " + function + "( since the " + function + "() function does not take any arguments", next);
         }
 
         private ISparqlExpression TryParseRegexExpression(Queue<IToken> tokens)

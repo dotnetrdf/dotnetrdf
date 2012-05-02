@@ -188,7 +188,9 @@ namespace VDS.RDF.Query
                       SparqlKeywordAdd = "ADD",
                       SparqlKeywordCopy = "COPY",
                       SparqlKeywordMove = "MOVE",
-                      SparqlKeywordTo = "TO"
+                      SparqlKeywordTo = "TO",
+                      SparqlKeywordUUID = "UUID",
+                      SparqlKeywordStrUUID = "STRUUID"
                       ;
 
         /// <summary>
@@ -274,11 +276,13 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordStrLang,
                                                       SparqlKeywordStrLen,
                                                       SparqlKeywordStrStarts,
+                                                      SparqlKeywordStrUUID,
                                                       SparqlKeywordSubStr,
                                                       SparqlKeywordTimezone,
                                                       SparqlKeywordTz,
                                                       SparqlKeywordUCase,
                                                       SparqlKeywordUri,
+                                                      SparqlKeywordUUID,
                                                       SparqlKeywordYear
                                                   };
 
@@ -448,6 +452,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordStrLen,
                                                         SparqlKeywordStrEnds,
                                                         SparqlKeywordStrStarts,
+                                                        SparqlKeywordStrUUID,
                                                         SparqlKeywordSubStr,
                                                         SparqlKeywordSum,
                                                         SparqlKeywordTimezone,
@@ -455,6 +460,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordUCase,
                                                         SparqlKeywordUndef,
                                                         SparqlKeywordUri,
+                                                        SparqlKeywordUUID,
                                                         SparqlKeywordYear
                                                        };
 

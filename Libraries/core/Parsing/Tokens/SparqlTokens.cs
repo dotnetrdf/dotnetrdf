@@ -1188,6 +1188,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL STRUUID Keyword
+    /// </summary>
+    public class StrUUIDKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new STRUUID Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public StrUUIDKeywordToken(int line, int pos) : base(Token.STRUUID, "STRUUID", line, line, pos, pos + 7) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL SUBSTR Keyword
     /// </summary>
     public class SubStrKeywordToken : BaseToken
@@ -1302,6 +1315,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
         public UriKeywordToken(int line, int pos) : base(Token.URIFUNC, "URI", line, line, pos, pos + 3) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL UUID Keyword
+    /// </summary>
+    public class UUIDKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new UUID Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public UUIDKeywordToken(int line, int pos) : base(Token.UUID, "UUID", line, line, pos, pos + 4) { }
     }
 
     /// <summary>
