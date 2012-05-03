@@ -240,6 +240,7 @@ namespace VDS.RDF.Query.Algebra
 
         public override void Trim(string variable)
         {
+            if (variable == null) return;
             foreach (HashSet<String> vs in this._variables)
             {
                 vs.Remove(variable);
@@ -259,12 +260,6 @@ namespace VDS.RDF.Query.Algebra
             {
                 this._containsCache.Remove(variable);
             }
-        }
-
-        public override void Sort(IComparer<ISet> comparer)
-        {
-            //TODO Implement this
-            base.Sort(comparer);
         }
     }
 }

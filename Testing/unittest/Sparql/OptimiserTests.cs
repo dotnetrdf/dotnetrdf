@@ -301,7 +301,7 @@ SELECT * WHERE
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine(algebra);
             Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
-            Assert.IsTrue(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+            Assert.IsTrue(algebra.Contains("Filter"), "Algebra should be optimised to use Filter");
         }
 
         [TestMethod]
@@ -363,6 +363,27 @@ WHERE
             Console.WriteLine(algebra);
             Assert.IsFalse(algebra.Contains("Extend("), "Algebra should not be optimised to use Extend");
             Assert.IsTrue(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserAlgebraFilteredProduct1()
+        {
+            String query = @"SELECT *
+WHERE
+{
+    ?s1 ?p1 ?o1 .
+    ?s2 ?p2 ?o2 .
+    FILTER(?o1 = ?o2)
+}";
+
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            Console.WriteLine(this._formatter.Format(q));
+
+            String algebra = q.ToAlgebra().ToString();
+            Console.WriteLine(algebra);
+            Assert.IsFalse(algebra.Contains("Filter("), "Algebra should be optimised to not use Filter");
+            Assert.IsTrue(algebra.Contains("FilteredProduct("), "Algebra should be optimised to use FilteredProduct");
         }
     }
 }

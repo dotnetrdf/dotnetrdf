@@ -1489,6 +1489,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1500,6 +1502,8 @@ namespace VDS.RDF.Storage
                 return new SesameHttpProtocolConnector(this._baseUri, storeID);
             }
         }
+
+#endif
 
     }
 
@@ -1551,6 +1555,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1562,6 +1568,8 @@ namespace VDS.RDF.Storage
                 return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID);
             }
         }
+
+#endif
 
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
@@ -1620,6 +1628,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1631,8 +1641,6 @@ namespace VDS.RDF.Storage
                 return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID);
             }
         }
-
-#if !NO_SYNC_HTTP
 
         /// <summary>
         /// Makes a SPARQL Update request to the Sesame server

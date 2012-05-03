@@ -105,6 +105,7 @@
     <Compile Include="Parsing\TriGParser.cs" />
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
     <Compile Include="Parsing\TurtleSpecsHelper.cs" />
+    <Compile Include="Query\Algebra\FilteredProduct.cs" />
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />

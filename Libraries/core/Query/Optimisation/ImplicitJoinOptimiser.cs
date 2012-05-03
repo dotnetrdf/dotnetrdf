@@ -42,6 +42,7 @@ using VDS.RDF.Query.Expressions.Functions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
@@ -78,8 +79,6 @@ namespace VDS.RDF.Query.Optimisation
     public class ImplicitJoinOptimiser
         : IAlgebraOptimiser
     {
-        private Type _exprType = typeof(ConstantTerm);
-
         /// <summary>
         /// Optimises the Algebra to use implict joins where applicable
         /// </summary>
@@ -100,11 +99,38 @@ namespace VDS.RDF.Query.Optimisation
                         List<String> vars = f.InnerAlgebra.Variables.ToList();
                         if (vars.Contains(lhsVar) && vars.Contains(rhsVar))
                         {
-                            //Try to use the extend style optimization
-                            VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(rhsVar, lhsVar);
-                            if (!equals) transformer.CanReplaceObjects = true;
-                            ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
-                            return new Extend(extAlgebra, new VariableTerm(lhsVar), rhsVar);
+                            try
+                            {
+                                //Try to use the extend style optimization
+                                VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(rhsVar, lhsVar);
+                                if (!equals) transformer.CanReplaceObjects = true;
+                                ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
+                                return new Extend(extAlgebra, new VariableTerm(lhsVar), rhsVar);
+                            }
+                            catch
+                            {
+                                //See if the Filtered Product style optimization applies instead
+                                //int splitPoint = -1;
+                                //if (this.IsDisjointOperation(f.InnerAlgebra, lhsVar, rhsVar, out splitPoint))
+                                //{
+                                //    if (splitPoint > -1)
+                                //    {
+                                //        //Means the inner algebra is a BGP we can split into two parts
+                                //        IBgp bgp = (IBgp)f.InnerAlgebra;
+                                //        return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
+                                //    }
+                                //    else
+                                //    {
+                                //        //Means that the inner algebra is a Join where the sides are disjoint
+                                //        IJoin join = (IJoin)f.InnerAlgebra;
+                                //        return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
+                                //    }
+                                //}
+                                //else
+                                //{
+                                    return f.Transform(this);
+                                //}
+                            }
                         }
                         else
                         {
@@ -172,6 +198,76 @@ namespace VDS.RDF.Query.Optimisation
                 lhsVar = lhs.Variables.First();
                 rhsVar = rhs.Variables.First();
                 return !lhsVar.Equals(rhsVar);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsDisjointOperation(ISparqlAlgebra algebra, String lhsVar, String rhsVar, out int splitPoint)
+        {
+            splitPoint = -1;
+            if (algebra is IBgp)
+            {
+                //Get Triple Patterns, can't split into a product if there are blank variables present
+                List<ITriplePattern> ps = ((IBgp)algebra).TriplePatterns.ToList();
+                if (ps.Any(p => !p.HasNoBlankVariables)) return false;
+
+                //Iterate over the Triple Patterns to see if we can split into a Product
+                List<String> vars = new List<String>();
+                for (int i = 0; i < ps.Count; i++)
+                {
+                    //Not a product if we've seen both variables already
+                    if (vars.Contains(lhsVar) && vars.Contains(rhsVar)) return false;
+
+                    ITriplePattern p = ps[i];
+                    if (p is TriplePattern || p is SubQueryPattern)
+                    {
+                        if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
+                        {
+                            //May be a product if we've seen only one variable so far and are now seeing another
+                            if (vars.Contains(lhsVar) && !vars.Contains(rhsVar) && p.Variables.Contains(rhsVar))
+                            {
+                                splitPoint = i;
+                                return true;
+                            }
+                            else if (vars.Contains(rhsVar) && !vars.Contains(lhsVar) && p.Variables.Contains(lhsVar))
+                            {
+                                splitPoint = i;
+                                return true;
+                            }
+                        }
+                        vars.AddRange(p.Variables);
+                    }
+                    else if (p is IAssignmentPattern)
+                    {
+                        vars.Add(((IAssignmentPattern)p).VariableName);
+                    }
+                    else if (p is FilterPattern)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                //If we get all the way here then not a product
+                return false;
+            }
+            else if (algebra is IJoin)
+            {
+                IJoin join = (IJoin)algebra;
+                if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+                {
+                    //There a product between the two sides of the join but are the two variables on different sides of that join
+                    return !(join.Lhs.Variables.Contains(lhsVar) && join.Lhs.Variables.Contains(rhsVar)) && !(join.Rhs.Variables.Contains(lhsVar) && join.Rhs.Variables.Contains(rhsVar));
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {

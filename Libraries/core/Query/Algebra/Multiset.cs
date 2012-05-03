@@ -257,6 +257,7 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="variable">Variable</param>
         public override void Trim(String variable)
         {
+            if (variable == null) return;
             if (this._variables.Remove(variable))
             {
                 foreach (ISet s in this._sets.Values)
