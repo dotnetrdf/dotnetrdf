@@ -111,6 +111,7 @@
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />
     <Compile Include="Query\Optimisation\ImplicitJoinOptimiser.cs" />
     <Compile Include="Query\Optimisation\VariableSubstitutionTransformer.cs" />
     <Compile Include="Query\Patterns\GraphPattern.cs" />

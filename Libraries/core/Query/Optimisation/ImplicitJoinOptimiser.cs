@@ -110,26 +110,26 @@ namespace VDS.RDF.Query.Optimisation
                             catch
                             {
                                 //See if the Filtered Product style optimization applies instead
-                                //int splitPoint = -1;
-                                //if (this.IsDisjointOperation(f.InnerAlgebra, lhsVar, rhsVar, out splitPoint))
-                                //{
-                                //    if (splitPoint > -1)
-                                //    {
-                                //        //Means the inner algebra is a BGP we can split into two parts
-                                //        IBgp bgp = (IBgp)f.InnerAlgebra;
-                                //        return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
-                                //    }
-                                //    else
-                                //    {
-                                //        //Means that the inner algebra is a Join where the sides are disjoint
-                                //        IJoin join = (IJoin)f.InnerAlgebra;
-                                //        return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
-                                //    }
-                                //}
-                                //else
-                                //{
+                                int splitPoint = -1;
+                                if (this.IsDisjointOperation(f.InnerAlgebra, lhsVar, rhsVar, out splitPoint))
+                                {
+                                    if (splitPoint > -1)
+                                    {
+                                        //Means the inner algebra is a BGP we can split into two parts
+                                        IBgp bgp = (IBgp)f.InnerAlgebra;
+                                        return new FilteredProduct(new Bgp(bgp.TriplePatterns.Take(splitPoint)), new Bgp(bgp.TriplePatterns.Skip(splitPoint)), f.SparqlFilter.Expression);
+                                    }
+                                    else
+                                    {
+                                        //Means that the inner algebra is a Join where the sides are disjoint
+                                        IJoin join = (IJoin)f.InnerAlgebra;
+                                        return new FilteredProduct(join.Lhs, join.Rhs, f.SparqlFilter.Expression);
+                                    }
+                                }
+                                else
+                                {
                                     return f.Transform(this);
-                                //}
+                                }
                             }
                         }
                         else
@@ -226,16 +226,24 @@ namespace VDS.RDF.Query.Optimisation
                     {
                         if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
                         {
-                            //May be a product if we've seen only one variable so far and are now seeing another
-                            if (vars.Contains(lhsVar) && !vars.Contains(rhsVar) && p.Variables.Contains(rhsVar))
+                            //May be a filterable product if we've seen only one variable so far and have hit a point where a product occurs
+                            if (vars.Contains(lhsVar) && !vars.Contains(rhsVar))
                             {
-                                splitPoint = i;
-                                return true;
+                                Bgp rhs = new Bgp(ps.Skip(i));
+                                if (rhs.Variables.Contains(rhsVar))
+                                {
+                                    splitPoint = i;
+                                    return true;
+                                }
                             }
-                            else if (vars.Contains(rhsVar) && !vars.Contains(lhsVar) && p.Variables.Contains(lhsVar))
+                            else if (vars.Contains(rhsVar) && !vars.Contains(lhsVar))
                             {
-                                splitPoint = i;
-                                return true;
+                                Bgp rhs = new Bgp(ps.Skip(i));
+                                if (rhs.Variables.Contains(lhsVar))
+                                {
+                                    splitPoint = i;
+                                    return true;
+                                }
                             }
                         }
                         vars.AddRange(p.Variables);

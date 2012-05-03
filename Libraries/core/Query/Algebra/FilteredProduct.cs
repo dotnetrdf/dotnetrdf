@@ -92,14 +92,32 @@ namespace VDS.RDF.Query.Algebra
                 {
                     //Calculate the product applying the filter as we go
 #if NET40 && !SILVERLIGHT
-                    //if (Options.UsePLinqEvaluation)
-                    //{
-                        
-                    //}
-                    //else
-                    //{
+                    if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
+                    {
+                        PartitionedMultiset partitionedSet;
+                        SparqlResultBinder binder = context.Binder;
+                        if (lhsResults.Count >= rhsResults.Count)
+                        {
+                            partitionedSet = new PartitionedMultiset(lhsResults.Count, rhsResults.Count);
+                            context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
+                            lhsResults.Sets.AsParallel().ForAll(x => this.EvalFilteredProduct(context, x, rhsResults, partitionedSet));
+                        }
+                        else
+                        {
+                            partitionedSet = new PartitionedMultiset(rhsResults.Count, lhsResults.Count);
+                            context.Binder = new LeviathanLeftJoinBinder(partitionedSet);
+                            rhsResults.Sets.AsParallel().ForAll(y => this.EvalFilteredProduct(context, y, lhsResults, partitionedSet));
+                        }
+
+                        context.Binder = binder;
+                        context.OutputMultiset = partitionedSet;
+                    }
+                    else
+                    {
 #endif
                         BaseMultiset productSet = new Multiset();
+                        SparqlResultBinder binder = context.Binder;
+                        context.Binder = new LeviathanLeftJoinBinder(productSet);
                         foreach (ISet x in lhsResults.Sets)
                         {
                             foreach (ISet y in rhsResults.Sets)
@@ -120,17 +138,41 @@ namespace VDS.RDF.Query.Algebra
                                     productSet.Remove(z.ID);
                                 }
                             }
-#if NET40 && !SILVERLIGHT
-                        //}
-#endif
+                        }
+                        context.Binder = binder;
                         context.OutputMultiset = productSet;
+#if NET40 && !SILVERLIGHT
                     }
+#endif
                 }
             }
             return context.OutputMultiset;
         }
 
-        //private void EvalFilteredProduct(SparqlEvaluationContext context, 
+        private void EvalFilteredProduct(SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
+        {
+            int id = partitionedSet.GetNextBaseID();
+            foreach (ISet y in other.Sets)
+            {
+                id++;
+                ISet z = x.Join(y);
+                z.ID = id;
+                partitionedSet.Add(z);
+                try
+                {
+                    if (!this._expr.Evaluate(context, z.ID).AsSafeBoolean())
+                    {
+                        //Means the expression evaluates to false so we discard the solution
+                        partitionedSet.Remove(z.ID);
+                    }
+                }
+                catch
+                {
+                    //Means the solution does not meet the FILTER and can be discarded
+                    partitionedSet.Remove(z.ID);
+                }
+            }
+        }
 
         public IEnumerable<string> Variables
         {

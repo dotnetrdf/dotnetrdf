@@ -46,11 +46,15 @@ namespace VDS.RDF.Query.Optimisation
         private static IQueryOptimiser _queryOpt = new DefaultOptimiser();
         private static List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
         {
+            //Optimise for Lazy Evaluation
             new AskBgpOptimiser(),
             new LazyBgpOptimiser(),
+            //Optimise into Strict Algebra - makes further optimisations easier to do
             new StrictAlgebraOptimiser(),
+            //Optimise for special filter constructs which improve performance
             new IdentityFilterOptimiser(),
-            new ImplicitJoinOptimiser()
+            new ImplicitJoinOptimiser(),
+            new FilteredProductOptimiser()
         };
 
         /// <summary>
