@@ -15,7 +15,8 @@ _:sp2b10k a dnr:SparqlQueryProcessor ;
 
 <dotnetrdf:/sp2b/50k> a dnr:HttpHandler ;
 					  dnr:type "VDS.RDF.Web.QueryHandler" ;
-					  dnr:queryProcessor _:sp2b50k .
+					  dnr:queryProcessor _:sp2b50k ;
+					  dnr:timeout 300000 .
 
 _:sp2b50k a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
