@@ -156,9 +156,6 @@ namespace VDS.RDF.Query.Algebra
             if (possMatches == null) return;
 
             //Now do the actual joins for the current set
-            //Note - We access the dictionary directly here because going through the this[int id] method
-            //incurs a Contains() call each time and we know the IDs must exist because they came from
-            //our dictionary originally!
             foreach (int poss in possMatches)
             {
                 if (this[poss].IsCompatibleWith(y, joinVars))
@@ -191,30 +188,43 @@ namespace VDS.RDF.Query.Algebra
             List<String> joinVars = this.Variables.Where(v => other.Variables.Contains(v)).ToList();
             if (joinVars.Count == 0)
             {
-                //Calculate a Product filtering as we go
-                foreach (ISet x in this.Sets)
+#if NET40 && !SILVERLIGHT
+                if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
-                    bool standalone = false;
-                    foreach (ISet y in other.Sets)
+                    PartitionedMultiset partitionedSet = new PartitionedMultiset(this.Count, other.Count + 1);
+                    this.Sets.AsParallel().ForAll(x => EvalLeftJoinProduct(x, other, partitionedSet, expr));
+                    return partitionedSet;
+                }
+                else
+                {
+#endif
+                    //Calculate a Product filtering as we go
+                    foreach (ISet x in this.Sets)
                     {
-                        ISet z = x.Join(y);
-                        try
+                        bool standalone = false;
+                        foreach (ISet y in other.Sets)
                         {
-                            joinedSet.Add(z);
-                            if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                            ISet z = x.Join(y);
+                            try
+                            {
+                                joinedSet.Add(z);
+                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                                {
+                                    joinedSet.Remove(z.ID);
+                                    standalone = true;
+                                }
+                            }
+                            catch
                             {
                                 joinedSet.Remove(z.ID);
                                 standalone = true;
                             }
                         }
-                        catch
-                        {
-                            joinedSet.Remove(z.ID);
-                            standalone = true;
-                        }
+                        if (standalone) joinedSet.Add(x.Copy());
                     }
-                    if (standalone) joinedSet.Add(x.Copy());
+#if NET40 && !SILVERLIGHT
                 }
+#endif
             }
             else
             {
@@ -250,61 +260,22 @@ namespace VDS.RDF.Query.Algebra
                 }
 
                 //Then do a pass over the RHS and work out the intersections
-                foreach (ISet y in other.Sets)
+#if NET40 && !SILVERLIGHT
+                if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
-                    IEnumerable<int> possMatches = null;
-                    int i = 0;
-                    foreach (String var in joinVars)
-                    {
-                        INode value = y[var];
-                        if (value != null)
-                        {
-                            if (values[i].ContainsKey(value))
-                            {
-                                possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
-                            }
-                            else
-                            {
-                                possMatches = Enumerable.Empty<int>();
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            //Don't forget that a null will be potentially compatible with everything
-                            possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
-                        }
-                        i++;
-                    }
-                    if (possMatches == null) continue;
-
-                    //Now do the actual joins for the current set
-                    foreach (int poss in possMatches)
-                    {
-                        if (this[poss].IsCompatibleWith(y, joinVars))
-                        {
-                            ISet z = this[poss].Join(y);
-                            joinedSet.Add(z);
-                            try
-                            {
-                                if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
-                                {
-                                    joinedSet.Remove(z.ID);
-                                    standalone.Add(poss);
-                                }
-                                else
-                                {
-                                    matched.Add(poss);
-                                }
-                            }
-                            catch
-                            {
-                                joinedSet.Remove(z.ID);
-                                standalone.Add(poss);
-                            }
-                        }
-                    }
+                    other.Sets.AsParallel().ForAll(y => EvalLeftJoin(y, joinVars, values, nulls, joinedSet, subcontext, expr, standalone, matched));
                 }
+                else
+                {
+#endif
+                    //Use a Serial Left Join
+                    foreach (ISet y in other.Sets)
+                    {
+                        this.EvalLeftJoin(y, joinVars, values, nulls, joinedSet, subcontext, expr, standalone, matched);
+                    }
+#if NET40 && !SILVERLIGHT
+                }
+#endif
 
                 //Finally add in unmatched sets from LHS
                 foreach (int id in this.SetIDs)
@@ -313,6 +284,102 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
             return joinedSet;
+        }
+
+#if NET40 && !SILVERLIGHT
+        
+        private void EvalLeftJoinProduct(ISet x, BaseMultiset other, PartitionedMultiset partitionedSet, ISparqlExpression expr)
+        {
+            LeviathanLeftJoinBinder binder = new LeviathanLeftJoinBinder(partitionedSet);
+            SparqlEvaluationContext subcontext = new SparqlEvaluationContext(binder);
+            bool standalone = false;
+
+            int id = partitionedSet.GetNextBaseID();
+            foreach (ISet y in other.Sets)
+            {
+                id++;
+                ISet z = x.Join(y);
+                z.ID = id;
+                try
+                {
+                    partitionedSet.Add(z);
+                    if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                    {
+                        partitionedSet.Remove(z.ID);
+                        standalone = true;
+                    }
+                }
+                catch
+                {
+                    partitionedSet.Remove(z.ID);
+                    standalone = true;
+                }
+            }
+            if (standalone)
+            {
+                id++;
+                ISet z = x.Copy();
+                z.ID = id;
+                partitionedSet.Add(z);
+            }
+        }
+
+#endif
+
+        private void EvalLeftJoin(ISet y, List<String> joinVars, List<HashTable<INode, int>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr, HashSet<int> standalone, HashSet<int> matched)
+        {
+            IEnumerable<int> possMatches = null;
+            int i = 0;
+            foreach (String var in joinVars)
+            {
+                INode value = y[var];
+                if (value != null)
+                {
+                    if (values[i].ContainsKey(value))
+                    {
+                        possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                    }
+                    else
+                    {
+                        possMatches = Enumerable.Empty<int>();
+                        break;
+                    }
+                }
+                else
+                {
+                    //Don't forget that a null will be potentially compatible with everything
+                    possMatches = (possMatches == null ? this.SetIDs : possMatches.Intersect(this.SetIDs));
+                }
+                i++;
+            }
+            if (possMatches == null) return;
+
+            //Now do the actual joins for the current set
+            foreach (int poss in possMatches)
+            {
+                if (this[poss].IsCompatibleWith(y, joinVars))
+                {
+                    ISet z = this[poss].Join(y);
+                    joinedSet.Add(z);
+                    try
+                    {
+                        if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
+                        {
+                            joinedSet.Remove(z.ID);
+                            standalone.Add(poss);
+                        }
+                        else
+                        {
+                            matched.Add(poss);
+                        }
+                    }
+                    catch
+                    {
+                        joinedSet.Remove(z.ID);
+                        standalone.Add(poss);
+                    }
+                }
+            }
         }
 
         /// <summary>

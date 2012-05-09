@@ -149,6 +149,8 @@ namespace VDS.RDF.Query.Algebra
             return context.OutputMultiset;
         }
 
+#if NET40 && !SILVERLIGHT
+
         private void EvalFilteredProduct(SparqlEvaluationContext context, ISet x, BaseMultiset other, PartitionedMultiset partitionedSet)
         {
             int id = partitionedSet.GetNextBaseID();
@@ -173,6 +175,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
         }
+
+#endif
 
         public IEnumerable<string> Variables
         {

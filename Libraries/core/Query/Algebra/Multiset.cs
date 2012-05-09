@@ -162,7 +162,7 @@ namespace VDS.RDF.Query.Algebra
         {
             if (other is IdentityMultiset || other is NullMultiset) return false;
  
-            return this._variables.All(v => !other.ContainsVariable(v));
+            return this.Variables.All(v => !other.ContainsVariable(v));
         }
 
         /// <summary>
@@ -182,6 +182,13 @@ namespace VDS.RDF.Query.Algebra
                     this._sets.Add(id, s);
                     s.ID = id;
                 }
+                lock (this._variables)
+                {
+                    foreach (String var in s.Variables)
+                    {
+                        if (!this._variables.Contains(var)) this._variables.Add(var);
+                    }
+                }
             }
             else
             {
@@ -189,14 +196,14 @@ namespace VDS.RDF.Query.Algebra
                 id = this._counter++;
                 this._sets.Add(id, s);
                 s.ID = id;
+
+                foreach (String var in s.Variables)
+                {
+                    if (!this._variables.Contains(var)) this._variables.Add(var);
+                }
 #if NET40 && !SILVERLIGHT
             }
 #endif
-            
-            foreach (String var in s.Variables)
-            {
-                if (!this._variables.Contains(var)) this._variables.Add(var);
-            }
             this._cacheInvalid = true;
         }
 
@@ -297,6 +304,7 @@ namespace VDS.RDF.Query.Algebra
             get 
             {
                 return (from var in this._variables
+                        where var != null
                         select var);
             }
         }

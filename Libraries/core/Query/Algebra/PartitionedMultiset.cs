@@ -132,12 +132,21 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        public override int Count
+        {
+            get
+            {
+                return this._partitions.Sum(p => p.Count);
+            }
+        }
+
         public override IEnumerable<string> Variables
         {
             get
             {
                 return (from vs in this._variables
                         from v in vs
+                        where v != null
                         select v).Distinct();
             }
         }
