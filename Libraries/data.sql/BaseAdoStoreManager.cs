@@ -598,7 +598,7 @@ namespace VDS.RDF.Storage
                     cmd.Parameters[prefix + "Value"].Value = n.ToString();
                     break;
                 case NodeType.Literal:
-                    cmd.Parameters[prefix + "Value"].Value = ((LiteralNode)n).Value;
+                    cmd.Parameters[prefix + "Value"].Value = ((ILiteralNode)n).Value;
                     break;
                 case NodeType.Uri:
                     cmd.Parameters[prefix + "Value"].Value = n.ToString();
@@ -610,7 +610,7 @@ namespace VDS.RDF.Storage
             //Node Meta Parameter
             if (n.NodeType == NodeType.Literal)
             {
-                LiteralNode lit = (LiteralNode)n;
+                ILiteralNode lit = (ILiteralNode)n;
                 if (lit.DataType != null)
                 {
                     if (!cmd.Parameters.Contains(prefix + "Meta"))
