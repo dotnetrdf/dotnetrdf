@@ -1421,7 +1421,7 @@ namespace VDS.RDF.Storage
 
             //Add the special Stardog Headers
 #if !SILVERLIGHT
-            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + ";persist=sync" + this.GetReasoningParameter());
+            request.Headers.Add("SD-Connection-String", "kb=" + this._kb + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
             request.Headers.Add("SD-Protocol", "1.0");
 #else
             request.Headers["SD-Connection-String"] = "kb=" + this._kb + ";persist=sync" + this.GetReasoningParameter();
