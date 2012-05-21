@@ -273,17 +273,9 @@ namespace VDS.RDF.Query
                     ctype = ctype.Substring(0, ctype.IndexOf(";"));
                 }
 
-                if (MimeTypesHelper.SparqlResults.Contains(ctype))
-                {
-                    ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
-                    resultsParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
-                    httpResponse.Close();
-                }
-                else
-                {
-                    httpResponse.Close();
-                    throw new RdfParseException("The SPARQL Endpoint returned unexpected Content Type '" + ctype + "', this error may be due to the given URI not returning a SPARQL Result Set");
-                }
+                ISparqlResultsReader resultsParser = MimeTypesHelper.GetSparqlParser(ctype);
+                resultsParser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
+                httpResponse.Close();
             }
             catch (WebException webEx)
             {
