@@ -41,10 +41,6 @@ namespace VDS.Common
     /// <typeparam name="TValue">Value Type</typeparam>
     /// <remarks>
     /// <para>
-    /// Stores a link to multiple children of type TrieNode each associated with a key of type Char.
-    /// If the node terminates a string then it must also store a non-null value of type V.
-    /// </para>
-    /// <para>
     /// Original code taken from <a href="http://code.google.com/p/typocalypse/source/browse/#hg/Trie">Typocolypse</a> but has been heavily rewritten to be much more generic and LINQ friendly
     /// </para>
     /// </remarks>
@@ -89,7 +85,10 @@ namespace VDS.Common
         internal TrieNode<TKeyBit, TValue> GetChild(TKeyBit key)
         {
             TrieNode<TKeyBit, TValue> child;
-            if (this._children.TryGetValue(key, out child)) return child;
+            lock (this._children)
+            {
+                if (this._children.TryGetValue(key, out child)) return child;
+            }
             return null;
         }
 
@@ -101,7 +100,10 @@ namespace VDS.Common
         /// <returns></returns>
         internal bool TryGetChild(TKeyBit key, out TrieNode<TKeyBit, TValue> child)
         {
-            return this._children.TryGetValue(key, out child);
+            lock (this._children)
+            {
+                return this._children.TryGetValue(key, out child);
+            }
         }
 
         /// <summary>
@@ -133,7 +135,10 @@ namespace VDS.Common
         {
             get
             {
-                return this._children.Count;
+                lock (this._children)
+                {
+                    return this._children.Count;
+                }
             }
         }
 
@@ -155,7 +160,10 @@ namespace VDS.Common
         {
             get
             {
-                return this._children.Count == 0;
+                lock (this._children)
+                {
+                    return this._children.Count == 0;
+                }
             }
         }
 
@@ -166,7 +174,10 @@ namespace VDS.Common
         /// <returns>True if a child with given key exists, false otherwise</returns>
         internal bool ContainsKey(TKeyBit key)
         {
-            return this._children.ContainsKey(key);
+            lock (this._children)
+            {
+                return this._children.ContainsKey(key);
+            }
         }
 
         /// <summary>
@@ -203,13 +214,19 @@ namespace VDS.Common
         {
             if (depth == 0)
             {
-                this._children.Clear();
+                lock (this._children)
+                {
+                    this._children.Clear();
+                }
             }
             else if (depth > 0)
             {
-                foreach (TrieNode<TKeyBit, TValue> node in this.Children)
+                lock (this._children)
                 {
-                    node.Trim(depth-1);
+                    foreach (TrieNode<TKeyBit, TValue> node in this._children.Values)
+                    {
+                        node.Trim(depth - 1);
+                    }
                 }
             }
             else
@@ -226,15 +243,18 @@ namespace VDS.Common
         internal TrieNode<TKeyBit, TValue> AddChild(TKeyBit key)
         {
             TrieNode<TKeyBit, TValue> child;
-            if (this._children.TryGetValue(key, out child))
+            lock (this._children)
             {
-                return child;
-            }
-            else
-            {
-                child = new TrieNode<TKeyBit, TValue>(this, key);
-                _children.Add(key, child);
-                return child;
+                if (this._children.TryGetValue(key, out child))
+                {
+                    return child;
+                }
+                else
+                {
+                    child = new TrieNode<TKeyBit, TValue>(this, key);
+                    this._children.Add(key, child);
+                    return child;
+                }
             }
         }
 
@@ -244,7 +264,10 @@ namespace VDS.Common
         /// <param name="key">The key associated with the child to remove.</param>
         internal void RemoveChild(TKeyBit key)
         {
-            _children.Remove(key);
+            lock (this._children)
+            {
+                this._children.Remove(key);
+            }
         }
 
         /// <summary>
@@ -254,7 +277,7 @@ namespace VDS.Common
         {
             get
             {
-                return this._children.Values;
+                return this._children.Values.ToList();
             }
         }
 
@@ -271,11 +294,14 @@ namespace VDS.Common
                 }
                 else
                 {
-                    IEnumerable<TrieNode<TKeyBit, TValue>> cs = from n in this._children.Values
-                                                                from c in n.AllChildren
-                                                                select c;
-                    cs = this._children.Values.Concat(this._children.Values);
-                    return cs;
+                    lock (this._children)
+                    {
+                        IEnumerable<TrieNode<TKeyBit, TValue>> cs = from n in this._children.Values
+                                                                    from c in n.AllChildren
+                                                                    select c;
+                        cs = this._children.Values.Concat(this._children.Values);
+                        return cs.ToList();
+                    }
                 }
             }
         }
@@ -300,11 +326,14 @@ namespace VDS.Common
                 }
                 else
                 {
-                    IEnumerable<TValue> vs = from n in this._children.Values
-                                             from v in n.Values
-                                             select v;
-                    if (this.Value != null && !this.IsRoot) vs = vs.Concat(new TValue[] { this.Value });
-                    return vs;
+                    lock (this._children)
+                    {
+                        IEnumerable<TValue> vs = from n in this._children.Values
+                                                 from v in n.Values
+                                                 select v;
+                        if (this.Value != null && !this.IsRoot) vs = vs.Concat(new TValue[] { this.Value });
+                        return vs.ToList();
+                    }
                 }
             }
         }

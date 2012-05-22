@@ -14,15 +14,21 @@ This represents a summary of additions, changes and removals for the 0.7.0 relea
 Added
 - Query
  - Added an implicit join optimiser
+ - Added a filtered product optimiser
 
 Changed
 - Bug Fixes
  - Fix for a bug with FILTER and BIND in the WHERE clause of INSERT/DELETE causing incorrect behaviour due to an over optimization issue
+ - Fix for a bug with ASK queries and SparqlRemoteEndpoint.QueryWithResultSet()
+ - Fix for a bug with Stardog connectivity related to defunct connection string parameter
+ - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed
+ - Fix for a bug with multi-threaded access to our Trie implementation
 - Parsing
  - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
 - Query
  - Turned on PLinq Evaluation by default, following operations are parallelised currently:
   - Join
+  - LeftJoin
   - Product
   - Filter
   - Extend
