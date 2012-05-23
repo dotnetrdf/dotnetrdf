@@ -767,6 +767,27 @@ namespace VDS.RDF.Test.Storage
             manager.Dispose();
         }
 
+        [TestMethod]
+        public void StorageVirtuosoBlankNodeInsert()
+        {
+            VirtuosoManager manager = new VirtuosoManager(VirtuosoManager.DefaultDB, VirtuosoTestUsername, VirtuosoTestPassword);
+            Graph g = new Graph();
+            Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+
+            manager.UpdateGraph("http://localhost/insertBNodeTest", t.AsEnumerable(), null);
+
+            Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/insertBNodeTest> { ?s a <http:///example.org/object> } }");
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+                Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+            }
+            else
+            {
+                Assert.Fail("Didn't get a SPARQL Result Set as expected");
+            }
+        }
+
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
             NTriplesFormatter formatter = new NTriplesFormatter();

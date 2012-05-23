@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class VirtuosoManager
-        : IUpdateableGenericIOManager, IConfigurationSerializable, IDisposable
+        : BaseAsyncSafeConnector, IUpdateableStorage, IUpdateableGenericIOManager, IConfigurationSerializable
     {
         /// <summary>
         /// Default Port for Virtuoso Servers
@@ -199,7 +199,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to Load</param>
-        public void LoadGraph(IGraph g, Uri graphUri)
+        public override void LoadGraph(IGraph g, Uri graphUri)
         {
             if (g.IsEmpty && graphUri != null)
             {
@@ -213,7 +213,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to Load</param>
-        public void LoadGraph(IRdfHandler handler, Uri graphUri)
+        public override void LoadGraph(IRdfHandler handler, Uri graphUri)
         {
             if (graphUri == null) throw new RdfStorageException("Cannot load an unnamed Graph from Virtuoso as this would require loading the entirety of the Virtuoso Quad Store into memory!");
 
@@ -266,7 +266,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to Load</param>
-        public void LoadGraph(IGraph g, String graphUri)
+        public override void LoadGraph(IGraph g, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -283,7 +283,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to Load</param>
-        public void LoadGraph(IRdfHandler handler, String graphUri)
+        public override void LoadGraph(IRdfHandler handler, String graphUri)
         {
             if (graphUri == null || graphUri.Equals(String.Empty))
             {
@@ -460,7 +460,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Completely replaces any previously saved Graph with the same Graph URI
         /// </remarks>
-        public void SaveGraph(IGraph g)
+        public override void SaveGraph(IGraph g)
         {
             if (g.BaseUri == null) throw new RdfStorageException("Cannot save a Graph without a Base URI to Virtuoso");
 
@@ -497,7 +497,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Gets the IO Behaviour of the store
         /// </summary>
-        public IOBehaviour IOBehaviour
+        public override IOBehaviour IOBehaviour
         {
             get
             {
@@ -511,7 +511,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
             {
@@ -523,30 +523,37 @@ namespace VDS.RDF.Storage
                 {
                     if (removals.Any())
                     {
-                        VirtuosoCommand deleteCmd = new VirtuosoCommand();
-                        deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
-                        StringBuilder delete = new StringBuilder();
-                        delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
-                        if (graphUri != null)
+                        if (removals.All(t => t.IsGroundTriple))
                         {
-                            delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
+                            VirtuosoCommand deleteCmd = new VirtuosoCommand();
+                            deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
+                            StringBuilder delete = new StringBuilder();
+                            delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
+                            if (graphUri != null)
+                            {
+                                delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
+                            }
+                            else
+                            {
+                                throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                            }
+                            delete.AppendLine("{");
+                            foreach (Triple t in removals)
+                            {
+                                delete.AppendLine(t.ToString(this._formatter));
+                            }
+                            delete.AppendLine("}");
+                            deleteCmd.CommandText = delete.ToString();
+                            deleteCmd.Connection = this._db;
+                            deleteCmd.Transaction = this._dbtrans;
+
+                            r = deleteCmd.ExecuteNonQuery();
+                            if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when deleting Triples");
                         }
                         else
                         {
-                            throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                            throw new RdfStorageException("Unable to explicitly delete Blank Nodes from Virtuoso");
                         }
-                        delete.AppendLine("{");
-                        foreach (Triple t in removals)
-                        {
-                            delete.AppendLine(t.ToString(this._formatter));
-                        }
-                        delete.AppendLine("}");
-                        deleteCmd.CommandText = delete.ToString();
-                        deleteCmd.Connection = this._db;
-                        deleteCmd.Transaction = this._dbtrans;
-
-                        r = deleteCmd.ExecuteNonQuery();
-                        if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when deleting Triples");
                     }
                 }
 
@@ -555,30 +562,53 @@ namespace VDS.RDF.Storage
                 {
                     if (additions.Any())
                     {
-                        VirtuosoCommand insertCmd = new VirtuosoCommand();
-                        insertCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : insertCmd.CommandTimeout);
-                        StringBuilder insert = new StringBuilder();
-                        insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
-                        if (graphUri != null)
+                        if (additions.All(t => t.IsGroundTriple))
                         {
-                            insert.AppendLine(" INTO <" + graphUri.ToString() + ">");
+                            VirtuosoCommand insertCmd = new VirtuosoCommand();
+                            insertCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : insertCmd.CommandTimeout);
+                            StringBuilder insert = new StringBuilder();
+                            insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
+                            if (graphUri != null)
+                            {
+                                insert.AppendLine(" INTO <" + graphUri.ToString() + ">");
+                            }
+                            else
+                            {
+                                throw new RdfStorageException("Cannot update an unnamed Graph in Virtuoso using this method - you must specify the URI of a Graph to Update");
+                            }
+                            insert.AppendLine("{");
+                            foreach (Triple t in additions)
+                            {
+                                insert.AppendLine(t.ToString(this._formatter));
+                            }
+                            insert.AppendLine("}");
+                            insertCmd.CommandText = insert.ToString();
+                            insertCmd.Connection = this._db;
+                            insertCmd.Transaction = this._dbtrans;
+
+                            r = insertCmd.ExecuteNonQuery();
+                            if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when inserting Triples");
                         }
                         else
                         {
-                            throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                            //When data to be inserted contains Blank Nodes we must make a call to the TTLP() Virtuoso function
+                            //instead of using INSERT DATA
+                            Graph g = new Graph();
+                            g.Assert(additions);
+                            VirtuosoCommand cmd = new VirtuosoCommand();
+                            cmd.CommandTimeout = (this._timeout > 0 ? this._timeout : cmd.CommandTimeout);
+                            cmd.CommandText = "DB.DBA.TTLP(@data, @base, @graph, 1)";
+                            cmd.Parameters.Add("data", VirtDbType.VarChar);
+                            cmd.Parameters["data"].Value = VDS.RDF.Writing.StringWriter.Write(g, new NTriplesWriter());
+                            String baseUri = graphUri.ToSafeString();
+                            if (String.IsNullOrEmpty(baseUri)) throw new RdfStorageException("Cannot updated an unnamed Graph in Virtuoso using this method - you must specify the URI of a Graph to Update");
+                            cmd.Parameters.Add("base", VirtDbType.VarChar);
+                            cmd.Parameters.Add("graph", VirtDbType.VarChar);
+                            cmd.Parameters["base"].Value = baseUri;
+                            cmd.Parameters["graph"].Value = baseUri;
+                            cmd.Connection = this._db;
+                            int result = cmd.ExecuteNonQuery();
                         }
-                        insert.AppendLine("{");
-                        foreach (Triple t in additions)
-                        {
-                            insert.AppendLine(t.ToString(this._formatter));
-                        }
-                        insert.AppendLine("}");
-                        insertCmd.CommandText = insert.ToString();
-                        insertCmd.Connection = this._db;
-                        insertCmd.Transaction = this._dbtrans;
-
-                        r = insertCmd.ExecuteNonQuery();
-                        if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when inserting Triples");
                     }
                 }
 
@@ -597,7 +627,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
-        public void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        public override void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             Uri u = (graphUri.Equals(String.Empty)) ? null : UriFactory.Create(graphUri);
             this.UpdateGraph(u, additions, removals);
@@ -606,7 +636,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Indicates that Updates are supported by the Virtuoso Native Quad Store
         /// </summary>
-        public bool UpdateSupported
+        public override bool UpdateSupported
         {
             get
             {
@@ -617,7 +647,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Manager is ready
         /// </summary>
-        public bool IsReady
+        public override bool IsReady
         {
             get
             {
@@ -628,7 +658,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that the Manager is not read-only
         /// </summary>
-        public bool IsReadOnly
+        public override bool IsReadOnly
         {
             get
             {
@@ -1094,7 +1124,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Virtuoso store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(Uri graphUri)
+        public override void DeleteGraph(Uri graphUri)
         {
             this.DeleteGraph(graphUri.ToSafeString());
         }
@@ -1103,7 +1133,7 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
-        public void DeleteGraph(String graphUri)
+        public override void DeleteGraph(String graphUri)
         {
             if (graphUri == null) return;
             if (graphUri.Equals(String.Empty)) return;
@@ -1123,7 +1153,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that deleting Graphs is supported
         /// </summary>
-        public bool DeleteSupported
+        public override bool DeleteSupported
         {
             get
             {
@@ -1135,7 +1165,7 @@ namespace VDS.RDF.Storage
         /// Lists the Graphs in the store
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Uri> ListGraphs()
+        public override IEnumerable<Uri> ListGraphs()
         {
             try
             {
@@ -1183,7 +1213,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Returns that listing graphs is supported
         /// </summary>
-        public bool ListGraphsSupported
+        public override bool ListGraphsSupported
         {
             get
             {
@@ -1197,7 +1227,7 @@ namespace VDS.RDF.Storage
         /// Opens a Connection to the Database
         /// </summary>
         /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started</param>
-        public void Open(bool keepOpen)
+        private void Open(bool keepOpen)
         {
             this.Open(keepOpen, IsolationLevel.ReadCommitted);
         }
@@ -1207,7 +1237,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="keepOpen">Indicates that the Connection should be kept open and a Transaction started</param>
         /// <param name="level">Isolation Level to use</param>
-        public void Open(bool keepOpen, IsolationLevel level)
+        private void Open(bool keepOpen, IsolationLevel level)
         {
             switch (this._db.State)
             {
@@ -1229,7 +1259,7 @@ namespace VDS.RDF.Storage
         /// Closes the Connection to the Database
         /// </summary>
         /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened</param>
-        public void Close(bool forceClose)
+        private void Close(bool forceClose)
         {
             this.Close(forceClose, false);
         }
@@ -1239,7 +1269,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="forceClose">Indicates that the connection should be closed even if keepOpen was specified when the Connection was opened</param>
         /// <param name="rollbackTrans">Indicates that the Transaction should be rolled back because something has gone wrong</param>
-        public void Close(bool forceClose, bool rollbackTrans)
+        private void Close(bool forceClose, bool rollbackTrans)
         {
             //Don't close if we're keeping open and not forcing Close or rolling back a Transaction
             if (this._keepOpen && !forceClose && !rollbackTrans)
@@ -1277,7 +1307,7 @@ namespace VDS.RDF.Storage
         /// Executes a Non-Query SQL Command against the database
         /// </summary>
         /// <param name="sqlCmd">SQL Command</param>
-        public void ExecuteNonQuery(string sqlCmd)
+        private void ExecuteNonQuery(string sqlCmd)
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
@@ -1297,7 +1327,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sqlCmd">SQL Command</param>
         /// <returns>DataTable of results</returns>
-        public DataTable ExecuteQuery(string sqlCmd)
+        private DataTable ExecuteQuery(string sqlCmd)
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
@@ -1321,7 +1351,7 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sqlCmd">SQL Command</param>
         /// <returns>First Column of First Row of the Results</returns>
-        public object ExecuteScalar(string sqlCmd)
+        private object ExecuteScalar(string sqlCmd)
         {
             //Create the SQL Command
             VirtuosoCommand cmd = new VirtuosoCommand(sqlCmd, this._db);
@@ -1343,7 +1373,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Disposes of the Manager
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             this.Close(true, false);
         }
