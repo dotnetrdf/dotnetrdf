@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
@@ -50,7 +51,8 @@ namespace VDS.RDF.Query.Optimisation
     /// Derived implementations may use override the virtual properties to control what forms of optimisation are used.  Derived implementations must override the <see cref="BaseQueryOptimiser.GetRankingComparer">GetRankingComparer()</see> method, optimisers which do not wish to change the order of Triple Patterns should return the <see cref="NoReorderComparer">NoReorderCompaper</see> in their implementation as a basic sort of Triple Patterns is done even if <see cref="BaseQueryOptimiser.ShouldReorder">ShouldReorder</see> is overridden to return false
     /// </para>
     /// </remarks>
-    public abstract class BaseQueryOptimiser : IQueryOptimiser
+    public abstract class BaseQueryOptimiser
+        : IQueryOptimiser
     {
         /// <summary>
         /// Causes the Graph Pattern to be optimised if it isn't already
@@ -166,6 +168,7 @@ namespace VDS.RDF.Query.Optimisation
                 gp.InsertAssignment(assignment, gp.TriplePatterns.Count);
             }
 
+
             if (this.ShouldPlaceFilters)
             {
                 //Then we need to place the Filters in appropriate places within the Pattern
@@ -178,6 +181,28 @@ namespace VDS.RDF.Query.Optimisation
                     }
                     else
                     {
+                        if (this.ShouldSplitFilters)
+                        {
+                            //See whether we can split any/all of the Unplaced Filters
+                            List<ISparqlFilter> fs = gp.UnplacedFilters.ToList();
+                            for (int i = 0; i < fs.Count; i++)
+                            {
+                                ISparqlFilter f = fs[i];
+                                if (f.Expression is AndExpression)
+                                {
+                                    //Split the And
+                                    //Note that multiple nested And's are handled by the fact that we will continue working through the list until it is finished
+                                    UnaryExpressionFilter lhs = new UnaryExpressionFilter(f.Expression.Arguments.First());
+                                    UnaryExpressionFilter rhs = new UnaryExpressionFilter(f.Expression.Arguments.Last());
+                                    fs.RemoveAt(i);
+                                    fs.Add(lhs);
+                                    fs.Add(rhs);
+                                }
+                            }
+                            //Finally we need to ensure the Unplaced Filters list is appropriately updated
+                            gp.ResetFilters(fs);
+                        }
+
                         foreach (ISparqlFilter f in gp.UnplacedFilters.ToList())
                         {
                             this.TryPlaceFilter(gp, f);
@@ -219,6 +244,25 @@ namespace VDS.RDF.Query.Optimisation
             get
             {
                 return true;
+            }
+        }
+
+        /// <summary>
+        /// Controls whether the Optimiser will split Filters
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If a Filter contains an and expression it may be split into its constituent parts and applied separately.  This option only applies if filter placement also applies.
+        /// </para>
+        /// <para>
+        /// Defaults to false since it is unclear if this actually benefits performance
+        /// </para>
+        /// </remarks>
+        protected virtual bool ShouldSplitFilters
+        {
+            get
+            {
+                return false;
             }
         }
 

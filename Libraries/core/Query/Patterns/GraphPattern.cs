@@ -150,12 +150,22 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
-        /// Adds a Filter to the Graph Pattern respecting any BGP breaks
+        /// Adds a Filter to the Graph Pattern
         /// </summary>
         /// <param name="filter">Filter</param>
         internal void AddFilter(ISparqlFilter filter)
         {
             this._unplacedFilters.Add(filter);
+        }
+
+        /// <summary>
+        /// Resets the set of Unplaced Filters to be a new set of 
+        /// </summary>
+        /// <param name="filters">Filters</param>
+        internal void ResetFilters(IEnumerable<ISparqlFilter> filters)
+        {
+            this._unplacedFilters.Clear();
+            this._unplacedFilters.AddRange(filters);
         }
 
         /// <summary>

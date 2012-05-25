@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// Default SPARQL Query Optimiser
     /// </summary>
-    public class DefaultOptimiser : BaseQueryOptimiser
+    public class DefaultOptimiser
+        : BaseQueryOptimiser
     {
         /// <summary>
         /// Gets the Default Comparer for Triple Patterns to rank them
@@ -62,7 +63,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// SPARQL Query Optimiser which does no reordering
     /// </summary>
-    public class NoReorderOptimiser : BaseQueryOptimiser
+    public class NoReorderOptimiser
+        : BaseQueryOptimiser
     {
         /// <summary>
         /// Gets that Triple Patterns should not be reordered
@@ -88,7 +90,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// A Comparer which ranks all Triple Patterns as equal
     /// </summary>
-    public class NoReorderComparer : IComparer<ITriplePattern>
+    public class NoReorderComparer 
+        : IComparer<ITriplePattern>
     {
         /// <summary>
         /// Compares two Triple Patterns are always returns that they are ranking equal

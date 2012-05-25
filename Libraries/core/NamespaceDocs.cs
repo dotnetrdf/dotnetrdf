@@ -433,7 +433,7 @@ namespace VDS.RDF.Query.Expressions
     }
 }
 
-namespace VDS.RDF.Query.Expression.Arithmetic
+namespace VDS.RDF.Query.Expressions.Arithmetic
 {
     /// <summary>
     /// Namespace containing expression classes pertaining to arithmetic operations
@@ -444,7 +444,7 @@ namespace VDS.RDF.Query.Expression.Arithmetic
     }
 }
 
-namespace VDS.RDF.Query.Expression.Comparison
+namespace VDS.RDF.Query.Expressions.Comparison
 {
     /// <summary>
     /// Namespace containing expression classes pertaining to comparison operations
@@ -455,7 +455,7 @@ namespace VDS.RDF.Query.Expression.Comparison
     }
 }
 
-namespace VDS.RDF.Query.Expression.Conditional
+namespace VDS.RDF.Query.Expressions.Conditional
 {
     /// <summary>
     /// Namespace containing expression classes pertaining to conditional operations
@@ -677,7 +677,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
     }
 }
 
-namespace VDS.RDF.Query.Expression.Primary
+namespace VDS.RDF.Query.Expressions.Primary
 {
     /// <summary>
     /// Namespace containing expression classes representing primary constructs in SPARQL expression trees i.e. constants, modifiers and variables
