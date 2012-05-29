@@ -862,5 +862,10 @@ namespace VDS.RDF.Utilities.Sparql
         }
 
         #endregion
+
+        private void chkUnsafeOptimisation_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
+        }
     }
 }

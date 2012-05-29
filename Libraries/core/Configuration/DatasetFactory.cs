@@ -45,7 +45,8 @@ namespace VDS.RDF.Configuration
         : IObjectFactory
     {
         private const String InMemoryDataset = "VDS.RDF.Query.Datasets.InMemoryDataset",
-                             InMemoryQuadDataset = "VDS.RDF.Query.Datasets.InMemoryQuadDataset";
+                             InMemoryQuadDataset = "VDS.RDF.Query.Datasets.InMemoryQuadDataset",
+                             WebDemandDataset = "VDS.RDF.Query.Datasets.WebDemandDataset";
 
         /// <summary>
         /// Tries to load a SPARQL Dataset based on information from the Configuration Graph
@@ -74,7 +75,6 @@ namespace VDS.RDF.Configuration
                         if (temp is IInMemoryQueryableStore)
                         {
                             obj = new InMemoryDataset((IInMemoryQueryableStore)temp);
-                            return true;
                         }
                         else
                         {
@@ -95,7 +95,6 @@ namespace VDS.RDF.Configuration
                         if (temp is IInMemoryQueryableStore)
                         {
                             obj = new InMemoryQuadDataset((IInMemoryQueryableStore)temp);
-                            return true;
                         }
                         else
                         {
@@ -103,9 +102,29 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
+
+                case WebDemandDataset:
+                    storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    if (storeNode == null)
+                    {
+                        obj = new WebDemandDataset(new InMemoryQuadDataset());
+                    }
+                    else
+                    {
+                        Object temp = ConfigurationLoader.LoadObject(g, storeNode);
+                        if (temp is ISparqlDataset)
+                        {
+                            obj = new WebDemandDataset((ISparqlDataset)temp);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load the Web Demand Dataset identified by the Node '" + objNode.ToString() + "' since the Object pointed to by the dnr:usingDataset property could not be loaded as an object which implements the ISparqlDataset interface");
+                        }
+                    }
+                    break;
             } 
 
-            return false;
+            return (obj != null);
         }
 
         /// <summary>
@@ -119,6 +138,7 @@ namespace VDS.RDF.Configuration
             {
                 case InMemoryDataset:
                 case InMemoryQuadDataset:
+                case WebDemandDataset:
                     return true;
                 default:
                     return false;

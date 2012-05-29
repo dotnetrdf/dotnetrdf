@@ -75,6 +75,12 @@ namespace VDS.RDF.Query.Optimisation
     ///   BIND (?x AS ?y)
     /// }
     /// </pre>
+    /// <para>
+    /// Under normal circumstances this optimisation is only used when the implict join is denoted by a SAMETERM expression or the optimiser is sure the variables don't represent literals (they never occur in the Object position) since when value equality is involved substituing one variable for another changes the semantics of the query and may lead to unexpected results.  Since this optimisation may offer big performance benefits for some queries (at the cost of potentially incorrect results) this form of the optimisation is allowed when you set <see cref="Options.UnsafeOptimisation"/> to true.
+    /// </para>
+    /// <para>
+    /// This optimiser is also capable of generating special algebra to deal with the case where there is an implicit join but the substitution based optimisation does not apply because variables cannot be substituted into the inner algebra, in this case a <see cref="FilteredProduct"/> is generated instead.
+    /// </para>
     /// </remarks>
     public class ImplicitJoinOptimiser
         : IAlgebraOptimiser
@@ -103,7 +109,7 @@ namespace VDS.RDF.Query.Optimisation
                             {
                                 //Try to use the extend style optimization
                                 VariableSubstitutionTransformer transformer = new VariableSubstitutionTransformer(rhsVar, lhsVar);
-                                if (!equals) transformer.CanReplaceObjects = true;
+                                if (!equals || Options.UnsafeOptimisation) transformer.CanReplaceObjects = true;
                                 ISparqlAlgebra extAlgebra = transformer.Optimise(f.InnerAlgebra);
                                 return new Extend(extAlgebra, new VariableTerm(lhsVar), rhsVar);
                             }

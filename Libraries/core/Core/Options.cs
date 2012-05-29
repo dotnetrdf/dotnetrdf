@@ -85,8 +85,7 @@ namespace VDS.RDF
         private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
         private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
-        private static bool _queryOptimisation = true;
-        private static bool _algebraOptimisation = true;
+        private static bool _queryOptimisation = true, _algebraOptimisation = true, _unsafeOptimisation = false;
         private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
         private static bool _queryAllowUnknownFunctions = true;
         private static bool _uriLoaderCaching = true;
@@ -181,6 +180,29 @@ namespace VDS.RDF
             set
             {
                 _algebraOptimisation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether some Optimisations considered unsafe can be used
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The notion of unsafe optimisations refers to optimisations that can make significant performance improvements to some types of queries but are disabled normally because they may lead to behaviour which does not strictly align with the SPARQL specification.
+        /// </para>
+        /// <para>
+        /// One example of such an optimisation is an implicit join where the optimiser cannot be sure that the variables involved don't represent literals.
+        /// </para>
+        /// </remarks>
+        public static bool UnsafeOptimisation
+        {
+            get
+            {
+                return _unsafeOptimisation;
+            }
+            set
+            {
+                _unsafeOptimisation = value;
             }
         }
 

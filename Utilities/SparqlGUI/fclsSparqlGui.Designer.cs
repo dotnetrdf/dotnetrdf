@@ -82,6 +82,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.chkUnsafeOptimisation = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -190,7 +191,7 @@
             this.lblDataset.Size = new System.Drawing.Size(566, 28);
             this.lblDataset.TabIndex = 0;
             this.lblDataset.Text = "Use this section of the GUI to import RDF data from Files/URIs.  You can reset th" +
-                "e Dataset to the empty dataset by clicking the Clear button";
+    "e Dataset to the empty dataset by clicking the Clear button";
             // 
             // grpQuery
             // 
@@ -297,6 +298,7 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkUnsafeOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkFullTextIndexing);
             this.grpQueryOptions.Controls.Add(this.chkLogExplanation);
             this.grpQueryOptions.Controls.Add(this.chkUseUtf8Bom);
@@ -336,7 +338,7 @@
             this.chkLogExplanation.TabIndex = 7;
             this.chkLogExplanation.Text = "Log Query Explanations";
             this.ttpTips.SetToolTip(this.chkLogExplanation, "Enable this option if you wish to have detailed query explanations logged to the " +
-                    "log file, this may make queries significantly slower in some cases");
+        "log file, this may make queries significantly slower in some cases");
             this.chkLogExplanation.UseVisualStyleBackColor = true;
             this.chkLogExplanation.CheckedChanged += new System.EventHandler(this.chkLogExplanation_CheckedChanged);
             // 
@@ -349,7 +351,7 @@
             this.chkUseUtf8Bom.TabIndex = 3;
             this.chkUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
             this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
-                    "s tools that may have an issue with the UTF-8 BOM");
+        "s tools that may have an issue with the UTF-8 BOM");
             this.chkUseUtf8Bom.UseVisualStyleBackColor = true;
             this.chkUseUtf8Bom.CheckedChanged += new System.EventHandler(this.chkUseUtf8Bom_CheckedChanged);
             // 
@@ -377,7 +379,7 @@
             this.chkAlgebraOptimisation.TabIndex = 10;
             this.chkAlgebraOptimisation.Text = "Optimise Query Algebra";
             this.ttpTips.SetToolTip(this.chkAlgebraOptimisation, "Determines whether the Engine will use Algebra optimisations to evaluate some que" +
-                    "ries more efficiently");
+        "ries more efficiently");
             this.chkAlgebraOptimisation.UseVisualStyleBackColor = true;
             this.chkAlgebraOptimisation.CheckedChanged += new System.EventHandler(this.chkAlgebraOptimisation_CheckedChanged);
             // 
@@ -391,7 +393,7 @@
             this.chkQueryOptimisation.TabIndex = 8;
             this.chkQueryOptimisation.Text = "Optimise Queries";
             this.ttpTips.SetToolTip(this.chkQueryOptimisation, "Determines whether the Engine will optimise the ordering of Triple Patterns in yo" +
-                    "ur Query (highly recommended)");
+        "ur Query (highly recommended)");
             this.chkQueryOptimisation.UseVisualStyleBackColor = true;
             this.chkQueryOptimisation.CheckedChanged += new System.EventHandler(this.chkQueryOptimisation_CheckedChanged);
             // 
@@ -405,7 +407,7 @@
             this.chkAllowUnknownFunctions.TabIndex = 6;
             this.chkAllowUnknownFunctions.Text = "Permit Unknown Function URIs";
             this.ttpTips.SetToolTip(this.chkAllowUnknownFunctions, "Unknown Functions allow unrecognised extension Function URIs to be used but the e" +
-                    "ngine will not evaluate these when evaluating queries");
+        "ngine will not evaluate these when evaluating queries");
             this.chkAllowUnknownFunctions.UseVisualStyleBackColor = true;
             this.chkAllowUnknownFunctions.CheckedChanged += new System.EventHandler(this.chkAllowUnknownFunctions_CheckedChanged);
             // 
@@ -664,6 +666,18 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Manage Queries:";
             // 
+            // chkUnsafeOptimisation
+            // 
+            this.chkUnsafeOptimisation.Location = new System.Drawing.Point(189, 150);
+            this.chkUnsafeOptimisation.Name = "chkUnsafeOptimisation";
+            this.chkUnsafeOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkUnsafeOptimisation.TabIndex = 11;
+            this.chkUnsafeOptimisation.Text = "Allow Unsafe Optimisations";
+            this.ttpTips.SetToolTip(this.chkUnsafeOptimisation, "Allows optimisations that may boost performance at the cost of possibly incorrect" +
+        " results (depending on the data and query)");
+            this.chkUnsafeOptimisation.UseVisualStyleBackColor = true;
+            this.chkUnsafeOptimisation.CheckedChanged += new System.EventHandler(this.chkUnsafeOptimisation_CheckedChanged);
+            // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -758,6 +772,7 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkUnsafeOptimisation;
     }
 }
 
