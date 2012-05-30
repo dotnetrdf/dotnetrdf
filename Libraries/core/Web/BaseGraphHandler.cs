@@ -78,9 +78,10 @@ namespace VDS.RDF.Web
         public void ProcessRequest(HttpContext context)
         {
             this._config = this.LoadConfig(context);
+            WebContext webContext = new WebContext(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, this._config);
 
             //Check whether we need to use authentication
             //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
@@ -88,21 +89,21 @@ namespace VDS.RDF.Web
             if (this._config.UserGroups.Any())
             {
                 //If we have user
-                isAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups);
+                isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
             }
             if (!isAuth) return;
 
             //Check whether we can just send a 304 Not Modified
-            if (HandlerHelper.CheckCachingHeaders(context, this._config.ETag, null))
+            if (HandlerHelper.CheckCachingHeaders(webContext, this._config.ETag, null))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotModified;
-                HandlerHelper.AddCachingHeaders(context, this._config.ETag, null);
+                HandlerHelper.AddCachingHeaders(webContext, this._config.ETag, null);
                 return;
             }
 
             try
             {
-                String[] acceptTypes = HandlerHelper.GetAcceptTypes(context);
+                String[] acceptTypes = HandlerHelper.GetAcceptTypes(webContext);
 
                 //Retrieve an appropriate MIME Type Definition which can be used to get a Writer
                 MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(acceptTypes).FirstOrDefault(d => d.CanWriteRdf);
@@ -118,7 +119,7 @@ namespace VDS.RDF.Web
 
                 //Serve the Graph to the User
                 context.Response.ContentType = definition.CanonicalMimeType;
-                HandlerHelper.AddCachingHeaders(context, this._config.ETag, null);
+                HandlerHelper.AddCachingHeaders(webContext, this._config.ETag, null);
                 if (writer is IHtmlWriter)
                 {
                     if (!this._config.Stylesheet.Equals(String.Empty))

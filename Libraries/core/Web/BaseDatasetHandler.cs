@@ -77,7 +77,7 @@ namespace VDS.RDF.Web
             this._config = this.LoadConfig(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context, this._config);
+            HandlerHelper.AddStandardHeaders(new WebContext(context), this._config);
 
             //Check whether we need to use authentication
             //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed
@@ -85,7 +85,7 @@ namespace VDS.RDF.Web
             if (this._config.UserGroups.Any())
             {
                 //If we have user
-                isAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups);
+                isAuth = HandlerHelper.IsAuthenticated(new WebContext(context), this._config.UserGroups);
             }
             if (!isAuth) return;
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Web
         {
             try
             {
-                HandlerHelper.SendToClient(context, dataset, this._config);
+                HandlerHelper.SendToClient(new WebContext(context), dataset, this._config);
             }
             catch (RdfWriterSelectionException)
             {

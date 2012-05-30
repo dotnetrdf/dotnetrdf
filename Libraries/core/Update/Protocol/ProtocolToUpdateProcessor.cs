@@ -56,7 +56,8 @@ namespace VDS.RDF.Update.Protocol
     /// <remarks>
     /// The conversion from HTTP operation to SPARQL Query/Update is as defined in the <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a> specification
     /// </remarks>
-    public class ProtocolToUpdateProcessor : BaseProtocolProcessor
+    public class ProtocolToUpdateProcessor
+        : BaseProtocolProcessor
     {
         private ISparqlQueryProcessor _queryProcessor;
         private ISparqlUpdateProcessor _updateProcessor;
@@ -77,7 +78,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a GET operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessGet(HttpContext context)
+        public override void ProcessGet(IHttpProtocolContext context)
         {
             //Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
@@ -101,7 +102,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a POST operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessPost(HttpContext context)
+        public override void ProcessPost(IHttpProtocolContext context)
         {
             //Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
@@ -161,7 +162,7 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        public override void ProcessPostCreate(HttpContext context)
+        public override void ProcessPostCreate(IHttpProtocolContext context)
         {
             //Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
@@ -212,7 +213,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a PUT operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessPut(HttpContext context)
+        public override void ProcessPut(IHttpProtocolContext context)
         {
             //Get the payload assuming there is one
             IGraph g = this.ParsePayload(context);
@@ -298,7 +299,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a DELETE operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessDelete(HttpContext context)
+        public override void ProcessDelete(IHttpProtocolContext context)
         {
             //Get the Graph URI of the Graph to delete
             Uri graphUri = this.ResolveGraphUri(context);
@@ -330,7 +331,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a HEAD operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessHead(HttpContext context)
+        public override void ProcessHead(IHttpProtocolContext context)
         {
             //Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
@@ -363,7 +364,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessPatch(HttpContext context)
+        public override void ProcessPatch(IHttpProtocolContext context)
         {
             //Work out the Graph URI we want to patch
             Uri graphUri = this.ResolveGraphUri(context);

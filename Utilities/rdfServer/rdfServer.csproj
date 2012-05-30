@@ -86,7 +86,7 @@
     <Compile Include="..\..\Libraries\core.silverlight\Compatability\HttpUtility.cs">
       <Link>HttpUtility.cs</Link>
     </Compile>
-    <Compile Include="HandlerHelper.cs" />
+    <Compile Include="ListenerContext.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdfServerOptions.cs" />

@@ -44,6 +44,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
+using VDS.RDF.Web;
 using VDS.RDF.Web.Configuration.Server;
 using VDS.RDF.Writing;
 using VDS.Web;
@@ -667,7 +668,7 @@ namespace VDS.RDF.Utilities.Server
         /// <param name="ex">Error</param>
         protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex)
         {
-            HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex);
+            HandlerHelper.HandleQueryErrors(new ServerContext(context), this._config, title, query, ex);
         }
 
         /// <summary>
@@ -680,7 +681,7 @@ namespace VDS.RDF.Utilities.Server
         /// <param name="statusCode">HTTP Status Code to return</param>
         protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex, int statusCode)
         {
-            HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex, statusCode);
+            HandlerHelper.HandleQueryErrors(new ServerContext(context), this._config, title, query, ex, statusCode);
         }
 
         /// <summary>
@@ -692,7 +693,7 @@ namespace VDS.RDF.Utilities.Server
         /// <param name="ex">Error</param>
         protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex)
         {
-            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex);
+            HandlerHelper.HandleUpdateErrors(new ServerContext(context), this._config, title, update, ex);
         }
 
         /// <summary>
@@ -705,7 +706,7 @@ namespace VDS.RDF.Utilities.Server
         /// <param name="statusCode">HTTP Status code to return</param>
         protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex, int statusCode)
         {
-            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex, statusCode);
+            HandlerHelper.HandleUpdateErrors(new ServerContext(context), this._config, title, update, ex, statusCode);
         }
 
         #endregion

@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
-
 using System;
 using System.Linq;
 using System.IO;
@@ -71,7 +69,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// Implemented by making a call to <see cref="IGenericIOManager.LoadGraph">LoadGraph()</see> on the underlying <see cref="IGenericIOManager">IGenericIOManager</see>
         /// </remarks>
-        public override void ProcessGet(HttpContext context)
+        public override void ProcessGet(IHttpProtocolContext context)
         {
             Uri graphUri = this.ResolveGraphUri(context);
             try
@@ -100,7 +98,7 @@ namespace VDS.RDF.Update.Protocol
         /// Otherwise this is implemented using <see cref="IGenericIOManager.UpdateGraph">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
         /// </para>
         /// </remarks>
-        public override void ProcessPost(HttpContext context)
+        public override void ProcessPost(IHttpProtocolContext context)
         {
             //If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
@@ -138,7 +136,7 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        public override void ProcessPostCreate(HttpContext context)
+        public override void ProcessPostCreate(IHttpProtocolContext context)
         {
             //If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
@@ -180,7 +178,7 @@ namespace VDS.RDF.Update.Protocol
         /// Implemented by calling <see cref="IGenericIOManager.SaveGraph">SaveGraph()</see> on the underlying manager
         /// </para>
         /// </remarks>
-        public override void ProcessPut(HttpContext context)
+        public override void ProcessPut(IHttpProtocolContext context)
         {
             //If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
@@ -209,7 +207,7 @@ namespace VDS.RDF.Update.Protocol
         /// The delete operation does not explicitly remove the Graph but simply replaces it with an empty Graph
         /// </para>
         /// </remarks>
-        public override void ProcessDelete(HttpContext context)
+        public override void ProcessDelete(IHttpProtocolContext context)
         {
             //If the Manager is read-only then a 403 Forbidden will be returned
             if (this._manager.IsReadOnly)
@@ -246,7 +244,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a HEAD operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessHead(HttpContext context)
+        public override void ProcessHead(IHttpProtocolContext context)
         {
             //Work out the Graph URI we want to get
             Uri graphUri = this.ResolveGraphUri(context);
@@ -279,7 +277,7 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public override void ProcessPatch(HttpContext context)
+        public override void ProcessPatch(IHttpProtocolContext context)
         {
             //Work out the Graph URI we want to patch
             Uri graphUri = this.ResolveGraphUri(context);
@@ -382,5 +380,3 @@ namespace VDS.RDF.Update.Protocol
         }
     }
 }
-
-#endif

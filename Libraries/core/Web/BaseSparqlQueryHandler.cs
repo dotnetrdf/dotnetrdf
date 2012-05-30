@@ -79,15 +79,16 @@ namespace VDS.RDF.Web
         public void ProcessRequest(HttpContext context)
         {
             this._config = this.LoadConfig(context);
+            WebContext webContext = new WebContext(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, this._config);
 
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
                 IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
-                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
 
@@ -120,7 +121,7 @@ namespace VDS.RDF.Web
                 {
                     //If we might show the Query Form only show the Description if the selected writer is
                     //not a HTML writer
-                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
+                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(webContext)).FirstOrDefault(d => d.CanWriteRdf);
                     if (definition != null)
                     {
                         IRdfWriter writer = definition.GetRdfWriter();
@@ -224,13 +225,13 @@ namespace VDS.RDF.Web
                 if (this._config.UserGroups.Any())
                 {
                     //If we have user
-                    isAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups);
+                    isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
                     requireActionAuth = true;
                 }
                 if (!isAuth) return;
  
                 //Is this user allowed to make this kind of query?
-                if (requireActionAuth) HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetPermissionAction(query));
+                if (requireActionAuth) HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, this.GetPermissionAction(query));
 
                 //Set the Default Graph URIs (if any)
                 if (userDefaultGraphs.Count > 0)
@@ -348,7 +349,7 @@ namespace VDS.RDF.Web
         /// </remarks>
         protected virtual void ProcessResults(HttpContext context, Object result)
         {
-            HandlerHelper.SendToClient(context, result, this._config);
+            HandlerHelper.SendToClient(new WebContext(context), result, this._config);
         }
 
         /// <summary>
@@ -369,7 +370,7 @@ namespace VDS.RDF.Web
         /// <param name="ex">Error</param>
         protected virtual void HandleErrors(HttpContext context, String title, String query, Exception ex)
         {
-            HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex, (int)HttpStatusCode.InternalServerError);
+            HandlerHelper.HandleQueryErrors(new WebContext(context), this._config, title, query, ex, (int)HttpStatusCode.InternalServerError);
         }
 
         /// <summary>
@@ -382,7 +383,7 @@ namespace VDS.RDF.Web
         /// <param name="statusCode">HTTP Status Code to return</param>
         protected virtual void HandleErrors(HttpContext context, String title, String query, Exception ex, int statusCode)
         {
-            HandlerHelper.HandleQueryErrors(context, this._config, title, query, ex, statusCode);
+            HandlerHelper.HandleQueryErrors(new WebContext(context), this._config, title, query, ex, statusCode);
         }
 
         /// <summary>

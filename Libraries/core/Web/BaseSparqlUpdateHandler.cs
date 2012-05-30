@@ -80,15 +80,16 @@ namespace VDS.RDF.Web
         public void ProcessRequest(HttpContext context)
         {
             this._config = this.LoadConfig(context);
+            WebContext webContext = new WebContext(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, this._config);
 
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
                 IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
-                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
 
@@ -118,7 +119,7 @@ namespace VDS.RDF.Web
                 {
                     //If we might show the Update Form only show the Description if the selected writer is
                     //not a HTML writer
-                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(context)).FirstOrDefault(d => d.CanWriteRdf);
+                    MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(webContext)).FirstOrDefault(d => d.CanWriteRdf);
                     if (definition != null)
                     {
                         IRdfWriter writer = definition.GetRdfWriter();
@@ -187,7 +188,7 @@ namespace VDS.RDF.Web
                 if (this._config.UserGroups.Any())
                 {
                     //If we have user
-                    isAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups);
+                    isAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups);
                     requireActionAuth = true;
                 }
                 if (!isAuth) return;
@@ -197,7 +198,7 @@ namespace VDS.RDF.Web
                 {
                     //Authenticate each action
                     bool actionAuth = true;
-                    if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(context, this._config.UserGroups, this.GetPermissionAction(cmd));
+                    if (requireActionAuth) actionAuth = HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, this.GetPermissionAction(cmd));
                     if (!actionAuth)
                     {
                         throw new SparqlUpdatePermissionException("You are not authorised to perform the " + this.GetPermissionAction(cmd) + " action");
@@ -382,7 +383,7 @@ namespace VDS.RDF.Web
         /// <param name="ex">Error</param>
         protected virtual void HandleErrors(HttpContext context, String title, String update, Exception ex)
         {
-            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex);
+            HandlerHelper.HandleUpdateErrors(new WebContext(context), this._config, title, update, ex);
         }
 
 
@@ -396,7 +397,7 @@ namespace VDS.RDF.Web
         /// <param name="statusCode">HTTP Status Code</param>
         protected virtual void HandleErrors(HttpContext context, String title, String update, Exception ex, int statusCode)
         {
-            HandlerHelper.HandleUpdateErrors(context, this._config, title, update, ex, statusCode);
+            HandlerHelper.HandleUpdateErrors(new WebContext(context), this._config, title, update, ex, statusCode);
         }
 
         /// <summary>

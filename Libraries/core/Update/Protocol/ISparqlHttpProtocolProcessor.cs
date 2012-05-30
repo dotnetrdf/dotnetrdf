@@ -33,14 +33,12 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net;
-using System.Web;
+using VDS.RDF.Web;
 
 namespace VDS.RDF.Update.Protocol
 {
@@ -53,13 +51,13 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a GET operation which should retrieve a Graph from the Store and return it
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessGet(HttpContext context);
+        void ProcessGet(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a POST operation which should add triples to a Graph in the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessPost(HttpContext context);
+        void ProcessPost(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
@@ -70,32 +68,30 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        void ProcessPostCreate(HttpContext context);
+        void ProcessPostCreate(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a PUT operation which should save a Graph to the Store completely replacing any existing Graph with the same URI
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessPut(HttpContext context);
+        void ProcessPut(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a DELETE operation which delete a Graph from the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessDelete(HttpContext context);
+        void ProcessDelete(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a HEAD operation which gets information about a Graph in the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessHead(HttpContext context);
+        void ProcessHead(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a PATCH operation which may choose
         /// </summary>
         /// <param name="context"></param>
-        void ProcessPatch(HttpContext context);
+        void ProcessPatch(IHttpProtocolContext context);
     }
 }
-
-#endif

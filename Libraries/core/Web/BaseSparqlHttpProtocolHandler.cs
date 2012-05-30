@@ -87,20 +87,21 @@ namespace VDS.RDF.Web
         public virtual void ProcessRequest(HttpContext context)
         {
             this._config = this.LoadConfig(context, out this._basePath);
+            WebContext webContext = new WebContext(context);
 
             //Add our Standard Headers
-            HandlerHelper.AddStandardHeaders(context, this._config);
+            HandlerHelper.AddStandardHeaders(webContext, this._config);
 
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
                 IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
-                HandlerHelper.SendToClient(context, svcDescrip, this._config);
+                HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
 
             //Check whether we need to use authentication
-            if (!HandlerHelper.IsAuthenticated(context, this._config.UserGroups, context.Request.HttpMethod)) return;
+            if (!HandlerHelper.IsAuthenticated(webContext, this._config.UserGroups, context.Request.HttpMethod)) return;
 
             try
             {
@@ -108,10 +109,10 @@ namespace VDS.RDF.Web
                 switch (context.Request.HttpMethod)
                 {
                     case "GET":
-                        this._config.Processor.ProcessGet(context);
+                        this._config.Processor.ProcessGet(webContext);
                         break;
                     case "PUT":
-                        this._config.Processor.ProcessPut(context);
+                        this._config.Processor.ProcessPut(webContext);
                         break;
                     case "POST":
                         Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
@@ -121,30 +122,30 @@ namespace VDS.RDF.Web
                             //Otherwise it is a PostCreate
                             if (context.Request.QueryString["graph"] != null)
                             {
-                                this._config.Processor.ProcessPost(context);
+                                this._config.Processor.ProcessPost(webContext);
                             }
                             else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), BaseProtocolProcessor.DefaultParameterPattern))
                             {
-                                this._config.Processor.ProcessPost(context);
+                                this._config.Processor.ProcessPost(webContext);
                             }
                             else
                             {
-                                this._config.Processor.ProcessPostCreate(context);
+                                this._config.Processor.ProcessPostCreate(webContext);
                             }
                         }
                         else
                         {
-                            this._config.Processor.ProcessPost(context);
+                            this._config.Processor.ProcessPost(webContext);
                         }
                         break;
                     case "DELETE":
-                        this._config.Processor.ProcessDelete(context);
+                        this._config.Processor.ProcessDelete(webContext);
                         break;
                     case "HEAD":
-                        this._config.Processor.ProcessHead(context);
+                        this._config.Processor.ProcessHead(webContext);
                         break;
                     case "PATCH":
-                        this._config.Processor.ProcessPatch(context);
+                        this._config.Processor.ProcessPatch(webContext);
                         break;
                     default:
                         //For any other HTTP Verb we send a 405 Method Not Allowed

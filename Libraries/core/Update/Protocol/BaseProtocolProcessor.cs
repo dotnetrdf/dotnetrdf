@@ -33,8 +33,6 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
-
 using System;
 using System.IO;
 using System.Linq;
@@ -48,7 +46,8 @@ namespace VDS.RDF.Update.Protocol
     /// <summary>
     /// Abstract Base class for SPARQL Graph Store HTTP Protocol for Graph Management implementations
     /// </summary>
-    public abstract class BaseProtocolProcessor : ISparqlHttpProtocolProcessor
+    public abstract class BaseProtocolProcessor 
+        : ISparqlHttpProtocolProcessor
     {
         /// <summary>
         /// This is the Pattern that is used to check whether ?default is present in the querystring.  This is needed since IIS does not recognise ?default as being a valid querystring key unless it ends in a = which the specification does not mandate so cannot be assumed
@@ -59,13 +58,13 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a GET operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessGet(HttpContext context);
+        public abstract void ProcessGet(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a POST operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPost(HttpContext context);
+        public abstract void ProcessPost(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
@@ -76,38 +75,38 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        public abstract void ProcessPostCreate(HttpContext context);
+        public abstract void ProcessPostCreate(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a PUT operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPut(HttpContext context);
+        public abstract void ProcessPut(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a DELETE operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessDelete(HttpContext context);
+        public abstract void ProcessDelete(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a HEAD operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessHead(HttpContext context);
+        public abstract void ProcessHead(IHttpProtocolContext context);
 
         /// <summary>
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPatch(HttpContext context);
+        public abstract void ProcessPatch(IHttpProtocolContext context);
 
         /// <summary>
         /// Gets the Graph URI that the request should affect
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <returns></returns>
-        protected Uri ResolveGraphUri(HttpContext context)
+        protected Uri ResolveGraphUri(IHttpProtocolContext context)
         {
             Uri graphUri;
             try
@@ -150,7 +149,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// The Graph parameter may be null in which case the other overload of this method will be invoked
         /// </remarks>
-        protected Uri ResolveGraphUri(HttpContext context, IGraph g)
+        protected Uri ResolveGraphUri(IHttpProtocolContext context, IGraph g)
         {
             if (g == null) return this.ResolveGraphUri(context);
 
@@ -199,7 +198,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// Default behaviour is to mint a URI based on a hash of the Request IP and Date Time.  Implementations can override this method to control URI creation as they desire
         /// </remarks>
-        protected virtual Uri MintGraphUri(HttpContext context, IGraph g)
+        protected virtual Uri MintGraphUri(IHttpProtocolContext context, IGraph g)
         {
             String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfffffffK");
             graphID = graphID.GetSha256Hash();
@@ -227,7 +226,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// In the event that there is no request body a null will be returned
         /// </remarks>
-        protected IGraph ParsePayload(HttpContext context)
+        protected IGraph ParsePayload(IHttpProtocolContext context)
         {
             if (context.Request.ContentLength == 0) return null;
 
@@ -244,7 +243,7 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Graph to send</param>
-        protected void SendResultsToClient(HttpContext context, IGraph g)
+        protected void SendResultsToClient(IHttpProtocolContext context, IGraph g)
         {
             IRdfWriter writer;
             String ctype;
@@ -300,5 +299,3 @@ namespace VDS.RDF.Update.Protocol
         protected abstract bool HasGraph(Uri graphUri);
     }
 }
-
-#endif
