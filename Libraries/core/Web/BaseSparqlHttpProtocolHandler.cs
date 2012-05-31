@@ -95,7 +95,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath));
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }

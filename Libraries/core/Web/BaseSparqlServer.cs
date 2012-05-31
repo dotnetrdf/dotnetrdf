@@ -98,7 +98,7 @@ namespace VDS.RDF.Web
             //OPTIONS requests always result in the Service Description document
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath + "description"), ServiceDescriptionType.All);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath + "description"), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
             }
             else
@@ -139,7 +139,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Query);
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
@@ -354,7 +354,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
@@ -517,7 +517,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath), ServiceDescriptionType.Protocol);
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath), ServiceDescriptionType.Protocol);
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
@@ -629,7 +629,7 @@ namespace VDS.RDF.Web
             try
             {
                 //Get the Service Description Graph
-                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
+                IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.All);
                 HandlerHelper.SendToClient(new WebContext(context), serviceDescrip, this._config);
             }
             catch

@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_ASP
+
 using System;
 using System.IO;
 using System.Linq;
@@ -58,13 +60,13 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a GET operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessGet(IHttpProtocolContext context);
+        public abstract void ProcessGet(IHttpContext context);
 
         /// <summary>
         /// Processes a POST operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPost(IHttpProtocolContext context);
+        public abstract void ProcessPost(IHttpContext context);
 
         /// <summary>
         /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
@@ -75,38 +77,38 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        public abstract void ProcessPostCreate(IHttpProtocolContext context);
+        public abstract void ProcessPostCreate(IHttpContext context);
 
         /// <summary>
         /// Processes a PUT operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPut(IHttpProtocolContext context);
+        public abstract void ProcessPut(IHttpContext context);
 
         /// <summary>
         /// Processes a DELETE operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessDelete(IHttpProtocolContext context);
+        public abstract void ProcessDelete(IHttpContext context);
 
         /// <summary>
         /// Processes a HEAD operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessHead(IHttpProtocolContext context);
+        public abstract void ProcessHead(IHttpContext context);
 
         /// <summary>
         /// Processes a PATCH operation
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public abstract void ProcessPatch(IHttpProtocolContext context);
+        public abstract void ProcessPatch(IHttpContext context);
 
         /// <summary>
         /// Gets the Graph URI that the request should affect
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <returns></returns>
-        protected Uri ResolveGraphUri(IHttpProtocolContext context)
+        protected Uri ResolveGraphUri(IHttpContext context)
         {
             Uri graphUri;
             try
@@ -149,7 +151,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// The Graph parameter may be null in which case the other overload of this method will be invoked
         /// </remarks>
-        protected Uri ResolveGraphUri(IHttpProtocolContext context, IGraph g)
+        protected Uri ResolveGraphUri(IHttpContext context, IGraph g)
         {
             if (g == null) return this.ResolveGraphUri(context);
 
@@ -198,7 +200,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// Default behaviour is to mint a URI based on a hash of the Request IP and Date Time.  Implementations can override this method to control URI creation as they desire
         /// </remarks>
-        protected virtual Uri MintGraphUri(IHttpProtocolContext context, IGraph g)
+        protected virtual Uri MintGraphUri(IHttpContext context, IGraph g)
         {
             String graphID = context.Request.UserHostAddress + "/" + DateTime.Now.ToString("yyyyMMddHHmmssfffffffK");
             graphID = graphID.GetSha256Hash();
@@ -226,7 +228,7 @@ namespace VDS.RDF.Update.Protocol
         /// <remarks>
         /// In the event that there is no request body a null will be returned
         /// </remarks>
-        protected IGraph ParsePayload(IHttpProtocolContext context)
+        protected IGraph ParsePayload(IHttpContext context)
         {
             if (context.Request.ContentLength == 0) return null;
 
@@ -243,7 +245,7 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Graph to send</param>
-        protected void SendResultsToClient(IHttpProtocolContext context, IGraph g)
+        protected void SendResultsToClient(IHttpContext context, IGraph g)
         {
             IRdfWriter writer;
             String ctype;
@@ -299,3 +301,5 @@ namespace VDS.RDF.Update.Protocol
         protected abstract bool HasGraph(Uri graphUri);
     }
 }
+
+#endif

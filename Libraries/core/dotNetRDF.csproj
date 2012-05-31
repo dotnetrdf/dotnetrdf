@@ -145,7 +145,7 @@
     <Compile Include="Storage\StorageCallbacks.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />
     <Compile Include="Web\WebContext.cs" />
-    <Compile Include="Web\IHttpProtocolContext.cs" />
+    <Compile Include="Web\IHttpContext.cs" />
     <Compile Include="Writing\BaseGZipWriter.cs" />
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />

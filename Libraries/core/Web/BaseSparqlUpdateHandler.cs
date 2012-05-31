@@ -88,7 +88,7 @@ namespace VDS.RDF.Web
             if (context.Request.HttpMethod.Equals("OPTIONS"))
             {
                 //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                 HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
                 return;
             }
@@ -127,7 +127,7 @@ namespace VDS.RDF.Web
                         {
                             //If not a HTML Writer selected OR not showing Update Form then show the Service Description Graph
                             //unless an error occurs creating it
-                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(context, this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
+                            IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri));
                             context.Response.ContentType = definition.CanonicalMimeType;
                             context.Response.ContentEncoding = definition.Encoding;
                             writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));

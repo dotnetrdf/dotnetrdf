@@ -33,11 +33,10 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Update.Protocol;
@@ -47,7 +46,8 @@ namespace VDS.RDF.Web.Configuration.Protocol
     /// <summary>
     /// Abstract Base Class for representing SPARQL Graph Store HTTP Protocol for Graph Management Handler configurations
     /// </summary>
-    public abstract class BaseProtocolHandlerConfiguration : BaseHandlerConfiguration
+    public abstract class BaseProtocolHandlerConfiguration
+        : BaseHandlerConfiguration
     {
         /// <summary>
         /// Protocol processor
@@ -64,7 +64,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseProtocolHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseProtocolHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
             //Then get the Protocol Processor to be used
@@ -134,7 +134,8 @@ namespace VDS.RDF.Web.Configuration.Protocol
     /// <summary>
     /// A basic Protocol Handler Configuration implentation
     /// </summary>
-    public class ProtocolHandlerConfiguration : BaseProtocolHandlerConfiguration
+    public class ProtocolHandlerConfiguration 
+        : BaseProtocolHandlerConfiguration
     {
         /// <summary>
         /// Creates a new Protocol Handler Configuration
@@ -142,7 +143,7 @@ namespace VDS.RDF.Web.Configuration.Protocol
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public ProtocolHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public ProtocolHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
     }
 }

@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_ASP
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,13 +53,13 @@ namespace VDS.RDF.Update.Protocol
         /// Processes a GET operation which should retrieve a Graph from the Store and return it
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessGet(IHttpProtocolContext context);
+        void ProcessGet(IHttpContext context);
 
         /// <summary>
         /// Processes a POST operation which should add triples to a Graph in the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessPost(IHttpProtocolContext context);
+        void ProcessPost(IHttpContext context);
 
         /// <summary>
         /// Processes a POST operation which adds triples to a new Graph in the Store and returns the URI of the newly created Graph
@@ -68,30 +70,32 @@ namespace VDS.RDF.Update.Protocol
         /// This operation allows clients to POST data to an endpoint and have it create a Graph and assign a URI for them.
         /// </para>
         /// </remarks>
-        void ProcessPostCreate(IHttpProtocolContext context);
+        void ProcessPostCreate(IHttpContext context);
 
         /// <summary>
         /// Processes a PUT operation which should save a Graph to the Store completely replacing any existing Graph with the same URI
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessPut(IHttpProtocolContext context);
+        void ProcessPut(IHttpContext context);
 
         /// <summary>
         /// Processes a DELETE operation which delete a Graph from the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessDelete(IHttpProtocolContext context);
+        void ProcessDelete(IHttpContext context);
 
         /// <summary>
         /// Processes a HEAD operation which gets information about a Graph in the Store
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        void ProcessHead(IHttpProtocolContext context);
+        void ProcessHead(IHttpContext context);
 
         /// <summary>
         /// Processes a PATCH operation which may choose
         /// </summary>
         /// <param name="context"></param>
-        void ProcessPatch(IHttpProtocolContext context);
+        void ProcessPatch(IHttpContext context);
     }
 }
+
+#endif

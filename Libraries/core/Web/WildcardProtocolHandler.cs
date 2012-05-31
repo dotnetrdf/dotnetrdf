@@ -104,7 +104,7 @@ namespace VDS.RDF.Web
                 }
             }
 
-            ProtocolHandlerConfiguration config = new ProtocolHandlerConfiguration(context, g, objNode);
+            ProtocolHandlerConfiguration config = new ProtocolHandlerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it
             if (config.CacheSliding)

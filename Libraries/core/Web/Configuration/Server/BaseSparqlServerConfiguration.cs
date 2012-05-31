@@ -33,12 +33,11 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -53,7 +52,8 @@ namespace VDS.RDF.Web.Configuration.Server
     /// <summary>
     /// Abstract Base class for Handler Configuration for SPARQL Servers
     /// </summary>
-    public abstract class BaseSparqlServerConfiguration : BaseHandlerConfiguration
+    public abstract class BaseSparqlServerConfiguration
+        : BaseHandlerConfiguration
     {
         /// <summary>
         /// Query processor
@@ -331,7 +331,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseSparqlServerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseSparqlServerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
             //Get the Query Processor to be used
@@ -600,7 +600,8 @@ namespace VDS.RDF.Web.Configuration.Server
     /// <summary>
     /// Concrete implementation of a Handler Configuration for SPARQL Servers
     /// </summary>
-    public class SparqlServerConfiguration : BaseSparqlServerConfiguration
+    public class SparqlServerConfiguration 
+        : BaseSparqlServerConfiguration
     {
         /// <summary>
         /// Creates a new SPARQL Server Configuration from information in a Configuration Graph
@@ -608,7 +609,7 @@ namespace VDS.RDF.Web.Configuration.Server
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public SparqlServerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public SparqlServerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
 

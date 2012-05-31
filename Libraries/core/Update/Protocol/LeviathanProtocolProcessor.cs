@@ -33,7 +33,7 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;

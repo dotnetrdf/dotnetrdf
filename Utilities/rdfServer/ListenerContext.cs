@@ -12,7 +12,7 @@ using VDS.Web;
 namespace VDS.RDF.Utilities.Server
 {
     public class ServerContext
-        : IHttpProtocolContext
+        : IHttpContext
     {
         private HttpServerContext _context;
         private IHttpProtocolRequest _request;

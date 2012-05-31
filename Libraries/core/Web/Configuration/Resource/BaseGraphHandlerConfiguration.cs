@@ -33,10 +33,9 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
-using System.Web;
 using VDS.RDF.Configuration;
 
 namespace VDS.RDF.Web.Configuration.Resource
@@ -55,7 +54,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseGraphHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseGraphHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
             INode graphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingGraph));
@@ -103,7 +102,8 @@ namespace VDS.RDF.Web.Configuration.Resource
     /// <summary>
     /// Basic implementation of a Graph Handler configuration
     /// </summary>
-    public class GraphHandlerConfiguration : BaseGraphHandlerConfiguration
+    public class GraphHandlerConfiguration
+        : BaseGraphHandlerConfiguration
     {
         /// <summary>
         /// Creates a new Graph Handler Configuration
@@ -111,7 +111,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public GraphHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public GraphHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
     }
 }

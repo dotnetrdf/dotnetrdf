@@ -119,7 +119,7 @@ namespace VDS.RDF.Web
                 }
             }
 
-            SparqlServerConfiguration config = new SparqlServerConfiguration(context, g, objNode);
+            SparqlServerConfiguration config = new SparqlServerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it
             if (config.CacheSliding)

@@ -101,7 +101,7 @@ namespace VDS.RDF.Web
             String objUri = "dotnetrdf:" + context.Request.Path;
             INode objNode = g.GetUriNode(UriFactory.Create(objUri));
             if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Update Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
-            UpdateHandlerConfiguration config = new UpdateHandlerConfiguration(context, g, objNode);
+            UpdateHandlerConfiguration config = new UpdateHandlerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it
             if (config.CacheSliding)

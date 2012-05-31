@@ -103,6 +103,8 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
+#if !SILVERLIGHT
+
                 case WebDemandDataset:
                     storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
                     if (storeNode == null)
@@ -122,6 +124,8 @@ namespace VDS.RDF.Configuration
                         }
                     }
                     break;
+
+#endif
             } 
 
             return (obj != null);

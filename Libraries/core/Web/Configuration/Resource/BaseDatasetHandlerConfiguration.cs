@@ -33,13 +33,12 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query.Datasets;
 
@@ -48,7 +47,8 @@ namespace VDS.RDF.Web.Configuration.Resource
     /// <summary>
     /// Abstract Base Class for Dataset Handler configurations
     /// </summary>
-    public class BaseDatasetHandlerConfiguration : BaseHandlerConfiguration
+    public class BaseDatasetHandlerConfiguration 
+        : BaseHandlerConfiguration
     {
         private ISparqlDataset _dataset;
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         /// <param name="context">HTTP Context</param>
         /// <param name="config">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseDatasetHandlerConfiguration(HttpContext context, IGraph config, INode objNode)
+        public BaseDatasetHandlerConfiguration(IHttpContext context, IGraph config, INode objNode)
             : base(context, config, objNode)
         {
             INode datasetNode = ConfigurationLoader.GetConfigurationNode(config, objNode, ConfigurationLoader.CreateConfigurationNode(config, ConfigurationLoader.PropertyUsingDataset));
@@ -91,7 +91,8 @@ namespace VDS.RDF.Web.Configuration.Resource
     /// <summary>
     /// Basic implementation of a Dataset Handler Configuration
     /// </summary>
-    public class DatasetHandlerConfiguration : BaseDatasetHandlerConfiguration
+    public class DatasetHandlerConfiguration
+        : BaseDatasetHandlerConfiguration
     {
         /// <summary>
         /// Creates a new Dataset Handler configuration
@@ -99,7 +100,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         /// <param name="context">HTTP Context</param>
         /// <param name="config">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public DatasetHandlerConfiguration(HttpContext context, IGraph config, INode objNode)
+        public DatasetHandlerConfiguration(IHttpContext context, IGraph config, INode objNode)
             : base(context, config, objNode) { }
     }
 }

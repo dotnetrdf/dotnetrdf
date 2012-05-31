@@ -100,7 +100,7 @@ namespace VDS.RDF.Web
                 }
             }
 
-            GraphHandlerConfiguration config = new GraphHandlerConfiguration(context, g, objNode);
+            GraphHandlerConfiguration config = new GraphHandlerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it
             if (config.CacheSliding)

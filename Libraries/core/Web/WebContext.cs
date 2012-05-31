@@ -47,10 +47,10 @@ using System.Web;
 namespace VDS.RDF.Web
 {
     /// <summary>
-    /// Implementation of <see cref="IHttpProtocolContext"/> which wraps the standard System.Web <see cref="HttpContext"/>
+    /// Implementation of <see cref="IHttpContext"/> which wraps the standard System.Web <see cref="HttpContext"/>
     /// </summary>
     public class WebContext
-        : IHttpProtocolContext
+        : IHttpContext
     {
         private HttpContext _context;
         private IHttpProtocolRequest _request;

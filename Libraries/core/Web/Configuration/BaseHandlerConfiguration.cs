@@ -33,16 +33,14 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Writing;
 
 namespace VDS.RDF.Web.Configuration
 {
@@ -126,7 +124,7 @@ namespace VDS.RDF.Web.Configuration
         /// It is acceptable for the <paramref name="context">context</paramref> parameter to be null
         /// </para>
         /// </remarks>
-        public BaseHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : this(g, objNode) { }
 
         /// <summary>

@@ -33,12 +33,11 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query.Expressions;
@@ -75,7 +74,7 @@ namespace VDS.RDF.Web.Configuration.Update
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseUpdateHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseUpdateHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
             //Then get the Update Processor to be used
@@ -196,7 +195,8 @@ namespace VDS.RDF.Web.Configuration.Update
     /// <summary>
     /// Basic implementation of a Update Handler Configuration
     /// </summary>
-    public class UpdateHandlerConfiguration : BaseUpdateHandlerConfiguration
+    public class UpdateHandlerConfiguration
+        : BaseUpdateHandlerConfiguration
     {
         /// <summary>
         /// Creates a new Update Handler Configuration
@@ -204,7 +204,7 @@ namespace VDS.RDF.Web.Configuration.Update
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public UpdateHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public UpdateHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
     }
 }

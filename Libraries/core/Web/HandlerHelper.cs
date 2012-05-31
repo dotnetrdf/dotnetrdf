@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_ASP
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,7 +67,7 @@ namespace VDS.RDF.Web
         /// <remarks>
         /// <strong>Note: </strong> Unauthenticated Users are treated as guests
         /// </remarks>
-        private static String GetUsername(IHttpProtocolContext context)
+        private static String GetUsername(IHttpContext context)
         {
             if (context.User != null)
             {
@@ -86,7 +88,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         /// <param name="groups">User Groups to test against</param>
         /// <returns></returns>
-        public static bool IsAuthenticated(IHttpProtocolContext context, IEnumerable<UserGroup> groups)
+        public static bool IsAuthenticated(IHttpContext context, IEnumerable<UserGroup> groups)
         {
             String user = HandlerHelper.GetUsername(context);
             if (groups.Any())
@@ -113,7 +115,7 @@ namespace VDS.RDF.Web
         /// <param name="groups">User Groups to test against</param>
         /// <param name="action">Action to check for permission for</param>
         /// <returns></returns>
-        public static bool IsAuthenticated(IHttpProtocolContext context, IEnumerable<UserGroup> groups, String action)
+        public static bool IsAuthenticated(IHttpContext context, IEnumerable<UserGroup> groups, String action)
         {
             if (groups.Any())
             {
@@ -158,7 +160,7 @@ namespace VDS.RDF.Web
         /// This method was added in 0.4.1 to allow for the <see cref="NegotiateByFileExtension">NegotiateByFileExtension</see> module to work properly.  Essentially the module may rewrite the <strong>Accept</strong> header of the HTTP request but this will not be visible directly via the <em>AcceptTypes</em> property of the HTTP request as that is fixed at the time the HTTP request is parsed and enters the ASP.Net pipeline.  This method checks whether the <strong>Accept</strong> header is present and if it has been modified from the <em>AcceptTypes</em> property uses the header instead of the property
         /// </para>
         /// </remarks>
-        public static String[] GetAcceptTypes(IHttpProtocolContext context)
+        public static String[] GetAcceptTypes(IHttpContext context)
         {
             String accept = context.Request.Headers["Accept"];
             if (accept != null && !accept.Equals(String.Empty))
@@ -187,7 +189,7 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
-        public static void SendToClient(IHttpProtocolContext context, Object result)
+        public static void SendToClient(IHttpContext context, Object result)
         {
             HandlerHelper.SendToClient(context, result, null);
         }
@@ -198,7 +200,7 @@ namespace VDS.RDF.Web
         /// <param name="context">Context of the HTTP Request</param>
         /// <param name="result">Results of the Sparql Query</param>
         /// <param name="config">Handler Configuration</param>
-        public static void SendToClient(IHttpProtocolContext context, Object result, BaseHandlerConfiguration config)
+        public static void SendToClient(IHttpContext context, Object result, BaseHandlerConfiguration config)
         {
             MimeTypeDefinition definition = null;
             String ctype = "text/plain";
@@ -381,7 +383,7 @@ namespace VDS.RDF.Web
         /// <param name="title">Error title</param>
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
-        public static void HandleQueryErrors(IHttpProtocolContext context, BaseHandlerConfiguration config, String title, String query, Exception ex)
+        public static void HandleQueryErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String query, Exception ex)
         {
             HandleQueryErrors(context, config, title, query, ex, (int)HttpStatusCode.InternalServerError);
         }
@@ -395,7 +397,7 @@ namespace VDS.RDF.Web
         /// <param name="query">Sparql Query</param>
         /// <param name="ex">Error</param>
         /// <param name="statusCode">HTTP Status Code to return</param>
-        public static void HandleQueryErrors(IHttpProtocolContext context, BaseHandlerConfiguration config, String title, String query, Exception ex, int statusCode)
+        public static void HandleQueryErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String query, Exception ex, int statusCode)
         {
             //Clear any existing Response and set our HTTP Status Code
             context.Response.Clear();
@@ -449,7 +451,7 @@ namespace VDS.RDF.Web
         /// <param name="title">Error title</param>
         /// <param name="update">SPARQL Update</param>
         /// <param name="ex">Error</param>
-        public static void HandleUpdateErrors(IHttpProtocolContext context, BaseHandlerConfiguration config, String title, String update, Exception ex)
+        public static void HandleUpdateErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String update, Exception ex)
         {
             HandleUpdateErrors(context, config, title, update, ex, (int)HttpStatusCode.InternalServerError);
         }
@@ -463,7 +465,7 @@ namespace VDS.RDF.Web
         /// <param name="update">SPARQL Update</param>
         /// <param name="ex">Error</param>
         /// <param name="statusCode">HTTP Status Code to return</param>
-        public static void HandleUpdateErrors(IHttpProtocolContext context, BaseHandlerConfiguration config, String title, String update, Exception ex, int statusCode)
+        public static void HandleUpdateErrors(IHttpContext context, BaseHandlerConfiguration config, String title, String update, Exception ex, int statusCode)
         {
             //Clear any existing Response
             context.Response.Clear();
@@ -549,7 +551,7 @@ namespace VDS.RDF.Web
         /// <param name="etag">ETag</param>
         /// <param name="lastModified">Last Modified</param>
         /// <returns>True if a 304 Not Modified can be sent</returns>
-        public static bool CheckCachingHeaders(IHttpProtocolContext context, String etag, DateTime? lastModified)
+        public static bool CheckCachingHeaders(IHttpContext context, String etag, DateTime? lastModified)
         {
             if (context == null) return false;
             if (etag == null && lastModified == null) return false;
@@ -587,7 +589,7 @@ namespace VDS.RDF.Web
         /// <param name="context">HTTP Context</param>
         /// <param name="etag">ETag</param>
         /// <param name="lastModified">Last Modified</param>
-        public static void AddCachingHeaders(IHttpProtocolContext context, String etag, DateTime? lastModified)
+        public static void AddCachingHeaders(IHttpContext context, String etag, DateTime? lastModified)
         {
             if (context == null) return;
             if (etag == null && lastModified == null) return;
@@ -629,7 +631,7 @@ namespace VDS.RDF.Web
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <param name="config">Handler Configuration</param>
-        public static void AddStandardHeaders(IHttpProtocolContext context, BaseHandlerConfiguration config)
+        public static void AddStandardHeaders(IHttpContext context, BaseHandlerConfiguration config)
         {
             try
             {
@@ -646,7 +648,7 @@ namespace VDS.RDF.Web
         /// Adds CORS headers which are needed to allow JS clients to access RDF/SPARQL endpoints powered by dotNetRDF
         /// </summary>
         /// <param name="context">HTTP Context</param>
-        public static void AddCorsHeaders(IHttpProtocolContext context)
+        public static void AddCorsHeaders(IHttpContext context)
         {
             try
             {
@@ -671,3 +673,5 @@ namespace VDS.RDF.Web
         #endregion
     }
 }
+
+#endif

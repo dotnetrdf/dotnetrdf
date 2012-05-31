@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if !NO_ASP
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -49,7 +51,7 @@ namespace VDS.RDF.Web
     /// <remarks>
     /// Abstraction which allows us to reuse code for request analysis and response processing across different HTTP server environments
     /// </remarks>
-    public interface IHttpProtocolContext
+    public interface IHttpContext
     {
         IHttpProtocolRequest Request
         {
@@ -152,3 +154,5 @@ namespace VDS.RDF.Web
         }
     }
 }
+
+#endif

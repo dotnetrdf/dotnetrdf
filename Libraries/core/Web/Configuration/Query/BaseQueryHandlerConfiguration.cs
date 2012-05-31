@@ -33,13 +33,12 @@ terms.
 
 */
 
-#if !NO_WEB && !NO_ASP
+#if !NO_ASP
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Web;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Parsing;
@@ -53,7 +52,8 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Abstract Base class for SPARQL Query Handlers
     /// </summary>
-    public class BaseQueryHandlerConfiguration : BaseHandlerConfiguration
+    public class BaseQueryHandlerConfiguration 
+        : BaseHandlerConfiguration
     {
         /// <summary>
         /// Query Processor to be used
@@ -126,7 +126,7 @@ namespace VDS.RDF.Web.Configuration.Query
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public BaseQueryHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public BaseQueryHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode)
         {
             //Get the Query Processor to be used
@@ -454,7 +454,8 @@ namespace VDS.RDF.Web.Configuration.Query
     /// <summary>
     /// Basic implementation of a Query Handler Configuration
     /// </summary>
-    public class QueryHandlerConfiguration : BaseQueryHandlerConfiguration
+    public class QueryHandlerConfiguration 
+        : BaseQueryHandlerConfiguration
     {
         /// <summary>
         /// Creates a new Query Handler Configuration
@@ -462,7 +463,7 @@ namespace VDS.RDF.Web.Configuration.Query
         /// <param name="context">HTTP Context</param>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        public QueryHandlerConfiguration(HttpContext context, IGraph g, INode objNode)
+        public QueryHandlerConfiguration(IHttpContext context, IGraph g, INode objNode)
             : base(context, g, objNode) { }
 
         /// <summary>
