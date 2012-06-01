@@ -49,7 +49,8 @@ namespace VDS.RDF.Query
     /// </summary>
     /// <remarks>
     /// </remarks>
-    public abstract class SparqlResultBinder : IDisposable
+    public abstract class SparqlResultBinder
+        : IDisposable
     {
         private SparqlQuery _query;
         private Dictionary<int,BindingGroup> _groups = null;
@@ -119,7 +120,8 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="groupID">Group ID</param>
         /// <returns></returns>
-        public virtual BindingGroup Group(int groupID) {
+        public virtual BindingGroup Group(int groupID)
+        {
             if (this._groups != null)
             {
                 if (this._groups.ContainsKey(groupID))
@@ -174,10 +176,12 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Results Binder used by Leviathan
     /// </summary>
-    public class LeviathanResultBinder : SparqlResultBinder
+    public class LeviathanResultBinder
+        : SparqlResultBinder
     {
         private SparqlEvaluationContext _context;
         private GroupMultiset _groupSet;
+        private int _groupContextDepth = 0;
 
         /// <summary>
         /// Creates a new Leviathan Results Binder
@@ -229,7 +233,7 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public override bool IsGroup(int groupID)
         {
-            if (this._context.InputMultiset is GroupMultiset)
+            if (this._context.InputMultiset is GroupMultiset || this._groupSet != null)
             {
                 return true;
             }
@@ -251,6 +255,10 @@ namespace VDS.RDF.Query
                 GroupMultiset groupSet = (GroupMultiset)this._context.InputMultiset;
                 return groupSet.Group(groupID);
             }
+            else if (this._groupSet != null)
+            {
+                return this._groupSet.Group(groupID);
+            }
             else
             {
                 throw new RdfQueryException("Cannot retrieve a Group when the Input Multiset is not a Group Multiset");
@@ -269,6 +277,11 @@ namespace VDS.RDF.Query
                 {
                     this._groupSet = (GroupMultiset)this._context.InputMultiset;
                     this._context.InputMultiset = this._groupSet.Contents;
+                    this._groupContextDepth = 1;
+                }
+                else if (this._groupContextDepth > 0)
+                {
+                    this._groupContextDepth++;
                 }
                 else
                 {
@@ -279,8 +292,16 @@ namespace VDS.RDF.Query
             {
                 if (this._groupSet != null)
                 {
-                    this._context.InputMultiset = this._groupSet;
-                    this._groupSet = null;
+                    if (this._groupContextDepth > 1)
+                    {
+                        this._groupContextDepth--;
+                    }
+                    else
+                    {
+                        this._context.InputMultiset = this._groupSet;
+                        this._groupSet = null;
+                        this._groupContextDepth = 0;
+                    }
                 }
                 else
                 {

@@ -182,33 +182,33 @@ namespace VDS.RDF
         #region Selection
 
         /// <summary>
-        /// Selects the Blank Node with the given ID
+        /// Selects the Blank Node with the given ID if it exists in the Graph, returns null otherwise
         /// </summary>
         /// <param name="nodeId">Node ID</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         IBlankNode GetBlankNode(string nodeId);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value and Language
+        /// Selects the Literal Node with the given Value and Language if it exists in the Graph, returns null otherwise
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         ILiteralNode GetLiteralNode(string literal, string langspec);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value
+        /// Selects the Literal Node with the given Value if it exists in the Graph, returns null otherwise
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         ILiteralNode GetLiteralNode(string literal);
 
         /// <summary>
-        /// Selects the Literal Node with the given Value and DataType
+        /// Selects the Literal Node with the given Value and DataType if it exists in the Graph, returns otherwise
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <param name="datatype">Data Type of the Literal</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
@@ -292,17 +292,17 @@ namespace VDS.RDF
         IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj);
 
         /// <summary>
-        /// Selects the Uri Node with the given QName
+        /// Selects the Uri Node with the given QName if it exists in the Graph, returns null otherwise
         /// </summary>
         /// <param name="qname">QName</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         IUriNode GetUriNode(string qname);
 
         /// <summary>
-        /// Selects the Uri Node with the given Uri
+        /// Selects the Uri Node with the given Uri if it exists in the Graph, returns null otherwise
         /// </summary>
         /// <param name="uri">Uri</param>
-        /// <returns></returns>
+        /// <returns>The Node if it exists in the Graph or null</returns>
         IUriNode GetUriNode(Uri uri);
 
         /// <summary>
@@ -464,7 +464,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for RDF Graphs which provide Transactions i.e. changes to them can be Flushed (committed) or Discard (rolled back) as desired
     /// </summary>
-    public interface ITransactionalGraph : IGraph
+    public interface ITransactionalGraph
+        : IGraph
     {
         /// <summary>
         /// Flushes any changes to the Graph
