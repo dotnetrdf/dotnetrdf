@@ -788,6 +788,43 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
+        [TestMethod]
+        public void StorageVirtuosoBlankNodeDelete()
+        {
+            //First ensure data is present in the store
+            VirtuosoManager manager = new VirtuosoManager(VirtuosoManager.DefaultDB, VirtuosoTestUsername, VirtuosoTestPassword);
+            manager.DeleteGraph("http://localhost/deleteBNodeTest");
+            Graph g = new Graph();
+            Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+            g.Assert(t);
+
+            manager.UpdateGraph("http://localhost/deleteBNodeTest", t.AsEnumerable(), null);
+
+            Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/deleteBNodeTest> { ?s a <http://example.org/object> } }");
+            if (results is SparqlResultSet)
+            {
+                TestTools.ShowResults(results);
+                Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+
+                //Now we've ensured data is present we can first load the graph and then try to delete the given triple
+                Graph h = new Graph();
+                manager.LoadGraph(h, "http://localhost/deleteBNodeTest");
+                Assert.AreEqual(g, h, "Graphs should be equal");
+
+                //Then we can go ahead and delete the triples from this graph
+                manager.UpdateGraph("http://localhost/deleteBNodeTest", null, h.Triples);
+                Graph i = new Graph();
+                manager.LoadGraph(i, "http://localhost/deleteBNodeTest");
+                Assert.IsTrue(i.IsEmpty, "Graph should be empty");
+                Assert.AreNotEqual(h, i);
+                Assert.AreNotEqual(g, i);
+            }
+            else
+            {
+                Assert.Fail("Didn't get a SPARQL Result Set as expected");
+            }
+        }
+
         private static void CheckQueryResult(Object results, bool expectResultSet)
         {
             NTriplesFormatter formatter = new NTriplesFormatter();

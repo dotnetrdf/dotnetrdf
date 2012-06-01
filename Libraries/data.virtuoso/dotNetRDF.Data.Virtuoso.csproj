@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataExtensions.cs" />
+    <Compile Include="VirtuosoFormatter.cs" />
     <Compile Include="VirtuosoManager.cs" />
     <Compile Include="VirtuosoObjectFactory.cs" />
     <Compile Include="VirtuosoReader.cs" />

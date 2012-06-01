@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
     /// Although this class takes a Database Name to ensure compatability with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter
     /// </para>
     /// <para>
-    /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and then retrieved will have different Blank Node IDs to those input.  In addition there is no guarentee that when you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs even if the Graph being saved was originally retrieved from Virtuoso.
+    /// Virtuoso automatically assigns IDs to Blank Nodes input into it, these IDs are <strong>not</strong> based on the actual Blank Node ID so inputting a Blank Node with the same ID multiple times will result in multiple Nodes being created in Virtuoso.  This means that data containing Blank Nodes which is stored to Virtuoso and then retrieved will have different Blank Node IDs to those input.  In addition there is no guarentee that when you save a Graph containing Blank Nodes into Virtuoso that retrieving it will give the same Blank Node IDs even if the Graph being saved was originally retrieved from Virtuoso.  Finally please see the remarks on the <see cref="VirtuosoManager.UpdateGraph">UpdateGraph()</see> method which deal with how insertion and deletion of triples containing blank nodes into existing graphs operates.
     /// </para>
     /// <para>
     /// You can use a null Uri or an empty String as a Uri to indicate that operations should affect the Default Graph.  Where the argument is only a Graph a null <see cref="IGraph.BaseUri">BaseUri</see> property indicates that the Graph affects the Default Graph
@@ -87,7 +87,7 @@ namespace VDS.RDF.Storage
 
         private VirtuosoConnection _db;
         private VirtuosoTransaction _dbtrans;
-        private SparqlFormatter _formatter = new SparqlFormatter();
+        private ITripleFormatter _formatter = new VirtuosoFormatter();
 
         private String _dbserver, _dbname, _dbuser, _dbpwd;
         private int _dbport, _timeout = 0;
@@ -511,6 +511,17 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">Graph Uri of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
+        /// <remarks>
+        /// <para>
+        /// In the case of inserts where blank nodes are present the data will be inserted but new blank nodes will be created.  You cannot insert data that refers to existing blank nodes via this method, consider using a INSERT WHERE style SPARQL Update instead.
+        /// </para>
+        /// <para>
+        /// Note that Blank Nodes cannot always be deleted successfully, if you have retrieved the triples you are now trying to delete from Virtuoso and they contain blank nodes then this will likely work as expected.  Otherwise deletetions of Blank Nodes cannot be guaranteed.
+        /// </para>
+        /// <para>
+        /// If the Graph being modified is relatively small it may be safer to load the graph into memory, makes the modifications there and then persist the graph back to the store (which overwrites the previous version of the graph).
+        /// </para>
+        /// </remarks>
         public override void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             try
@@ -523,37 +534,53 @@ namespace VDS.RDF.Storage
                 {
                     if (removals.Any())
                     {
+                        //HACK: This is super hacky but works in most cases provided the blank node containing triples
+                        //we're attempting to delete originated from Virtuoso
+                        //We use the VirtuosoFormatter as our formatter which formats Blank Nodes as calls to the
+                        //bif:rdf_make_iid_of_qname('nodeID://bnode') function which works if the blank node originates from Virtuoso
+
+                        VirtuosoCommand deleteCmd = new VirtuosoCommand();
+                        deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
+                        StringBuilder delete = new StringBuilder();
                         if (removals.All(t => t.IsGroundTriple))
                         {
-                            VirtuosoCommand deleteCmd = new VirtuosoCommand();
-                            deleteCmd.CommandTimeout = (this._timeout > 0 ? this._timeout : deleteCmd.CommandTimeout);
-                            StringBuilder delete = new StringBuilder();
                             delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE DATA");
-                            if (graphUri != null)
-                            {
-                                delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
-                            }
-                            else
-                            {
-                                throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
-                            }
-                            delete.AppendLine("{");
-                            foreach (Triple t in removals)
-                            {
-                                delete.AppendLine(t.ToString(this._formatter));
-                            }
-                            delete.AppendLine("}");
-                            deleteCmd.CommandText = delete.ToString();
-                            deleteCmd.Connection = this._db;
-                            deleteCmd.Transaction = this._dbtrans;
-
-                            r = deleteCmd.ExecuteNonQuery();
-                            if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when deleting Triples");
                         }
                         else
                         {
-                            throw new RdfStorageException("Unable to explicitly delete Blank Nodes from Virtuoso");
+                            //If there are Blank Nodes present we must use a DELETE rather than a DELETE DATA since
+                            //DELETE DATA does not allow the backquoted expressions required to do this hack
+                            delete.AppendLine("SPARQL define output:format '_JAVA_' DELETE");
                         }
+                        if (graphUri != null)
+                        {
+                            delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
+                        }
+                        else
+                        {
+                            throw new RdfStorageException("Cannot update an unnamed Graph in a Virtuoso Store using this method - you must specify the URI of a Graph to Update");
+                        }
+                        delete.AppendLine("{");
+                        foreach (Triple t in removals)
+                        {
+                            delete.AppendLine(t.ToString(this._formatter));
+                        }
+                        delete.AppendLine("}");
+
+                        //If there are Blank Nodes present we will be using a DELETE rather than a DELETE DATA
+                        //so we need to add a WHERE clause
+                        if (removals.Any(t => !t.IsGroundTriple))
+                        {
+                            delete.AppendLine("WHERE { }");
+                        }
+
+                        //Run the Delete
+                        deleteCmd.CommandText = delete.ToString();
+                        deleteCmd.Connection = this._db;
+                        deleteCmd.Transaction = this._dbtrans;
+
+                        r = deleteCmd.ExecuteNonQuery();
+                        if (r < 0) throw new RdfStorageException("Virtuoso encountered an error when deleting Triples");
                     }
                 }
 

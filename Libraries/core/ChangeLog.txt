@@ -24,6 +24,7 @@ Changed
  - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed
  - Fix for a bug with multi-threaded access to our Trie implementation
  - Fix for a bug with nested aggregation evaluation being incorrect
+ - Fix for bugs readrding insertion and deletion of Blank Node containing triples via the UpdateGraph() method when using Virtuoso
 - Parsing
  - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
 - Query

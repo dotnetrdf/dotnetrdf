@@ -55,7 +55,8 @@ namespace VDS.RDF.Writing.Formatting
     /// <summary>
     /// Formatter for formatting Nodes for use in SPARQL and for formatting SPARQL Queries
     /// </summary>
-    public class SparqlFormatter : TurtleFormatter, IQueryFormatter, IResultFormatter
+    public class SparqlFormatter 
+        : TurtleFormatter, IQueryFormatter, IResultFormatter
     {
         private Uri _tempBaseUri;
 
