@@ -348,8 +348,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">URI for the Node</param>
         /// <returns></returns>
+        /// <remarks>
+        /// Generally we expect to be passed an absolute URI, while relative URIs are permitted the behaviour is less well defined.  If there is a Base URI defined for the Graph then relative URIs will be automatically resolved against that Base, if the Base URI is not defined then relative URIs will be left as is.  In this case issues may occur when trying to serialize the data or when accurate round tripping is required.
+        /// </remarks>
         public virtual IUriNode CreateUriNode(Uri uri)
         {
+            if (!uri.IsAbsoluteUri && this._baseuri != null) uri = Tools.ResolveUri(uri, this._baseuri);
             return new UriNode(this, uri);
         }
 

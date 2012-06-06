@@ -56,6 +56,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
+        [Obsolete("Deprecated for public use, will be made removed in future releases", false)]
         public static void StreamCopy(Stream input, Stream output)
         {
             int i;
@@ -77,6 +78,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <returns>Memory Stream with a local copy of the Input Stream seeked to the origin and ready to read from</returns>
+        [Obsolete("Deprecated for public use, will be removed in future release", false)]
         public static MemoryStream StreamCopyLocal(Stream input)
         {
             MemoryStream temp = new MemoryStream();
@@ -185,11 +187,11 @@ namespace VDS.RDF
                         //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
                         if (u.ToString().StartsWith("#"))
                         {
-                            return Tools.ResolveUri(u, b);
+                            return Tools.ResolveUri(u, b).ToString();
                         }
                         else if (Tools.IsValidBaseUri(b))
                         {
-                            return Tools.ResolveUri(u, b);
+                            return Tools.ResolveUri(u, b).ToString();
                         }
                         else
                         {
@@ -223,11 +225,10 @@ namespace VDS.RDF
         /// <param name="baseUri">Base Uri to resolve against</param>
         /// <returns>Resolved Uri as a String</returns>
         /// <exception cref="UriFormatException">Uri Format Exception if one/both of the URIs is malformed</exception>
-        /// <remarks>We recommend that you don't use this method directly but invoke it via the ResolveUri function, this ensures that certain classes of Uri resolve correctly</remarks>
-        internal static String ResolveUri(Uri uriref, Uri baseUri)
+        public static Uri ResolveUri(Uri uriref, Uri baseUri)
         {
             Uri result = new Uri(baseUri, uriref);
-            return result.ToString();
+            return result;
         }
 
         /// <summary>

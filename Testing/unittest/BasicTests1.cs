@@ -278,6 +278,17 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void UriResolutionWithGraphBase()
+        {
+            IGraph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/");
+
+            Uri expected = new Uri("http://example.org/relative/path");
+            IUriNode actual = g.CreateUriNode(new Uri("relative/path", UriKind.Relative));
+            Assert.AreEqual(expected, actual.Uri);
+        }
+
+        [TestMethod]
         public void UriHashCodes()
         {
             //Quick Test to see if how the Uri classes Hash Codes behave
