@@ -44,9 +44,11 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Parser Context class for TriG Parsers
     /// </summary>
-    public class TriGParserContext : TokenisingStoreParserContext
+    public class TriGParserContext 
+        : TokenisingStoreParserContext
     {
         private bool _defaultGraphExists = false;
+        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Parser Context with default settings
@@ -139,6 +141,14 @@ namespace VDS.RDF.Parsing.Contexts
                 {
                     this._defaultGraphExists = value;
                 }
+            }
+        }
+
+        public TriGSyntax Syntax
+        {
+            get
+            {
+                return this._syntax;
             }
         }
     }

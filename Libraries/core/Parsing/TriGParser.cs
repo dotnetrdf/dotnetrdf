@@ -46,6 +46,8 @@ using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
 {
+
+
     /// <summary>
     /// Parser for parsing TriG (Turtle with Named Graphs) RDF Syntax into a Triple Store
     /// </summary>
@@ -54,11 +56,22 @@ namespace VDS.RDF.Parsing
         : IStoreReader, ITraceableTokeniser
     {
         private bool _tracetokeniser = false;
+        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
-        /// Default Graph Uri for default graphs parsed from TriG input
+        /// Creates a TriG Parser than uses the default syntax
         /// </summary>
-        public const String DefaultGraphURI = "trig:default-graph";
+        public TriGParser()
+        { }
+
+        /// <summary>
+        /// Creates a TriG Parser which uses the specified syntax
+        /// </summary>
+        /// <param name="syntax">Syntax</param>
+        public TriGParser(TriGSyntax syntax)
+        {
+            this._syntax = syntax;
+        }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
@@ -72,6 +85,21 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._tracetokeniser = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the TriG syntax used
+        /// </summary>
+        public TriGSyntax Syntax
+        {
+            get
+            {
+                return this._syntax;
+            }
+            set
+            {
+                this._syntax = value;
             }
         }
 
@@ -152,7 +180,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 //Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
                 this.Parse(context);
             }
             catch
@@ -233,15 +261,47 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Tries to parse a directive
+        /// </summary>
+        /// <param name="context"></param>
         private void TryParseDirective(TriGParserContext context)
         {
-            //See what type of directive it is
             IToken directive = context.Tokens.Dequeue();
+            this.TryParseDirective(context, directive);
+        }
 
+        /// <summary>
+        /// Tries to parse directives
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="directive"></param>
+        /// <remarks>
+        /// This overload is needed because in some cases we may dequeue a token before we know it is a directive
+        /// </remarks>
+        private void TryParseDirective(TriGParserContext context, IToken directive)
+        {
+            //See what type of directive it is
             if (directive.TokenType == Token.BASEDIRECTIVE)
             {
-                //Base Directives Invalid in TriG
-                throw ParserHelper.Error("The Base Directive is not a valid in TriG",directive);
+                IToken baseUri = context.Tokens.Dequeue();
+                if (baseUri.TokenType == Token.URI)
+                {
+                    try
+                    {
+                        Uri newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
+                        context.BaseUri = newBase;
+                        if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
+                    }
+                    catch (UriFormatException)
+                    {
+                        throw ParserHelper.Error("The URI '" + baseUri.Value + "' given for the Base URI  is not a valid URI", baseUri);
+                    }
+                }
+                else
+                {
+                    throw ParserHelper.Error("Unexpected Token '" + baseUri.GetType().ToString() + "' encountered, expected a URI Token after a @base directive", baseUri);
+                }
             }
             else if (directive.TokenType == Token.PREFIXDIRECTIVE)
             {
@@ -255,21 +315,14 @@ namespace VDS.RDF.Parsing
                         //Ensure the Uri is absolute
                         try
                         {
-                            Uri u = new Uri(uri.Value, UriKind.Absolute);
+                            Uri u = new Uri(Tools.ResolveUri(uri.Value, context.BaseUri.ToSafeString()));
                             String pre = (prefix.Value.Equals(":")) ? String.Empty : prefix.Value.Substring(0, prefix.Value.Length-1);
                             context.Namespaces.AddNamespace(pre, u);
                             if (!context.Handler.HandleNamespace(pre, u)) ParserHelper.Stop();
-
-                            //Expect a DOT to Terminate
-                            IToken dot = context.Tokens.Dequeue();
-                            if (dot.TokenType != Token.DOT)
-                            {
-                                throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Prefix Directive", dot);
-                            }
                         }
                         catch (UriFormatException)
                         {
-                            throw ParserHelper.Error("The URI '" + uri.Value + "' given for the prefix '" + prefix.Value + "' is not a valid Absolute URI", uri);
+                            throw ParserHelper.Error("The URI '" + uri.Value + "' given for the prefix '" + prefix.Value + "' is not a valid URI", uri);
                         }
                     }
                     else
@@ -285,6 +338,13 @@ namespace VDS.RDF.Parsing
             else
             {
                 throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive Token", directive);
+            }
+
+            //Expect a DOT to Terminate
+            IToken dot = context.Tokens.Dequeue();
+            if (dot.TokenType != Token.DOT)
+            {
+                throw ParserHelper.Error("Unexpected Token '" + dot.GetType().ToString() + "' encountered, expected a Dot (Line Terminator) Token to terminate a Base/Prefix Directive", dot);
             }
         }
 
@@ -427,6 +487,14 @@ namespace VDS.RDF.Parsing
                             this.TryParseCollection(context, graphUri, subjNode);
                         }
                         break;
+
+                    case Token.PREFIXDIRECTIVE:
+                    case Token.BASEDIRECTIVE:
+                        if (context.Syntax == TriGSyntax.Original) throw ParserHelper.Error("@base/@prefix directives are not permitted to occur inside a Graph in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser", subj);
+
+                        //Parse the directive then continue
+                        this.TryParseDirective(context, subj);
+                        continue;
 
                     case Token.EOF:
                         throw ParserHelper.Error("Unexpected End of File while trying to parse Triples", subj);

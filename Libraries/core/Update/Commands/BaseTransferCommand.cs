@@ -135,9 +135,9 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null)
             {
-                return (this._destUri == null || this._sourceUri == null) || this._sourceUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri) || this._destUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                return (this._destUri == null || this._sourceUri == null);
             }
             else
             {

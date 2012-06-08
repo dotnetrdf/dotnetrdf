@@ -44,10 +44,12 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// Tokeniser for TriG (Turtle with Named Graphs) RDF Syntax
     /// </summary>
-    public class TriGTokeniser : BaseTokeniser
+    public class TriGTokeniser
+        : BaseTokeniser
     {
         private BlockingTextReader _in;
         private int _lasttokentype = -1;
+        private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
@@ -55,6 +57,9 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Stream to read Tokens from</param>
         public TriGTokeniser(StreamReader input)
             : this(BlockingTextReader.Create(input)) { }
+
+        public TriGTokeniser(StreamReader input, TriGSyntax syntax)
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
@@ -68,11 +73,28 @@ namespace VDS.RDF.Parsing.Tokens
         }
 
         /// <summary>
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
+        /// </summary>
+        /// <param name="input">Stream to read Tokens from</param>
+        public TriGTokeniser(BlockingTextReader input, TriGSyntax syntax)
+            : this(input) 
+        {
+            this._syntax = syntax;
+        }
+
+        /// <summary>
         /// Creates a new TriG Tokeniser which reads Tokens from the given Input
         /// </summary>
         /// <param name="input">Input to read Tokens from</param>
         public TriGTokeniser(TextReader input)
             : this(BlockingTextReader.Create(input)) { }
+
+        /// <summary>
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Input
+        /// </summary>
+        /// <param name="input">Input to read Tokens from</param>
+        public TriGTokeniser(TextReader input, TriGSyntax syntax)
+            : this(BlockingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Gets the next available Token from the Input Stream
@@ -368,6 +390,7 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else if (output.Equals("@base"))
             {
+                if (this._syntax == TriGSyntax.Original) throw new RdfParseException("The @base directive is not permitted in this version of TriG, later versions of TriG support this feature and may be enabled by changing your syntax setting when you create a TriG Parser");
                 this._lasttokentype = Token.BASEDIRECTIVE;
                 return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
             }

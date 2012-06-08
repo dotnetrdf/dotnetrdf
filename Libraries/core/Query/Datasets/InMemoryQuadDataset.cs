@@ -141,7 +141,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         protected override void RemoveGraphInternal(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null)
             {
                 if (this._store.HasGraph(null))
                 {

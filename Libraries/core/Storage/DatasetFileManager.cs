@@ -157,23 +157,13 @@ namespace VDS.RDF.Storage
                 {
                     g = this._store.Graph(graphUri);
                 }
-                else
-                {
-                    foreach (Uri u in WriterHelper.StoreDefaultGraphURIs.Select(s => UriFactory.Create(s)))
-                    {
-                        if (this._store.HasGraph(u))
-                        {
-                            g = this._store.Graph(u);
-                            break;
-                        }
-                    }
-                }
             }
             else if (this._store.HasGraph(graphUri))
             {
                 g = this._store.Graph(graphUri);
             }
 
+            if (g == null) return;
             handler.Apply(g);
         }
 

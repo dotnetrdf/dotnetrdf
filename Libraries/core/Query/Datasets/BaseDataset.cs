@@ -378,7 +378,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public virtual void RemoveGraph(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null)
             {
                 if (this._defaultGraph != null)
                 {
@@ -408,7 +408,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         public bool HasGraph(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null)
             {
                 if (this._defaultGraph != null)
                 {
@@ -462,7 +462,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                if (graphUri == null)
                 {
                     if (this._defaultGraph != null)
                     {
@@ -897,7 +897,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="graphUri">Graph URI</param>
         public sealed override void RemoveGraph(Uri graphUri)
         {
-            if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+            if (graphUri == null)
             {
                 if (this.InternalDefaultGraph != null)
                 {
@@ -930,7 +930,7 @@ namespace VDS.RDF.Query.Datasets
         {
             get
             {
-                if (graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri))
+                if (graphUri == null)
                 {
                     if (this.InternalDefaultGraph != null)
                     {

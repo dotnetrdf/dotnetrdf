@@ -158,17 +158,13 @@ namespace VDS.RDF.Query.Algebra
                     //Compute the Aggregate
                     if (groupSet != null)
                     {
-                        //context.InputMultiset = groupSet.Contents;
                         context.Binder.SetGroupContext(true);
                         foreach (int id in groupSet.SetIDs)
                         {
-                            //BUG: When an aggregate is nested inside another we get unexpected effects, the inner aggregate applies over the entire results
-                            //rather than just the group in question
                             INode aggValue = v.Aggregate.Apply(context, groupSet.GroupSetIDs(id));
                             context.OutputMultiset[id].Add(v.Name, aggValue);
                         }
                         context.Binder.SetGroupContext(false);
-                        //context.InputMultiset = groupSet;
                     }
                     else
                     {

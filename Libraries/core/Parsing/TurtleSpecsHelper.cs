@@ -48,13 +48,28 @@ namespace VDS.RDF.Parsing
     public enum TurtleSyntax
     {
         /// <summary>
-        /// Turtle as originally specified by the <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle Submission</a>
+        /// Turtle as originally specified by the <a href="http://www.w3.org/TeamSubmission/turtle/">Turtle Team Submission</a>
         /// </summary>
         Original,
         /// <summary>
         /// Turtle as standardised by the <a href="http://www.w3.org/TR/turtle/">W3C RDF Working Group</a>
         /// </summary>
         W3C
+    }
+
+    /// <summary>
+    /// Acceptable TriG syntaxes
+    /// </summary>
+    public enum TriGSyntax
+    {
+        /// <summary>
+        /// TriG as originally <a href="http://www4.wiwiss.fu-berlin.de/bizer/trig/">specified</a>.  @base is not permitted and @prefix may only occur outside of graphs
+        /// </summary>
+        Original,
+        /// <summary>
+        /// TriG as specified by the <a href="http://www.w3.org/2010/01/Turtle/Trig">TriG Member Submission</a>.  @base is permitted and both @base and @prefix may occur both inside and outside graphs but the tokens use Turtle Team Submission rules i.e. newer escape sequences and other changes in the official W3C specification of Turtle do not apply.
+        /// </summary>
+        MemberSubmission
     }
 
     /// <summary>

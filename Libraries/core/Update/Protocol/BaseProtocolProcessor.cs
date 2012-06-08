@@ -120,10 +120,6 @@ namespace VDS.RDF.Update.Protocol
                     {
                         throw new SparqlHttpProtocolUriResolutionException("Graph URIs specified using the ?graph parameter must be absolute URIs");
                     }
-                    else if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
-                    {
-                        return null;
-                    }
                 }
                 else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), DefaultParameterPattern))
                 {
@@ -164,10 +160,6 @@ namespace VDS.RDF.Update.Protocol
                     if (!graphUri.IsAbsoluteUri)
                     {
                         throw new SparqlHttpProtocolUriResolutionException("Graph URIs specified using the ?graph parameter must be absolute URIs");
-                    }
-                    else if (graphUri.ToString().Equals(GraphCollection.DefaultGraphUri))
-                    {
-                        return null;
                     }
                 }
                 else if (context.Request.QueryString.AllKeys.Contains("default") || Regex.IsMatch(context.Request.QueryString.ToString(), DefaultParameterPattern))

@@ -156,14 +156,7 @@ namespace VDS.RDF.Writing
                     //Queue the Graphs to be written
                     foreach (IGraph g in context.Store.Graphs)
                     {
-                        if (g.BaseUri == null)
-                        {
-                            context.Add(UriFactory.Create(GraphCollection.DefaultGraphUri));
-                        }
-                        else
-                        {
-                            context.Add(g.BaseUri);
-                        }
+                        context.Add(g.BaseUri);
                     }
 
                     //Start making the async calls
@@ -223,7 +216,7 @@ namespace VDS.RDF.Writing
         private String GraphToNQuads(ThreadedStoreWriterContext globalContext, NTriplesWriterContext context)
         {
             if (context.Graph.IsEmpty) return String.Empty;
-            if (context.PrettyPrint && !WriterHelper.IsDefaultGraph(context.Graph.BaseUri))
+            if (context.PrettyPrint && context.Graph.BaseUri != null)
             {
                 context.Output.WriteLine("# Graph: " + context.Graph.BaseUri.ToString());
             }
@@ -250,7 +243,7 @@ namespace VDS.RDF.Writing
             output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphUri != null && !WriterHelper.IsDefaultGraph(t.GraphUri))
+            if (t.GraphUri != null)
             {
                 output.Append(" <");
                 output.Append(context.UriFormatter.FormatUri(t.GraphUri));
@@ -304,11 +297,10 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = globalContext.GetNextUri();
-                while (u != null)
+                Uri u = null;
+                while (globalContext.TryGetNextUri(out u))
                 {
                     //Get the Graph from the Store
-                    if (WriterHelper.IsDefaultGraph(u) && !globalContext.Store.HasGraph(u)) u = null;
                     IGraph g = globalContext.Store.Graphs[u];
 
                     //Generate the Graph Output and add to Stream
@@ -331,9 +323,6 @@ namespace VDS.RDF.Writing
                             Monitor.Exit(globalContext.Output);
                         }
                     }
-
-                    //Get the Next Uri
-                    u = globalContext.GetNextUri();
                 }
             }
             catch (ThreadAbortException)

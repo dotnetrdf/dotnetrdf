@@ -181,7 +181,6 @@ namespace VDS.RDF.Query
     {
         private SparqlEvaluationContext _context;
         private GroupMultiset _groupSet;
-        private int _groupContextDepth = 0;
 
         /// <summary>
         /// Creates a new Leviathan Results Binder
@@ -277,31 +276,19 @@ namespace VDS.RDF.Query
                 {
                     this._groupSet = (GroupMultiset)this._context.InputMultiset;
                     this._context.InputMultiset = this._groupSet.Contents;
-                    this._groupContextDepth = 1;
-                }
-                else if (this._groupContextDepth > 0)
-                {
-                    this._groupContextDepth++;
+
                 }
                 else
                 {
-                    throw new RdfQueryException("Cannot set Group Context to access Contents data when the Input is not a Group Multiset");
+                    throw new RdfQueryException("Cannot set Group Context to access Contents data when the Input is not a Group Multiset, you may be trying to use a nested aggregate which is illegal");
                 }
             }
             else
             {
                 if (this._groupSet != null)
                 {
-                    if (this._groupContextDepth > 1)
-                    {
-                        this._groupContextDepth--;
-                    }
-                    else
-                    {
-                        this._context.InputMultiset = this._groupSet;
-                        this._groupSet = null;
-                        this._groupContextDepth = 0;
-                    }
+                    this._context.InputMultiset = this._groupSet;
+                    this._groupSet = null;
                 }
                 else
                 {

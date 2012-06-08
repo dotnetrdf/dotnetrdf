@@ -141,7 +141,7 @@ namespace VDS.RDF.Writing
             writer.WriteStartElement("graph");
 
             //Is the Graph Named?
-            if (!WriterHelper.IsDefaultGraph(g.BaseUri))
+            if (g.BaseUri != null)
             {
                 if (!g.BaseUri.ToString().StartsWith("trix:local:"))
                 {

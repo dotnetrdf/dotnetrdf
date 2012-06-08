@@ -104,7 +104,7 @@ namespace VDS.RDF.Update.Commands
         {
             if (this._graphUri == null)
             {
-                return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                return true;
             }
             else
             {

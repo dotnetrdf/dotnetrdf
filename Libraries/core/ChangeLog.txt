@@ -23,8 +23,9 @@ Changed
  - Fix for a bug with Stardog connectivity related to defunct connection string parameter
  - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed
  - Fix for a bug with multi-threaded access to our Trie implementation
- - Fix for a bug with nested aggregation evaluation being incorrect
+ - Fix for a bug with nested aggregates evaluating when they should error i.e. inner aggregate gives unbound
  - Fix for bugs readrding insertion and deletion of Blank Node containing triples via the UpdateGraph() method when using Virtuoso
+ - Fix for calling CreateUriNode() with a relative URI on a Graph not automatically resolving against Graph Base URI
 - Parsing
  - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
 - Query

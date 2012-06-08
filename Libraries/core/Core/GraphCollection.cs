@@ -47,10 +47,7 @@ namespace VDS.RDF
     public class GraphCollection 
         : BaseGraphCollection, IEnumerable<IGraph>
     {
-        /// <summary>
-        /// Constant used as the URI for Default Graphs (which is the Graph with the Null Base URI) for the purposes of getting a Hash Code for the Graph URI
-        /// </summary>
-        public const String DefaultGraphUri = "dotnetrdf:default-graph";
+        protected const int DefaultGraphID = 0;
 
         /// <summary>
         /// Dictionary of Graph Uri Enhanced Hash Codes to Graphs
@@ -72,7 +69,7 @@ namespace VDS.RDF
             int id;
             if (graphUri == null)
             {
-                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
+                id = DefaultGraphID;
             }
             else
             {
@@ -114,7 +111,7 @@ namespace VDS.RDF
             int id;
             if (g.BaseUri == null)
             {
-                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
+                id = DefaultGraphID;
             }
             else
             {
@@ -193,7 +190,7 @@ namespace VDS.RDF
             int id;
             if (graphUri == null)
             {
-                id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
+                id = DefaultGraphID;
             }
             else
             {
@@ -277,7 +274,7 @@ namespace VDS.RDF
                 int id;
                 if (graphUri == null)
                 {
-                    id = UriFactory.Create(DefaultGraphUri).GetEnhancedHashCode();
+                    id = DefaultGraphID;
                 }
                 else
                 {

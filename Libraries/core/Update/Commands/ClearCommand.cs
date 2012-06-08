@@ -136,13 +136,13 @@ namespace VDS.RDF.Update.Commands
                 case ClearMode.All:
                     return true;
                 case ClearMode.Default:
-                    return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                    return graphUri == null;
                 case ClearMode.Named:
-                    return graphUri != null && !graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                    return graphUri != null;
                 case ClearMode.Graph:
                     if (this._graphUri == null)
                     {
-                        return graphUri == null || graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri);
+                        return true;
                     }
                     else
                     {

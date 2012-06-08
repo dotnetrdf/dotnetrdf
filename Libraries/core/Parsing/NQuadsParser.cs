@@ -69,11 +69,6 @@ namespace VDS.RDF.Parsing
         private bool _tracetokeniser = false;
 
         /// <summary>
-        /// Default Graph Uri for default graphs parsed from NQuads input
-        /// </summary>
-        public const String DefaultGraphURI = "nquads:default-graph";
-
-        /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
         /// </summary>
         public bool TraceTokeniser

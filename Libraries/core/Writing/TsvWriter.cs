@@ -252,8 +252,8 @@ namespace VDS.RDF.Writing
         {
             try
             {
-                Uri u = globalContext.GetNextUri();
-                while (u != null)
+                Uri u = null;
+                while (globalContext.TryGetNextUri(out u))
                 {
                     //Get the Graph from the Store
                     IGraph g = globalContext.Store.Graphs[u];
@@ -275,9 +275,6 @@ namespace VDS.RDF.Writing
                     {
                         Monitor.Exit(globalContext.Output);
                     }
-
-                    //Get the Next Uri
-                    u = globalContext.GetNextUri();
                 }
             }
             catch (ThreadAbortException)
@@ -301,7 +298,7 @@ namespace VDS.RDF.Writing
         /// <returns></returns>
         private String GenerateGraphOutput(ThreadedStoreWriterContext globalContext, BaseWriterContext context)
         {
-            if (!WriterHelper.IsDefaultGraph(context.Graph.BaseUri))
+            if (context.Graph.BaseUri != null)
             {
                 //Named Graphs have a fourth context field added
                 foreach (Triple t in context.Graph.Triples)

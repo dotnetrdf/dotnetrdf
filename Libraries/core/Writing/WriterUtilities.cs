@@ -319,17 +319,6 @@ namespace VDS.RDF.Writing
     /// </summary>
     public static class WriterHelper
     {
-        /// <summary>
-        /// Array of Default Graph URIs used by parsers which parse RDF dataset formats
-        /// </summary>
-        public static String[] StoreDefaultGraphURIs = new String[] 
-        { 
-            TriGParser.DefaultGraphURI, 
-            NQuadsParser.DefaultGraphURI,
-            TriXParser.DefaultGraphURI,
-            GraphCollection.DefaultGraphUri 
-        };
-
         private static String _uriEncodeForXmlPattern = "&([^;]+)$";
 
         /// <summary>
@@ -397,16 +386,10 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="u">Uri to test</param>
         /// <returns></returns>
+        [Obsolete("No longer required since all code that uses 'magic' URIs to refer to the default graph has been removed from the API", true)]
         public static bool IsDefaultGraph(Uri u)
         {
-            if (u == null)
-            {
-                return true;
-            }
-            else
-            {
-                return StoreDefaultGraphURIs.Contains(u.ToString());
-            }
+            return u == null;
         }
 
         /// <summary>

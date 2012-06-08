@@ -129,8 +129,6 @@ namespace VDS.RDF.Update.Commands
         /// <returns></returns>
         public override bool AffectsGraph(Uri graphUri)
         {
-            if (graphUri.ToSafeString().Equals(GraphCollection.DefaultGraphUri)) graphUri = null;
-
             List<String> affectedUris = new List<string>();
             if (this.TargetUri != null)
             {
@@ -147,7 +145,7 @@ namespace VDS.RDF.Update.Commands
                                       where p.IsGraph
                                       select p.GraphSpecifier.Value);
             }
-            if (affectedUris.Any(u => u != null && u.Equals(GraphCollection.DefaultGraphUri))) affectedUris.Add(String.Empty);
+            if (affectedUris.Any(u => u != null)) affectedUris.Add(String.Empty);
 
             return affectedUris.Contains(graphUri.ToSafeString());
         }

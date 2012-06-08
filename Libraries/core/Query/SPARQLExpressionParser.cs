@@ -464,7 +464,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, Aggregates are not permitted in this Expression", next);
+                        throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, Aggregates are not permitted in this Expression or you have attempted to nest aggregates", next);
                     }
 
                 case Token.URI:
@@ -1118,6 +1118,10 @@ namespace VDS.RDF.Query
             bool distinct = false, all = false;
             bool scalarArgs = false;
 
+            //Turn off aggregate allowance since aggregates may not be nested
+            bool aggsAllowed = this._allowAggregates;
+            this._allowAggregates = false;
+
             //Expect a Left Bracket next
             IToken next = tokens.Dequeue();
             if (next.TokenType != Token.LEFTBRACKET)
@@ -1229,6 +1233,9 @@ namespace VDS.RDF.Query
             {
                 scalarArguments = this.TryParseScalarArguments(agg, tokens);
             }
+
+            //Reset Aggregate Allowance
+            this._allowAggregates = aggsAllowed;
 
             //Now we need to generate the actual expression
             switch (agg.TokenType)

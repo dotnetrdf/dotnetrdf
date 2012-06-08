@@ -116,22 +116,24 @@ namespace VDS.RDF.Writing.Contexts
         /// Gets the next Uri for a Graph that is waiting to be written
         /// </summary>
         /// <returns>Uri of next Graph to be written</returns>
-        public Uri GetNextUri()
+        public bool TryGetNextUri(out Uri uri)
         {
-            Uri temp = null;
+            uri = null;
+            bool ok = false;
             try
             {
                 Monitor.Enter(this._writeList);
                 if (this._writeList.Count > 0)
                 {
-                    temp = this._writeList.Dequeue();
+                    uri = this._writeList.Dequeue();
+                    ok = true;
                 }
             }
             finally
             {
                 Monitor.Exit(this._writeList);
             }
-            return temp;
+            return ok;
         }
     }
 }

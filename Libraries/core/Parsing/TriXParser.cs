@@ -68,10 +68,6 @@ namespace VDS.RDF.Parsing
         : IStoreReader
     {
         /// <summary>
-        /// Default Graph Uri for default graphs parsed from TriX input
-        /// </summary>
-        public const String DefaultGraphURI = "trix:default-graph";
-        /// <summary>
         /// Current W3C Namespace Uri for TriX
         /// </summary>
         public const String TriXNamespaceURI = "http://www.w3.org/2004/03/trix/trix-1/";
