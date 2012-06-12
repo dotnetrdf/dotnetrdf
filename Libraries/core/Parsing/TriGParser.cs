@@ -181,6 +181,7 @@ namespace VDS.RDF.Parsing
             {
                 //Create the Parser Context and Invoke the Parser
                 TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
+                context.Syntax = this._syntax;
                 this.Parse(context);
             }
             catch
@@ -239,7 +240,31 @@ namespace VDS.RDF.Parsing
                         case Token.URI:
                         case Token.LEFTCURLYBRACKET:
                             //Parse a Graph
-                            this.TryParseGraph(context);
+
+                            if (context.Syntax != TriGSyntax.Original)
+                            {
+                                //We must take care here because @prefix and @base directives may be Graph scoped so anything visible currently
+                                //remains visible and must be restored afterwards but anything inside the Graph is not visible outside of it
+                                Uri extBase = context.BaseUri;
+                                INamespaceMapper nsmap = new NamespaceMapper(context.Namespaces);
+
+                                this.TryParseGraph(context);
+
+                                //After we parse the Graph restore the state
+                                if (!context.Handler.HandleBaseUri(extBase)) ParserHelper.Stop();
+                                context.BaseUri = extBase;
+                                context.Namespaces.Clear();
+                                foreach (String prefix in nsmap.Prefixes)
+                                {
+                                    if (!context.Handler.HandleNamespace(prefix, nsmap.GetNamespaceUri(prefix))) ParserHelper.Stop();
+                                }
+                                context.Namespaces.Import(nsmap);
+                            }
+                            else
+                            {
+                                //With the old syntax declarations are file scoped so no need to worry about graph scoping
+                                this.TryParseGraph(context);
+                            }
                             break;
 
                         default:
@@ -291,6 +316,7 @@ namespace VDS.RDF.Parsing
                     {
                         Uri newBase = new Uri(Tools.ResolveUri(baseUri.Value, context.BaseUri.ToSafeString()));
                         context.BaseUri = newBase;
+                        this.RaiseWarning("The @base directive is not valid in all versions of the TriG specification, your data may not be compatible with some older tools which do not support this version of TriG");
                         if (!context.Handler.HandleBaseUri(newBase)) ParserHelper.Stop();
                     }
                     catch (UriFormatException)

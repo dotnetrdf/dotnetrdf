@@ -144,11 +144,18 @@ namespace VDS.RDF.Parsing.Contexts
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Syntax to be used
+        /// </summary>
         public TriGSyntax Syntax
         {
             get
             {
                 return this._syntax;
+            }
+            set
+            {
+                this._syntax = value;
             }
         }
     }

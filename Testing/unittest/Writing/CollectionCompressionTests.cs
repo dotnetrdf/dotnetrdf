@@ -87,7 +87,7 @@ namespace VDS.RDF.Test.Writing
             CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
             WriterHelper.FindCollections(context);
 
-            Assert.AreEqual(0, context.Collections.Count, "Expected no Collection to be found");
+            Assert.AreEqual(0, context.Collections.Count, "Expected no Collections to be found");
 
             this.CheckCompressionRoundTrip(g);
         }
@@ -160,6 +160,46 @@ namespace VDS.RDF.Test.Writing
 
             this.CheckCompressionRoundTrip(g);
         }
+
+        //[TestMethod]
+        //public void WritingCollectionCompressionSimple6()
+        //{
+        //    Graph g = new Graph();
+        //    g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
+        //    INode n = g.CreateBlankNode();
+        //    INode rdfType = g.CreateUriNode("rdf:type");
+
+        //    g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
+
+        //    CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+        //    WriterHelper.FindCollections(context);
+
+        //    Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
+        //    Assert.AreEqual(0, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
+
+        //    this.CheckCompressionRoundTrip(g);
+        //}
+
+        //[TestMethod]
+        //public void WritingCollectionCompressionSimple7()
+        //{
+        //    Graph g = new Graph();
+        //    g.NamespaceMap.AddNamespace("ex", new Uri("http://example.org/"));
+        //    INode n = g.CreateBlankNode();
+        //    INode rdfType = g.CreateUriNode("rdf:type");
+
+        //    g.Assert(n, rdfType, g.CreateUriNode("ex:Obj"));
+        //    g.Assert(n, rdfType, g.CreateUriNode("ex:Test"));
+
+        //    CompressingTurtleWriterContext context = new CompressingTurtleWriterContext(g, Console.Out);
+        //    WriterHelper.FindCollections(context);
+
+        //    Assert.AreEqual(1, context.Collections.Count, "Expected 1 Collection to be found");
+        //    Assert.AreEqual(1, context.Collections.First().Value.Triples.Count, "Expected 1 Triple to be in the collection");
+
+        //    this.CheckCompressionRoundTrip(g);
+        //}
+
 
         [TestMethod]
         public void WritingCollectionCompressionComplex1()

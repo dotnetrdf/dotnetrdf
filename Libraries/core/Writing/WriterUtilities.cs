@@ -532,6 +532,10 @@ namespace VDS.RDF.Writing
                     //If there are no Triples in the Collection then this is a single use Blank Node so can always compress
                     if (c.Triples.Count > 0 && c.Triples.Count == context.Graph.GetTriples(kvp.Key).Count())
                     {
+                        //TODO: This doesn't work because it can conflict
+                        //In this case we can remove a single Triple from the Collection and hope this allows us to compress
+                        //context.Collections[kvp.Key].Triples.RemoveAt(0);
+
                         context.Collections.Remove(kvp.Key);
                     }
                 }

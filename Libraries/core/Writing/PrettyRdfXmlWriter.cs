@@ -690,18 +690,18 @@ namespace VDS.RDF.Writing
                     return;
                 }
 
-                //First see if there is a typed triple available
+                //First see if there is a typed triple available (only applicable if we have more than one triple)
                 INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                 Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
-                if (typeTriple != null)
+                if (/*c.Triples.Count > 1 &&*/ typeTriple != null)
                 {
                     //Should be safe to invoke GenerateSubjectOutput but we can't allow rdf:Description
                     this.GenerateSubjectOutput(context, c.Triples, false);
                 }
                 else
                 {
-                    //Otherwise we use rdf:parseType="Resource" and invoke GeneratePredicateOutput
-                    context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
+                    //Otherwise we invoke GeneratePredicateOutput (and use rdf:parseType="Resource" if there was more than 1 triple)
+                    /*if (c.Triples.Count > 1)*/ context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
                     foreach (Triple t in c.Triples)
                     {
                         this.GeneratePredicateOutput(context, t);

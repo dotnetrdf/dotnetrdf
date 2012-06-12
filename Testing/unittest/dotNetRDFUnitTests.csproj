@@ -101,6 +101,7 @@
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Interop\SemWebInteropTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
+    <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="NamespaceMapperTest.cs" />
