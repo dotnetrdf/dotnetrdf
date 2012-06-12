@@ -10,6 +10,7 @@ using VDS.RDF.Storage.Virtualisation;
 
 namespace VDS.RDF.Query.Datasets
 {
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     class AdoTripleEnumerable<TConn,TCommand,TParameter,TAdapter,TException> 
         : IEnumerable<Triple>
         where TConn : DbConnection
@@ -56,6 +57,7 @@ namespace VDS.RDF.Query.Datasets
         }
     }
 
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     class AdoStreamingTripleEnumerator<TConn,TCommand,TParameter,TAdapter,TException> 
         : IEnumerator<Triple>
         where TConn : DbConnection
@@ -157,7 +159,7 @@ namespace VDS.RDF.Query.Datasets
         }
     }
 
-
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     class AdoBatchedTripleEnumerator<TConn, TCommand, TParameter, TAdapter, TException>
         : IEnumerator<Triple>
         where TConn : DbConnection

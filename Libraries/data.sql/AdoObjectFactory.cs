@@ -43,6 +43,7 @@ namespace VDS.RDF.Configuration
     /// <summary>
     /// An Object Factory that can create objects of the classes provided by the dotNetRDF.Data.Sql library
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class AdoObjectFactory 
         : IObjectFactory
     {

@@ -42,6 +42,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Represents a database schema that provides the required ADO store stored procedures
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class AdoSchemaDefinition
     {
         private List<AdoSchemaScriptDefinition> _scripts = new List<AdoSchemaScriptDefinition>();
@@ -114,6 +115,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Possible Schema Script Types
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public enum AdoSchemaScriptType
     {
         /// <summary>
@@ -133,6 +135,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Supported Database Types
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public enum AdoSchemaScriptDatabase
     {
         /// <summary>
@@ -148,6 +151,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Represents the definition of a schema script
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class AdoSchemaScriptDefinition
     {
         /// <summary>
@@ -202,6 +206,7 @@ namespace VDS.RDF.Storage
     /// There are two schemas provided by default, the <strong>Hash</strong> schema is recommended but requires SQL Server 2005 or higher.  The <strong>Simple</strong> schema is less performant but has a version that works with earlier versions of SQL Server e.g. SQL Server 2000.  We <strong>strongly</strong> recommend the Hash schema for all new development!
     /// </para>
     /// </remarks>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public static class AdoSchemaHelper
     {
         private static List<AdoSchemaDefinition> _defs = new List<AdoSchemaDefinition>();

@@ -54,6 +54,7 @@ namespace VDS.RDF.Storage
     /// This code cannot communicate with legacy SQL Stores and this is by design, please see <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">this page</a> for details on migrating legacy stores
     /// </para>
     /// </remarks>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class MicrosoftAdoManager 
         : BaseAdoSqlClientStore
     {

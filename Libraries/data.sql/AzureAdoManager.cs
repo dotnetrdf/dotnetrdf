@@ -45,6 +45,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// Essentially just derived from the more general <see cref="MicrosoftAdoManager">MicrosoftAdoManager</see> with a constructor which reduces the amount of input you need to create an instance that will connect to SQL Azure successfully
     /// </remarks>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class AzureAdoManager
         : MicrosoftAdoManager
     {

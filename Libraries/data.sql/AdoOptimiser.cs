@@ -33,6 +33,7 @@ terms.
 
 */
 
+using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SqlClient;
@@ -50,6 +51,7 @@ namespace VDS.RDF.Query.Optimisation
     /// <typeparam name="TParameter">Parameter Type</typeparam>
     /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public abstract class BaseAdoOptimiser<TConn, TCommand, TParameter, TAdaptor, TException> 
         : IAlgebraOptimiser
         where TConn : DbConnection
@@ -107,6 +109,7 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// An abstract implementation of the ADO Optimiser for System.Data.SqlClient based ADO Store implementations
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public abstract class BaseAdoSqlClientOptimiser
         : BaseAdoOptimiser<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>
     {
@@ -121,6 +124,7 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// An implementation of the ADO Optimiser for Microsoft SQL Server based ADO Store implementations
     /// </summary>
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public class MicrosoftAdoOptimiser
         : BaseAdoSqlClientOptimiser
     {
