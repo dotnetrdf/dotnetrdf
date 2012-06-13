@@ -96,7 +96,7 @@ namespace VDS.RDF.Configuration
                             PropertyFromEmbedded = "dnr:fromEmbedded",
                             PropertyFromUri = "dnr:fromUri",
                             PropertyFromString = "dnr:fromString",
-                            PropertyFromDatabase = "dnr:fromDatabase",
+                            PropertyFromDataset = "dnr:fromDataset",
                             PropertyFromStore = "dnr:fromStore",
                             PropertyFromGraph = "dnr:fromGraph",
                             PropertyWithUri = "dnr:withUri",
@@ -147,6 +147,9 @@ namespace VDS.RDF.Configuration
                             PropertyMultiThreadedWriting = "dnr:multiThreadedWriting",
                             PropertyImportNamespacesFrom = "dnr:importNamespacesFrom"
                             ;
+
+        [Obsolete("Property is no longer supported by the Configuration API", true)]
+        public const String PropertyFromDatabase = "dnr:fromDatabase";
 
         /// <summary>
         /// QName Constants for configuration classes

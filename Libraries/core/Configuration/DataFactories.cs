@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
 
@@ -179,6 +180,38 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Unable to load data from a Store for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromStore property points to an Object which cannot be loaded as an object which implements either the IGenericIOManager/ITripleStore interface");
                 }
             }
+
+            //Load from Datasets
+            IEnumerable<INode> ds = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromDataset));
+            ds.All(d => !ConfigurationLoader.CheckCircularReference(objNode, d, ConfigurationLoader.PropertyFromDataset));
+            IEnumerable<Object> datasets = ds.Select(d => ConfigurationLoader.LoadObject(g, d));
+            sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyWithUri));
+            foreach (Object dataset in datasets)
+            {
+                if (dataset is ISparqlDataset)
+                {
+                    foreach (INode source in sources)
+                    {
+                        if (source.NodeType == NodeType.Uri)
+                        {
+                            output.Merge(((ISparqlDataset)dataset)[((IUriNode)sources).Uri]);
+                        }
+                        else if (source.NodeType == NodeType.Literal)
+                        {
+                            output.Merge(((ISparqlDataset)dataset)[UriFactory.Create(((ILiteralNode)source).Value)]);
+                        }
+                        else
+                        {
+                            throw new DotNetRdfConfigurationException("Unable to load data from a Dataset for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values for the dnr:withUri property is not a URI/Literal Node as required");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load data from a Dataset for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromDataset property points to an Object which cannot be loaded as an object which implements the required ISparqlDataset interface");
+                }
+            }
+
 
             //Finally load from Remote URIs
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromUri));

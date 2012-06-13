@@ -396,7 +396,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Class used to hold Nesting Namespace definition information
+    /// Class used to hold Nested Namespace definition information
     /// </summary>
     class NestedMapping
     {

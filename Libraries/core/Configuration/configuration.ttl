@@ -324,6 +324,12 @@ dnr:fromStore a rdf:Property ;
 			  rdfs:comment "This property states that data is retrieved from a generic store connection." ;
 			  rdfs:domain dnr:Graph ;
 			  rdfs:range dnr:GenericIOManager .
+
+dnr:fromDataset a rdf:Property ;
+				rdfs:label "From Dataset" ;
+				rdfs:comment "This property states that date is retrieved from a SPARQL Dataset." ;
+				rdfs:domain dnr:Graph ;
+				rdfs:range dnr:SparqlDataset .
 			  
 dnr:withUri a rdf:Property ;
 			rdfs:label "With URI" ;
