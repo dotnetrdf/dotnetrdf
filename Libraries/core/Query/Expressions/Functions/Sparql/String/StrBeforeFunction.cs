@@ -39,8 +39,8 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
             if (!this.IsValidArgumentPair(input, ends)) throw new RdfQueryException("The Literals provided as arguments to this SPARQL String function are not of valid forms (see SPARQL spec for acceptable combinations)");
 
-            Uri datatype = (input.DataType != null ? input.DataType : ends.DataType);
-            string lang = (!input.Language.Equals(string.Empty) ? input.Language : ends.Language);
+            Uri datatype = input.DataType;//(input.DataType != null ? input.DataType : ends.DataType);
+            string lang = input.Language;// (!input.Language.Equals(string.Empty) ? input.Language : ends.Language);
 
             if (input.Value.Contains(ends.Value))
             {
@@ -60,7 +60,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                     return new StringNode(null, resultValue);
                 }
             }
-            else
+            else if (ends.Value.Equals(string.Empty))
             {
                 if (datatype != null)
                 {
@@ -71,6 +71,10 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 {
                     return new StringNode(null, string.Empty, lang);
                 }
+            }
+            else
+            {
+                return new StringNode(null, string.Empty);
             }
         }
 

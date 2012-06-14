@@ -196,13 +196,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the IO Behaviour of the Store
+        /// </summary>
+        public override IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return base.IOBehaviour | IOBehaviour.StorageServer;
+            }
+        }
+
 #if !NO_SYNC_HTTP
 
         /// <summary>
         /// Creates a new Store (if it doesn't exist) and switches the connector to use that Store
         /// </summary>
         /// <param name="storeID">Store ID</param>
-        public override void CreateStore(String storeID)
+        public override bool CreateStore(String storeID)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -230,6 +241,7 @@ namespace VDS.RDF.Storage
                     response.Close();
                 }
                 this._ready = true;
+                return true;
             }
             catch (WebException webEx)
             {
@@ -248,6 +260,7 @@ namespace VDS.RDF.Storage
                     {
                         //OK - Just means the Store already exists
                         this._ready = true;
+                        return true;
                     }
                     else
                     {
@@ -272,6 +285,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Setting <paramref name="combineIndices"/> causes AllegroGraph to merge the new indices with existing indices which results in faster queries but may take significant extra time for the indexing to be done depending on the size of the Store.
         /// </remarks>
+        [Obsolete("This method is only useful when working with AllgeroGraph 3.x, it is unecessary for AllegroGraph 4.x and should not be invoked", false)]
         public void IndexStore(bool combineIndices)
         {
             try

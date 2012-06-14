@@ -38,7 +38,7 @@ using System;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Flags Enumeration which is used to express the IO Behaviour of a specific Store
+    /// Flags Enumeration which is used to express the IO Behaviours of a specific Store
     /// </summary>
     [Flags]
     public enum IOBehaviour
@@ -111,6 +111,19 @@ namespace VDS.RDF.Storage
         ExplicitEmptyGraphs = 4096,
 
         /// <summary>
+        /// Indicates that the Store is from a system which provides access to multiple stores (such an implementation will usually implement the <see cref="IStorageServer">IStorageServer</see> interface) - at a minimum this usually means the store will allow you to list other available stores.  More complex abilities like creating and deleting stores are indicated by other flags.
+        /// </summary>
+        HasMultipleStores = 8192,
+        /// <summary>
+        /// Indicates that the Store provides the means to create additional Stores
+        /// </summary>
+        CanCreateStores = 16384,
+        /// <summary>
+        /// Indicates that the Store provides the means to delete Stores
+        /// </summary>
+        CanDeleteStores = 32768,
+
+        /// <summary>
         /// Indicates a Store that can do Triple Level additions and removals on existing Graphs using the UpdateGraph() method
         /// </summary>
         CanUpdateTriples = CanUpdateAddTriples | CanUpdateDeleteTriples,
@@ -138,5 +151,10 @@ namespace VDS.RDF.Storage
         /// Default Behaviour is considered to be Quad Store with Default and Named Graphs, data is appended to the default graph and overwrites named graphs
         /// </remarks>
         GraphStore = IsQuadStore | HasDefaultGraph | HasNamedGraphs | AppendToDefault | OverwriteNamed,
+
+        /// <summary>
+        /// Behaviour for fully fledged storage servers i.e. multiple stores are supported and can be created and deleted as desired
+        /// </summary>
+        StorageServer = HasMultipleStores | CanCreateStores | CanDeleteStores,
     }
 }

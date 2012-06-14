@@ -344,12 +344,16 @@ namespace VDS.RDF.Storage
         /// Creates a new Store with the given ID
         /// </summary>
         /// <param name="storeID">Store ID</param>
-        void CreateStore(string storeID);
+        /// <returns>Whether creation succeeded</returns>
+        bool CreateStore(string storeID);
 
         /// <summary>
         /// Deletes the Store with the given ID
         /// </summary>
         /// <param name="storeID">Store ID</param>
+        /// <remarks>
+        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation
+        /// </remarks>
         void DeleteStore(string storeID);
 
         /// <summary>

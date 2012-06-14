@@ -194,7 +194,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.HasMultipleStores;
             }
         }
 
@@ -1292,14 +1292,14 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
-        public virtual void CreateStore(String storeID)
+        public virtual bool CreateStore(String storeID)
         {
-            throw new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol");
+            throw new RdfStorageException("Sesame does not support creating stores via it's HTTP Protocol");
         }
 
         public virtual void DeleteStore(String storeID)
         {
-            throw new NotImplementedException();
+            throw new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol");
         }
 
         public virtual IEnumerable<String> ListStores()

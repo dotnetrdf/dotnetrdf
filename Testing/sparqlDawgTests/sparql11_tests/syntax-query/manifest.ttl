@@ -49,7 +49,7 @@
 :test_36
 :test_37
 :test_38
-:test_39
+# :test_39	# duplicate of :test_34
 :test_40
 :test_41
 :test_42
@@ -63,8 +63,21 @@
 :test_50
 :test_51
 
-:test_52
+# :test_52	# obsoleted by decision to allow colons in prefixname local parts, but not allow them to be escaped
 :test_53
+:test_54
+:test_55
+:test_56
+:test_57
+:test_58
+:test_59
+:test_60
+:test_61
+:test_62
+:test_63
+:test_64
+:test_65
+:test_66
 
 ) .
 
@@ -296,11 +309,12 @@
    mf:name    "syntax-bindings-05.rq" ;
    mf:action  <syntax-bindings-05.rq> ;.
 
-:test_39 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:Approved ;
-   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
-   mf:name    "syntax-bindings-01.rq" ;
-   mf:action  <syntax-bindings-01.rq> ;.
+# duplicate of :test_34
+# :test_39 rdf:type   mf:PositiveSyntaxTest11 ;
+#    dawgt:approval dawgt:Approved ;
+#    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-04-05#resolution_2> ;
+#    mf:name    "syntax-bindings-01.rq" ;
+#    mf:action  <syntax-bindings-01.rq> ;.
 
 :test_40 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:Approved ;
@@ -375,13 +389,78 @@
    mf:action  <syntax-bindings-09.rq> ;.
 
 :test_52 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
    mf:name    "PrefixName with backslash-escaped colons" ;
    mf:action  <qname-escape-01.rq> ;.
 
 :test_53 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
+   dawgt:approval dawgt:Approved ;
+   dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
    mf:name    "PrefixName with hex-encoded colons" ;
    mf:action  <qname-escape-02.rq> ;.
 
+:test_54 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "PrefixName with unescaped colons" ;
+   mf:action  <qname-escape-03.rq> ;.
 
+:test_55 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope1.rq" ;
+   mf:action  <syntax-BINDscope1.rq> ;.
+
+:test_56 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope2.rq" ;
+   mf:action  <syntax-BINDscope2.rq> ;.
+
+:test_57 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope3.rq" ;
+   mf:action  <syntax-BINDscope3.rq> ;.
+
+:test_58 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope4.rq" ;
+   mf:action  <syntax-BINDscope4.rq> ;.
+
+:test_59 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope5.rq" ;
+   mf:action  <syntax-BINDscope5.rq> ;.
+
+:test_60 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope6.rq" ;
+   mf:action  <syntax-BINDscope6.rq> ;.
+
+:test_61 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope7.rq" ;
+   mf:action  <syntax-BINDscope7.rq> ;.
+
+:test_62 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-BINDscope8.rq" ;
+   mf:action  <syntax-BINDscope8.rq> ;.
+
+:test_63 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-propertyPaths-01.rq" ;
+   mf:action  <syntax-propertyPaths-01.rq> ;.
+
+:test_64 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-SELECTscope1.rq" ;
+   mf:action  <syntax-SELECTscope1.rq> ;.
+
+:test_65 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-SELECTscope2" ;
+   mf:action  <syntax-SELECTscope2.rq> ;.
+
+:test_66 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-SELECTscope3.rq" ;
+   mf:action  <syntax-SELECTscope3.rq> ;.

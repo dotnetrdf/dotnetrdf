@@ -309,13 +309,9 @@ namespace VDS.RDF.Configuration
         : IObjectFactory
     {
         private const String TripleStore = "VDS.RDF.TripleStore",
-                             SqlTripleStore = "VDS.RDF.SqlTripleStore",
-                             ThreadedSqlTripleStore = "VDS.RDF.ThreadedSqlTripleStore",
-                             OnDemandTripleStore = "VDS.RDF.OnDemandTripleStore",
 #if !SILVERLIGHT
                              WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
 #endif
-                             NativeTripleStore = "VDS.RDF.NativeTripleStore",
                              PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
 
 
@@ -352,9 +348,6 @@ namespace VDS.RDF.Configuration
                     store = new WebDemandTripleStore();
                     break;
 #endif
-
-                case NativeTripleStore:
-                    throw new DotNetRdfConfigurationException("The NativeTripleStore class is obsolete, please use a PersistentTripleStore instead which supercedes this class and provides more useful behaviour");
 
                 case PersistentTripleStore:
                     subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propGenericManager);
@@ -458,13 +451,9 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case TripleStore:
-                case SqlTripleStore:
-                case ThreadedSqlTripleStore:
-                case OnDemandTripleStore:
 #if !SILVERLIGHT
                 case WebDemandTripleStore:
 #endif
-                case NativeTripleStore:
                 case PersistentTripleStore:
                      return true;
                 default:

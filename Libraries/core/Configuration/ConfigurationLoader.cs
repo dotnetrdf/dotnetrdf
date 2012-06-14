@@ -148,7 +148,7 @@ namespace VDS.RDF.Configuration
                             PropertyImportNamespacesFrom = "dnr:importNamespacesFrom"
                             ;
 
-        [Obsolete("Property is no longer supported by the Configuration API", true)]
+        [Obsolete("Property is obsolete and no longer supported by the Configuration API", true)]
         public const String PropertyFromDatabase = "dnr:fromDatabase";
 
         /// <summary>
@@ -157,7 +157,6 @@ namespace VDS.RDF.Configuration
         public const String ClassObjectFactory = "dnr:ObjectFactory",
                             ClassTripleStore = "dnr:TripleStore",
                             ClassGraph = "dnr:Graph",
-                            ClassSqlManager = "dnr:SqlIOManager",
                             ClassGenericManager = "dnr:GenericIOManager",
                             ClassHttpHandler = "dnr:HttpHandler",
                             ClassSparqlEndpoint = "dnr:SparqlEndpoint",
@@ -181,16 +180,21 @@ namespace VDS.RDF.Configuration
                             ClassDatasetWriter = "dnr:DatasetWriter",
                             ClassSparqlResultsWriter = "dnr:SparqlResultsWriter";
 
+        [Obsolete("Class is obsolete and no longer supported by the Configuration API", true)]
+        public const String ClassSqlManager = "dnr:SqlIOManager";
+
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
         /// </summary>
         public const String DefaultTypeTripleStore = "VDS.RDF.TripleStore",
                             DefaultTypeGraph = "VDS.RDF.Graph",
-                            DefaultTypeSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager",
                             DefaultTypeSparqlQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor",
                             DefaultTypeSparqlUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
                             DefaultTypeSparqlHttpProtocolProcessor = "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor",
                             DefaultTypeUserGroup = "VDS.RDF.Configuration.Permissions";
+
+        [Obsolete("Default Type is obsolete and no longer supported by the Configuration API", true)]
+        public const String DefaultTypeSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager";
 
         #endregion
 
@@ -908,8 +912,6 @@ namespace VDS.RDF.Configuration
                             return DefaultTypeSparqlQueryProcessor;
                         case ClassSparqlUpdateProcessor:
                             return DefaultTypeSparqlUpdateProcessor;
-                        case ClassSqlManager:
-                            return DefaultTypeSqlManager;
                         case ClassTripleStore:
                             return DefaultTypeTripleStore;
                         case ClassUser:
