@@ -424,24 +424,25 @@ namespace VDS.RDF.Storage
 #endif
                     if (webEx.Response.ContentLength > 0)
                     {
+                        String responseText = "";
                         try
                         {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
+                            responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
                         }
                         catch
                         {
-                            throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                            throw new RdfQueryException("A HTTP error occurred while querying the Store. Error getting response.", webEx);
                         }
+                        throw new RdfQueryException("A HTTP error occured while querying the Store. Store returned the following error message: " + responseText, webEx);
                     }
                     else
                     {
-                        throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                        throw new RdfQueryException("A HTTP error occurred while querying the Store. Empty response.", webEx);
                     }
                 }
                 else
                 {
-                    throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                    throw new RdfQueryException("A HTTP error occurred while querying the Store. No response.", webEx);
                 }
             }
         }

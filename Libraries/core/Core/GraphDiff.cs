@@ -90,6 +90,8 @@ namespace VDS.RDF
                 return report;
             }
 
+            report.AreDifferentSizes = (a.Triples.Count != b.Triples.Count);
+
             //Next check for changes in Ground Triples
             //Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
             foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
@@ -269,7 +271,7 @@ namespace VDS.RDF
     /// </remarks>
     public class GraphDiffReport
     {
-        private bool _areEqual = false;
+        private bool _areEqual = false, _areDiffSize = false;
         private Dictionary<INode, INode> _mapping = new Dictionary<INode,INode>();
         private List<Triple> _addedTriples = new List<Triple>();
         private List<Triple> _removedTriples = new List<Triple>();
@@ -288,6 +290,21 @@ namespace VDS.RDF
             internal set
             {
                 this._areEqual = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the Graphs are different sizes, different sized graphs are by definition non-equal
+        /// </summary>
+        public bool AreDifferentSizes
+        {
+            get
+            {
+                return this._areDiffSize;
+            }
+            internal set
+            {
+                this._areDiffSize = value;
             }
         }
 
