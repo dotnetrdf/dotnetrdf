@@ -96,6 +96,10 @@ namespace VDS.RDF.Parsing
                         //Groups are considered predicates for purposes of last item
                         lastItem = LastPathItemType.Predicate;
                     }
+                    else if (next.TokenType == Token.LEFTBRACKET)
+                    {
+                        openBrackets++;
+                    }
                 }
                 else
                 {

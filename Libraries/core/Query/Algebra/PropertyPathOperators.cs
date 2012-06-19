@@ -279,7 +279,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                List<INode> nodes = new List<INode>();
+                HashSet<INode> nodes = new HashSet<INode>();
 
                 BaseMultiset initialInput = context.InputMultiset;
                 Multiset currInput = new Multiset();
@@ -328,7 +328,7 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
 
-                return nodes;
+                return nodes.ToList();
             }
         }
     }

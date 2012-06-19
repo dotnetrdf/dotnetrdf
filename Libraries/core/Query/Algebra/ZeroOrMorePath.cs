@@ -165,6 +165,7 @@ namespace VDS.RDF.Query.Algebra
                 context.OutputMultiset = new Multiset();
 
                 //Evaluate the Paths to check that are acceptable
+                HashSet<ISet> returnedPaths = new HashSet<ISet>();
                 foreach (List<INode> path in paths)
                 {
                     if (reverse)
@@ -177,7 +178,10 @@ namespace VDS.RDF.Query.Algebra
                                 if (subjVar != null) s.Add(subjVar, path[path.Count - 1]);
                                 if (objVar != null) s.Add(objVar, path[0]);
                             }
+                            //Make sure to check for uniqueness
+                            if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
+                            returnedPaths.Add(s);
 
                             //If both are terms can short circuit evaluation here
                             //It is sufficient just to determine that there is one path possible
@@ -194,7 +198,10 @@ namespace VDS.RDF.Query.Algebra
                                 if (subjVar != null) s.Add(subjVar, path[0]);
                                 if (objVar != null) s.Add(objVar, path[path.Count - 1]);
                             }
+                            //Make sure to check for uniqueness
+                            if (returnedPaths.Contains(s)) continue;
                             context.OutputMultiset.Add(s);
+                            returnedPaths.Add(s);
 
                             //If both are terms can short circuit evaluation here
                             //It is sufficient just to determine that there is one path possible
