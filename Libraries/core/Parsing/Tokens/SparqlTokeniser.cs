@@ -168,8 +168,8 @@ namespace VDS.RDF.Parsing.Tokens
                         }
                         else if (Char.IsDigit(next))
                         {
-                            //Could be a Numeric Literal or a QName
-                            return this.TryGetQNameOrNumericLiteral();
+                            //Must be a Numeric Literal
+                            return this.TryGetNumericLiteral();
                         }
                         else
                         {
@@ -768,8 +768,8 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (colonoccurred)
                     {
-                        //Can't contain more than 1 Colon
-                        throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
+                        //Can't contain more than 1 Colon in SPARQL 1.0
+                        if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
                     }
                     else
                     {
@@ -862,8 +862,8 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     if (colonoccurred)
                     {
-                        //Can't contain more than 1 Colon
-                        throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
+                        //Can't contain more than 1 Colon in SPARQL 1.0
+                        if (this._syntax == SparqlQuerySyntax.Sparql_1_0) throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
                     }
                     else
                     {
@@ -1368,23 +1368,15 @@ namespace VDS.RDF.Parsing.Tokens
                     throw Error("Unexpected String '" + value + "' encountered while trying to parse a SPARQL Keyword.  This appears to be an attempt to use an ASK/CONSTRUCT/DESCRIBE as a sub-query which is not supported");
                 }
             }
-            //else if (!colonoccurred && (this.LastTokenType == Token.ORDERBY || (/*this._orderByKeywordSeen && */this.LastTokenType == Token.RIGHTBRACKET)))
-            //{
-                //Should be an ASC/DESC Keyword
-                else if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
-                {
-                    this.LastTokenType = Token.ASC;
-                    return new AscKeywordToken(this.CurrentLine, this.StartPosition);
-                }
-                else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDesc, StringComparison.OrdinalIgnoreCase))
-                {
-                    this.LastTokenType = Token.DESC;
-                    return new DescKeywordToken(this.CurrentLine, this.StartPosition);
-                //}
-                //else
-                //{
-                //    throw Error("Unexpected String '" + value + "' encountered after an Order By which is not a valid QName/Keyword");
-                //}
+            else if (value.Equals(SparqlSpecsHelper.SparqlKeywordAsc, StringComparison.OrdinalIgnoreCase))
+            {
+                this.LastTokenType = Token.ASC;
+                return new AscKeywordToken(this.CurrentLine, this.StartPosition);
+            }
+            else if (value.Equals(SparqlSpecsHelper.SparqlKeywordDesc, StringComparison.OrdinalIgnoreCase))
+            {
+                this.LastTokenType = Token.DESC;
+                return new DescKeywordToken(this.CurrentLine, this.StartPosition);
             }
             else if (value.Equals("a"))
             {
@@ -1408,105 +1400,6 @@ namespace VDS.RDF.Parsing.Tokens
                 //Return the QName
                 this.LastTokenType = Token.QNAME;
                 return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
-            }
-        }
-
-        private IToken TryGetQNameOrNumericLiteral()
-        {
-            char next = this.Peek();
-            bool colonoccurred = false;
-            bool dotoccurred = false;
-
-            while (UnicodeSpecsHelper.IsLetterOrDigit(next) || UnicodeSpecsHelper.IsLetterModifier(next) || next == '_' || next == '-' || next == ':' || next == '\\' || (next == '.' && !dotoccurred && !colonoccurred) || next == '+' || next == '-' || next == '%')
-            {
-                if (next == '\\' || next == '%')
-                {
-                    //Handle Escapes
-                    if (!colonoccurred)
-                    {
-                        this.HandleEscapes(TokeniserEscapeMode.QName);
-                    }
-                    else
-                    {
-                        this.HandleSparqlLocalNameEscapes();
-                    }
-                    next = this.Peek();
-                    continue;
-                }
-
-                if (next == ':')
-                {
-                    if (colonoccurred)
-                    {
-                        //Can't contain more than 1 Colon
-                        throw Error("Unexpected Character (Code " + (int)next + " :\nThe Colon Character can only occur once in a QName");
-                    }
-                    else
-                    {
-                        colonoccurred = true;
-                    }
-                }
-                else if (next == '.')
-                {
-                    dotoccurred = true;
-                }
-
-                //Consume
-                this.ConsumeCharacter();
-
-                next = this.Peek();
-            }
-
-            String value = this.Value;
-
-            //Backtrack if necessary
-            if (value.EndsWith("."))
-            {
-                if (this._syntax == SparqlQuerySyntax.Sparql_1_0)
-                {
-                    //For SPARQL 1.0 only QNames can end with an ignorable .
-                    if (!Char.IsDigit(value[0]) && value[0] != '+' && value[0] != '-')
-                    {
-                        //Backtrack only for QNames ending in a .
-                        this.Backtrack();
-                        value = value.Substring(0, value.Length - 1);
-                    }
-                }
-                else
-                {
-                    //For SPARQL 1.1 backtrack regardless
-                    this.Backtrack();
-                    value = value.Substring(0, value.Length - 1);
-                }
-            }
-
-            if (colonoccurred)
-            {
-                //Must be a QName
-                if (!SparqlSpecsHelper.IsValidQName(value, this._syntax))
-                {
-                    //Not a valid QName
-                    throw Error("The value '" + value + "' is not valid as a QName");
-                }
-                else
-                {
-                    this.LastTokenType = Token.QNAME;
-                    return new QNameToken(SparqlSpecsHelper.UnescapeQName(value), this.CurrentLine, this.StartPosition, this.EndPosition);
-                }
-            }
-            else
-            {
-                //Should be a Numeric Literal
-                if (!SparqlSpecsHelper.IsValidNumericLiteral(value))
-                {
-                    //Not a Valid Numeric Literal
-                    throw Error("The value '" + value + "' is not valid as a Numeric Literal");
-                }
-                else
-                {
-                    this.LastTokenType = Token.QNAME;
-                    return new PlainLiteralToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);
-                }
             }
         }
 
@@ -1684,52 +1577,51 @@ namespace VDS.RDF.Parsing.Tokens
 
             char next = this.Peek();
 
-            while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || (next == '.' && !dotoccurred))
+            while (Char.IsDigit(next) || next == '-' || next == '+' || next == 'e' || next == 'E' || (next == '.' && !dotoccurred))
             {
-                //Consume the Character
-                this.ConsumeCharacter();
-
                 if (next == '+')
                 {
                     //Can only be first character in the numeric literal or come immediately after the 'e'
-                    if (this.Length > 1 && !this.Value.EndsWith("e+"))
+                    if (this.Length > 0 && !this.Value.ToLower().EndsWith("e"))
                     {
-                        throw Error("Unexpected Character (Code " + (int)next + ") +\nThe plus sign can only occur once at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as an additive operator please insert space to disambiguate this");
+                        //throw Error("Unexpected Character (Code " + (int)next + ") +\nThe plus sign can only occur once at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as an additive operator please insert space to disambiguate this");
+                        break;
                     }
                 }
                 if (next == '-')
                 {
-                    if (negoccurred && !this.Value.EndsWith("e-"))
+                    if (negoccurred && !this.Value.ToLower().EndsWith("e"))
                     {
                         //Negative sign already seen
-                        throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
+                        //throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur once at the Start of a Numeric Literal, if this was intended as a subtractive operator please insert space to disambiguate this");
+                        break;
                     }
                     else
                     {
                         negoccurred = true;
 
                         //Check this is at the start of the string or immediately after the 'e'
-                        if (this.Length > 1 && !this.Value.EndsWith("e-"))
+                        if (this.Length > 0 && !this.Value.ToLower().EndsWith("e"))
                         {
-                            throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the 'e' exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
+                            throw Error("Unexpected Character (Code " + (int)next + ") -\nThe minus sign can only occur at the Start of a Numeric Literal and once immediately after the exponent specifier, if this was intended as a subtractive operator please insert space to disambiguate this");
                         }
                     }
                 }
-                else if (next == 'e')
+                else if (next == 'e' || next == 'E')
                 {
                     if (expoccurred)
                     {
                         //Exponent already seen
-                        throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier can only occur once in a Numeric Literal");
+                        throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier can only occur once in a Numeric Literal");
                     }
                     else
                     {
                         expoccurred = true;
 
                         //Check that it isn't the start of the string
-                        if (this.Length == 1)
+                        if (this.Length == 0)
                         {
-                            throw Error("Unexpected Character (Code " + (int)next + " e\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
+                            throw Error("Unexpected Character (Code " + (int)next + " " + next + "\nThe Exponent specifier cannot occur at the start of a Numeric Literal");
                         }
                     }
                 }
@@ -1737,6 +1629,9 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     dotoccurred = true;
                 }
+
+                //Consume the Character
+                this.ConsumeCharacter();
 
                 next = this.Peek();
             }

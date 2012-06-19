@@ -627,21 +627,35 @@ namespace VDS.RDF.Query
                 //Must have a Colon in a QName
                 return false;
             } 
-            else if (value.StartsWith(":"))
-            {
-                //No need to validate QName
-                //Just validation Local Name
-                char[] cs = value.ToCharArray(1, value.Length - 1);
+            //else if (value.StartsWith(":"))
+            //{
+            //    //No need to validate QName
+            //    //Just validation Local Name
+            //    char[] cs = value.ToCharArray(1, value.Length - 1);
 
-                return IsPNLocal(cs, syntax);
-            }
+            //    return IsPNLocal(cs, syntax);
+            //}
             else
             {
                 //Split into Prefix and Local Name
-                char[] prefix = value.ToCharArray(0, value.IndexOf(':'));
-                char[] local = value.ToCharArray(value.IndexOf(':') + 1, value.Length - value.IndexOf(':')-1);
+                String[] parts = value.Split(':');
 
-                return (IsPNPrefix(prefix) && IsPNLocal(local, syntax));
+                //If SPARQL 1.0 then can only have two sections
+                if (syntax == SparqlQuerySyntax.Sparql_1_0 && parts.Length > 2) return false;
+
+                //All sections ending in a colon (i.e. all but the last) must match PN_PREFIX production
+                for (int i = 0; i < parts.Length - 1; i++)
+                {
+                    if (!IsPNPrefix(parts[i].ToCharArray())) return false;
+                }
+                //Final section must match PN_LOCAL
+                return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
+
+
+                //char[] prefix = value.ToCharArray(0, value.IndexOf(':'));
+                //char[] local = value.ToCharArray(value.IndexOf(':') + 1, value.Length - value.IndexOf(':')-1);
+
+                //return (IsPNPrefix(prefix) && IsPNLocal(local, syntax));
             }
         }
 
@@ -849,6 +863,9 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public static bool IsPNPrefix(char[] cs)
         {
+            //Empty Prefixes are valid
+            if (cs.Length == 0) return true;
+
             //First character must be from PN_CHARS_BASE
             char first = cs[0];
             if (IsPNCharsBase(first))
