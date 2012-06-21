@@ -37,7 +37,7 @@
 		<update-silent/manifest.ttl>
 		<syntax-fed/manifest.ttl>
 		<service-description/manifest.ttl>
-		<protocol/manifest.ttl>
+		#<protocol/manifest.ttl>
 	).
 
 
