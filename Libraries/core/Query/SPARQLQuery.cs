@@ -420,7 +420,7 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Gets/Sets the Bindings Clause for the Query
+        /// Gets/Sets the VALUES Clause for the Query which are bindings that should be applied
         /// </summary>
         public BindingsPattern Bindings
         {
@@ -1177,7 +1177,7 @@ namespace VDS.RDF.Query
             //If we have a BINDINGS clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
-                pattern = new Bindings(this._bindings, pattern);
+                pattern = Join.CreateJoin(pattern, new Bindings(this._bindings));
             }
 
             //Then we apply any optimisers followed by relevant solution modifiers

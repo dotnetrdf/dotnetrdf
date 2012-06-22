@@ -131,6 +131,7 @@ namespace VDS.RDF.Parsing
                         case Token.LEFTCURLYBRACKET:
                             //Explicit cardinality modifiers
 
+                            if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_1) throw new RdfParseException("The {} forms for property paths are not supported in SPARQL 1.1", next);
                             if (lastItem != LastPathItemType.Predicate)
                             {
                                 throw new RdfParseException("Cardinality Modifiers can only follow Predicates/Path Groups", next);

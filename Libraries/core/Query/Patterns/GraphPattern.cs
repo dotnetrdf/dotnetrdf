@@ -66,6 +66,7 @@ namespace VDS.RDF.Query.Patterns
         private List<ISparqlFilter> _unplacedFilters = new List<ISparqlFilter>();
         private List<IAssignmentPattern> _unplacedAssignments = new List<IAssignmentPattern>();
         private ISparqlFilter _filter;
+        private BindingsPattern _data;
         private bool _break = false, _broken = false;
 
         /// <summary>
@@ -189,6 +190,41 @@ namespace VDS.RDF.Query.Patterns
             {
                 this._graphPatterns.Add(p);
                 if (!this._isUnion && !p.IsSubQuery) this.BreakBGP();
+            }
+        }
+
+        /// <summary>
+        /// Adds inline data to a Graph Pattern respecting any BGP breaks
+        /// </summary>
+        /// <param name="data"></param>
+        internal void AddInlineData(BindingsPattern data)
+        {
+            if (this._break)
+            {
+                if (this._broken)
+                {
+                    this._graphPatterns.Last().AddInlineData(data);
+                }
+                else if (this._data == null && this._graphPatterns.Count == 0)
+                {
+                    this._data = data;
+                }
+                else
+                {
+                    GraphPattern p = new GraphPattern();
+                    p.AddInlineData(data);
+                    this._graphPatterns.Add(p);
+                }
+            }
+            else if (this._isUnion)
+            {
+                this.BreakBGP();
+                this.AddInlineData(data);
+            }
+            else
+            {
+                this._data = data;
+                this.BreakBGP();
             }
         }
 
@@ -423,6 +459,17 @@ namespace VDS.RDF.Query.Patterns
         }
 
         /// <summary>
+        /// Gets whether this Graph Pattern contains an Inline Data block (VALUES clause)
+        /// </summary>
+        public bool HasInlineData
+        {
+            get
+            {
+                return this._data != null;
+            }
+        }
+
+        /// <summary>
         /// Determines whether the Graph Pattern has any kind of Modifier (GRAPH, MINUS, OPTIONAL etc) applied
         /// </summary>
         public bool HasModifier
@@ -613,6 +660,17 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the inline data (VALUES block if any)
+        /// </summary>
+        public BindingsPattern InlineData
+        {
+            get
+            {
+                return this._data;
+            }
+        }
+
         #endregion
 
         #region Pattern Optimisation
@@ -793,6 +851,27 @@ namespace VDS.RDF.Query.Patterns
                 output.Append(ap.ToString());
                 if (linebreaks) output.AppendLine();
             }
+            //Inline Data
+            if (this.HasInlineData)
+            {
+                output.Append(indent);
+                String temp = this._data.ToString();
+                if (!temp.Contains('\n'))
+                {
+                    output.Append(temp + " ");
+                }
+                else
+                {
+                    String[] lines = temp.Split('\n');
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (i > 0) output.Append(indent);
+                        output.Append(lines[i]);
+                        if (i < lines.Length - 1) output.AppendLine();
+                    }
+                }
+                if (linebreaks) output.AppendLine();
+            }
             //Graph Patterns
             foreach (GraphPattern gp in this._graphPatterns)
             {
@@ -849,6 +928,8 @@ namespace VDS.RDF.Query.Patterns
                         union = new Union(union, this._graphPatterns[i].ToAlgebra());
                     }
                 }
+                //Apply Inline Data
+                if (this.HasInlineData) union = Join.CreateJoin(union, new Bindings(this._data));
                 //If there's a FILTER apply it over the Union
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
@@ -868,6 +949,8 @@ namespace VDS.RDF.Query.Patterns
                     //If we have any unplaced LETs these get Joined onto the BGP
                     bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments));
                 }
+                //Apply Inline Data
+                if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
                     if (this._isOptional && !(this._isExists || this._isNotExists))
@@ -899,6 +982,11 @@ namespace VDS.RDF.Query.Patterns
                 {
                     complex = new Bgp(this._triplePatterns);
                 }
+
+                //Apply Inline Data
+                //If this Graph Pattern had child patterns before this Graph Pattern then we would
+                //have broken the BGP and not added the Inline Data here so it's always safe to apply this here
+                if (this.HasInlineData) complex = Join.CreateJoin(complex, new Bindings(this._data));
 
                 //Then Join each of the Graph Patterns as appropriate
                 foreach (GraphPattern gp in this._graphPatterns)

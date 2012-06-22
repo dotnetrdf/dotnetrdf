@@ -42,7 +42,7 @@ using VDS.RDF.Query.Algebra;
 namespace VDS.RDF.Query.Patterns
 {
     /// <summary>
-    /// Represents a set of Bindings for a SPARQL Query
+    /// Represents a set of Bindings for a SPARQL Query or part thereof i.e. represents the VALUES clause
     /// </summary>
     public class BindingsPattern
     {
@@ -127,12 +127,12 @@ namespace VDS.RDF.Query.Patterns
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("BINDINGS ");
+            output.Append("VALUES ( ");
             foreach (String var in this._vars)
             {
                 output.Append("?" + var + " ");
             }
-            output.AppendLine();
+            output.AppendLine(")");
             output.AppendLine("{");
             foreach (BindingTuple t in this._tuples)
             {

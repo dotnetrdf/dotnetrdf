@@ -483,10 +483,12 @@ namespace VDS.RDF.Parsing
                         if (SparqlSpecsHelper.IsSelectQuery(context.Query.QueryType))
                         {
                             temp = context.Tokens.Peek();
-                            if (temp.TokenType == Token.BINDINGS)
+                            if (temp.TokenType == Token.BINDINGS || temp.TokenType == Token.VALUES)
                             {
+                                if (temp.TokenType == Token.BINDINGS && context.SyntaxMode != SparqlQuerySyntax.Extended) throw ParserHelper.Error("The BINDINGS keyword is the old name for the VALUES keyword, use the VALUES keyword instead", temp);
+                                if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Inline Data blocks (VALUES clauses) are not permitted in SPARQL 1.0", temp);
                                 context.Tokens.Dequeue();
-                                this.TryParseBindingsClause(context);
+                                context.Query.Bindings = this.TryParseInlineData(context);
                             }
                         }
 
@@ -1381,6 +1383,18 @@ namespace VDS.RDF.Parsing
                                 this.TryParseServiceClause(context, pattern);
                                 break;
 
+                            case Token.VALUES:
+                                //VALUES clause
+                                if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Inline Data blocks (VALUES clauses) are not permitted in SPARQL 1.0", next);
+                                if (!child.IsEmpty)
+                                {
+                                    pattern.AddGraphPattern(child);
+                                    child = new GraphPattern();
+                                }
+                                context.Tokens.Dequeue();
+                                pattern.AddInlineData(this.TryParseInlineData(context));
+                                break;
+
                             case Token.VARIABLE:
                             case Token.URI:
                             case Token.QNAME:
@@ -1581,6 +1595,12 @@ namespace VDS.RDF.Parsing
                 case Token.UNION:
                     //UNION Clause
                     this.TryParseUnionClause(context, p);
+                    break;
+
+                case Token.VALUES:
+                    //VALUES Clause
+                    if (context.SyntaxMode == SparqlQuerySyntax.Sparql_1_0) throw ParserHelper.Error("Inline Data blocks (VALUES clauses) are not permitted in SPARQL 1.0", next);
+                    p.AddInlineData(this.TryParseInlineData(context));
                     break;
 
                 case Token.LEFTCURLYBRACKET:
@@ -1949,6 +1969,7 @@ namespace VDS.RDF.Parsing
                     case Token.SERVICE:
                     case Token.GRAPH:
                     case Token.FILTER:
+                    case Token.VALUES:
                         //End of the Triple Patterns
 
                         //Allow for trailing semicolon and Blank Node Collection lists
@@ -3442,40 +3463,54 @@ namespace VDS.RDF.Parsing
             p.AddGraphPattern(child);
         }
 
-        private void TryParseBindingsClause(SparqlQueryParserContext context)
+        private BindingsPattern TryParseInlineData(SparqlQueryParserContext context)
         {
-            //First expect one/more variables
+            //First expect either a single variable or a sequence of variables enclosed in ( )
             IToken next = context.Tokens.Peek();
             List<String> vars = new List<String>();
-            while (next.TokenType == Token.VARIABLE)
+            bool simpleForm = false;
+            if (next.TokenType == Token.LEFTBRACKET)
             {
-                vars.Add(next.Value.Substring(1));
                 context.Tokens.Dequeue();
                 next = context.Tokens.Peek();
-            }
-            if (vars.Count == 0)
-            {
-                //If No Variables then expect an empty BINDINGS { }
-                next = context.Tokens.Peek();
-                if (next.TokenType != Token.LEFTCURLYBRACKET)
+                while (next.TokenType == Token.VARIABLE)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected either one/more Variable Tokens or the empty set { } after a BINDINGS keyword", next);
+                    vars.Add(next.Value.Substring(1));
+                    context.Tokens.Dequeue();
+                    next = context.Tokens.Peek();
                 }
+                if (next.TokenType != Token.RIGHTBRACKET) throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' ecountered, expected a ) to terminate the variables list for a VALUES clause", next);
+                context.Tokens.Dequeue();
+            }
+            else if (next.TokenType == Token.VARIABLE)
+            {
+                //Using the simplified form of the syntax
+                simpleForm = true;
+                vars.Add(next.Value.Substring(1));
+                context.Tokens.Dequeue();
+            }
+            else
+            {
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected variables list for a VALUES clause", next);
             }
 
             //Then expect a Left Curly Bracket
+            next = context.Tokens.Peek();
             if (next.TokenType == Token.LEFTCURLYBRACKET)
             {
                 context.Tokens.Dequeue();
                 BindingsPattern bindings = new BindingsPattern(vars);
 
-                //Each Binding tuple must start with a (
+                //Each Binding tuple must start with a ( unless using simplified single variable syntax form
                 next = context.Tokens.Peek();
-                while (next.TokenType == Token.LEFTBRACKET)
+                while ((simpleForm && next.TokenType != Token.RIGHTCURLYBRACKET) || next.TokenType == Token.LEFTBRACKET)
                 {
-                    //Discard the ( and peek the next token
-                    context.Tokens.Dequeue();
-                    next = context.Tokens.Peek();
+                    if (!simpleForm)
+                    {
+                        //Discard the ( and peek the next token
+                        context.Tokens.Dequeue();
+                        next = context.Tokens.Peek();
+                    }
 
                     //Expect a sequence of values in the tuple
                     List<PatternItem> values = new List<PatternItem>();
@@ -3531,38 +3566,40 @@ namespace VDS.RDF.Parsing
                                 break;
 
                             default:
-                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token for a URI/Literal or an UNDEF keyword as part of a tuple in a BINDINGS clause", next);
+                                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Token for a URI/Literal or an UNDEF keyword as part of a tuple in a VALUES clause", next);
                         }
 
                         next = context.Tokens.Peek();
+
+                        //For simplified syntax just break after each value
+                        if (simpleForm) break;
                     }
 
                     if (vars.Count != values.Count)
                     {
-                        throw new RdfParseException("Invalid tuple in the BINDINGS clause, each Binding should contain " + vars.Count + " values but got a tuple containing " + values.Count + " values");
+                        throw new RdfParseException("Invalid tuple in the VALUES clause, each Binding should contain " + vars.Count + " values but got a tuple containing " + values.Count + " values");
                     }
 
                     //Generate a representation of this possible solution and add it to our Bindings object
                     bindings.AddTuple(new BindingTuple(vars, values));
 
                     //Discard the ) and peek the next token
-                    context.Tokens.Dequeue();
+                    if (!simpleForm) context.Tokens.Dequeue();
                     next = context.Tokens.Peek();
                 }
-
-                //Set the Query's BINDINGS clause
-                context.Query.Bindings = bindings;
 
                 //Finally we need to see a Right Curly Bracket
                 if (next.TokenType != Token.RIGHTCURLYBRACKET)
                 {
-                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Curly Bracket to terminate the BINDINGS clause", next);
+                    throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Right Curly Bracket to terminate the VALUES clause", next);
                 }
                 context.Tokens.Dequeue();
+
+                return bindings;
             }
             else
             {
-                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket after the list of variables as part of a BINDINGS clause", next);
+                throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, expected a Left Curly Bracket after the list of variables as part of a VALUES clause", next);
             }
         }
 

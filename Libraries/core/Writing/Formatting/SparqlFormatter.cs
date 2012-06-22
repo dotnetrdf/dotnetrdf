@@ -284,61 +284,7 @@ namespace VDS.RDF.Writing.Formatting
                 //Finally BINDINGS
                 if (query.Bindings != null)
                 {
-                    output.Append("BINDINGS ");
-                    foreach (String var in query.Bindings.Variables)
-                    {
-                        output.Append("?" + var);
-                        output.Append(' ');
-                    }
-                    if (query.Bindings.Variables.Any()) output.AppendLine();
-                    output.Append('{');
-                    bool multipleTuples = query.Bindings.Tuples.Count() > 1;
-                    if (multipleTuples) output.AppendLine();
-                    foreach (BindingTuple tuple in query.Bindings.Tuples)
-                    {
-                        if (tuple.IsEmpty)
-                        {
-                            if (multipleTuples)
-                            {
-                                output.AppendLineIndented("()", 2);
-                            }
-                            else
-                            {
-                                output.Append(" () ");
-                            }
-                            continue;
-                        }
-
-                        if (multipleTuples)
-                        {
-                            output.AppendIndented("(", 2);
-                        }
-                        else
-                        {
-                            output.Append("(");
-                        }
-                        foreach (String var in query.Bindings.Variables)
-                        {
-                            output.Append(' ');
-                            if (tuple[var] == null)
-                            {
-                                output.AppendLine(SparqlSpecsHelper.SparqlKeywordUndef);
-                            }
-                            else
-                            {
-                                output.Append(this.Format(tuple[var], null));
-                            }
-                        }
-                        if (multipleTuples)
-                        {
-                            output.AppendLine(")");
-                        }
-                        else
-                        {
-                            output.Append(')');
-                        }
-                    }
-                    output.AppendLine("}");
+                    output.AppendLine(this.FormatInlineData(query.Bindings));
                 }
 
                 return output.ToString();
@@ -439,7 +385,7 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append("MINUS ");
             }
 
-            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count() > 0 || gp.UnplacedFilters.Count() > 0)
+            if (gp.TriplePatterns.Count > 1 || gp.HasChildGraphPatterns || (gp.TriplePatterns.Count <= 1 && gp.Filter != null) || gp.UnplacedAssignments.Count() > 0 || gp.UnplacedFilters.Count() > 0 || gp.HasInlineData)
             {
                 output.AppendLine("{");
                 foreach (ITriplePattern tp in gp.TriplePatterns)
@@ -449,6 +395,10 @@ namespace VDS.RDF.Writing.Formatting
                 foreach (IAssignmentPattern ap in gp.UnplacedAssignments)
                 {
                     output.AppendLineIndented(this.Format(ap), 2);
+                }
+                if (gp.HasInlineData)
+                {
+                    output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 2);
                 }
                 foreach (GraphPattern child in gp.ChildGraphPatterns)
                 {
@@ -466,14 +416,37 @@ namespace VDS.RDF.Writing.Formatting
             {
                 if (gp.Filter != null)
                 {
-                    output.AppendIndented("{ FILTER(", 2);
-                    output.Append(this.FormatExpression(gp.Filter.Expression));
-                    output.AppendLine(") }");
+                    if (gp.HasInlineData)
+                    {
+                        output.AppendLineIndented("{", 2);
+                        output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
+                        output.AppendLineIndented("FILTER (" + this.FormatExpression(gp.Filter.Expression) + ")", 4);
+                        output.AppendLineIndented("}", 2);
+                    }
+                    else
+                    {
+                        output.AppendIndented("{ FILTER(", 2);
+                        output.Append(this.FormatExpression(gp.Filter.Expression));
+                        output.AppendLine(") }");
+                    }
+                }
+                else if (gp.HasInlineData)
+                {
+                    output.AppendLineIndented("{", 2);
+                    output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
+                    output.AppendLineIndented("}", 2);
                 }
                 else
                 {
                     output.Append("{ }");
                 }
+            }
+            else if (gp.HasInlineData)
+            {
+                output.AppendLineIndented("{", 2);
+                output.AppendLineIndented(this.Format(gp.TriplePatterns[0]), 4);
+                output.AppendLineIndented(this.FormatInlineData(gp.InlineData), 4);
+                output.AppendLineIndented("}", 2);
             }
             else
             {
@@ -1104,6 +1077,68 @@ namespace VDS.RDF.Writing.Formatting
                 output.Append(this.FormatOrderBy(orderBy.Child));
             }
 
+            return output.ToString();
+        }
+
+        protected virtual String FormatInlineData(BindingsPattern data)
+        {
+            StringBuilder output = new StringBuilder();
+            output.Append("VALUES ( ");
+            foreach (String var in data.Variables)
+            {
+                output.Append("?" + var);
+                output.Append(' ');
+            }
+            output.Append(')');
+            if (data.Variables.Any()) output.AppendLine();
+            output.Append('{');
+            bool multipleTuples = data.Tuples.Count() > 1;
+            if (multipleTuples) output.AppendLine();
+            foreach (BindingTuple tuple in data.Tuples)
+            {
+                if (tuple.IsEmpty)
+                {
+                    if (multipleTuples)
+                    {
+                        output.AppendLineIndented("()", 2);
+                    }
+                    else
+                    {
+                        output.Append(" () ");
+                    }
+                    continue;
+                }
+
+                if (multipleTuples)
+                {
+                    output.AppendIndented("(", 2);
+                }
+                else
+                {
+                    output.Append("(");
+                }
+                foreach (String var in data.Variables)
+                {
+                    output.Append(' ');
+                    if (tuple[var] == null)
+                    {
+                        output.AppendLine(SparqlSpecsHelper.SparqlKeywordUndef);
+                    }
+                    else
+                    {
+                        output.Append(this.Format(tuple[var], null));
+                    }
+                }
+                if (multipleTuples)
+                {
+                    output.AppendLine(")");
+                }
+                else
+                {
+                    output.Append(')');
+                }
+            }
+            output.AppendLine("}");
             return output.ToString();
         }
 

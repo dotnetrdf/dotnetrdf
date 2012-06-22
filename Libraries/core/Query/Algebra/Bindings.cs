@@ -46,20 +46,19 @@ namespace VDS.RDF.Query.Algebra
     /// Represents a BINDINGS modifier on a SPARQL Query
     /// </summary>
     public class Bindings
-        : IUnaryOperator
+        : ITerminalOperator
     {
         private BindingsPattern _bindings;
-        private ISparqlAlgebra _pattern;
+        private BaseMultiset _mset;
 
         /// <summary>
         /// Creates a new BINDINGS modifier
         /// </summary>
         /// <param name="bindings">Bindings</param>
-        /// <param name="pattern">Pattern</param>
-        public Bindings(BindingsPattern bindings, ISparqlAlgebra pattern)
+        public Bindings(BindingsPattern bindings)
         {
+            if (bindings == null) throw new ArgumentNullException("Null Bindings");
             this._bindings = bindings;
-            this._pattern = pattern;
         }
 
         /// <summary>
@@ -69,21 +68,11 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            //Evalute the Pattern
-            BaseMultiset results = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
-
-            //If the result is Null/Identity/Empty
-            if (results is NullMultiset || results is IdentityMultiset || results.IsEmpty)
+            if (this._mset == null)
             {
-                context.OutputMultiset = results;
-                return results;
+                this._mset = this._bindings.ToMultiset();
             }
-            else
-            {
-                //Result is an Join from the results to the Input Bindings
-                context.OutputMultiset = results.Join(this._bindings.ToMultiset());
-                return context.OutputMultiset;
-            }
+            return this._mset;
         }
 
         /// <summary>
@@ -93,7 +82,7 @@ namespace VDS.RDF.Query.Algebra
         {
             get
             {
-                return this._pattern.Variables.Distinct();
+                return this._bindings.Variables;
             }
         }
 
@@ -109,23 +98,12 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Gets the Inner Algebra
-        /// </summary>
-        public ISparqlAlgebra InnerAlgebra
-        {
-            get
-            {
-                return this._pattern;
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Algebra
         /// </summary>
         /// <returns></returns>
         public override string ToString()
         {
-            return "Bindings(" + this._pattern.ToString() + ")";
+            return "Bindings()";
         }
 
         /// <summary>
@@ -134,32 +112,31 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            SparqlQuery q = this._pattern.ToQuery();
-            if (this._bindings != null)
-            {
-                q.Bindings = this._bindings;
-            }
+            GraphPattern gp = this.ToGraphPattern();
+            SparqlQuery q = new SparqlQuery();
+            q.RootGraphPattern = gp;
             return q;
         }
 
         /// <summary>
-        /// Throws an exception as a Bindings() algebra cannot be converted to a Graph Pattern
+        /// Convers the Algebra back to a Graph Pattern
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="NotSupportedException">Always thrown as a Bindings() cannot be converted to a Graph Pattern</exception>
         public GraphPattern ToGraphPattern()
         {
-            throw new NotSupportedException("A Bindings() cannot be converted to a GraphPattern");
+            GraphPattern gp = new GraphPattern();
+            gp.AddInlineData(this._bindings);
+            return gp;
         }
 
-        /// <summary>
-        /// Transforms the Inner Algebra using the given Optimiser
-        /// </summary>
-        /// <param name="optimiser">Optimiser</param>
-        /// <returns></returns>
-        public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
-        {
-            return new Bindings(this._bindings, this._pattern);
-        }
+        ///// <summary>
+        ///// Transforms the Inner Algebra using the given Optimiser
+        ///// </summary>
+        ///// <param name="optimiser">Optimiser</param>
+        ///// <returns></returns>
+        //public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
+        //{
+        //    return this;
+        //}
     }
 }
