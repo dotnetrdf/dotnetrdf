@@ -226,6 +226,19 @@ namespace VDS.RDF.Parsing.Tokens
     }
 
     /// <summary>
+    /// Token which represents the SPARQL CALL Keyword
+    /// </summary>
+    public class CallKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new CALL Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="pos">Position the Keyword occurs at</param>
+        public CallKeywordToken(int line, int pos) : base(Token.CALL, "CALL", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
     /// Token which represents the SPARQL CEIL Keyword
     /// </summary>
     public class CeilKeywordToken : BaseToken
@@ -1328,6 +1341,19 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="line">Line the Keyword occurs on</param>
         /// <param name="pos">Position the Keyword occurs at</param>
         public UUIDKeywordToken(int line, int pos) : base(Token.UUID, "UUID", line, line, pos, pos + 4) { }
+    }
+
+    /// <summary>
+    /// Token which represents the SPARQL VALUES Keyword
+    /// </summary>
+    public class ValuesKeywordToken : BaseToken
+    {
+        /// <summary>
+        /// Creates a new VALUES Keyword Token
+        /// </summary>
+        /// <param name="line">Line the Keyword occurs on</param>
+        /// <param name="post">Position the Keyword occurs at</param>
+        public ValuesKeywordToken(int line, int post) : base(Token.VALUES, "VALUES", line, line, post, post + 6) { }
     }
 
     /// <summary>

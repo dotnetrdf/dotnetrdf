@@ -924,6 +924,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Bound Function Keyword
                         this.LastTokenType = Token.BOUND;
                         return new BoundKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordCall:
+                        //Call Function Keyword
+                        this.LastTokenType = Token.CALL;
+                        return new CallKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordCeil:
                         //Ceil Function Keyword
                         this.LastTokenType = Token.CEIL;
@@ -1336,6 +1340,10 @@ namespace VDS.RDF.Parsing.Tokens
                         //Using Keyword
                         this.LastTokenType = Token.USING;
                         return new UsingKeywordToken(this.CurrentLine, this.StartPosition);
+                    case SparqlSpecsHelper.SparqlKeywordValues:
+                        //Values Kewyord
+                        this.LastTokenType = Token.VALUES;
+                        return new ValuesKeywordToken(this.CurrentLine, this.StartPosition);
                     case SparqlSpecsHelper.SparqlKeywordWhere:
                         //Where Keyword
                         this.LastTokenType = Token.WHERE;

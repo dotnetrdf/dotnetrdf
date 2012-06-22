@@ -172,6 +172,7 @@ namespace VDS.RDF.Query
         private bool _subquery = false;
         private ISparqlDescribe _describer = null;
         private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+        private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
         /// Creates a new SPARQL Query
@@ -473,6 +474,28 @@ namespace VDS.RDF.Query
                 else
                 {
                     this._optimisers = Enumerable.Empty<IAlgebraOptimiser>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the locally scoped Expression Factories that may be used if the query is using the CALL() function to do dynamic function invocation
+        /// </summary>
+        public IEnumerable<ISparqlCustomExpressionFactory> ExpressionFactories
+        {
+            get
+            {
+                return this._exprFactories;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._exprFactories = value;
+                }
+                else
+                {
+                    this._exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
                 }
             }
         }

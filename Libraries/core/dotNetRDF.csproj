@@ -109,6 +109,7 @@
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />
+    <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
     <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />

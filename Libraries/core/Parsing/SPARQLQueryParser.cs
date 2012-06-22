@@ -358,6 +358,7 @@ namespace VDS.RDF.Parsing
             context.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             context.Tokens.InitialiseBuffer();
             context.SyntaxMode = this._syntax;
+            context.Query.ExpressionFactories = context.ExpressionFactories.ToList();
 
             do
             {
@@ -739,6 +740,7 @@ namespace VDS.RDF.Parsing
                     case Token.ABS:
                     case Token.BNODE:
                     case Token.BOUND:
+                    case Token.CALL:
                     case Token.CEIL:
                     case Token.COALESCE:
                     case Token.CONCAT:
@@ -2194,6 +2196,7 @@ namespace VDS.RDF.Parsing
                 case Token.ABS:
                 case Token.BNODE:
                 case Token.BOUND:
+                case Token.CALL:
                 case Token.CEIL:
                 case Token.COALESCE:
                 case Token.CONCAT:
@@ -2639,6 +2642,7 @@ namespace VDS.RDF.Parsing
                     case Token.ABS:
                     case Token.BNODE:
                     case Token.BOUND:
+                    case Token.CALL:
                     case Token.CEIL:
                     case Token.COALESCE:
                     case Token.CONCAT:
@@ -2811,6 +2815,7 @@ namespace VDS.RDF.Parsing
                     case Token.ABS:
                     case Token.BNODE:
                     case Token.BOUND:
+                    case Token.CALL:
                     case Token.CEIL:
                     case Token.COALESCE:
                     case Token.CONCAT:
@@ -2975,6 +2980,7 @@ namespace VDS.RDF.Parsing
                 case Token.ABS:
                 case Token.BNODE:
                 case Token.BOUND:
+                case Token.CALL:
                 case Token.CEIL:
                 case Token.COALESCE:
                 case Token.CONCAT:
@@ -3199,6 +3205,7 @@ namespace VDS.RDF.Parsing
                             case Token.ABS:
                             case Token.BNODE:
                             case Token.BOUND:
+                            case Token.CALL:
                             case Token.CEIL:
                             case Token.COALESCE:
                             case Token.CONCAT:

@@ -137,6 +137,7 @@ namespace VDS.RDF.Parsing.Tokens
                           BINDINGS = 135,
                           UNDEF = 136,
                           BIND = 137,
+                          VALUES = 138,
 
                           STR = 150,
                           LANG = 151,
@@ -194,6 +195,7 @@ namespace VDS.RDF.Parsing.Tokens
                           REPLACE = 203,
                           STRUUID = 204,
                           UUID = 205,
+                          CALL = 206,
 
                           PLUS = 250,
                           MINUS = 251,

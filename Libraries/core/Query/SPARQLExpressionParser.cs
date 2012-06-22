@@ -392,6 +392,7 @@ namespace VDS.RDF.Query
                 case Token.ABS:
                 case Token.BNODE:
                 case Token.BOUND:
+                case Token.CALL:
                 case Token.CEIL:
                 case Token.COALESCE:
                 case Token.CONCAT:
@@ -623,6 +624,17 @@ namespace VDS.RDF.Query
                     {
                         throw Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, a Left Bracket to start a BOUND function call was expected", next);
                     }
+
+                case Token.CALL:
+                    if (this._syntax != SparqlQuerySyntax.Extended) throw Error("The CALL keyword is only valid when using SPARQL 1.1 Extended syntax", next);
+                    args = new List<ISparqlExpression>();
+                    do
+                    {
+                        args.Add(this.TryParseBrackettedExpression(tokens, first, out comma));
+                        first = false;
+                    } while (comma);
+
+                    return new CallFunction(args);
 
                 case Token.CEIL:
                     return new CeilFunction(this.TryParseBrackettedExpression(tokens));

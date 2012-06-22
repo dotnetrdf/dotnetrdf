@@ -150,6 +150,7 @@ namespace VDS.RDF.Query
                       SparqlKeywordMinus = "MINUS",
                       SparqlKeywordService = "SERVICE",
                       SparqlKeywordBindings = "BINDINGS",
+                      SparqlKeywordValues = "VALUES",
                       SparqlKeywordUndef = "UNDEF",
                       SparqlKeywordIsNumeric = "ISNUMERIC",
                       SparqlKeywordStrLen = "STRLEN",
@@ -190,7 +191,8 @@ namespace VDS.RDF.Query
                       SparqlKeywordMove = "MOVE",
                       SparqlKeywordTo = "TO",
                       SparqlKeywordUUID = "UUID",
-                      SparqlKeywordStrUUID = "STRUUID"
+                      SparqlKeywordStrUUID = "STRUUID",
+                      SparqlKeywordCall = "CALL"
                       ;
 
         /// <summary>
@@ -223,8 +225,9 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordMinus,
                                                       SparqlKeywordService,
                                                       SparqlKeywordBindings,
+                                                      SparqlKeywordValues,
                                                       SparqlKeywordUndef,
-                                                      SparqlKeywordDefault
+                                                      SparqlKeywordDefault,
                                                   };
         /// <summary>
         /// Set of SPARQL Keywords that are Function Keywords
@@ -233,6 +236,7 @@ namespace VDS.RDF.Query
                                                       SparqlKeywordAbs,
                                                       SparqlKeywordBNode,
                                                       SparqlKeywordBound,
+                                                      SparqlKeywordCall,
                                                       SparqlKeywordCeil,
                                                       SparqlKeywordCoalesce,
                                                       SparqlKeywordConcat,
@@ -403,7 +407,6 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordAbs,
                                                         SparqlKeywordAs,
                                                         SparqlKeywordAvg,
-                                                        SparqlKeywordBindings,
                                                         SparqlKeywordBNode,
                                                         SparqlKeywordCeil,
                                                         SparqlKeywordCoalesce,
@@ -461,6 +464,7 @@ namespace VDS.RDF.Query
                                                         SparqlKeywordUndef,
                                                         SparqlKeywordUri,
                                                         SparqlKeywordUUID,
+                                                        SparqlKeywordValues,
                                                         SparqlKeywordYear
                                                        };
 
