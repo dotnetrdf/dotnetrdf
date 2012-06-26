@@ -224,6 +224,8 @@
     <Compile Include="Sparql\SparqlProcessorsWithHandlersTests.cs" />
     <Compile Include="Sparql\StrictOptimiserTest.cs" />
     <Compile Include="Sparql\WeightedOptimiserTests.cs" />
+    <Compile Include="Storage\Async\BaseAsyncTests.cs" />
+    <Compile Include="Storage\Async\InMemoryAsync.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
     <Compile Include="Configuration\ConfigurationApiTests.cs" />
     <Compile Include="Storage\DydraTests.cs" />
