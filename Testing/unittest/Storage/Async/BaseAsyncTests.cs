@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Test.Storage
@@ -16,6 +17,7 @@ namespace VDS.RDF.Test.Storage
         private const String AddTripleUri = "http://localhost/storage/async/AddTriples";
         private const String RemoveTriplesUri = "http://localhost/storage/async/RemoveTriples";
         private const String DeleteGraphUri = "http://localhost/storage/async/DeleteGraph";
+        private const String QueryGraphUri = "http://localhost/storage/async/QueryGraph";
 
         /// <summary>
         /// Method to be implemented by derived classes to obtain the storage provider to test
@@ -27,6 +29,11 @@ namespace VDS.RDF.Test.Storage
         protected void Fail(IAsyncStorageProvider provider, String msg)
         {
             Assert.Fail("[" + provider.GetType().Name + "] " + msg);
+        }
+
+        protected void Fail(IAsyncStorageProvider provider, String msg, Exception e)
+        {
+            throw new Exception("[" + provider.GetType().Name + "] " + msg, e);
         }
 
         protected void TestAsyncSaveLoad(IGraph g)
@@ -73,12 +80,12 @@ namespace VDS.RDF.Test.Storage
                     }
                     else
                     {
-                        this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message);
+                        this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message);
+                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             } 
             finally 
@@ -149,17 +156,17 @@ namespace VDS.RDF.Test.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message);
+                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message);
+                        this.Fail(provider, "DeleteGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message);
+                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -234,17 +241,17 @@ namespace VDS.RDF.Test.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message);
+                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message);
+                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message);
+                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -319,17 +326,17 @@ namespace VDS.RDF.Test.Storage
                         }
                         else
                         {
-                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message);
+                            this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                         }
                     }
                     else
                     {
-                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message);
+                        this.Fail(provider, "UpdateGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                     }
                 }
                 else
                 {
-                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message);
+                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
@@ -369,13 +376,78 @@ namespace VDS.RDF.Test.Storage
                 }
                 else
                 {
-                    this.Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message);
+                    this.Fail(provider, "ListGraphs() returned an error - " + resArgs.Error.Message, resArgs.Error);
                 }
             }
             finally
             {
                 provider.Dispose();
             }            
+        }
+
+        protected void TestAsyncQuery(IGraph g)
+        {
+            IAsyncStorageProvider provider = this.GetAsyncProvider();
+            if (!(provider is IAsyncQueryableStorage))
+            {
+                Console.WriteLine("[" + provider.GetType().Name + "] IO Behaviour required for this test is not supported, skipping test for this provider");
+                return;
+            }
+            try
+            {
+                ManualResetEvent signal = new ManualResetEvent(false);
+                AsyncStorageCallbackArgs resArgs = null;
+                g.BaseUri = UriFactory.Create(SaveGraphUri);
+                provider.SaveGraph(g, (_, args, state) =>
+                {
+                    resArgs = args;
+                    signal.Set();
+                }, null);
+
+                //Wait for response, max 15s
+                signal.WaitOne(15000);
+
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs.WasSuccessful)
+                {
+                    Console.WriteLine("Async SaveGraph() worked OK, trying async Query() to confirm operation worked as expected");
+
+                    resArgs = null;
+                    signal.Reset();
+                    ((IAsyncQueryableStorage)provider).Query("SELECT * WHERE { GRAPh <" + QueryGraphUri + "> { ?s a ?type } }", (_, args, state) =>
+                    {
+                        resArgs = args;
+                        signal.Set();
+                    }, null);
+
+                    //Wait for response, max 15s
+                    signal.WaitOne(15000);
+
+                    if (resArgs == null) this.Fail(provider, "Query() did not return in 15 seconds");
+                    if (resArgs.WasSuccessful)
+                    {
+                        Console.WriteLine("Async Query() worked OK, checking results...");
+                        SparqlResultSet results = resArgs.QueryResults as SparqlResultSet;
+                        if (results == null) this.Fail(provider, "Result Set was empty");
+                        foreach (SparqlResult r in results)
+                        {
+                            Assert.IsTrue(g.GetTriplesWithSubjectObject(r["s"], r["type"]).Any(), "Unexpected Type triple " + r["s"].ToString() + " a " + r["type"].ToString() + " was returned");
+                        }
+                    }
+                    else
+                    {
+                        this.Fail(provider, "LoadGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                    }
+                }
+                else
+                {
+                    this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
+                }
+            }
+            finally
+            {
+                provider.Dispose();
+            }
         }
 
         [TestMethod]
@@ -414,6 +486,14 @@ namespace VDS.RDF.Test.Storage
         public void StorageAsyncListGraphs()
         {
             this.TestAsyncListGraphs();
+        }
+
+        [TestMethod]
+        public void StorageAsyncQuery()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            this.TestAsyncQuery(g);
         }
     }
 }

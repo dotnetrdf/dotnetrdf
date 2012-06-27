@@ -111,6 +111,9 @@
     <Compile Include="Sparql\ResultAccessTests.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
     <Compile Include="Sparql\VariableSubstitutionTests.cs" />
+    <Compile Include="Storage\Async\DydraAsync.cs" />
+    <Compile Include="Storage\Async\SesameAsync.cs" />
+    <Compile Include="Storage\Async\VirtuosoAsync.cs" />
     <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestConfigManager.cs" />
     <Compile Include="TestTools.cs" />

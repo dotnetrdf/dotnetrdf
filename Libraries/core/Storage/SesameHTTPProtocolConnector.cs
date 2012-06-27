@@ -1163,6 +1163,7 @@ namespace VDS.RDF.Storage
                                             ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, isAsk);
                                             resreader.Load(resultsHandler, data);
                                             response.Close();
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
                                         }
                                         catch (RdfParserSelectionException)
                                         {
@@ -1175,6 +1176,7 @@ namespace VDS.RDF.Storage
                                                     ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser("application/sparql-results+xml");
                                                     resreader.Load(resultsHandler, data);
                                                     response.Close();
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
 
                                                 }
                                                 catch (RdfParserSelectionException)
@@ -1195,7 +1197,12 @@ namespace VDS.RDF.Storage
                                                 rdfreader.Load(rdfHandler, data);
                                             }
                                             response.Close();
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
                                         }
+                                    }
+                                    catch (RdfParseException parseEx)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, parseEx), state);
                                     }
                                     catch (WebException webEx)
                                     {
