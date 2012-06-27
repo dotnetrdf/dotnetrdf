@@ -35,11 +35,11 @@ terms.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using VDS.RDF.Parsing;
-using VDS.RDF.Configuration;
 using System.IO;
+using System.Net;
+using System.Threading;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Storage
@@ -238,6 +238,12 @@ namespace VDS.RDF.Storage
     public abstract class BaseAsyncHttpConnector
         : BaseHttpConnector, IAsyncStorageProvider
     {
+        private DoRequestSequenceDelgate _d;
+
+        public BaseAsyncHttpConnector()
+        {
+            this._d = new DoRequestSequenceDelgate(this.DoRequestSequence);
+        }
 
         public virtual void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
@@ -543,5 +549,75 @@ namespace VDS.RDF.Storage
         }
 
         public abstract void Dispose();
+
+        protected void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
+        {
+            this._d.BeginInvoke(requests, callback, state, this.MakeRequestSequenceCallback, callback);
+        }
+
+        private void MakeRequestSequenceCallback(IAsyncResult r)
+        {
+            try
+            {
+                this._d.EndInvoke(r);
+            }
+            catch (Exception ex)
+            {
+                AsyncStorageCallback callback = r.AsyncState as AsyncStorageCallback;
+                if (callback != null)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("Unexpected error while making a sequence of asynchronous requests to the Store, see inner exception for details", ex)), null);
+                }
+            }
+        }
+
+        private delegate void DoRequestSequenceDelgate(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state);
+
+        private void DoRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
+        {
+            ManualResetEvent signal = new ManualResetEvent(false);
+            foreach (HttpWebRequest request in requests)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                request.BeginGetResponse(r =>
+                {
+                    try
+                    {
+                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+
+                        //This request worked OK, close the response and carry on
+                        response.Close();
+                        signal.Set();
+                    }
+                    catch (WebException webEx)
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                        }
+#endif
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("A HTTP Error occurred while making a sequence of asynchronous requests to the Store, see inner exception for details", webEx)), state);
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("Unexpected error while making a sequence of asynchronous requests to the Store, see inner exception for details", ex)), state);
+                        return;
+                    }
+                }, state);
+
+                signal.WaitOne();
+                signal.Reset();
+            }
+
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), state);
+        }
     }
 }

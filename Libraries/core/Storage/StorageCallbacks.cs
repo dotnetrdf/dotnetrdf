@@ -73,7 +73,11 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Got the list of Stores
         /// </summary>
-        ListStores
+        ListStores,
+        /// <summary>
+        /// Unknown Action
+        /// </summary>
+        Unknown
     }
 
     /// <summary>

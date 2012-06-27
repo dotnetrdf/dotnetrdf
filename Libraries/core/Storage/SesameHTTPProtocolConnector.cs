@@ -961,42 +961,16 @@ namespace VDS.RDF.Storage
                         }
 
                         //Run all the requests, if any error make an error callback and abort
-                        while (requests.Count > 0)
-                        {
-                            request = requests.Dequeue();
-#if DEBUG
-                            if (Options.HttpDebugging)
+                        this.MakeRequestSequence(requests, (sender, args, st) =>
                             {
-                                Tools.HttpDebugRequest(request);
-                            }
-#endif
-                            request.BeginGetResponse(r =>
+                                if (!args.WasSuccessful)
                                 {
-                                    try
-                                    {
-                                        response = (HttpWebResponse) request.EndGetResponse(r);
+                                    //Invoke callbakc and bail out
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
+                                    return;
+                                }
+                            }, state);
 
-                                        //This delete worked OK, close the response and carry on
-                                        response.Close();
-                                    }
-                                    catch (WebException webEx)
-                                    {
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                        }
-#endif
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
-                                        return;
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
-                                        return;
-                                    }
-                                }, state);
-                        }
                     }
                 }
 
@@ -1023,8 +997,12 @@ namespace VDS.RDF.Storage
 
                         //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
                         this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                        return;
                     }
                 }
+
+                //If we get here then we may have done some deletes (which suceeded) but didn't do any adds so we still need to invoke the callback
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
             }
             catch (WebException webEx)
             {
