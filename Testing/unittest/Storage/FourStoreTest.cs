@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Storage
     public class FourStoreTest
     {
         //private const String FourStoreTestUri = "http://nottm-virtual.ecs.soton.ac.uk:8080/";
-        private const String FourStoreTestUri = "http://nottm-virtual:8080";
+        public const String FourStoreTestUri = "http://nottm-virtual:8080";
 
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 

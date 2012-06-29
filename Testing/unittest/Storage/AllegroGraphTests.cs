@@ -13,6 +13,15 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class AllegroGraphTests
     {
+        public const String TestServerUri = "http://localhost:9875",
+                            TestCatalog = "test",
+                            TestRepository = "unit-test";
+
+        private AllegroGraphConnector GetConnector()
+        {
+            return new AllegroGraphConnector(TestServerUri, TestCatalog, TestRepository);
+        }
+
         [TestMethod]
         public void StorageAllegroGraphSaveLoad()
         {
@@ -22,7 +31,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+                AllegroGraphConnector agraph = this.GetConnector();
                 agraph.SaveGraph(g);
 
                 Graph h = new Graph();
@@ -46,7 +55,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+                AllegroGraphConnector agraph = this.GetConnector();
                 agraph.SaveGraph(g);
 
                 Console.WriteLine("Graph before deletion");
@@ -82,7 +91,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+                AllegroGraphConnector agraph = this.GetConnector();
 
                 String ask = "ASK WHERE { ?s ?p ?o }";
 
@@ -107,7 +116,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+                AllegroGraphConnector agraph = this.GetConnector();
 
                 String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 

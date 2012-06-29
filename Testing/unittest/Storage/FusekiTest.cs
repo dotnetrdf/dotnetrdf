@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Storage
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        private const String FusekiTestUri = "http://localhost:3030/dataset/data";
+        public const String FusekiTestUri = "http://localhost:3030/dataset/data";
 
         [TestMethod]
         public void StorageFusekiSaveGraph()

@@ -111,8 +111,13 @@
     <Compile Include="Sparql\ResultAccessTests.cs" />
     <Compile Include="Sparql\SparqlTests.cs" />
     <Compile Include="Sparql\VariableSubstitutionTests.cs" />
+    <Compile Include="Storage\Async\AllegroGraphAsync.cs" />
     <Compile Include="Storage\Async\DydraAsync.cs" />
+    <Compile Include="Storage\Async\FourStoreAsync.cs" />
+    <Compile Include="Storage\Async\FusekiAsync.cs" />
     <Compile Include="Storage\Async\SesameAsync.cs" />
+    <Compile Include="Storage\Async\SparqlGraphStoreAsync.cs" />
+    <Compile Include="Storage\Async\StardogAsync.cs" />
     <Compile Include="Storage\Async\VirtuosoAsync.cs" />
     <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestConfigManager.cs" />
@@ -267,7 +272,7 @@
     <Compile Include="Sparql\ResultSetWriterTests.cs" />
     <Compile Include="Sparql\UpdateTests.cs" />
     <Compile Include="Sparql\ViewTests.cs" />
-    <Compile Include="Storage\SparqlUniformHttpProtocolTest.cs" />
+    <Compile Include="Storage\SparqlGraphStoreProtocolTest.cs" />
     <Compile Include="Parsing\VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
     <Compile Include="Web\ServiceDescription.cs" />
