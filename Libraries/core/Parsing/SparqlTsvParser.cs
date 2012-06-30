@@ -320,6 +320,8 @@ namespace VDS.RDF.Parsing
                 if (next.TokenType == Token.EOL || next.TokenType == Token.EOF) break;
             }
 
+            if (v < context.Variables.Count) throw ParserHelper.Error("Too few RDF Terms, got " + v + " but expected " + context.Variables.Count, next);
+
             if (!context.Handler.HandleResult(result)) ParserHelper.Stop();
         }
 

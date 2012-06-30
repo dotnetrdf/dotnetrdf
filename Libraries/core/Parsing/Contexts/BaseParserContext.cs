@@ -172,7 +172,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingParserContext(IGraph g, ITokeniser tokeniser)
             : base(g)
         {
-            this._queue = new TokenQueue(tokeniser);
+            this._queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingParserContext(IRdfHandler handler, ITokeniser tokeniser)
             : base(handler)
         {
-            this._queue = new TokenQueue(tokeniser);
+            this._queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>

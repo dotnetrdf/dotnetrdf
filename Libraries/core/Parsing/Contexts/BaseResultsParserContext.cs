@@ -153,7 +153,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(SparqlResultSet results, ITokeniser tokeniser)
             : base(results)
         {
-            this._queue = new TokenQueue(tokeniser);
+            this._queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace VDS.RDF.Parsing.Contexts
         public TokenisingResultParserContext(ISparqlResultsHandler handler, ITokeniser tokeniser)
             : base(handler)
         {
-            this._queue = new TokenQueue(tokeniser);
+            this._queue = new BufferedTokenQueue(tokeniser);
         }
 
         /// <summary>
