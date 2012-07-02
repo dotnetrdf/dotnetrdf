@@ -192,6 +192,12 @@
     <Content Include="sparql11_tests\negation\exists-02.srx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="sparql11_tests\negation\full-minuend.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\negation\part-minuend.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sparql11_tests\property-path\clique3.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -280,6 +286,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sparql11_tests\syntax-query\syntax-SELECTscope3.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\negation\full-minuend.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\negation\full-minuend.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\negation\part-minuend.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\negation\part-minuend.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="sparql11_tests\syntax-query\syntax-propertyPaths-01.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="sparqlparser_tests\algebra\data-1.ttl">
