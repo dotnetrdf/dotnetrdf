@@ -509,7 +509,8 @@ namespace VDS.RDF.Storage
                     {
                         try
                         {
-                            StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                            Stream stream = request.EndGetRequestStream(r);
+                            StreamWriter writer = new StreamWriter(stream);
                             writer.Write(postData);
                             writer.Close();
 

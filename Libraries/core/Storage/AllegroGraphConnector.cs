@@ -123,7 +123,7 @@ namespace VDS.RDF.Storage
             this.CreateStore(storeID, (sender, args, state) =>
                 {
                     resArgs = args;
-                    singal.Set();
+                    signal.Set();
                 }, null);
             signal.WaitOne();
 
@@ -426,8 +426,6 @@ namespace VDS.RDF.Storage
             return stores;
         }
 
-#endif
-
         /// <summary>
         /// Gets a Store within the current catalog
         /// </summary>
@@ -438,16 +436,14 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public override IStorageProvider GetStore(String storeID)
         {
-#if !NO_SYNC_HTTP
             //Allowed to return self when given ID matches own ID
             if (this._store.Equals(storeID)) return this;
 
             //Otherwise return a new instance
             return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
-#else
-            throw new RdfStorageException("Not supported on your platform, please use the asynchronous overload of this method");
-#endif
         }
+
+#endif
 
         /// <summary>
         /// Gets the List of Stores available  on the server within the current catalog asynchronously

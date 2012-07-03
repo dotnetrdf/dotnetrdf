@@ -1367,6 +1367,7 @@ namespace VDS.RDF.Storage
         public abstract IStorageProvider GetStore(String storeID);
 
 #endif
+
         /// <summary>
         /// Creates a store asynchronously
         /// </summary>
@@ -1597,6 +1598,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Gets the Store with the given ID
         /// </summary>
@@ -1614,6 +1617,42 @@ namespace VDS.RDF.Storage
             else
             {
                 return new SesameHttpProtocolConnector(this._baseUri, storeID);
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Gets a store asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// </remarks>
+        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                if (this._store.Equals(storeID))
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
+                }
+                else
+                {
+                    IAsyncStorageProvider provider;
+#if !NO_PROXY
+                    provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+                    provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
+#endif
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
+                }
+            }
+            catch (Exception e)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
             }
         }
     }
@@ -1666,6 +1705,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Gets the Store with the given ID
         /// </summary>
@@ -1682,10 +1723,15 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID);
+#if !NO_PROXY
+                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd);
+#endif
             }
         }
-
+#endif
+        
         /// <summary>
         /// Gets a store asynchronously
         /// </summary>
@@ -1697,12 +1743,22 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            //Since GetStore() does not do anything that requires sync HTTP we can just call the synchronous GetStore() method
-            //and either return the result of wrap the error via the callback
             try
             {
-                IStorageProvider provider = this.GetStore(storeID);
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, (IAsyncStorageProvider)provider), state);
+                if (this._store.Equals(storeID))
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
+                }
+                else
+                {
+                    IAsyncStorageProvider provider;
+#if !NO_PROXY
+                    provider = new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+                    provider = new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd);
+#endif
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
+                }
             }
             catch (Exception e)
             {
@@ -1762,6 +1818,8 @@ namespace VDS.RDF.Storage
 
 #endif
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Gets the Store with the given ID
         /// </summary>
@@ -1778,7 +1836,11 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID);
+#if !NO_PROXY
+                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd);
+#endif
             }
         }
 
@@ -1857,6 +1919,211 @@ namespace VDS.RDF.Storage
                 {
                     throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
                 }
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Gets a store asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// </remarks>
+        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                if (this._store.Equals(storeID))
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
+                }
+                else
+                {
+                    IAsyncStorageProvider provider;
+#if !NO_PROXY
+                    provider = new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+                    provider = new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd);
+#endif
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
+                }
+            }
+            catch (Exception e)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
+            }
+        }
+
+        /// <summary>
+        /// Makes a SPARQL Update request to the Sesame server
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("update=");
+                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(r);
+                            using (StreamWriter writer = new StreamWriter(stream))
+                            {
+                                writer.Write(postData);
+                                writer.Close();
+                            }
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            //Get the Response and process based on the Content Type
+                            request.BeginGetResponse(r2 =>
+                                 {
+                                     try
+                                     {
+                                         HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                         if (Options.HttpDebugging)
+                                         {
+                                             Tools.HttpDebugResponse(response);
+                                         }
+#endif
+                                         //If we get here it completed OK
+                                         response.Close();
+                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
+                                     }
+                                     catch (WebException webEx)
+                                     {
+                                         if (webEx.Response != null)
+                                         {
+#if DEBUG
+                                             if (Options.HttpDebugging)
+                                             {
+                                                 Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                             }
+#endif
+                                             if (webEx.Response.ContentLength > 0)
+                                             {
+                                                 try
+                                                 {
+                                                     String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                                 }
+                                                 catch
+                                                 {
+                                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                                                 }
+                                             }
+                                             else
+                                             {
+                                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                                             }
+                                         }
+                                         else
+                                         {
+                                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                                         }
+                                     }
+                                     catch (Exception ex)
+                                     {
+                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
+                                     }
+                                 }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            if (webEx.Response != null)
+                            {
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                }
+#endif
+                                if (webEx.Response.ContentLength > 0)
+                                {
+                                    try
+                                    {
+                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                                    }
+                                    catch
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                                    }
+                                }
+                                else
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                                }
+                            }
+                            else
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                if (webEx.Response != null)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    if (webEx.Response.ContentLength > 0)
+                    {
+                        try
+                        {
+                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
+                        }
+                        catch
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                        }
+                    }
+                    else
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                    }
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
+                }
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
             }
         }
     }

@@ -89,7 +89,7 @@ namespace VDS.RDF
     /// <para>
     /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs
     /// </para>
-    /// <h3>Configuration API</h4>
+    /// <h3>Configuration API</h3>
     /// <para>
     /// We provide a <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system is used extensively as part of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
     /// </para>
@@ -115,6 +115,9 @@ namespace VDS.RDF
     ///     <tr><td><see cref="IUpdateableGenericIOManager"/></td><td><see cref="IUpdateableStorage"/></td></tr>
     ///     <tr><td><see cref="IMultiStoreGenericIOManager"/></td><td><see cref="IStorageServer"/></td></tr>
     /// </table>
+    /// <para>
+    /// There are also some improvements to the <see cref="IStoreReader"/> and <see cref="IStoreWriter"/> interfaces such that they can now be used to read/write directly from files and streams.  The old <see cref="IStorageParams"/> APIs are marked as obsolete and will be removed in future releases, please update your code to use the newer methods which are more user friendly.
+    /// </para>
     /// <h5>0.6.x vs 0.5.x API</h5>
     /// <para>
     /// The 0.6.x release has limited breaking changes and these are primarily in the internals of the SPARQL engine and so should only affect advanced users of the API.  Specifically the <see cref="VDS.RDF.Query.Dataset.ISparqlDataset"/> interface was updated and the <see cref="VDS.RDF.Query.Expressions.ISparqlExpression"/> interface refactored in terms of the new <see cref="IValuedNode"/> interface.  A variety of methods and classes previously marked obsolete are not either removed or marked obsolete unusable.
@@ -184,7 +187,7 @@ namespace VDS.RDF.Configuration.Permissions
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are used internally in the SPARQL engine.
+    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are used internally in the SPARQL engine.  These all derive from the standard Node implementations so can be used interchangeably with those if desired.
     /// </summary>
     class NamespaceDoc
     {
@@ -234,7 +237,7 @@ namespace VDS.RDF.Parsing.Contexts
 {
     /// <summary>
     /// <para>
-    /// Namespace for Parser Context classes, these are classes that are used internally by parsers to store their state.  This allows parsers to be safely used in a multi-threaded scenario since the parsing of one Graph/Store cannot affect the parsing of another.
+    /// Namespace for Parser Context classes, these are classes that are used internally by parsers to store their state.  This allows parsers to be safely used in a multi-threaded scenario so the parsing of one Graph/Store cannot affect the parsing of another.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -303,16 +306,7 @@ namespace VDS.RDF.Query
     /// Namespace for Query Classes which provide Querying capabilities on RDF Graphs
     /// </para>
     /// <para>
-    /// Query capabilities are provided for two forms of Query:
-    /// <ol>
-    ///     <li>Basic Graph pattern matching which is implemented via the <see cref="ISelector">ISelector</see> interface</li>
-    ///     <li>SPARQL Queries
-    ///         <ul>
-    ///             <li>Full SPARQL over local in-memory Triple Stores</li>
-    ///             <li>Full SPARQL over remote endpoints</li>
-    ///         </ul>
-    ///     </li>
-    /// </ol>
+    /// Query capabilities are centered around support for the SPARQL standard.  You can execute full SPARQL 1.1 queries over in-memory data or submit queries to remote SPARQL endpoints.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -740,7 +734,7 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// Namespace which provides a client for interacting with a Pellet Server
     /// </para>
     /// <para>
-    /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.
+    /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.  You may also want to consider using the <see cref="StardogConnector"/> which is the triple store from the same people who developed Pellet and which integrates some Pellet capabilities.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -821,13 +815,23 @@ namespace VDS.RDF.Storage
     /// <para>
     /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
+    /// <para>
+    /// Note that this is the new name for the old <see cref="IGenericIOManager"/> interface, the following table summarizes name changes to the interfaces in this API which were made in the 0.7.x releases.  Note that in the 0.7.x initial release the old interface names were preserved as marker interfaces to enable backwards compatibility with existing code.
+    /// </para>
+    /// <table>
+    ///     <tr><th>Old Name</th><th>New Name</th></tr>
+    ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
+    ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
+    ///     <tr><td><see cref="IUpdateableGenericIOManager"/></td><td><see cref="IUpdateableStorage"/></td></tr>
+    ///     <tr><td><see cref="IMultiStoreGenericIOManager"/></td><td><see cref="IStorageServer"/></td></tr>
+    /// </table>
     /// <h3>Data Provider Libraries</h3>
     /// <para>
     /// From the 0.5.0 release onwards any triple store integration that requires additional dependencies are provided with their own library to reduce dependencies in the Core library and allow that functionality to be optional.  The following stores are currently provided in separate libraries:
     /// </para>
     /// <ul>
     ///     <li>Virtuoso - Virtuoso support can be found in the <strong>dotNetRDF.Data.Virtuoso.dll</strong> library and requires one additional dependency.</li>
-    ///     <li>Microsoft SQL Server - Our new SQL backend called the ADO Store can be found in the <strong>dotNetRDF.Data.Sql.dll</strong> library and currently has no additional dependencies.</li>
+    ///     <li><strong>Deprecated</strong> Microsoft SQL Server - Our new SQL backend called the ADO Store can be found in the <strong>dotNetRDF.Data.Sql.dll</strong> library and currently has no additional dependencies.</li>
     /// </ul>
     /// </summary>
     class NamespaceDoc
@@ -895,14 +899,11 @@ namespace VDS.RDF.Web
     /// Namespace for Classes designed to aid the deployment of Linked Data, SPARQL Endpoints and other Semantic Web technologies as part of ASP.Net web applications.
     /// </para>
     /// <para>
-    /// As of the 0.3.0 release the ASP.Net support has been heavily rewritten, as opposed to the previous system which required many &lt;appSettings&gt; defining the new system now requires only 1 &lt;appSetting&gt; like so:
+    /// The ASP.Net support leverages the <see cref="VDS.RDF.Configuration">Configuration API</see> heavily and so only requires only 1 &lt;appSetting&gt; like so:
     /// <code>
     /// &lt;add key="dotNetRDFConfig" value="~/App_Data/config.ttl" /&gt;
     /// </code>
     /// This setting provides a pointer to an RDF configuration graph that uses the <a href="http://www.dotnetrdf.org/configuration#">Configuration Vocabulary</a> to express the configuration of HTTP Handlers for your ASP.Net application.  We also now provide a command line tool <a href="http://www.dotnetrdf.org/content.asp?pageID=rdfWedDeploy">rdfWebDeploy</a> which can be used to automate the testing and deployment of this configuration.  See documentation on the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">Configuration API</a> for more detail.  Individual handler documentation gives basic examples of Handler configurations.
-    /// </para>
-    /// <para>
-    /// <strong>Note: </strong> As can be seen the old ASP.Net handlers have now all been marked as obsolete, they are left in the library currently to provide compatability with existing applications but we strongly recommend that applications using these migrate to the new Handlers and all new development should use the new Handlers.
     /// </para>
     /// </summary>
     class NamespaceDoc
