@@ -44,12 +44,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     class PreviewGraphTask : CancellableTask<IGraph>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private String _graphUri;
         private int _previewSize = 100;
         private CancellableHandler _canceller;
 
-        public PreviewGraphTask(IGenericIOManager manager, String graphUri, int previewSize)
+        public PreviewGraphTask(IStorageProvider manager, String graphUri, int previewSize)
             : base("Preview Graph")
         {
             this._manager = manager;

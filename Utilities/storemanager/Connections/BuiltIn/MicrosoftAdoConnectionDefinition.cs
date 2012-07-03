@@ -71,7 +71,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             return new MicrosoftAdoManager(this.Server, this.Database, this.Username, this.Password, this.EncryptConnection, this.AccessMode);
         }
@@ -90,7 +90,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             return new AzureAdoManager(this.Server, this.Database, this.Username, this.Password);
         }

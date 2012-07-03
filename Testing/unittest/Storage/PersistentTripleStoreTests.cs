@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Storage
                              TestGraphUri2 = "http://example.org/persistence/graphs/2",
                              TestGraphUri3 = "http://example.org/persistence/graphs/3";
 
-        private void EnsureTestDataset(IGenericIOManager manager)
+        private void EnsureTestDataset(IStorageProvider manager)
         {
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -40,7 +40,7 @@ namespace VDS.RDF.Test.Storage
             manager.SaveGraph(g);
         }
 
-        private void EnsureGraphDeleted(IGenericIOManager manager, Uri graphUri)
+        private void EnsureGraphDeleted(IStorageProvider manager, Uri graphUri)
         {
             if (manager.DeleteSupported)
             {
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Storage
             }
             else
             {
-                Assert.Inconclusive("Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IGenericIOManager instance does not support");
+                Assert.Inconclusive("Unable to conduct this test as it requires ensuring a Graph is deleted from the underlying store which the IStorageProvider instance does not support");
             }
         }
 
@@ -60,7 +60,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Contains Tests
 
-        private void TestContains(IGenericIOManager manager)
+        private void TestContains(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Get Graph Tests
 
-        private void TestGetGraph(IGenericIOManager manager)
+        private void TestGetGraph(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -189,7 +189,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Add Triples Tests
 
-        private void TestAddTriplesFlushed(IGenericIOManager manager)
+        private void TestAddTriplesFlushed(IStorageProvider manager)
         {
             this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
             this.EnsureTestDataset(manager);
@@ -248,7 +248,7 @@ namespace VDS.RDF.Test.Storage
             this.TestAddTriplesFlushed(manager);
         }
 
-        private void TestAddTriplesDiscarded(IGenericIOManager manager)
+        private void TestAddTriplesDiscarded(IStorageProvider manager)
         {
             this.EnsureGraphDeleted(manager, new Uri(TestGraphUri1));
             this.EnsureTestDataset(manager);
@@ -311,7 +311,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Remove Triples Tests
 
-        private void TestRemoveTriplesFlushed(IGenericIOManager manager)
+        private void TestRemoveTriplesFlushed(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -370,7 +370,7 @@ namespace VDS.RDF.Test.Storage
             this.TestRemoveTriplesFlushed(manager);
         }
 
-        private void TestRemoveTriplesDiscarded(IGenericIOManager manager)
+        private void TestRemoveTriplesDiscarded(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -433,7 +433,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Add Graph Tests
 
-        private void TestAddGraphFlushed(IGenericIOManager manager)
+        private void TestAddGraphFlushed(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -487,7 +487,7 @@ namespace VDS.RDF.Test.Storage
             this.TestAddGraphFlushed(manager);
         }
 
-        private void TestAddGraphDiscarded(IGenericIOManager manager)
+        private void TestAddGraphDiscarded(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -554,7 +554,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Remove Graph Tests
 
-        private void TestRemoveGraphFlushed(IGenericIOManager manager)
+        private void TestRemoveGraphFlushed(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -614,7 +614,7 @@ namespace VDS.RDF.Test.Storage
             this.TestRemoveGraphFlushed(manager);
         }
 
-        private void TestRemoveGraphDiscarded(IGenericIOManager manager)
+        private void TestRemoveGraphDiscarded(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -671,7 +671,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Add then Remove Graph Sequencing Tests
 
-        private void TestAddThenRemoveGraphFlushed(IGenericIOManager manager)
+        private void TestAddThenRemoveGraphFlushed(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -730,7 +730,7 @@ namespace VDS.RDF.Test.Storage
             this.TestAddThenRemoveGraphFlushed(manager);
         }
 
-        private void TestAddThenRemoveGraphDiscarded(IGenericIOManager manager)
+        private void TestAddThenRemoveGraphDiscarded(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -793,7 +793,7 @@ namespace VDS.RDF.Test.Storage
 
         #region Remove then Add Graph Sequencing Tests
 
-        private void TestRemoveThenAddGraphFlushed(IGenericIOManager manager)
+        private void TestRemoveThenAddGraphFlushed(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -851,7 +851,7 @@ namespace VDS.RDF.Test.Storage
             this.TestRemoveThenAddGraphFlushed(manager);
         }
 
-        private void TestRemoveThenAddGraphDiscarded(IGenericIOManager manager)
+        private void TestRemoveThenAddGraphDiscarded(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -913,7 +913,7 @@ namespace VDS.RDF.Test.Storage
 
         #region SPARQL Query Tests
 
-        private void TestQueryUnsynced(IGenericIOManager manager)
+        private void TestQueryUnsynced(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -931,7 +931,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        private void TestQuerySelect(IGenericIOManager manager, String query)
+        private void TestQuerySelect(IStorageProvider manager, String query)
         {
             this.EnsureTestDataset(manager);
 
@@ -949,7 +949,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        private void TestQueryAsk(IGenericIOManager manager, String query, bool expected)
+        private void TestQueryAsk(IStorageProvider manager, String query, bool expected)
         {
             this.EnsureTestDataset(manager);
 
@@ -970,7 +970,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        private void TestQueryConstruct(IGenericIOManager manager, String query)
+        private void TestQueryConstruct(IStorageProvider manager, String query)
         {
             this.EnsureTestDataset(manager);
 
@@ -988,7 +988,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        private void TestQueryDescribe(IGenericIOManager manager, String query)
+        private void TestQueryDescribe(IStorageProvider manager, String query)
         {
             this.EnsureTestDataset(manager);
 
@@ -1154,7 +1154,7 @@ namespace VDS.RDF.Test.Storage
 
         #region SPARQL Update Tests
 
-        private void TestUpdateUnsynced(IGenericIOManager manager)
+        private void TestUpdateUnsynced(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
 
@@ -1172,7 +1172,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        private void TestUpdate(IGenericIOManager manager)
+        private void TestUpdate(IStorageProvider manager)
         {
             this.EnsureTestDataset(manager);
             Uri updateUri = new Uri("http://example.org/persistence/update/temp");

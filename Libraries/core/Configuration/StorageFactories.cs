@@ -44,7 +44,7 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Factory class for producing <see cref="IGenericIOManager">IGenericIOManager</see> instances from Configuration Graphs
+    /// Factory class for producing <see cref="IStorageProvider">IStorageProvider</see> instances from Configuration Graphs
     /// </summary>
     public class GenericManagerFactory
         : IObjectFactory
@@ -77,7 +77,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-            IGenericIOManager manager = null;
+            IStorageProvider manager = null;
             obj = null;
 
             String server, user, pwd, store;
@@ -227,13 +227,13 @@ namespace VDS.RDF.Configuration
                     //Get the actual Manager we are wrapping
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IGenericIOManager)
+                    if (temp is IStorageProvider)
                     {
-                        manager = new ReadOnlyConnector((IGenericIOManager)temp);
+                        manager = new ReadOnlyConnector((IStorageProvider)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IStorageProvider interface");
                     }
                     break;
 
@@ -241,13 +241,13 @@ namespace VDS.RDF.Configuration
                     //Get the actual Manager we are wrapping
                     storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
-                    if (temp is IQueryableGenericIOManager)
+                    if (temp is IQueryableStorage)
                     {
-                        manager = new QueryableReadOnlyConnector((IQueryableGenericIOManager)temp);
+                        manager = new QueryableReadOnlyConnector((IQueryableStorage)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Queryable Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IQueryableGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Queryable Read-Only Connector identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object which cannot be loaded as an object which implements the required IQueryableStorage interface");
                     }
                     break;
 
@@ -264,11 +264,11 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-                        manager = (IGenericIOManager)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
+                        manager = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
                     }
                     else
                     {
-                        manager = (IGenericIOManager)Activator.CreateInstance(targetType, new Object[] { server, store });
+                        manager = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
                     }
                     break;
 

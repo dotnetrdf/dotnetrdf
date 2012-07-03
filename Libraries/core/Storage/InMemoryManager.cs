@@ -51,11 +51,11 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Useful if you want to test out some code using temporary in-memory data before you run the code against a real store or if you are using some code that requires an <see cref="IGenericIOManager">IGenericIOManager</see> interface but you need the results of that code to be available directly in-memory.
+    /// Useful if you want to test out some code using temporary in-memory data before you run the code against a real store or if you are using some code that requires an <see cref="IStorageProvider">IStorageProvider</see> interface but you need the results of that code to be available directly in-memory.
     /// </para>
     /// </remarks>
     public class InMemoryManager 
-        : BaseAsyncSafeConnector, IQueryableStorage, IUpdateableStorage, IAsyncQueryableStorage, IAsyncUpdateableStorage, IConfigurationSerializable, IUpdateableGenericIOManager
+        : BaseAsyncSafeConnector, IUpdateableStorage, IAsyncUpdateableStorage, IConfigurationSerializable, IUpdateableGenericIOManager
     {
         private ISparqlDataset _dataset;
         private SparqlQueryParser _queryParser;

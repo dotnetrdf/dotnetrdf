@@ -44,7 +44,7 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <typeparam name="TGraphID">Graph ID Type</typeparam>
     /// <remarks>
     /// <para>
-    /// An implementation of this is typically in addition to a more general RDF store implementation (such as an <see cref="IGenericIOManager">IGenericIOManager</see>) and was originally designed and intended for use in creating <see cref="VDS.RDF.Query.Datasets.ISparqlDataset">ISparqlDataset</see> instances which allow out of memory data to be queried more efficiently.
+    /// An implementation of this is typically in addition to a more general RDF store implementation (such as an <see cref="IStorageProvider">IStorageProvider</see>) and was originally designed and intended for use in creating <see cref="VDS.RDF.Query.Datasets.ISparqlDataset">ISparqlDataset</see> instances which allow out of memory data to be queried more efficiently.
     /// </para>
     /// <para>
     /// It is expected that most implementations will use a cache to ensure that repeated transformations are as fast as possible

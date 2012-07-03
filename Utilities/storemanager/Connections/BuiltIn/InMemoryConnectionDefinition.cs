@@ -45,7 +45,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
         public InMemoryConnectionDefinition()
             : base("In-Memory", "Create a temporary non-persistent in-memory store for testing and experimentation purposes") { }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             //if (this.UseFullTextIndexing)
             //{

@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     public class FusekiConnector 
         : SparqlHttpProtocolConnector, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IUpdateableStorage, IQueryableGenericIOManager, IUpdateableGenericIOManager
+        , IUpdateableStorage, IUpdateableGenericIOManager
 #endif
     {
         private SparqlFormatter _formatter = new SparqlFormatter();

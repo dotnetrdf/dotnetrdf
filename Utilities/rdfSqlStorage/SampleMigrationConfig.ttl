@@ -18,7 +18,7 @@
 								dnr:password "password" .
 					
 # While the migration target shown here is the new ADO Store it may actually be any
-# valid IGenericIOManager instance i.e. you can use a migration configuration to migrate from
+# valid IStorageProvider instance i.e. you can use a migration configuration to migrate from
 # the old SQL store to a full blown triple store e.g. Virtuoso
 			
 <dotnetrdf:migration:target> a dnr:GenericIOManager ;

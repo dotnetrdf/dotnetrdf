@@ -9,9 +9,9 @@ using VDS.RDF.Storage;
 namespace dotNetRDFTest
 {
     class MockGenericManager 
-        : IGenericIOManager
+        : IStorageProvider
     {
-        #region IGenericIOManager Members
+        #region IStorageProvider Members
 
         public void LoadGraph(IGraph g, Uri graphUri)
         {

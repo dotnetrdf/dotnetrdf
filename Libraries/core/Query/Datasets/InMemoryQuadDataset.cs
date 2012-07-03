@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="store">In-Memory queryable store</param>
         public InMemoryQuadDataset(IInMemoryQueryableStore store)
-            : this(store, true) { }
+            : this(store, false) { }
 
         /// <summary>
         /// Creates a new In-Memory dataset

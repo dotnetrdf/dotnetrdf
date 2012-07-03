@@ -53,14 +53,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private bool _usePaging = false;
         private int _pageSize = 1000;
 
-        public QueryTask(IQueryableGenericIOManager manager, String query)
+        public QueryTask(IQueryableStorage manager, String query)
             : base("SPARQL Query")
         {
             this._processor = new GenericQueryProcessor(manager);
             this._query = query;
         }
 
-        public QueryTask(IQueryableGenericIOManager manager, String query, int pageSize)
+        public QueryTask(IQueryableStorage manager, String query, int pageSize)
             : this(manager, query)
         {
             this._usePaging = true;

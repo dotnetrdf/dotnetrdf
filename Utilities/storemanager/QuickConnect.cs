@@ -74,16 +74,16 @@ namespace VDS.RDF.Utilities.StoreManager
         /// Attempts to load the Connection
         /// </summary>
         /// <returns></returns>
-        public IGenericIOManager GetConnection()
+        public IStorageProvider GetConnection()
         {
             Object temp = ConfigurationLoader.LoadObject(this._g, this._objNode);
-            if (temp is IGenericIOManager)
+            if (temp is IStorageProvider)
             {
-                return (IGenericIOManager)temp;
+                return (IStorageProvider)temp;
             }
             else
             {
-                throw new DotNetRdfConfigurationException("Connection Configuration appears to be invalid as could not load an Object which implements the IGenericIOManager interface from the given Configuration Graph");
+                throw new DotNetRdfConfigurationException("Connection Configuration appears to be invalid as could not load an Object which implements the IStorageProvider interface from the given Configuration Graph");
             }
         }
 

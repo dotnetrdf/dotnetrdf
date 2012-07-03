@@ -34,13 +34,13 @@ namespace VDS.RDF.Test
                 Console.WriteLine();
 
                 //Create our Native Managers
-                List<IGenericIOManager> managers = new List<IGenericIOManager>() {
+                List<IStorageProvider> managers = new List<IStorageProvider>() {
                     new MicrosoftAdoManager("localhost", "dotnetrdf_experimental","example","password"),
                     new VirtuosoManager("localhost", 1111, "DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword)
                 };
 
                 //Save the Graph to each Manager
-                foreach (IGenericIOManager manager in managers)
+                foreach (IStorageProvider manager in managers)
                 {
                     Console.WriteLine("Saving using '" + manager.GetType().ToString() + "'");
                     manager.SaveGraph(g);
@@ -49,7 +49,7 @@ namespace VDS.RDF.Test
                 }
 
                 //Load Back from each Manager
-                foreach (IGenericIOManager manager in managers)
+                foreach (IStorageProvider manager in managers)
                 {
                     Console.WriteLine("Loading using '" + manager.GetType().ToString() + "' with a NativeGraph");
                     StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);

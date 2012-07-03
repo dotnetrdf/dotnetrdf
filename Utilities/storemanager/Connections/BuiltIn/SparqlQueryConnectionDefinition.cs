@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             SparqlRemoteEndpoint endpoint = String.IsNullOrEmpty(this.DefaultGraphUri) ? new SparqlRemoteEndpoint(new Uri(this.EndpointUri)) : new SparqlRemoteEndpoint(new Uri(this.EndpointUri), this.DefaultGraphUri);
             if (this.UseProxy)

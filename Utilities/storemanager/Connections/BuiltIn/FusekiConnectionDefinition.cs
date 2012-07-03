@@ -54,7 +54,7 @@ DefaultValue("http://localhost:3030/dataset/data")]
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             if (this.UseProxy)
             {

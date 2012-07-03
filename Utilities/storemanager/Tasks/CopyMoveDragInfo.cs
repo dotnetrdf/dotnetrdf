@@ -56,7 +56,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             private set;
         }
 
-        public IGenericIOManager Source
+        public IStorageProvider Source
         {
             get;
             private set;

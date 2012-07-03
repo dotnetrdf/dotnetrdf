@@ -53,7 +53,7 @@ namespace VDS.RDF.Storage
     /// Allows you to treat an RDF Dataset File - NQuads, TriG or TriX - as a read-only generic store
     /// </summary>
     public class DatasetFileManager 
-        : BaseAsyncSafeConnector, IGenericIOManager, IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseAsyncSafeConnector, IQueryableStorage, IQueryableGenericIOManager, IConfigurationSerializable
     {
         private TripleStore _store = new TripleStore();
         private bool _ready = false;

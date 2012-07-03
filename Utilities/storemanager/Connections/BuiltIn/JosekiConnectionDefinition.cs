@@ -72,7 +72,7 @@ DefaultValue("http://localhost:2020")]
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             if (this.UseProxy)
             {

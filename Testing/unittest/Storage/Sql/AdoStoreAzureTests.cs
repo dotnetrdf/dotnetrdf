@@ -15,7 +15,7 @@ namespace VDS.RDF.Test.Storage.Sql
         private const String AzureUsername = "example";
         private const String AzurePassword = "ex_azure_2011_login";
 
-        private IGenericIOManager GetConnection()
+        private IStorageProvider GetConnection()
         {
             return new AzureAdoManager(AzureDatabaseServer, AzureDatabase, AzureUsername, AzurePassword);
         }
@@ -26,7 +26,7 @@ namespace VDS.RDF.Test.Storage.Sql
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
-            IGenericIOManager manager = this.GetConnection();
+            IStorageProvider manager = this.GetConnection();
             try
             {
                 manager.SaveGraph(g);

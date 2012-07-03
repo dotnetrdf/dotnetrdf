@@ -138,7 +138,6 @@
     <Compile Include="Core\GraphLiteralNode.cs" />
     <Compile Include="Storage\AsyncStorageExtensions.cs" />
     <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
-    <Compile Include="Storage\FolderStores.cs" />
     <Compile Include="Storage\IGenericIOManager.cs" />
     <Compile Include="Storage\IStorageProvider.cs" />
     <Compile Include="Storage\Params\StreamParams.cs" />

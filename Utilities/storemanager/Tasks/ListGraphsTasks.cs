@@ -46,9 +46,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ListGraphsTask 
         : NonCancellableTask<IEnumerable<Uri>>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
-        public ListGraphsTask(IGenericIOManager manager)
+        public ListGraphsTask(IStorageProvider manager)
             : base("List Graphs")
         {
             this._manager = manager;
@@ -70,10 +70,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 return this._manager.ListGraphs();
             }
-            else if (this._manager is IQueryableGenericIOManager)
+            else if (this._manager is IQueryableStorage)
             {
                 List<Uri> uris = new List<Uri>();
-                Object results = ((IQueryableGenericIOManager)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;

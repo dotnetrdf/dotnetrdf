@@ -197,7 +197,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Helper method which adds proxy configuration to serialization
         /// </summary>
-        /// <param name="objNode">Object Node representing the <see cref="IGenericIOManager">IGenericIOManager</see> whose configuration is being serialized</param>
+        /// <param name="objNode">Object Node representing the <see cref="IStorageProvider">IStorageProvider</see> whose configuration is being serialized</param>
         /// <param name="context">Serialization Context</param>
         protected void SerializeProxyConfig(INode objNode, ConfigurationSerializationContext context)
         {

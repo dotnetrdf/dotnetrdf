@@ -42,16 +42,17 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IGenericIOManager">IGenericIOManager</see> in batches provided the manager supports the <see cref="IGenericIOManager.UpdateGraph">UpdateGraph()</see> method
+    /// A RDF Handler which writes the Triples being parsed directly to a <see cref="IStorageProvider">IStorageProvider</see> in batches provided the manager supports the <see cref="IStorageProvider.UpdateGraph">UpdateGraph()</see> method
     /// </summary>
-    public class WriteToStoreHandler : BaseRdfHandler
+    public class WriteToStoreHandler
+        : BaseRdfHandler
     {
         /// <summary>
         /// Default Batch Size for writes
         /// </summary>
         public const int DefaultBatchSize = 1000;
 
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private List<Triple> _actions, _bnodeActions;
         private HashSet<String> _bnodeUris;
         private Uri _defaultGraphUri, _currGraphUri;
@@ -63,7 +64,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="manager">Manager to write to</param>
         /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to</param>
         /// <param name="batchSize">Batch Size</param>
-        public WriteToStoreHandler(IGenericIOManager manager, Uri defaultGraphUri, int batchSize)
+        public WriteToStoreHandler(IStorageProvider manager, Uri defaultGraphUri, int batchSize)
         {
             if (manager == null) throw new ArgumentNullException("manager", "Cannot write to a null Generic IO Manager");
             if (manager.IsReadOnly) throw new ArgumentException("manager", "Cannot write to a Read-Only Generic IO Manager");
@@ -85,7 +86,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="manager">Manager to write to</param>
         /// <param name="defaultGraphUri">Graph URI to write Triples from the default graph to</param>
-        public WriteToStoreHandler(IGenericIOManager manager, Uri defaultGraphUri)
+        public WriteToStoreHandler(IStorageProvider manager, Uri defaultGraphUri)
             : this(manager, defaultGraphUri, DefaultBatchSize) { }
 
         /// <summary>
@@ -93,14 +94,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="manager">Manager to write to</param>
         /// <param name="batchSize">Batch Size</param>
-        public WriteToStoreHandler(IGenericIOManager manager, int batchSize)
+        public WriteToStoreHandler(IStorageProvider manager, int batchSize)
             : this(manager, null, batchSize) { }
 
         /// <summary>
         /// Creates a new Write to Store Handler
         /// </summary>
         /// <param name="manager">Manager to write to</param>
-        public WriteToStoreHandler(IGenericIOManager manager)
+        public WriteToStoreHandler(IStorageProvider manager)
             : this(manager, null, DefaultBatchSize) { }
 
         /// <summary>

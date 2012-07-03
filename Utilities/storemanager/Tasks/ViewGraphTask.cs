@@ -44,10 +44,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     class ViewGraphTask 
         : NonCancellableTask<IGraph>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private String _graphUri;
 
-        public ViewGraphTask(IGenericIOManager manager, String graphUri)
+        public ViewGraphTask(IStorageProvider manager, String graphUri)
             : base("View Graph")
         {
             this._manager = manager;

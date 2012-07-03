@@ -31,7 +31,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             }
         }
 
-        private void TestWriteToStoreHandler(IGenericIOManager manager)
+        private void TestWriteToStoreHandler(IStorageProvider manager)
         {
             //First ensure that our test file exists
             EnsureTestData();
@@ -72,7 +72,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.AreEqual(orig, temp, "Graphs should be equal");
         }
 
-        private void TestWriteToStoreDatasetsHandler(IGenericIOManager manager)
+        private void TestWriteToStoreDatasetsHandler(IStorageProvider manager)
         {
             NodeFactory factory = new NodeFactory();
             INode a = factory.CreateUriNode(new Uri("http://example.org/a"));
@@ -123,7 +123,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(gD.ContainsTriple(new Triple(d, d, d)), "d Graph should have the d triple");
         }
 
-        private void TestWriteToStoreHandlerWithBNodes(IGenericIOManager manager)
+        private void TestWriteToStoreHandlerWithBNodes(IStorageProvider manager)
         {
             String fragment = "@prefix : <http://example.org/>. :subj :has [ a :BNode ; :with \"value\" ] .";
 

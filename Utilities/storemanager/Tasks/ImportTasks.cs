@@ -47,7 +47,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private String _file;
 
-        public ImportFileTask(IGenericIOManager manager, String file, Uri targetUri, int batchSize)
+        public ImportFileTask(IStorageProvider manager, String file, Uri targetUri, int batchSize)
             : base("Import File", manager, targetUri, batchSize)
         {
             this._file = file;
@@ -74,7 +74,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     {
         private Uri _u;
 
-        public ImportUriTask(IGenericIOManager manager, Uri u, Uri targetUri, int batchSize)
+        public ImportUriTask(IStorageProvider manager, Uri u, Uri targetUri, int batchSize)
             : base("Import URI", manager, targetUri, batchSize)
         {
             this._u = u;

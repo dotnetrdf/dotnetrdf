@@ -14,12 +14,12 @@ namespace VDS.RDF.Test.Update
     {
         private SparqlUpdateParser _parser = new SparqlUpdateParser();
 
-        protected abstract IGenericIOManager GetManager();
+        protected abstract IStorageProvider GetManager();
 
         [TestMethod]
         public void SparqlUpdateGenericCreateAndInsertData()
         {
-            IGenericIOManager manager = this.GetManager();
+            IStorageProvider manager = this.GetManager();
             GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 
@@ -37,7 +37,7 @@ namespace VDS.RDF.Test.Update
         [TestMethod]
         public void SparqlUpdateGenericCreateInsertDeleteData()
         {
-            IGenericIOManager manager = this.GetManager();
+            IStorageProvider manager = this.GetManager();
             GenericUpdateProcessor processor = new GenericUpdateProcessor(manager);
             SparqlUpdateCommandSet cmds = this._parser.ParseFromString("CREATE GRAPH <http://example.org/sparqlUpdate/created>; INSERT DATA { GRAPH <http://example.org/sparqlUpdate/created> { <http://example.org/s> <http://example.org/p> <http://example.org/o> } }");
 

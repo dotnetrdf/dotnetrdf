@@ -44,9 +44,9 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 {
     class ConnectionInfo
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
-        public ConnectionInfo(IGenericIOManager manager)
+        public ConnectionInfo(IStorageProvider manager)
         {
             this._manager = manager;
         }
@@ -89,7 +89,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
         [Category("Basic"), Description("The actual connection object, may be expanded to see implementation specific additional information"),
          TypeConverter(typeof(ExpandableObjectConverter))]
-        public IGenericIOManager Connection
+        public IStorageProvider Connection
         {
             get
             {
@@ -102,7 +102,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                return (this._manager is IQueryableGenericIOManager);
+                return (this._manager is IQueryableStorage);
             }
         }
 
@@ -111,7 +111,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         {
             get
             {
-                if (this._manager is IUpdateableGenericIOManager)
+                if (this._manager is IUpdateableStorage)
                 {
                     return "Native";
                 }

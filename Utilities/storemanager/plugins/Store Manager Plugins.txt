@@ -6,7 +6,7 @@ any need for you to edit Store Manager's codebase yourself.
 
 To do this you will need to implement the following interfaces in your own assembly:
 
-IGenericIOManager
+IStorageProvider
 - Can be found under VDS.RDF.Storage in dotNetRDF.dll
 - This is the interface which actually provides the connectivity between dotNetRDF and a Triple Store
 

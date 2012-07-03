@@ -43,10 +43,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     class DeleteGraphTask : NonCancellableTask<TaskResult>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private String _graphUri;
 
-        public DeleteGraphTask(IGenericIOManager manager, String graphUri)
+        public DeleteGraphTask(IStorageProvider manager, String graphUri)
             : base("Delete Graph")
         {
             this._manager = manager;

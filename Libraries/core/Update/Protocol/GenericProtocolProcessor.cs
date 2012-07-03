@@ -48,18 +48,18 @@ using VDS.RDF.Web;
 namespace VDS.RDF.Update.Protocol
 {
     /// <summary>
-    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IGenericIOManager">IGenericIOManager</see> is available
+    /// A processor for the SPARQL Graph Store HTTP Protocol which operates by performing the desired operations on some arbitrary underlying Store for which an <see cref="IStorageProvider">IStorageProvider</see> is available
     /// </summary>
     public class GenericProtocolProcessor
         : BaseProtocolProcessor
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Generic Protocol Processor
         /// </summary>
         /// <param name="manager">Generic IO Manager</param>
-        public GenericProtocolProcessor(IGenericIOManager manager)
+        public GenericProtocolProcessor(IStorageProvider manager)
         {
             this._manager = manager;
         }
@@ -69,7 +69,7 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <remarks>
-        /// Implemented by making a call to <see cref="IGenericIOManager.LoadGraph">LoadGraph()</see> on the underlying <see cref="IGenericIOManager">IGenericIOManager</see>
+        /// Implemented by making a call to <see cref="IStorageProvider.LoadGraph">LoadGraph()</see> on the underlying <see cref="IStorageProvider">IStorageProvider</see>
         /// </remarks>
         public override void ProcessGet(IHttpContext context)
         {
@@ -94,10 +94,10 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         /// <remarks>
         /// <para>
-        /// <strong>Warning: </strong> If the underlying <see cref="IGenericIOManager">IGenericIOManager</see> is read-only then this operation returns a 403 Forbidden.
+        /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// Otherwise this is implemented using <see cref="IGenericIOManager.UpdateGraph">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
+        /// Otherwise this is implemented using <see cref="IStorageProvider.UpdateGraph">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
         /// </para>
         /// </remarks>
         public override void ProcessPost(IHttpContext context)
@@ -174,10 +174,10 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         /// <remarks>
         /// <para>
-        /// <strong>Warning: </strong> If the underlying <see cref="IGenericIOManager">IGenericIOManager</see> is read-only then this operation returns a 403 Forbidden.
+        /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// Implemented by calling <see cref="IGenericIOManager.SaveGraph">SaveGraph()</see> on the underlying manager
+        /// Implemented by calling <see cref="IStorageProvider.SaveGraph">SaveGraph()</see> on the underlying manager
         /// </para>
         /// </remarks>
         public override void ProcessPut(IHttpContext context)
@@ -203,7 +203,7 @@ namespace VDS.RDF.Update.Protocol
         /// <param name="context">HTTP Context</param>
         /// <remarks>
         /// <para>
-        /// <strong>Warning: </strong> If the underlying <see cref="IGenericIOManager">IGenericIOManager</see> is read-only then this operation returns a 403 Forbidden.
+        /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
         /// The delete operation does not explicitly remove the Graph but simply replaces it with an empty Graph
@@ -350,7 +350,7 @@ namespace VDS.RDF.Update.Protocol
         /// <returns></returns>
         protected override bool HasGraph(Uri graphUri)
         {
-            if (this._manager is IQueryableGenericIOManager)
+            if (this._manager is IQueryableStorage)
             {
                 //Generate an ASK query based on this
                 SparqlParameterizedString ask = new SparqlParameterizedString();
@@ -364,7 +364,7 @@ namespace VDS.RDF.Update.Protocol
                     ask.CommandText = "ASK WHERE { ?s ?p ?o }";
                 }
 
-                Object results = ((IQueryableGenericIOManager)this._manager).Query(ask.ToString());
+                Object results = ((IQueryableStorage)this._manager).Query(ask.ToString());
                 if (results is SparqlResultSet)
                 {
                     return ((SparqlResultSet)results).Result;

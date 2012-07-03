@@ -151,7 +151,7 @@ namespace VDS.RDF
         /// <summary>
         /// Abstract Method to be implemented by derived classes which Updates the Store
         /// </summary>
-        /// <remarks>Implements should take appropriate steps to push the Updates to the underlying Store.  This will in practise be a one/two line implementation which invokes an appropriate method on some <see cref="IGenericIOManager">IGenericIOManager</see> or similar class.</remarks>
+        /// <remarks>Implements should take appropriate steps to push the Updates to the underlying Store.  This will in practise be a one/two line implementation which invokes an appropriate method on some <see cref="IStorageProvider">IStorageProvider</see> or similar class.</remarks>
         protected abstract void UpdateStore();
 
         #endregion

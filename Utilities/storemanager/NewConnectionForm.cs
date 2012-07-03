@@ -51,7 +51,7 @@ namespace VDS.RDF.Utilities.StoreManager
         : Form
     {
         private List<IConnectionDefinition> _definitions = new List<IConnectionDefinition>();
-        private IGenericIOManager _connection;
+        private IStorageProvider _connection;
 
         public NewConnectionForm()
         {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lstStoreTypes.DisplayMember = "StoreName";
         }
 
-        public IGenericIOManager Connection
+        public IStorageProvider Connection
         {
             get
             {
@@ -253,9 +253,9 @@ namespace VDS.RDF.Utilities.StoreManager
                 this._connection = def.OpenConnection();
                 if (this.chkForceReadOnly.Checked)
                 {
-                    if (this._connection is IQueryableGenericIOManager)
+                    if (this._connection is IQueryableStorage)
                     {
-                        this._connection = new QueryableReadOnlyConnector((IQueryableGenericIOManager)this._connection);
+                        this._connection = new QueryableReadOnlyConnector((IQueryableStorage)this._connection);
                     }
                     else
                     {

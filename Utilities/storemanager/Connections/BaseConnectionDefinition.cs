@@ -83,7 +83,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             private set;
         }
 
-        public IGenericIOManager OpenConnection()
+        public IStorageProvider OpenConnection()
         {
             //Validate Attributes
             foreach (PropertyInfo property in this._properties.Keys)
@@ -165,7 +165,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             return this.OpenConnectionInternal();
         }
 
-        protected abstract IGenericIOManager OpenConnectionInternal();
+        protected abstract IStorageProvider OpenConnectionInternal();
 
         public IEnumerator<KeyValuePair<PropertyInfo, ConnectionAttribute>> GetEnumerator()
         {

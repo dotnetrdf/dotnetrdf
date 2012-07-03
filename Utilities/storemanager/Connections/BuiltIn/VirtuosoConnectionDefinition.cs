@@ -64,7 +64,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
-        protected override IGenericIOManager OpenConnectionInternal()
+        protected override IStorageProvider OpenConnectionInternal()
         {
             return new VirtuosoManager(this.Server, this.Port, this.Database, this.Username, this.Password);
         }

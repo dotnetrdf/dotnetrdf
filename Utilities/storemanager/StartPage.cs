@@ -96,7 +96,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     {
                         try
                         {
-                            IGenericIOManager manager = connect.GetConnection();
+                            IStorageProvider manager = connect.GetConnection();
                             StoreManagerForm storeManager = new StoreManagerForm(manager);
                             storeManager.MdiParent = Program.MainForm;
                             storeManager.Show();
@@ -119,7 +119,7 @@ namespace VDS.RDF.Utilities.StoreManager
             NewConnectionForm newConn = new NewConnectionForm();
             if (newConn.ShowDialog() == DialogResult.OK)
             {
-                IGenericIOManager manager = newConn.Connection;
+                IStorageProvider manager = newConn.Connection;
                 StoreManagerForm storeManager = new StoreManagerForm(manager);
                 storeManager.MdiParent = Program.MainForm;
                 storeManager.Show();

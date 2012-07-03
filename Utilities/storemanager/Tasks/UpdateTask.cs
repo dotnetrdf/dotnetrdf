@@ -45,11 +45,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     public class UpdateTask : NonCancellableTask<TaskResult>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private String _update;
         private SparqlUpdateCommandSet _cmds;
 
-        public UpdateTask(IGenericIOManager manager, String update)
+        public UpdateTask(IStorageProvider manager, String update)
             : base("SPARQL Update")
         {
             this._manager = manager;

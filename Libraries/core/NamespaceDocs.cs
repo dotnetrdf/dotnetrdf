@@ -819,7 +819,7 @@ namespace VDS.RDF.Storage
     /// Namespace for Storage Classes which provide support for using arbitrary backing Stores
     /// </para>
     /// <para>
-    /// Storage is managed via the <see cref="IGenericIOManager">IGenericIOManager</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
+    /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
     /// <h3>Data Provider Libraries</h3>
     /// <para>

@@ -48,7 +48,7 @@ namespace VDS.RDF.Utilities.StoreManager
 {
     partial class CopyMoveDialogue : Form
     {
-        public CopyMoveDialogue(CopyMoveDragInfo info, IGenericIOManager target)
+        public CopyMoveDialogue(CopyMoveDragInfo info, IStorageProvider target)
         {
             InitializeComponent();
 

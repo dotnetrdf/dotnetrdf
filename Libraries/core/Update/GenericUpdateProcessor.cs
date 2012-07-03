@@ -48,26 +48,26 @@ using VDS.RDF.Update.Commands;
 namespace VDS.RDF.Update
 {
     /// <summary>
-    /// SPARQL Update Processor which processes commands against a generic underlying store represented by an <see cref="IGenericIOManager">IGenericIOManager</see> implementation
+    /// SPARQL Update Processor which processes commands against a generic underlying store represented by an <see cref="IStorageProvider">IStorageProvider</see> implementation
     /// </summary>
     /// <remarks>
     /// <para>
-    /// If the provided manager also implements the <see cref="IUpdateableGenericIOManager">IUpdateableGenericIOManager</see> interface then the managers native SPARQL Update implementation will be used for the non-type specific calls i.e. <see cref="GenericUpdateProcessor.ProcessCommand">ProcessCommand()</see> and <see cref="GenericUpdateProcessor.ProcessCommandSet">ProcessCommandSet()</see>.  At all other times the SPARQL Update commands will be processed by approximating their behaviour through calls to <see cref="IGenericIOManager.SaveGraph">SaveGraph()</see>, <see cref="IGenericIOManager.LoadGraph">LoadGraph()</see> and <see cref="IGenericIOManager.UpdateGraph">UpdateGraph()</see> in addition to local in-memory manipulation of the data.  Some commands such as INSERT and DELETE can only be processed when the manager is also a <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> since they rely on making a query and performing actions based on the results of that query.
+    /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used for the non-type specific calls i.e. <see cref="GenericUpdateProcessor.ProcessCommand">ProcessCommand()</see> and <see cref="GenericUpdateProcessor.ProcessCommandSet">ProcessCommandSet()</see>.  At all other times the SPARQL Update commands will be processed by approximating their behaviour through calls to <see cref="IStorageProvider.SaveGraph">SaveGraph()</see>, <see cref="IStorageProvider.LoadGraph">LoadGraph()</see> and <see cref="IStorageProvider.UpdateGraph">UpdateGraph()</see> in addition to local in-memory manipulation of the data.  Some commands such as INSERT and DELETE can only be processed when the manager is also a <see cref="IQueryableStorage">IQueryableStorage</see> since they rely on making a query and performing actions based on the results of that query.
     /// </para>
     /// <para>
-    /// The performance of this processor is somewhat dependent on the underlying <see cref="IGenericIOManager">IGenericIOManager</see>.  If the underlying manager supports triple level updates as indicated by the <see cref="IGenericIOManager.UpdateSupported">UpdateSupported</see> property then operations can be performed quite efficiently, if this is not the case then any operation which modifies a Graph will need to load the existing Graph from the store, make the modifications locally in-memory and then save the resulting Graph back to the Store
+    /// The performance of this processor is somewhat dependent on the underlying <see cref="IStorageProvider">IStorageProvider</see>.  If the underlying manager supports triple level updates as indicated by the <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property then operations can be performed quite efficiently, if this is not the case then any operation which modifies a Graph will need to load the existing Graph from the store, make the modifications locally in-memory and then save the resulting Graph back to the Store
     /// </para>
     /// </remarks>
     public class GenericUpdateProcessor 
         : ISparqlUpdateProcessor
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Generic Update Processor
         /// </summary>
         /// <param name="manager">Generic IO Manager</param>
-        public GenericUpdateProcessor(IGenericIOManager manager)
+        public GenericUpdateProcessor(IStorageProvider manager)
         {
             if (manager.IsReadOnly) throw new ArgumentException("Cannot create a GenericUpdateProcessor for a store which is read-only", "manager");
             this._manager = manager;
@@ -95,9 +95,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Add Command</param>
         public void ProcessAddCommand(AddCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -144,9 +144,9 @@ namespace VDS.RDF.Update
         /// </remarks>
         public void ProcessClearCommand(ClearCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else 
             {
@@ -230,9 +230,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Copy Command</param>
         public void ProcessCopyCommand(CopyCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -292,14 +292,14 @@ namespace VDS.RDF.Update
         /// Implemented by adding an empty Graph to the Store
         /// </para>
         /// <para>
-        /// <strong>Warning:</strong> As the <see cref="IGenericIOManager">IGenericIOManager</see> interface does not allow checking whether a Graph exists processing CREATE commands can result in overwriting existing Graphs
+        /// <strong>Warning:</strong> As the <see cref="IStorageProvider">IStorageProvider</see> interface does not allow checking whether a Graph exists processing CREATE commands can result in overwriting existing Graphs
         /// </para>
         /// </remarks>
         public void ProcessCreateCommand(CreateCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -326,14 +326,14 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Command</param>
         /// <remarks>
         /// <para>
-        /// If the provided manager also implements the <see cref="IUpdateableGenericIOManager">IUpdateableGenericIOManager</see> interface then the managers native SPARQL Update implementation will be used.
+        /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used.
         /// </para>
         /// </remarks>
         public virtual void ProcessCommand(SparqlUpdateCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -387,7 +387,7 @@ namespace VDS.RDF.Update
         /// <param name="commands">Command Set</param>
         /// <remarks>
         /// <para>
-        /// If the provided manager also implements the <see cref="IUpdateableGenericIOManager">IUpdateableGenericIOManager</see> interface then the managers native SPARQL Update implementation will be used.
+        /// If the provided manager also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface then the managers native SPARQL Update implementation will be used.
         /// </para>
         /// </remarks>
         public virtual void ProcessCommandSet(SparqlUpdateCommandSet commands)
@@ -396,9 +396,9 @@ namespace VDS.RDF.Update
             commands.UpdateExecutionTime = null;
             try
             {
-                if (this._manager is IUpdateableGenericIOManager)
+                if (this._manager is IUpdateableStorage)
                 {
-                    ((IUpdateableGenericIOManager)this._manager).Update(commands.ToString());
+                    ((IUpdateableStorage)this._manager).Update(commands.ToString());
                 }
                 else
                 {
@@ -421,18 +421,18 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Delete Command</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> interface in order for DELETE commands to be processed
+        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for DELETE commands to be processed
         /// </para>
         /// </remarks>
         public void ProcessDeleteCommand(DeleteCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
-                if (this._manager is IQueryableGenericIOManager)
+                if (this._manager is IQueryableStorage)
                 {
                     //Check IO Behaviour
                     //For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
@@ -467,7 +467,7 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
+                    Object results = ((IQueryableStorage)this._manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         //Now need to transform the Result Set back to a Multiset
@@ -610,9 +610,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">DELETE Data Command</param>
         public void ProcessDeleteDataCommand(DeleteDataCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -727,9 +727,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Drop Command</param>
         public void ProcessDropCommand(DropCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -817,18 +817,18 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Command</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> interface in order for INSERT commands to be processed
+        /// <strong>Note:</strong> The underlying manager must implement the <see cref="IQueryableStorage">IQueryableStorage</see> interface in order for INSERT commands to be processed
         /// </para>
         /// </remarks>
         public void ProcessInsertCommand(InsertCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
-                if (this._manager is IQueryableGenericIOManager)
+                if (this._manager is IQueryableStorage)
                 {
                     //Check IO Behaviour
                     //For a insert we either need the ability to Update Add Triples or to Overwrite Graphs
@@ -863,7 +863,7 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
+                    Object results = ((IQueryableStorage)this._manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         //Now need to transform the Result Set back to a Multiset
@@ -1006,9 +1006,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert Data Command</param>
         public void ProcessInsertDataCommand(InsertDataCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -1104,9 +1104,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Load Command</param>
         public void ProcessLoadCommand(LoadCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
@@ -1160,13 +1160,13 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Insert/Delete Command</param>
         public void ProcessModifyCommand(ModifyCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {
-                if (this._manager is IQueryableGenericIOManager)
+                if (this._manager is IQueryableStorage)
                 {
                     //Check IO Behaviour
                     //For a delete we either need the ability to Update Delete Triples or to Overwrite Graphs
@@ -1219,7 +1219,7 @@ namespace VDS.RDF.Update
                         query.AddNamedGraph(u);
                     }
 
-                    Object results = ((IQueryableGenericIOManager)this._manager).Query(query.ToString());
+                    Object results = ((IQueryableStorage)this._manager).Query(query.ToString());
                     if (results is SparqlResultSet)
                     {
                         //Now need to transform the Result Set back to a Multiset
@@ -1464,9 +1464,9 @@ namespace VDS.RDF.Update
         /// <param name="cmd">Move Command</param>
         public void ProcessMoveCommand(MoveCommand cmd)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
-                ((IUpdateableGenericIOManager)this._manager).Update(cmd.ToString());
+                ((IUpdateableStorage)this._manager).Update(cmd.ToString());
             }
             else
             {

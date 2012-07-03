@@ -99,9 +99,9 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
                     return;
                 }
                 Object targetObj = ConfigurationLoader.LoadObject(g, targetNode);
-                if (!(targetObj is IGenericIOManager))
+                if (!(targetObj is IStorageProvider))
                 {
-                    Console.Error.WriteLine("rdfSqlStorage: Error: Expected the migration target to be loadable as an object of type IGenericIOManager!");
+                    Console.Error.WriteLine("rdfSqlStorage: Error: Expected the migration target to be loadable as an object of type IStorageProvider!");
                     return;
                 }
                 Console.WriteLine("rdfSqlStorage: Loaded migration source and target OK...");
@@ -116,7 +116,7 @@ namespace VDS.RDF.Utilities.Data.Sql.Clients.Cmd
                     Console.WriteLine("rdfSqlStorage: Migration source has " + uris.Count + " Graph URIs");
 
                     //Start migrating Graphs
-                    IGenericIOManager target = (IGenericIOManager)targetObj;
+                    IStorageProvider target = (IStorageProvider)targetObj;
                     for (int i = 0; i < uris.Count; i++)
                     {
                         Console.WriteLine("rdfSqlStorage: Migrating Graph '" + uris[i].ToSafeString() + "' (" + (i + 1) + " of " + uris.Count + ")...");

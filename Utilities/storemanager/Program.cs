@@ -60,7 +60,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public static IEnumerable<IGenericIOManager> ActiveConnections
+        public static IEnumerable<IStorageProvider> ActiveConnections
         {
             get
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 }
                 else
                 {
-                    return Enumerable.Empty<IGenericIOManager>();
+                    return Enumerable.Empty<IStorageProvider>();
                 }
             }
         }

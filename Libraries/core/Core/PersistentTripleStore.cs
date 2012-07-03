@@ -11,7 +11,7 @@ using VDS.RDF.Update;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Represents an in-memory view of a triple store provided by an <see cref="IGenericIOManager">IGenericIOManager</see> instance where changes to the in-memory view get reflected in the persisted view.
+    /// Represents an in-memory view of a triple store provided by an <see cref="IStorageProvider">IStorageProvider</see> instance where changes to the in-memory view get reflected in the persisted view.
     /// </summary>
     /// <remarks>
     /// <h3>Persistence Behaviour</h3>
@@ -19,21 +19,21 @@ namespace VDS.RDF
     /// <strong>Note:</strong> This is a transactional implementation - this means that changes made are not persisted until you either call <see cref="PersistentTripleStore.Flush()">Flush()</see> or you dispose of the instance.  Alternatively you may invoke the <see cref="PersistentTripleStore.Discard()">Discard()</see> method to throw away changes made to the in-memory state.
     /// </para>
     /// <para>
-    /// The actual level of persistence provided will vary according to the <see cref="IGenericIOManager">IGenericIOManager</see> instance you use.  For example if the <see cref="IGenericIOManager.DeleteGraph()">DeleteGraph()</see> method is not supported then Graph removals won't persist in the underlying store.  Similarily an instance which is read-only will allow you to pull out existing graphs from the store but won't persist any changes.
+    /// The actual level of persistence provided will vary according to the <see cref="IStorageProvider">IStorageProvider</see> instance you use.  For example if the <see cref="IStorageProvider.DeleteGraph()">DeleteGraph()</see> method is not supported then Graph removals won't persist in the underlying store.  Similarily an instance which is read-only will allow you to pull out existing graphs from the store but won't persist any changes.
     /// </para>
     /// <para>
     /// The Contains() method of the underlying <see cref="BaseGraphCollection">BaseGraphCollection</see> has been overridden so that invoking Contains causes the Graph from the underlying store to be loaded if it exists, this means that operations like <see cref="PersistentTripleStore.HasGraph()">HasGraph()</see> may be slower than expected or cause applications to stop while they wait to load data from the store.
     /// </para>
     /// <h3>SPARQL Query Behaviour</h3>
     /// <para>
-    /// The exact SPARQL Query behaviour will depend on the capabilities of the underlying <see cref="IGenericIOManager">IGenericIOManager</see> instance.  If it also implements the <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> interface then its own SPARQL implementation will be used, note that if you try and make a SPARQL query but the in-memory view has not been synced (via a <see cref="PersistentTripleStore.Flush()">Flush()</see> or <see cref="PersistentTripleStore.Discard()">Discard()</see> call) prior to the query then an <see cref="RdfQueryException">RdfQueryException</see> will be thrown.  If you want to make the query regardless you can do so by invoking the query method on the underlying store directly by accessing it via the <see cref="PersistentTripleStore.UnderlyingStore">UnderlyingStore</see> property.
+    /// The exact SPARQL Query behaviour will depend on the capabilities of the underlying <see cref="IStorageProvider">IStorageProvider</see> instance.  If it also implements the <see cref="IQueryableStorage">IQueryableStorage</see> interface then its own SPARQL implementation will be used, note that if you try and make a SPARQL query but the in-memory view has not been synced (via a <see cref="PersistentTripleStore.Flush()">Flush()</see> or <see cref="PersistentTripleStore.Discard()">Discard()</see> call) prior to the query then an <see cref="RdfQueryException">RdfQueryException</see> will be thrown.  If you want to make the query regardless you can do so by invoking the query method on the underlying store directly by accessing it via the <see cref="PersistentTripleStore.UnderlyingStore">UnderlyingStore</see> property.
     /// </para>
     /// <para>
     /// If the underlying store does not support SPARQL itself then SPARQL queries cannot be applied and a <see cref="NotSupportedException">NotSupportedException</see> will be thrown.
     /// </para>
     /// <h3>SPARQL Update Behaviour</h3>
     /// <para>
-    /// Similarly to SPARQL Query support the SPARQL Update behaviour depends on whether the underlying <see cref="IGenericIOManager">IGenericIOManager</see> instance also implements the <see cref="IUpdateableGenericIOManager">IUpdateableGenericIOManager</see> interface.  If it does then its own SPARQL implementation is used, otherwise a <see cref="GenericUpdateProcessor">GenericUpdateProcessor</see> will be used to approximate the SPARQL Update.
+    /// Similarly to SPARQL Query support the SPARQL Update behaviour depends on whether the underlying <see cref="IStorageProvider">IStorageProvider</see> instance also implements the <see cref="IUpdateableStorage">IUpdateableStorage</see> interface.  If it does then its own SPARQL implementation is used, otherwise a <see cref="GenericUpdateProcessor">GenericUpdateProcessor</see> will be used to approximate the SPARQL Update.
     /// </para>
     /// <para>
     /// Please be aware that as with SPARQL Query if the in-memory view is not synced with the underlying store a <see cref="SparqlUpdateException">SparqlUpdateException</see> will be thrown.
@@ -46,18 +46,18 @@ namespace VDS.RDF
     public sealed class PersistentTripleStore
         : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore, ITransactionalStore
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private SparqlUpdateParser _updateParser;
         private GenericUpdateProcessor _updateProcessor;
 
         /// <summary>
-        /// Creates a new in-memory view of some underlying store represented by the <see cref="IGenericIOManager">IGenericIOManager</see> instance
+        /// Creates a new in-memory view of some underlying store represented by the <see cref="IStorageProvider">IStorageProvider</see> instance
         /// </summary>
         /// <param name="manager">IO Manager</param>
         /// <remarks>
         /// Please see the remarks for this class for notes on exact behaviour of this class
         /// </remarks>
-        public PersistentTripleStore(IGenericIOManager manager)
+        public PersistentTripleStore(IStorageProvider manager)
             : base(new PersistentGraphCollection(manager))
         {
             this._manager = manager;
@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the underlying store
         /// </summary>
-        public IGenericIOManager UnderlyingStore
+        public IStorageProvider UnderlyingStore
         {
             get
             {
@@ -154,14 +154,14 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query as unparsed String</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string query)
         {
-            if (this._manager is IQueryableGenericIOManager)
+            if (this._manager is IQueryableStorage)
             {
                 if (!((PersistentGraphCollection)this._graphs).IsSynced)
                 {
                     throw new RdfQueryException("Unable to execute a SPARQL Query as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in query results you can invoke the Query() method directly on the underlying store by accessing it through the UnderlyingStore property.");
                 }
 
-                ((IQueryableGenericIOManager)this._manager).Query(rdfHandler, resultsHandler, query);
+                ((IQueryableStorage)this._manager).Query(rdfHandler, resultsHandler, query);
             }
             else
             {
@@ -182,14 +182,14 @@ namespace VDS.RDF
         /// </remarks>
         public void ExecuteUpdate(string update)
         {
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
                 if (!((PersistentGraphCollection)this._graphs).IsSynced)
                 {
                     throw new SparqlUpdateException("Unable to execute a SPARQL Update as the in-memory view of the store is not synced with the underlying store, please invoked Flush() or Discard() and try again.  Alternatively if you do not want to see in-memory changes reflected in update results you can invoke the Update() method directly on the underlying store by accessing it through the UnderlyingStore property.");
                 }
 
-                ((IUpdateableGenericIOManager)this._manager).Update(update);
+                ((IUpdateableStorage)this._manager).Update(update);
             }
             else
             {
@@ -227,15 +227,15 @@ namespace VDS.RDF
     class PersistentGraphCollection
         : GraphCollection
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
         private List<TripleStorePersistenceAction> _actions = new List<TripleStorePersistenceAction>();
         private HashSet<String> _removedGraphs = new HashSet<string>();
         private bool _persisting = false;
 
-        public PersistentGraphCollection(IGenericIOManager manager)
+        public PersistentGraphCollection(IStorageProvider manager)
         {
-            if (manager == null) throw new ArgumentNullException("manager", "Must use a non-null IGenericIOManager instance with a PersistentGraphCollection");
+            if (manager == null) throw new ArgumentNullException("manager", "Must use a non-null IStorageProvider instance with a PersistentGraphCollection");
             this._manager = manager;
 
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);

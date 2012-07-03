@@ -55,6 +55,6 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
             get;
         }
 
-        IGenericIOManager OpenConnection();
+        IStorageProvider OpenConnection();
     }
 }

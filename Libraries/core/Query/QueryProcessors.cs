@@ -155,19 +155,19 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IGenericIOManager.Query">Query()</see> method of an <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see>
+    /// A SPARQL Query Processor where the query is processed by passing it to the <see cref="IQueryableStorage.Query">Query()</see> method of an <see cref="IQueryableStorage">IQueryableStorage</see>
     /// </summary>
     public class GenericQueryProcessor 
         : ISparqlQueryProcessor
     {
-        private IQueryableGenericIOManager _manager;
+        private IQueryableStorage _manager;
         private SparqlFormatter _formatter = new SparqlFormatter();
 
         /// <summary>
         /// Creates a new Generic Query Processor
         /// </summary>
         /// <param name="manager">Generic IO Manager</param>
-        public GenericQueryProcessor(IQueryableGenericIOManager manager)
+        public GenericQueryProcessor(IQueryableStorage manager)
         {
             this._manager = manager;
         }

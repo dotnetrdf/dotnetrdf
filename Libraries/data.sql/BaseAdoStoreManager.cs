@@ -90,7 +90,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
     public abstract class BaseAdoStore<TConn,TCommand,TParameter,TAdapter,TException> 
-        : IUpdateableGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
+        : IUpdateableStorage, IUpdateableGenericIOManager, IVirtualRdfProvider<int, int>, IConfigurationSerializable, IDisposable
         where TConn : DbConnection
         where TCommand : DbCommand
         where TParameter : DbParameter
@@ -859,7 +859,7 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        #region IGenericIOManager Members
+        #region IStorageProvider Members
 
         /// <summary>
         /// Loads a Graph from the store
@@ -1333,7 +1333,7 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        #region IQueryableGenericIOManager Members
+        #region IQueryableStorage Members
 
         /// <summary>
         /// Makes a SPARQL Query against the Store
@@ -1404,7 +1404,7 @@ namespace VDS.RDF.Storage
 
         #endregion
 
-        #region IUpdateableGenericIOManager Members
+        #region IUpdateableStorage Members
 
         /// <summary>
         /// Performa a SPARQL Update on the Store

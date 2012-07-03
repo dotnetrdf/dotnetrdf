@@ -143,13 +143,13 @@ namespace VDS.RDF.Configuration
             sources = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyWithUri));
             foreach (Object store in connections)
             {
-                if (store is IGenericIOManager)
+                if (store is IStorageProvider)
                 {
                     foreach (INode source in sources)
                     {
                         if (source.NodeType == NodeType.Uri || source.NodeType == NodeType.Literal)
                         {
-                            ((IGenericIOManager)store).LoadGraph(output, source.ToString());
+                            ((IStorageProvider)store).LoadGraph(output, source.ToString());
                         } 
                         else 
                         {
@@ -177,7 +177,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Unable to load data from a Store for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromStore property points to an Object which cannot be loaded as an object which implements either the IGenericIOManager/ITripleStore interface");
+                    throw new DotNetRdfConfigurationException("Unable to load data from a Store for the Graph identified by the Node '" + objNode.ToString() + "' as one of the values of the dnr:fromStore property points to an Object which cannot be loaded as an object which implements either the IStorageProvider/ITripleStore interface");
                 }
             }
 
@@ -354,13 +354,13 @@ namespace VDS.RDF.Configuration
                     if (subObj == null) return false;
 
                     temp = ConfigurationLoader.LoadObject(g, subObj);
-                    if (temp is IGenericIOManager)
+                    if (temp is IStorageProvider)
                     {
-                        store = new PersistentTripleStore((IGenericIOManager)temp);
+                        store = new PersistentTripleStore((IStorageProvider)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IStorageProvider interface");
                     }
                     break;
             }

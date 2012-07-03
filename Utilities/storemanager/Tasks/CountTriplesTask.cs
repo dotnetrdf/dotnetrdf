@@ -44,12 +44,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     class CountTriplesTask : CancellableTask<TaskValueResult<int>>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private String _graphUri;
         private CancellableHandler _canceller;
         private CountHandler _counter;
 
-        public CountTriplesTask(IGenericIOManager manager, String graphUri)
+        public CountTriplesTask(IStorageProvider manager, String graphUri)
             : base("Count Triples")
         {
             this._manager = manager;

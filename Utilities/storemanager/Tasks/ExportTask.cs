@@ -50,9 +50,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         : CancellableTask<TaskResult>
     {
         private String _file;
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
-        public ExportTask(IGenericIOManager manager, String file)
+        public ExportTask(IStorageProvider manager, String file)
             : base("Export Store") 
         {
             if (file == null) throw new ArgumentNullException("file", "Cannot Export the Store to a null File");
@@ -166,10 +166,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 return this._manager.ListGraphs();
             }
-            else if (this._manager is IQueryableGenericIOManager)
+            else if (this._manager is IQueryableStorage)
             {
                 List<Uri> uris = new List<Uri>();
-                Object results = ((IQueryableGenericIOManager)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
+                Object results = ((IQueryableStorage)this._manager).Query("SELECT DISTINCT ?g WHERE {GRAPH ?g {?s ?p ?o}}");
                 if (results is SparqlResultSet)
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;

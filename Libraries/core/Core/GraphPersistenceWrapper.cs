@@ -1350,12 +1350,12 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// The Store Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to an underlying store via a provided <see cref="IGenericIOManger">IGenericIOManager</see> implementation
+    /// The Store Graph Persistence Wrapper is a wrapper around another Graph that will be persisted to an underlying store via a provided <see cref="IStorageProvider">IStorageProvider</see> implementation
     /// </summary>
     public class StoreGraphPersistenceWrapper
         : GraphPersistenceWrapper
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Store Graph Persistence Wrapper
@@ -1366,10 +1366,10 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IGenericIOManager">IGenericIOManager</see> must support triple level updates indicated by it returning true to its <see cref="IGenericIOManager.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
-        public StoreGraphPersistenceWrapper(IGenericIOManager manager, IGraph g, Uri graphUri, bool writeOnly)
+        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, Uri graphUri, bool writeOnly)
             : base(g, writeOnly)
         {
             if (manager == null) throw new ArgumentNullException("manager","Cannot persist to a null Generic IO Manager");
@@ -1389,10 +1389,10 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IGenericIOManager">IGenericIOManager</see> must support triple level updates indicated by it returning true to its <see cref="IGenericIOManager.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property and the Graph to be wrapped must be an empty Graph
         /// </para>
         /// </remarks>
-        public StoreGraphPersistenceWrapper(IGenericIOManager manager, IGraph g, bool writeOnly)
+        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g, bool writeOnly)
             : this(manager, g, g.BaseUri, writeOnly) { }
 
         /// <summary>
@@ -1400,7 +1400,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="manager">Generic IO Manager</param>
         /// <param name="g">Graph to wrap</param>
-        public StoreGraphPersistenceWrapper(IGenericIOManager manager, IGraph g)
+        public StoreGraphPersistenceWrapper(IStorageProvider manager, IGraph g)
             : this(manager, g, g.BaseUri, false) { }
 
         /// <summary>
@@ -1411,13 +1411,13 @@ namespace VDS.RDF
         /// <param name="writeOnly">Whether to operate in write-only mode</param>
         /// <remarks>
         /// <para>
-        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IGenericIOManager">IGenericIOManager</see> must support triple level updates indicated by it returning true to its <see cref="IGenericIOManager.UpdateSupported">UpdateSupported</see> property
+        /// <strong>Note:</strong> In order to operate in write-only mode the <see cref="IStorageProvider">IStorageProvider</see> must support triple level updates indicated by it returning true to its <see cref="IStorageProvider.UpdateSupported">UpdateSupported</see> property
         /// </para>
         /// <para>
         /// When not operating in write-only mode the existing Graph will be loaded from the underlying store
         /// </para>
         /// </remarks>
-        public StoreGraphPersistenceWrapper(IGenericIOManager manager, Uri graphUri, bool writeOnly)
+        public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri, bool writeOnly)
             : base(writeOnly)
         {
             if (manager == null) throw new ArgumentNullException("manager", "Cannot persist to a null Generic IO Manager");
@@ -1439,11 +1439,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="manager">Generic IO Manager</param>
         /// <param name="graphUri">Graph URI (the URI the Graph will be persisted as)</param>
-        public StoreGraphPersistenceWrapper(IGenericIOManager manager, Uri graphUri)
+        public StoreGraphPersistenceWrapper(IStorageProvider manager, Uri graphUri)
             : this(manager, graphUri, false) { }
 
         /// <summary>
-        /// Gets whether the in-use <see cref="IGenericIOManager">IGenericIOMnager</see> supports triple level updates
+        /// Gets whether the in-use <see cref="IStorageProvider">IStorageProvider</see> supports triple level updates
         /// </summary>
         protected override bool SupportsTriplePersistence
         {
@@ -1454,7 +1454,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Persists the deleted Triples to the in-use <see cref="IGenericIOManager">IGenericIOManager</see>
+        /// Persists the deleted Triples to the in-use <see cref="IStorageProvider">IStorageProvider</see>
         /// </summary>
         /// <param name="ts">Triples</param>
         protected override void PersistDeletedTriples(IEnumerable<Triple> ts)
@@ -1470,7 +1470,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Persists the inserted Triples to the in-use <see cref="IGenericIOManager">IGenericIOManager</see>
+        /// Persists the inserted Triples to the in-use <see cref="IStorageProvider">IStorageProvider</see>
         /// </summary>
         /// <param name="ts">Triples</param>
         protected override void PersistInsertedTriples(IEnumerable<Triple> ts)
@@ -1486,7 +1486,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Persists the entire Graph to the in-use <see cref="IGenericIOManager">IGenericIOManager</see>
+        /// Persists the entire Graph to the in-use <see cref="IStorageProvider">IStorageProvider</see>
         /// </summary>
         protected override void PersistGraph()
         {

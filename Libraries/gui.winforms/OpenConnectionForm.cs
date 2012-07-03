@@ -43,13 +43,13 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.GUI.WinForms
 {
     /// <summary>
-    /// A Form that can be used to select an IGenericIOManager instance defined in an RDF Graph using the dotNetRDF Configuration Vocabulary
+    /// A Form that can be used to select an IStorageProvider instance defined in an RDF Graph using the dotNetRDF Configuration Vocabulary
     /// </summary>
     public partial class OpenConnectionForm : Form
     {
         private IGraph _g;
         private List<INode> _connectionNodes = new List<INode>();
-        private IGenericIOManager _connection;
+        private IStorageProvider _connection;
 
         /// <summary>
         /// Creates a new Open Connection Form
@@ -94,7 +94,7 @@ namespace VDS.RDF.GUI.WinForms
         /// <remarks>
         /// May be null if the User closes/cancels the Form
         /// </remarks>
-        public IGenericIOManager Connection
+        public IStorageProvider Connection
         {
             get
             {
@@ -112,15 +112,15 @@ namespace VDS.RDF.GUI.WinForms
                 try
                 {
                     Object temp = ConfigurationLoader.LoadObject(this._g, objNode);
-                    if (temp is IGenericIOManager)
+                    if (temp is IStorageProvider)
                     {
-                        this._connection = (IGenericIOManager)temp;
+                        this._connection = (IStorageProvider)temp;
                         this.DialogResult = DialogResult.OK;
                         this.Close();
                     }
                     else
                     {
-                        MessageBox.Show("Unable to open the selected connection as it was loaded by the Configuration Loader as an object of type '" + temp.GetType().ToString() + "' which does not implement the IGenericIOManager interface", "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Unable to open the selected connection as it was loaded by the Configuration Loader as an object of type '" + temp.GetType().ToString() + "' which does not implement the IStorageProvider interface", "Open Connection Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 catch (Exception ex)

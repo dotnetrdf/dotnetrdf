@@ -53,11 +53,11 @@ namespace VDS.RDF.Utilities.StoreManager
     public partial class StoreManagerForm
         : CrossThreadForm
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private int _taskID = 0;
         private EventHandler _copyGraphHandler, _moveGraphHandler;
 
-        public StoreManagerForm(IGenericIOManager manager)
+        public StoreManagerForm(IStorageProvider manager)
         {
             InitializeComponent();
 
@@ -76,7 +76,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this._moveGraphHandler = this.MoveGraphClick;
         }
 
-        public IGenericIOManager Manager
+        public IStorageProvider Manager
         {
             get
             {
@@ -87,13 +87,13 @@ namespace VDS.RDF.Utilities.StoreManager
         private void fclsGenericStoreManager_Load(object sender, EventArgs e)
         {
             //Determine whether SPARQL Query is supported
-            if (!(this._manager is IQueryableGenericIOManager))
+            if (!(this._manager is IQueryableStorage))
             {
                 this.tabFunctions.TabPages.Remove(this.tabSparqlQuery);
             }
 
             //Determine what SPARQL Update mode if any is supported
-            if (this._manager is IUpdateableGenericIOManager)
+            if (this._manager is IUpdateableStorage)
             {
                 this.lblUpdateMode.Text = "Update Mode: Native";
             }
@@ -156,16 +156,16 @@ namespace VDS.RDF.Utilities.StoreManager
                 return;
             }
 
-            if (this._manager is IQueryableGenericIOManager)
+            if (this._manager is IQueryableStorage)
             {
                 if (this.chkPageQuery.Checked)
                 {
-                    QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text, (int)this.numPageSize.Value);
+                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text, (int)this.numPageSize.Value);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
                 else
                 {
-                    QueryTask task = new QueryTask((IQueryableGenericIOManager)this._manager, this.txtSparqlQuery.Text);
+                    QueryTask task = new QueryTask((IQueryableStorage)this._manager, this.txtSparqlQuery.Text);
                     this.AddTask<Object>(task, this.QueryCallback);
                 }
             }
@@ -276,7 +276,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.ExportCallback);
         }
 
-        public void CopyGraph(String graphUri, IGenericIOManager target)
+        public void CopyGraph(String graphUri, IStorageProvider target)
         {
             if (target == null) return;
 
@@ -309,7 +309,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public void MoveGraph(String graphUri, IGenericIOManager target)
+        public void MoveGraph(String graphUri, IStorageProvider target)
         {
             if (target == null) return;
 
@@ -514,7 +514,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     this.mnuMoveGraphTo.DropDownItems.RemoveAt(2);
                 }
-                foreach (IGenericIOManager manager in Program.ActiveConnections)
+                foreach (IStorageProvider manager in Program.ActiveConnections)
                 {
                     if (!ReferenceEquals(manager, this._manager) && !manager.IsReadOnly)
                     {
@@ -608,12 +608,12 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null) return;
-            if (item.Tag is IGenericIOManager)
+            if (item.Tag is IStorageProvider)
             {
                 if (this.lvwGraphs.SelectedItems.Count > 0)
                 {
                     String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                    this.CopyGraph(graphUri, item.Tag as IGenericIOManager);
+                    this.CopyGraph(graphUri, item.Tag as IStorageProvider);
                 }
             }
         }
@@ -622,12 +622,12 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ToolStripMenuItem item = sender as ToolStripMenuItem;
             if (item == null) return;
-            if (item.Tag is IGenericIOManager)
+            if (item.Tag is IStorageProvider)
             {
                 if (this.lvwGraphs.SelectedItems.Count > 0)
                 {
                     String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                    this.MoveGraph(graphUri, item.Tag as IGenericIOManager);
+                    this.MoveGraph(graphUri, item.Tag as IStorageProvider);
                 }
             }
         }

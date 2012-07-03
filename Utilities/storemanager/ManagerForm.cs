@@ -267,7 +267,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     openConnections.MdiParent = this;
                     if (openConnections.ShowDialog() == DialogResult.OK)
                     {
-                        IGenericIOManager manager = openConnections.Connection;
+                        IStorageProvider manager = openConnections.Connection;
                         StoreManagerForm genManagerForm = new StoreManagerForm(manager);
                         genManagerForm.MdiParent = this;
                         genManagerForm.Show();
@@ -404,7 +404,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     QuickConnect qc = (QuickConnect)tag;
                     try
                     {
-                        IGenericIOManager manager = qc.GetConnection();
+                        IStorageProvider manager = qc.GetConnection();
                         StoreManagerForm genManager = new StoreManagerForm(manager);
                         genManager.MdiParent = this;
                         genManager.Show();
@@ -437,7 +437,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        public void AddRecentConnection(IGenericIOManager manager)
+        public void AddRecentConnection(IStorageProvider manager)
         {
             INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
 
@@ -478,7 +478,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }            
         }
 
-        public void AddFavouriteConnection(IGenericIOManager manager)
+        public void AddFavouriteConnection(IStorageProvider manager)
         {
             INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
 
@@ -505,7 +505,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
-        private INode AddConnection(IGraph config, IGenericIOManager manager, String persistentFile)
+        private INode AddConnection(IGraph config, IStorageProvider manager, String persistentFile)
         {
             if (config == null) return null;
 
@@ -577,7 +577,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 if (this.ActiveMdiChild is StoreManagerForm)
                 {
-                    IGenericIOManager manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
+                    IStorageProvider manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
                     this.AddFavouriteConnection(manager);
                 }
                 else
@@ -606,7 +606,7 @@ namespace VDS.RDF.Utilities.StoreManager
             newConn.StartPosition = FormStartPosition.CenterParent;
             if (newConn.ShowDialog() == DialogResult.OK)
             {
-                IGenericIOManager manager = newConn.Connection;
+                IStorageProvider manager = newConn.Connection;
                 StoreManagerForm storeManager = new StoreManagerForm(manager);
                 storeManager.MdiParent = this;
                 storeManager.Show();

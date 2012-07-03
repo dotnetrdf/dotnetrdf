@@ -46,11 +46,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class CopyMoveTask
         : CancellableTask<TaskResult>
     {
-        private IGenericIOManager _source, _target;
+        private IStorageProvider _source, _target;
         private Uri _sourceUri, _targetUri;
         private CancellableHandler _canceller;
 
-        public CopyMoveTask(IGenericIOManager source, IGenericIOManager target, Uri sourceUri, Uri targetUri, bool forceCopy)
+        public CopyMoveTask(IStorageProvider source, IStorageProvider target, Uri sourceUri, Uri targetUri, bool forceCopy)
             : base(GetName(source, target, sourceUri, targetUri, forceCopy))
         {
             this._source = source;
@@ -59,7 +59,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._targetUri = targetUri;
         }
 
-        public IGenericIOManager Source
+        public IStorageProvider Source
         {
             get
             {
@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
-        public IGenericIOManager Target
+        public IStorageProvider Target
         {
             get
             {
@@ -75,7 +75,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
-        private static String GetName(IGenericIOManager source, IGenericIOManager target, Uri sourceUri, Uri targetUri, bool forceCopy)
+        private static String GetName(IStorageProvider source, IStorageProvider target, Uri sourceUri, Uri targetUri, bool forceCopy)
         {
             if (ReferenceEquals(source, target) && !forceCopy)
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             {
                 case "Move":
                     //Move a Graph 
-                    if (ReferenceEquals(this._source, this._target) && this._source is IUpdateableGenericIOManager)
+                    if (ReferenceEquals(this._source, this._target) && this._source is IUpdateableStorage)
                     {
                         //If the Source and Target are identical and it supports SPARQL Update natively then we'll just issue a MOVE command
                         this.Information = "Issuing a MOVE command to renamed Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
@@ -130,7 +130,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.CommandText += " GRAPH @target";
                             update.SetUri("target", this._targetUri);
                         }
-                        ((IUpdateableGenericIOManager)this._source).Update(update.ToString());
+                        ((IUpdateableStorage)this._source).Update(update.ToString());
                         this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.ToString() + "'";
                     }
                     else
@@ -183,7 +183,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                     break;
 
                 case "Copy":
-                    if (ReferenceEquals(this._source, this._target) && this._source is IUpdateableGenericIOManager)
+                    if (ReferenceEquals(this._source, this._target) && this._source is IUpdateableStorage)
                     {
                         //If the Source and Target are identical and it supports SPARQL Update natively then we'll just issue a COPY command
                         this.Information = "Issuing a COPY command to copy Graph '" + this._sourceUri.ToSafeString() + "' to '" + this._targetUri.ToSafeString() + "'";
@@ -207,7 +207,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.CommandText += " GRAPH @target";
                             update.SetUri("target", this._targetUri);
                         }
-                        ((IUpdateableGenericIOManager)this._source).Update(update.ToString());
+                        ((IUpdateableStorage)this._source).Update(update.ToString());
                         this.Information = "COPY command completed OK, Graph copied to '" + this._targetUri.ToSafeString() + "'";
                     }
                     else

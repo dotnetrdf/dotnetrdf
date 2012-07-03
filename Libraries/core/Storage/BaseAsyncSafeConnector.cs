@@ -5,8 +5,11 @@ using System.Text;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Abstract Base Class for <see cref="IStorageProvider">IStorageProvider</see> implementations for which it is safe to do the <see cref="IAsyncStorageProvider">IAsyncStorageProvider</see> implementation simply by farming out calls to the synchronous methods onto background threads (i.e. non-HTTP based connectors)
+    /// </summary>
     public abstract class BaseAsyncSafeConnector
-        : IStorageProvider, IAsyncStorageProvider
+        : IStorageProvider, IGenericIOManager, IAsyncStorageProvider
     {
         public abstract void LoadGraph(IGraph g, Uri graphUri);
 

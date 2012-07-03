@@ -43,7 +43,7 @@ using VDS.RDF.Query;
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Provides a Read-Only wrapper that can be placed around another <see cref="IGenericIOManager">IGenericIOManager</see> instance
+    /// Provides a Read-Only wrapper that can be placed around another <see cref="IStorageProvider">IStorageProvider</see> instance
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,20 +51,20 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class ReadOnlyConnector 
-        : IGenericIOManager, IConfigurationSerializable
+        : IStorageProvider, IGenericIOManager, IConfigurationSerializable
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
 
         /// <summary>
         /// Creates a new Read-Only connection which is a read-only wrapper around another store
         /// </summary>
         /// <param name="manager">Manager for the Store you want to wrap as read-only</param>
-        public ReadOnlyConnector(IGenericIOManager manager)
+        public ReadOnlyConnector(IStorageProvider manager)
         {
             this._manager = manager;
         }
 
-        #region IGenericIOManager Members
+        #region IStorageProvider Members
 
         /// <summary>
         /// Loads a Graph from the underlying Store
@@ -284,13 +284,13 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                throw new DotNetRdfConfigurationException("Unable to serialize configuration as the underlying IGenericIOManager is not serializable");
+                throw new DotNetRdfConfigurationException("Unable to serialize configuration as the underlying IStorageProvider is not serializable");
             }
         }
     }
 
     /// <summary>
-    /// Provides a Read-Only wrapper that can be placed around another <see cref="IQueryableGenericIOManager">IQueryableGenericIOManager</see> instance
+    /// Provides a Read-Only wrapper that can be placed around another <see cref="IQueryableStorage">IQueryableStorage</see> instance
     /// </summary>
     /// <remarks>
     /// <para>
@@ -298,15 +298,15 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class QueryableReadOnlyConnector
-        : ReadOnlyConnector, IQueryableGenericIOManager
+        : ReadOnlyConnector, IQueryableStorage, IQueryableGenericIOManager
     {
-        private IQueryableGenericIOManager _queryManager;
+        private IQueryableStorage _queryManager;
 
         /// <summary>
         /// Creates a new Queryable Read-Only connection which is a read-only wrapper around another store
         /// </summary>
         /// <param name="manager">Manager for the Store you want to wrap as read-only</param>
-        public QueryableReadOnlyConnector(IQueryableGenericIOManager manager)
+        public QueryableReadOnlyConnector(IQueryableStorage manager)
             : base(manager)
         {
             this._queryManager = manager;

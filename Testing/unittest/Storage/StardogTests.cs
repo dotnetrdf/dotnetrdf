@@ -26,9 +26,9 @@ namespace VDS.RDF.Test.Storage
             return new StardogConnector(StardogTestUri, StardogTestKB, StardogUser, StardogPassword);
         }
 
-        protected override IGenericIOManager GetManager()
+        protected override IStorageProvider GetManager()
         {
-            return (IGenericIOManager)this.GetConnection();
+            return (IStorageProvider)this.GetConnection();
         }
 
         [TestMethod]

@@ -120,13 +120,13 @@ namespace VDS.RDF.Configuration
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
-                    if (temp is IQueryableGenericIOManager)
+                    if (temp is IQueryableStorage)
                     {
-                        processor = new GenericQueryProcessor((IQueryableGenericIOManager)temp);
+                        processor = new GenericQueryProcessor((IQueryableStorage)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Generic Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IQueryableGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Generic Query Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IQueryableStorage interface");
                     }
                     break;
 
@@ -256,13 +256,13 @@ namespace VDS.RDF.Configuration
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
-                    if (temp is IGenericIOManager)
+                    if (temp is IStorageProvider)
                     {
-                        processor = new GenericUpdateProcessor((IGenericIOManager)temp);
+                        processor = new GenericUpdateProcessor((IStorageProvider)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Generic Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Generic Update Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IStorageProvider interface");
                     }
 
                     break;
@@ -382,13 +382,13 @@ namespace VDS.RDF.Configuration
                     INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
-                    if (temp is IGenericIOManager)
+                    if (temp is IStorageProvider)
                     {
-                        processor = new GenericProtocolProcessor((IGenericIOManager)temp);
+                        processor = new GenericProtocolProcessor((IStorageProvider)temp);
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load the Generic Protocol Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IGenericIOManager interface");
+                        throw new DotNetRdfConfigurationException("Unable to load the Generic Protocol Processor identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:genericManager property points to an Object that cannot be loaded as an object which implements the IStorageProvider interface");
                     }
                     break;
 

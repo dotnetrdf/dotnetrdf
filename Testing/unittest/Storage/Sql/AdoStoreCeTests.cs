@@ -10,7 +10,7 @@ namespace VDS.RDF.Test.Storage.Sql
     [TestClass]
     public class AdoStoreCeTests
     {
-        //private IGenericIOManager GetConnection()
+        //private IStorageProvider GetConnection()
         //{
         //    return new SqlCeAdoManager("data.sdf");
         //}
@@ -18,7 +18,7 @@ namespace VDS.RDF.Test.Storage.Sql
         //[TestMethod]
         //public void StorageAdoCeConnect()
         //{
-        //    IGenericIOManager sqlce = this.GetConnection();
+        //    IStorageProvider sqlce = this.GetConnection();
         //    Console.WriteLine(sqlce.ToString());
         //    sqlce.Dispose();
         //}

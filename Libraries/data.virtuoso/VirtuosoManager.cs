@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This class implements <see cref="IGenericIOManager">IGenericIOManager</see> allowing it to be used with any of the general classes that support this interface as well as the Virtuoso specific classes.
+    /// This class implements <see cref="IStorageProvider">IStorageProvider</see> allowing it to be used with any of the general classes that support this interface as well as the Virtuoso specific classes.
     /// </para>
     /// <para>
     /// Although this class takes a Database Name to ensure compatability with any Virtuoso installation (i.e. this allows for the Native Quad Store to be in a non-standard database) generally you should always specify <strong>DB</strong> as the Database Name parameter

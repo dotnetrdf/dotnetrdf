@@ -44,14 +44,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     public abstract class BaseImportTask : CancellableTask<TaskResult>
     {
-        private IGenericIOManager _manager;
+        private IStorageProvider _manager;
         private Uri _targetUri;
         private CancellableHandler _canceller;
         private StoreCountHandler _counter = new StoreCountHandler();
         private ImportProgressHandler _progress;
         private int _batchSize;
 
-        public BaseImportTask(String name, IGenericIOManager manager, Uri targetGraph, int batchSize)
+        public BaseImportTask(String name, IStorageProvider manager, Uri targetGraph, int batchSize)
             : base(name)
         {
             this._manager = manager;
