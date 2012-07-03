@@ -103,7 +103,7 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// Interface for storage providers which provide the Read/Write functionality to some arbitrary storage layer
+    /// Interface for storage providers which provide the read/write functionality to some arbitrary storage layer
     /// </summary>
     /// <remarks>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
@@ -291,41 +291,140 @@ namespace VDS.RDF.Storage
         void Update(String sparqlUpdate);
     }
 
+    /// <summary>
+    /// Interface for storage providers which provide asynchronous read/write functionality to some arbitrary storage layer
+    /// </summary>
+    /// <remarks>
+    /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
+    /// </remarks>
     public interface IAsyncStorageProvider
         : IStorageCapabilities, IDisposable
     {
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void LoadGraph(IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void LoadGraph(IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Updates a Graph in the Store asychronously
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Updates a Graph in the Store asychronously
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void UpdateGraph(String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void DeleteGraph(Uri graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Lists the Graphs in the Store asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void ListGraphs(AsyncStorageCallback callback, Object state);
     }
 
+    /// <summary>
+    /// Interface for storage providers which allow SPARQL Queries to be made against them asynchronously
+    /// </summary>
     public interface IAsyncQueryableStorage
         : IAsyncStorageProvider
     {
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Query(String sparqlQuery, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state);
     }
 
+    /// <summary>
+    /// Interface for storage providers which allow SPARQL Updates to be made against them asynchronously
+    /// </summary>
     public interface IAsyncUpdateableStorage
         : IAsyncQueryableStorage
     {
+        /// <summary>
+        /// Updates the store asynchronously
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Update(String sparqlUpdates, AsyncStorageCallback callback, Object state);
     }
 
@@ -367,6 +466,9 @@ namespace VDS.RDF.Storage
         IStorageProvider GetStore(string storeID);
     }
 
+    /// <summary>
+    /// Interface for storage providers which are capable of managing multiple stores asynchronously
+    /// </summary>
     public interface IAsyncStorageServer
     {
         void ListStores(AsyncStorageCallback callback, Object state);
@@ -404,12 +506,30 @@ namespace VDS.RDF.Storage
         void Rollback();
     }
 
+    /// <summary>
+    /// Interface for storage providers which have controllable transactions which can be managed asynchronously
+    /// </summary>
     public interface IAsyncTransactionalStorage
     {
+        /// <summary>
+        /// Begins a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Begin(AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Commits a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Commit(AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Rolls back a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void Rollback(AsyncStorageCallback callback, Object state);
     }
 }

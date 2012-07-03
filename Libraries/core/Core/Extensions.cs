@@ -41,6 +41,7 @@ using System.Security.Cryptography;
 using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF
@@ -127,26 +128,51 @@ namespace VDS.RDF
 
         #region Node Collection replacement extensions
 
+        /// <summary>
+        /// Gets the Blank Nodes
+        /// </summary>
+        /// <param name="ns">Nodes</param>
+        /// <returns></returns>
         public static IEnumerable<IBlankNode> BlankNodes(this IEnumerable<INode> ns)
         {
             return ns.OfType<IBlankNode>();
         }
 
+        /// <summary>
+        /// Gets the Graph Literal Nodes
+        /// </summary>
+        /// <param name="ns">Nodes</param>
+        /// <returns></returns>
         public static IEnumerable<IGraphLiteralNode> GraphLiteralNodes(this IEnumerable<INode> ns)
         {
             return ns.OfType<IGraphLiteralNode>();
         }
 
+        /// <summary>
+        /// Gets the Literal Nodes
+        /// </summary>
+        /// <param name="ns">Nodes</param>
+        /// <returns></returns>
         public static IEnumerable<ILiteralNode> LiteralNodes(this IEnumerable<INode> ns)
         {
             return ns.OfType<ILiteralNode>();
         }
 
+        /// <summary>
+        /// Gets the URI Nodes
+        /// </summary>
+        /// <param name="ns">Nodes</param>
+        /// <returns></returns>
         public static IEnumerable<IUriNode> UriNodes(this IEnumerable<INode> ns)
         {
             return ns.OfType<IUriNode>();
         }
 
+        /// <summary>
+        /// Gets the Variable Nodes
+        /// </summary>
+        /// <param name="ns">Nodes</param>
+        /// <returns></returns>
         public static IEnumerable<IVariableNode> VariableNodes(this IEnumerable<INode> ns)
         {
             return ns.OfType<IVariableNode>();
@@ -905,9 +931,14 @@ namespace VDS.RDF
         /// <returns></returns>
         public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
         {
+            //Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
             TripleStore store = new TripleStore();
             store.Add(g);
-            return store.ExecuteQuery(sparqlQuery);
+            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(sparqlQuery);
+            return processor.ProcessQuery(q);
         }
 
         /// <summary>
@@ -921,7 +952,11 @@ namespace VDS.RDF
         {
             TripleStore store = new TripleStore();
             store.Add(g);
-            store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
+            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(sparqlQuery);
+            processor.ProcessQuery(rdfHandler, resultsHandler, q);
         }
 
         /// <summary>
@@ -957,7 +992,9 @@ namespace VDS.RDF
         {
             TripleStore store = new TripleStore();
             store.Add(g);
-            return store.ExecuteQuery(query);
+            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            return processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -971,7 +1008,9 @@ namespace VDS.RDF
         {
             TripleStore store = new TripleStore();
             store.Add(g);
-            store.ExecuteQuery(rdfHandler, resultsHandler, query);
+            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
+            processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
 
         /// <summary>
@@ -1274,7 +1313,7 @@ namespace VDS.RDF
         /// Creates a new Boolean typed literal
         /// </summary>
         /// <param name="b">Boolean</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this bool b, INodeFactory factory)
@@ -1288,7 +1327,7 @@ namespace VDS.RDF
         /// Creates a new Byte typed literal
         /// </summary>
         /// <param name="b">Byte</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <remarks>
         /// Byte in .Net is actually equivalent to Unsigned Byte in XML Schema so depending on the value of the Byte the type will either be xsd:byte if it fits or xsd:usignedByte
@@ -1313,7 +1352,7 @@ namespace VDS.RDF
         /// Creates a new Byte typed literal
         /// </summary>
         /// <param name="b">Byte</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <remarks>
         /// SByte in .Net is directly equivalent to Byte in XML Schema so the type will always be xsd:byte
@@ -1329,7 +1368,7 @@ namespace VDS.RDF
         /// Creates a new Date Time typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this DateTime dt, INodeFactory factory)
@@ -1343,7 +1382,7 @@ namespace VDS.RDF
         /// Creates a new Date typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteralDate(this DateTime dt, INodeFactory factory)
@@ -1357,7 +1396,7 @@ namespace VDS.RDF
         /// Creates a new Time typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteralTime(this DateTime dt, INodeFactory factory)
@@ -1371,7 +1410,7 @@ namespace VDS.RDF
         /// Creates a new duration typed literal
         /// </summary>
         /// <param name="t">Time Span</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         public static ILiteralNode ToLiteral(this TimeSpan t, INodeFactory factory)
         {
@@ -1384,7 +1423,7 @@ namespace VDS.RDF
         /// Creates a new Decimal typed literal
         /// </summary>
         /// <param name="d">Decimal</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this decimal d, INodeFactory factory)
@@ -1398,7 +1437,7 @@ namespace VDS.RDF
         /// Creates a new Double typed literal
         /// </summary>
         /// <param name="d">Double</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this double d, INodeFactory factory)
@@ -1412,7 +1451,7 @@ namespace VDS.RDF
         /// Creates a new Float typed literal
         /// </summary>
         /// <param name="f">Float</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this float f, INodeFactory factory)
@@ -1426,7 +1465,7 @@ namespace VDS.RDF
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="i">Integer</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this short i, INodeFactory factory)
@@ -1440,7 +1479,7 @@ namespace VDS.RDF
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="i">Integer</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this int i, INodeFactory factory)
@@ -1454,7 +1493,7 @@ namespace VDS.RDF
         /// Creates a new Integer typed literal
         /// </summary>
         /// <param name="l">Integer</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this long l, INodeFactory factory)
@@ -1468,7 +1507,7 @@ namespace VDS.RDF
         /// Creates a new String typed literal
         /// </summary>
         /// <param name="s">String</param>
-        /// <param name="factory">Node Factory create in</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph/String argument is null</exception>
         public static ILiteralNode ToLiteral(this String s, INodeFactory factory)

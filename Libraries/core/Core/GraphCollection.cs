@@ -47,6 +47,9 @@ namespace VDS.RDF
     public class GraphCollection 
         : BaseGraphCollection, IEnumerable<IGraph>
     {
+        /// <summary>
+        /// Internal Constant used as the Hash Code for the default graph
+        /// </summary>
         protected const int DefaultGraphID = 0;
 
         /// <summary>

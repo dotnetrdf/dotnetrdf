@@ -148,6 +148,9 @@ namespace VDS.RDF.Configuration
                             PropertyImportNamespacesFrom = "dnr:importNamespacesFrom"
                             ;
 
+        /// <summary>
+        /// QName Constants for <strong>obsolete</strong> configuration properties for use with the CreateConfigurationNode function
+        /// </summary>
         [Obsolete("Property is obsolete and no longer supported by the Configuration API", true)]
         public const String PropertyFromDatabase = "dnr:fromDatabase";
 
@@ -180,6 +183,9 @@ namespace VDS.RDF.Configuration
                             ClassDatasetWriter = "dnr:DatasetWriter",
                             ClassSparqlResultsWriter = "dnr:SparqlResultsWriter";
 
+        /// <summary>
+        /// QName Constants for <strong>obsolete</strong> configuration classes
+        /// </summary>
         [Obsolete("Class is obsolete and no longer supported by the Configuration API", true)]
         public const String ClassSqlManager = "dnr:SqlIOManager";
 
@@ -193,6 +199,9 @@ namespace VDS.RDF.Configuration
                             DefaultTypeSparqlHttpProtocolProcessor = "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor",
                             DefaultTypeUserGroup = "VDS.RDF.Configuration.Permissions";
 
+        /// <summary>
+        /// QName Constants for Default Types for some <strong>obsolete</strong> configuration classes
+        /// </summary>
         [Obsolete("Default Type is obsolete and no longer supported by the Configuration API", true)]
         public const String DefaultTypeSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager";
 

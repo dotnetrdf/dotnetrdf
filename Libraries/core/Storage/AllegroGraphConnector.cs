@@ -69,6 +69,12 @@ namespace VDS.RDF.Storage
         private String _catalog;
         private bool _ready = false;
          
+        /// <summary>
+        /// Creates a new Connection to an AllegroGraph store
+        /// </summary>
+        /// <param name="baseUri">Base URI for the Store</param>
+        /// <param name="catalogID">Catalog ID</param>
+        /// <param name="storeID">Store ID</param>
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID)
             : this(baseUri, storeID, catalogID, (String)null, (String)null) { }
 
@@ -371,6 +377,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Get the lists of stores available on the Server
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerable<String> ListStores()
         {
             HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
@@ -416,6 +426,11 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+        /// <summary>
+        /// Gets the List of Stores available  on the server within the current catalog asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
         public override void ListStores(AsyncStorageCallback callback, object state)
         {
             try
@@ -477,6 +492,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Creates a new Store on the server within the current catalog asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
         public override void CreateStore(string storeID, AsyncStorageCallback callback, object state)
         {
             try
@@ -574,6 +595,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Store from the server within the current catalog asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
         public override void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             try
@@ -638,9 +665,11 @@ namespace VDS.RDF.Storage
         /// Gets a Store within the current catalog asynchronously
         /// </summary>
         /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to call back</param>
         /// <returns></returns>
         /// <remarks>
-        /// AllegroGraph groups stores by catalogue, you may only use this method to obtain stores within your current catalogue
+        /// AllegroGraph groups stores by catalog, you may only use this method to obtain stores within your current catalogue
         /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {

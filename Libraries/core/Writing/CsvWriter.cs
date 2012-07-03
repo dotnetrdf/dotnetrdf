@@ -204,12 +204,22 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Saves a Triple Store to CSV Format
+        /// </summary>
+        /// <param name="store">Triple Store to save</param>
+        /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot write to a null file");
             this.Save(store, new StreamWriter(filename));
         }
 
+        /// <summary>
+        /// Saves a Triple Store to CSV Format
+        /// </summary>
+        /// <param name="store">Triple Store to save</param>
+        /// <param name="writer">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");

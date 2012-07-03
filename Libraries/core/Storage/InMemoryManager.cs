@@ -368,16 +368,36 @@ namespace VDS.RDF.Storage
 
         #region Async Members
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             this.AsyncQuery(sparqlQuery, callback, state);
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             this.AsyncQueryHandlers(sparqlQuery, rdfHandler, resultsHandler, callback, state);
         }
 
+        /// <summary>
+        /// Updates the store asynchronously
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             this.AsyncUpdate(sparqlUpdates, callback, state);

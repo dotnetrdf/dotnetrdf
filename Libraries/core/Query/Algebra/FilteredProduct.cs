@@ -1,4 +1,39 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-12
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,12 +44,21 @@ using VDS.RDF.Query.Optimisation;
 
 namespace VDS.RDF.Query.Algebra
 {
+    /// <summary>
+    /// Algebra operator which combines a Filter and a Product into a single operation for improved performance and reduced memory usage
+    /// </summary>
     public class FilteredProduct
         : IAbstractJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
         private ISparqlExpression _expr;
 
+        /// <summary>
+        /// Creates a new Filtered Product
+        /// </summary>
+        /// <param name="lhs">LHS Algebra</param>
+        /// <param name="rhs">RHS Algebra</param>
+        /// <param name="expr">Expression to filter with</param>
         public FilteredProduct(ISparqlAlgebra lhs, ISparqlAlgebra rhs, ISparqlExpression expr)
         {
             this._lhs = lhs;
@@ -22,6 +66,9 @@ namespace VDS.RDF.Query.Algebra
             this._expr = expr;
         }
 
+        /// <summary>
+        /// Gets the LHS Algebra
+        /// </summary>
         public ISparqlAlgebra Lhs
         {
             get
@@ -30,6 +77,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the RHS Algebra
+        /// </summary>
         public ISparqlAlgebra Rhs
         {
             get 
@@ -38,6 +88,11 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Transforms the inner algebra with the given optimiser
+        /// </summary>
+        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
             if (optimiser is IExpressionTransformer)
@@ -50,16 +105,31 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Transforms the LHS algebra only with the given optimiser
+        /// </summary>
+        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <returns></returns>
         public ISparqlAlgebra TransformLhs(IAlgebraOptimiser optimiser)
         {
             return new FilteredProduct(optimiser.Optimise(this._lhs), this._rhs, this._expr);
         }
 
+        /// <summary>
+        /// Transforms the RHS algebra only with the given optimiser
+        /// </summary>
+        /// <param name="optimiser">Algebra Optimiser</param>
+        /// <returns></returns>
         public ISparqlAlgebra TransformRhs(Optimisation.IAlgebraOptimiser optimiser)
         {
             return new FilteredProduct(this._lhs, optimiser.Optimise(this._rhs), this._expr);
         }
 
+        /// <summary>
+        /// Evaluates the filtered product
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset initialInput = context.InputMultiset;
@@ -178,26 +248,41 @@ namespace VDS.RDF.Query.Algebra
 
 #endif
 
+        /// <summary>
+        /// Gets the Variables used in the Algebra
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get
             {
-                return this._lhs.Variables.Concat(this._rhs.Variables).Distinct();
+                return this._lhs.Variables.Concat(this._rhs.Variables).Concat(this._expr.Variables).Distinct();
             }
         }
 
+        /// <summary>
+        /// Converts the algebra back into a query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             ISparqlAlgebra algebra = new Filter(new Join(this._lhs, this._rhs), new UnaryExpressionFilter(this._expr));
             return algebra.ToQuery();
         }
 
+        /// <summary>
+        /// Converts the algebra back into a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
         {
             ISparqlAlgebra algebra = new Filter(new Join(this._lhs, this._rhs), new UnaryExpressionFilter(this._expr));
             return algebra.ToGraphPattern();
         }
 
+        /// <summary>
+        /// Gets the string represenation of the algebra
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "FilteredProduct(" + this._lhs.ToString() + ", " + this._rhs.ToString() + ", " + this._expr.ToString() + ")";

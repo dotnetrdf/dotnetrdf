@@ -716,6 +716,8 @@ namespace VDS.RDF.Storage
         /// Saves a Graph to the Store
         /// </summary>
         /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state)
         {
             HttpWebRequest request;
@@ -741,6 +743,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state)
         {
             Dictionary<String, String> requestParams = new Dictionary<string, string>();
@@ -759,6 +763,8 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         /// <remarks>
         /// Removals are processed before any additions, to force a specific order of additions and removals you should make multiple calls to this function specifying each set of additions or removals you wish to perform seperately
         /// </remarks>
@@ -818,6 +824,8 @@ namespace VDS.RDF.Storage
         /// Deletes a Graph from the Store
         /// </summary>
         /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, Object state)
         {
             if (graphUri != null && !graphUri.Equals(String.Empty))
@@ -839,6 +847,8 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Lists the Graphs from the Repository
         /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         /// <returns></returns>
         public override void ListGraphs(AsyncStorageCallback callback, Object state)
         {
@@ -897,6 +907,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -914,6 +930,14 @@ namespace VDS.RDF.Storage
                 }, state);
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             try
@@ -1088,6 +1112,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates the store asynchronously
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             try

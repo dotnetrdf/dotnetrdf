@@ -1,10 +1,46 @@
-﻿using System;
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Static Helper class containing internal extensions methods used to support the <see cref="BaseAsyncSafeConnector">BaseAsyncSafeConnector</see> class
+    /// </summary>
     internal static class AsyncStorageExtensions
     {
         private delegate void AsyncLoadGraphDelegate(IStorageProvider storage, IGraph g, Uri graphUri);
@@ -14,6 +50,14 @@ namespace VDS.RDF.Storage
             storage.LoadGraph(g, graphUri);
         }
 
+        /// <summary>
+        /// Loads a Graph asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="g">Graph to load into</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncLoadGraph(this IStorageProvider storage, IGraph g, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncLoadGraphDelegate d = new AsyncLoadGraphDelegate(LoadGraph);
@@ -37,7 +81,15 @@ namespace VDS.RDF.Storage
         {
             storage.LoadGraph(handler, graphUri);   
         }
-
+      
+        /// <summary>
+        /// Loads a Graph asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncLoadGraph(this IStorageProvider storage, IRdfHandler handler, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncLoadGraphHandlersDelegate d = new AsyncLoadGraphHandlersDelegate(LoadGraph);
@@ -62,6 +114,13 @@ namespace VDS.RDF.Storage
             storage.SaveGraph(g);
         }
 
+        /// <summary>
+        /// Saves a Graph aynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncSaveGraph(this IStorageProvider storage, IGraph g, AsyncStorageCallback callback, Object state)
         {
             AsyncSaveGraphDelegate d = new AsyncSaveGraphDelegate(SaveGraph);
@@ -86,6 +145,15 @@ namespace VDS.RDF.Storage
             storage.UpdateGraph(graphUri, additions, removals);
         }
 
+        /// <summary>
+        /// Updates a Graph asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to add</param>
+        /// <param name="removals">Triples to remove</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncUpdateGraph(this IStorageProvider storage, Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
         {
             AsyncUpdateGraphDelegate d = new AsyncUpdateGraphDelegate(UpdateGraph);
@@ -110,6 +178,13 @@ namespace VDS.RDF.Storage
             storage.DeleteGraph(graphUri);
         }
 
+        /// <summary>
+        /// Deletes a Graph asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncDeleteGraph(this IStorageProvider storage, Uri graphUri, AsyncStorageCallback callback, Object state)
         {
             AsyncDeleteGraphDelegate d = new AsyncDeleteGraphDelegate(DeleteGraph);
@@ -134,6 +209,12 @@ namespace VDS.RDF.Storage
             return storage.ListGraphs();
         }
 
+        /// <summary>
+        /// Lists Graphs in the store asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncListGraphs(this IStorageProvider storage, AsyncStorageCallback callback, Object state)
         {
             AsyncListGraphsDelegate d = new AsyncListGraphsDelegate(ListGraphs);
@@ -158,6 +239,13 @@ namespace VDS.RDF.Storage
             return storage.Query(query);
         }
 
+        /// <summary>
+        /// Queries a store asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncQuery(this IQueryableStorage storage, String query, AsyncStorageCallback callback, Object state)
         {
             AsyncQueryDelegate d = new AsyncQueryDelegate(Query);
@@ -182,6 +270,15 @@ namespace VDS.RDF.Storage
             storage.Query(rdfHandler, resultsHandler, query);
         }
 
+        /// <summary>
+        /// Queries a store asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncQueryHandlers(this IQueryableStorage storage, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, AsyncStorageCallback callback, Object state)
         {
             AsyncQueryHandlersDelegate d = new AsyncQueryHandlersDelegate(QueryHandlers);
@@ -206,6 +303,13 @@ namespace VDS.RDF.Storage
             storage.Update(updates);
         }
 
+        /// <summary>
+        /// Updates a store asynchronously
+        /// </summary>
+        /// <param name="storage">Storage Provider</param>
+        /// <param name="updates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         internal static void AsyncUpdate(this IUpdateableStorage storage, String updates, AsyncStorageCallback callback, Object state)
         {
             AsyncUpdateDelegate d = new AsyncUpdateDelegate(Update);
