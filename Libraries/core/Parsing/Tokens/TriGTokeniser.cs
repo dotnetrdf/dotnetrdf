@@ -58,6 +58,11 @@ namespace VDS.RDF.Parsing.Tokens
         public TriGTokeniser(StreamReader input)
             : this(BlockingTextReader.Create(input)) { }
 
+        /// <summary>
+        /// Creates a new TriG Tokeniser which reads Tokens from the given Stream using the specified syntax
+        /// </summary>
+        /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="syntax">Syntax</param>
         public TriGTokeniser(StreamReader input, TriGSyntax syntax)
             : this(BlockingTextReader.Create(input), syntax) { }
 
@@ -76,6 +81,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// Creates a new TriG Tokeniser which reads Tokens from the given Stream
         /// </summary>
         /// <param name="input">Stream to read Tokens from</param>
+        /// <param name="syntax">Syntax</param>
         public TriGTokeniser(BlockingTextReader input, TriGSyntax syntax)
             : this(input) 
         {
@@ -93,6 +99,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// Creates a new TriG Tokeniser which reads Tokens from the given Input
         /// </summary>
         /// <param name="input">Input to read Tokens from</param>
+        /// <param name="syntax">Syntax</param>
         public TriGTokeniser(TextReader input, TriGSyntax syntax)
             : this(BlockingTextReader.Create(input), syntax) { }
 

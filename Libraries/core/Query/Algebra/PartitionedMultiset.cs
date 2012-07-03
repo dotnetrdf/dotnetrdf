@@ -1,4 +1,39 @@
-﻿#if NET40 && !SILVERLIGHT
+﻿/*
+
+Copyright Robert Vesse 2009-10
+rvesse@vdesign-studios.com
+
+------------------------------------------------------------------------
+
+This file is part of dotNetRDF.
+
+dotNetRDF is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+dotNetRDF is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------
+
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
+us at the above stated email address to discuss alternative
+terms.
+
+*/
+
+#if NET40 && !SILVERLIGHT
 
 using System;
 using System.Collections.Generic;
@@ -21,6 +56,11 @@ namespace VDS.RDF.Query.Algebra
         private Dictionary<String, HashSet<INode>> _containsCache;
         private bool _cacheInvalid = true;
 
+        /// <summary>
+        /// Creates a new Partionted Multiset
+        /// </summary>
+        /// <param name="numPartitions">Number of partitions</param>
+        /// <param name="partitionSize">Partition Size</param>
         public PartitionedMultiset(int numPartitions, int partitionSize)
         {
             this._numPartitions = numPartitions;
@@ -98,6 +138,13 @@ namespace VDS.RDF.Query.Algebra
             return this.Variables.All(v => !other.ContainsVariable(v));
         }
 
+        /// <summary>
+        /// Adds a Set to the multiset
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <remarks>
+        /// Assumes the caller has set the ID of the set appropriately and will use this to determine which partition to add to
+        /// </remarks>
         public override void Add(ISet s)
         {
             //Compute which partition based on the ID
@@ -111,12 +158,20 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Adds a Variable to the multiset
+        /// </summary>
+        /// <param name="variable">Variable</param>
         public override void AddVariable(string variable)
         {
             if (this._variables.Count == 0) this._variables.Add(new HashSet<string>());
             this._variables[0].Add(variable);
         }
 
+        /// <summary>
+        /// Removes a Set from the multiset
+        /// </summary>
+        /// <param name="id">Set ID</param>
         public override void Remove(int id)
         {
             int p = id / this._partitionSize;
@@ -124,6 +179,9 @@ namespace VDS.RDF.Query.Algebra
             this._cacheInvalid = true;
         }
 
+        /// <summary>
+        /// Gets whether the multiset is empty
+        /// </summary>
         public override bool IsEmpty
         {
             get 
@@ -132,6 +190,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the number of sets in the multiset
+        /// </summary>
         public override int Count
         {
             get
@@ -140,6 +201,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the variables in the multiset
+        /// </summary>
         public override IEnumerable<string> Variables
         {
             get
@@ -151,6 +215,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the sets in the multiset
+        /// </summary>
         public override IEnumerable<ISet> Sets
         {
             get 
@@ -169,6 +236,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets the Set IDs in the mutliset
+        /// </summary>
         public override IEnumerable<int> SetIDs
         {
             get 
@@ -186,6 +256,11 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Gets a Set from the multiset
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public override ISet this[int id]
         {
             get
@@ -210,6 +285,9 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Removes temporary variables from all sets the multiset
+        /// </summary>
         public override void Trim()
         {
             List<String> trimVars = this.Variables.Where(v => v.StartsWith("_:")).ToList();
@@ -247,6 +325,10 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Removes a specific variable from all sets in the multiset
+        /// </summary>
+        /// <param name="variable">Variable</param>
         public override void Trim(string variable)
         {
             if (variable == null) return;

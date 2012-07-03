@@ -106,6 +106,7 @@ namespace VDS.RDF.Configuration
                             PropertyEndpointUri = "dnr:endpointUri",
                             PropertyDefaultGraphUri = "dnr:defaultGraphUri",
                             PropertyNamedGraphUri = "dnr:namedGraphUri",
+                            PropertyUnionDefaultGraph = "dnr:unionDefaultGraph",
                             PropertyProxy = "dnr:proxy",
                             //Properties for reasoners
                             PropertyReasoner = "dnr:reasoner",

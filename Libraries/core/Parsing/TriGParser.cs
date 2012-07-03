@@ -153,12 +153,22 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        /// <summary>
+        /// Loads the named Graphs from the TriG input into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="filename">File to load from</param>
         public void Load(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(store, new StreamReader(filename, Encoding.UTF8));
         }
 
+        /// <summary>
+        /// Loads the named Graphs from the TriG input into the given Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store to load into</param>
+        /// <param name="input">Input to load from</param>
         public void Load(ITripleStore store, TextReader input)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -166,12 +176,22 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), input);
         }
 
+        /// <summary>
+        /// Loads the named Graphs from the TriG input using the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="filename">File to load from</param>
         public void Load(IRdfHandler handler, String filename)
         {
             if (filename == null) throw new RdfParseException("Cannot parse an RDF Dataset from a null file");
             this.Load(handler, new StreamReader(filename, Encoding.UTF8));
         }
 
+        /// <summary>
+        /// Loads the named Graphs from the TriG input using the given RDF Handler
+        /// </summary>
+        /// <param name="handler">RDF Handler to use</param>
+        /// <param name="input">Input to load from</param>
         public void Load(IRdfHandler handler, TextReader input)
         {
             if (handler == null) throw new RdfParseException("Cannot parse an RDF Dataset using a null handler");

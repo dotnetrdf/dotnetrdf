@@ -59,6 +59,9 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
+            bool unionDefGraph = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUnionDefaultGraph), false);
+            INode defaultGraphNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultGraphUri));
+            Uri defaultGraph = (defaultGraphNode != null && defaultGraphNode.NodeType == NodeType.Uri ? ((IUriNode)defaultGraphNode).Uri : null);
 
             INode storeNode;
             switch (targetType.FullName)
@@ -74,7 +77,18 @@ namespace VDS.RDF.Configuration
                         Object temp = ConfigurationLoader.LoadObject(g, storeNode);
                         if (temp is IInMemoryQueryableStore)
                         {
-                            obj = new InMemoryDataset((IInMemoryQueryableStore)temp);
+                            if (unionDefGraph)
+                            {
+                                obj = new InMemoryDataset((IInMemoryQueryableStore)temp, unionDefGraph);
+                            }
+                            else if (defaultGraph != null)
+                            {
+                                obj = new InMemoryDataset((IInMemoryQueryableStore)temp, defaultGraph);
+                            }
+                            else
+                            {
+                                obj = new InMemoryDataset((IInMemoryQueryableStore)temp);
+                            }
                         }
                         else
                         {

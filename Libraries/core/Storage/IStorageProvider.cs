@@ -471,12 +471,41 @@ namespace VDS.RDF.Storage
     /// </summary>
     public interface IAsyncStorageServer
     {
+        /// <summary>
+        /// Lists the available stores asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void ListStores(AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Creates a store asynchronously
+        /// </summary>
+        /// <param name="storeID">ID of the store to create</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
+        /// </remarks>
         void CreateStore(String storeID, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Deletes a store asynchronously
+        /// </summary>
+        /// <param name="storeID">ID of the store to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         void DeleteStore(String storeID, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Gets a store asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the implementation also implements <see cref="IAsyncStorageProvider"/> and the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// </remarks>
         void GetStore(String storeID, AsyncStorageCallback callback, Object state);
     }
 

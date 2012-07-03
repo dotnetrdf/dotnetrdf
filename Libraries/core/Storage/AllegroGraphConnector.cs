@@ -36,10 +36,11 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Net;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
@@ -108,12 +109,33 @@ namespace VDS.RDF.Storage
             this._catalog = catalogID;
 
 #if !NO_SYNC_HTTP
-            this.CreateStore(storeID);
+            if (this.CreateStore(storeID))
+            {
+                this._store = storeID;
+            }
+            else
+            {
+                throw new RdfStorageException("Failed to create/connect to the specified Store");
+            }
 #else
+            ManualResetEvent signal = new ManualResetEvent(false);
+            AsyncStorageCallbackArgs resArgs = null;
             this.CreateStore(storeID, (sender, args, state) =>
                 {
-                    if (args.WasSuccessful) this._ready = true;
+                    resArgs = args;
+                    singal.Set();
                 }, null);
+            signal.WaitOne();
+
+            if (resArgs.WasSuccessful)
+            {
+                this._ready = true;
+                this._store = storeID;
+            }
+            else
+            {
+                throw new RdfStorageException("Failed to create/connect to the specified Store");
+            }
 #endif
         }
 
@@ -216,7 +238,7 @@ namespace VDS.RDF.Storage
 #if !NO_SYNC_HTTP
 
         /// <summary>
-        /// Creates a new Store (if it doesn't exist) and switches the connector to use that Store
+        /// Creates a new Store (if it doesn't already exist)
         /// </summary>
         /// <param name="storeID">Store ID</param>
         public override bool CreateStore(String storeID)
@@ -277,10 +299,6 @@ namespace VDS.RDF.Storage
                 {
                     throw;
                 }
-            }
-            finally
-            {
-                this._store = storeID;
             }
         }
 
@@ -408,6 +426,8 @@ namespace VDS.RDF.Storage
             return stores;
         }
 
+#endif
+
         /// <summary>
         /// Gets a Store within the current catalog
         /// </summary>
@@ -418,14 +438,17 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public override IStorageProvider GetStore(String storeID)
         {
+#if !NO_SYNC_HTTP
             //Allowed to return self when given ID matches own ID
             if (this._store.Equals(storeID)) return this;
 
             //Otherwise return a new instance
             return new AllegroGraphConnector(this._agraphBase, this._catalog, storeID, this._username, this._pwd, this.Proxy);
+#else
+            throw new RdfStorageException("Not supported on your platform, please use the asynchronous overload of this method");
+#endif
         }
 
-#endif
         /// <summary>
         /// Gets the List of Stores available  on the server within the current catalog asynchronously
         /// </summary>

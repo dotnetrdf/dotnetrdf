@@ -1080,6 +1080,11 @@ namespace VDS.RDF.Writing.Formatting
             return output.ToString();
         }
 
+        /// <summary>
+        /// Formats the Inline Data portion of a Query
+        /// </summary>
+        /// <param name="data">Inline Data</param>
+        /// <returns></returns>
         protected virtual String FormatInlineData(BindingsPattern data)
         {
             StringBuilder output = new StringBuilder();

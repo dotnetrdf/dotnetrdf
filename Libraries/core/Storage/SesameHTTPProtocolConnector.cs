@@ -846,7 +846,12 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             try
@@ -893,6 +898,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             try
@@ -922,12 +934,19 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store asychronously
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             try
             {
                 HttpWebRequest request;
-                HttpWebResponse response;
                 Dictionary<String, String> serviceParams;
                 NTriplesWriter ntwriter = new NTriplesWriter();
 
@@ -1016,6 +1035,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             try
@@ -1047,6 +1072,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query</returns>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -1064,6 +1096,14 @@ namespace VDS.RDF.Storage
                 }, state);
         }
 
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying store processing the resulting Graph/Result Set with a handler of your choice
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">SPARQL Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callbakc</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             try
@@ -1277,16 +1317,32 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        /// <summary>
+        /// Creates a new Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns>Whether creation succeeded</returns>
         public virtual bool CreateStore(String storeID)
         {
             throw new RdfStorageException("Sesame does not support creating stores via it's HTTP Protocol");
         }
 
+        /// <summary>
+        /// Deletes the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <remarks>
+        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation
+        /// </remarks>
         public virtual void DeleteStore(String storeID)
         {
             throw new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol");
         }
 
+        /// <summary>
+        /// Gets the list of available stores
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<String> ListStores()
         {
             HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
@@ -1300,19 +1356,47 @@ namespace VDS.RDF.Storage
             return handler.Strings;
         }
 
+        /// <summary>
+        /// Gets the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
+        /// </remarks>
         public abstract IStorageProvider GetStore(String storeID);
 
 #endif
+        /// <summary>
+        /// Creates a store asynchronously
+        /// </summary>
+        /// <param name="storeID">ID of the store to create</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
+        /// </remarks>
         public virtual void CreateStore(String storeID, AsyncStorageCallback callback, Object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
         }
 
+        /// <summary>
+        /// Deletes a store asynchronously
+        /// </summary>
+        /// <param name="storeID">ID of the store to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
         }
 
+        /// <summary>
+        /// Lists the available stores asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public virtual void ListStores(AsyncStorageCallback callback, Object state)
         {
             HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
@@ -1365,6 +1449,15 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a store asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the implementation also implements <see cref="IAsyncStorageProvider"/> and the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// </remarks>
         public abstract void GetStore(String storeID, AsyncStorageCallback callback, Object state);
 
         /// <summary>
@@ -1504,8 +1597,14 @@ namespace VDS.RDF.Storage
 
 #endif
 
-#if !NO_SYNC_HTTP
-
+        /// <summary>
+        /// Gets the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
+        /// </remarks>
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1517,9 +1616,6 @@ namespace VDS.RDF.Storage
                 return new SesameHttpProtocolConnector(this._baseUri, storeID);
             }
         }
-
-#endif
-
     }
 
     /// <summary>
@@ -1570,8 +1666,14 @@ namespace VDS.RDF.Storage
 
 #endif
 
-#if !NO_SYNC_HTTP
-
+        /// <summary>
+        /// Gets the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
+        /// </remarks>
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1584,11 +1686,28 @@ namespace VDS.RDF.Storage
             }
         }
 
-#endif
-
+        /// <summary>
+        /// Gets a store asynchronously
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
+        /// </remarks>
         public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            //Since GetStore() does not do anything that requires sync HTTP we can just call the synchronous GetStore() method
+            //and either return the result of wrap the error via the callback
+            try
+            {
+                IStorageProvider provider = this.GetStore(storeID);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, (IAsyncStorageProvider)provider), state);
+            }
+            catch (Exception e)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
+            }
         }
     }
 
@@ -1643,8 +1762,14 @@ namespace VDS.RDF.Storage
 
 #endif
 
-#if !NO_SYNC_HTTP
-
+        /// <summary>
+        /// Gets the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
+        /// </remarks>
         public override IStorageProvider GetStore(string storeID)
         {
             if (this._store.Equals(storeID))
@@ -1734,8 +1859,6 @@ namespace VDS.RDF.Storage
                 }
             }
         }
-
-#endif
     }
 
 }

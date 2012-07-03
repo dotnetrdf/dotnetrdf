@@ -341,7 +341,7 @@ dnr:assignUri a rdf:Property ;
 			  rdfs:comment "This property assigns the resulting Graph the given Base URI." ;
 			  rdfs:domain dnr:Graph .
 			  
-# Properties for SPARQL Endpoints
+# Properties for SPARQL related stuff
 
 dnr:endpoint a rdf:Property ;
 			 rdfs:label "Endpoint" ;
@@ -361,6 +361,13 @@ dnr:defaultGraphUri a rdf:Property ;
 dnr:namedGraphUri a rdf:Property ;
 				  rdfs:label "Named Graph URI" ;
 				  rdfs:comment "This property defines Named Graph URIs." .
+
+
+dnr:unionDefaultGraph a rdf:Property ;
+					  rdfs:label "Union Default Graph" ;
+					  rdfs:comment "This property indicates whether a union default graph should be used" ;
+					  rdfs:range xsd:boolean ;
+					  rdfs:domain dnr:SparqlDataset .
 				  
 dnr:proxy a rdf:Property ;
 		  rdfs:label "Proxy Server" ;

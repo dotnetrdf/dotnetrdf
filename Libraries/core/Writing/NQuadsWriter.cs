@@ -126,6 +126,11 @@ namespace VDS.RDF.Writing
             }
         }
 
+        /// <summary>
+        /// Saves a Store in NQuads format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
@@ -136,6 +141,12 @@ namespace VDS.RDF.Writing
 #endif
         }
 
+
+        /// <summary>
+        /// Saves a Store in NQuads format
+        /// </summary>
+        /// <param name="store">Store to save</param>
+        /// <param name="writer">Writer to save to</param>
         public void Save(ITripleStore store, TextWriter writer)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");

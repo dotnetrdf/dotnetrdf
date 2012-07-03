@@ -904,6 +904,12 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             //Have to do the delete first as that requires a separate transaction
@@ -1001,6 +1007,10 @@ namespace VDS.RDF.Storage
                                                 }
                                             }, state);
                                     }
+                                    else
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g), state);
+                                    }
                                 }
                                 catch (WebException webEx)
                                 {
@@ -1071,6 +1081,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             try
@@ -1115,6 +1132,8 @@ namespace VDS.RDF.Storage
                             IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                             parser.Load(handler, new StreamReader(response.GetResponseStream()));
                             response.Close();
+
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
                         }
                         catch (WebException webEx)
                         {
@@ -1142,11 +1161,297 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store asychronously
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            this.UpdateGraphAsync(graphUri, additions, removals, callback, state);
         }
 
+        private void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        {
+            //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
+            if (this._activeTrans != null)
+            {
+                this.UpdateGraphAsync(this._activeTrans, false, graphUri, additions, removals, callback, state);
+            }
+            else
+            {
+                this.Begin((sender, args, st) =>
+                {
+                    if (args.WasSuccessful)
+                    {
+                        this.UpdateGraphAsync(this._activeTrans, true, graphUri, additions, removals, callback, state);
+                    }
+                    else
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                    }
+                }, state);
+            }
+        }
+
+        private void UpdateGraphAsync(String tID, bool autoCommit, String graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                if (removals != null && removals.Any())
+                {
+                    HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/remove", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request.ContentType = MimeTypesHelper.TriG[0];
+
+                    request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            //Save the Data as TriG to the Request Stream
+                            Stream stream = request.EndGetRequestStream(r);
+                            TripleStore store = new TripleStore();
+                            Graph g = new Graph();
+                            g.Assert(removals);
+                            store.Add(g);
+                            this._writer.Save(store, new StreamWriter(stream));
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+                            request.BeginGetResponse(r2 =>
+                            {
+                                try
+                                {
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        Tools.HttpDebugResponse(response);
+                                    }
+#endif
+                                    //If we get here then it was OK
+                                    response.Close();
+
+                                    if (additions != null && additions.Any())
+                                    {
+                                        //Now we need to do additions
+                                        
+                                    }
+                                    else
+                                    {
+                                        //No additions to do
+                                        //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                        if (autoCommit)
+                                        {
+                                            this.Commit((sender, args, st) =>
+                                            {
+                                                if (args.WasSuccessful)
+                                                {
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                                }
+                                                else
+                                                {
+                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                                                }
+                                            }, state);
+                                        }
+                                        else
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                        }
+                                    }
+                                }
+                                catch (WebException webEx)
+                                {
+#if DEBUG
+                                    if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to uodate a Graph, see inner exception for details", webEx)), state);
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                                }
+                            }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+                }
+                else if (additions != null && additions.Any())
+                {
+                    HttpWebRequest request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request.ContentType = MimeTypesHelper.TriG[0];
+
+                    request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            //Save the Data as TriG to the Request Stream
+                            Stream stream = request.EndGetRequestStream(r);
+                            TripleStore store = new TripleStore();
+                            Graph g = new Graph();
+                            g.Assert(additions);
+                            store.Add(g);
+                            this._writer.Save(store, new StreamWriter(stream));
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+                            request.BeginGetResponse(r2 =>
+                            {
+                                try
+                                {
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        Tools.HttpDebugResponse(response);
+                                    }
+#endif
+                                    //If we get here then it was OK
+                                    response.Close();
+
+                                    //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                    if (autoCommit)
+                                    {
+                                        this.Commit((sender, args, st) =>
+                                        {
+                                            if (args.WasSuccessful)
+                                            {
+                                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                            }
+                                            else
+                                            {
+                                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                                            }
+                                        }, state);
+                                    }
+                                    else
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                    }
+                                }
+                                catch (WebException webEx)
+                                {
+#if DEBUG
+                                    if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+                                }
+                                catch (Exception ex)
+                                {
+                                    if (autoCommit)
+                                    {
+                                        //If something went wrong try to rollback, don't care what the rollback response is
+                                        this.Rollback((sender, args, st) => { }, state);
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                                }
+                            }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            if (autoCommit)
+                            {
+                                //If something went wrong try to rollback, don't care what the rollback response is
+                                this.Rollback((sender, args, st) => { }, state);
+                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                        }
+                    }, state);
+
+                }
+                else
+                {
+                    //Nothing to do, just invoke callback
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                if (autoCommit)
+                {
+                    //If something went wrong try to rollback, don't care what the rollback response is
+                    this.Rollback((sender, args, st) => { }, state);
+                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             //Get a Transaction ID, if there is no active Transaction then this operation will start a new transaction and be auto-committed
@@ -1219,6 +1524,10 @@ namespace VDS.RDF.Storage
                                         }
                                     }, state);
                             }
+                            else
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
+                            }
                         }
                         catch (WebException webEx)
                         {
@@ -1266,6 +1575,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(String query, AsyncStorageCallback callback, Object state)
         {
             Graph g = new Graph();
@@ -1283,6 +1598,14 @@ namespace VDS.RDF.Storage
             }, state);
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
         {
             try
@@ -1621,7 +1944,11 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-
+        /// <summary>
+        /// Begins a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Begin(AsyncStorageCallback callback, object state)
         {
             try
@@ -1708,14 +2035,19 @@ namespace VDS.RDF.Storage
 #if DEBUG
                 if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
 #endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("A HTTP Error occurred while trying to start a Transaction, see inner exception for details")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("A HTTP Error occurred while trying to start a Transaction, see inner exception for details", webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details")), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details", ex)), state);
             }
         }
 
+        /// <summary>
+        /// Commits a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Commit(AsyncStorageCallback callback, object state)
         {
             try
@@ -1751,6 +2083,7 @@ namespace VDS.RDF.Storage
 #endif
                                 response.Close();
                                 this._activeTrans = null;
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit), state);
                             }
                             catch (WebException webEx)
                             {
@@ -1795,6 +2128,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Rolls back a transaction asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Rollback(AsyncStorageCallback callback, object state)
         {
             try
@@ -1818,6 +2156,7 @@ namespace VDS.RDF.Storage
                                     HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
                                     response.Close();
                                     this._activeTrans = null;
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback), state);
                                 }
                                 catch (WebException webEx)
                                 {

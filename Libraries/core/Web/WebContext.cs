@@ -56,6 +56,10 @@ namespace VDS.RDF.Web
         private IHttpProtocolRequest _request;
         private IHttpProtocolResponse _response;
 
+        /// <summary>
+        /// Creates a new Web Context
+        /// </summary>
+        /// <param name="context">HTTP Context</param>
         public WebContext(HttpContext context)
         {
             this._context = context;
@@ -63,6 +67,9 @@ namespace VDS.RDF.Web
             this._response = new WebResponse(context);
         }
 
+        /// <summary>
+        /// Gets the HTTP Request
+        /// </summary>
         public IHttpProtocolRequest Request
         {
             get
@@ -71,6 +78,9 @@ namespace VDS.RDF.Web
             }
         }
 
+        /// <summary>
+        /// Gets the HTTP Response
+        /// </summary>
         public IHttpProtocolResponse Response
         {
             get
@@ -79,6 +89,9 @@ namespace VDS.RDF.Web
             }
         }
 
+        /// <summary>
+        /// Gets the User
+        /// </summary>
         public IPrincipal User
         {
             get
@@ -88,6 +101,9 @@ namespace VDS.RDF.Web
         }
     }
 
+    /// <summary>
+    /// Implementation of <see cref="IHttpProtocolRequest"/> which wraps the standard System.Web <see cref="HttpRequest"/>
+    /// </summary>
     class WebRequest
         : IHttpProtocolRequest
     {
@@ -171,6 +187,9 @@ namespace VDS.RDF.Web
         }
     }
 
+    /// <summary>
+    /// Implementation of <see cref="IHttpProtocolResponse"/> which wraps the standard System.Web <see cref="HttpResponse"/>
+    /// </summary>
     class WebResponse
         : IHttpProtocolResponse
     {

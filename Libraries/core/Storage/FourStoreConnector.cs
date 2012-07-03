@@ -659,10 +659,7 @@ namespace VDS.RDF.Storage
 
                 //Write the Graph as Turtle to the Request Stream
                 CompressingTurtleWriter writer = new CompressingTurtleWriter(WriterCompressionLevel.High);
-                this.SaveGraphAsync(request, writer, g, (sender, args, st) =>
-                    {
-                        callback(this, args, state);
-                    }, state);
+                this.SaveGraphAsync(request, writer, g, callback, state);
         }
 
         /// <summary>
@@ -770,6 +767,11 @@ namespace VDS.RDF.Storage
                         {
                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
                         }, state);
+                    }
+                    else
+                    {
+                        //Nothing to do
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
                     }
                 }
                 catch (WebException webEx)
@@ -938,6 +940,7 @@ namespace VDS.RDF.Storage
                                     rdfreader.Load(rdfHandler, data);
                                     response.Close();
                                 }
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
                             }
                             catch (WebException webEx)
                             {
@@ -1016,21 +1019,21 @@ namespace VDS.RDF.Storage
                         try
                         {
                             String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
                         }
                         catch
                         {
-                            throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
                         }
                     }
                     else
                     {
-                        throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
                     }
                 }
                 else
                 {
-                    throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
                 }
             }
         }

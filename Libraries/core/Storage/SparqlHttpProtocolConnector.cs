@@ -569,6 +569,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="g">Graph to load into</param>
         /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IGraph g, String graphUri, AsyncStorageCallback callback, Object state)
         {
             Uri origUri = g.BaseUri;
@@ -588,6 +590,8 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, String graphUri, AsyncStorageCallback callback, Object state)
         {
             String retrievalUri = this._serviceUri;
@@ -611,6 +615,8 @@ namespace VDS.RDF.Storage
         /// Saves a Graph to the Protocol Server
         /// </summary>
         /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, Object state)
         {
             String saveUri = this._serviceUri;
@@ -647,13 +653,14 @@ namespace VDS.RDF.Storage
             }
         }
 
-
         /// <summary>
         /// Updates a Graph on the Protocol Server
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         /// <remarks>
         /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
         /// </remarks>
@@ -708,11 +715,22 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Lists the Graphs in the Store asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void ListGraphs(AsyncStorageCallback callback, Object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, new NotSupportedException("SPARQL HTTP Protocol Connector does not support listing graphs")), state);
         }
-
+        
+        /// <summary>
+        /// Deletes a Graph from the store asynchronously
+        /// </summary>
+        /// <param name="graphUri">URI of the graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(String graphUri, AsyncStorageCallback callback, Object state)
         {
             String deleteUri = this._serviceUri;

@@ -826,16 +826,6 @@ namespace VDS.RDF.Storage
 
 #endif
 
-        public void Query(String query, AsyncStorageCallback callback, Object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String query, AsyncStorageCallback callback, Object state)
-        {
-            throw new NotImplementedException();
-        }
-
         #endregion
 
         #region Helper Methods

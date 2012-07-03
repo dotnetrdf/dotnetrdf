@@ -698,7 +698,12 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-
+        /// <summary>
+        /// Saves a Graph to the Store asynchronously
+        /// </summary>
+        /// <param name="g">Graph to save</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
             if (this._updateService == null) throw new RdfStorageException("Unable to save a Graph to the Joseki store - the connector was created in read-only mode");
@@ -794,6 +799,13 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Loads a Graph from the Store asynchronously
+        /// </summary>
+        /// <param name="handler">Handler to load with</param>
+        /// <param name="graphUri">URI of the Graph to load</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
             HttpWebRequest request;
@@ -811,6 +823,14 @@ namespace VDS.RDF.Storage
             this.LoadGraphAsync(request, handler, callback, state);
         }
 
+        /// <summary>
+        /// Updates a Graph in the Store asychronously
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             if (this._updateService == null) 
@@ -871,6 +891,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Graph from the Store
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to delete</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
             if (String.IsNullOrEmpty(graphUri))
@@ -886,6 +912,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Updates the store asynchronously
+        /// </summary>
+        /// <param name="sparqlUpdates">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Update(string sparqlUpdates, AsyncStorageCallback callback, object state)
         {
             if (this._updateService == null)
@@ -985,6 +1017,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             Graph g = new Graph();
@@ -1002,6 +1040,14 @@ namespace VDS.RDF.Storage
             }, state);
         }
 
+        /// <summary>
+        /// Queries the store asynchronously
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, string sparqlQuery, AsyncStorageCallback callback, object state)
         {
             try

@@ -57,7 +57,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class FusekiConnector 
-        : SparqlHttpProtocolConnector, IConfigurationSerializable
+        : SparqlHttpProtocolConnector, IAsyncUpdateableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IUpdateableStorage, IUpdateableGenericIOManager
 #endif
@@ -404,7 +404,7 @@ namespace VDS.RDF.Storage
         /// <summary>
         /// Executes SPARQL Updates against the Fuseki store
         /// </summary>
-        /// <param name="sparqlUpdate"></param>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
         public void Update(String sparqlUpdate)
         {
             try
@@ -451,6 +451,357 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+
+        /// <summary>
+        /// Makes a SPARQL Query against the underlying store
+        /// </summary>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query</returns>
+        public void Query(string sparqlQuery, AsyncStorageCallback callback, object state)
+        {
+            Graph g = new Graph();
+            SparqlResultSet results = new SparqlResultSet();
+            this.Query(new GraphHandler(g), new ResultSetHandler(results), sparqlQuery, (sender, args, st) =>
+            {
+                if (results.ResultsType != SparqlResultsType.Unknown)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, results, args.Error), state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQuery, sparqlQuery, g, args.Error), state);
+                }
+            }, state);
+        }
+
+        /// <summary>
+        /// Executes a SPARQL Query on the Fuseki store processing the results using an appropriate handler from those provided
+        /// </summary>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
+        public void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request, always use POST for async for simplicity
+                String queryUri = this._queryUri;
+
+                request = (HttpWebRequest)WebRequest.Create(queryUri);
+                request.Method = "POST";
+                request.Accept = MimeTypesHelper.HttpRdfOrSparqlAcceptHeader;
+                request = base.GetProxiedRequest(request);
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("query=");
+                postData.Append(Uri.EscapeDataString(sparqlQuery));
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            StreamWriter writer = new StreamWriter(request.GetRequestStream());
+                            writer.Write(postData);
+                            writer.Close();
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            //Get the Response and process based on the Content Type
+                            request.BeginGetResponse(r2 =>
+                            {
+                                try
+                                {
+                                    HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        Tools.HttpDebugResponse(response);
+                                    }
+#endif
+
+                                    StreamReader data = new StreamReader(response.GetResponseStream());
+                                    String ctype = response.ContentType;
+                                    try
+                                    {
+                                        //Is the Content Type referring to a Sparql Result Set format?
+                                        ISparqlResultsReader resreader = MimeTypesHelper.GetSparqlParser(ctype, true);
+                                        resreader.Load(resultsHandler, data);
+                                        response.Close();
+                                    }
+                                    catch (RdfParserSelectionException)
+                                    {
+                                        //If we get a Parse exception then the Content Type isn't valid for a Sparql Result Set
+
+                                        //Is the Content Type referring to a RDF format?
+                                        IRdfReader rdfreader = MimeTypesHelper.GetParser(ctype);
+                                        rdfreader.Load(rdfHandler, data);
+                                        response.Close();
+                                    }
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler), state);
+                                }
+                                catch (WebException webEx)
+                                {
+#if DEBUG
+                                    if (Options.HttpDebugging)
+                                    {
+                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                    }
+#endif
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+                                }
+                                catch (Exception ex)
+                                {
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+                                }
+                            }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+#endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+            }
+        }
+
+        /// <summary>
+        /// Executes SPARQL Updates against the Fuseki store
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public void Update(String sparqlUpdate, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                //Make the SPARQL Update Request
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(this._updateUri);
+                request.Method = "POST";
+                request.ContentType = "application/sparql-update";
+                request = base.GetProxiedRequest(request);
+
+                request.BeginGetRequestStream(r =>
+                    {
+                        try
+                        {
+                            Stream stream = request.EndGetRequestStream(r);
+                            StreamWriter writer = new StreamWriter(stream);
+                            writer.Write(sparqlUpdate);
+                            writer.Close();
+
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                Tools.HttpDebugRequest(request);
+                            }
+#endif
+
+                            request.BeginGetResponse(r2 =>
+                                {
+                                    try
+                                    {
+                                        HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            Tools.HttpDebugResponse(response);
+                                        }
+#endif
+                                        //If we get here without erroring then the request was OK
+                                        response.Close();
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
+                                    }
+                                    catch (WebException webEx)
+                                    {
+#if DEBUG
+                                        if (Options.HttpDebugging)
+                                        {
+                                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                                        }
+#endif
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+                                    }
+                                }, state);
+                        }
+                        catch (WebException webEx)
+                        {
+#if DEBUG
+                            if (Options.HttpDebugging)
+                            {
+                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                            }
+#endif
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+            }
+        }
+
+        /// <summary>
+        /// Lists the graph sin the Store asynchronously
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public override void ListGraphs(AsyncStorageCallback callback, object state)
+        {
+            //Use ListUrisHandler and make an async query to list the graphs, when that returns we invoke the correct callback
+            ListUrisHandler handler = new ListUrisHandler("g");
+            ((IAsyncQueryableStorage)this).Query(null, handler, "SELECT DISTINCT ?g WHERE { GRAPH ?g { ?s ?p ?o } }", (sender, args, st) =>
+            {
+                if (args.WasSuccessful)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, handler.Uris), state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListGraphs, args.Error), state);
+                }
+            }, state);
+        }
+
+        /// <summary>
+        /// Updates a Graph on the Protocol Server
+        /// </summary>
+        /// <param name="graphUri">URI of the Graph to update</param>
+        /// <param name="additions">Triples to be added</param>
+        /// <param name="removals">Triples to be removed</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
+        /// </remarks>
+        public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                String graph = (graphUri != null && !graphUri.Equals(String.Empty)) ? "GRAPH <" + this._formatter.FormatUri(graphUri) + "> {" : String.Empty;
+                StringBuilder update = new StringBuilder();
+
+                if (additions != null)
+                {
+                    if (additions.Any())
+                    {
+                        update.AppendLine("INSERT DATA {");
+                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+
+                        foreach (Triple t in additions)
+                        {
+                            update.AppendLine(this._formatter.Format(t));
+                        }
+
+                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        update.AppendLine("}");
+                    }
+                }
+
+                if (removals != null)
+                {
+                    if (removals.Any())
+                    {
+                        if (update.Length > 0) update.AppendLine(";");
+
+                        update.AppendLine("DELETE DATA {");
+                        if (!graph.Equals(String.Empty)) update.AppendLine(graph);
+
+                        foreach (Triple t in removals)
+                        {
+                            update.AppendLine(this._formatter.Format(t));
+                        }
+
+                        if (!graph.Equals(String.Empty)) update.AppendLine("}");
+                        update.AppendLine("}");
+                    }
+                }
+
+                if (update.Length > 0)
+                {
+                    this.Update(update.ToString(), (sender, args, st) =>
+                        {
+                            if (args.WasSuccessful)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                            }
+                            else
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                            }
+                        }, state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                }
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
+            }
+        }
 
         /// <summary>
         /// Gets a String which gives details of the Connection

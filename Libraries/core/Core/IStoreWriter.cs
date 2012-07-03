@@ -33,7 +33,6 @@ terms.
 
 */
 
-
 using System;
 using System.IO;
 using VDS.RDF.Storage.Params;
@@ -54,8 +53,18 @@ namespace VDS.RDF
         [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
         void Save(ITripleStore store, IStoreParams parameters);
 
+        /// <summary>
+        /// Method for saving data to a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store</param>
+        /// <param name="filename">File to save to</param>
         void Save(ITripleStore store, String filename);
 
+        /// <summary>
+        /// Method for saving data to a Triple Store
+        /// </summary>
+        /// <param name="store">Triple Store</param>
+        /// <param name="output">Write to save to</param>
         void Save(ITripleStore store, TextWriter output);
 
         /// <summary>

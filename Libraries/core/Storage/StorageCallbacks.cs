@@ -90,53 +90,115 @@ namespace VDS.RDF.Storage
     /// </remarks>
     public sealed class AsyncStorageCallbackArgs
     {
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation)
         {
             this.Operation = operation;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="ex">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, Exception ex)
             : this(operation)
         {
             this.Error = ex;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="g">Graph to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IGraph g)
             : this(operation, g, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="g">Graph to return</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IGraph g, Exception e)
             : this(operation, e)
         {
             this.Graph = g;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="graphUri">URI of the affected Graph</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, Uri graphUri)
             : this(operation, graphUri, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="graphUri">URI of the affected Graph</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, Uri graphUri, Exception e)
             : this(operation, e)
         {
             this.GraphUri = graphUri;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="graphUris">Enumeration of Graph URIs</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<Uri> graphUris)
             : this(operation)
         {
             this.GraphUris = graphUris;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="handler">Handler to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IRdfHandler handler)
             : this(operation, handler, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="handler">Handler to return</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IRdfHandler handler, Exception e)
             : this(operation, e)
         {
             this.RdfHandler = handler;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler to return</param>
+        /// <param name="resultsHandler">Results Handler to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler)
             : this(operation, query, rdfHandler, resultsHandler, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="rdfHandler">RDF Handler</param>
+        /// <param name="resultsHandler">Results Handler</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, Exception e)
             : this(operation, e)
         {
@@ -145,6 +207,12 @@ namespace VDS.RDF.Storage
             this.ResultsHandler = resultsHandler;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="queryResults">Results to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults)
             : this(operation, queryResults as IGraph)
         {
@@ -152,6 +220,13 @@ namespace VDS.RDF.Storage
             this.QueryResults = queryResults;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="query">SPARQL Query</param>
+        /// <param name="queryResults">Results to return</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String query, Object queryResults, Exception e)
             : this(operation, e)
         {
@@ -159,30 +234,63 @@ namespace VDS.RDF.Storage
             this.QueryResults = queryResults;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="data">Data to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data)
             : this(operation, data, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="data">Data to return</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data, Exception e)
             : this(operation, e)
         {
             this.SetData(data);
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="stores">Enumeration of Store IDs</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<String> stores)
             : this(operation, stores, null) { }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="stores">Enumeration of Store IDs</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, IEnumerable<String> stores, Exception e)
             : this(operation, e)
         {
             this.StoreIDs = stores;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="provider">Storage Provider</param>
+        /// <param name="e">Error that occurred</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IAsyncStorageProvider provider, Exception e)
             : this(operation, storeID, e)
         {
             this.StorageProvider = provider;
         }
 
+        /// <summary>
+        /// Sets the Data to the appropriate property based on the operation type
+        /// </summary>
+        /// <param name="data">Data</param>
         private void SetData(String data)
         {
             switch (this.Operation)

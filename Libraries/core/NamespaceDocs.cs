@@ -67,30 +67,31 @@ namespace VDS.RDF
     ///     <li>4store</li>
     ///     <li>Fuseki</li>
     ///     <li>Joseki</li>
-    ///     <li>Any Sesame HTTP Protocol compliant store</li>
+    ///     <li>Any Sesame HTTP Protocol compliant store e.g. Sesame, OWLIM</li>
     ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
     ///     <li>Stardog</li>
     ///     <li>Talis Platform</li>
     ///     <li>Virtuoso</li>
     /// </ul>
     /// </para>
-    /// <h3>SQL Storage</h3>
+    /// <h4>SQL Storage</h4>
     /// <para>
-    /// Prior to the 0.5.0 release we provided an SQL backend henceforth referred to as the Legacy format, this has been officially deprecated for some time and was only ever recommended for small scale prototyping and testing.
+    /// <strong>Warning:</strong> The SQL Storage feature is being deprecated in future releases, please transition to one of the aforementioned 3rd party triple stores which are far more performant and all use the same <see cref="IStorageProvider">IStorageProvider</see> interface.  Do not use this support for any new development
     /// </para>
     /// <para>
     /// From 0.5.0 onwards the release includes a new SQL backend called the ADO Store provided in a separate library <strong>dotNetRDF.Data.Sql.dll</strong> - for information on how to migrate from the old format to the new format please see the <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">Migration guide</a>
     /// </para>
     /// <h3>ASP.Net Integration</h3>
     /// <para>
-    /// For those building ASP.Net based websites the <see cref="VDS.RDF.Web">Web</see> namespace is dedicated to providing classes for integrating RDF into ASP.Net applications.  If you've used dotNetRDF for ASP.Net applications prior to Version 0.3.0 please be aware that most of the existing classes were deprecated in favour of new classes which take advantage of the new Configuration API.  From the 0.4.0 release onwards the old handlers are completely removed from the library
+    /// For those building ASP.Net based websites the <see cref="VDS.RDF.Web">Web</see> namespace is dedicated to providing classes for integrating RDF into ASP.Net applications.
     /// </para>
+    /// <h3>Ontology API</h3>
     /// <para>
-    /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF which was introduced in the 0.2.2 release
+    /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs
     /// </para>
-    /// <h4>Configuration API</h4>
+    /// <h3>Configuration API</h4>
     /// <para>
-    /// From the 0.3.0 release we provide <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system has been used as part of a complete refresh of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
+    /// We provide a <see cref="Configuration">Configuration</see> API which provides for encoding configuration in RDF Graphs.  This configuration system is used extensively as part of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.  This is primarily intended as an easy way to help deploy configurations for ASP.Net applications though you can make use of the API to describe the configuration of various types of objects in other applications, for example we use it in our Store Manager utility to store connection details.
     /// </para>
     /// <h3>Notes</h3>
     /// <para>
@@ -100,21 +101,28 @@ namespace VDS.RDF
     /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
     /// </para>
     /// <h4>Breaking Changes</h4>
+    /// <h5>0.7.x vs 0.6.x API</h5>
+    /// <para>
+    /// The 0.7.x release makes some substantial changes to the API though we have tried to make these backwards compatible as far as possible.  The key breaking changes are the removal of several obsoleted APIs around selection and node collections, rather than providing an explicit node collection graphs now simply allow you to obtain an enumerable over the Nodes of the Graph.
+    /// </para>
+    /// <para>
+    /// The more noticeable but mostly backwards compatible change is the reorganisation of the <see cref="VDS.RDF.Storage"/> namespace, the interfaces in that namespace have been renamed to have more descriptive and consistent naming and we have introduced new interfaces for asynchronous access to storage.  The old interfaces remain as marker interfaces which inherit from the new interfaces so existing code will not need to be changed but will result in compiler warnings reminding you to upgrade to the new interface names.  The following table summarizes the old and new interface names:
+    /// </para>
+    /// <table>
+    ///     <tr><th>Old Name</th><th>New Name</th></tr>
+    ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
+    ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
+    ///     <tr><td><see cref="IUpdateableGenericIOManager"/></td><td><see cref="IUpdateableStorage"/></td></tr>
+    ///     <tr><td><see cref="IMultiStoreGenericIOManager"/></td><td><see cref="IStorageServer"/></td></tr>
+    /// </table>
     /// <h5>0.6.x vs 0.5.x API</h5>
     /// <para>
     /// The 0.6.x release has limited breaking changes and these are primarily in the internals of the SPARQL engine and so should only affect advanced users of the API.  Specifically the <see cref="VDS.RDF.Query.Dataset.ISparqlDataset"/> interface was updated and the <see cref="VDS.RDF.Query.Expressions.ISparqlExpression"/> interface refactored in terms of the new <see cref="IValuedNode"/> interface.  A variety of methods and classes previously marked obsolete are not either removed or marked obsolete unusable.
     /// </para>
-    /// <h5>0.5.x vs 0.4.x API</h5>
-    /// <para>
-    /// The 0.5.x release has limited breaking changes vs the 0.4.x API and these are mostly just in terms of additional methods so only those who have implemented custom implementations of a few interfaces will be affected by this.  The only serious breaking change is a major refactor of the <see cref="VDS.RDF.Query.Describe.ISparqlDescribe">ISparqlDescribe</see> interface but this should affect relatively few users.
-    /// </para>
-    /// <para>
-    /// The other major change from the 0.4.x API is that Virtuoso support is now in a separate library <strong>dotNetRDF.Data.Virtuoso.dll</strong> which helps reduce dependencies in the Core library.  Also our new SQL backend referred to as the ADO Store can be found in a new separate library <strong>dotNetRDF.Data.Sql.dll</strong>
-    /// </para>
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>
     /// <para>
-    /// From the 0.4.1 release onwards there is no longer a separate build for Mono, changes in our code mean that dotNetRDF can now run directly on Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
+    /// There is no separate build for Mono since dotNetRDF can run directly under Mono.  Note that there may still be some features of .Net we use that Mono does not fully support, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Mono%20Issues">Mono Issues</a> page for more details.  We recommend Mono 2.10 or higher though the library should run on recent 2.6/2.8 releases.
     /// </para>
     /// <h5>Client Profile Build</h5>
     /// <para>
@@ -125,7 +133,8 @@ namespace VDS.RDF
     /// The Silverlight and Windows Phone 7 builds of dotNetRDF (<em>dotNetRDF.Silverlight.dll</em> and <em>dotNetRDF.WindowsPhone.dll</em>) are experimental builds that receive limited internal testing so please be aware that these are not as stable as the standard .Net builds.  These build runs on Silverlight 4/Windows Phone 7 and omits the following features since they can't be supported on these platforms:
     /// </para>
     /// <ul>
-    ///     <li>Most of the <see cref="VDS.RDF.Storage">Storage</see> namespace and the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
+    ///     <li>Most of the <see cref="VDS.RDF.Web">Web</see> namespaces</li>
+    ///     <li>Does not include parts of the <see cref="VDS.RDF.Storage">Storage</see> namespace that would require synchronous HTTP</li>
     ///     <li>No String normalization support</li>
     ///     <li>No <see cref="VDS.RDF.Parsing.UriLoader">UriLoader</see> caching support</li>
     ///     <li>No multi-threaded support where <see cref="System.Threading.ReaderWriteLockSlim">ReaderWriterLockSlim</see> is used</li>
@@ -147,16 +156,7 @@ namespace VDS.RDF.Configuration
     /// Namespace for Configuration Classes which are used for dynamic loading of Configuration serialized as RDF Graphs.
     /// </para>
     /// <para>
-    /// As of the 0.3.0 release we introduced this new API which provides for encoding configuration in RDF Graphs.  This configuration system has been used as part of a complete refresh of the ASP.Net support as it allows for much more expressive and flexible configurations than were previously possible.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.
-    /// </para>
-    /// <para>
-    /// The 0.4.0 release adds some new features:
-    /// <ul>
-    ///     <li>dnr:SparqlDataset and dnr:usingDataset for configuring <see cref="VDS.RDF.Query.Datasets.ISparqlDataset">ISparqlDataset</see> instances</li>
-    ///     <li>dnr:enableCors for enabling/disabling CORS on HTTP Handlers</li>
-    ///     <li>dnr:serviceDescription for configuring SPARQL Service Description Graphs for HTTP Handlers</li>
-    ///     <li>dnr:fromEmbedded for loading data from embedded resources</li>
-    /// </ul>
+    /// This API which provides for encoding dotNetRDF centric configuration in RDF Graphs though it can be extended to serialize and deserialize arbitrary objects if desired.  This configuration API is used extensively with our ASP.Net support as it allows for highly expressive and flexible configurations.  See the <a href="http://www.dotnetrdf.org/content.asp?pageID=Configuration%20API">documentation</a> on the main website for many detailed examples.
     /// </para>
     /// </summary>
     class NamespaceDoc
