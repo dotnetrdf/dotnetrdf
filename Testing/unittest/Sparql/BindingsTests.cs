@@ -15,48 +15,6 @@ namespace VDS.RDF.Test.Sparql
         private SparqlQueryParser _parser = new SparqlQueryParser();
 
         [TestMethod]
-        public void SparqlBindingsEmpty()
-        {
-            SparqlParameterizedString query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
-
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car } BINDINGS {}";
-
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
-        }
-
-        [TestMethod]
-        public void SparqlBindingsEmpty2()
-        {
-            SparqlParameterizedString query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
-
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car } BINDINGS { () }";
-
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
-        }
-
-        [TestMethod]
-        public void SparqlBindingsEmpty3()
-        {
-            SparqlParameterizedString query = new SparqlParameterizedString();
-            query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
-            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
-
-            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
-            bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car } BINDINGS { () () }";
-
-            this.TestBindings(this.GetTestData(), bindingsQuery, query);
-        }
-
-        [TestMethod]
         public void SparqlBindingsSimple()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();
@@ -65,10 +23,38 @@ namespace VDS.RDF.Test.Sparql
 
             SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
             bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } BINDINGS ?type { ( ex:Car ) }";
+            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car }";
 
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }
+
+        [TestMethod]
+        public void SparqlBindingsSimple2()
+        {
+            SparqlParameterizedString query = new SparqlParameterizedString();
+            query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
+
+            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
+            bindingsQuery.Namespaces = query.Namespaces;
+            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?type { ex:Car ex:Plane }";
+
+            this.TestBindings(this.GetTestData(), bindingsQuery, query);
+        }
+        [TestMethod]
+        public void SparqlBindingsSimple3()
+        {
+            SparqlParameterizedString query = new SparqlParameterizedString();
+            query.Namespaces.AddNamespace("ex", new Uri("http://example.org/vehicles/"));
+            query.CommandText = "SELECT ?subj WHERE { ?subj a ex:Car }";
+
+            SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
+            bindingsQuery.Namespaces = query.Namespaces;
+            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?subj ?type { (ex:FordFiesta ex:Car) }";
+
+            this.TestBindings(this.GetTestData(), bindingsQuery, query);
+        }
+
 
         private void TestBindings(ISparqlDataset data, SparqlParameterizedString queryWithBindings, SparqlParameterizedString queryWithoutBindings)
         {

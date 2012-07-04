@@ -82,7 +82,7 @@ namespace VDS.RDF.Test.Sparql
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
-                this._data = new InMemoryDataset(store);
+                this._data = new InMemoryDataset(store, g.BaseUri);
             }
         }
 
@@ -204,7 +204,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
             OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             ISparqlAlgebra algebra = this.GetAlgebra(path);
@@ -222,7 +222,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
             OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode sportsCar = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/SportsCar"));
@@ -241,7 +241,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
             OneOrMore path = new OneOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             INode airVehicle = this._factory.CreateUriNode(new Uri("http://example.org/vehicles/AirVehicle"));
@@ -260,7 +260,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromFile("InferenceTest.ttl");
             store.Add(g);
-            InMemoryDataset dataset = new InMemoryDataset(store);
+            InMemoryDataset dataset = new InMemoryDataset(store, g.BaseUri);
 
             ZeroOrMore path = new ZeroOrMore(new Property(this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "subClassOf"))));
             ISparqlAlgebra algebra = this.GetAlgebra(path);

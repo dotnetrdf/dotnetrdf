@@ -471,24 +471,21 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlGraphClause5()
         {
-            String query = "SELECT * FROM <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
+            String query = "SELECT * FROM NAMED <http://example.org/named> WHERE { GRAPH <http://example.org/other> { ?s ?p ?o } }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 
-            InMemoryDataset dataset = new InMemoryDataset();
+            TripleStore store = new TripleStore();
             IGraph ex = new Graph();
             FileLoader.Load(ex, "InferenceTest.ttl");
             ex.BaseUri = new Uri("http://example.org/named");
-            dataset.AddGraph(ex);
+            store.Add(ex);
             IGraph ex2 = new Graph();
             ex2.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             ex2.BaseUri = new Uri("http://example.org/other");
-            dataset.AddGraph(ex2);
+            store.Add(ex2);
 
-            IGraph def = new Graph();
-            dataset.AddGraph(def);
-
-            dataset.SetDefaultGraph(def.BaseUri);
+            InMemoryDataset dataset = new InMemoryDataset(store);
 
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
             Object results = processor.ProcessQuery(q);

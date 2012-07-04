@@ -53,6 +53,7 @@
   <ItemGroup>
     <Content Include="App_Data\sp2b.ttl" />
     <Content Include="App_Data\sp2b10k.nt" />
+    <Content Include="App_Data\sp2b250k.nt" />
     <Content Include="App_Data\sp2b50k.nt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

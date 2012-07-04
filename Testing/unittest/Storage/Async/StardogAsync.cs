@@ -11,6 +11,11 @@ namespace VDS.RDF.Test.Storage.Async
     public class StardogAsync
         : BaseAsyncTests
     {
+        public StardogAsync()
+        {
+            this.WaitDelay = 45000;
+        }
+
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
             return new StardogConnector(StardogTests.StardogTestUri, StardogTests.StardogTestKB, StardogTests.StardogUser, StardogTests.StardogPassword);

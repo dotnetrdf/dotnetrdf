@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlQNameUnescapingDawg1()
         {
-            this.TestQNameUnescaping("og:audio\\:title", "og:audio:title");
+            this.TestQNameUnescaping("og:audio:title", "og:audio:title");
         }
     }
 }

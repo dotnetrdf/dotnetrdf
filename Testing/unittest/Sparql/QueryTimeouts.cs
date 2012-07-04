@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
@@ -14,6 +15,18 @@ namespace VDS.RDF.Test.Sparql
     {
         private long[] _timeouts = new long[] { 50, 100, 250, 500, 1000 };
         private SparqlQueryParser _parser = new SparqlQueryParser();
+
+        private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
+        {
+            if (store.Graphs.Count == 1)
+            {
+                return new InMemoryDataset(store, store.Graphs.First().BaseUri);
+            }
+            else
+            {
+                return new InMemoryDataset(store);
+            }
+        }
 
         private void TestProductTimeout(IGraph data, String query, bool useGlobal, int expectedResults)
         {
@@ -38,7 +51,7 @@ namespace VDS.RDF.Test.Sparql
                 store.Add(data);
 
                 SparqlQuery q = this._parser.ParseFromString(query);
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
 
                 SparqlFormatter formatter = new SparqlFormatter();
                 Console.WriteLine("Query:");
@@ -128,7 +141,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
                 processor.ProcessQuery(q);
@@ -234,7 +247,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
                 processor.ProcessQuery(q);
@@ -260,7 +273,7 @@ namespace VDS.RDF.Test.Sparql
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             store.Add(g);
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             try
             {
                 processor.ProcessQuery(q);
@@ -292,7 +305,7 @@ namespace VDS.RDF.Test.Sparql
                 TripleStore store = new TripleStore();
                 store.Add(g);
 
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {
@@ -329,7 +342,7 @@ namespace VDS.RDF.Test.Sparql
                 TripleStore store = new TripleStore();
                 store.Add(g);
 
-                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+                LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
                 Object results = processor.ProcessQuery(q);
                 if (results is SparqlResultSet)
                 {

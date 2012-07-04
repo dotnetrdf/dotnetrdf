@@ -206,7 +206,7 @@ namespace VDS.RDF.Test.Writing.Serialization
             this.TestGraphSerializationDataContract(g);
         }
 
-        [TestMethod, ExpectedException(typeof(JsonSerializationException))]
+        [TestMethod]
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();

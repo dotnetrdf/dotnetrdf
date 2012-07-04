@@ -19,6 +19,8 @@ namespace VDS.RDF.Test.Storage
         private const String DeleteGraphUri = "http://localhost/storage/async/DeleteGraph";
         private const String QueryGraphUri = "http://localhost/storage/async/QueryGraph";
 
+        protected int WaitDelay = 15000;
+
         /// <summary>
         /// Method to be implemented by derived classes to obtain the storage provider to test
         /// </summary>
@@ -51,9 +53,9 @@ namespace VDS.RDF.Test.Storage
                     }, null);
 
                 //Wait for response, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
@@ -68,9 +70,9 @@ namespace VDS.RDF.Test.Storage
                         }, null);
 
                     //Wait for response, max 15s
-                    signal.WaitOne(15000);
+                    signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in 15 seconds");
+                    if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async LoadGraph() worked OK, checking for graph equality...");
@@ -87,7 +89,7 @@ namespace VDS.RDF.Test.Storage
                 {
                     this.Fail(provider, "SaveGraph() returned error - " + resArgs.Error.Message, resArgs.Error);
                 }
-            } 
+            }
             finally 
             {
                 provider.Dispose();
@@ -114,9 +116,9 @@ namespace VDS.RDF.Test.Storage
                 }, null);
 
                 //Wait for response, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async DeleteGraph() to remove newly added graph...");
@@ -129,9 +131,9 @@ namespace VDS.RDF.Test.Storage
                         }, null);
 
                     //Wait for response, max 15s
-                    signal.WaitOne(15000);
+                    signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "DeleteGraph() did not return in 15 seconds");
+                    if (resArgs == null) this.Fail(provider, "DeleteGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async DeleteGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
@@ -146,9 +148,9 @@ namespace VDS.RDF.Test.Storage
                         }, null);
 
                         //Wait for response, max 15s
-                        signal.WaitOne(15000);
+                        signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in 15 seconds");
+                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for empty graph");
@@ -195,9 +197,9 @@ namespace VDS.RDF.Test.Storage
                 }, null);
 
                 //Wait for response, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to remove some triples...");
@@ -211,9 +213,9 @@ namespace VDS.RDF.Test.Storage
                     }, null);
 
                     //Wait for response, max 15s
-                    signal.WaitOne(15000);
+                    signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in 15 seconds");
+                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
@@ -228,9 +230,9 @@ namespace VDS.RDF.Test.Storage
                         }, null);
 
                         //Wait for response, max 15s
-                        signal.WaitOne(15000);
+                        signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in 15 seconds");
+                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples removed...");
@@ -280,13 +282,13 @@ namespace VDS.RDF.Test.Storage
                 }, null);
 
                 //Wait for response, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async UpdateGraph() to add some triples...");
-                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("urn:test")))).ToList();
+                    List<Triple> ts = g.GetTriplesWithPredicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Select(t => new Triple(t.Subject, t.Predicate, g.CreateUriNode(UriFactory.Create("http://example.org/Test")))).ToList();
                     resArgs = null;
                     signal.Reset();
                     provider.UpdateGraph(AddTripleUri, ts, null, (_, args, state) =>
@@ -296,9 +298,9 @@ namespace VDS.RDF.Test.Storage
                     }, null);
 
                     //Wait for response, max 15s
-                    signal.WaitOne(15000);
+                    signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in 15 seconds");
+                    if (resArgs == null) this.Fail(provider, "UpdateGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async UpdateGraph() worked OK, trying async LoadGraph() to confirm operation worked as expected");
@@ -313,9 +315,9 @@ namespace VDS.RDF.Test.Storage
                         }, null);
 
                         //Wait for response, max 15s
-                        signal.WaitOne(15000);
+                        signal.WaitOne(WaitDelay);
 
-                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in 15 seconds");
+                        if (resArgs == null) this.Fail(provider, "LoadGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                         if (resArgs.WasSuccessful)
                         {
                             Console.WriteLine("Async LoadGraph() worked OK, checking for triples added...");
@@ -364,7 +366,7 @@ namespace VDS.RDF.Test.Storage
                     }, null);
 
                 //Wait, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
                 if (resArgs == null) this.Fail(provider, "ListGraphs() failed to return in 15s");
                 if (resArgs.WasSuccessful)
@@ -405,9 +407,9 @@ namespace VDS.RDF.Test.Storage
                 }, null);
 
                 //Wait for response, max 15s
-                signal.WaitOne(15000);
+                signal.WaitOne(WaitDelay);
 
-                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in 15 seconds");
+                if (resArgs == null) this.Fail(provider, "SaveGraph() did not return in " + (WaitDelay / 1000) + " seconds");
                 if (resArgs.WasSuccessful)
                 {
                     Console.WriteLine("Async SaveGraph() worked OK, trying async Query() to confirm operation worked as expected");
@@ -421,9 +423,9 @@ namespace VDS.RDF.Test.Storage
                     }, null);
 
                     //Wait for response, max 15s
-                    signal.WaitOne(15000);
+                    signal.WaitOne(WaitDelay);
 
-                    if (resArgs == null) this.Fail(provider, "Query() did not return in 15 seconds");
+                    if (resArgs == null) this.Fail(provider, "Query() did not return in " + (WaitDelay / 1000) + " seconds");
                     if (resArgs.WasSuccessful)
                     {
                         Console.WriteLine("Async Query() worked OK, checking results...");

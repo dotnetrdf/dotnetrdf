@@ -341,6 +341,11 @@ namespace VDS.RDF.Storage
                             Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                         }
 #endif
+                        if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler), state);
+                            return;
+                        }
                     }
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx)), state);
                 }
@@ -686,13 +691,14 @@ namespace VDS.RDF.Storage
 
         private void MakeRequestSequenceCallback(IAsyncResult r)
         {
+            AsyncStorageCallback callback = r.AsyncState as AsyncStorageCallback;
             try
             {
                 this._d.EndInvoke(r);
+                //callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown), null);
             }
             catch (Exception ex)
             {
-                AsyncStorageCallback callback = r.AsyncState as AsyncStorageCallback;
                 if (callback != null)
                 {
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.Unknown, new RdfStorageException("Unexpected error while making a sequence of asynchronous requests to the Store, see inner exception for details", ex)), null);

@@ -283,18 +283,18 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf* <http://example.org/vehicles/Vehicle>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf+ <http://example.org/vehicles/Vehicle>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf? <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2,4} <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2,} <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{,4} <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2} <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2,4} <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2,} <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{,4} <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2} <http://example.org/vehicles/Vehicle>}");
 
             //Simple Inverse Paths
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?type ^a ?entity}");
 
             //Sequence Paths
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf / rdfs:subClassOf <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2} / rdfs:subClassOf <http://example.org/vehicles/Vehicle>}");
-            testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf / rdfs:subClassOf{2} <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf{2} / rdfs:subClassOf <http://example.org/vehicles/Vehicle>}");
+            //testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass rdfs:subClassOf / rdfs:subClassOf{2} <http://example.org/vehicles/Vehicle>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass a / rdfs:subClassOf <http://example.org/vehicles/Plane>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?vehicle a ^ rdfs:subClassOf <http://example.org/vehicles/Plane>}");
             testQueries.Add(rdfsPrefix + "SELECT * WHERE {?subclass a / ^ rdfs:subClassOf <http://example.org/vehicles/Vehicle>}");
@@ -331,34 +331,6 @@ SELECT * WHERE {?s ?p ?o . ?s rdfs:label ?label}");
                     Console.WriteLine(queryEx.StackTrace);
                 }
             }
-        }
-
-        [TestMethod]
-        public void SparqlSimplePropertyPathDuplicates()
-        {
-            QueryableGraph g = new QueryableGraph();
-            FileLoader.Load(g, "property-path-duplicates.ttl");
-
-            String foafPrefix = "PREFIX foaf: <http://xmlns.com/foaf/0.1/>\n";
-            String twoStepQuery = foafPrefix + "SELECT ?x ?y WHERE { ?x foaf:knows ?z . ?z foaf:knows ?y }";
-            String pathQuery = foafPrefix + "SELECT ?x ?y WHERE {?x foaf:knows{2} ?y}";
-
-            Object resultsA = g.ExecuteQuery(twoStepQuery);
-            Object resultsB = g.ExecuteQuery(pathQuery);
-
-            Console.WriteLine("Two Step Query");
-            Console.WriteLine();
-            Console.WriteLine(twoStepQuery);
-            TestTools.ShowResults(resultsA);
-            Console.WriteLine();
-
-            Console.WriteLine("Equivalent Path Query");
-            Console.WriteLine();
-            Console.WriteLine(pathQuery);
-            TestTools.ShowResults(resultsB);
-            Console.WriteLine();
-
-            Assert.AreEqual(resultsA, resultsB, "Result Sets should have been equivalent");
         }
 
         [TestMethod]

@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 
@@ -28,7 +29,7 @@ namespace VDS.RDF.Test.Sparql
             }
             if (this._processor == null)
             {
-                this._processor = new LeviathanQueryProcessor(this._data);
+                this._processor = new LeviathanQueryProcessor(new InMemoryDataset(this._data, this._data.Graphs.First().BaseUri));
             }
         }
 

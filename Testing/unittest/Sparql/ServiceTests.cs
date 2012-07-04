@@ -33,7 +33,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlServiceUsingDBPediaAndBindings()
         {
-            String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } BINDINGS ?s { ( <http://dbpedia.org/resource/Southampton> ) ( <http://dbpedia.org/resource/Ilkeston> ) }";
+            String query = "SELECT * WHERE { SERVICE <http://dbpedia.org/sparql> { ?s a ?type } } VALUES ?s { <http://dbpedia.org/resource/Southampton> <http://dbpedia.org/resource/Ilkeston> }";
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
 

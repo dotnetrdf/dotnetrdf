@@ -41,7 +41,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
 
             CountHandler handler = new CountHandler();
-            UriLoader.Load(handler, new Uri("http://www.dotnetrdf.org/configuration#"));
+            EmbeddedResourceLoader.Load(handler, "VDS.RDF.Configuration.configuration.ttl");
 
             Assert.AreEqual(orig.Triples.Count, handler.Count);
         }

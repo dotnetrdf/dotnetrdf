@@ -124,7 +124,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlParsingPropertyPathsNegatedSetModified()
         {
-            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment){1,2} ?o }";
+            String query = "PREFIX rdfs: <" + NamespaceMapper.RDFS + "> SELECT * WHERE { ?s !(rdfs:label|rdfs:comment)+ ?o }";
             TestQuery(query);
         }
 

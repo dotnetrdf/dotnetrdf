@@ -16,7 +16,7 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class StardogTests : GenericUpdateProcessorTests
     {
-        public const String StardogTestUri = "http://localhost:2011/";
+        public const String StardogTestUri = "http://localhost:5822/";
         public const String StardogTestKB = "test";
         public const String StardogUser = "anonymous";
         public const String StardogPassword = "anonymous";

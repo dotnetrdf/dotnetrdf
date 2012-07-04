@@ -261,7 +261,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                //If the error is a 404 then return false
+                //If the error is a 404 then return
                 //Any other error caused the function to throw an error
                 if (webEx.Response != null)
                 {
@@ -271,6 +271,7 @@ namespace VDS.RDF.Storage
                         Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     }
 #endif
+                    if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound) return;
                 }
                 throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
             }
@@ -764,6 +765,10 @@ namespace VDS.RDF.Storage
                 if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
                 {
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx)), state);
+                }
+                else
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri()), state);
                 }
             }
         }

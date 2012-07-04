@@ -912,23 +912,6 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
-            //Have to do the delete first as that requires a separate transaction
-            if (g.BaseUri != null)
-            {
-                try
-                {
-                    this.DeleteGraph(g.BaseUri, (sender, args, st) =>
-                        {
-                            this.SaveGraphAsync(g, callback, state);
-                        }, state);
-                }
-                catch (Exception ex)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("Unable to save a Named Graph to the Store as this requires deleting any existing Named Graph with this name which failed, see inner exception for more detail", ex)), state);
-                    return;
-                }
-            }
-
             this.SaveGraphAsync(g, callback, state);
         }
 
@@ -945,7 +928,25 @@ namespace VDS.RDF.Storage
                     {
                         if (args.WasSuccessful)
                         {
-                            this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                            //Have to do the delete first as that requires a separate transaction
+                            if (g.BaseUri != null)
+                            {
+                                this.DeleteGraph(g.BaseUri, (_1, delArgs, _2) =>
+                                {
+                                    if (delArgs.WasSuccessful)
+                                    {
+                                        this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                                    }
+                                    else
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, new RdfStorageException("Unable to save a Named Graph to the Store as this requires deleted any existing Named Graph with this name which failed, see inner exception for more detail", delArgs.Error)), state);
+                                    }
+                                }, state);
+                            }
+                            else
+                            {
+                                this.SaveGraphAsync(this._activeTrans, true, g, callback, state);
+                            }
                         }
                         else
                         {
@@ -1214,6 +1215,7 @@ namespace VDS.RDF.Storage
                             Stream stream = request.EndGetRequestStream(r);
                             TripleStore store = new TripleStore();
                             Graph g = new Graph();
+                            g.BaseUri = graphUri.ToSafeUri();
                             g.Assert(removals);
                             store.Add(g);
                             this._writer.Save(store, new StreamWriter(stream));
@@ -1241,7 +1243,107 @@ namespace VDS.RDF.Storage
                                     if (additions != null && additions.Any())
                                     {
                                         //Now we need to do additions
-                                        
+                                        request = this.CreateRequest(this._kb + "/" + tID + "/add", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                                        request.ContentType = MimeTypesHelper.TriG[0];
+
+                                        request.BeginGetRequestStream(r3 =>
+                                        {
+                                            try
+                                            {
+                                                //Save the Data as TriG to the Request Stream
+                                                stream = request.EndGetRequestStream(r3);
+                                                store = new TripleStore();
+                                                g = new Graph();
+                                                g.BaseUri = graphUri.ToSafeUri();
+                                                g.Assert(additions);
+                                                store.Add(g);
+                                                this._writer.Save(store, new StreamWriter(stream));
+
+#if DEBUG
+                                                if (Options.HttpDebugging)
+                                                {
+                                                    Tools.HttpDebugRequest(request);
+                                                }
+#endif
+                                                request.BeginGetResponse(r4 =>
+                                                {
+                                                    try
+                                                    {
+                                                        response = (HttpWebResponse)request.EndGetResponse(r4);
+#if DEBUG
+                                                        if (Options.HttpDebugging)
+                                                        {
+                                                            Tools.HttpDebugResponse(response);
+                                                        }
+#endif
+                                                        //If we get here then it was OK
+                                                        response.Close();
+
+                                                        //Commit Transaction only if in auto-commit mode (active transaction will be null)
+                                                        if (autoCommit)
+                                                        {
+                                                            this.Commit((sender, args, st) =>
+                                                            {
+                                                                if (args.WasSuccessful)
+                                                                {
+                                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                                                }
+                                                                else
+                                                                {
+                                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), args.Error), state);
+                                                                }
+                                                            }, state);
+                                                        }
+                                                        else
+                                                        {
+                                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+                                                        }
+                                                    }
+                                                    catch (WebException webEx)
+                                                    {
+#if DEBUG
+                                                        if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                                        if (autoCommit)
+                                                        {
+                                                            //If something went wrong try to rollback, don't care what the rollback response is
+                                                            this.Rollback((sender, args, st) => { }, state);
+                                                        }
+                                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        if (autoCommit)
+                                                        {
+                                                            //If something went wrong try to rollback, don't care what the rollback response is
+                                                            this.Rollback((sender, args, st) => { }, state);
+                                                        }
+                                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                                                    }
+                                                }, state);
+                                            }
+                                            catch (WebException webEx)
+                                            {
+#if DEBUG
+                                                if (webEx.Response != null && Options.HttpDebugging) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+#endif
+                                                if (autoCommit)
+                                                {
+                                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                                    this.Rollback((sender, args, st) => { }, state);
+                                                }
+                                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("A HTTP Error occurred while trying to update a Graph, see inner exception for details", webEx)), state);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                if (autoCommit)
+                                                {
+                                                    //If something went wrong try to rollback, don't care what the rollback response is
+                                                    this.Rollback((sender, args, st) => { }, state);
+                                                }
+                                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, new RdfStorageException("An unexpected error occurred while trying to update a Graph, see inner exception for details", ex)), state);
+                                            }
+                                        }, state);
                                     }
                                     else
                                     {
@@ -1327,6 +1429,7 @@ namespace VDS.RDF.Storage
                             TripleStore store = new TripleStore();
                             Graph g = new Graph();
                             g.Assert(additions);
+                            g.BaseUri = graphUri.ToSafeUri();
                             store.Add(g);
                             this._writer.Save(store, new StreamWriter(stream));
 
@@ -1953,10 +2056,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Monitor.Enter(this);
                 if (this._activeTrans != null)
                 {
-                    Monitor.Exit(this);
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("Cannot start a new Transaction as there is already an active Transaction")), state);
                 }
                 else
@@ -2011,10 +2112,6 @@ namespace VDS.RDF.Storage
                             {
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionBegin, new RdfStorageException("An unexpected error occurred while trying to start a Transaction, see inner exception for details", ex)), state);
                             }
-                            finally
-                            {
-                                Monitor.Exit(this);
-                            }
                         }, state);
                     }
                     catch (WebException webEx)
@@ -2052,10 +2149,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Monitor.Enter(this);
                 if (this._activeTrans == null)
                 {
-                    Monitor.Exit(this);
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit, new RdfStorageException("Cannot commit a Transaction as there is currently no active Transaction")), state);
                 }
                 else
@@ -2096,10 +2191,6 @@ namespace VDS.RDF.Storage
                             {
                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionCommit, new RdfStorageException("An unexpected error occurred while trying to commit a Transaction, see inner exception for details", ex)), state);
                             }
-                            finally
-                            {
-                                Monitor.Exit(this);
-                            }
                         }, state);
                     }
                     catch (WebException webEx)
@@ -2137,10 +2228,8 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Monitor.Enter(this);
                 if (this._activeTrans == null)
                 {
-                    Monitor.Exit(this);
                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback, new RdfStorageException("Cannot rollback a Transaction on the as there is currently no active Transaction")), state);
                 }
                 else
@@ -2168,10 +2257,6 @@ namespace VDS.RDF.Storage
                                 catch (Exception ex)
                                 {
                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.TransactionRollback, new RdfStorageException("An unexpected error occurred while trying to rollback a Transaction, see inner exception for details", ex)), state);
-                                }
-                                finally
-                                {
-                                    Monitor.Exit(this);
                                 }
                             }, state);
                     }

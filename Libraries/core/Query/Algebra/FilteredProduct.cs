@@ -208,6 +208,8 @@ namespace VDS.RDF.Query.Algebra
                                     productSet.Remove(z.ID);
                                 }
                             }
+                            //Remember to check for timeouts occassionaly
+                            context.CheckTimeout();
                         }
                         context.Binder = binder;
                         context.OutputMultiset = productSet;
@@ -244,6 +246,8 @@ namespace VDS.RDF.Query.Algebra
                     partitionedSet.Remove(z.ID);
                 }
             }
+            //Remember to check for timeouts occassionally
+            context.CheckTimeout();
         }
 
 #endif

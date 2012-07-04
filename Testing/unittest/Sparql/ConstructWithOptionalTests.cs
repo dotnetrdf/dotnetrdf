@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
@@ -16,6 +17,18 @@ namespace VDS.RDF.Test.Sparql
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
+
+        private ISparqlDataset AsDataset(IInMemoryQueryableStore store)
+        {
+            if (store.Graphs.Count == 1)
+            {
+                return new InMemoryDataset(store, store.Graphs.First().BaseUri);
+            }
+            else
+            {
+                return new InMemoryDataset(store);
+            }
+        }
 
         private void TestConstruct(IGraph data, IGraph expected, String query)
         {
@@ -29,7 +42,7 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlQuery q = this._parser.ParseFromString(query);
 
-            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(AsDataset(store));
             Object results = processor.ProcessQuery(q);
             if (results is IGraph)
             {
