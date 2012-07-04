@@ -15,6 +15,8 @@ Added
 - Query
  - Added an implicit join optimiser
  - Added a filtered product optimiser
+ - Added support for UUID and STRUUID functions
+ - Added support for VALUES syntax
 
 Changed
 - Bug Fixes
@@ -29,6 +31,9 @@ Changed
 - Parsing
  - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
 - Query
+ - Default behaviour is now not to have a union default graph
+ - BINDINGS syntax now disabled in favour of the new VALUES syntax from latest editors draft
+ - Revised STRAFTER and STRBEFORE implementation to latest editors draft
  - Turned on PLinq Evaluation by default, following operations are parallelised currently:
   - Join
   - LeftJoin

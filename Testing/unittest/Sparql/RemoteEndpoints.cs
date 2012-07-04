@@ -76,7 +76,7 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
             CountHandler handler = new CountHandler();
-            endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
+            endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Triple Count: " + handler.Count);
             Assert.AreNotEqual(0, handler.Count, "Count should not be zero");
@@ -87,7 +87,7 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
             ResultCountHandler handler = new ResultCountHandler();
-            endpoint.QueryWithResultSet(handler, "SELECT * WHERE { ?s ?p ?o }");
+            endpoint.QueryWithResultSet(handler, "SELECT * WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
             Console.WriteLine("Result Count: " + handler.Count);
             Assert.AreNotEqual(0, handler.Count, "Count should not be zero");

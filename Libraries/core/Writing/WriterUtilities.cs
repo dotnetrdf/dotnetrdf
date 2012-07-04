@@ -375,9 +375,9 @@ namespace VDS.RDF.Writing
             }
             else
             {
-                //All characters must be alphanumeric in NTriples
+                //All characters must be alphanumeric and not start with a digit in NTriples
                 char[] cs = id.ToCharArray();
-                return cs.All(c => Char.IsLetterOrDigit(c));
+                return Char.IsLetter(cs[0]) && cs.All(c => Char.IsLetterOrDigit(c));
             }
         }
 

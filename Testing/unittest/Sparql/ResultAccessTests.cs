@@ -66,7 +66,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod,ExpectedException(typeof(RdfException))]
         public void SparqlResultAccessByNameError()
         {
-            String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s rdfs:range ?range } }";
+            String query = "SELECT * WHERE { ?s a ?type . OPTIONAL { ?s ex:range ?range } }";
             SparqlQuery q = this.CreateQuery(query);
             SparqlResultSet results = this.GetResults(q);
 

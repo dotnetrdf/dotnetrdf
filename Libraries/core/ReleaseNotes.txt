@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.6.2 Beta
+Version 0.7.0 Beta
 
 Robert Vesse 2009-12
 rvesse@vdesign-studios.com
@@ -53,7 +53,7 @@ There are two data providers found under the Data directory that can be used to 
 with the dotNetRDF API.  These are as follows:
 
 - OpenLink Virtuoso -> dotNetRDF.Data.Virtuoso.dll
-- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll
+- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll (This library is deprecated and not recommend for new development)
 
 There is a single query plugin found under the Query directory that provides full text query support using Lucene.Net:
 
@@ -96,6 +96,12 @@ Parsing
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
+- Support is as close to the 1.1 specification as we can get but there are some things which are still unclear in the
+  latest editors draft and the current test suite is incomplete wrt to the latest draft so we do not guarantee complete 
+  support in this release
+
+Storage
+- The Async Storage API has been tested as far as possible but we cannot guarantee that there aren't bugs in this new API
  
 Change History
 --------------
