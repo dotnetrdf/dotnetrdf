@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Data.Sql</id>
-    <version>0.6.2</version>
+    <version>0.7.0</version>
     <authors>RobVesse</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
@@ -12,7 +12,7 @@
     <description>dotNetRDF.Data.Sql provides an simple SQL based triplestore for use with dotNetRDF intended primarily for small scale deployments where dedicated triple stores are not deployable.  Works with SQL Server 2005 and higher or SQL Azure</description>
     <tags>RDF Semantic Web SPARQL SQL</tags>
     <dependencies>
-	<dependency id="dotNetRDF" version="0.6.2" />
+	<dependency id="dotNetRDF" version="0.7.0" />
     </dependencies>
   </metadata>
 </package>

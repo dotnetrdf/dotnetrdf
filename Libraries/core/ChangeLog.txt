@@ -53,6 +53,7 @@ Removed
 - Obsolete ISelector API removed
 - Removed any internal use of embedded HashLib code as it is no longer necessary
 - Removed the obsolete BaseNodeCollection API
+- Marked the contents of the Data.Sql library as obsolete but usable
    
 
 
