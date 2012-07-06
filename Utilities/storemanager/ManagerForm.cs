@@ -465,6 +465,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(qc.Type);
                             if (def != null)
                             {
+                                def.PopulateFrom(qc.Graph, qc.ObjectNode);
                                 EditConnectionForm editConn = new EditConnectionForm(def);
                                 if (editConn.ShowDialog() == DialogResult.OK)
                                 {

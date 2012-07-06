@@ -102,6 +102,7 @@ namespace VDS.RDF.Utilities.StoreManager
                             IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(connect.Type);
                             if (def != null)
                             {
+                                def.PopulateFrom(connect.Graph, connect.ObjectNode);
                                 EditConnectionForm edit = new EditConnectionForm(def);
                                 if (edit.ShowDialog() == DialogResult.OK)
                                 {
@@ -196,7 +197,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 if (def != null)
                 {
                     def.PopulateFrom(connect.Graph, connect.ObjectNode);
-
                     EditConnectionForm edit = new EditConnectionForm(def);
                     if (edit.ShowDialog() == DialogResult.OK)
                     {
