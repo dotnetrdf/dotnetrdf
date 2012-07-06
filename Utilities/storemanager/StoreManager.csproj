@@ -72,26 +72,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connections\BaseConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\AllegroGraphConnection.cs" />
-    <Compile Include="Connections\BaseServerConnection.cs" />
-    <Compile Include="Connections\BuiltIn\DatasetFileConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\DydraConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\FourStoreConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\FusekiConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\InMemoryConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\JosekiConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\MicrosoftAdoConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\SesameConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\SparqlGraphStoreConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\SparqlQueryConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\StardogConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\TalisConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
-    <Compile Include="Connections\ConnectionAttribute.cs" />
-    <Compile Include="Connections\ConnectionDefinitionManager.cs" />
-    <Compile Include="Connections\ConnectionInfo.cs" />
-    <Compile Include="Connections\IConnectionDefinition.cs" />
     <Compile Include="CopyMoveDialogue.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -113,6 +93,7 @@
     <Compile Include="AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="StoreManagerForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +127,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\CopyMoveDragInfo.cs" />
+    <Compile Include="Tasks\CopyMoveRenameTask.cs" />
     <EmbeddedResource Include="StoreManagerForm.resx">
       <DependentUpon>StoreManagerForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -181,21 +164,6 @@
     <Compile Include="StartPage.Designer.cs">
       <DependentUpon>StartPage.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tasks\BaseImportTask.cs" />
-    <Compile Include="Tasks\BaseTask.cs" />
-    <Compile Include="Tasks\CopyMoveDragInfo.cs" />
-    <Compile Include="Tasks\CopyMoveRenameTask.cs" />
-    <Compile Include="Tasks\CountTriplesTask.cs" />
-    <Compile Include="Tasks\PreviewGraphTask.cs" />
-    <Compile Include="Tasks\DeleteGraphTask.cs" />
-    <Compile Include="Tasks\ExportTask.cs" />
-    <Compile Include="Tasks\ImportTasks.cs" />
-    <Compile Include="Tasks\ITask.cs" />
-    <Compile Include="Tasks\ListGraphsTasks.cs" />
-    <Compile Include="Tasks\QueryTask.cs" />
-    <Compile Include="Tasks\TaskExtensions.cs" />
-    <Compile Include="Tasks\UpdateTask.cs" />
-    <Compile Include="Tasks\ViewGraphTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\dotNetRDF.csproj">
@@ -213,6 +181,10 @@
     <ProjectReference Include="..\..\Libraries\gui.winforms\dotNetRDF.WinForms.csproj">
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\storemanager.core\StoreManager.Core.csproj">
+      <Project>{396210A4-AEDA-4352-8458-1788083E336F}</Project>
+      <Name>StoreManager.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

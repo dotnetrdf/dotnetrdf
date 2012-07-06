@@ -51,6 +51,7 @@
             this.btnInspect = new System.Windows.Forms.Button();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkUnsafeOptimisation = new System.Windows.Forms.CheckBox();
             this.chkFullTextIndexing = new System.Windows.Forms.CheckBox();
             this.chkLogExplanation = new System.Windows.Forms.CheckBox();
             this.chkUseUtf8Bom = new System.Windows.Forms.CheckBox();
@@ -82,7 +83,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.chkUnsafeOptimisation = new System.Windows.Forms.CheckBox();
+            this.chkParallelEval = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -199,7 +200,7 @@
             this.grpQuery.Controls.Add(this.txtQuery);
             this.grpQuery.Location = new System.Drawing.Point(12, 148);
             this.grpQuery.Name = "grpQuery";
-            this.grpQuery.Size = new System.Drawing.Size(582, 283);
+            this.grpQuery.Size = new System.Drawing.Size(582, 311);
             this.grpQuery.TabIndex = 1;
             this.grpQuery.TabStop = false;
             this.grpQuery.Text = "Query";
@@ -207,7 +208,7 @@
             // btnQuery
             // 
             this.btnQuery.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnQuery.Location = new System.Drawing.Point(236, 254);
+            this.btnQuery.Location = new System.Drawing.Point(236, 282);
             this.btnQuery.Name = "btnQuery";
             this.btnQuery.Size = new System.Drawing.Size(111, 23);
             this.btnQuery.TabIndex = 1;
@@ -223,7 +224,7 @@
             this.txtQuery.Multiline = true;
             this.txtQuery.Name = "txtQuery";
             this.txtQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtQuery.Size = new System.Drawing.Size(566, 229);
+            this.txtQuery.Size = new System.Drawing.Size(566, 257);
             this.txtQuery.TabIndex = 0;
             // 
             // btnExplain
@@ -298,6 +299,7 @@
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkParallelEval);
             this.grpQueryOptions.Controls.Add(this.chkUnsafeOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkFullTextIndexing);
             this.grpQueryOptions.Controls.Add(this.chkLogExplanation);
@@ -313,10 +315,22 @@
             this.grpQueryOptions.Controls.Add(this.lblTimeout);
             this.grpQueryOptions.Location = new System.Drawing.Point(600, 136);
             this.grpQueryOptions.Name = "grpQueryOptions";
-            this.grpQueryOptions.Size = new System.Drawing.Size(384, 182);
+            this.grpQueryOptions.Size = new System.Drawing.Size(384, 210);
             this.grpQueryOptions.TabIndex = 5;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkUnsafeOptimisation
+            // 
+            this.chkUnsafeOptimisation.Location = new System.Drawing.Point(189, 150);
+            this.chkUnsafeOptimisation.Name = "chkUnsafeOptimisation";
+            this.chkUnsafeOptimisation.Size = new System.Drawing.Size(177, 31);
+            this.chkUnsafeOptimisation.TabIndex = 11;
+            this.chkUnsafeOptimisation.Text = "Allow Unsafe Optimisations";
+            this.ttpTips.SetToolTip(this.chkUnsafeOptimisation, "Allows optimisations that may boost performance at the cost of possibly incorrect" +
+        " results (depending on the data and query)");
+            this.chkUnsafeOptimisation.UseVisualStyleBackColor = true;
+            this.chkUnsafeOptimisation.CheckedChanged += new System.EventHandler(this.chkUnsafeOptimisation_CheckedChanged);
             // 
             // chkFullTextIndexing
             // 
@@ -526,7 +540,7 @@
             this.stsGraphs,
             this.stsTriples,
             this.stsLastQuery});
-            this.stsStatus.Location = new System.Drawing.Point(0, 439);
+            this.stsStatus.Location = new System.Drawing.Point(0, 462);
             this.stsStatus.Name = "stsStatus";
             this.stsStatus.Size = new System.Drawing.Size(994, 22);
             this.stsStatus.TabIndex = 7;
@@ -632,7 +646,7 @@
             this.grpQueryTools.Controls.Add(this.btnLoad);
             this.grpQueryTools.Controls.Add(this.btnSaveQuery);
             this.grpQueryTools.Controls.Add(this.btnInspect);
-            this.grpQueryTools.Location = new System.Drawing.Point(600, 324);
+            this.grpQueryTools.Location = new System.Drawing.Point(606, 352);
             this.grpQueryTools.Name = "grpQueryTools";
             this.grpQueryTools.Size = new System.Drawing.Size(384, 107);
             this.grpQueryTools.TabIndex = 6;
@@ -666,23 +680,24 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Manage Queries:";
             // 
-            // chkUnsafeOptimisation
+            // chkParallelEval
             // 
-            this.chkUnsafeOptimisation.Location = new System.Drawing.Point(189, 150);
-            this.chkUnsafeOptimisation.Name = "chkUnsafeOptimisation";
-            this.chkUnsafeOptimisation.Size = new System.Drawing.Size(177, 31);
-            this.chkUnsafeOptimisation.TabIndex = 11;
-            this.chkUnsafeOptimisation.Text = "Allow Unsafe Optimisations";
-            this.ttpTips.SetToolTip(this.chkUnsafeOptimisation, "Allows optimisations that may boost performance at the cost of possibly incorrect" +
-        " results (depending on the data and query)");
-            this.chkUnsafeOptimisation.UseVisualStyleBackColor = true;
-            this.chkUnsafeOptimisation.CheckedChanged += new System.EventHandler(this.chkUnsafeOptimisation_CheckedChanged);
+            this.chkParallelEval.Checked = true;
+            this.chkParallelEval.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkParallelEval.Location = new System.Drawing.Point(6, 179);
+            this.chkParallelEval.Name = "chkParallelEval";
+            this.chkParallelEval.Size = new System.Drawing.Size(177, 31);
+            this.chkParallelEval.TabIndex = 12;
+            this.chkParallelEval.Text = "Enable Parallel Query Evaluation";
+            this.ttpTips.SetToolTip(this.chkParallelEval, "Enables/Disables whether we can use parallel query evaluation");
+            this.chkParallelEval.UseVisualStyleBackColor = true;
+            this.chkParallelEval.CheckedChanged += new System.EventHandler(this.chkParallelEval_CheckedChanged);
             // 
             // fclsSparqlGui
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(994, 461);
+            this.ClientSize = new System.Drawing.Size(994, 484);
             this.Controls.Add(this.grpQueryOptions);
             this.Controls.Add(this.grpQueryTools);
             this.Controls.Add(this.groupBox1);
@@ -773,6 +788,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox chkUnsafeOptimisation;
+        private System.Windows.Forms.CheckBox chkParallelEval;
     }
 }
 

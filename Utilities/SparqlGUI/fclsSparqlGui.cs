@@ -867,5 +867,10 @@ namespace VDS.RDF.Utilities.Sparql
         {
             Options.UnsafeOptimisation = this.chkUnsafeOptimisation.Checked;
         }
+
+        private void chkParallelEval_CheckedChanged(object sender, EventArgs e)
+        {
+            Options.UsePLinqEvaluation = this.chkParallelEval.Checked;
+        }
     }
 }

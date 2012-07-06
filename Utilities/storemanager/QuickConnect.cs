@@ -52,6 +52,7 @@ namespace VDS.RDF.Utilities.StoreManager
     {
         private IGraph _g;
         private INode _objNode;
+        private Type _type;
 
         /// <summary>
         /// Creates a new Quick Connection
@@ -62,6 +63,39 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this._g = g;
             this._objNode = objNode;
+            
+            //Get Type
+            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyType));
+            if (typeName != null)
+            {
+                try
+                {
+                    this._type = System.Type.GetType(typeName);
+
+                    //Force oureslves into the catch block where we try assembly qualifiying the name
+                    if (this._type == null) throw new Exception();
+                }
+                catch
+                {
+                    //Was it not assembly qualified?  Try adding dotNetRDF to ensure it
+                    if (!typeName.Contains(','))
+                    {
+                        typeName = typeName += ", dotNetRDF";
+                        try
+                        {
+                            this._type = System.Type.GetType(typeName);
+                        }
+                        catch
+                        {
+                            this._type = null;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                this._type = null;
+            }
         }
 
         public QuickConnect(IGraph g, INode objNode, String label)
@@ -88,6 +122,17 @@ namespace VDS.RDF.Utilities.StoreManager
         }
 
         /// <summary>
+        /// Gets the Graph that the Connection should be loaded from
+        /// </summary>
+        public IGraph Graph
+        {
+            get
+            {
+                return this._g;
+            }
+        }
+
+        /// <summary>
         /// Gets the Node that this Connection should be loaded from
         /// </summary>
         public INode ObjectNode
@@ -95,6 +140,14 @@ namespace VDS.RDF.Utilities.StoreManager
             get
             {
                 return this._objNode;
+            }
+        }
+
+        public Type Type
+        {
+            get
+            {
+                return this._type;
             }
         }
 

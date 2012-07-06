@@ -62,6 +62,12 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lstStoreTypes.DisplayMember = "StoreName";
         }
 
+        public NewConnectionForm(IConnectionDefinition def)
+            : this()
+        {
+            this.lstStoreTypes.SelectedItem = def;
+        }
+
         public IStorageProvider Connection
         {
             get

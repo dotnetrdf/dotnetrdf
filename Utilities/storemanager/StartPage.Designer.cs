@@ -28,14 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StartPage));
             this.btnNewConnection = new System.Windows.Forms.Button();
             this.grpRecent = new System.Windows.Forms.GroupBox();
             this.lstRecent = new System.Windows.Forms.ListBox();
+            this.mnuRecentConnections = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuEditRecent = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFaveConnections = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuEditFave = new System.Windows.Forms.ToolStripMenuItem();
             this.grpFavourites = new System.Windows.Forms.GroupBox();
             this.lstFaves = new System.Windows.Forms.ListBox();
             this.chkAlwaysShow = new System.Windows.Forms.CheckBox();
             this.grpRecent.SuspendLayout();
+            this.mnuRecentConnections.SuspendLayout();
+            this.mnuFaveConnections.SuspendLayout();
             this.grpFavourites.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -67,11 +74,42 @@
             // 
             // lstRecent
             // 
+            this.lstRecent.ContextMenuStrip = this.mnuRecentConnections;
             this.lstRecent.FormattingEnabled = true;
             this.lstRecent.Location = new System.Drawing.Point(6, 19);
             this.lstRecent.Name = "lstRecent";
             this.lstRecent.Size = new System.Drawing.Size(462, 108);
             this.lstRecent.TabIndex = 0;
+            // 
+            // mnuRecentConnections
+            // 
+            this.mnuRecentConnections.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuEditRecent});
+            this.mnuRecentConnections.Name = "mnuConnections";
+            this.mnuRecentConnections.Size = new System.Drawing.Size(160, 48);
+            this.mnuRecentConnections.Opening += new System.ComponentModel.CancelEventHandler(this.mnuRecentConnections_Opening);
+            // 
+            // mnuEditRecent
+            // 
+            this.mnuEditRecent.Name = "mnuEditRecent";
+            this.mnuEditRecent.Size = new System.Drawing.Size(159, 22);
+            this.mnuEditRecent.Text = "Edit Connection";
+            this.mnuEditRecent.Click += new System.EventHandler(this.mnuEditRecent_Click);
+            // 
+            // mnuFaveConnections
+            // 
+            this.mnuFaveConnections.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuEditFave});
+            this.mnuFaveConnections.Name = "mnuConnections";
+            this.mnuFaveConnections.Size = new System.Drawing.Size(160, 26);
+            this.mnuFaveConnections.Opening += new System.ComponentModel.CancelEventHandler(this.mnuFaveConnections_Opening);
+            // 
+            // mnuEditFave
+            // 
+            this.mnuEditFave.Name = "mnuEditFave";
+            this.mnuEditFave.Size = new System.Drawing.Size(159, 22);
+            this.mnuEditFave.Text = "Edit Connection";
+            this.mnuEditFave.Click += new System.EventHandler(this.mnuEditFave_Click);
             // 
             // grpFavourites
             // 
@@ -85,6 +123,7 @@
             // 
             // lstFaves
             // 
+            this.lstFaves.ContextMenuStrip = this.mnuFaveConnections;
             this.lstFaves.FormattingEnabled = true;
             this.lstFaves.Location = new System.Drawing.Point(6, 19);
             this.lstFaves.Name = "lstFaves";
@@ -123,6 +162,8 @@
             this.Text = "Get Started";
             this.Load += new System.EventHandler(this.StartPage_Load);
             this.grpRecent.ResumeLayout(false);
+            this.mnuRecentConnections.ResumeLayout(false);
+            this.mnuFaveConnections.ResumeLayout(false);
             this.grpFavourites.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -137,5 +178,9 @@
         private System.Windows.Forms.ListBox lstRecent;
         private System.Windows.Forms.ListBox lstFaves;
         private System.Windows.Forms.CheckBox chkAlwaysShow;
+        private System.Windows.Forms.ContextMenuStrip mnuFaveConnections;
+        private System.Windows.Forms.ToolStripMenuItem mnuEditFave;
+        private System.Windows.Forms.ContextMenuStrip mnuRecentConnections;
+        private System.Windows.Forms.ToolStripMenuItem mnuEditRecent;
     }
 }

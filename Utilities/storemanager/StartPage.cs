@@ -45,6 +45,7 @@ using System.Windows.Forms;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -135,6 +136,70 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             Properties.Settings.Default.ShowStartPage = this.chkAlwaysShow.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void mnuEditFave_Click(object sender, EventArgs e)
+        {
+            EditConnection(this.lstFaves);   
+        }
+
+        private void mnuEditRecent_Click(object sender, EventArgs e)
+        {
+            EditConnection(this.lstRecent);
+        }
+
+        private void EditConnection(ListBox lbox)
+        {
+            QuickConnect connect = lbox.SelectedItem as QuickConnect;
+            if (connect == null) return;
+
+            Type t = connect.Type;
+            if (t != null)
+            {
+                IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(t);
+                if (def != null)
+                {
+                    def.PopulateFrom(connect.Graph, connect.ObjectNode);
+
+                    NewConnectionForm newConn = new NewConnectionForm(def);
+                    if (newConn.ShowDialog() == DialogResult.OK)
+                    {
+                        IStorageProvider manager = newConn.Connection;
+                        StoreManagerForm storeManager = new StoreManagerForm(manager);
+                        storeManager.MdiParent = Program.MainForm;
+                        storeManager.Show();
+
+                        //Add to Recent Connections
+                        Program.MainForm.AddRecentConnection(manager);
+
+                        this.Close();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("The selected connection is not editable", "Edit Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("The selected connection is not editable", "Edit Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void CheckConnectionContext(ListBox lbox, CancelEventArgs e)
+        {
+            if (lbox == null) e.Cancel = true;
+            if (lbox.SelectedItem == null) e.Cancel = true;
+        }
+
+        private void mnuFaveConnections_Opening(object sender, CancelEventArgs e)
+        {
+            CheckConnectionContext(this.lstFaves, e);
+        }
+
+        private void mnuRecentConnections_Opening(object sender, CancelEventArgs e)
+        {
+            CheckConnectionContext(this.lstRecent, e);
         }
     }
 }
