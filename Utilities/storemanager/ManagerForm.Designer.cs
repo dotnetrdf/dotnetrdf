@@ -35,14 +35,16 @@
             this.mnuSaveConnection = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuAddFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOpenConnection = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuFileSep1 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuStartPage = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuFileSep2 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuFavouriteConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClearFavouriteConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuRecentConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClearRecentConnections = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.mnuFileSep3 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuUseUtf8Bom = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,10 +85,12 @@
             this.mnuSaveConnection,
             this.mnuAddFavourite,
             this.mnuOpenConnection,
-            this.mnuSeparator2,
+            this.mnuFileSep1,
+            this.mnuStartPage,
+            this.mnuFileSep2,
             this.mnuFavouriteConnections,
             this.mnuRecentConnections,
-            this.mnuSeparator4,
+            this.mnuFileSep3,
             this.mnuExit});
             this.mnuFile.ImageTransparentColor = System.Drawing.SystemColors.ActiveBorder;
             this.mnuFile.Name = "mnuFile";
@@ -121,10 +125,22 @@
             this.mnuOpenConnection.Text = "&Open Connection";
             this.mnuOpenConnection.Click += new System.EventHandler(this.mnuOpenConnection_Click);
             // 
-            // mnuSeparator2
+            // mnuFileSep1
             // 
-            this.mnuSeparator2.Name = "mnuSeparator2";
-            this.mnuSeparator2.Size = new System.Drawing.Size(229, 6);
+            this.mnuFileSep1.Name = "mnuFileSep1";
+            this.mnuFileSep1.Size = new System.Drawing.Size(229, 6);
+            // 
+            // mnuStartPage
+            // 
+            this.mnuStartPage.Name = "mnuStartPage";
+            this.mnuStartPage.Size = new System.Drawing.Size(232, 22);
+            this.mnuStartPage.Text = "Show Start Page";
+            this.mnuStartPage.Click += new System.EventHandler(this.mnuStartPage_Click);
+            // 
+            // mnuFileSep2
+            // 
+            this.mnuFileSep2.Name = "mnuFileSep2";
+            this.mnuFileSep2.Size = new System.Drawing.Size(229, 6);
             // 
             // mnuFavouriteConnections
             // 
@@ -168,10 +184,10 @@
             this.mnuSeparator3.Name = "mnuSeparator3";
             this.mnuSeparator3.Size = new System.Drawing.Size(207, 6);
             // 
-            // mnuSeparator4
+            // mnuFileSep3
             // 
-            this.mnuSeparator4.Name = "mnuSeparator4";
-            this.mnuSeparator4.Size = new System.Drawing.Size(229, 6);
+            this.mnuFileSep3.Name = "mnuFileSep3";
+            this.mnuFileSep3.Size = new System.Drawing.Size(229, 6);
             // 
             // mnuExit
             // 
@@ -321,7 +337,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuTileVertical;
         private System.Windows.Forms.ToolStripMenuItem mnuCloseAll;
         private System.Windows.Forms.ToolStripMenuItem mnuArrangeIcons;
-        private System.Windows.Forms.ToolStripSeparator mnuSeparator2;
+        private System.Windows.Forms.ToolStripSeparator mnuFileSep2;
         private System.Windows.Forms.ToolStripMenuItem mnuSaveConnection;
         private System.Windows.Forms.ToolStripMenuItem mnuOpenConnection;
         private System.Windows.Forms.SaveFileDialog sfdConnection;
@@ -329,7 +345,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuRecentConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuClearRecentConnections;
         private System.Windows.Forms.ToolStripSeparator mnuSeparator3;
-        private System.Windows.Forms.ToolStripSeparator mnuSeparator4;
+        private System.Windows.Forms.ToolStripSeparator mnuFileSep3;
         private System.Windows.Forms.ToolStripMenuItem mnuFavouriteConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuClearFavouriteConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuAddFavourite;
@@ -340,6 +356,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuAbout;
         private System.Windows.Forms.ToolStripMenuItem mnuNewConnection;
         private System.Windows.Forms.ToolStripMenuItem mnuShowStartPage;
+        private System.Windows.Forms.ToolStripSeparator mnuFileSep1;
+        private System.Windows.Forms.ToolStripMenuItem mnuStartPage;
     }
 }
 

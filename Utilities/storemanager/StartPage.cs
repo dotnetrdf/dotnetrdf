@@ -57,6 +57,8 @@ namespace VDS.RDF.Utilities.StoreManager
 
             this.FillConnectionList(recent, this.lstRecent);
             this.FillConnectionList(faves, this.lstFaves);
+            this.chkAlwaysEdit.Checked = Properties.Settings.Default.AlwaysEdit;
+            this.chkAlwaysShow.Checked = Properties.Settings.Default.ShowStartPage;
         }
 
         private void StartPage_Load(object sender, EventArgs e)
@@ -66,7 +68,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void FillConnectionList(IGraph config, ListBox lbox)
         {
-             SparqlParameterizedString query = new SparqlParameterizedString();
+            SparqlParameterizedString query = new SparqlParameterizedString();
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
             query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
 
@@ -95,21 +97,48 @@ namespace VDS.RDF.Utilities.StoreManager
                     QuickConnect connect = lbox.SelectedItem as QuickConnect;
                     if (connect != null)
                     {
-                        try
+                        if (Properties.Settings.Default.AlwaysEdit)
                         {
-                            IStorageProvider manager = connect.GetConnection();
-                            StoreManagerForm storeManager = new StoreManagerForm(manager);
-                            storeManager.MdiParent = Program.MainForm;
-                            storeManager.Show();
+                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(connect.Type);
+                            if (def != null)
+                            {
+                                EditConnectionForm edit = new EditConnectionForm(def);
+                                if (edit.ShowDialog() == DialogResult.OK)
+                                {
+                                    IStorageProvider manager = edit.Connection;
+                                    StoreManagerForm storeManager = new StoreManagerForm(manager);
+                                    storeManager.MdiParent = Program.MainForm;
+                                    storeManager.Show();
 
-                            //Add to Recent Connections
-                            Program.MainForm.AddRecentConnection(manager);
+                                    //Add to Recent Connections
+                                    Program.MainForm.AddRecentConnection(manager);
 
-                            this.Close();
+                                    this.Close();
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Selected Connection is not editable", "Connection Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            MessageBox.Show("Error Opening Connection " + connect.ToString() + ":\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            try
+                            {
+                                IStorageProvider manager = connect.GetConnection();
+                                StoreManagerForm storeManager = new StoreManagerForm(manager);
+                                storeManager.MdiParent = Program.MainForm;
+                                storeManager.Show();
+
+                                //Add to Recent Connections
+                                Program.MainForm.AddRecentConnection(manager);
+
+                                this.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Error Opening Connection " + connect.ToString() + ":\n" + ex.Message, "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 });
@@ -138,6 +167,13 @@ namespace VDS.RDF.Utilities.StoreManager
             Properties.Settings.Default.Save();
         }
 
+        private void chkAlwaysEdit_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AlwaysEdit = this.chkAlwaysEdit.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+
         private void mnuEditFave_Click(object sender, EventArgs e)
         {
             EditConnection(this.lstFaves);   
@@ -161,10 +197,10 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     def.PopulateFrom(connect.Graph, connect.ObjectNode);
 
-                    NewConnectionForm newConn = new NewConnectionForm(def);
-                    if (newConn.ShowDialog() == DialogResult.OK)
+                    EditConnectionForm edit = new EditConnectionForm(def);
+                    if (edit.ShowDialog() == DialogResult.OK)
                     {
-                        IStorageProvider manager = newConn.Connection;
+                        IStorageProvider manager = edit.Connection;
                         StoreManagerForm storeManager = new StoreManagerForm(manager);
                         storeManager.MdiParent = Program.MainForm;
                         storeManager.Show();

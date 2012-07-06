@@ -40,6 +40,8 @@
             this.grpFavourites = new System.Windows.Forms.GroupBox();
             this.lstFaves = new System.Windows.Forms.ListBox();
             this.chkAlwaysShow = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.chkAlwaysEdit = new System.Windows.Forms.CheckBox();
             this.grpRecent.SuspendLayout();
             this.mnuRecentConnections.SuspendLayout();
             this.mnuFaveConnections.SuspendLayout();
@@ -65,10 +67,10 @@
             // grpRecent
             // 
             this.grpRecent.Controls.Add(this.lstRecent);
-            this.grpRecent.Location = new System.Drawing.Point(12, 188);
+            this.grpRecent.Location = new System.Drawing.Point(12, 218);
             this.grpRecent.Name = "grpRecent";
             this.grpRecent.Size = new System.Drawing.Size(474, 141);
-            this.grpRecent.TabIndex = 1;
+            this.grpRecent.TabIndex = 3;
             this.grpRecent.TabStop = false;
             this.grpRecent.Text = "Recent Connections";
             // 
@@ -86,7 +88,7 @@
             this.mnuRecentConnections.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuEditRecent});
             this.mnuRecentConnections.Name = "mnuConnections";
-            this.mnuRecentConnections.Size = new System.Drawing.Size(160, 48);
+            this.mnuRecentConnections.Size = new System.Drawing.Size(160, 26);
             this.mnuRecentConnections.Opening += new System.ComponentModel.CancelEventHandler(this.mnuRecentConnections_Opening);
             // 
             // mnuEditRecent
@@ -114,7 +116,7 @@
             // grpFavourites
             // 
             this.grpFavourites.Controls.Add(this.lstFaves);
-            this.grpFavourites.Location = new System.Drawing.Point(12, 41);
+            this.grpFavourites.Location = new System.Drawing.Point(12, 71);
             this.grpFavourites.Name = "grpFavourites";
             this.grpFavourites.Size = new System.Drawing.Size(474, 141);
             this.grpFavourites.TabIndex = 2;
@@ -128,30 +130,52 @@
             this.lstFaves.Location = new System.Drawing.Point(6, 19);
             this.lstFaves.Name = "lstFaves";
             this.lstFaves.Size = new System.Drawing.Size(462, 108);
-            this.lstFaves.TabIndex = 1;
+            this.lstFaves.TabIndex = 0;
             // 
             // chkAlwaysShow
             // 
             this.chkAlwaysShow.AutoSize = true;
             this.chkAlwaysShow.Checked = true;
             this.chkAlwaysShow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAlwaysShow.Location = new System.Drawing.Point(12, 335);
+            this.chkAlwaysShow.Location = new System.Drawing.Point(12, 383);
             this.chkAlwaysShow.Name = "chkAlwaysShow";
             this.chkAlwaysShow.Size = new System.Drawing.Size(246, 17);
-            this.chkAlwaysShow.TabIndex = 3;
+            this.chkAlwaysShow.TabIndex = 5;
             this.chkAlwaysShow.Text = "Always show this Start Page when starting up?";
             this.chkAlwaysShow.UseVisualStyleBackColor = true;
             this.chkAlwaysShow.CheckedChanged += new System.EventHandler(this.chkAlwaysShow_CheckedChanged);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(15, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(471, 30);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Double click any connection below to open it, alternatively click once to select," +
+    " then right click and hit Edit Connection to edit a previous connection.";
+            // 
+            // chkAlwaysEdit
+            // 
+            this.chkAlwaysEdit.AutoSize = true;
+            this.chkAlwaysEdit.Location = new System.Drawing.Point(12, 365);
+            this.chkAlwaysEdit.Name = "chkAlwaysEdit";
+            this.chkAlwaysEdit.Size = new System.Drawing.Size(334, 17);
+            this.chkAlwaysEdit.TabIndex = 4;
+            this.chkAlwaysEdit.Text = "Always Edit rather than Open Connections when double clicking?";
+            this.chkAlwaysEdit.UseVisualStyleBackColor = true;
+            this.chkAlwaysEdit.CheckedChanged += new System.EventHandler(this.chkAlwaysEdit_CheckedChanged);
             // 
             // StartPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(498, 357);
-            this.Controls.Add(this.chkAlwaysShow);
-            this.Controls.Add(this.grpFavourites);
-            this.Controls.Add(this.grpRecent);
+            this.ClientSize = new System.Drawing.Size(498, 412);
+            this.Controls.Add(this.chkAlwaysEdit);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnNewConnection);
+            this.Controls.Add(this.grpFavourites);
+            this.Controls.Add(this.chkAlwaysShow);
+            this.Controls.Add(this.grpRecent);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -182,5 +206,7 @@
         private System.Windows.Forms.ToolStripMenuItem mnuEditFave;
         private System.Windows.Forms.ContextMenuStrip mnuRecentConnections;
         private System.Windows.Forms.ToolStripMenuItem mnuEditRecent;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkAlwaysEdit;
     }
 }

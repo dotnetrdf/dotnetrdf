@@ -42,6 +42,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Configuration;
 using VDS.RDF.Writing;
+using VDS.RDF.Utilities.StoreManager.Connections;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
@@ -59,6 +60,14 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
+
+            //Ensure we upgrade settings if user has come from an older version of the application
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.Save();
+                Properties.Settings.Default.Reload();
+            }
 
             //Enable UTF-8 BOM Output if relevant
             Options.UseBomForUtf8 = false;
@@ -103,6 +112,10 @@ namespace VDS.RDF.Utilities.StoreManager
             //Ensure Configuration Loader has any required Object Factorires registered
             ConfigurationLoader.AddObjectFactory(new AdoObjectFactory());
             ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
+            ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
+
+            //Prepare Connection Definitions so users don't get a huge lag the first time they use these
+            ConnectionDefinitionManager.GetDefinitions().Count();
         }
 
         private void fclsManager_Load(object sender, EventArgs e)
@@ -339,6 +352,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     item.Tag = new QuickConnect(config, r["obj"]);
                     item.Click += new EventHandler(QuickConnectClick);
 
+                    ToolStripMenuItem edit = new ToolStripMenuItem();
+                    edit.Text = "Edit Connection";
+                    edit.Tag = item.Tag;
+                    edit.Click += new EventHandler(QuickEditClick);
+                    item.DropDownItems.Add(edit);
+
                     if (addRemoveOption)
                     {
                         ToolStripMenuItem remove = new ToolStripMenuItem();
@@ -349,7 +368,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
                         ToolStripMenuItem connect = new ToolStripMenuItem();
                         connect.Text = "Open Connection";
-                        connect.Tag = new QuickConnect(config, r["obj"]);
+                        connect.Tag = item.Tag;
                         connect.Click += new EventHandler(QuickConnectClick);
                         item.DropDownItems.Add(connect);
                     }
@@ -417,6 +436,67 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void QuickEditClick(object sender, EventArgs e)
+        {
+            if (sender == null) return;
+            Object tag = null;
+            if (sender is Control)
+            {
+                tag = ((Control)sender).Tag;
+            }
+            else if (sender is ToolStripItem)
+            {
+                tag = ((ToolStripItem)sender).Tag;
+            }
+            else if (sender is Menu)
+            {
+                tag = ((Menu)sender).Tag;
+            }
+
+            if (tag != null)
+            {
+                if (tag is QuickConnect)
+                {
+                    QuickConnect qc = (QuickConnect)tag;
+                    try
+                    {
+                        if (qc.Type != null)
+                        {
+                            IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(qc.Type);
+                            if (def != null)
+                            {
+                                EditConnectionForm editConn = new EditConnectionForm(def);
+                                if (editConn.ShowDialog() == DialogResult.OK)
+                                {
+                                    IStorageProvider manager = editConn.Connection;
+                                    StoreManagerForm storeManager = new StoreManagerForm(manager);
+                                    storeManager.MdiParent = Program.MainForm;
+                                    storeManager.Show();
+
+                                    //Add to Recent Connections
+                                    this.AddRecentConnection(manager);
+
+                                    this.Close();
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("This Connection is not ediatable", "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("This Connection is not ediatable", "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Unable to edit the Connection due to an error: " + ex.Message, "Quick Edit Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+            }
+        }
+
         private void QuickRemoveClick(object sender, EventArgs e)
         {
             if (sender == null) return;
@@ -441,14 +521,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             INode objNode = this.AddConnection(this._recentConnections, manager, this._recentConnectionsFile);
 
-            if (objNode != null)
-            {
-                ToolStripMenuItem item = new ToolStripMenuItem();
-                item.Text = manager.ToString();
-                item.Tag = new QuickConnect(this._recentConnections, objNode);
-                item.Click += new EventHandler(QuickConnectClick);
-                this.mnuRecentConnections.DropDownItems.Add(item);
-            }
+            if (objNode != null) this.AddConnectionToMenu(manager, this._recentConnections, objNode, this.mnuRecentConnections, this._recentConnectionsFile, false);
 
             //Check the number of Recent Connections and delete the Oldest if more than 9
             List<INode> conns = this._recentConnections.GetTriplesWithPredicateObject(this._recentConnections.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), this._recentConnections.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + ConfigurationLoader.ClassGenericManager.Substring(ConfigurationLoader.ClassGenericManager.IndexOf(':') + 1)))).Select(t => t.Subject).ToList();
@@ -481,27 +554,40 @@ namespace VDS.RDF.Utilities.StoreManager
         public void AddFavouriteConnection(IStorageProvider manager)
         {
             INode objNode = this.AddConnection(this._faveConnections, manager, this._faveConnectionsFile);
+            this.AddConnectionToMenu(manager, this._faveConnections, objNode, this.mnuFavouriteConnections, this._faveConnectionsFile, true);    
+        }
 
+        private void AddConnectionToMenu(IStorageProvider manager, IGraph g, INode objNode, ToolStripMenuItem parentItem, String persistentFile, bool addRemove)
+        {
             if (objNode != null)
             {
                 ToolStripMenuItem item = new ToolStripMenuItem();
                 item.Text = manager.ToString();
-                item.Tag = new QuickConnect(this._faveConnections, objNode);
+                item.Tag = new QuickConnect(g, objNode);
                 item.Click += new EventHandler(QuickConnectClick);
 
-                ToolStripMenuItem remove = new ToolStripMenuItem();
-                remove.Text = "Remove Connection from this List";
-                remove.Tag = new QuickRemove(this.mnuFavouriteConnections, this._faveConnections, objNode, this._faveConnectionsFile);
-                remove.Click += new EventHandler(QuickRemoveClick);
-                item.DropDownItems.Add(remove);
+                ToolStripMenuItem edit = new ToolStripMenuItem();
+                edit.Text = "Edit Connection";
+                edit.Tag = item.Tag;
+                edit.Click += new EventHandler(QuickEditClick);
+                item.DropDownItems.Add(edit);
 
-                ToolStripMenuItem connect = new ToolStripMenuItem();
-                connect.Text = "Open Connection";
-                connect.Tag = new QuickConnect(this._faveConnections, objNode);
-                connect.Click += new EventHandler(QuickConnectClick);
-                item.DropDownItems.Add(connect);
+                if (addRemove)
+                {
+                    ToolStripMenuItem remove = new ToolStripMenuItem();
+                    remove.Text = "Remove Connection from this List";
+                    remove.Tag = new QuickRemove(parentItem, g, objNode, persistentFile);
+                    remove.Click += new EventHandler(QuickRemoveClick);
+                    item.DropDownItems.Add(remove);
 
-                this.mnuFavouriteConnections.DropDownItems.Add(item);
+                    ToolStripMenuItem connect = new ToolStripMenuItem();
+                    connect.Text = "Open Connection";
+                    connect.Tag = item.Tag;
+                    connect.Click += new EventHandler(QuickConnectClick);
+                    item.DropDownItems.Add(connect);
+                }
+
+                parentItem.DropDownItems.Add(item);
             }
         }
 
@@ -621,5 +707,13 @@ namespace VDS.RDF.Utilities.StoreManager
             Properties.Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
             Properties.Settings.Default.Save();
         }
+
+        private void mnuStartPage_Click(object sender, EventArgs e)
+        {
+            StartPage start = new StartPage(this._recentConnections, this._faveConnections);
+            start.Owner = this;
+            start.ShowDialog();
+        }
+
     }
 }

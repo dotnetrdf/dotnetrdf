@@ -49,21 +49,42 @@ namespace VDS.RDF.Utilities.StoreManager
     public partial class AboutForm
         : Form
     {
+        private HashSet<Assembly> _assemblies = new HashSet<Assembly>();
+
         public AboutForm()
         {
             InitializeComponent();
             this.lblAppVersionActual.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             this.lblApiVersionActual.Text = Assembly.GetAssembly(typeof(IGraph)).GetName().Version.ToString();
 
+            ShowDetectedAssemblies();
+        }
+
+        private void ShowDetectedAssemblies()
+        {
             Assembly current = Assembly.GetExecutingAssembly();
             foreach (Type t in ConnectionDefinitionManager.DefinitionTypes)
             {
                 Assembly assm = Assembly.GetAssembly(t);
                 if (!ReferenceEquals(current, assm))
                 {
-                    this.lstPlugins.Items.Add(assm.ToString());
+                    if (!this._assemblies.Contains(assm))
+                    {
+                        this._assemblies.Add(assm);
+                        this.lstPlugins.Items.Add(assm.ToString());
+                    }
                 }
             }
+        }
+
+        private void btnRescan_Click(object sender, EventArgs e)
+        {
+            this._assemblies.Clear();
+            this.lstPlugins.BeginUpdate();
+            this.lstPlugins.Items.Clear();
+            ConnectionDefinitionManager.ScanPlugins();
+            this.ShowDetectedAssemblies();
+            this.lstPlugins.EndUpdate();
         }
     }
 }

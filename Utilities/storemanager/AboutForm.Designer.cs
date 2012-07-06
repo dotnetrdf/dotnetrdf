@@ -37,6 +37,7 @@
             this.lblInfo = new System.Windows.Forms.Label();
             this.grpPlugins = new System.Windows.Forms.GroupBox();
             this.lstPlugins = new System.Windows.Forms.ListBox();
+            this.btnRescan = new System.Windows.Forms.Button();
             this.tlpAbout.SuspendLayout();
             this.grpPlugins.SuspendLayout();
             this.SuspendLayout();
@@ -57,57 +58,57 @@
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpAbout.Size = new System.Drawing.Size(284, 162);
+            this.tlpAbout.Size = new System.Drawing.Size(411, 162);
             this.tlpAbout.TabIndex = 0;
             // 
             // lblApiVersionActual
             // 
-            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersionActual.AutoSize = true;
-            this.lblApiVersionActual.Location = new System.Drawing.Point(145, 30);
+            this.lblApiVersionActual.Location = new System.Drawing.Point(208, 30);
             this.lblApiVersionActual.Name = "lblApiVersionActual";
-            this.lblApiVersionActual.Size = new System.Drawing.Size(136, 30);
+            this.lblApiVersionActual.Size = new System.Drawing.Size(200, 30);
             this.lblApiVersionActual.TabIndex = 3;
             this.lblApiVersionActual.Text = "{0}";
             this.lblApiVersionActual.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblAppVersionActual
             // 
-            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersionActual.AutoSize = true;
-            this.lblAppVersionActual.Location = new System.Drawing.Point(145, 0);
+            this.lblAppVersionActual.Location = new System.Drawing.Point(208, 0);
             this.lblAppVersionActual.Name = "lblAppVersionActual";
-            this.lblAppVersionActual.Size = new System.Drawing.Size(136, 30);
+            this.lblAppVersionActual.Size = new System.Drawing.Size(200, 30);
             this.lblAppVersionActual.TabIndex = 2;
             this.lblAppVersionActual.Text = "{0}";
             this.lblAppVersionActual.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblAppVersion
             // 
-            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersion.AutoSize = true;
             this.lblAppVersion.Location = new System.Drawing.Point(3, 0);
             this.lblAppVersion.Name = "lblAppVersion";
-            this.lblAppVersion.Size = new System.Drawing.Size(136, 30);
+            this.lblAppVersion.Size = new System.Drawing.Size(199, 30);
             this.lblAppVersion.TabIndex = 0;
             this.lblAppVersion.Text = "Store Manager Version:";
             this.lblAppVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblApiVersion
             // 
-            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersion.AutoSize = true;
             this.lblApiVersion.Location = new System.Drawing.Point(3, 30);
             this.lblApiVersion.Name = "lblApiVersion";
-            this.lblApiVersion.Size = new System.Drawing.Size(136, 30);
+            this.lblApiVersion.Size = new System.Drawing.Size(199, 30);
             this.lblApiVersion.TabIndex = 1;
             this.lblApiVersion.Text = "dotNetRDF Version:";
             this.lblApiVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -118,40 +119,51 @@
             this.tlpAbout.SetColumnSpan(this.lblInfo, 2);
             this.lblInfo.Location = new System.Drawing.Point(3, 60);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(275, 91);
+            this.lblInfo.Size = new System.Drawing.Size(399, 78);
             this.lblInfo.TabIndex = 4;
             this.lblInfo.Text = resources.GetString("lblInfo.Text");
             // 
             // grpPlugins
             // 
+            this.grpPlugins.Controls.Add(this.btnRescan);
             this.grpPlugins.Controls.Add(this.lstPlugins);
             this.grpPlugins.Location = new System.Drawing.Point(12, 180);
             this.grpPlugins.Name = "grpPlugins";
-            this.grpPlugins.Size = new System.Drawing.Size(284, 100);
+            this.grpPlugins.Size = new System.Drawing.Size(411, 127);
             this.grpPlugins.TabIndex = 1;
             this.grpPlugins.TabStop = false;
-            this.grpPlugins.Text = "Detected Plugins";
+            this.grpPlugins.Text = "Detected Connection Definition Sources and Plugins";
             // 
             // lstPlugins
             // 
             this.lstPlugins.FormattingEnabled = true;
             this.lstPlugins.Location = new System.Drawing.Point(6, 19);
             this.lstPlugins.Name = "lstPlugins";
-            this.lstPlugins.Size = new System.Drawing.Size(272, 69);
+            this.lstPlugins.Size = new System.Drawing.Size(396, 69);
             this.lstPlugins.TabIndex = 0;
             // 
-            // fclsAbout
+            // btnRescan
+            // 
+            this.btnRescan.Location = new System.Drawing.Point(327, 94);
+            this.btnRescan.Name = "btnRescan";
+            this.btnRescan.Size = new System.Drawing.Size(75, 23);
+            this.btnRescan.TabIndex = 1;
+            this.btnRescan.Text = "Rescan Plugins";
+            this.btnRescan.UseVisualStyleBackColor = true;
+            this.btnRescan.Click += new System.EventHandler(this.btnRescan_Click);
+            // 
+            // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 284);
+            this.ClientSize = new System.Drawing.Size(435, 319);
             this.Controls.Add(this.grpPlugins);
             this.Controls.Add(this.tlpAbout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "fclsAbout";
+            this.Name = "AboutForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "About Store Manager";
@@ -172,5 +184,6 @@
         private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.GroupBox grpPlugins;
         private System.Windows.Forms.ListBox lstPlugins;
+        private System.Windows.Forms.Button btnRescan;
     }
 }
