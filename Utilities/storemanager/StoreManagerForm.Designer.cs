@@ -85,6 +85,10 @@
             this.txtExportFile = new System.Windows.Forms.TextBox();
             this.lblExportFile = new System.Windows.Forms.Label();
             this.lblExport = new System.Windows.Forms.Label();
+            this.tabServer = new System.Windows.Forms.TabPage();
+            this.btnRefreshStores = new System.Windows.Forms.Button();
+            this.lvwStores = new System.Windows.Forms.ListView();
+            this.colStoreID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabInfo = new System.Windows.Forms.TabPage();
             this.propInfo = new System.Windows.Forms.PropertyGrid();
             this.lblInfo = new System.Windows.Forms.Label();
@@ -109,6 +113,7 @@
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
+            this.lblStoreListUnavailable = new System.Windows.Forms.Label();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -122,6 +127,7 @@
             this.grpImport.SuspendLayout();
             this.tabExport.SuspendLayout();
             this.grpExport.SuspendLayout();
+            this.tabServer.SuspendLayout();
             this.tabInfo.SuspendLayout();
             this.tabTasks.SuspendLayout();
             this.mnuTasks.SuspendLayout();
@@ -135,12 +141,13 @@
             this.tabFunctions.Controls.Add(this.tabSparqlUpdate);
             this.tabFunctions.Controls.Add(this.tabImport);
             this.tabFunctions.Controls.Add(this.tabExport);
+            this.tabFunctions.Controls.Add(this.tabServer);
             this.tabFunctions.Controls.Add(this.tabInfo);
             this.tabFunctions.Controls.Add(this.tabTasks);
             this.tabFunctions.Location = new System.Drawing.Point(12, 12);
             this.tabFunctions.Name = "tabFunctions";
             this.tabFunctions.SelectedIndex = 0;
-            this.tabFunctions.Size = new System.Drawing.Size(522, 334);
+            this.tabFunctions.Size = new System.Drawing.Size(623, 334);
             this.tabFunctions.TabIndex = 0;
             // 
             // tabGraphs
@@ -151,7 +158,7 @@
             this.tabGraphs.Location = new System.Drawing.Point(4, 22);
             this.tabGraphs.Name = "tabGraphs";
             this.tabGraphs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGraphs.Size = new System.Drawing.Size(514, 308);
+            this.tabGraphs.Size = new System.Drawing.Size(615, 308);
             this.tabGraphs.TabIndex = 0;
             this.tabGraphs.Text = "Graphs";
             this.tabGraphs.UseVisualStyleBackColor = true;
@@ -159,19 +166,19 @@
             // lblGraphListUnavailable
             // 
             this.lblGraphListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGraphListUnavailable.Location = new System.Drawing.Point(26, 117);
+            this.lblGraphListUnavailable.Location = new System.Drawing.Point(23, 117);
             this.lblGraphListUnavailable.Name = "lblGraphListUnavailable";
-            this.lblGraphListUnavailable.Size = new System.Drawing.Size(463, 40);
+            this.lblGraphListUnavailable.Size = new System.Drawing.Size(568, 40);
             this.lblGraphListUnavailable.TabIndex = 6;
             this.lblGraphListUnavailable.Text = "Unable to list Graphs since your selected Store does not support this feature fro" +
-                "m within this Tool";
+    "m within this Tool";
             this.lblGraphListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblGraphListUnavailable.Visible = false;
             // 
             // btnGraphRefresh
             // 
             this.btnGraphRefresh.Enabled = false;
-            this.btnGraphRefresh.Location = new System.Drawing.Point(218, 279);
+            this.btnGraphRefresh.Location = new System.Drawing.Point(269, 279);
             this.btnGraphRefresh.Name = "btnGraphRefresh";
             this.btnGraphRefresh.Size = new System.Drawing.Size(76, 23);
             this.btnGraphRefresh.TabIndex = 5;
@@ -191,7 +198,7 @@
             this.lvwGraphs.Location = new System.Drawing.Point(6, 6);
             this.lvwGraphs.MultiSelect = false;
             this.lvwGraphs.Name = "lvwGraphs";
-            this.lvwGraphs.Size = new System.Drawing.Size(502, 267);
+            this.lvwGraphs.Size = new System.Drawing.Size(603, 267);
             this.lvwGraphs.TabIndex = 4;
             this.lvwGraphs.UseCompatibleStateImageBehavior = false;
             this.lvwGraphs.View = System.Windows.Forms.View.Details;
@@ -200,7 +207,7 @@
             // colGraphURI
             // 
             this.colGraphURI.Text = "Graph URI";
-            this.colGraphURI.Width = 490;
+            this.colGraphURI.Width = 583;
             // 
             // mnuGraphs
             // 
@@ -303,7 +310,7 @@
             this.tabSparqlQuery.Location = new System.Drawing.Point(4, 22);
             this.tabSparqlQuery.Name = "tabSparqlQuery";
             this.tabSparqlQuery.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSparqlQuery.Size = new System.Drawing.Size(514, 308);
+            this.tabSparqlQuery.Size = new System.Drawing.Size(615, 308);
             this.tabSparqlQuery.TabIndex = 1;
             this.tabSparqlQuery.Text = "SPARQL Query";
             this.tabSparqlQuery.UseVisualStyleBackColor = true;
@@ -339,12 +346,12 @@
             this.chkPageQuery.Size = new System.Drawing.Size(390, 17);
             this.chkPageQuery.TabIndex = 2;
             this.chkPageQuery.Text = "Issue this query repeatedly until there are no further results using page size of" +
-                " ";
+    " ";
             this.chkPageQuery.UseVisualStyleBackColor = true;
             // 
             // btnLoadQuery
             // 
-            this.btnLoadQuery.Location = new System.Drawing.Point(220, 279);
+            this.btnLoadQuery.Location = new System.Drawing.Point(270, 279);
             this.btnLoadQuery.Name = "btnLoadQuery";
             this.btnLoadQuery.Size = new System.Drawing.Size(75, 23);
             this.btnLoadQuery.TabIndex = 5;
@@ -354,7 +361,7 @@
             // 
             // btnSaveQuery
             // 
-            this.btnSaveQuery.Location = new System.Drawing.Point(139, 279);
+            this.btnSaveQuery.Location = new System.Drawing.Point(189, 279);
             this.btnSaveQuery.Name = "btnSaveQuery";
             this.btnSaveQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSaveQuery.TabIndex = 4;
@@ -364,7 +371,7 @@
             // 
             // btnSparqlQuery
             // 
-            this.btnSparqlQuery.Location = new System.Drawing.Point(301, 279);
+            this.btnSparqlQuery.Location = new System.Drawing.Point(351, 279);
             this.btnSparqlQuery.Name = "btnSparqlQuery";
             this.btnSparqlQuery.Size = new System.Drawing.Size(75, 23);
             this.btnSparqlQuery.TabIndex = 6;
@@ -379,17 +386,17 @@
             this.txtSparqlQuery.Multiline = true;
             this.txtSparqlQuery.Name = "txtSparqlQuery";
             this.txtSparqlQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlQuery.Size = new System.Drawing.Size(502, 185);
+            this.txtSparqlQuery.Size = new System.Drawing.Size(603, 185);
             this.txtSparqlQuery.TabIndex = 1;
             this.txtSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
-                "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
-                "\n";
+    "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
+    "\n";
             // 
             // lblQueryIntro
             // 
             this.lblQueryIntro.Location = new System.Drawing.Point(3, 12);
             this.lblQueryIntro.Name = "lblQueryIntro";
-            this.lblQueryIntro.Size = new System.Drawing.Size(505, 61);
+            this.lblQueryIntro.Size = new System.Drawing.Size(606, 61);
             this.lblQueryIntro.TabIndex = 0;
             this.lblQueryIntro.Text = resources.GetString("lblQueryIntro.Text");
             // 
@@ -401,7 +408,7 @@
             this.tabSparqlUpdate.Controls.Add(this.lblUpdateIntro);
             this.tabSparqlUpdate.Location = new System.Drawing.Point(4, 22);
             this.tabSparqlUpdate.Name = "tabSparqlUpdate";
-            this.tabSparqlUpdate.Size = new System.Drawing.Size(514, 308);
+            this.tabSparqlUpdate.Size = new System.Drawing.Size(615, 308);
             this.tabSparqlUpdate.TabIndex = 3;
             this.tabSparqlUpdate.Text = "SPARQL Update";
             this.tabSparqlUpdate.UseVisualStyleBackColor = true;
@@ -417,7 +424,7 @@
             // 
             // btnSparqlUpdate
             // 
-            this.btnSparqlUpdate.Location = new System.Drawing.Point(220, 282);
+            this.btnSparqlUpdate.Location = new System.Drawing.Point(270, 282);
             this.btnSparqlUpdate.Name = "btnSparqlUpdate";
             this.btnSparqlUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnSparqlUpdate.TabIndex = 3;
@@ -432,17 +439,17 @@
             this.txtSparqlUpdate.Multiline = true;
             this.txtSparqlUpdate.Name = "txtSparqlUpdate";
             this.txtSparqlUpdate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlUpdate.Size = new System.Drawing.Size(502, 215);
+            this.txtSparqlUpdate.Size = new System.Drawing.Size(606, 215);
             this.txtSparqlUpdate.TabIndex = 2;
             this.txtSparqlUpdate.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
-                "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
-                "\n";
+    "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
+    "\n";
             // 
             // lblUpdateIntro
             // 
             this.lblUpdateIntro.Location = new System.Drawing.Point(3, 12);
             this.lblUpdateIntro.Name = "lblUpdateIntro";
-            this.lblUpdateIntro.Size = new System.Drawing.Size(508, 46);
+            this.lblUpdateIntro.Size = new System.Drawing.Size(609, 46);
             this.lblUpdateIntro.TabIndex = 0;
             this.lblUpdateIntro.Text = resources.GetString("lblUpdateIntro.Text");
             // 
@@ -454,7 +461,7 @@
             this.tabImport.Controls.Add(this.grpImport);
             this.tabImport.Location = new System.Drawing.Point(4, 22);
             this.tabImport.Name = "tabImport";
-            this.tabImport.Size = new System.Drawing.Size(514, 308);
+            this.tabImport.Size = new System.Drawing.Size(615, 308);
             this.tabImport.TabIndex = 2;
             this.tabImport.Text = "Import Data";
             this.tabImport.UseVisualStyleBackColor = true;
@@ -466,7 +473,7 @@
             this.grpImportBatchSize.Controls.Add(this.lblBatchSize);
             this.grpImportBatchSize.Location = new System.Drawing.Point(6, 173);
             this.grpImportBatchSize.Name = "grpImportBatchSize";
-            this.grpImportBatchSize.Size = new System.Drawing.Size(505, 37);
+            this.grpImportBatchSize.Size = new System.Drawing.Size(606, 37);
             this.grpImportBatchSize.TabIndex = 10;
             this.grpImportBatchSize.TabStop = false;
             this.grpImportBatchSize.Text = "Import Batch Size";
@@ -523,7 +530,7 @@
             this.grpImportOptions.Controls.Add(this.chkImportDefaultUri);
             this.grpImportOptions.Location = new System.Drawing.Point(6, 216);
             this.grpImportOptions.Name = "grpImportOptions";
-            this.grpImportOptions.Size = new System.Drawing.Size(505, 89);
+            this.grpImportOptions.Size = new System.Drawing.Size(606, 89);
             this.grpImportOptions.TabIndex = 9;
             this.grpImportOptions.TabStop = false;
             this.grpImportOptions.Text = "Default Target Graph URI";
@@ -533,7 +540,7 @@
             this.txtImportDefaultGraph.Enabled = false;
             this.txtImportDefaultGraph.Location = new System.Drawing.Point(20, 63);
             this.txtImportDefaultGraph.Name = "txtImportDefaultGraph";
-            this.txtImportDefaultGraph.Size = new System.Drawing.Size(476, 20);
+            this.txtImportDefaultGraph.Size = new System.Drawing.Size(580, 20);
             this.txtImportDefaultGraph.TabIndex = 1;
             // 
             // chkImportDefaultUri
@@ -541,7 +548,7 @@
             this.chkImportDefaultUri.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkImportDefaultUri.Location = new System.Drawing.Point(6, 19);
             this.chkImportDefaultUri.Name = "chkImportDefaultUri";
-            this.chkImportDefaultUri.Size = new System.Drawing.Size(490, 51);
+            this.chkImportDefaultUri.Size = new System.Drawing.Size(594, 51);
             this.chkImportDefaultUri.TabIndex = 0;
             this.chkImportDefaultUri.Text = resources.GetString("chkImportDefaultUri.Text");
             this.chkImportDefaultUri.TextAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -552,7 +559,7 @@
             // 
             this.lblImport.Location = new System.Drawing.Point(3, 14);
             this.lblImport.Name = "lblImport";
-            this.lblImport.Size = new System.Drawing.Size(508, 73);
+            this.lblImport.Size = new System.Drawing.Size(609, 73);
             this.lblImport.TabIndex = 8;
             this.lblImport.Text = resources.GetString("lblImport.Text");
             // 
@@ -567,14 +574,14 @@
             this.grpImport.Controls.Add(this.lblFile);
             this.grpImport.Location = new System.Drawing.Point(6, 89);
             this.grpImport.Name = "grpImport";
-            this.grpImport.Size = new System.Drawing.Size(505, 76);
+            this.grpImport.Size = new System.Drawing.Size(606, 76);
             this.grpImport.TabIndex = 0;
             this.grpImport.TabStop = false;
             this.grpImport.Text = "Data Source";
             // 
             // btnImportUri
             // 
-            this.btnImportUri.Location = new System.Drawing.Point(427, 45);
+            this.btnImportUri.Location = new System.Drawing.Point(525, 45);
             this.btnImportUri.Name = "btnImportUri";
             this.btnImportUri.Size = new System.Drawing.Size(75, 23);
             this.btnImportUri.TabIndex = 7;
@@ -586,7 +593,7 @@
             // 
             this.txtImportUri.Location = new System.Drawing.Point(38, 47);
             this.txtImportUri.Name = "txtImportUri";
-            this.txtImportUri.Size = new System.Drawing.Size(383, 20);
+            this.txtImportUri.Size = new System.Drawing.Size(481, 20);
             this.txtImportUri.TabIndex = 6;
             // 
             // lblUri
@@ -600,7 +607,7 @@
             // 
             // btnImportFile
             // 
-            this.btnImportFile.Location = new System.Drawing.Point(427, 19);
+            this.btnImportFile.Location = new System.Drawing.Point(525, 19);
             this.btnImportFile.Name = "btnImportFile";
             this.btnImportFile.Size = new System.Drawing.Size(75, 23);
             this.btnImportFile.TabIndex = 4;
@@ -610,7 +617,7 @@
             // 
             // btnBrowseImport
             // 
-            this.btnBrowseImport.Location = new System.Drawing.Point(346, 19);
+            this.btnBrowseImport.Location = new System.Drawing.Point(444, 19);
             this.btnBrowseImport.Name = "btnBrowseImport";
             this.btnBrowseImport.Size = new System.Drawing.Size(75, 23);
             this.btnBrowseImport.TabIndex = 3;
@@ -622,7 +629,7 @@
             // 
             this.txtImportFile.Location = new System.Drawing.Point(38, 21);
             this.txtImportFile.Name = "txtImportFile";
-            this.txtImportFile.Size = new System.Drawing.Size(302, 20);
+            this.txtImportFile.Size = new System.Drawing.Size(400, 20);
             this.txtImportFile.TabIndex = 2;
             // 
             // lblFile
@@ -640,7 +647,7 @@
             this.tabExport.Controls.Add(this.lblExport);
             this.tabExport.Location = new System.Drawing.Point(4, 22);
             this.tabExport.Name = "tabExport";
-            this.tabExport.Size = new System.Drawing.Size(514, 308);
+            this.tabExport.Size = new System.Drawing.Size(615, 308);
             this.tabExport.TabIndex = 5;
             this.tabExport.Text = "Export Data";
             this.tabExport.UseVisualStyleBackColor = true;
@@ -653,14 +660,14 @@
             this.grpExport.Controls.Add(this.lblExportFile);
             this.grpExport.Location = new System.Drawing.Point(6, 72);
             this.grpExport.Name = "grpExport";
-            this.grpExport.Size = new System.Drawing.Size(505, 82);
+            this.grpExport.Size = new System.Drawing.Size(596, 82);
             this.grpExport.TabIndex = 10;
             this.grpExport.TabStop = false;
             this.grpExport.Text = "Export Destination";
             // 
             // btnExportStore
             // 
-            this.btnExportStore.Location = new System.Drawing.Point(215, 47);
+            this.btnExportStore.Location = new System.Drawing.Point(261, 47);
             this.btnExportStore.Name = "btnExportStore";
             this.btnExportStore.Size = new System.Drawing.Size(75, 23);
             this.btnExportStore.TabIndex = 7;
@@ -670,7 +677,7 @@
             // 
             // btnBrowseExport
             // 
-            this.btnBrowseExport.Location = new System.Drawing.Point(424, 19);
+            this.btnBrowseExport.Location = new System.Drawing.Point(515, 18);
             this.btnBrowseExport.Name = "btnBrowseExport";
             this.btnBrowseExport.Size = new System.Drawing.Size(75, 23);
             this.btnBrowseExport.TabIndex = 6;
@@ -682,7 +689,7 @@
             // 
             this.txtExportFile.Location = new System.Drawing.Point(39, 21);
             this.txtExportFile.Name = "txtExportFile";
-            this.txtExportFile.Size = new System.Drawing.Size(379, 20);
+            this.txtExportFile.Size = new System.Drawing.Size(470, 20);
             this.txtExportFile.TabIndex = 5;
             // 
             // lblExportFile
@@ -698,9 +705,55 @@
             // 
             this.lblExport.Location = new System.Drawing.Point(3, 14);
             this.lblExport.Name = "lblExport";
-            this.lblExport.Size = new System.Drawing.Size(508, 64);
+            this.lblExport.Size = new System.Drawing.Size(599, 64);
             this.lblExport.TabIndex = 9;
             this.lblExport.Text = resources.GetString("lblExport.Text");
+            // 
+            // tabServer
+            // 
+            this.tabServer.Controls.Add(this.lblStoreListUnavailable);
+            this.tabServer.Controls.Add(this.btnRefreshStores);
+            this.tabServer.Controls.Add(this.lvwStores);
+            this.tabServer.Location = new System.Drawing.Point(4, 22);
+            this.tabServer.Name = "tabServer";
+            this.tabServer.Padding = new System.Windows.Forms.Padding(3);
+            this.tabServer.Size = new System.Drawing.Size(615, 308);
+            this.tabServer.TabIndex = 7;
+            this.tabServer.Text = "Server Management";
+            this.tabServer.UseVisualStyleBackColor = true;
+            // 
+            // btnRefreshStores
+            // 
+            this.btnRefreshStores.Enabled = false;
+            this.btnRefreshStores.Location = new System.Drawing.Point(269, 279);
+            this.btnRefreshStores.Name = "btnRefreshStores";
+            this.btnRefreshStores.Size = new System.Drawing.Size(76, 23);
+            this.btnRefreshStores.TabIndex = 6;
+            this.btnRefreshStores.Text = "&Refresh";
+            this.btnRefreshStores.UseVisualStyleBackColor = true;
+            this.btnRefreshStores.Click += new System.EventHandler(this.btnRefreshStores_Click);
+            // 
+            // lvwStores
+            // 
+            this.lvwStores.AllowDrop = true;
+            this.lvwStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colStoreID});
+            this.lvwStores.ContextMenuStrip = this.mnuGraphs;
+            this.lvwStores.FullRowSelect = true;
+            this.lvwStores.GridLines = true;
+            this.lvwStores.HideSelection = false;
+            this.lvwStores.Location = new System.Drawing.Point(6, 6);
+            this.lvwStores.MultiSelect = false;
+            this.lvwStores.Name = "lvwStores";
+            this.lvwStores.Size = new System.Drawing.Size(603, 267);
+            this.lvwStores.TabIndex = 5;
+            this.lvwStores.UseCompatibleStateImageBehavior = false;
+            this.lvwStores.View = System.Windows.Forms.View.Details;
+            // 
+            // colStoreID
+            // 
+            this.colStoreID.Text = "Store ID";
+            this.colStoreID.Width = 583;
             // 
             // tabInfo
             // 
@@ -709,7 +762,7 @@
             this.tabInfo.Location = new System.Drawing.Point(4, 22);
             this.tabInfo.Name = "tabInfo";
             this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInfo.Size = new System.Drawing.Size(514, 308);
+            this.tabInfo.Size = new System.Drawing.Size(615, 308);
             this.tabInfo.TabIndex = 6;
             this.tabInfo.Text = "Information";
             this.tabInfo.UseVisualStyleBackColor = true;
@@ -718,14 +771,14 @@
             // 
             this.propInfo.Location = new System.Drawing.Point(6, 57);
             this.propInfo.Name = "propInfo";
-            this.propInfo.Size = new System.Drawing.Size(502, 245);
+            this.propInfo.Size = new System.Drawing.Size(603, 245);
             this.propInfo.TabIndex = 2;
             // 
             // lblInfo
             // 
             this.lblInfo.Location = new System.Drawing.Point(3, 12);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(505, 52);
+            this.lblInfo.Size = new System.Drawing.Size(606, 52);
             this.lblInfo.TabIndex = 1;
             this.lblInfo.Text = resources.GetString("lblInfo.Text");
             // 
@@ -737,7 +790,7 @@
             this.tabTasks.Location = new System.Drawing.Point(4, 22);
             this.tabTasks.Name = "tabTasks";
             this.tabTasks.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTasks.Size = new System.Drawing.Size(514, 308);
+            this.tabTasks.Size = new System.Drawing.Size(615, 308);
             this.tabTasks.TabIndex = 4;
             this.tabTasks.Text = "Tasks";
             this.tabTasks.UseVisualStyleBackColor = true;
@@ -767,7 +820,7 @@
             this.lvwTasks.Location = new System.Drawing.Point(6, 59);
             this.lvwTasks.MultiSelect = false;
             this.lvwTasks.Name = "lvwTasks";
-            this.lvwTasks.Size = new System.Drawing.Size(502, 220);
+            this.lvwTasks.Size = new System.Drawing.Size(603, 220);
             this.lvwTasks.Sorting = System.Windows.Forms.SortOrder.Descending;
             this.lvwTasks.TabIndex = 1;
             this.lvwTasks.UseCompatibleStateImageBehavior = false;
@@ -781,17 +834,17 @@
             // colTask
             // 
             this.colTask.Text = "Task";
-            this.colTask.Width = 87;
+            this.colTask.Width = 127;
             // 
             // colState
             // 
             this.colState.Text = "Task State";
-            this.colState.Width = 98;
+            this.colState.Width = 108;
             // 
             // colInfo
             // 
             this.colInfo.Text = "Task Information";
-            this.colInfo.Width = 259;
+            this.colInfo.Width = 303;
             // 
             // mnuTasks
             // 
@@ -843,7 +896,7 @@
             // 
             this.lblTasks.Location = new System.Drawing.Point(3, 12);
             this.lblTasks.Name = "lblTasks";
-            this.lblTasks.Size = new System.Drawing.Size(505, 52);
+            this.lblTasks.Size = new System.Drawing.Size(606, 52);
             this.lblTasks.TabIndex = 0;
             this.lblTasks.Text = resources.GetString("lblTasks.Text");
             // 
@@ -856,9 +909,9 @@
             // 
             this.stsStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stsCurrent});
-            this.stsStatus.Location = new System.Drawing.Point(0, 349);
+            this.stsStatus.Location = new System.Drawing.Point(0, 354);
             this.stsStatus.Name = "stsStatus";
-            this.stsStatus.Size = new System.Drawing.Size(546, 22);
+            this.stsStatus.Size = new System.Drawing.Size(641, 22);
             this.stsStatus.SizingGrip = false;
             this.stsStatus.TabIndex = 1;
             // 
@@ -890,11 +943,23 @@
             // 
             this.sfdExport.Title = "Export Store As...";
             // 
+            // lblStoreListUnavailable
+            // 
+            this.lblStoreListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStoreListUnavailable.Location = new System.Drawing.Point(23, 134);
+            this.lblStoreListUnavailable.Name = "lblStoreListUnavailable";
+            this.lblStoreListUnavailable.Size = new System.Drawing.Size(568, 40);
+            this.lblStoreListUnavailable.TabIndex = 7;
+            this.lblStoreListUnavailable.Text = "Unable to list Stores since your selected Store does not support this feature fro" +
+    "m within this Tool";
+            this.lblStoreListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblStoreListUnavailable.Visible = false;
+            // 
             // StoreManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(546, 371);
+            this.ClientSize = new System.Drawing.Size(641, 376);
             this.Controls.Add(this.stsStatus);
             this.Controls.Add(this.tabFunctions);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -922,6 +987,7 @@
             this.tabExport.ResumeLayout(false);
             this.grpExport.ResumeLayout(false);
             this.grpExport.PerformLayout();
+            this.tabServer.ResumeLayout(false);
             this.tabInfo.ResumeLayout(false);
             this.tabTasks.ResumeLayout(false);
             this.tabTasks.PerformLayout();
@@ -1014,5 +1080,10 @@
         private System.Windows.Forms.TabPage tabInfo;
         private System.Windows.Forms.PropertyGrid propInfo;
         private System.Windows.Forms.Label lblInfo;
+        private System.Windows.Forms.TabPage tabServer;
+        private System.Windows.Forms.ListView lvwStores;
+        private System.Windows.Forms.ColumnHeader colStoreID;
+        private System.Windows.Forms.Button btnRefreshStores;
+        private System.Windows.Forms.Label lblStoreListUnavailable;
     }
 }

@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="lblImport.Text" xml:space="preserve">
-    <value>You can use this tool to import data into your Store.  You can either Import a RDF Graph from a File/URI or you can import a RDF Dataset (may contain multiple graphs e.g. NQuads) from a File/URI.  This tool will attempt to detect the format of the input and handle it appropriately.
-Please note that in many cases it may be more efficient to import data using the management tools provided with the Store rather than using this tool.</value>
-  </data>
   <metadata name="mnuGraphs.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>719, 20</value>
   </metadata>
@@ -132,6 +128,10 @@ Please note that in many cases it may be more efficient to import data using the
   </data>
   <data name="chkImportDefaultUri.Text" xml:space="preserve">
     <value>If Imported Data does not explicitly define Graphs to insert Triples into (i.e. is a RDF Graph rather than a RDF Dataset) use the following Graph URI.  Note that when Importing from a URI the URI will be used as the destination URI unless overridden by this option.</value>
+  </data>
+  <data name="lblImport.Text" xml:space="preserve">
+    <value>You can use this tool to import data into your Store.  You can either Import a RDF Graph from a File/URI or you can import a RDF Dataset (may contain multiple graphs e.g. NQuads) from a File/URI.  This tool will attempt to detect the format of the input and handle it appropriately.
+Please note that in many cases it may be more efficient to import data using the management tools provided with the Store rather than using this tool.</value>
   </data>
   <data name="lblExport.Text" xml:space="preserve">
     <value>You can use this tool to export data from a Store into a RDF Dataset format (e.g. NQuads).  If you want to export individual graphs double click on the Graph in the Graphs list and use the Export button there.

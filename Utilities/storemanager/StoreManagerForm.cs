@@ -112,6 +112,12 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.tabFunctions.TabPages.Remove(this.tabImport);
             }
 
+            //Disable Server Management for non Storage Servers
+            if (!(this._manager is IStorageServer))
+            {
+                this.tabFunctions.TabPages.Remove(this.tabServer);
+            }
+
             //Show Connection Information
             this.propInfo.SelectedObject = new Connections.ConnectionInfo(this._manager);
         }
@@ -122,6 +128,12 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             ListGraphsTask task = new ListGraphsTask(this._manager);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
+        }
+
+        public void ListStores()
+        {
+            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer);
+            this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
         private void ViewGraph(String graphUri)
@@ -339,6 +351,11 @@ namespace VDS.RDF.Utilities.StoreManager
             this.ListGraphs();
         }
 
+        private void btnRefreshStores_Click(object sender, EventArgs e)
+        {
+            this.ListStores();
+        }
+
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             this.ofdImport.Filter = MimeTypesHelper.GetFilenameFilter(true, true, false, false, false, false);
@@ -441,6 +458,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.stsCurrent.Text = "Store is ready";
                 this.ListGraphs();
+                this.ListStores();
                 this.timStartup.Stop();
             }
         }
@@ -954,6 +972,43 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void ListStoresCallback(ITask<IEnumerable<String>> task)
+        {
+            if (task.State == TaskState.Completed && task.Result != null)
+            {
+                this.CrossThreadSetText(this.stsCurrent, "Rendering Store List...");
+                this.CrossThreadSetVisibility(this.lvwStores, true);
+                this.CrossThreadBeginUpdate(this.lvwStores);
+                this.CrossThreadClear(this.lvwStores);
+
+                foreach (String id in task.Result)
+                {
+                    if (id != null)
+                    {
+                        this.CrossThreadAdd(this.lvwStores, id);
+                    }
+                }
+
+                this.CrossThreadEndUpdate(this.lvwStores);
+
+                this.CrossThreadSetText(this.stsCurrent, "Store is ready");
+                this.CrossThreadSetEnabled(this.btnRefreshStores, true);
+
+                task.Information = this.lvwStores.Items.Count + " Store IDs were returned";
+            }
+            else
+            {
+                this.CrossThreadSetText(this.stsCurrent, "Store Listing unavailable - Store is ready");
+                if (task.Error != null)
+                {
+                    CrossThreadMessage("Unable to list Stores due to the following error:\n" + task.Error.Message, "Store List Unavailable", MessageBoxIcon.Warning);
+                }
+                this.CrossThreadSetVisibility(this.lvwStores, false);
+                this.CrossThreadSetVisibility(this.lblStoreListUnavailable, true);
+                this.CrossThreadRefresh(this.tabServer);
+            }
+        }
+
         private void ViewGraphCallback(ITask<IGraph> task)
         {
             if (task.State == TaskState.Completed && task.Result != null)
@@ -1223,7 +1278,6 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this._manager.Dispose();
         }
-
     }
 
     class SortTasksByID : IComparer, IComparer<ListViewItem>
