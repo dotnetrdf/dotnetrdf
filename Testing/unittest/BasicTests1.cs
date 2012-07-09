@@ -288,6 +288,21 @@ namespace VDS.RDF.Test
             Assert.AreEqual(expected, actual.Uri);
         }
 
+        [TestMethod, ExpectedException(typeof(RdfException))]
+        public void UriResolutionUriProvidedToQNameMethod()
+        {
+            try
+            {
+                IGraph g = new Graph();
+                INode test = g.CreateUriNode("http://example.org");
+            }
+            catch (Exception ex)
+            {
+                TestTools.ReportError("Error", ex, false);
+                throw ex;
+            }
+        }
+
         [TestMethod]
         public void UriHashCodes()
         {

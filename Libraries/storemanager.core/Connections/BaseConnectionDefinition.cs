@@ -57,6 +57,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         /// </summary>
         /// <param name="storeName">Display Name of the Store</param>
         /// <param name="storeDescrip">Display Description of the Store</param>
+        /// <param name="t">Type of the connection instance that this definition will generate</param>
         public BaseConnectionDefinition(String storeName, String storeDescrip, Type t)
         {
             this.StoreName = storeName;

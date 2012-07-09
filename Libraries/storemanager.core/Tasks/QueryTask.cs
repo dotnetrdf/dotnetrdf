@@ -44,6 +44,9 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for running queries
+    /// </summary>
     public class QueryTask
         : NonCancellableTask<Object>
     {
@@ -55,6 +58,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private bool _usePaging = false;
         private int _pageSize = 1000;
 
+        /// <summary>
+        /// Creates a new Query Task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="query">Query</param>
         public QueryTask(IQueryableStorage manager, String query)
             : base("SPARQL Query")
         {
@@ -63,6 +71,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._query = query;
         }
 
+        /// <summary>
+        /// Creates a new Query Task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="query">Query</param>
+        /// <param name="pageSize">Page Size</param>
         public QueryTask(IQueryableStorage manager, String query, int pageSize)
             : this(manager, query)
         {
@@ -70,6 +84,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._pageSize = pageSize;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override object RunTaskInternal()
         {
             try
@@ -238,6 +256,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Returns that the task cannot be cancelled
+        /// </summary>
         public override bool IsCancellable
         {
             get 
@@ -246,6 +267,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets the query (assuming it is valid standard SPARQL)
+        /// </summary>
         public SparqlQuery Query
         {
             get

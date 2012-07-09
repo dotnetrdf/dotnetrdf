@@ -179,7 +179,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph()"/> call will append to existing data or overwrite it, see <see cref="ConnectionInfo.SaveToDefaultBehaviour"/> and <see cref="ConnectionInfo.SaveToNamedBehaviour"/> for more detailed information
+        /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph"/> call will append to existing data or overwrite it, see <see cref="ConnectionInfo.SaveToDefaultBehaviour"/> and <see cref="ConnectionInfo.SaveToNamedBehaviour"/> for more detailed information
         /// </summary>
         [Category("Features"),Description("When a data import is performed with Store Manager will the imported data be appended to any existing data in the target graph(s) or will it overwrite it?  If this property is false exact import behaviour can be determined by checking the SaveToDefaultBehaviour and SaveToNamedBehaviour properties.")]
         public bool WillImportsAppend
@@ -238,7 +238,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph()"/> call will append to existing data or overwrite it when saving to the Default Graph
+        /// Gets whether data imported by a <see cref="IStorageProvider.SaveGraph"/> call will append to existing data or overwrite it when saving to the Default Graph
         /// </summary>
         [Category("IO Capabilities"),Description("How does the connection handle saving graph data to the default graph?  Possible values are Overwrite, Append, N/A (Read Only) and Unknown.  Please note that when using the Import feature Store Manager will always attempt to append data unless the connection does not allow this, please see the WillImportsAppend property to see what the behaviour for this connection will be when used within Store Manager.  Note - If that property is false then this behaviour applies for triples in the default graph.")]
         public String SaveToDefaultBehaviour
@@ -265,7 +265,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph()"/> call will append to existing data or overwrite it when saving to a Named Graph
+        /// Gets whethe data imported by a <see cref="IStorageProvider.SaveGraph"/> call will append to existing data or overwrite it when saving to a Named Graph
         /// </summary>
         [Category("IO Capabilities"), Description("How does the connection handle saving graph data to named graphs?  Possible values are Overwrite, Append, N/A (Read Only) and Unknown.  Please note that when using the Import feature Store Manager will always attempt to append data unless the connection does not allow this, please see the WillImportsAppend property to see what the behaviour for this connection will be when used within Store Manager.  Note - If that property is false then this behaviour applies for triples in named graphs.")]
         public String SaveToNamedBehaviour

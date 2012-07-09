@@ -78,6 +78,7 @@
     <Compile Include="Controls\ConnectionSettingsGrid.Designer.cs">
       <DependentUpon>ConnectionSettingsGrid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ControlEvents.cs" />
     <Compile Include="CopyMoveDialogue.cs">
       <SubType>Form</SubType>
     </Compile>

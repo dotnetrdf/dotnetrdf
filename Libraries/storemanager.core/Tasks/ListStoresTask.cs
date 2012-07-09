@@ -43,17 +43,28 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for listing stores
+    /// </summary>
     public class ListStoresTask 
         : NonCancellableTask<IEnumerable<String>>
     {
         private IStorageServer _manager;
 
+        /// <summary>
+        /// Creates a new list stores task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
         public ListStoresTask(IStorageServer manager)
             : base("List Stores")
         {
             this._manager = manager;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<String> RunTaskInternal()
         {
             if (this._manager == null) throw new RdfStorageException("Store does not support listing of available Stores");

@@ -137,6 +137,9 @@ Please note that in many cases it may be more efficient to import data using the
     <value>You can use this tool to export data from a Store into a RDF Dataset format (e.g. NQuads).  If you want to export individual graphs double click on the Graph in the Graphs list and use the Export button there.
 Please note that depending on your store it may be more efficient to export data using the management tools provided with the Store rather than using this tool.</value>
   </data>
+  <metadata name="mnuStores.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>834, 20</value>
+  </metadata>
   <data name="lblInfo.Text" xml:space="preserve">
     <value>This view shows detailed information about this connection and the capabilities provided by it.  Some connections may expose implementation specific additional information which may be found under the Connection property:</value>
   </data>
@@ -151,9 +154,6 @@ Please note that depending on your store it may be more efficient to export data
   </metadata>
   <metadata name="stsStatus.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>124, 17</value>
-  </metadata>
-  <metadata name="timStartup.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>224, 17</value>
   </metadata>
   <metadata name="ofdQuery.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>323, 16</value>

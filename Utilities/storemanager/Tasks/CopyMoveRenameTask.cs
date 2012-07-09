@@ -43,6 +43,9 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for copying/moving graphs
+    /// </summary>
     public class CopyMoveTask
         : CancellableTask<TaskResult>
     {
@@ -50,6 +53,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private Uri _sourceUri, _targetUri;
         private CancellableHandler _canceller;
 
+        /// <summary>
+        /// Creates a new Copy/Move task
+        /// </summary>
+        /// <param name="source">Source</param>
+        /// <param name="target">Target</param>
+        /// <param name="sourceUri">Source URI</param>
+        /// <param name="targetUri">Target URI</param>
+        /// <param name="forceCopy">Whether to force a copy</param>
         public CopyMoveTask(IStorageProvider source, IStorageProvider target, Uri sourceUri, Uri targetUri, bool forceCopy)
             : base(GetName(source, target, sourceUri, targetUri, forceCopy))
         {
@@ -59,6 +70,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._targetUri = targetUri;
         }
 
+        /// <summary>
+        /// Gets the Source
+        /// </summary>
         public IStorageProvider Source
         {
             get
@@ -67,6 +81,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets the Target
+        /// </summary>
         public IStorageProvider Target
         {
             get
@@ -98,6 +115,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
             if (this._target.IsReadOnly) throw new RdfStorageException("Cannot Copy/Move a Graph when the Target is a read-only Store!");
@@ -251,6 +272,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             return new TaskResult(true);
         }
 
+        /// <summary>
+        /// Cancels the task
+        /// </summary>
         protected override void CancelInternal()
         {
             if (this._canceller != null)
@@ -260,6 +284,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
     }
 
+    /// <summary>
+    /// Handler for monitoring the progress of copy and moves
+    /// </summary>
     class CopyMoveProgressHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
@@ -269,6 +296,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private bool _streaming;
         private int _count = 0;
 
+        /// <summary>
+        /// Creates a new handler
+        /// </summary>
+        /// <param name="handler">Handler</param>
+        /// <param name="task">Task</param>
+        /// <param name="action">Action</param>
+        /// <param name="streaming">Whether the copy/move is streaming</param>
         public CopyMoveProgressHandler(IRdfHandler handler, CopyMoveTask task, String action, bool streaming)
         {
             this._handler = handler;
@@ -277,6 +311,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._streaming = streaming;
         }
 
+        /// <summary>
+        /// Returns that the handler accepts all triples
+        /// </summary>
         public override bool AcceptsAll
         {
             get
@@ -285,6 +322,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets the inner handlers
+        /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
             get
@@ -293,26 +333,49 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Starts handling RDF
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._handler.StartRdf();
         }
 
+        /// <summary>
+        /// Ends RDF handling
+        /// </summary>
+        /// <param name="ok">Whether parsing finished OK</param>
         protected override void EndRdfInternal(bool ok)
         {
             this._handler.EndRdf(ok);
         }
 
+        /// <summary>
+        /// Handles Base URI declarations
+        /// </summary>
+        /// <param name="baseUri">Base URI</param>
+        /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
             return this._handler.HandleBaseUri(baseUri);
         }
 
+        /// <summary>
+        /// Handles Namespace declarations
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
             return this._handler.HandleNamespace(prefix, namespaceUri);
         }
 
+        /// <summary>
+        /// Handles the triples
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             this._count++;

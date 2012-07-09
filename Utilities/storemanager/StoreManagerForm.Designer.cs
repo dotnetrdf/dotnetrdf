@@ -89,6 +89,10 @@
             this.btnRefreshStores = new System.Windows.Forms.Button();
             this.lvwStores = new System.Windows.Forms.ListView();
             this.colStoreID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.mnuStores = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.mnuNewStore = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuOpenStore = new System.Windows.Forms.ToolStripMenuItem();
+            this.mnuDeleteStore = new System.Windows.Forms.ToolStripMenuItem();
             this.tabInfo = new System.Windows.Forms.TabPage();
             this.propInfo = new System.Windows.Forms.PropertyGrid();
             this.lblInfo = new System.Windows.Forms.Label();
@@ -109,11 +113,9 @@
             this.ofdImport = new System.Windows.Forms.OpenFileDialog();
             this.stsStatus = new System.Windows.Forms.StatusStrip();
             this.stsCurrent = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timStartup = new System.Windows.Forms.Timer(this.components);
             this.ofdQuery = new System.Windows.Forms.OpenFileDialog();
             this.sfdQuery = new System.Windows.Forms.SaveFileDialog();
             this.sfdExport = new System.Windows.Forms.SaveFileDialog();
-            this.lblStoreListUnavailable = new System.Windows.Forms.Label();
             this.tabFunctions.SuspendLayout();
             this.tabGraphs.SuspendLayout();
             this.mnuGraphs.SuspendLayout();
@@ -128,6 +130,7 @@
             this.tabExport.SuspendLayout();
             this.grpExport.SuspendLayout();
             this.tabServer.SuspendLayout();
+            this.mnuStores.SuspendLayout();
             this.tabInfo.SuspendLayout();
             this.tabTasks.SuspendLayout();
             this.mnuTasks.SuspendLayout();
@@ -711,7 +714,6 @@
             // 
             // tabServer
             // 
-            this.tabServer.Controls.Add(this.lblStoreListUnavailable);
             this.tabServer.Controls.Add(this.btnRefreshStores);
             this.tabServer.Controls.Add(this.lvwStores);
             this.tabServer.Location = new System.Drawing.Point(4, 22);
@@ -738,7 +740,7 @@
             this.lvwStores.AllowDrop = true;
             this.lvwStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colStoreID});
-            this.lvwStores.ContextMenuStrip = this.mnuGraphs;
+            this.lvwStores.ContextMenuStrip = this.mnuStores;
             this.lvwStores.FullRowSelect = true;
             this.lvwStores.GridLines = true;
             this.lvwStores.HideSelection = false;
@@ -754,6 +756,35 @@
             // 
             this.colStoreID.Text = "Store ID";
             this.colStoreID.Width = 583;
+            // 
+            // mnuStores
+            // 
+            this.mnuStores.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.mnuNewStore,
+            this.mnuOpenStore,
+            this.mnuDeleteStore});
+            this.mnuStores.Name = "mnuStores";
+            this.mnuStores.Size = new System.Drawing.Size(153, 92);
+            this.mnuStores.Opening += new System.ComponentModel.CancelEventHandler(this.mnuStores_Opening);
+            // 
+            // mnuNewStore
+            // 
+            this.mnuNewStore.Name = "mnuNewStore";
+            this.mnuNewStore.Size = new System.Drawing.Size(152, 22);
+            this.mnuNewStore.Text = "&New Store";
+            // 
+            // mnuOpenStore
+            // 
+            this.mnuOpenStore.Name = "mnuOpenStore";
+            this.mnuOpenStore.Size = new System.Drawing.Size(152, 22);
+            this.mnuOpenStore.Text = "&Open Store";
+            this.mnuOpenStore.Click += new System.EventHandler(this.mnuOpenStore_Click);
+            // 
+            // mnuDeleteStore
+            // 
+            this.mnuDeleteStore.Name = "mnuDeleteStore";
+            this.mnuDeleteStore.Size = new System.Drawing.Size(152, 22);
+            this.mnuDeleteStore.Text = "&Delete Store";
             // 
             // tabInfo
             // 
@@ -921,12 +952,6 @@
             this.stsCurrent.Size = new System.Drawing.Size(217, 17);
             this.stsCurrent.Text = "Waiting for the Store to become ready...";
             // 
-            // timStartup
-            // 
-            this.timStartup.Enabled = true;
-            this.timStartup.Interval = 250;
-            this.timStartup.Tick += new System.EventHandler(this.timStartup_Tick);
-            // 
             // ofdQuery
             // 
             this.ofdQuery.DefaultExt = "rq";
@@ -942,18 +967,6 @@
             // sfdExport
             // 
             this.sfdExport.Title = "Export Store As...";
-            // 
-            // lblStoreListUnavailable
-            // 
-            this.lblStoreListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStoreListUnavailable.Location = new System.Drawing.Point(23, 134);
-            this.lblStoreListUnavailable.Name = "lblStoreListUnavailable";
-            this.lblStoreListUnavailable.Size = new System.Drawing.Size(568, 40);
-            this.lblStoreListUnavailable.TabIndex = 7;
-            this.lblStoreListUnavailable.Text = "Unable to list Stores since your selected Store does not support this feature fro" +
-    "m within this Tool";
-            this.lblStoreListUnavailable.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.lblStoreListUnavailable.Visible = false;
             // 
             // StoreManagerForm
             // 
@@ -988,6 +1001,7 @@
             this.grpExport.ResumeLayout(false);
             this.grpExport.PerformLayout();
             this.tabServer.ResumeLayout(false);
+            this.mnuStores.ResumeLayout(false);
             this.tabInfo.ResumeLayout(false);
             this.tabTasks.ResumeLayout(false);
             this.tabTasks.PerformLayout();
@@ -1015,7 +1029,6 @@
         private System.Windows.Forms.OpenFileDialog ofdImport;
         private System.Windows.Forms.StatusStrip stsStatus;
         private System.Windows.Forms.ToolStripStatusLabel stsCurrent;
-        private System.Windows.Forms.Timer timStartup;
         private System.Windows.Forms.Button btnLoadQuery;
         private System.Windows.Forms.Button btnSaveQuery;
         private System.Windows.Forms.OpenFileDialog ofdQuery;
@@ -1084,6 +1097,9 @@
         private System.Windows.Forms.ListView lvwStores;
         private System.Windows.Forms.ColumnHeader colStoreID;
         private System.Windows.Forms.Button btnRefreshStores;
-        private System.Windows.Forms.Label lblStoreListUnavailable;
+        private System.Windows.Forms.ContextMenuStrip mnuStores;
+        private System.Windows.Forms.ToolStripMenuItem mnuNewStore;
+        private System.Windows.Forms.ToolStripMenuItem mnuOpenStore;
+        private System.Windows.Forms.ToolStripMenuItem mnuDeleteStore;
     }
 }

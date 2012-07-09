@@ -46,12 +46,20 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for exporting data from a Store
+    /// </summary>
     public class ExportTask
         : CancellableTask<TaskResult>
     {
         private String _file;
         private IStorageProvider _manager;
 
+        /// <summary>
+        /// Creates a new Export Task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="file">File to export to</param>
         public ExportTask(IStorageProvider manager, String file)
             : base("Export Store") 
         {
@@ -60,6 +68,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._manager = manager;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
             MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this._file))).FirstOrDefault(d => d.CanWriteRdfDatasets);
@@ -194,6 +206,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
     }
 
+    /// <summary>
+    /// Handler for monitoring the progress of export operations
+    /// </summary>
     class ExportProgressHandler
         : BaseRdfHandler, IWrappingRdfHandler
     {
@@ -201,6 +216,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private ExportTask _task;
         private int _count = 0;
 
+        /// <summary>
+        /// Creates a new Export Progress handler
+        /// </summary>
+        /// <param name="handler">Handler</param>
+        /// <param name="task">Export Task</param>
+        /// <param name="initCount">Initial Count</param>
         public ExportProgressHandler(IRdfHandler handler, ExportTask task, int initCount)
         {
             this._handler = handler;
@@ -208,6 +229,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._count = initCount;
         }
 
+        /// <summary>
+        /// Gets the Inner Handlers
+        /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
             get
@@ -216,6 +240,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets whether the Handler accepts all
+        /// </summary>
         public override bool AcceptsAll
         {
             get 
@@ -224,26 +251,49 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Starts handling RDF
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._handler.StartRdf();
         }
 
+        /// <summary>
+        /// Ends handling RDF
+        /// </summary>
+        /// <param name="ok">Whether parsing completed OK</param>
         protected override void EndRdfInternal(bool ok)
         {
             this._handler.EndRdf(ok);
         }
 
+        /// <summary>
+        /// Handles Base URI
+        /// </summary>
+        /// <param name="baseUri">Base URI</param>
+        /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
             return this._handler.HandleBaseUri(baseUri);
         }
 
+        /// <summary>
+        /// Handles Namespace declarations
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
             return this._handler.HandleNamespace(prefix, namespaceUri);
         }
 
+        /// <summary>
+        /// Handles Triples
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             this._count++;
@@ -255,6 +305,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             return this._handler.HandleTriple(t);
         }
 
+        /// <summary>
+        /// Gets the count of triples seen so far
+        /// </summary>
         public int TripleCount
         {
             get

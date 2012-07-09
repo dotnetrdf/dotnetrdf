@@ -98,6 +98,12 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Creates a new Quick Connection
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="label">Label</param>
         public QuickConnect(IGraph g, INode objNode, String label)
             : this(g, objNode)
         {
@@ -143,6 +149,9 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Gets the Type that this quick connect will generate
+        /// </summary>
         public Type Type
         {
             get
@@ -151,12 +160,19 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Gets the Label
+        /// </summary>
         public String Label
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Gets the String representation of the Quick Connect
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             if (this.Label != null)
@@ -170,6 +186,9 @@ namespace VDS.RDF.Utilities.StoreManager
         }
     }
 
+    /// <summary>
+    /// Class for quickly removing a Connection when the Configuration Graph and Object Node are known
+    /// </summary>
     public class QuickRemove
     {
         private ToolStripMenuItem _menu;
@@ -177,6 +196,13 @@ namespace VDS.RDF.Utilities.StoreManager
         private INode _objNode;
         private String _file;
 
+        /// <summary>
+        /// Creates a new Quick Remove
+        /// </summary>
+        /// <param name="menu">Menu Item</param>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="file">File</param>
         public QuickRemove(ToolStripMenuItem menu, IGraph g, INode objNode, String file)
         {
             this._menu = menu;
@@ -185,6 +211,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this._file = file;
         }
 
+        /// <summary>
+        /// Remove the connection from the Configuration Graph
+        /// </summary>
         public void Remove()
         {
             this._g.Retract(this._g.GetTriplesWithSubject(this._objNode));
@@ -196,6 +225,9 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Gets the Menu Item
+        /// </summary>
         public ToolStripMenuItem Menu
         {
             get

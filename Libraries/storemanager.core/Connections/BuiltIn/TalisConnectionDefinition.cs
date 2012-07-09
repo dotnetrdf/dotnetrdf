@@ -84,6 +84,10 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
             set;
         }
 
+        /// <summary>
+        /// Opens the Connection
+        /// </summary>
+        /// <returns></returns>
         protected override IStorageProvider OpenConnectionInternal()
         {
             if (this.UseProxy)

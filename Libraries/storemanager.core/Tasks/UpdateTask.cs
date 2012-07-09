@@ -43,6 +43,9 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for running SPARQL updates
+    /// </summary>
     public class UpdateTask 
         : NonCancellableTask<TaskResult>
     {
@@ -50,6 +53,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private String _update;
         private SparqlUpdateCommandSet _cmds;
 
+        /// <summary>
+        /// Creates a new SPARQL Update task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="update">SPARQL Update</param>
         public UpdateTask(IStorageProvider manager, String update)
             : base("SPARQL Update")
         {
@@ -57,6 +65,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._update = update;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
             SparqlUpdateParser parser = new SparqlUpdateParser();
@@ -66,6 +78,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             return new TaskResult(true);
         }
 
+        /// <summary>
+        /// Gets the Update Commands
+        /// </summary>
         public SparqlUpdateCommandSet Updates
         {
             get

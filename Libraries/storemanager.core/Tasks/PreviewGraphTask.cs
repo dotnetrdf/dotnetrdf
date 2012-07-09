@@ -42,6 +42,9 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task which previews a graph
+    /// </summary>
     public class PreviewGraphTask 
         : CancellableTask<IGraph>
     {
@@ -50,6 +53,12 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         private int _previewSize = 100;
         private CancellableHandler _canceller;
 
+        /// <summary>
+        /// Creates a new preview graph task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="graphUri">URI of the graph to preview</param>
+        /// <param name="previewSize">Preview Size</param>
         public PreviewGraphTask(IStorageProvider manager, String graphUri, int previewSize)
             : base("Preview Graph")
         {
@@ -58,6 +67,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._previewSize = previewSize;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override IGraph RunTaskInternal()
         {
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
@@ -76,6 +89,9 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             return g;
         }
 
+        /// <summary>
+        /// Cancels the task
+        /// </summary>
         protected override void CancelInternal()
         {
             if (this._canceller != null)

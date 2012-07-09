@@ -31,32 +31,33 @@ terms.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
-using VDS.RDF;
-using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
-using VDS.RDF.Update;
-using VDS.RDF.Writing;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
+    /// <summary>
+    /// Form for managing stores
+    /// </summary>
     public partial class StoreManagerForm
         : CrossThreadForm
     {
         private IStorageProvider _manager;
         private int _taskID = 0;
         private EventHandler _copyGraphHandler, _moveGraphHandler;
+        private System.Timers.Timer timStartup;
 
+        /// <summary>
+        /// Creates a new Store Manager form
+        /// </summary>
+        /// <param name="manager">Storage provider</param>
         public StoreManagerForm(IStorageProvider manager)
         {
             InitializeComponent();
@@ -74,8 +75,15 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lvwGraphs.DragDrop += new DragEventHandler(lvwGraphs_DragDrop);
             this._copyGraphHandler = this.CopyGraphClick;
             this._moveGraphHandler = this.MoveGraphClick;
+
+            //Startup Timer
+            timStartup = new System.Timers.Timer(250);
+            timStartup.Elapsed += new ElapsedEventHandler(timStartup_Tick);
         }
 
+        /// <summary>
+        /// Gets the Storage Provider
+        /// </summary>
         public IStorageProvider Manager
         {
             get
@@ -120,46 +128,74 @@ namespace VDS.RDF.Utilities.StoreManager
 
             //Show Connection Information
             this.propInfo.SelectedObject = new Connections.ConnectionInfo(this._manager);
+
+            //Run Startup Timer
+            timStartup.Start();
         }
 
         #region Store Operations
 
+        /// <summary>
+        /// Requests that the graphs be listed
+        /// </summary>
         public void ListGraphs()
         {
             ListGraphsTask task = new ListGraphsTask(this._manager);
             this.AddTask<IEnumerable<Uri>>(task, this.ListGraphsCallback);
         }
 
+        /// <summary>
+        /// Requests that the stores be listed
+        /// </summary>
         public void ListStores()
         {
             ListStoresTask task = new ListStoresTask(this._manager as IStorageServer);
             this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
+        /// <summary>
+        /// Requests that the view of a graph be returned
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         private void ViewGraph(String graphUri)
         {
             ViewGraphTask task = new ViewGraphTask(this._manager, graphUri);
             this.AddTask<IGraph>(task, this.ViewGraphCallback);
         }
 
+        /// <summary>
+        /// Requests the preview of a graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         private void PreviewGraph(String graphUri)
         {
             PreviewGraphTask task = new PreviewGraphTask(this._manager, graphUri, Properties.Settings.Default.PreviewSize);
             this.AddTask<IGraph>(task, this.PreviewGraphCallback);
         }
 
+        /// <summary>
+        /// Requests the count of triples for a graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         private void CountTriples(String graphUri)
         {
             CountTriplesTask task = new CountTriplesTask(this._manager, graphUri);
             this.AddTask<TaskValueResult<int>>(task, this.CountTriplesCallback);
         }
 
+        /// <summary>
+        /// Requests the deletion of a graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         private void DeleteGraph(String graphUri)
         {
             DeleteGraphTask task = new DeleteGraphTask(this._manager, graphUri);
             this.AddTask<TaskResult>(task, this.DeleteGraphCallback);
         }
 
+        /// <summary>
+        /// Runs a Query
+        /// </summary>
         private void Query()
         {
             if (!this._manager.IsReady)
@@ -187,6 +223,9 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Runs an Update
+        /// </summary>
         private void Update()
         {
             if (!this._manager.IsReady)
@@ -199,6 +238,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.UpdateCallback);
         }
 
+        /// <summary>
+        /// Imports a File
+        /// </summary>
         private void ImportFile()
         {
             if (!this._manager.IsReady)
@@ -231,6 +273,9 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.ImportCallback);
         }
 
+        /// <summary>
+        /// Imports  URI
+        /// </summary>
         private void ImportUri()
         {
             if (!this._manager.IsReady)
@@ -270,6 +315,9 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Exports data
+        /// </summary>
         private void Export()
         {
             if (!this._manager.IsReady)
@@ -288,6 +336,11 @@ namespace VDS.RDF.Utilities.StoreManager
             this.AddTask<TaskResult>(task, this.ExportCallback);
         }
 
+        /// <summary>
+        /// Copies a Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="target">Target</param>
         public void CopyGraph(String graphUri, IStorageProvider target)
         {
             if (target == null) return;
@@ -310,6 +363,10 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Renames a Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         private void RenameGraph(String graphUri)
         {
             CopyMoveRenameGraphForm rename = new CopyMoveRenameGraphForm("Rename");
@@ -321,6 +378,11 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        /// <summary>
+        /// Moves a Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="target">Target</param>
         public void MoveGraph(String graphUri, IStorageProvider target)
         {
             if (target == null) return;
@@ -336,6 +398,40 @@ namespace VDS.RDF.Utilities.StoreManager
                 this.AddTask<TaskResult>(task, this.CopyMoveRenameCallback);
             }
         }
+
+        #region Server Operations
+
+        /// <summary>
+        /// Requests a Store be retrieved
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        public void GetStore(String id)
+        {
+            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer, id);
+            this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
+        }
+
+        /// <summary>
+        /// Requests a Store be deleted
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        public void DeleteStore(String id)
+        {
+            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer, id);
+            this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
+        }
+
+        /// <summary>
+        /// Requests a store be created
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        public void CreateStore(String id)
+        {
+            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer, id);
+            this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
+        }
+
+        #endregion
 
         #endregion
 
@@ -683,6 +779,20 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = graphsTask.IsCancellable;
                     }
+                    else if (tag is ListStoresTask)
+                    {
+                        ListStoresTask storesTask = (ListStoresTask)tag;
+                        this.mnuViewErrors.Enabled = storesTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = storesTask.IsCancellable;
+                    }
+                    else if (tag is GetStoreTask)
+                    {
+                        GetStoreTask getStoreTask = (GetStoreTask)tag;
+                        this.mnuViewErrors.Enabled = getStoreTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = getStoreTask.IsCancellable;
+                    }
                     else if (tag is CountTriplesTask)
                     {
                         CountTriplesTask countTask = (CountTriplesTask)tag;
@@ -703,6 +813,13 @@ namespace VDS.RDF.Utilities.StoreManager
                         this.mnuViewErrors.Enabled = basicTask.Error != null;
                         this.mnuViewResults.Enabled = false;
                         this.mnuCancel.Enabled = basicTask.IsCancellable;
+                    }
+                    else if (tag is ITask<TaskValueResult<bool>>)
+                    {
+                        ITask<TaskValueResult<bool>> boolTask = (ITask<TaskValueResult<bool>>)tag;
+                        this.mnuViewErrors.Enabled = boolTask.Error != null;
+                        this.mnuViewResults.Enabled = false;
+                        this.mnuCancel.Enabled = boolTask.IsCancellable;
                     }
                     else
                     {
@@ -759,6 +876,18 @@ namespace VDS.RDF.Utilities.StoreManager
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
+                else if (tag is ListStoresTask)
+                {
+                    TaskInformationForm<IEnumerable<String>> storeInfo = new TaskInformationForm<IEnumerable<string>>((ListStoresTask)tag, this._manager.ToString());
+                    storeInfo.MdiParent = this.MdiParent;
+                    storeInfo.Show();
+                }
+                else if (tag is GetStoreTask)
+                {
+                    TaskInformationForm<IStorageProvider> getStoreInfo = new TaskInformationForm<IStorageProvider>((GetStoreTask)tag, this._manager.ToString());
+                    getStoreInfo.MdiParent = this.MdiParent;
+                    getStoreInfo.Show();
+                }
                 else if (tag is CountTriplesTask)
                 {
                     TaskInformationForm<TaskValueResult<int>> countInfo = new TaskInformationForm<TaskValueResult<int>>((CountTriplesTask)tag, this._manager.ToString());
@@ -776,6 +905,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     TaskInformationForm<TaskResult> simpleInfo = new TaskInformationForm<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
+                }
+                else if (tag is ITask<TaskValueResult<bool>>)
+                {
+                    TaskInformationForm<TaskValueResult<bool>> boolInfo = new TaskInformationForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>)tag, this._manager.ToString());
+                    boolInfo.MdiParent = this.MdiParent;
+                    boolInfo.Show();
                 }
                 else
                 {
@@ -872,6 +1007,38 @@ namespace VDS.RDF.Utilities.StoreManager
                         CrossThreadMessage("Unable to show Graph as there is no Graph as expected", "Unable to Show Graph", MessageBoxIcon.Error);
                     }
                 }
+            }
+        }
+
+        #endregion
+
+        #region Stores Context Menu
+
+        private void mnuStores_Opening(object sender, CancelEventArgs e)
+        {
+            this.mnuNewStore.Enabled = (this._manager.IOBehaviour & IOBehaviour.CanCreateStores) != 0;
+            if (this.lvwStores.SelectedItems.Count > 0)
+            {
+                this.mnuOpenStore.Enabled = true;
+                this.mnuDeleteStore.Enabled = (this._manager.IOBehaviour & IOBehaviour.CanDeleteStores) != 0;               
+            }
+            else
+            {
+                this.mnuOpenStore.Enabled = false;
+                this.mnuDeleteStore.Enabled = false;
+            }
+        }
+
+        private void mnuOpenStore_Click(object sender, EventArgs e)
+        {
+            if (this.lvwStores.SelectedItems.Count > 0)
+            {
+                String id = this.lvwStores.SelectedItems[0].Text;
+                this.GetStore(id);
+            }
+            else
+            {
+                MessageBox.Show("No Store selected", "Open Store Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1003,8 +1170,6 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     CrossThreadMessage("Unable to list Stores due to the following error:\n" + task.Error.Message, "Store List Unavailable", MessageBoxIcon.Warning);
                 }
-                this.CrossThreadSetVisibility(this.lvwStores, false);
-                this.CrossThreadSetVisibility(this.lblStoreListUnavailable, true);
                 this.CrossThreadRefresh(this.tabServer);
             }
         }
@@ -1272,6 +1437,74 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void GetStoreCallback(ITask<IStorageProvider> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                StoreManagerForm manager = new StoreManagerForm(task.Result);
+                CrossThreadSetMdiParent(manager);
+                CrossThreadShow(manager);
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage(task.Name + " Failed due to the following error: " + task.Error.Message, task.Name + " Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage(task.Name + " Failed due to an unknown error", task.Name + " Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void DeleteStoreCallback(ITask<TaskResult> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                CrossThreadMessage(task.Name + " Completed OK - " + task.Information, task.Name + " Completed", MessageBoxIcon.Information);
+                this.ListStores();
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage(task.Name + " Failed due to the following error: " + task.Error.Message, task.Name + " Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage(task.Name + " Failed due to an unknown error", task.Name + " Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void CreateStoreCallback(ITask<TaskValueResult<bool>> task)
+        {
+            if (task.State == TaskState.Completed)
+            {
+                if (task.Result.Value == true)
+                {
+                    CrossThreadMessage(task.Name + " Completed OK - " + task.Information, task.Name + " Completed", MessageBoxIcon.Information);
+                    this.ListStores();
+                }
+                else
+                {
+                    CrossThreadMessage(task.Name + " Failed - Underlying Server returned that a Store was not created", task.Name + " Failed", MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                if (task.Error != null)
+                {
+                    CrossThreadMessage(task.Name + " Failed due to the following error: " + task.Error.Message, task.Name + " Failed", MessageBoxIcon.Error);
+                }
+                else
+                {
+                    CrossThreadMessage(task.Name + " Failed due to an unknown error", task.Name + " Failed", MessageBoxIcon.Error);
+                }
+            }
+        }
+
         #endregion
 
         protected override void OnClosed(EventArgs e)
@@ -1280,9 +1513,18 @@ namespace VDS.RDF.Utilities.StoreManager
         }
     }
 
-    class SortTasksByID : IComparer, IComparer<ListViewItem>
+    /// <summary>
+    /// Comparer for sorting tasks by their IDs
+    /// </summary>
+    class SortTasksByID
+        : IComparer, IComparer<ListViewItem>
     {
-
+        /// <summary>
+        /// Compares two tasks
+        /// </summary>
+        /// <param name="x">Task</param>
+        /// <param name="y">Task</param>
+        /// <returns></returns>
         public int Compare(ListViewItem x, ListViewItem y)
         {
             int a, b;
@@ -1305,6 +1547,12 @@ namespace VDS.RDF.Utilities.StoreManager
 
         #region IComparer Members
 
+        /// <summary>
+        /// Compares two tasks
+        /// </summary>
+        /// <param name="x">Task</param>
+        /// <param name="y">Task</param>
+        /// <returns></returns>
         public int Compare(object x, object y)
         {
             if (x is ListViewItem && y is ListViewItem)

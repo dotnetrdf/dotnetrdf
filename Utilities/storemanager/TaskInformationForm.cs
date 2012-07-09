@@ -49,6 +49,10 @@ using VDS.RDF.GUI.WinForms;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
+    /// <summary>
+    /// Form for viewing Task Information
+    /// </summary>
+    /// <typeparam name="T">Task Result Type</typeparam>
     public partial class TaskInformationForm<T> 
         : CrossThreadForm where T : class
     {
@@ -142,9 +146,16 @@ namespace VDS.RDF.Utilities.StoreManager
 
         }
 
+        public TaskInformationForm(ListStoresTask task, String subtitle)
+            : this((ITask<T>)task, subtitle)
+        {
+
+        }
+
         public TaskInformationForm(ITask<IGraph> task, String subtitle)
             : this((ITask<T>)task, subtitle)
         {
+            CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
             this.btnViewResults.Click += new EventHandler(delegate(Object sender, EventArgs e)
                 {
                     if (task.Result != null)
@@ -167,6 +178,18 @@ namespace VDS.RDF.Utilities.StoreManager
                 });
         }
 
+        public TaskInformationForm(ITask<TaskValueResult<bool>> task, String subtitle)
+            : this((ITask<T>)task, subtitle)
+        {
+
+        }
+
+        public TaskInformationForm(GetStoreTask task, String subtitle)
+            : this((ITask<T>)task, subtitle)
+        {
+
+        }
+
         private void ShowInformation(ITask<T> task)
         {
             CrossThreadSetText(this.lblTaskState, String.Format("Task State: {0}", task.State.GetStateDescription()));
@@ -174,19 +197,27 @@ namespace VDS.RDF.Utilities.StoreManager
             CrossThreadSetText(this.lblElapsed, (task.Elapsed != null) ? String.Format("Time Elapsed: {0}", task.Elapsed) : "N/A");
             CrossThreadSetEnabled(this.btnCancel,task.IsCancellable && task.State != TaskState.Completed && task.State != TaskState.CompletedWithErrors);
             CrossThreadSetEnabled(this.btnErrorTrace, task.Error != null);
-            CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
+            CrossThreadSetEnabled(this.btnViewResults, false);
         }
 
         private void ShowQueryInformation(QueryTask task)
         {
+            CrossThreadSetEnabled(this.btnViewResults, task.State == TaskState.Completed && task.Result != null);
             if (task.Query != null)
             {
-                SparqlFormatter formatter = new SparqlFormatter(task.Query.NamespaceMap);
                 StringWriter writer = new StringWriter();
                 writer.WriteLine("Parsed Query:");
-                writer.WriteLine(formatter.Format(task.Query));
-                writer.WriteLine("SPARQL Algebra:");
-                writer.WriteLine(task.Query.ToAlgebra().ToString());
+                if (task.Query != null)
+                {
+                    SparqlFormatter formatter = new SparqlFormatter(task.Query.NamespaceMap);
+                    writer.WriteLine(formatter.Format(task.Query));
+                    writer.WriteLine("SPARQL Algebra:");
+                    writer.WriteLine(task.Query.ToAlgebra().ToString());
+                }
+                else
+                {
+                    writer.WriteLine("Unavailable - Not standard SPARQL 1.0/1.1");
+                }
                 CrossThreadSetText(this.txtAdvInfo, writer.ToString());
             }
         }
@@ -201,6 +232,5 @@ namespace VDS.RDF.Utilities.StoreManager
                 CrossThreadSetText(this.txtAdvInfo, writer.ToString());
             }
         }
-
     }
 }

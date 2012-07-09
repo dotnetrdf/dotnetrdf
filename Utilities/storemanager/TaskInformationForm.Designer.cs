@@ -138,7 +138,7 @@
             this.btnViewResults.Text = "View &Results";
             this.btnViewResults.UseVisualStyleBackColor = true;
             // 
-            // fclsTaskInformation
+            // TaskInformationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -152,7 +152,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "fclsTaskInformation";
+            this.Name = "TaskInformationForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "{0}";
             this.tabInfo.ResumeLayout(false);

@@ -43,17 +43,31 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for importing data from a file
+    /// </summary>
     public class ImportFileTask 
         : BaseImportTask
     {
         private String _file;
 
+        /// <summary>
+        /// Creates a new Import File task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="file">File to import from</param>
+        /// <param name="targetUri">Target Graph URI</param>
+        /// <param name="batchSize">Import Batch Size</param>
         public ImportFileTask(IStorageProvider manager, String file, Uri targetUri, int batchSize)
             : base("Import File", manager, targetUri, batchSize)
         {
             this._file = file;
         }
 
+        /// <summary>
+        /// Implements the import
+        /// </summary>
+        /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
             this.Information = "Importing from File " + this._file;
@@ -71,17 +85,31 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         }
     }
 
+    /// <summary>
+    /// Task for importing data from a URI
+    /// </summary>
     public class ImportUriTask
         : BaseImportTask
     {
         private Uri _u;
 
+        /// <summary>
+        /// Creates a new Import URI Task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="u">URI to import from</param>
+        /// <param name="targetUri">Target Graph URI</param>
+        /// <param name="batchSize">Import Batch Size</param>
         public ImportUriTask(IStorageProvider manager, Uri u, Uri targetUri, int batchSize)
             : base("Import URI", manager, targetUri, batchSize)
         {
             this._u = u;
         }
 
+        /// <summary>
+        /// Implements the import
+        /// </summary>
+        /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
             this.Information = "Importing from URI " + this._u.ToString();
@@ -97,6 +125,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets the Default Target Graph URI
+        /// </summary>
+        /// <returns></returns>
         protected override Uri GetDefaultTargetUri()
         {
             return this._u;

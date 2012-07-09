@@ -33,7 +33,11 @@ using System.Windows.Forms;
 
 namespace VDS.RDF.Utilities.StoreManager
 {
-    public class CrossThreadForm : Form
+    /// <summary>
+    /// Extension to form class which provides a bunch of useful methods for doing cross thread invokes
+    /// </summary>
+    public class CrossThreadForm 
+        : Form
     {
         #region Cross Thread Messaging
 
@@ -311,6 +315,10 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private delegate void CrossThreadSetMdiParentDelegate(Form f);
 
+        /// <summary>
+        /// Sets the MDI Parent of the given Form to be same as this forms MDI Parent
+        /// </summary>
+        /// <param name="f">Form</param>
         protected void CrossThreadSetMdiParent(Form f)
         {
             if (this.InvokeRequired)

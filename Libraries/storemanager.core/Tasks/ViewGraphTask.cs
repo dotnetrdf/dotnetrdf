@@ -41,12 +41,20 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for viewing the contents of a Graph
+    /// </summary>
     public class ViewGraphTask 
         : NonCancellableTask<IGraph>
     {
         private IStorageProvider _manager;
         private String _graphUri;
 
+        /// <summary>
+        /// Creates a new view graph task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="graphUri">URI of the Graph to view</param>
         public ViewGraphTask(IStorageProvider manager, String graphUri)
             : base("View Graph")
         {
@@ -54,6 +62,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._graphUri = graphUri;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override IGraph RunTaskInternal()
         {
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))

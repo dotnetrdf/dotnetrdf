@@ -43,17 +43,28 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task which lists graph
+    /// </summary>
     public class ListGraphsTask 
         : NonCancellableTask<IEnumerable<Uri>>
     {
         private IStorageProvider _manager;
 
+        /// <summary>
+        /// Creates a new List Graphs task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
         public ListGraphsTask(IStorageProvider manager)
             : base("List Graphs")
         {
             this._manager = manager;
         }
 
+        /// <summary>
+        /// Runs the task
+        /// </summary>
+        /// <returns></returns>
         protected override IEnumerable<Uri> RunTaskInternal()
         {
             if (!this._manager.IsReady)

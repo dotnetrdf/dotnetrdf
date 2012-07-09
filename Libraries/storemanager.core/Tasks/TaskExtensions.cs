@@ -40,8 +40,16 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Extension methods for tasks
+    /// </summary>
     public static class TaskExtensions
     {
+        /// <summary>
+        /// Gets the human readable description for a task state
+        /// </summary>
+        /// <param name="state">Task State</param>
+        /// <returns></returns>
         public static String GetStateDescription(this TaskState state)
         {
             switch (state)
@@ -64,6 +72,11 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             }
         }
 
+        /// <summary>
+        /// Gets the safe string version for an object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         internal static String ToSafeString(this Object obj)
         {
             return (obj != null ? obj.ToString() : String.Empty);

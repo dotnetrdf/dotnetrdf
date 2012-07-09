@@ -39,50 +39,37 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Storage;
 
-namespace VDS.RDF.Utilities.StoreManager.Tasks
+namespace VDS.RDF.Utilities.StoreManager.Controls
 {
     /// <summary>
-    /// Information for doing copy/move via drag/drop
+    /// Event Arguments for Connection Event
     /// </summary>
-    class CopyMoveDragInfo
+    public class ConnectedEventArgs
+        : EventArgs
     {
         /// <summary>
-        /// Creates a new Copy/Move infor
+        /// Creates a new Connected Event arguments
         /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        /// <param name="connection">Storage Provider</param>
+        public ConnectedEventArgs(IStorageProvider connection)
         {
-            this.Form = form;
-            this.Source = form.Manager;
-            this.SourceUri = sourceUri;
+            this.Connection = connection;
         }
 
         /// <summary>
-        /// Drag Source Form
+        /// Gets/Sets the Connection
         /// </summary>
-        public StoreManagerForm Form
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Drag Source Storage Provider
-        /// </summary>
-        public IStorageProvider Source
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
+        public IStorageProvider Connection
         {
             get;
             private set;
         }
     }
+
+    /// <summary>
+    /// Delegate for Connected Event
+    /// </summary>
+    /// <param name="sender">Sender</param>
+    /// <param name="e">Event Arguments</param>
+    public delegate void Connected(Object sender, ConnectedEventArgs e);
 }

@@ -42,47 +42,41 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     /// <summary>
-    /// Information for doing copy/move via drag/drop
+    /// Task for creating a new Store
     /// </summary>
-    class CopyMoveDragInfo
+    public class CreateStoreTask
+        : NonCancellableTask<TaskValueResult<bool>>
     {
+        private IStorageServer _server;
+        private String _id;
+
         /// <summary>
-        /// Creates a new Copy/Move infor
+        /// Creates a task for creating a Store
         /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        /// <param name="server">Server</param>
+        /// <param name="id"></param>
+        public CreateStoreTask(IStorageServer server, String id)
+            : base("Create Store")
         {
-            this.Form = form;
-            this.Source = form.Manager;
-            this.SourceUri = sourceUri;
+            this._server = server;
+            this._id = id;
         }
 
         /// <summary>
-        /// Drag Source Form
+        /// Runs the task
         /// </summary>
-        public StoreManagerForm Form
+        /// <returns></returns>
+        protected override TaskValueResult<bool> RunTaskInternal()
         {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Drag Source Storage Provider
-        /// </summary>
-        public IStorageProvider Source
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
-        {
-            get;
-            private set;
+            this.Information = "Creating Store " + this._id + "...";
+            if (this._server != null)
+            {
+                return new TaskValueResult<bool>(this._server.CreateStore(this._id));
+            }
+            else
+            {
+                throw new RdfStorageException("Retrieving a store is unsupported");
+            }
         }
     }
 }

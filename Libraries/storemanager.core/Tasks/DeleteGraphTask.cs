@@ -34,19 +34,24 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Storage;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
+    /// <summary>
+    /// Task for deleting a Graph from a Store
+    /// </summary>
     public class DeleteGraphTask
         : NonCancellableTask<TaskResult>
     {
         private IStorageProvider _manager;
         private String _graphUri;
 
+        /// <summary>
+        /// Creates a new Delete Graph task
+        /// </summary>
+        /// <param name="manager">Storage Provider</param>
+        /// <param name="graphUri">Graph URI</param>
         public DeleteGraphTask(IStorageProvider manager, String graphUri)
             : base("Delete Graph")
         {
@@ -54,6 +59,10 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._graphUri = graphUri;
         }
 
+        /// <summary>
+        /// Runs the Task
+        /// </summary>
+        /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))

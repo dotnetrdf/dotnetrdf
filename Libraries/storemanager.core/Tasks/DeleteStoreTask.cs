@@ -42,47 +42,42 @@ using VDS.RDF.Storage;
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
     /// <summary>
-    /// Information for doing copy/move via drag/drop
+    /// Creates a task for deleting a Store
     /// </summary>
-    class CopyMoveDragInfo
+    public class DeleteStoreTask
+        : NonCancellableTask<TaskResult>
     {
+        private IStorageServer _server;
+        private String _id;
+
         /// <summary>
-        /// Creates a new Copy/Move infor
+        /// Gets a Store
         /// </summary>
-        /// <param name="form">Drag Source</param>
-        /// <param name="sourceUri">Source Graph URI</param>
-        public CopyMoveDragInfo(StoreManagerForm form, String sourceUri)
+        /// <param name="server">Server</param>
+        /// <param name="id"></param>
+        public DeleteStoreTask(IStorageServer server, String id)
+            : base("Delete Store")
         {
-            this.Form = form;
-            this.Source = form.Manager;
-            this.SourceUri = sourceUri;
+            this._server = server;
+            this._id = id;
         }
 
         /// <summary>
-        /// Drag Source Form
+        /// Runs the task
         /// </summary>
-        public StoreManagerForm Form
+        /// <returns></returns>
+        protected override TaskResult RunTaskInternal()
         {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Drag Source Storage Provider
-        /// </summary>
-        public IStorageProvider Source
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the Source Graph URI
-        /// </summary>
-        public String SourceUri
-        {
-            get;
-            private set;
+            this.Information = "Deleting Store " + this._id + "...";
+            if (this._server != null)
+            {
+                this._server.DeleteStore(this._id);
+                return new TaskResult(true);
+            }
+            else
+            {
+                throw new RdfStorageException("Deleting a store is unsupported");
+            }
         }
     }
 }
