@@ -139,17 +139,20 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     this.mnuSaveConnection.Enabled = true;
                     this.mnuAddFavourite.Enabled = true;
+                    this.mnuNewFromExisting.Enabled = true;
                 }
                 else
                 {
                     this.mnuSaveConnection.Enabled = false;
                     this.mnuAddFavourite.Enabled = false;
+                    this.mnuNewFromExisting.Enabled = false;
                 }
             }
             else
             {
                 this.mnuSaveConnection.Enabled = false;
                 this.mnuAddFavourite.Enabled = false;
+                this.mnuNewFromExisting.Enabled = false;
             }
         }
 
@@ -703,6 +706,41 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void mnuNewFromExisting_Click(object sender, EventArgs e)
+        {
+            if (this.ActiveMdiChild != null)
+            {
+                if (this.ActiveMdiChild is StoreManagerForm)
+                {
+                    IStorageProvider manager = ((StoreManagerForm)this.ActiveMdiChild).Manager;
+                    IConnectionDefinition def = ConnectionDefinitionManager.GetDefinition(manager.GetType());
+                    if (def != null)
+                    {
+                        if (manager is IConfigurationSerializable)
+                        {
+                            Graph g = new Graph();
+                            ConfigurationSerializationContext ctx = new ConfigurationSerializationContext(g);
+                            INode n = g.CreateBlankNode();
+                            ctx.NextSubject = n;
+                            ((IConfigurationSerializable)manager).SerializeConfiguration(ctx);
+                            def.PopulateFrom(g, n);
+
+                            EditConnectionForm editConn = new EditConnectionForm(def);
+                            if (editConn.ShowDialog() == DialogResult.OK)
+                            {
+                                StoreManagerForm managerForm = new StoreManagerForm(editConn.Connection);
+                                this.AddRecentConnection(editConn.Connection);
+                                managerForm.MdiParent = this;
+                                managerForm.Show();
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
+            MessageBox.Show("The current connection is not editable", "New Connection from Current Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
         private void mnuShowStartPage_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.ShowStartPage = this.mnuShowStartPage.Checked;
@@ -715,6 +753,5 @@ namespace VDS.RDF.Utilities.StoreManager
             start.Owner = this;
             start.ShowDialog();
         }
-
     }
 }

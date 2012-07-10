@@ -22,11 +22,13 @@ rdfConvert
 
 
 rdfEditor (Not available under Mono)
+- Updated SPARQL Query syntax support
+- Updated syntax highlighting and validation for TriG
  
 rdfOptStats
    
 rdfQuery
-- Pick up some bug fixes to SPARQL support
+- Pick up some bug fixes to SPARQL support and new SPARQL 1.1 feature support
 
 rdfServer
 
@@ -40,10 +42,12 @@ soh
 
 SparqlGUI
 - Pick up some bug fixes to SPARQL support
-- Additional config option to allow unsafe optimization
+- Additional config option to allow unsafe optimization and parallel evaluation
 
 StoreManager
 - Pick up some bug fixes to Virtuoso support
 - Pick up a bug fix to Sesame support
 - Pick up some bug fixes to Stardog support
 - New Connection Form will now remember previously entered connection details during a session
+- Ability to create new connections by editing existing, recent and favourite connections
+- Initial support added for storage servers

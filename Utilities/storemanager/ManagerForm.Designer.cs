@@ -60,6 +60,8 @@
             this.stsBar = new System.Windows.Forms.StatusStrip();
             this.sfdConnection = new System.Windows.Forms.SaveFileDialog();
             this.ofdConnection = new System.Windows.Forms.OpenFileDialog();
+            this.mnuNewFromExisting = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.mnuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,6 +84,8 @@
             // 
             this.mnuFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.mnuNewConnection,
+            this.mnuNewFromExisting,
+            this.toolStripSeparator1,
             this.mnuSaveConnection,
             this.mnuAddFavourite,
             this.mnuOpenConnection,
@@ -107,7 +111,7 @@
             // mnuSaveConnection
             // 
             this.mnuSaveConnection.Name = "mnuSaveConnection";
-            this.mnuSaveConnection.Size = new System.Drawing.Size(232, 22);
+            this.mnuSaveConnection.Size = new System.Drawing.Size(235, 22);
             this.mnuSaveConnection.Text = "&Save Connection";
             this.mnuSaveConnection.Click += new System.EventHandler(this.mnuSaveConnection_Click);
             // 
@@ -303,6 +307,18 @@
             // 
             this.ofdConnection.Title = "Open Connection";
             // 
+            // mnuNewFromExisting
+            // 
+            this.mnuNewFromExisting.Name = "mnuNewFromExisting";
+            this.mnuNewFromExisting.Size = new System.Drawing.Size(232, 22);
+            this.mnuNewFromExisting.Text = "New Connection from Curent";
+            this.mnuNewFromExisting.Click += new System.EventHandler(this.mnuNewFromExisting_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(229, 6);
+            // 
             // ManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -358,6 +374,8 @@
         private System.Windows.Forms.ToolStripMenuItem mnuShowStartPage;
         private System.Windows.Forms.ToolStripSeparator mnuFileSep1;
         private System.Windows.Forms.ToolStripMenuItem mnuStartPage;
+        private System.Windows.Forms.ToolStripMenuItem mnuNewFromExisting;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
