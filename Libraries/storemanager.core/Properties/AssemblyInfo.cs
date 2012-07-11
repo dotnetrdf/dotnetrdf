@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("storemanager.core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("StoreManager Core")]
+[assembly: AssemblyDescription("Core infrastructure for the Store Manager tool")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IDS")]
-[assembly: AssemblyProduct("storemanager.core")]
-[assembly: AssemblyCopyright("Copyright © IDS 2012")]
+[assembly: AssemblyCompany("Visual Design Studios")]
+[assembly: AssemblyProduct("StoreManager.core")]
+[assembly: AssemblyCopyright("Copyright © Robert Vesse 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("0.6.0.2246")]
+[assembly: AssemblyFileVersion("0.6.0.0")]

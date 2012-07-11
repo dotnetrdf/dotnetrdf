@@ -55,6 +55,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             InitializeComponent();
             this.lblAppVersionActual.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.lblCoreVersionActual.Text = Assembly.GetAssembly(typeof(IConnectionDefinition)).GetName().Version.ToString();
             this.lblApiVersionActual.Text = Assembly.GetAssembly(typeof(IGraph)).GetName().Version.ToString();
 
             ShowDetectedAssemblies();

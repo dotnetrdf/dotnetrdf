@@ -36,8 +36,10 @@
             this.lblApiVersion = new System.Windows.Forms.Label();
             this.lblInfo = new System.Windows.Forms.Label();
             this.grpPlugins = new System.Windows.Forms.GroupBox();
-            this.lstPlugins = new System.Windows.Forms.ListBox();
             this.btnRescan = new System.Windows.Forms.Button();
+            this.lstPlugins = new System.Windows.Forms.ListBox();
+            this.lblCoreVersion = new System.Windows.Forms.Label();
+            this.lblCoreVersionActual = new System.Windows.Forms.Label();
             this.tlpAbout.SuspendLayout();
             this.grpPlugins.SuspendLayout();
             this.SuspendLayout();
@@ -47,27 +49,31 @@
             this.tlpAbout.ColumnCount = 2;
             this.tlpAbout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpAbout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpAbout.Controls.Add(this.lblApiVersionActual, 1, 1);
+            this.tlpAbout.Controls.Add(this.lblCoreVersionActual, 1, 1);
+            this.tlpAbout.Controls.Add(this.lblCoreVersion, 0, 1);
+            this.tlpAbout.Controls.Add(this.lblApiVersionActual, 1, 2);
             this.tlpAbout.Controls.Add(this.lblAppVersionActual, 1, 0);
             this.tlpAbout.Controls.Add(this.lblAppVersion, 0, 0);
-            this.tlpAbout.Controls.Add(this.lblApiVersion, 0, 1);
-            this.tlpAbout.Controls.Add(this.lblInfo, 0, 2);
+            this.tlpAbout.Controls.Add(this.lblApiVersion, 0, 2);
+            this.tlpAbout.Controls.Add(this.lblInfo, 0, 3);
             this.tlpAbout.Location = new System.Drawing.Point(12, 12);
             this.tlpAbout.Name = "tlpAbout";
-            this.tlpAbout.RowCount = 3;
+            this.tlpAbout.RowCount = 4;
+            this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpAbout.Size = new System.Drawing.Size(411, 162);
+            this.tlpAbout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAbout.Size = new System.Drawing.Size(411, 202);
             this.tlpAbout.TabIndex = 0;
             // 
             // lblApiVersionActual
             // 
-            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersionActual.AutoSize = true;
-            this.lblApiVersionActual.Location = new System.Drawing.Point(208, 30);
+            this.lblApiVersionActual.Location = new System.Drawing.Point(208, 60);
             this.lblApiVersionActual.Name = "lblApiVersionActual";
             this.lblApiVersionActual.Size = new System.Drawing.Size(200, 30);
             this.lblApiVersionActual.TabIndex = 3;
@@ -76,9 +82,9 @@
             // 
             // lblAppVersionActual
             // 
-            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersionActual.AutoSize = true;
             this.lblAppVersionActual.Location = new System.Drawing.Point(208, 0);
             this.lblAppVersionActual.Name = "lblAppVersionActual";
@@ -89,9 +95,9 @@
             // 
             // lblAppVersion
             // 
-            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAppVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAppVersion.AutoSize = true;
             this.lblAppVersion.Location = new System.Drawing.Point(3, 0);
             this.lblAppVersion.Name = "lblAppVersion";
@@ -102,11 +108,11 @@
             // 
             // lblApiVersion
             // 
-            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblApiVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lblApiVersion.AutoSize = true;
-            this.lblApiVersion.Location = new System.Drawing.Point(3, 30);
+            this.lblApiVersion.Location = new System.Drawing.Point(3, 60);
             this.lblApiVersion.Name = "lblApiVersion";
             this.lblApiVersion.Size = new System.Drawing.Size(199, 30);
             this.lblApiVersion.TabIndex = 1;
@@ -117,7 +123,7 @@
             // 
             this.lblInfo.AutoSize = true;
             this.tlpAbout.SetColumnSpan(this.lblInfo, 2);
-            this.lblInfo.Location = new System.Drawing.Point(3, 60);
+            this.lblInfo.Location = new System.Drawing.Point(3, 90);
             this.lblInfo.Name = "lblInfo";
             this.lblInfo.Size = new System.Drawing.Size(399, 78);
             this.lblInfo.TabIndex = 4;
@@ -127,20 +133,12 @@
             // 
             this.grpPlugins.Controls.Add(this.btnRescan);
             this.grpPlugins.Controls.Add(this.lstPlugins);
-            this.grpPlugins.Location = new System.Drawing.Point(12, 180);
+            this.grpPlugins.Location = new System.Drawing.Point(12, 231);
             this.grpPlugins.Name = "grpPlugins";
             this.grpPlugins.Size = new System.Drawing.Size(411, 127);
             this.grpPlugins.TabIndex = 1;
             this.grpPlugins.TabStop = false;
             this.grpPlugins.Text = "Detected Connection Definition Sources and Plugins";
-            // 
-            // lstPlugins
-            // 
-            this.lstPlugins.FormattingEnabled = true;
-            this.lstPlugins.Location = new System.Drawing.Point(6, 19);
-            this.lstPlugins.Name = "lstPlugins";
-            this.lstPlugins.Size = new System.Drawing.Size(396, 69);
-            this.lstPlugins.TabIndex = 0;
             // 
             // btnRescan
             // 
@@ -152,11 +150,45 @@
             this.btnRescan.UseVisualStyleBackColor = true;
             this.btnRescan.Click += new System.EventHandler(this.btnRescan_Click);
             // 
+            // lstPlugins
+            // 
+            this.lstPlugins.FormattingEnabled = true;
+            this.lstPlugins.Location = new System.Drawing.Point(6, 19);
+            this.lstPlugins.Name = "lstPlugins";
+            this.lstPlugins.Size = new System.Drawing.Size(396, 69);
+            this.lstPlugins.TabIndex = 0;
+            // 
+            // lblCoreVersion
+            // 
+            this.lblCoreVersion.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCoreVersion.AutoSize = true;
+            this.lblCoreVersion.Location = new System.Drawing.Point(3, 30);
+            this.lblCoreVersion.Name = "lblCoreVersion";
+            this.lblCoreVersion.Size = new System.Drawing.Size(199, 30);
+            this.lblCoreVersion.TabIndex = 5;
+            this.lblCoreVersion.Text = "StoreManager.Core Version:";
+            this.lblCoreVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblCoreVersionActual
+            // 
+            this.lblCoreVersionActual.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCoreVersionActual.AutoSize = true;
+            this.lblCoreVersionActual.Location = new System.Drawing.Point(208, 30);
+            this.lblCoreVersionActual.Name = "lblCoreVersionActual";
+            this.lblCoreVersionActual.Size = new System.Drawing.Size(200, 30);
+            this.lblCoreVersionActual.TabIndex = 6;
+            this.lblCoreVersionActual.Text = "{0}";
+            this.lblCoreVersionActual.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // AboutForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(435, 319);
+            this.ClientSize = new System.Drawing.Size(435, 370);
             this.Controls.Add(this.grpPlugins);
             this.Controls.Add(this.tlpAbout);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -185,5 +217,7 @@
         private System.Windows.Forms.GroupBox grpPlugins;
         private System.Windows.Forms.ListBox lstPlugins;
         private System.Windows.Forms.Button btnRescan;
+        private System.Windows.Forms.Label lblCoreVersionActual;
+        private System.Windows.Forms.Label lblCoreVersion;
     }
 }
