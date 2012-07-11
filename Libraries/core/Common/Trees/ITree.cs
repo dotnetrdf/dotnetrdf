@@ -52,6 +52,7 @@ namespace VDS.Common.Trees
         TNode Root
         {
             get;
+            set;
         }
 
         /// <summary>
@@ -208,6 +209,7 @@ namespace VDS.Common.Trees
         IBinaryTreeNode<TKey, TValue> Parent
         {
             get;
+            set;
         }
 
         /// <summary>

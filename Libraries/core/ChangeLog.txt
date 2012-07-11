@@ -9,51 +9,19 @@ rvesse@vdesign-studios.com
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.7.0 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.7.1 release of dotNetRDF
 
 Added
-- Query
- - Added an implicit join optimiser
- - Added a filtered product optimiser
- - Added support for UUID and STRUUID functions
- - Added support for VALUES syntax
+- Core API
+ - New Indexing data structures
 
 Changed
 - Bug Fixes
- - Fix for a bug with FILTER and BIND in the WHERE clause of INSERT/DELETE causing incorrect behaviour due to an over optimization issue
- - Fix for a bug with ASK queries and SparqlRemoteEndpoint.QueryWithResultSet()
- - Fix for a bug with Stardog connectivity related to defunct connection string parameter
- - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed
- - Fix for a bug with multi-threaded access to our Trie implementation
- - Fix for a bug with nested aggregates evaluating when they should error i.e. inner aggregate gives unbound
- - Fix for bugs readrding insertion and deletion of Blank Node containing triples via the UpdateGraph() method when using Virtuoso
- - Fix for calling CreateUriNode() with a relative URI on a Graph not automatically resolving against Graph Base URI
-- Parsing
- - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
-- Query
- - Default behaviour is now not to have a union default graph
- - BINDINGS syntax now disabled in favour of the new VALUES syntax from latest editors draft
- - Revised STRAFTER and STRBEFORE implementation to latest editors draft
- - Turned on PLinq Evaluation by default, following operations are parallelised currently:
-  - Join
-  - LeftJoin
-  - Product
-  - Filter
-  - Extend
-- Storage
- - Major refactor and reorganisation of interfaces within Storage namespace to have more consistent naming
- - Supports a standard async access API over almost all existing storage providers
- - Adds a new IStorageServer interface for providers like Sesame and AllegroGraph which allow multiple stores to be managed
-- Serialization
- - Refactored IStoreWriter API to be consistent with IRdfWriter and ISparqlResultsWriter
-- Update
- - Refactored code around ISparqlHttpProtocolProcessor to make it easier to expose this feature on non-ASP.Net web servers
+
 
 Removed
-- Obsolete ISelector API removed
-- Removed any internal use of embedded HashLib code as it is no longer necessary
-- Removed the obsolete BaseNodeCollection API
-- Marked the contents of the Data.Sql library as obsolete but usable
+- Marked the TalisPlatformConnector as obsolete but usable
+- Marked the contents of the Data.Sql library as obsolete unusable
    
 
 
