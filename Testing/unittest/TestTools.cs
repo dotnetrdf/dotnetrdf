@@ -222,5 +222,41 @@ namespace VDS.RDF.Test
                 TestTools.ReportError("Error", ex, true);
             }
         }
+
+        public static void PrintEnumerable<T>(IEnumerable<T> items, String sep)
+            where T : class
+        {
+            bool first = true;
+            foreach (T item in items)
+            {
+                if (!first)
+                {
+                    Console.Write(sep);
+                }
+                else
+                {
+                    first = false;
+                }
+                Console.Write((item != null ? item.ToString() : String.Empty));
+            }
+        }
+
+        public static void PrintEnumerableStruct<T>(IEnumerable<T> items, String sep)
+            where T : struct
+        {
+            bool first = true;
+            foreach (T item in items)
+            {
+                if (!first)
+                {
+                    Console.Write(sep);
+                }
+                else
+                {
+                    first = false;
+                }
+                Console.Write(item.ToString());
+            }
+        }
     }
 }

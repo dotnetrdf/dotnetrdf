@@ -98,6 +98,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="BasicTests1.cs" />
     <Compile Include="BasicTests2.cs" />
+    <Compile Include="BinaryTreeTests.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />

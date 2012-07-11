@@ -78,6 +78,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Trees\BinaryTree.cs" />
+    <Compile Include="Common\Trees\ITree.cs" />
     <Compile Include="Core\BackgroundPersistedGraph.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Core\BaseGraphCollection.cs" />
