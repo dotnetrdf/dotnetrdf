@@ -51,7 +51,7 @@ namespace VDS.Common.Trees
         : ITree<TNode, TKey, TValue>
         where TNode : class, IBinaryTreeNode<TKey, TValue>
     {
-        private IComparer<TKey> _comparer = Comparer<TKey>.Default;
+        protected IComparer<TKey> _comparer = Comparer<TKey>.Default;
 
         /// <summary>
         /// Creates a new unbalanced Binary Tree
@@ -71,7 +71,7 @@ namespace VDS.Common.Trees
         /// <summary>
         /// Gets/Sets the Root of the Tree
         /// </summary>
-        public TNode Root
+        public virtual TNode Root
         {
             get;
             set;
@@ -493,111 +493,5 @@ namespace VDS.Common.Trees
             }
         }
 
-    }
-
-    public class UnbalancedBinaryTree<TKey, TValue>
-        : BinaryTree<IBinaryTreeNode<TKey, TValue>, TKey, TValue>
-    {
-        public UnbalancedBinaryTree()
-            : base() { }
-
-        public UnbalancedBinaryTree(IComparer<TKey> comparer)
-            : base(comparer) { }
-
-        protected override IBinaryTreeNode<TKey, TValue> CreateNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
-        {
-            return new BinaryTreeNode<TKey, TValue>(parent, key, value);
-        }
-    }
-
-    /// <summary>
-    /// Binary Tree node implementation
-    /// </summary>
-    /// <typeparam name="TKey">Key Type</typeparam>
-    /// <typeparam name="TValue">Value Type</typeparam>
-    public class BinaryTreeNode<TKey, TValue>
-        : IBinaryTreeNode<TKey, TValue>
-    {
-        private IBinaryTreeNode<TKey, TValue> _left, _right;
-
-        public BinaryTreeNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
-        {
-            this.Parent = parent;
-            this.Key = key;
-            this.Value = value;
-        }
-
-        public IBinaryTreeNode<TKey, TValue> Parent
-        {
-            get;
-            set;
-        }
-
-        public IBinaryTreeNode<TKey, TValue> LeftChild
-        {
-            get
-            {
-                return this._left;
-            }
-            set
-            {
-                this._left = value;
-                if (this._left != null) this._left.Parent = this;
-            }
-        }
-
-        public IBinaryTreeNode<TKey, TValue> RightChild
-        {
-            get
-            {
-                return this._right;
-            }
-            set
-            {
-                this._right = value;
-                if (this._right != null) this._right.Parent = this;
-            }
-        }
-
-        public TKey Key
-        {
-            get;
-            set;
-        }
-
-        public TValue Value
-        {
-            get;
-            set;
-        }
-
-        public bool HasChildren
-        {
-            get
-            {
-                return this.LeftChild != null || this.RightChild != null;
-            }
-        }
-
-        public int ChildCount
-        {
-            get
-            {
-                return (this.LeftChild != null ? 1 : 0) + (this.RightChild != null ? 1 : 0);
-            }
-        }
-
-        public IEnumerable<IBinaryTreeNode<TKey, TValue>> Nodes
-        {
-            get
-            {
-                return (this.LeftChild != null ? this.LeftChild.Nodes : Enumerable.Empty<IBinaryTreeNode<TKey, TValue>>()).Concat(this.AsEnumerable()).Concat(this.RightChild != null ? this.RightChild.Nodes : Enumerable.Empty<IBinaryTreeNode<TKey, TValue>>());
-            }
-        }
-
-        public override string ToString()
-        {
-            return "Key: " + this.Key.ToString() + " Value: " + this.Value.ToSafeString();
-        }
     }
 }
