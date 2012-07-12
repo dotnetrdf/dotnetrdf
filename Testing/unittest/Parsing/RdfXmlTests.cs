@@ -119,20 +119,59 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingRdfXmlWithUrlEscapedNodes()
         {
+            //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
             NTriplesFormatter formatter = new NTriplesFormatter();
             RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
             Graph g = new Graph();
             domParser.Load(g, "urlencodes-in-rdfxml.rdf");
 
-            IUriNode encodedNode = g.GetUriNode(new Uri("http://example.com/some%40encoded%2FUri"));
-            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
 
-            IUriNode unencodedNode = g.GetUriNode(new Uri("http://example.com/some@encoded/Uri"));
+            Uri encoded = new Uri("http://example.com/some%40encoded%2FUri");
+            Uri unencoded = new Uri("http://example.com/some@encoded/Uri");
+
+            Assert.IsFalse(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should not be equivalent because %40 encodes a reserved character and per RFC 3986 decoding this can change the meaning of the URI");
+
+            IUriNode encodedNode = g.GetUriNode(encoded);
+            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+            IUriNode unencodedNode = g.GetUriNode(unencoded);
             Assert.IsNotNull(unencodedNode, "The unencoded node should be returned by its unencoded URI");
 
-            IUriNode encoded = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
-            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, encoded, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
-            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, encoded, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
+            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
+            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
+            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlWithUrlEscapedNodes2()
+        {
+            //Originally submitted by Rob Styles as part of CORE-251, modified somewhat during debugging process
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
+            Graph g = new Graph();
+            domParser.Load(g, "urlencodes-in-rdfxml.rdf");
+
+            foreach (Triple t in g.Triples)
+            {
+                Console.WriteLine(t.ToString(formatter));
+            }
+
+            Uri encoded = new Uri("http://example.com/some%20encoded%2FUri");
+            Uri unencoded = new Uri("http://example.com/some encoded/Uri");
+
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(encoded, unencoded), "URIs should be equivalent");
+
+            IUriNode encodedNode = g.GetUriNode(encoded);
+            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+            IUriNode unencodedNode = g.GetUriNode(unencoded);
+            Assert.IsNotNull(unencodedNode, "The unencoded node should be returned by its unencoded URI");
+
+            IUriNode pred = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
+            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
+            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
 	}

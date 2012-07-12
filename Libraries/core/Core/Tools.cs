@@ -168,7 +168,7 @@ namespace VDS.RDF
                 if (uriref.Equals(String.Empty))
                 {
                     //Empty Uri reference refers to the Base Uri
-                    return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).ToString();
+                    return UriFactory.Create(Tools.FixMalformedUriStrings(baseUri)).AbsoluteUri;
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace VDS.RDF
                     if (u.IsAbsoluteUri) 
                     {
                         //Uri Reference is an Absolute Uri so no need to resolve against Base Uri
-                        return u.ToString();
+                        return u.AbsoluteUri;
                     } 
                     else 
                     {
@@ -187,11 +187,11 @@ namespace VDS.RDF
                         //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
                         if (u.ToString().StartsWith("#"))
                         {
-                            return Tools.ResolveUri(u, b).ToString();
+                            return Tools.ResolveUri(u, b).AbsoluteUri;
                         }
                         else if (Tools.IsValidBaseUri(b))
                         {
-                            return Tools.ResolveUri(u, b).ToString();
+                            return Tools.ResolveUri(u, b).AbsoluteUri;
                         }
                         else
                         {
@@ -209,7 +209,7 @@ namespace VDS.RDF
 
                 try
                 {
-                    return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).ToString();
+                    return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
                 }
                 catch (UriFormatException)
                 {

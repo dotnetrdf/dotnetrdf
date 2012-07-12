@@ -11,4 +11,10 @@
   <rdf:Description rdf:about="http://example.com/some@encoded/Uri">
     <encoded>false</encoded>
   </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/some%20encoded%2FUri">
+    <encoded>true</encoded>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/some encoded/Uri">
+    <encoded>false</encoded>
+  </rdf:Description>
 </rdf:RDF>
