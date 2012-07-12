@@ -217,6 +217,9 @@
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests2.cs" />
     <Compile Include="Sparql\ExplainProcessorTests.cs" />
+    <Content Include="resources\urlencodes-in-rdfxml.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Sparql\FastJoinTests.cs" />
     <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />

@@ -603,6 +603,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         private void mnuCloseAll_Click(object sender, RoutedEventArgs e)
         {
             this._editor.DocumentManager.CloseAll();
+            foreach (TabItem tab in this.tabDocuments.Items)
+            {
+                tab.Content = null;
+            }
             this.tabDocuments.Items.Clear();
 
             //Recreate new Tabs for any Documents that were not closed
@@ -1543,8 +1547,15 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             if (Application.Current.ShutdownMode != ShutdownMode.OnExplicitShutdown )
             {
-                this._editor.DocumentManager.CloseAll();
-                Application.Current.Shutdown();
+                mnuCloseAll_Click(sender, new RoutedEventArgs());
+                if (this.tabDocuments.Items.Count == 0)
+                {
+                    Application.Current.Shutdown();
+                }
+                else
+                {
+                    e.Cancel = true;
+                }
             }
         }
 

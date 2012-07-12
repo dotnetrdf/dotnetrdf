@@ -115,5 +115,25 @@ namespace VDS.RDF.Test.Parsing
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
             this.TestRdfXmlSequence(parser, "sequence2.rdf");
         }
+
+        [TestMethod]
+        public void ParsingRdfXmlWithUrlEscapedNodes()
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            RdfXmlParser domParser = new RdfXmlParser(RdfXmlParserMode.DOM);
+            Graph g = new Graph();
+            domParser.Load(g, "urlencodes-in-rdfxml.rdf");
+
+            IUriNode encodedNode = g.GetUriNode(new Uri("http://example.com/some%40encoded%2FUri"));
+            Assert.IsNotNull(encodedNode, "The encoded node should be returned by its encoded URI");
+
+            IUriNode unencodedNode = g.GetUriNode(new Uri("http://example.com/some@encoded/Uri"));
+            Assert.IsNotNull(unencodedNode, "The unencoded node should be returned by its unencoded URI");
+
+            IUriNode encoded = g.CreateUriNode(new Uri("http://example.org/schema/encoded"));
+            Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, encoded, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
+            Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, encoded, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
+
+        }
 	}
 }

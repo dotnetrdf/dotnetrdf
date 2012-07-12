@@ -292,6 +292,6 @@ namespace VDS.RDF.Test.Writing
             g.LoadFromString(fragment);
 
             this.CheckFailure(g);
-        }
+        }       
     }
 }
