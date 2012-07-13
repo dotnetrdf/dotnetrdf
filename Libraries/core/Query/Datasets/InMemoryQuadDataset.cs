@@ -69,6 +69,13 @@ namespace VDS.RDF.Query.Datasets
             : this(new TripleStore(), unionDefaultGraph) { }
 
         /// <summary>
+        /// Creates a new in-memory dataset containing initially just the given graph and treating the given graph as the default graph of the dataset
+        /// </summary>
+        /// <param name="g">Graph</param>
+        public InMemoryQuadDataset(IGraph g)
+            : this(g.AsTripleStore(), g.BaseUri) { }
+
+        /// <summary>
         /// Creates a new In-Memory dataset
         /// </summary>
         /// <param name="store">In-Memory queryable store</param>

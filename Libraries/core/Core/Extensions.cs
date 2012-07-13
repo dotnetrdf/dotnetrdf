@@ -923,6 +923,13 @@ namespace VDS.RDF
     /// </summary>
     public static class GraphExtensions
     {
+        internal static IInMemoryQueryableStore AsTripleStore(this IGraph g)
+        {
+            TripleStore store = new TripleStore();
+            store.Add(g);
+            return store;
+        }
+
         /// <summary>
         /// Executes a SPARQL Query on a Graph
         /// </summary>
@@ -932,9 +939,7 @@ namespace VDS.RDF
         public static Object ExecuteQuery(this IGraph g, String sparqlQuery)
         {
             //Due to change in default graph behaviour ensure that we associate this graph as the default graph of the dataset
-            TripleStore store = new TripleStore();
-            store.Add(g);
-            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
@@ -950,9 +955,7 @@ namespace VDS.RDF
         /// <param name="sparqlQuery">SPARQL Query</param>
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            TripleStore store = new TripleStore();
-            store.Add(g);
-            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(sparqlQuery);
@@ -990,9 +993,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static Object ExecuteQuery(this IGraph g, SparqlQuery query)
         {
-            TripleStore store = new TripleStore();
-            store.Add(g);
-            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
             return processor.ProcessQuery(query);
         }
@@ -1006,9 +1007,7 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query</param>
         public static void ExecuteQuery(this IGraph g, IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            TripleStore store = new TripleStore();
-            store.Add(g);
-            InMemoryDataset ds = new InMemoryDataset(store, g.BaseUri);
+            InMemoryDataset ds = new InMemoryDataset(g);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(ds);
             processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
