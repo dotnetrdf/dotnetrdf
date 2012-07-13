@@ -61,7 +61,7 @@ namespace VDS.RDF.Storage
     public class DydraConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP
-        , IUpdateableStorage, IUpdateableGenericIOManager
+        , IUpdateableStorage
 #endif
     {
         private const String DydraBaseUri = "http://dydra.com/";

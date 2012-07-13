@@ -39,6 +39,8 @@ using System.Windows.Forms;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Utilities.StoreManager.Tasks;
 
 namespace VDS.RDF.Utilities.StoreManager
@@ -121,7 +123,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
 
             //Disable Server Management for non Storage Servers
-            if (!(this._manager is IStorageServer))
+            if (!(this._manager is IStorageServer<IStoreTemplate>))
             {
                 this.tabFunctions.TabPages.Remove(this.tabServer);
             }
@@ -149,7 +151,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void ListStores()
         {
-            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer);
+            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer<IStoreTemplate>);
             this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
@@ -407,7 +409,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void GetStore(String id)
         {
-            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer, id);
+            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer<IStoreTemplate>, id);
             this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
         }
 
@@ -417,7 +419,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void DeleteStore(String id)
         {
-            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer, id);
+            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer<IStoreTemplate>, id);
             this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
         }
 
@@ -425,9 +427,9 @@ namespace VDS.RDF.Utilities.StoreManager
         /// Requests a store be created
         /// </summary>
         /// <param name="id">Store ID</param>
-        public void CreateStore(String id)
+        public void CreateStore(IStoreTemplate template)
         {
-            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer, id);
+            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer<IStoreTemplate>, template);
             this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
         }
 

@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -47,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class GetStoreTask
         : NonCancellableTask<IStorageProvider>
     {
-        private IStorageServer _server;
+        private IStorageServer<IStoreTemplate> _server;
         private String _id;
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public GetStoreTask(IStorageServer server, String id)
+        public GetStoreTask(IStorageServer<IStoreTemplate> server, String id)
             : base("Get Store")
         {
             this._server = server;

@@ -76,7 +76,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class SparqlConnector
-        : IQueryableStorage, IQueryableGenericIOManager, IConfigurationSerializable
+        : IQueryableStorage, IConfigurationSerializable
     {
         private SparqlRemoteEndpoint _endpoint;
         private SparqlConnectorLoadMethod _mode = SparqlConnectorLoadMethod.Construct;

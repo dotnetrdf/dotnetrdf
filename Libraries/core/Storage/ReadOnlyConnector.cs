@@ -51,7 +51,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class ReadOnlyConnector 
-        : IStorageProvider, IGenericIOManager, IConfigurationSerializable
+        : IStorageProvider, IConfigurationSerializable
     {
         private IStorageProvider _manager;
 
@@ -298,7 +298,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class QueryableReadOnlyConnector
-        : ReadOnlyConnector, IQueryableStorage, IQueryableGenericIOManager
+        : ReadOnlyConnector, IQueryableStorage
     {
         private IQueryableStorage _queryManager;
 

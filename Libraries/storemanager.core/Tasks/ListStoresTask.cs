@@ -40,6 +40,8 @@ using System.Text;
 using System.Threading;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -49,13 +51,13 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class ListStoresTask 
         : NonCancellableTask<IEnumerable<String>>
     {
-        private IStorageServer _manager;
+        private IStorageServer<IStoreTemplate> _manager;
 
         /// <summary>
         /// Creates a new list stores task
         /// </summary>
         /// <param name="manager">Storage Provider</param>
-        public ListStoresTask(IStorageServer manager)
+        public ListStoresTask(IStorageServer<IStoreTemplate> manager)
             : base("List Stores")
         {
             this._manager = manager;

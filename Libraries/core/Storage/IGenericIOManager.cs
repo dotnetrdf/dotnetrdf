@@ -47,7 +47,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    [Obsolete("This interface is now a synonym for the IStorageProvider interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IStorageProvider instead", false)]
+    [Obsolete("This interface is now a synonym for the IStorageProvider interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IStorageProvider instead", true)]
     public interface IGenericIOManager 
         : IStorageProvider
     {
@@ -62,7 +62,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    [Obsolete("This interface is now a synonym for the IQueryableStorage interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IQueryableStorage instead", false)]
+    [Obsolete("This interface is now a synonym for the IQueryableStorage interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IQueryableStorage instead", true)]
     public interface IQueryableGenericIOManager 
         : IGenericIOManager, IQueryableStorage
     {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// Designed to allow for arbitrary Triple Stores to be plugged into the library as required by the end user
     /// </remarks>
-    [Obsolete("This interface is now a synonym for the IUpdateableStorage interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IUpdateableStorage instead", false)]
+    [Obsolete("This interface is now a synonym for the IUpdateableStorage interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IUpdateableStorage instead", true)]
     public interface IUpdateableGenericIOManager
         : IQueryableGenericIOManager, IUpdateableStorage
     {
@@ -93,9 +93,8 @@ namespace VDS.RDF.Storage
     /// <strong>Note:</strong> This is now a synonym for the more descriptive <see cref="IStorageServer">IStorageServer</see> interface and will be removed in future releases.
     /// </para>
     /// </remarks>
-    [Obsolete("This interface is now a synonym for the IStorageServer interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IStorageServer instead", false)]
+    [Obsolete("This interface is now a synonym for the IStorageServer interface and remains in the API for backwards compatibility with existing code.  Please update your code to use IStorageServer instead", true)]
     public interface IMultiStoreGenericIOManager 
-        : IStorageServer
     {
 
     }

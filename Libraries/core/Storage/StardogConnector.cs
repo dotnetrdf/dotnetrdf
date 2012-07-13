@@ -100,7 +100,7 @@ namespace VDS.RDF.Storage
     public class StardogConnector 
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IQueryableGenericIOManager, ITransactionalStorage
+        , IQueryableStorage, ITransactionalStorage
 #endif
     {
         /// <summary>

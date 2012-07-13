@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks
 {
@@ -47,19 +49,19 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class CreateStoreTask
         : NonCancellableTask<TaskValueResult<bool>>
     {
-        private IStorageServer _server;
-        private String _id;
+        private IStorageServer<IStoreTemplate> _server;
+        private IStoreTemplate _template;
 
         /// <summary>
         /// Creates a task for creating a Store
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public CreateStoreTask(IStorageServer server, String id)
+        public CreateStoreTask(IStorageServer<IStoreTemplate> server, IStoreTemplate template)
             : base("Create Store")
         {
             this._server = server;
-            this._id = id;
+            this._template = template;
         }
 
         /// <summary>
@@ -68,14 +70,14 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskValueResult<bool> RunTaskInternal()
         {
-            this.Information = "Creating Store " + this._id + "...";
+            this.Information = "Creating Store " + this._template.ID + "...";
             if (this._server != null)
             {
-                return new TaskValueResult<bool>(this._server.CreateStore(this._id));
+                return new TaskValueResult<bool>(this._server.CreateStore(this._template));
             }
             else
             {
-                throw new RdfStorageException("Retrieving a store is unsupported");
+                throw new RdfStorageException("Creating a store is unsupported");
             }
         }
     }

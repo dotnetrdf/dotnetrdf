@@ -59,7 +59,7 @@ namespace VDS.RDF.Storage
     public class SparqlHttpProtocolConnector 
         : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncStorageProvider
 #if !NO_SYNC_HTTP
-        , IStorageProvider, IGenericIOManager
+        , IStorageProvider
 #endif
     {
         /// <summary>

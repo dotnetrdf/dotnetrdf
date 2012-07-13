@@ -72,7 +72,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class VirtuosoManager
-        : BaseAsyncSafeConnector, IUpdateableStorage, IUpdateableGenericIOManager, IConfigurationSerializable
+        : BaseAsyncSafeConnector, IUpdateableStorage, IConfigurationSerializable
     {
         /// <summary>
         /// Default Port for Virtuoso Servers

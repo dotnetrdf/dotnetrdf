@@ -45,6 +45,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
@@ -61,9 +63,9 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector, IAsyncStorageServer, IConfigurationSerializable
+        : BaseSesameHttpProtocolConnector<StoreTemplate>, IAsyncStorageServer<StoreTemplate>, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IStorageServer, IMultiStoreGenericIOManager
+        , IStorageServer<StoreTemplate>
 #endif
     {
         private String _agraphBase;
@@ -109,22 +111,26 @@ namespace VDS.RDF.Storage
             this._catalog = catalogID;
 
 #if !NO_SYNC_HTTP
-            if (this.CreateStore(storeID))
-            {
-                this._store = storeID;
-            }
-            else
-            {
-                throw new RdfStorageException("Failed to create/connect to the specified Store");
-            }
+            if (!this.CreateStore(this.GetNewTemplate(this._store)))throw new RdfStorageException("Failed to create/connect to the specified Store");
 #else
             ManualResetEvent signal = new ManualResetEvent(false);
             AsyncStorageCallbackArgs resArgs = null;
-            this.CreateStore(storeID, (sender, args, state) =>
+            this.GetNewTemplate(this._store, (sender, args, state) =>
                 {
-                    resArgs = args;
-                    signal.Set();
-                }, null);
+                    if (args.WasSuccessful)
+                    {
+                        this.CreateStore((StoreTemplate)args.Template, (sender2, args2, state2) =>
+                            {
+                                resArgs = args2;
+                                signal.Set();
+                            }, null);
+                    }
+                    else
+                    {
+                        resArgs = args;
+                        signal.Set();
+                    }
+            }, null);
             signal.WaitOne();
 
             if (resArgs.WasSuccessful)
@@ -237,11 +243,16 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        public override StoreTemplate GetNewTemplate(String id)
+        {
+            return new StoreTemplate(id);
+        }
+
         /// <summary>
         /// Creates a new Store (if it doesn't already exist)
         /// </summary>
-        /// <param name="storeID">Store ID</param>
-        public override bool CreateStore(String storeID)
+        /// <param name="template">Template for creating the new Store</param>
+        public override bool CreateStore(StoreTemplate template)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -249,7 +260,7 @@ namespace VDS.RDF.Storage
             {
                 Dictionary<String, String> createParams = new Dictionary<string, string>();
                 createParams.Add("override", "false");
-                request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", createParams);
+                request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -511,19 +522,24 @@ namespace VDS.RDF.Storage
             }
         }
 
+        public override void GetNewTemplate(string id, AsyncStorageCallback callback, object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StoreTemplate(id)), state);
+        }
+
         /// <summary>
         /// Creates a new Store on the server within the current catalog asynchronously
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="template">Template to create the store from</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to callback</param>
-        public override void CreateStore(string storeID, AsyncStorageCallback callback, object state)
+        public override void CreateStore(StoreTemplate template, AsyncStorageCallback callback, object state)
         {
             try
             {
                 Dictionary<String, String> createParams = new Dictionary<string, string>();
                 createParams.Add("override", "false");
-                HttpWebRequest request = this.CreateRequest("repositories/" + storeID, "*/*", "PUT", createParams);
+                HttpWebRequest request = this.CreateRequest("repositories/" + template.ID, "*/*", "PUT", createParams);
 
 #if DEBUG
                 if (Options.HttpDebugging)
@@ -544,7 +560,7 @@ namespace VDS.RDF.Storage
                             }
 #endif
                             response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                         }
                         catch (WebException webEx)
                         {
@@ -562,21 +578,21 @@ namespace VDS.RDF.Storage
                                 if (code == 400)
                                 {
                                     //400 just means the store already exists so this is OK
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
                                 }
                                 else
                                 {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
                                 }
                             }
                             else
                             {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
                             }
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
                         }
                     }, state);
             }
@@ -596,21 +612,21 @@ namespace VDS.RDF.Storage
                     if (code == 400)
                     {
                         //400 just means the store already exists so this is OK
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
                     }
                     else
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
                     }
                 }
                 else
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("A HTTP error occurred while trying to create a store, see inner exception for details", webEx)), state);
                 }
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, storeID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An unexpected error occurred while trying to create a store, see inner exception for details", ex)), state);
             }
         }
 

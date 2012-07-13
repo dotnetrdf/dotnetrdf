@@ -42,7 +42,7 @@ namespace VDS.RDF.Storage
     /// Abstract Base Class for <see cref="IStorageProvider">IStorageProvider</see> implementations for which it is safe to do the <see cref="IAsyncStorageProvider">IAsyncStorageProvider</see> implementation simply by farming out calls to the synchronous methods onto background threads (i.e. non-HTTP based connectors)
     /// </summary>
     public abstract class BaseAsyncSafeConnector
-        : IStorageProvider, IGenericIOManager, IAsyncStorageProvider
+        : IStorageProvider, IAsyncStorageProvider
     {
         /// <summary>
         /// Loads a Graph from the Store

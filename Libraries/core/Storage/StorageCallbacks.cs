@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Storage
 {
@@ -58,6 +59,10 @@ namespace VDS.RDF.Storage
         /// Rolled back a Transaction
         /// </summary>
         TransactionRollback,
+        /// <summary>
+        /// Gettting a new store template
+        /// </summary>
+        NewTemplate,
         /// <summary>
         /// Created a Store
         /// </summary>
@@ -240,7 +245,7 @@ namespace VDS.RDF.Storage
         /// <param name="operation">Operation</param>
         /// <param name="data">Data to return</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String data)
-            : this(operation, data, null) { }
+            : this(operation, data, (Exception)null) { }
 
         /// <summary>
         /// Creates new callback arguments
@@ -287,6 +292,12 @@ namespace VDS.RDF.Storage
             this.StorageProvider = provider;
         }
 
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IStoreTemplate template)
+            : this(operation, storeID)
+        {
+            this.Template = template;
+        }
+
         /// <summary>
         /// Sets the Data to the appropriate property based on the operation type
         /// </summary>
@@ -306,6 +317,7 @@ namespace VDS.RDF.Storage
                 case AsyncStorageOperation.CreateStore:
                 case AsyncStorageOperation.DeleteStore:
                 case AsyncStorageOperation.GetStore:
+                case AsyncStorageOperation.NewTemplate:
                     this.StoreID = data;
                     break;
             }
@@ -391,6 +403,8 @@ namespace VDS.RDF.Storage
         /// Gets the operation that was performed
         /// </summary>
         public AsyncStorageOperation Operation { get; private set; }
+
+        public IStoreTemplate Template { get; private set; }
     }
 
     /// <summary>

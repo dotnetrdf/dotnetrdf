@@ -45,6 +45,8 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -58,12 +60,18 @@ namespace VDS.RDF.Storage
     /// See <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">here</a> for the protocol specification, this base class supports Version 5 of the protocol which does not include SPARQL Update support
     /// </para>
     /// </remarks>
-    public abstract class BaseSesameHttpProtocolConnector 
-        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer, IConfigurationSerializable
+    public abstract class BaseSesameHttpProtocolConnector<T> 
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer<T>, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IStorageServer, IQueryableGenericIOManager
+        , IQueryableStorage, IStorageServer<T>
 #endif
+        where T : IStoreTemplate
     {
+        /// <summary>
+        /// System Repository ID
+        /// </summary>
+        public const String SystemRepositoryID = "SYSTEM";
+
         /// <summary>
         /// Base Uri for the Store
         /// </summary>
@@ -1317,15 +1325,14 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        public abstract T GetNewTemplate(String id);
+
         /// <summary>
         /// Creates a new Store with the given ID
         /// </summary>
-        /// <param name="storeID">Store ID</param>
+        /// <param name="template">Template for creating the new store</param>
         /// <returns>Whether creation succeeded</returns>
-        public virtual bool CreateStore(String storeID)
-        {
-            throw new RdfStorageException("Sesame does not support creating stores via it's HTTP Protocol");
-        }
+        public abstract bool CreateStore(T template);
 
         /// <summary>
         /// Deletes the Store with the given ID
@@ -1368,19 +1375,18 @@ namespace VDS.RDF.Storage
 
 #endif
 
+        public abstract void GetNewTemplate(String id, AsyncStorageCallback callback, Object state);
+
         /// <summary>
         /// Creates a store asynchronously
         /// </summary>
-        /// <param name="storeID">ID of the store to create</param>
+        /// <param name="template">Template for creating the new store</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
         /// <remarks>
         /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
         /// </remarks>
-        public virtual void CreateStore(String storeID, AsyncStorageCallback callback, Object state)
-        {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
-        }
+        public abstract void CreateStore(T template, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Deletes a store asynchronously
@@ -1473,14 +1479,17 @@ namespace VDS.RDF.Storage
         {
             //Build the Request Uri
             String requestUri = this._baseUri + servicePath;
-            if (queryParams.Count > 0)
+            if (queryParams != null)
             {
-                requestUri += "?";
-                foreach (String p in queryParams.Keys)
+                if (queryParams.Count > 0)
                 {
-                    requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                    requestUri += "?";
+                    foreach (String p in queryParams.Keys)
+                    {
+                        requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                    }
+                    requestUri = requestUri.Substring(0, requestUri.Length - 1);
                 }
-                requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }
 
             //Create our Request
@@ -1661,7 +1670,7 @@ namespace VDS.RDF.Storage
     /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 5 (i.e. no SPARQL Update support)
     /// </summary>
     public class SesameHttpProtocolVersion5Connector
-        : BaseSesameHttpProtocolConnector
+        : BaseSesameHttpProtocolConnector<BaseSesameTemplate>
     {
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -1707,6 +1716,52 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        public override BaseSesameTemplate GetNewTemplate(string id)
+        {
+            return new SesameMemTemplate(id);
+        }
+
+        public override bool CreateStore(BaseSesameTemplate template)
+        {
+            try
+            {
+                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", null);
+
+                request.ContentType = MimeTypesHelper.NTriples[0];
+                NTriplesWriter ntwriter = new NTriplesWriter();
+                ntwriter.Save(template.GetTemplateGraph(), new StreamWriter(request.GetRequestStream()));
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get then it was OK
+                    response.Close();
+                }
+                return true;
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                throw new RdfStorageException("A HTTP Error occurred while trying to create a new store", webEx);
+            }
+        }
+
         /// <summary>
         /// Gets the Store with the given ID
         /// </summary>
@@ -1731,7 +1786,50 @@ namespace VDS.RDF.Storage
             }
         }
 #endif
-        
+
+        public override void GetNewTemplate(string id, AsyncStorageCallback callback, object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new SesameMemTemplate(id)), state);
+        }
+
+        public override void CreateStore(BaseSesameTemplate template, AsyncStorageCallback callback, object state)
+        {
+            try
+            {
+                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", null);
+
+                request.ContentType = MimeTypesHelper.NTriples[0];
+                NTriplesWriter ntwriter = new NTriplesWriter();
+
+                this.SaveGraphAsync(request, ntwriter, template.GetTemplateGraph(), (sender, args, st) =>
+                    {
+                        if (args.WasSuccessful)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                }
+#endif
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("A HTTP Error occurred while trying to create a new Store asynchronously, see inner exception for details", webEx)), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Unexpected error while trying to create a new Store asynchronously, see inner exception for details", ex)), state);
+                return;
+            }
+        }
+
         /// <summary>
         /// Gets a store asynchronously
         /// </summary>
@@ -1773,7 +1871,7 @@ namespace VDS.RDF.Storage
     public class SesameHttpProtocolVersion6Connector
         : SesameHttpProtocolVersion5Connector
 #if !NO_SYNC_HTTP
-        , IUpdateableStorage, IUpdateableGenericIOManager
+        , IUpdateableStorage
 #endif
     {
         /// <summary>

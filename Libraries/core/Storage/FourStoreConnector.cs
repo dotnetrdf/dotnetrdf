@@ -67,7 +67,7 @@ namespace VDS.RDF.Storage
     public class FourStoreConnector
         : BaseAsyncHttpConnector, IAsyncUpdateableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IUpdateableStorage, IUpdateableGenericIOManager
+        , IUpdateableStorage
 #endif
     {
         private String _baseUri;
