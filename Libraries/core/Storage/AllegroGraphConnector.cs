@@ -63,9 +63,9 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector<StoreTemplate>, IAsyncStorageServer<StoreTemplate>, IConfigurationSerializable
+        : BaseSesameHttpProtocolConnector<StoreTemplate>, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IStorageServer<StoreTemplate>
+        , IStorageServer
 #endif
     {
         private String _agraphBase;
@@ -111,7 +111,7 @@ namespace VDS.RDF.Storage
             this._catalog = catalogID;
 
 #if !NO_SYNC_HTTP
-            if (!this.CreateStore(this.GetNewTemplate(this._store)))throw new RdfStorageException("Failed to create/connect to the specified Store");
+            if (!this.CreateStore(this.GetDefaultTemplate(this._store)))throw new RdfStorageException("Failed to create/connect to the specified Store");
 #else
             ManualResetEvent signal = new ManualResetEvent(false);
             AsyncStorageCallbackArgs resArgs = null;
@@ -243,16 +243,21 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
-        public override StoreTemplate GetNewTemplate(String id)
+        public override IStoreTemplate GetDefaultTemplate(String id)
         {
-            return new StoreTemplate(id);
+            return new StoreTemplate(id, "AllegroGraph", "An AllgroGraph store");
+        }
+
+        public override IEnumerable<IStoreTemplate> GetAvailableTemplates(String id)
+        {
+            return this.GetDefaultTemplate(id).AsEnumerable();
         }
 
         /// <summary>
         /// Creates a new Store (if it doesn't already exist)
         /// </summary>
         /// <param name="template">Template for creating the new Store</param>
-        public override bool CreateStore(StoreTemplate template)
+        public override bool CreateStore(IStoreTemplate template)
         {
             HttpWebRequest request = null;
             HttpWebResponse response = null;
@@ -522,9 +527,14 @@ namespace VDS.RDF.Storage
             }
         }
 
-        public override void GetNewTemplate(string id, AsyncStorageCallback callback, object state)
+        public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StoreTemplate(id)), state);
+        }
+
+        public override void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state)
+        {
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, new IStoreTemplate[] { new StoreTemplate(id) }), state);
         }
 
         /// <summary>
@@ -533,7 +543,7 @@ namespace VDS.RDF.Storage
         /// <param name="template">Template to create the store from</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to callback</param>
-        public override void CreateStore(StoreTemplate template, AsyncStorageCallback callback, object state)
+        public override void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
         {
             try
             {

@@ -48,16 +48,16 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     /// <summary>
     /// Task for listing stores
     /// </summary>
-    public class ListStoresTask 
+    public class ListStoresTask
         : NonCancellableTask<IEnumerable<String>>
     {
-        private IStorageServer<IStoreTemplate> _manager;
+        private IStorageServer _manager;
 
         /// <summary>
         /// Creates a new list stores task
         /// </summary>
         /// <param name="manager">Storage Provider</param>
-        public ListStoresTask(IStorageServer<IStoreTemplate> manager)
+        public ListStoresTask(IStorageServer manager)
             : base("List Stores")
         {
             this._manager = manager;

@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class GetStoreTask
         : NonCancellableTask<IStorageProvider>
     {
-        private IStorageServer<IStoreTemplate> _server;
+        private IStorageServer _server;
         private String _id;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public GetStoreTask(IStorageServer<IStoreTemplate> server, String id)
+        public GetStoreTask(IStorageServer server, String id)
             : base("Get Store")
         {
             this._server = server;

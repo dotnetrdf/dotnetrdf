@@ -49,7 +49,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
     public class DeleteStoreTask
         : NonCancellableTask<TaskResult>
     {
-        private IStorageServer<IStoreTemplate> _server;
+        private IStorageServer _server;
         private String _id;
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// </summary>
         /// <param name="server">Server</param>
         /// <param name="id"></param>
-        public DeleteStoreTask(IStorageServer<IStoreTemplate> server, String id)
+        public DeleteStoreTask(IStorageServer server, String id)
             : base("Delete Store")
         {
             this._server = server;

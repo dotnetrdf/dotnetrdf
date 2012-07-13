@@ -47,8 +47,7 @@ namespace VDS.RDF.Storage.Management
     /// <remarks>
     /// This interface may be implemented either separately or alongside <see cref="IStorageProvider"/>.  It is quite acceptable for an implementation of <see cref="IStorageProvider"/> that provides a connection to a store sitting on a server that manages multiple stores to also provide an implementation of this interface in order to allow access to other stores on the server.
     /// </remarks>
-    public interface IStorageServer<T>
-        where T : IStoreTemplate
+    public interface IStorageServer
     {
         /// <summary>
         /// Gets the list of available stores
@@ -57,21 +56,25 @@ namespace VDS.RDF.Storage.Management
         IEnumerable<String> ListStores();
 
         /// <summary>
-        /// Gets a template for creating a store with the given ID
+        /// Gets a default template for creating a store with the given ID
         /// </summary>
         /// <param name="id">ID</param>
         /// <returns></returns>
-        T GetNewTemplate(String id);
+        IStoreTemplate GetDefaultTemplate(String id);
+
+        /// <summary>
+        /// Gets all possible templates for creating a store with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <returns></returns>
+        IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
 
         /// <summary>
         /// Creates a new Store with the given ID
         /// </summary>
         /// <param name="template">Template for the new store</param>
         /// <returns>Whether creation succeeded</returns>
-        /// <remarks>
-        /// The template type provides the necessary information for the implementation to create a store, it is defined with a constrained generic type parameter so that implementations of this interface can further constrain the parameter to only accept implementations that make sense to them
-        /// </remarks>
-        bool CreateStore(T template);
+        bool CreateStore(IStoreTemplate template);
 
         /// <summary>
         /// Deletes the Store with the given ID
@@ -96,8 +99,7 @@ namespace VDS.RDF.Storage.Management
     /// <summary>
     /// Interface for storage providers which are capable of managing multiple stores asynchronously
     /// </summary>
-    public interface IAsyncStorageServer<T>
-        where T : IStoreTemplate
+    public interface IAsyncStorageServer
     {
         /// <summary>
         /// Lists the available stores asynchronously
@@ -107,13 +109,21 @@ namespace VDS.RDF.Storage.Management
         void ListStores(AsyncStorageCallback callback, Object state);
 
         /// <summary>
-        /// Gets a template for creating a store with the given ID
+        /// Gets a default template for creating a store with the given ID
         /// </summary>
         /// <param name="id">ID</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
         /// <returns></returns>
-        void GetNewTemplate(String id, AsyncStorageCallback callback, Object state);
+        void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
+
+        /// <summary>
+        /// Gets all available templates for creating a store with the given ID
+        /// </summary>
+        /// <param name="id">ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Creates a store asynchronously
@@ -124,7 +134,7 @@ namespace VDS.RDF.Storage.Management
         /// <remarks>
         /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
         /// </remarks>
-        void CreateStore(T template, AsyncStorageCallback callback, Object state);
+        void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Deletes a store asynchronously

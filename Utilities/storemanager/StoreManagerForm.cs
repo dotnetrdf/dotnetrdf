@@ -123,7 +123,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
 
             //Disable Server Management for non Storage Servers
-            if (!(this._manager is IStorageServer<IStoreTemplate>))
+            if (!(this._manager is IStorageServer))
             {
                 this.tabFunctions.TabPages.Remove(this.tabServer);
             }
@@ -151,7 +151,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void ListStores()
         {
-            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer<IStoreTemplate>);
+            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer);
             this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
@@ -409,7 +409,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void GetStore(String id)
         {
-            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer<IStoreTemplate>, id);
+            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer, id);
             this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
         }
 
@@ -419,7 +419,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void DeleteStore(String id)
         {
-            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer<IStoreTemplate>, id);
+            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer, id);
             this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
         }
 
@@ -429,7 +429,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void CreateStore(IStoreTemplate template)
         {
-            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer<IStoreTemplate>, template);
+            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer, template);
             this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
         }
 
@@ -1031,6 +1031,15 @@ namespace VDS.RDF.Utilities.StoreManager
             }
         }
 
+        private void mnuNewStore_Click(object sender, EventArgs e)
+        {
+            NewStoreForm newStore = new NewStoreForm(this._manager as IStorageServer);
+            if (newStore.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                this.CreateStore(newStore.Template);
+            }
+        }
+
         private void mnuOpenStore_Click(object sender, EventArgs e)
         {
             if (this.lvwStores.SelectedItems.Count > 0)
@@ -1041,6 +1050,19 @@ namespace VDS.RDF.Utilities.StoreManager
             else
             {
                 MessageBox.Show("No Store selected", "Open Store Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void mnuDeleteStore_Click(object sender, EventArgs e)
+        {
+            if (this.lvwStores.SelectedItems.Count > 0)
+            {
+                String id = this.lvwStores.SelectedItems[0].Text;
+                this.DeleteStore(id);
+            }
+            else
+            {
+                MessageBox.Show("No Store selected", "Delete Store Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1513,6 +1535,7 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             this._manager.Dispose();
         }
+
     }
 
     /// <summary>

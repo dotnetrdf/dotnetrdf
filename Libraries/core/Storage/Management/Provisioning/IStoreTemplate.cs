@@ -26,5 +26,21 @@ namespace VDS.RDF.Storage.Management.Provisioning
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets the name of the type of store the template will create
+        /// </summary>
+        String TemplateName
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the description of the type of store the template will create
+        /// </summary>
+        String TemplateDescription
+        {
+            get;
+        }
     }
 }

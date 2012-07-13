@@ -47,6 +47,7 @@ using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
+using VDS.RDF.Storage.Management.Provisioning.Sesame;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -61,9 +62,9 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector<T> 
-        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer<T>, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IStorageServer<T>
+        , IQueryableStorage, IStorageServer
 #endif
         where T : IStoreTemplate
     {
@@ -117,6 +118,16 @@ namespace VDS.RDF.Storage
         private StringBuilder _output = new StringBuilder();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+        /// <summary>
+        /// Available Sesame template types
+        /// </summary>
+        protected List<Type> _templateTypes = new List<Type>()
+        {
+            typeof(SesameMemTemplate),
+            typeof(SesameNativeTemplate),
+            typeof(SesameHttpTemplate)
+        };
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -202,7 +213,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.HasMultipleStores;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.HasMultipleStores | IOBehaviour.CanCreateStores;
             }
         }
 
@@ -1325,14 +1336,16 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
-        public abstract T GetNewTemplate(String id);
+        public abstract IStoreTemplate GetDefaultTemplate(String id);
+
+        public abstract IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
 
         /// <summary>
         /// Creates a new Store with the given ID
         /// </summary>
         /// <param name="template">Template for creating the new store</param>
         /// <returns>Whether creation succeeded</returns>
-        public abstract bool CreateStore(T template);
+        public abstract bool CreateStore(IStoreTemplate template);
 
         /// <summary>
         /// Deletes the Store with the given ID
@@ -1375,7 +1388,9 @@ namespace VDS.RDF.Storage
 
 #endif
 
-        public abstract void GetNewTemplate(String id, AsyncStorageCallback callback, Object state);
+        public abstract void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
+
+        public abstract void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Creates a store asynchronously
@@ -1386,7 +1401,7 @@ namespace VDS.RDF.Storage
         /// <remarks>
         /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
         /// </remarks>
-        public abstract void CreateStore(T template, AsyncStorageCallback callback, Object state);
+        public abstract void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, Object state);
 
         /// <summary>
         /// Deletes a store asynchronously
@@ -1716,49 +1731,79 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
-        public override BaseSesameTemplate GetNewTemplate(string id)
+        public override IStoreTemplate GetDefaultTemplate(string id)
         {
             return new SesameMemTemplate(id);
         }
 
-        public override bool CreateStore(BaseSesameTemplate template)
+        public override IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
-            try
+            List<IStoreTemplate> templates = new List<IStoreTemplate>();
+            Object[] args = new Object[] { id };
+            foreach (Type t in this._templateTypes)
             {
-                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", null);
+                try
+                {
+                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
+                    if (template != null) templates.Add(template);
+                }
+                catch
+                {
+                    //Ignore and continue
+                }
+            }
+            return templates;
+        }
 
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-                ntwriter.Save(template.GetTemplateGraph(), new StreamWriter(request.GetRequestStream()));
+        public override bool CreateStore(IStoreTemplate template)
+        {
+            if (template is BaseSesameTemplate)
+            {
+                try
+                {
+                    Dictionary<String,String> createParams = new Dictionary<string,string>();
+                    BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+                    IGraph g = sesameTemplate.GetTemplateGraph();
+                    createParams.Add("context", sesameTemplate.ContextNode.ToString());
+                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+
+                    request.ContentType = MimeTypesHelper.NTriples[0];
+                    NTriplesWriter ntwriter = new NTriplesWriter();
+                    ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
 
 #if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    Tools.HttpDebugRequest(request);
-                }
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugRequest(request);
+                    }
 #endif
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugResponse(response);
+                        }
+#endif
+                        //If we get then it was OK
+                        response.Close();
+                    }
+                    return true;
+                }
+                catch (WebException webEx)
                 {
 #if DEBUG
                     if (Options.HttpDebugging)
                     {
-                        Tools.HttpDebugResponse(response);
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
                     }
 #endif
-                    //If we get then it was OK
-                    response.Close();
+                    throw new RdfStorageException("A HTTP Error occurred while trying to create a new store", webEx);
                 }
-                return true;
             }
-            catch (WebException webEx)
+            else
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to create a new store", webEx);
+                throw new RdfStorageException("Invalid templates, templates must derive from BaseSesameTemplate");
             }
         }
 
@@ -1787,46 +1832,76 @@ namespace VDS.RDF.Storage
         }
 #endif
 
-        public override void GetNewTemplate(string id, AsyncStorageCallback callback, object state)
+        public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new SesameMemTemplate(id)), state);
         }
 
-        public override void CreateStore(BaseSesameTemplate template, AsyncStorageCallback callback, object state)
+        public override void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
-            try
+            List<IStoreTemplate> templates = new List<IStoreTemplate>();
+            Object[] args = new Object[] { id };
+            foreach (Type t in this._templateTypes)
             {
-                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", null);
-
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-
-                this.SaveGraphAsync(request, ntwriter, template.GetTemplateGraph(), (sender, args, st) =>
-                    {
-                        if (args.WasSuccessful)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
-                        }
-                        else
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
+                try
                 {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
+                    if (template != null) templates.Add(template);
                 }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("A HTTP Error occurred while trying to create a new Store asynchronously, see inner exception for details", webEx)), state);
+                catch
+                {
+                    //Ignore and continue
+                }
             }
-            catch (Exception ex)
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
+        }
+
+        public override void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
+        {
+            if (template is BaseSesameTemplate)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Unexpected error while trying to create a new Store asynchronously, see inner exception for details", ex)), state);
-                return;
+                try
+                {
+                    Dictionary<String, String> createParams = new Dictionary<string, string>();
+                    BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+                    IGraph g = sesameTemplate.GetTemplateGraph();
+                    createParams.Add("context", sesameTemplate.ContextNode.ToString());
+                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+
+                    request.ContentType = MimeTypesHelper.NTriples[0];
+                    NTriplesWriter ntwriter = new NTriplesWriter();
+
+                    this.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
+                        {
+                            if (args.WasSuccessful)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
+                            }
+                            else
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
+                            }
+                        }, state);
+                }
+                catch (WebException webEx)
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    }
+#endif
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("A HTTP Error occurred while trying to create a new Store asynchronously, see inner exception for details", webEx)), state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Unexpected error while trying to create a new Store asynchronously, see inner exception for details", ex)), state);
+                    return;
+                }
+            }
+            else
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate")), state);
             }
         }
 

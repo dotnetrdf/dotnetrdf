@@ -64,6 +64,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         NewTemplate,
         /// <summary>
+        /// Getting all available templates
+        /// </summary>
+        AvailableTemplates,
+        /// <summary>
         /// Created a Store
         /// </summary>
         CreateStore,
@@ -298,6 +302,12 @@ namespace VDS.RDF.Storage
             this.Template = template;
         }
 
+        public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IEnumerable<IStoreTemplate> templates)
+            : this(operation, storeID)
+        {
+            this.AvailableTemplates = templates;
+        }
+
         /// <summary>
         /// Sets the Data to the appropriate property based on the operation type
         /// </summary>
@@ -405,6 +415,8 @@ namespace VDS.RDF.Storage
         public AsyncStorageOperation Operation { get; private set; }
 
         public IStoreTemplate Template { get; private set; }
+
+        public IEnumerable<IStoreTemplate> AvailableTemplates { get; private set; }
     }
 
     /// <summary>

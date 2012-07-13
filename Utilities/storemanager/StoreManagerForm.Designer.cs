@@ -772,6 +772,7 @@
             this.mnuNewStore.Name = "mnuNewStore";
             this.mnuNewStore.Size = new System.Drawing.Size(152, 22);
             this.mnuNewStore.Text = "&New Store";
+            this.mnuNewStore.Click += new System.EventHandler(this.mnuNewStore_Click);
             // 
             // mnuOpenStore
             // 
@@ -785,6 +786,7 @@
             this.mnuDeleteStore.Name = "mnuDeleteStore";
             this.mnuDeleteStore.Size = new System.Drawing.Size(152, 22);
             this.mnuDeleteStore.Text = "&Delete Store";
+            this.mnuDeleteStore.Click += new System.EventHandler(this.mnuDeleteStore_Click);
             // 
             // tabInfo
             // 
