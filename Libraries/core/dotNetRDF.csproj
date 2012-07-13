@@ -147,8 +147,11 @@
     <Compile Include="Storage\IGenericIOManager.cs" />
     <Compile Include="Storage\IStorageProvider.cs" />
     <Compile Include="Storage\Management\IStorageServer.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\IStoreTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimLiteTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimSETemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs" />
