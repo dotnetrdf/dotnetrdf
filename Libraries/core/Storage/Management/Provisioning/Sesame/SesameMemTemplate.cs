@@ -11,7 +11,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This template generates the following Sesame repository config graph:
+    /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
     /// </para>
     /// <pre>
     /// @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
@@ -62,6 +62,21 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             g.Assert(impl, g.CreateUriNode("rep:repositoryType"), g.CreateLiteralNode("openrdf:SailRepository"));
             INode sailImpl = g.CreateBlankNode();
             g.Assert(impl, g.CreateUriNode("sr:sailImpl"), sailImpl);
+
+            if (this.DirectTypeHierarchyInferencing)
+            {
+                INode sailDelegate = g.CreateBlankNode();
+                g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:DirectTypeHierarchyInferencer"));
+                g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
+                sailImpl = sailDelegate;
+            }
+            if (this.RdfSchemaInferencing)
+            {
+                INode sailDelegate = g.CreateBlankNode();
+                g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:ForwardChainingRDFSInferencer"));
+                g.Assert(sailImpl, g.CreateUriNode("sail:delegate"), sailDelegate);
+                sailImpl = sailDelegate;
+            }
             g.Assert(sailImpl, g.CreateUriNode("sail:sailType"), g.CreateLiteralNode("openrdf:MemoryStore"));
             g.Assert(sailImpl, g.CreateUriNode("ms:persist"), this.Persist.ToLiteral(g));
             g.Assert(sailImpl, g.CreateUriNode("ms:syncDelay"), this.SyncDelay.ToLiteral(g));
@@ -82,8 +97,28 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the sync delay
         /// </summary>
-        [Category("Sesame Configuration"), DefaultValue(0)]
+        [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
         public int SyncDelay
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets/Sets whether to enable direct type hierarchy inferencing
+        /// </summary>
+        [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
+        public bool DirectTypeHierarchyInferencing
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets/Sets whether to enable RDF Schema Inferencing
+        /// </summary>
+        [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
+        public bool RdfSchemaInferencing
         {
             get;
             set;

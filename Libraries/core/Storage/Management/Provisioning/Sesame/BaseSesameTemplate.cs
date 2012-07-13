@@ -9,11 +9,16 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// <summary>
     /// Abstract base class for templates for creating new stores in Sesame
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Sesame templates generate a configuration graph like the one <a href="http://www.openrdf.org/doc/sesame2/users/ch07.html#section-repository-config">mentioned</a> in the Sesame documentation, this graph is POSTed to the SYSTEM repository causing a new store to be created.
+    /// </para>
+    /// </remarks>
     public abstract class BaseSesameTemplate
         : StoreTemplate
     {
         /// <summary>
-        /// Constants for Sesame Namespaces
+        /// Constants for Sesame repository configuration namespaces
         /// </summary>
         public const String RepositoryNamespace = "http://www.openrdf.org/config/repository#",
                             RepositorySailNamespace = "http://www.openrdf.org/config/repository/sail#",
@@ -68,7 +73,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             this.ContextNode = g.CreateBlankNode();
             g.Assert(this.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:Repository"));
             g.Assert(this.ContextNode, g.CreateUriNode("rep:repositoryID"), g.CreateLiteralNode(this.ID));
-            g.Assert(this.ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(this.Label));
+            g.Assert(this.ContextNode, g.CreateUriNode("rdfs:label"), g.CreateLiteralNode(this.Label.ToSafeString()));
             return g;
         }
 

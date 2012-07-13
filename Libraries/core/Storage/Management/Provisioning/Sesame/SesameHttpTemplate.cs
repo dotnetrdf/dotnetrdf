@@ -10,6 +10,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// Templates for creating remote Sesame stores
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
+    /// </para>
     /// <pre>
     /// @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
     /// @prefix rep: <http://www.openrdf.org/config/repository#>.
@@ -23,6 +26,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     ///    rep:repositoryID "{this.ID}" ;
     ///    rdfs:label "{this.Label}" .
     /// </pre>
+    /// <para>
+    /// The placeholders of the form <strong>{this.Property}</strong> represent properties of this class whose values will be inserted into the repository config graph and used to create a new store in Sesame.
+    /// </para>
     /// </remarks>
     public class SesameHttpTemplate
         : BaseSesameTemplate
