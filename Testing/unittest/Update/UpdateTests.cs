@@ -148,5 +148,88 @@ namespace VDS.RDF.Test
             ExplainUpdateProcessor processor = new ExplainUpdateProcessor(dataset, ExplanationLevel.Full);
             processor.ProcessCommandSet(cmds);
         }
+
+        [TestMethod]
+        public void SparqlUpdateChangesNotReflectedInOriginalGraph1()
+        {
+            //Test Case originally submitted by Tomasz Pluskiewicz
+
+            // given
+            IGraph sourceGraph = new Graph();
+            sourceGraph.LoadFromString(@"@prefix ex: <http://www.example.com/> .
+ex:Subject ex:hasObject ex:Object .");
+
+            IGraph expectedGraph = new Graph();
+            expectedGraph.LoadFromString(@"@prefix ex: <http://www.example.com/> .
+ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] .");
+
+
+            //IMPORTANT - Because we create the dataset without an existing store it
+            //creates a new triple store internally which has a single unnamed graph
+            //Then when we add another unnamed graph it merges into that existing graph,
+            //this is why the update does not apply to the added graph but rather to
+            //the merged graph that is internal to the dataset
+            ISparqlDataset dataset = new InMemoryDataset(true);
+            dataset.AddGraph(sourceGraph);
+
+            // when
+            var command = new SparqlParameterizedString
+            {
+                CommandText = @"PREFIX ex: <http://www.example.com/>
+DELETE { ex:Subject ex:hasObject ex:Object . }
+INSERT { ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] . }
+WHERE { ?s ?p ?o . }"
+            };
+            SparqlUpdateCommandSet cmds = new SparqlUpdateParser().ParseFromString(command);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreEqual(1, dataset.Graphs.Count(), "Should only be 1 Graph");
+
+            IGraph g = dataset.Graphs.First();
+            Assert.AreEqual(2, g.Triples.Count, "Result Graph should have 2 triples");
+            Assert.IsFalse(ReferenceEquals(g, sourceGraph), "Result Graph should not be the Source Graph");
+            Assert.AreEqual(1, sourceGraph.Triples.Count, "Source Graph should not be modified");
+            Assert.AreNotEqual(expectedGraph, sourceGraph, "Source Graph should not match expected Graph");
+        }
+
+        [TestMethod]
+        public void SparqlUpdateChangesNotReflectedInOriginalGraph2()
+        {
+            //Test Case originally submitted by Tomasz Pluskiewicz
+
+            // given
+            IGraph sourceGraph = new Graph();
+            sourceGraph.LoadFromString(@"@prefix ex: <http://www.example.com/> .
+ex:Subject ex:hasObject ex:Object .");
+
+            IGraph expectedGraph = new Graph();
+            expectedGraph.LoadFromString(@"@prefix ex: <http://www.example.com/> .
+ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] .");
+
+            TripleStore store = new TripleStore();
+            store.Add(sourceGraph);
+            ISparqlDataset dataset = new InMemoryDataset(store, sourceGraph.BaseUri);
+
+            // when
+            var command = new SparqlParameterizedString
+            {
+                CommandText = @"PREFIX ex: <http://www.example.com/>
+DELETE { ex:Subject ex:hasObject ex:Object . }
+INSERT { ex:Subject ex:hasBlank [ ex:hasObject ex:Object ] . }
+WHERE { ?s ?p ?o . }"
+            };
+            SparqlUpdateCommandSet cmds = new SparqlUpdateParser().ParseFromString(command);
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(cmds);
+
+            Assert.AreEqual(1, dataset.Graphs.Count(), "Should only be 1 Graph");
+
+            IGraph g = dataset.Graphs.First();
+            Assert.AreEqual(2, g.Triples.Count, "Result Graph should have 2 triples");
+            Assert.IsTrue(ReferenceEquals(g, sourceGraph), "Result Graph should be the Source Graph");
+            Assert.AreEqual(2, sourceGraph.Triples.Count, "Source Graph should have be modified and now contain 2 triples");
+            Assert.AreEqual(expectedGraph, sourceGraph, "Source Graph should match expected Graph");
+        }
     }
 }
