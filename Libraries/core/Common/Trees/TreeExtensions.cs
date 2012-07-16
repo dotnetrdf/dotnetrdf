@@ -30,5 +30,20 @@ namespace VDS.Common.Trees
             if (node == null) return 0;
             return node.Nodes.LongCount();
         }
+
+        /// <summary>
+        /// Isolates a Node from the tree by setting its parent and child links to be null
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Valye Type</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
+        internal static IBinaryTreeNode<TKey, TValue> Isolate<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
+        {
+            node.Parent = null;
+            node.LeftChild = null;
+            node.RightChild = null;
+            return node;
+        }
     }
 }

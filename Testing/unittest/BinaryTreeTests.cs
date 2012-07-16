@@ -27,6 +27,8 @@ namespace VDS.RDF.Test
 
             //Force a sort of the inputs because initial inputs may be unsorted
             inputs.Sort();
+            Console.Write("Sorted Inputs (Expected Output): ");
+            TestTools.PrintEnumerableStruct<TKey>(inputs, ",");
 
             List<TKey> outputs = tree.Keys.ToList();
             Console.Write("Outputs: ");
@@ -68,6 +70,9 @@ namespace VDS.RDF.Test
 
             //Force a sort of the inputs because initial inputs may be unsorted
             inputs.Sort();
+            Console.Write("Sorted Inputs (Expected Output): ");
+            TestTools.PrintEnumerableStruct<TKey>(inputs, ",");
+            Console.WriteLine();
 
             List<TKey> outputs = tree.Keys.ToList();
             Console.Write("Outputs: ");
@@ -341,6 +346,214 @@ namespace VDS.RDF.Test
                 tree.Add(i, i);
             }
             List<int> deletes = new List<int>() { 3, 11, 25, 2, 15, 19 };
+            int count = input.Count;
+            foreach (int i in deletes)
+            {
+                Console.WriteLine("Removing Key " + i);
+                Assert.IsTrue(tree.Remove(i), "Failed to remove Key " + i);
+                input.Remove(i);
+                count--;
+                this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
+                Assert.AreEqual(count, tree.Nodes.Count(), "Removal of Key " + i + " did not reduce node count as expected");
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDelete11()
+        {
+            List<int> input = new List<int>() { 25, 14, 5, 8, 22, 17, 9, 12, 4, 1, 3, 23, 2, 7, 19, 20, 10, 24, 16, 6, 21, 13, 18, 11, 15 };
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            foreach (int i in input)
+            {
+                tree.Add(i, i);
+            }
+            List<int> deletes = new List<int>() { 3, 14, 25 };
+            int count = input.Count;
+            foreach (int i in deletes)
+            {
+                Console.WriteLine("Removing Key " + i);
+                Assert.IsTrue(tree.Remove(i), "Failed to remove Key " + i);
+                input.Remove(i);
+                count--;
+                this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
+                Assert.AreEqual(count, tree.Nodes.Count(), "Removal of Key " + i + " did not reduce node count as expected");
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatInsert1()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(Enumerable.Range(1, 10), tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatInsert2()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(Enumerable.Range(1, 100), tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatInsert3()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+
+            //Randomize the input order
+            List<int> pool = Enumerable.Range(1, 100).ToList();
+            List<int> input = new List<int>();
+            while (pool.Count > 0)
+            {
+                int r = this._rnd.Next(pool.Count);
+                input.Add(pool[r]);
+                pool.RemoveAt(r);
+            }
+
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(input, tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatInsert4()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+
+            //Randomize the input order
+            List<int> pool = Enumerable.Range(1, 1000).ToList();
+            List<int> input = new List<int>();
+            while (pool.Count > 0)
+            {
+                int r = this._rnd.Next(pool.Count);
+                input.Add(pool[r]);
+                pool.RemoveAt(r);
+            }
+
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(input, tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatInsert5()
+        {
+            for (int i = 1; i < 10; i++)
+            {
+                ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+                this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(Enumerable.Range(1, i), tree);
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete1()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            List<int> inputs = Enumerable.Range(1, 100).ToList();
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(inputs, tree);
+            Assert.IsTrue(tree.Remove(inputs[0]));
+            inputs.RemoveAt(0);
+            this.TestOrderStructs<int>(inputs, tree.Keys.ToList());
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete2()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            List<int> inputs = Enumerable.Range(1, 100).ToList();
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(inputs, tree);
+            Assert.IsTrue(tree.Remove(inputs[50]));
+            inputs.RemoveAt(50);
+            this.TestOrderStructs<int>(inputs, tree.Keys.ToList());
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete3()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+                this.TestOrderPreservationOnDeleteStructs<IBinaryTreeNode<int, int>, int>(Enumerable.Range(1, 10), tree);
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete4()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+                this.TestOrderPreservationOnDeleteStructs<IBinaryTreeNode<int, int>, int>(Enumerable.Range(1, 100), tree);
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete5()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                //Randomize the input order
+                List<int> pool = Enumerable.Range(1, 25).ToList();
+                List<int> input = new List<int>();
+                while (pool.Count > 0)
+                {
+                    int r = this._rnd.Next(pool.Count);
+                    input.Add(pool[r]);
+                    pool.RemoveAt(r);
+                }
+
+                ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+                this.TestOrderPreservationOnDeleteStructs<IBinaryTreeNode<int, int>, int>(input, tree);
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete6()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                //Randomize the input order
+                List<int> pool = Enumerable.Range(1, 1000).ToList();
+                List<int> input = new List<int>();
+                while (pool.Count > 0)
+                {
+                    int r = this._rnd.Next(pool.Count);
+                    input.Add(pool[r]);
+                    pool.RemoveAt(r);
+                }
+
+                ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+                this.TestOrderPreservationOnDeleteStructs<IBinaryTreeNode<int, int>, int>(input, tree);
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete7()
+        {
+            List<int> input = new List<int>() { 19, 10, 20, 14, 16, 5, 2, 23, 9, 1, 8, 4, 15, 11, 24, 7, 21, 13, 6, 3, 22, 18, 12, 17, 25 };
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            foreach (int i in input)
+            {
+                tree.Add(i, i);
+            }
+            List<int> deletes = new List<int>() { 3, 11, 25, 2, 15, 19 };
+            int count = input.Count;
+            foreach (int i in deletes)
+            {
+                Console.WriteLine("Removing Key " + i);
+                Assert.IsTrue(tree.Remove(i), "Failed to remove Key " + i);
+                input.Remove(i);
+                count--;
+                this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
+                Assert.AreEqual(count, tree.Nodes.Count(), "Removal of Key " + i + " did not reduce node count as expected");
+            }
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDelete8()
+        {
+            List<int> input = new List<int>() { 25,14,5,8,22,17,9,12,4,1,3,23,2,7,19,20,10,24,16,6,21,13,18,11,15 };
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int,int>();
+            foreach (int i in input)
+            {
+                tree.Add(i, i);
+            }
+            List<int> deletes = new List<int>() { 3, 14, 25 };
             int count = input.Count;
             foreach (int i in deletes)
             {

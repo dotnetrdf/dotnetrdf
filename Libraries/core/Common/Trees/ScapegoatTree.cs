@@ -6,10 +6,10 @@ using System.Text;
 namespace VDS.Common.Trees
 {
     /// <summary>
-    /// A scapegoat tree
+    /// A scapegoat tree implementation
     /// </summary>
-    /// <typeparam name="TKey"></typeparam>
-    /// <typeparam name="TValue"></typeparam>
+    /// <typeparam name="TKey">Key Type</typeparam>
+    /// <typeparam name="TValue">Valye Type</typeparam>
     public sealed class ScapegoatTree<TKey, TValue>
         : BinaryTree<IBinaryTreeNode<TKey, TValue>, TKey, TValue>
     {
@@ -109,15 +109,29 @@ namespace VDS.Common.Trees
                 }
             } while (current != null);
 
+            //Check how we need to rebuild after the rebalance
+            IBinaryTreeNode<TKey, TValue> parent = current.Parent;
+            bool rebuildLeft = false;
+            if (parent != null)
+            {
+                rebuildLeft = ReferenceEquals(current, parent.LeftChild);
+            }
+
             //Now do a rebalance of the scapegoat which will be whatever current is set to
             IBinaryTreeNode<TKey, TValue>[] nodes = current.Nodes.ToArray();
+            foreach (IBinaryTreeNode<TKey, TValue> n in nodes)
+            {
+                n.Isolate();
+            }
+
             int median = nodes.Length / 2;
-            IBinaryTreeNode<TKey, TValue> root = this.CreateNode(null, nodes[median].Key, nodes[median].Value);
-            root.LeftChild = this.RebuildSubtree(nodes, 0, median);
-            root.RightChild = this.RebuildSubtree(nodes, median + 1, nodes.Length - 1);
+            //Console.WriteLine("m = " + median);
+            IBinaryTreeNode<TKey, TValue> root = nodes[median];
+            root.LeftChild = this.RebalanceLeftSubtree(nodes, 0, median - 1);
+            root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, nodes.Length - 1);
 
             //Use the rebalanced tree in place of the current node
-            if (current.Parent == null)
+            if (parent == null)
             {
                 //Replace entire tree
                 this.Root = root;
@@ -125,33 +139,82 @@ namespace VDS.Common.Trees
             else
             {
                 //Replace subtree
-                if (ReferenceEquals(current, current.Parent.LeftChild))
+                if (rebuildLeft)
                 {
-                    current.Parent.LeftChild = root;
+                    parent.LeftChild = root;
                 }
                 else
                 {
-                    current.Parent.RightChild = root;
+                    parent.RightChild = root;
                 }
             }
 
             //Reset Max Node code after a rebalance
             this._maxNodeCount = this._nodeCount;
+            //Console.WriteLine("Rebalance Done");
         }
 
-        private IBinaryTreeNode<TKey, TValue> RebuildSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
+        private IBinaryTreeNode<TKey, TValue> RebalanceLeftSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
         {
-            //Empty Node
-            if (end == start) return this.CreateNode(null, nodes[start].Key, nodes[start].Value);
-            //if (end - start == 1) return this.CreateNode(null, nodes[
+            //Console.WriteLine("Left(" + start + "," + end + ")");
+            if (start > end) return null;
+            if (end == start) return nodes[start];
+            if (end - start == 1)
+            {
+                IBinaryTreeNode<TKey, TValue> root = nodes[end];
+                root.LeftChild = nodes[start];
+                return root;
+            }
+            else if (end - start == 2)
+            {
+                IBinaryTreeNode<TKey, TValue> root = nodes[start + 1];
+                root.LeftChild = nodes[start];
+                root.RightChild = nodes[end];
+                return root;
+            }
+            else
+            {
 
-            //Rebuild the tree
-            int median = start + ((end - start) / 2);
-            IBinaryTreeNode<TKey, TValue> root = this.CreateNode(null, nodes[median].Key, nodes[median].Value);
-            root.LeftChild = this.RebuildSubtree(nodes, start, median - 1);
-            root.RightChild = this.RebuildSubtree(nodes, median + 1, end - 1);
+                //Rebuild the tree
+                int median = start + ((end - start) / 2);
+                //Console.WriteLine("m = " + median);
+                IBinaryTreeNode<TKey, TValue> root = nodes[median];
+                root.LeftChild = this.RebalanceLeftSubtree(nodes, start, median - 1);
+                end = (end % 2 == 0 ? end - 1 : end);
+                root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, end);
+                return root;
+            }
+        }
 
-            return root;
+        private IBinaryTreeNode<TKey, TValue> RebalanceRightSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
+        {
+            //Console.WriteLine("Right(" + start + "," + end + ")");
+            if (start > end) return null;
+            if (end == start) return nodes[start];
+            if (end - start == 1)
+            {
+                IBinaryTreeNode<TKey, TValue> root = nodes[start];
+                root.RightChild = nodes[end];
+                return root;
+            }
+            else if (end - start == 2)
+            {
+                IBinaryTreeNode<TKey, TValue> root = nodes[start + 1];
+                root.LeftChild = nodes[start];
+                root.RightChild = nodes[end];
+                return root;
+            }
+            else
+            {
+                //Rebuild the tree
+                int median = start + ((end - start) / 2);
+                //Console.WriteLine("m = " + median);
+                IBinaryTreeNode<TKey, TValue> root = nodes[median];
+                root.LeftChild = this.RebalanceLeftSubtree(nodes, start, median - 1);
+                end = (end % 2 == 0 ? end - 1 : end);
+                root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, end);
+                return root;
+            }
         }
 
         protected sealed override void AfterDelete(IBinaryTreeNode<TKey, TValue> node)

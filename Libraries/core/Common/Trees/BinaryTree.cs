@@ -202,7 +202,7 @@ namespace VDS.Common.Trees
         /// <param name="parent">Parent</param>
         /// <param name="node">Newly inserted node</param>
         protected virtual void AfterLeftInsert(IBinaryTreeNode<TKey, TValue> parent, IBinaryTreeNode<TKey, TValue> node)
-        { }
+        {  }
 
         /// <summary>
         /// Virtual method that can be used by derived implementations to perform tree balances after an insert
@@ -210,7 +210,7 @@ namespace VDS.Common.Trees
         /// <param name="parent">Parent</param>
         /// <param name="node">Newly inserted node</param>
         protected virtual void AfterRightInsert(IBinaryTreeNode<TKey, TValue> parent, IBinaryTreeNode<TKey, TValue> node)
-        { }
+        {  }
 
         /// <summary>
         /// Removes a Node based on the Key
@@ -300,33 +300,69 @@ namespace VDS.Common.Trees
                     }
                     else
                     {
-                        TNode successor = this.FindLeftmostChild(current);
-                        if (ReferenceEquals(current, successor))
+                        TNode successor;
+                        if (current.LeftChild != null)
                         {
-                            //There were no left children
-                            if (current.Parent == null)
+                            //Has a left subtree sp get the in order successor which is the rightmost child of the left
+                            //subtree
+                            successor = this.FindRightmostChild((TNode)current.LeftChild);
+                            if (ReferenceEquals(current.LeftChild, successor))
                             {
-                                //At Root and no left child so can move right child up to root
-                                this.Root = (TNode)current.RightChild;
-                                if (this.Root != null) this.Root.Parent = null;
-                                this.AfterDelete(this.Root);
-                                return true;
+                                //There were no right children on the left subtree
+                                if (current.Parent == null)
+                                {
+                                    //At Root and no right child of left subtree so can move left child up to root
+                                    this.Root = (TNode)current.LeftChild;
+                                    if (this.Root != null) this.Root.Parent = null;
+                                    this.AfterDelete(this.Root);
+                                    return true;
+                                }
+                                else
+                                {
+                                    //Not at Root and no right child of left subtree so can move left child up
+                                    current.Parent.LeftChild = current.LeftChild;
+                                    this.AfterDelete((TNode)current.Parent.LeftChild);
+                                    return true;
+                                }
                             }
-                            else
-                            {
-                                //Not at Root and no left child so can move right child up
-                                current.Parent.RightChild = current.RightChild;
-                                this.AfterDelete((TNode)current.Parent.RightChild);
-                                return true;
-                            }
+                            //Move value up to this node and delete the rightmost child
+                            successor.Parent.RightChild = null;
+                            current.Key = successor.Key;
+                            current.Value = successor.Value;
+                            this.AfterDelete(current);
+                            return true;
                         }
-                        //Has a leftmost child
-                        //Move value up to this node and delete the leftmost child
-                        successor.Parent.LeftChild = null;
-                        current.Key = successor.Key;
-                        current.Value = successor.Value;
-                        this.AfterDelete(current);
-                        return true;
+                        else
+                        {
+                            //Must have a right subtree so find the in order sucessor which is the
+                            //leftmost child of the right subtree
+                            successor = this.FindLeftmostChild((TNode)current.RightChild);
+                            if (ReferenceEquals(current.RightChild, successor))
+                            {
+                                //There were no left children on the right subtree
+                                if (current.Parent == null)
+                                {
+                                    //At Root and no left child of right subtree so can move right child up to root
+                                    this.Root = (TNode)current.RightChild;
+                                    if (this.Root != null) this.Root.Parent = null;
+                                    this.AfterDelete(this.Root);
+                                    return true;
+                                }
+                                else
+                                {
+                                    //Not at Root and no left child of right subtree so can move right child up
+                                    current.Parent.RightChild = current.RightChild;
+                                    this.AfterDelete((TNode)current.Parent.RightChild);
+                                    return true;
+                                }
+                            }
+                            //Move value up to this node and delete the leftmost child
+                            successor.Parent.LeftChild = null;
+                            current.Key = successor.Key;
+                            current.Value = successor.Value;
+                            this.AfterDelete(current);
+                            return true;
+                        }
                     }
                 }
                 else

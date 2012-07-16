@@ -155,6 +155,9 @@
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\BaseStardogTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\StoreTemplate.cs" />
     <Compile Include="Storage\Params\StreamParams.cs" />
     <Compile Include="Storage\Params\IStoreParams.cs" />
