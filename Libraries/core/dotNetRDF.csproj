@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="Common\Trees\BinaryTree.cs" />
     <Compile Include="Common\Trees\BinaryTreeNode.cs" />
+    <Compile Include="Common\Trees\AVLTree.cs" />
     <Compile Include="Common\Trees\ITree.cs" />
     <Compile Include="Common\Trees\ScapegoatTree.cs" />
     <Compile Include="Common\Trees\TreeExtensions.cs" />
