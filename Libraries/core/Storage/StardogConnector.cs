@@ -663,6 +663,23 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public void UpdateGraph(Uri graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
+
+            // if there are no adds or deletes, just return and avoid creating empty transaction
+
+            bool anyData = false;
+
+            if (removals != null)
+                if (removals.Any())
+                    anyData = true;
+            
+            if (additions != null)
+                if (additions.Any())
+                    anyData = true;
+
+            if (!anyData) return;
+
+
+
             String tID = null;
             try
             {
