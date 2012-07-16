@@ -1189,7 +1189,26 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            this.UpdateGraphAsync(graphUri, additions, removals, callback, state);
+            // if there are no adds or deletes, just callback and avoid creating empty transaction
+
+            bool anyData = false;
+
+            if (removals != null)
+                if (removals.Any())
+                    anyData = true;
+
+            if (additions != null)
+                if (additions.Any())
+                    anyData = true;
+
+            if (!anyData)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
+            }
+            else
+            {
+                this.UpdateGraphAsync(graphUri, additions, removals, callback, state);
+            }
         }
 
         private void UpdateGraphAsync(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, Object state)
