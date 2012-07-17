@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
                 {
                     if (this._tripleCollectionType != null)
                     {
-                        if (this._nodeCollectionType != null)
+                        if (this._nodeCollectionType == null)
                         {
                             this._instance = (IGraph)Activator.CreateInstance(this._graphType, new Object[] { Activator.CreateInstance(this._tripleCollectionType) });
                         }

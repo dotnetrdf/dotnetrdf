@@ -60,7 +60,13 @@ namespace VDS.RDF
         /// Creates a new Thread Safe Graph
         /// </summary>
         public ThreadSafeGraph()
-            : base(new IndexedThreadSafeTripleCollection()) { }
+            : this(new ThreadSafeTripleCollection(new IndexedTripleCollection())) { }
+
+        public ThreadSafeGraph(BaseTripleCollection tripleCollection)
+            : base(new ThreadSafeTripleCollection(tripleCollection)) { }
+
+        public ThreadSafeGraph(ThreadSafeTripleCollection tripleCollection)
+            : base(tripleCollection) { }
 
         #region Triple Assertion and Retraction
 
@@ -523,16 +529,14 @@ namespace VDS.RDF
     /// Since this is a non-indexed version load performance will be better but query performance better
     /// </para>
     /// </remarks>
-    public class NonIndexedThreadSafeGraph : ThreadSafeGraph
+    public class NonIndexedThreadSafeGraph
+        : ThreadSafeGraph
     {
         /// <summary>
         /// Creates a new non-indexed Thread Safe Graph
         /// </summary>
         public NonIndexedThreadSafeGraph()
-            : base()
-        {
-            this._triples = new ThreadSafeTripleCollection();
-        }
+            : base(new ThreadSafeTripleCollection()) { }
     }
 }
 

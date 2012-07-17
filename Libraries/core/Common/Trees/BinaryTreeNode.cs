@@ -16,6 +16,7 @@ namespace VDS.Common.Trees
         : IBinaryTreeNode<TKey, TValue>
     {
         private IBinaryTreeNode<TKey, TValue> _left, _right;
+        private long _height = 1;
 
         public BinaryTreeNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
         {
@@ -40,6 +41,7 @@ namespace VDS.Common.Trees
             {
                 this._left = value;
                 if (this._left != null) this._left.Parent = this;
+                this.RecalculateHeight();
             }
         }
 
@@ -49,10 +51,11 @@ namespace VDS.Common.Trees
             {
                 return this._right;
             }
-            set
+            set//
             {
                 this._right = value;
                 if (this._right != null) this._right.Parent = this;
+                this.RecalculateHeight();
             }
         }
 
@@ -81,6 +84,28 @@ namespace VDS.Common.Trees
             get
             {
                 return (this.LeftChild != null ? 1 : 0) + (this.RightChild != null ? 1 : 0);
+            }
+        }
+
+        public long Height
+        {
+            get
+            {
+                return this._height;
+            }
+            private set
+            {
+                this._height = value;
+            }
+        }
+
+        public void RecalculateHeight()
+        {
+            long newHeight = Math.Max((this._left != null ? this._left.Height : 0), (this._right != null ? this._right.Height : 0)) + 1;
+            if (newHeight != this._height)
+            {
+                this._height = newHeight;
+                if (this.Parent != null) this.Parent.RecalculateHeight();
             }
         }
 

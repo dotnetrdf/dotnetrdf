@@ -37,11 +37,20 @@ namespace VDS.Common
         public MultiDictionary()
             : this(null, null, DefaultMode) { }
 
+        public MultiDictionary(MultiDictionaryMode mode)
+            : this(null, null, mode) { }
+
         public MultiDictionary(Func<TKey, int> hashFunction)
             : this(hashFunction, null, DefaultMode) { }
 
         public MultiDictionary(IComparer<TKey> comparer)
             : this(null, comparer, DefaultMode) { }
+
+        public MultiDictionary(Func<TKey, int> hashFunction, MultiDictionaryMode mode)
+            : this(hashFunction, null, mode) { }
+
+        public MultiDictionary(IComparer<TKey> comparer, MultiDictionaryMode mode)
+            : this(null, comparer, mode) { }
 
         /// <summary>
         /// Creates a new multi-dictionary

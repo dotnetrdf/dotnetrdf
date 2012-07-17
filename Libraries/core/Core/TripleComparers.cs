@@ -43,6 +43,19 @@ namespace VDS.RDF
         }
     }
 
+    class SOComparer : IComparer<Triple>
+    {
+        public int Compare(Triple x, Triple y)
+        {
+            int c = x.Subject.CompareTo(y.Subject);
+            if (c == 0)
+            {
+                c = x.Object.CompareTo(y.Object);
+            }
+            return c;
+        }
+    }
+
     class POComparer : IComparer<Triple>
     {
         public int Compare(Triple x, Triple y)

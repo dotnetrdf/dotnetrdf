@@ -56,10 +56,11 @@ namespace VDS.Common.Trees
         }
 
         /// <summary>
-        /// Adds a Key Value pair to the tree
+        /// Adds a Key Value pair to the tree or replaces the existing value associated with a key
         /// </summary>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
+        /// <returns>True if a new node was created, false otherwise.  In the case false is returned the existing value will still be updated to the given value</returns>
         bool Add(TKey key, TValue value);
 
         /// <summary>
@@ -73,8 +74,9 @@ namespace VDS.Common.Trees
         /// Moves to a Node based on the key inserting a new Node if necessary
         /// </summary>
         /// <param name="key">Key</param>
+        /// <param name="created">Whether a new node was inserted</param>
         /// <returns>Node associated with the given Key which may be newly inserted</returns>
-        TNode MoveToNode(TKey key);
+        TNode MoveToNode(TKey key, out bool created);
 
         /// <summary>
         /// Removes a Node based on the Key
@@ -219,6 +221,19 @@ namespace VDS.Common.Trees
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Height of the subtree this node represents
+        /// </summary>
+        long Height
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Indicates that the node should recauclate the height of the subtree it represents
+        /// </summary>
+        void RecalculateHeight();
     }
 
 }

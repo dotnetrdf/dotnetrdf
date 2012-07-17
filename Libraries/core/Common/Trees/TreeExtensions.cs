@@ -21,7 +21,8 @@ namespace VDS.Common.Trees
         public static long GetHeight<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             if (node == null) return 0;
-            return 1 + Math.Max(node.LeftChild.GetHeight(), node.RightChild.GetHeight());
+            return node.Height;
+            //return 1 + Math.Max(node.LeftChild.GetHeight(), node.RightChild.GetHeight());
         }
 
         public static long GetBalance<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)

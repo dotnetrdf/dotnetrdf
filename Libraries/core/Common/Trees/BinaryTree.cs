@@ -94,9 +94,10 @@ namespace VDS.Common.Trees
             else
             {
                 //Move to the node
-                IBinaryTreeNode<TKey, TValue> node = this.MoveToNode(key);
+                bool created = false;
+                IBinaryTreeNode<TKey, TValue> node = this.MoveToNode(key, out created);
                 node.Value = value;
-                return true;
+                return created;
             }
         }
 
@@ -116,6 +117,8 @@ namespace VDS.Common.Trees
         /// <returns>Node associated with the given Key or null if the key is not present in the tree</returns>
         public virtual TNode Find(TKey key)
         {
+            if (this.Root == null) return null;
+
             //Iteratively binary search for the key
             TNode current = this.Root;
             int c;
@@ -144,12 +147,14 @@ namespace VDS.Common.Trees
         /// Moves to the node with the given key inserting a new node if necessary
         /// </summary>
         /// <param name="key">Key</param>
+        /// <param name="created">Whether a new node was inserted</param>
         /// <returns></returns>
-        public virtual TNode MoveToNode(TKey key)
+        public virtual TNode MoveToNode(TKey key, out bool created)
         {
             if (this.Root == null)
             {
                 this.Root = this.CreateNode(null, key, default(TValue));
+                created = true;
                 return this.Root;
             }
             else
@@ -174,12 +179,14 @@ namespace VDS.Common.Trees
                     else
                     {
                         //If we find a match on the key then return it
+                        created = false;
                         return current;
                     }
                 } while (current != null);
 
                 //Key doesn't exist so need to do an insert
                 current = this.CreateNode(parent, key, default(TValue));
+                created = true;
                 if (c < 0)
                 {
                     parent.LeftChild = current;
