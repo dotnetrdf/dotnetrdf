@@ -382,7 +382,7 @@ namespace VDS.RDF.Parsing.Tokens
 
             //Consume characters which can be in the keyword or Language Specifier
             char next = this.Peek();
-            while (Char.IsLetter(next) || next == '-')
+            while (Char.IsLetterOrDigit(next) || next == '-')
             {
                 this.ConsumeCharacter();
                 next = this.Peek();

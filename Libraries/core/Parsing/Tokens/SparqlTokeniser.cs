@@ -1715,12 +1715,9 @@ namespace VDS.RDF.Parsing.Tokens
                 this.StartNewToken();
 
                 char next = this.Peek();
-                bool dashoccurred = false;
-                while (Char.IsLetter(next) || (next == '-' && !dashoccurred)) 
+                while (Char.IsLetterOrDigit(next) || next == '-') 
                 {
                     this.ConsumeCharacter();
-
-                    if (next == '-') dashoccurred = true;
                     next = this.Peek();
                 }
 

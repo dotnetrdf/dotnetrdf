@@ -240,7 +240,7 @@ namespace VDS.Common
 
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return this.Remove(item.Key, item.Value);
+            return this.Remove(item.Key);
         }
 
         #endregion

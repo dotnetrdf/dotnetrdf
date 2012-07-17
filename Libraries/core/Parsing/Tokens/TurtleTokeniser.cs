@@ -1169,7 +1169,7 @@ namespace VDS.RDF.Parsing.Tokens
             char next = this.Peek();
 
             //Consume Letter Characters
-            while (Char.IsLetter(next) || next == '-')
+            while (Char.IsLetterOrDigit(next) || next == '-')
             {
                 this.ConsumeCharacter();
                 next = this.Peek();

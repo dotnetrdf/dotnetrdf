@@ -17,6 +17,14 @@ Added
 
 Changed
 - Bug Fixes
+ - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi
+ - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
+
+- Storage API
+ - Refactored IStorageServer API
+ - Added support for creating stores with Sesame - thanks to Jeen Broekstra
+ - Stardog
+  - Avoid any transaction if calling UpdateGraph() without any updates - thanks to Ron Michael Zettlemoyer
 
 
 Removed

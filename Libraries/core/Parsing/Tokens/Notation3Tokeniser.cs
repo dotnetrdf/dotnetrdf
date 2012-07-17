@@ -602,22 +602,9 @@ namespace VDS.RDF.Parsing.Tokens
 
                 //Get the Specifier
                 char next = this.Peek();
-                bool negoccurred = false;
                 while (Char.IsLetterOrDigit(next) || next == '-')
                 {
                     this.ConsumeCharacter();
-                    if (next == '-')
-                    {
-                        if (negoccurred)
-                        {
-                            throw Error("Unexpected Character (Code " + (int)next + " -\nThe hyphen character can only be used once in a Language Specifier");
-                        }
-                        else
-                        {
-                            negoccurred = true;
-                        }
-                    }
-
                     next = this.Peek();
                 }
 
