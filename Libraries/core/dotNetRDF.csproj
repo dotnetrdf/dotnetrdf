@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\MultiDictionary.cs" />
     <Compile Include="Common\Trees\BinaryTree.cs" />
     <Compile Include="Common\Trees\BinaryTreeNode.cs" />
     <Compile Include="Common\Trees\AVLTree.cs" />

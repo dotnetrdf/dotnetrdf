@@ -73,9 +73,10 @@ namespace VDS.Common
     /// <typeparam name="TValue">Type of Values</typeparam>
     /// <remarks>
     /// <para>
-    /// Essentially a Dictionary which allows multiple values for each key
+    /// Essentially a Dictionary which allows multiple values for each key, unlike the newer <see cref="MultiDictionary"/> this implementation is lossy since it does not store unique keys so if you have colliding keys all values associated with them are mushed together under a single key
     /// </para>
     /// </remarks>
+    [Obsolete("The HashTable is superceded by the far more powerful MultiDictionary which should be used for all new development")]
     public class HashTable<TKey, TValue> 
         : IDictionary<TKey, TValue>, IEnumerable<TValue>
     {
