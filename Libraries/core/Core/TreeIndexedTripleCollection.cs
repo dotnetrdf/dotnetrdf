@@ -32,9 +32,9 @@ namespace VDS.RDF
             if (Options.FullTripleIndexing)
             {
                 this._fullIndexing = true;
-                this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), new SPComparer(), MultiDictionaryMode.AVL);
-                this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), new SOComparer(), MultiDictionaryMode.AVL);
-                this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), new POComparer(), MultiDictionaryMode.AVL);
+                this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), new SPComparer(), MultiDictionaryMode.Unbalanced);
+                this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), new SOComparer(), MultiDictionaryMode.Unbalanced);
+                this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), new POComparer(), MultiDictionaryMode.Unbalanced);
             }
         }
 
@@ -220,40 +220,61 @@ namespace VDS.RDF
 
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
-            List<Triple> ts;
-            if (this._po.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
+            if (this._fullIndexing)
             {
-                return (ts != null ? ts : Enumerable.Empty<Triple>());
+                List<Triple> ts;
+                if (this._po.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
+                {
+                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
             }
             else
             {
-                return Enumerable.Empty<Triple>();
+                return this.WithPredicate(pred).Where(t => t.Object.Equals(obj));
             }
         }
 
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
-            List<Triple> ts;
-            if (this._so.TryGetValue(new Triple(subj, this._predVar, obj), out ts))
+            if (this._fullIndexing)
             {
-                return (ts != null ? ts : Enumerable.Empty<Triple>());
+                List<Triple> ts;
+                if (this._so.TryGetValue(new Triple(subj, this._predVar, obj), out ts))
+                {
+                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
             }
             else
             {
-                return Enumerable.Empty<Triple>();
+                return this.WithSubject(subj).Where(t => t.Object.Equals(obj));
             }
         }
 
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
-            List<Triple> ts;
-            if (this._sp.TryGetValue(new Triple(subj, pred, this._objVar), out ts))
+            if (this._fullIndexing)
             {
-                return (ts != null ? ts : Enumerable.Empty<Triple>());
+                List<Triple> ts;
+                if (this._sp.TryGetValue(new Triple(subj, pred, this._objVar), out ts))
+                {
+                    return (ts != null ? ts : Enumerable.Empty<Triple>());
+                }
+                else
+                {
+                    return Enumerable.Empty<Triple>();
+                }
             }
             else
             {
-                return Enumerable.Empty<Triple>();
+                return this.WithSubject(subj).Where(t => t.Predicate.Equals(pred));
             }
         }
 
