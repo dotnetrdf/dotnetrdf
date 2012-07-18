@@ -29,7 +29,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateTimeoutException timeoutEx)
             {
-                TestTools.ReportError("Timeout", timeoutEx, false);
+                TestTools.ReportError("Timeout", timeoutEx);
                 Console.WriteLine();
                 Console.WriteLine("Execution Time: " + cmds.UpdateExecutionTime.Value.ToString());
 

@@ -60,7 +60,8 @@ namespace VDS.RDF.Test
                             VirtuosoPort = "Storage.Virtuoso.Port",
                             VirtuosoDatabase = "Storage.Virtuoso.DB",
                             VirtuosoUser = "Storage.Virtuoso.User",
-                            VirtuosoPassword = "Storage.Virtuoso.Password";
+                            VirtuosoPassword = "Storage.Virtuoso.Password",
+                            VirtuosoEndpoint = "Storage.Virtuoso.Endpoint";
 
         private static bool _init = false, _failed = false;
         private static Dictionary<String, String> _settings = new Dictionary<string,string>();

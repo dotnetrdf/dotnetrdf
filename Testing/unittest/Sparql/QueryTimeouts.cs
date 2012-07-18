@@ -149,7 +149,7 @@ namespace VDS.RDF.Test.Sparql
             }
             catch (RdfQueryTimeoutException timeoutEx)
             {
-                TestTools.ReportError("Timeout", timeoutEx, false);
+                TestTools.ReportError("Timeout", timeoutEx);
 
                 Console.WriteLine();
                 Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
@@ -255,7 +255,7 @@ namespace VDS.RDF.Test.Sparql
             }
             catch (RdfQueryTimeoutException timeoutEx)
             {
-                TestTools.ReportError("Timeout", timeoutEx, false);
+                TestTools.ReportError("Timeout", timeoutEx);
 
                 Console.WriteLine();
                 Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());
@@ -281,7 +281,7 @@ namespace VDS.RDF.Test.Sparql
             }
             catch (RdfQueryTimeoutException timeoutEx)
             {
-                TestTools.ReportError("Timeout", timeoutEx, false);
+                TestTools.ReportError("Timeout", timeoutEx);
 
                 Console.WriteLine();
                 Console.WriteLine("Execution Time: " + q.QueryExecutionTime.Value.ToString());

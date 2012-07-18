@@ -26,114 +26,86 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageAllegroGraphSaveLoad()
         {
-            try
-            {
-                Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-                agraph.SaveGraph(g);
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            agraph.SaveGraph(g);
 
-                Graph h = new Graph();
-                agraph.LoadGraph(h, "http://example.org/AllegroGraphTest");
-                Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
+            Graph h = new Graph();
+            agraph.LoadGraph(h, "http://example.org/AllegroGraphTest");
+            Assert.IsFalse(h.IsEmpty, "Graph should not be empty after loading");
 
-                Assert.AreEqual(g, h, "Graphs should have been equal");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
+            Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
         [TestMethod]
         public void StorageAllegroGraphDeleteTriples()
         {
-            try
+            Graph g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+            g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
+
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+            agraph.SaveGraph(g);
+
+            Console.WriteLine("Graph before deletion");
+            TestTools.ShowGraph(g);
+
+            //Delete all Triples about the Ford Fiesta
+            agraph.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
+
+            Graph h = new Graph();
+            agraph.LoadGraph(h, g.BaseUri);
+
+            Console.WriteLine("Graph after deletion");
+            TestTools.ShowGraph(h);
+
+            Assert.IsFalse(h.IsEmpty, "Graph should not be completely empty");
+            Assert.IsTrue(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
+            Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
+
+            Object results = agraph.Query("ASK WHERE { GRAPH <http://example.org/AllegroGraphTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
+            if (results is SparqlResultSet)
             {
-                Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
-
-                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-                agraph.SaveGraph(g);
-
-                Console.WriteLine("Graph before deletion");
-                TestTools.ShowGraph(g);
-
-                //Delete all Triples about the Ford Fiesta
-                agraph.UpdateGraph(g.BaseUri, null, g.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
-
-                Graph h = new Graph();
-                agraph.LoadGraph(h, g.BaseUri);
-
-                Console.WriteLine("Graph after deletion");
-                TestTools.ShowGraph(h);
-
-                Assert.IsFalse(h.IsEmpty, "Graph should not be completely empty");
-                Assert.IsTrue(g.HasSubGraph(h), "Graph retrieved with missing Triples should be a sub-graph of the original Graph");
-                Assert.IsFalse(g.Equals(h), "Graph retrieved should not be equal to original Graph");
-
-                Object results = agraph.Query("ASK WHERE { GRAPH <http://example.org/AllegroGraphTest> { <http://example.org/vehicles/FordFiesta> ?p ?o } }");
-                if (results is SparqlResultSet)
-                {
-                    Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
-                }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
+                Assert.IsFalse(((SparqlResultSet)results).Result, "There should no longer be any triples about the Ford Fiesta present");
             }
         }
 
         [TestMethod]
         public void StorageAllegroGraphAsk()
         {
-            try
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+
+            String ask = "ASK WHERE { ?s ?p ?o }";
+
+            Object results = agraph.Query(ask);
+            if (results is SparqlResultSet)
             {
-                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-
-                String ask = "ASK WHERE { ?s ?p ?o }";
-
-                Object results = agraph.Query(ask);
-                if (results is SparqlResultSet)
-                {
-                    TestTools.ShowResults(results);
-                }
-                else
-                {
-                    Assert.Fail("Failed to get a Result Set as expected");
-                }
+                TestTools.ShowResults(results);
             }
-            catch (Exception ex)
+            else
             {
-                TestTools.ReportError("Error", ex, true);
+                Assert.Fail("Failed to get a Result Set as expected");
             }
         }
 
         [TestMethod]
         public void StorageAllegroGraphDescribe()
         {
-            try
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+
+            String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
+
+            Object results = agraph.Query(describe);
+            if (results is IGraph)
             {
-                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
-
-                String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
-
-                Object results = agraph.Query(describe);
-                if (results is IGraph)
-                {
-                    TestTools.ShowGraph((IGraph)results);
-                }
-                else
-                {
-                    Assert.Fail("Failed to get a Graph as expected");
-                }
+                TestTools.ShowGraph((IGraph)results);
             }
-            catch (Exception ex)
+            else
             {
-                TestTools.ReportError("Error", ex, true);
+                Assert.Fail("Failed to get a Graph as expected");
             }
         }
     }

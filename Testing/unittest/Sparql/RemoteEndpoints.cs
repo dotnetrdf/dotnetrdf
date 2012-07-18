@@ -378,6 +378,11 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointSyncVsAsyncTimeLocalVirtuoso()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
+            {
+                Assert.Inconclusive("Test Config marks Virtuoso as unavailable, test cannot be run");
+            }
+
             String query;
             using (StreamReader reader = new StreamReader("dbpedia-query-time.rq"))
             {
@@ -385,7 +390,7 @@ namespace VDS.RDF.Test.Sparql
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint)));
             Stopwatch timer = new Stopwatch();
             timer.Start();
             SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;

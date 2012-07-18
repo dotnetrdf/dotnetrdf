@@ -66,7 +66,7 @@ namespace VDS.RDF.Test
             }
             catch (WebException webEx)
             {
-                TestTools.ReportError("Web Exception", webEx, false);
+                TestTools.ReportError("Web Exception", webEx);
                 Console.WriteLine();
                 Console.WriteLine("Unable to retrieve the Graphs from the Web successfully!");
                 Assert.Inconclusive();

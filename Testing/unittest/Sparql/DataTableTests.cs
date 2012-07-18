@@ -337,7 +337,7 @@ namespace VDS.RDF.Test.Sparql
                 Assert.AreEqual(SparqlResultsType.Unknown, results.ResultsType, "Should have unknown results type");
                 Console.WriteLine("Errored as expected");
                 Console.WriteLine();
-                TestTools.ReportError("Invalid Cast", ex, false);
+                TestTools.ReportError("Invalid Cast", ex);
             }
         }
     }

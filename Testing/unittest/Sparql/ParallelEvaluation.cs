@@ -109,7 +109,7 @@ namespace VDS.RDF.Test.Sparql
             }
             catch (OutOfMemoryException outEx)
             {
-                TestTools.ReportError("Out of Memory", outEx, false);
+                TestTools.ReportError("Out of Memory", outEx);
             }
         }
     }

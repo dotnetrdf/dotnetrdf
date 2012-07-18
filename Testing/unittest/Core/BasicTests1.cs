@@ -232,11 +232,11 @@ namespace VDS.RDF.Test
             }
             catch (UriFormatException uriEx)
             {
-                TestTools.ReportError("Uri Format Exception", uriEx, true);
+                throw;
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Other Exception", ex, true);
+                throw;
             }
         }
 
@@ -261,7 +261,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, false);
+                TestTools.ReportError("Error", ex);
                 throw ex;
             }
         }
@@ -449,7 +449,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }
         }
 

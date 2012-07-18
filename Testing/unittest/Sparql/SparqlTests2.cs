@@ -238,16 +238,16 @@ namespace VDS.RDF.Test
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine("Parsing Error thrown as expected");
-                TestTools.ReportError("Parser Error", parseEx, false);
+                TestTools.ReportError("Parser Error", parseEx);
             }
             catch (RdfQueryException queryEx)
             {
                 Console.WriteLine("Query Error thrown as expected");
-                TestTools.ReportError("Query Error", queryEx, false);
+                TestTools.ReportError("Query Error", queryEx);
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Unexpected Error", ex, false);
+                TestTools.ReportError("Unexpected Error", ex);
                 Assert.Fail("Did not get a RdfParseException/RdfQueryException as expected");
             }
         }
@@ -277,16 +277,16 @@ namespace VDS.RDF.Test
             catch (RdfParseException parseEx)
             {
                 Console.WriteLine("Parsing Error thrown as expected");
-                TestTools.ReportError("Parser Error", parseEx, false);
+                TestTools.ReportError("Parser Error", parseEx);
             }
             catch (RdfQueryException queryEx)
             {
                 Console.WriteLine("Query Error thrown as expected");
-                TestTools.ReportError("Query Error", queryEx, false);
+                TestTools.ReportError("Query Error", queryEx);
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Unexpected Error", ex, false);
+                TestTools.ReportError("Unexpected Error", ex);
                 Assert.Fail("Did not get a RdfParseException/RdfQueryException as expected");
             }
         }

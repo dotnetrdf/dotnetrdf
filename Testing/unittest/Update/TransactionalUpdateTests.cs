@@ -69,7 +69,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
@@ -93,7 +93,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Transaction has not been committed yet as Auto-Commit is off");
@@ -107,7 +107,7 @@ namespace VDS.RDF.Test.Update
             catch (SparqlUpdateException upEx)
             {
                 Console.WriteLine("Threw error when attempting to Flush() as expected");
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
             
             //Now discard
@@ -147,7 +147,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should ensure it was still in the Dataset");
@@ -183,7 +183,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
@@ -233,7 +233,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist");
@@ -256,7 +256,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should not exist");
@@ -292,7 +292,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should exist as the Discard() should cause it to be added back to the Dataset");
@@ -315,7 +315,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsFalse(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
@@ -337,7 +337,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset.HasGraph(TestGraphUri), "Graph should not exist as the Discard() should cause it to be removed from the Dataset");
@@ -374,7 +374,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsTrue(dataset[TestGraphUri].IsEmpty, "Graph should be empty as the Discard() should reverse first the delete then the insert");
@@ -415,7 +415,7 @@ namespace VDS.RDF.Test.Update
             }
             catch (SparqlUpdateException upEx)
             {
-                TestTools.ReportError("Update Exception", upEx, false);
+                TestTools.ReportError("Update Exception", upEx);
             }
 
             Assert.IsFalse(dataset[TestGraphUri].IsEmpty, "Graph should not be empty as the Discard() should reverse first the insert then the delete so the end results should be the triple still being in the Graph");

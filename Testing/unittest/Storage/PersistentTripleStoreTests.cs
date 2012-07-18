@@ -23,19 +23,19 @@ namespace VDS.RDF.Test.Storage
             Graph g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
             g.BaseUri = new Uri(TestGraphUri1);
-            g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
+            g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
 
             g = new Graph();
             g.LoadFromFile("InferenceTest.ttl");
             g.BaseUri = new Uri(TestGraphUri2);
-            g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
+            g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
 
             g = new Graph();
             g.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
             g.BaseUri = new Uri(TestGraphUri3);
-            g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
+            g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             manager.SaveGraph(g);
         }
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Graph aExpected = new Graph();
                 aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple));
+                aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 aExpected.BaseUri = new Uri(TestGraphUri1);
                 IGraph aActual = store.Graph(aExpected.BaseUri);
                 Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graph()");
@@ -953,8 +953,8 @@ namespace VDS.RDF.Test.Storage
         public void StoragePersistentTripleStoreMemQueryAsk()
         {
             InMemoryManager manager = new InMemoryManager();
-            this.TestQueryAsk(manager, "ASK WHERE { ?s a ?type }", true);
-            this.TestQueryAsk(manager, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
+            this.TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
+            this.TestQueryAsk(manager, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
 
         [TestMethod]

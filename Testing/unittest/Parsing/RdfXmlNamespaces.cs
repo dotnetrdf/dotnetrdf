@@ -25,7 +25,7 @@ namespace VDS.RDF.Test.Parsing
                 Assert.IsTrue(parseEx.HasPositionInformation, "Should have position information");
                 Console.WriteLine("Line " + parseEx.StartLine + " Column " + parseEx.StartPosition);
 
-                TestTools.ReportError("Parser Error", parseEx, false);
+                TestTools.ReportError("Parser Error", parseEx);
             }
         }
 

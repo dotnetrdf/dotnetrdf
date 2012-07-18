@@ -65,7 +65,7 @@ namespace VDS.RDF.Test.Sparql
             catch (RdfQueryException queryEx)
             {
                 Console.WriteLine("Errored as expected");
-                TestTools.ReportError("Query Error", queryEx, false);
+                TestTools.ReportError("Query Error", queryEx);
             }
         }
 
@@ -86,7 +86,7 @@ namespace VDS.RDF.Test.Sparql
             catch (RdfQueryException queryEx)
             {
                 Console.WriteLine("Errored when errors should have been suppressed");
-                TestTools.ReportError("Query Error", queryEx, true);
+                TestTools.ReportError("Query Error", queryEx);
             }
         }
     }

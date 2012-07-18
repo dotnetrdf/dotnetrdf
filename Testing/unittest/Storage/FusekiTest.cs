@@ -186,7 +186,7 @@ namespace VDS.RDF.Test.Storage
                 catch (Exception ex)
                 {
                     Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex, false);
+                    TestTools.ReportError("Error", ex);
                 }
                 Console.WriteLine();
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Test.Storage
                 catch (Exception ex)
                 {
                     Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex, false);
+                    TestTools.ReportError("Error", ex);
                 }
                 Console.WriteLine();
 
@@ -252,7 +252,7 @@ namespace VDS.RDF.Test.Storage
                 catch (Exception ex)
                 {
                     Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex, false);
+                    TestTools.ReportError("Error", ex);
                 }
                 Console.WriteLine();
 

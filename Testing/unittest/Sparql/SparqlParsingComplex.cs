@@ -179,7 +179,7 @@ namespace VDS.RDF.Test.Sparql
                 catch (RdfParseException parseEx)
                 {
                     Console.WriteLine("Errored as expected");
-                    TestTools.ReportError("Parsing Error", parseEx, false);
+                    TestTools.ReportError("Parsing Error", parseEx);
                 }
             }
         }
@@ -232,7 +232,7 @@ namespace VDS.RDF.Test.Sparql
                 catch (RdfParseException parseEx)
                 {
                     Console.WriteLine("Errored as expected");
-                    TestTools.ReportError("Parsing Error", parseEx, false);
+                    TestTools.ReportError("Parsing Error", parseEx);
                 }
                 Console.WriteLine();
             }

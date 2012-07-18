@@ -62,7 +62,14 @@ namespace VDS.RDF.Test.Parsing
                     }
                     catch (RdfParseException parseEx)
                     {
-                        TestTools.ReportError("RDF Parsing Error", parseEx, parseExpected[i]);
+                        if (!parseExpected[i])
+                        {
+                            TestTools.ReportError("RDF Parsing Error", parseEx);
+                        }  
+                        else
+                        {
+                            throw;
+                        }
                     }
                     finally
                     {

@@ -15,7 +15,7 @@ namespace VDS.RDF.Test
 {
     public class TestTools
     {
-        public static void ReportError(String title, Exception ex, bool fail)
+        public static void ReportError(String title, Exception ex)
         {
             Console.WriteLine(title);
             Console.WriteLine(ex.Message);
@@ -23,12 +23,7 @@ namespace VDS.RDF.Test
 
             if (ex.InnerException != null)
             {
-                ReportError("Inner Exception", ex.InnerException, fail);
-            }
-
-            if (fail)
-            {
-                Assert.Fail("An Exception occurred in the Test");
+                ReportError("Inner Exception", ex.InnerException);
             }
         }
 

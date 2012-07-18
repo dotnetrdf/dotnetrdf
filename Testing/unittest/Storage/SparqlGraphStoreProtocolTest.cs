@@ -178,7 +178,7 @@ namespace VDS.RDF.Test.Storage
                 catch (Exception ex)
                 {
                     Console.WriteLine("Errored as expected since the Graph was deleted");
-                    TestTools.ReportError("Error", ex, false);
+                    TestTools.ReportError("Error", ex);
                 }
             }
             finally
@@ -238,12 +238,12 @@ namespace VDS.RDF.Test.Storage
                 catch (RdfStorageException storeEx)
                 {
                     Console.WriteLine("Got an error as expected");
-                    TestTools.ReportError("Storage Error", storeEx, false);
+                    TestTools.ReportError("Storage Error", storeEx);
                 }
                 catch (NotSupportedException ex)
                 {
                     Console.WriteLine("Got a Not Supported error as expected");
-                    TestTools.ReportError("Not Supported", ex, false);
+                    TestTools.ReportError("Not Supported", ex);
                 }
             }
             finally

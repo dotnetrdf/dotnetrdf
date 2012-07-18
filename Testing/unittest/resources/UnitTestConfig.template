@@ -64,3 +64,4 @@ Storage.Virtuoso.Port=1111
 Storage.Virtuoso.DB=DB
 Storage.Virtuoso.User=dba
 Storage.Virtuoso.Password=dba
+Storage.Virtuoso.Endpoint=http://localhost:8890/sparql
