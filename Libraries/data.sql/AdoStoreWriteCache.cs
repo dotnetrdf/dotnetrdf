@@ -7,7 +7,7 @@ using VDS.Common;
 
 namespace VDS.RDF.Storage
 {
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     class AdoStoreWriteCache
     {
         private HashTable<int, AdoStoreNodeID> _cache = new HashTable<int, AdoStoreNodeID>(1);
@@ -31,7 +31,7 @@ namespace VDS.RDF.Storage
         }
     }
 
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     class AdoStoreNodeID
     {
         private INode _n;

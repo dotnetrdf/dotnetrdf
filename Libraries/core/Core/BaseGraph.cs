@@ -241,7 +241,7 @@ namespace VDS.RDF
         {
             if (!this.RaiseClearRequested()) return;
 
-            this.Retract(this.Triples);
+            this.Retract(this.Triples.ToList());
 
             this.RaiseCleared();
         }

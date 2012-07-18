@@ -13,12 +13,13 @@ namespace VDS.RDF.Test.Storage.Async
     {
         public StardogAsync()
         {
+            //Increase the wait delay for Stardog because we have extra overhead for transactions
             this.WaitDelay = 45000;
         }
 
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return new StardogConnector(StardogTests.StardogTestUri, StardogTests.StardogTestKB, StardogTests.StardogUser, StardogTests.StardogPassword);
+            return StardogTests.GetConnection();
         }
     }
 }

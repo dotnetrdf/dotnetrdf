@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Storage.Async
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return new SesameHttpProtocolConnector("http://localhost:8080/openrdf-sesame/", "unittest");
+            return SesameTests.GetConnection();
         }
     }
 }

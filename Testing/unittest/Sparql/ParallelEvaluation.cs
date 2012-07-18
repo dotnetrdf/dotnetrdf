@@ -28,8 +28,8 @@ namespace VDS.RDF.Test.Sparql
                 this._dataset = new InMemoryDataset();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
-                if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit));
+                g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
+                if (g.Triples.Count > TripleLimit) g.Retract(g.Triples.Skip(TripleLimit).ToList());
                 this._dataset.AddGraph(g);
 
                 this._processor = new LeviathanQueryProcessor(this._dataset);

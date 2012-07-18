@@ -9,6 +9,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
 using VDS.RDF.Storage.Params;
+using VDS.RDF.Test.Storage;
 
 namespace VDS.RDF.Test.Parsing.Handlers
 {
@@ -187,14 +188,14 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingWriteToStoreHandlerVirtuoso()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestWriteToStoreHandler(virtuoso);
         }
 
         [TestMethod]
         public void ParsingWriteToStoreHandlerAllegroGraph()
         {
-            AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unittest");
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             this.TestWriteToStoreHandler(agraph);
         }
 
@@ -204,7 +205,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             try
             {
                 Options.UriLoaderCaching = false;
-                FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 this.TestWriteToStoreHandler(fuseki);
             }
             finally
@@ -221,14 +222,6 @@ namespace VDS.RDF.Test.Parsing.Handlers
         }
 
         [TestMethod]
-        public void ParsingWriteToStoreHandlerSql()
-        {
-            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
-            this.TestWriteToStoreHandler(sql);
-            sql.Dispose();
-        }
-
-        [TestMethod]
         public void ParsingWriteToStoreHandlerDatasetsInMemory()
         {
             InMemoryManager manager = new InMemoryManager();
@@ -238,21 +231,21 @@ namespace VDS.RDF.Test.Parsing.Handlers
         [TestMethod]
         public void ParsingWriteToStoreHandlerDatasetsVirtuoso()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestWriteToStoreDatasetsHandler(virtuoso);
         }
 
         [TestMethod]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesAllegroGraph()
         {
-            AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unittest");
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
             this.TestWriteToStoreHandlerWithBNodes(agraph);
         }
 
         [TestMethod]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesFuseki()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestWriteToStoreHandlerWithBNodes(fuseki);
         }
 
@@ -264,17 +257,9 @@ namespace VDS.RDF.Test.Parsing.Handlers
         }
 
         [TestMethod]
-        public void ParsingWriteToStoreHandlerBNodesAcrossBatchesSql()
-        {
-            MicrosoftAdoManager sql = new MicrosoftAdoManager("unit_test", "example", "password");
-            this.TestWriteToStoreHandlerWithBNodes(sql);
-            sql.Dispose();
-        }
-
-        [TestMethod]
         public void ParsingWriteToStoreHandlerBNodesAcrossBatchesVirtuoso()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", "dba", "dba");
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestWriteToStoreHandlerWithBNodes(virtuoso);
         }
     }

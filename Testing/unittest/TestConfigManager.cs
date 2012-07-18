@@ -22,6 +22,9 @@ namespace VDS.RDF.Test
                             LocalGraphStoreQueryUri = "Web.SparqlServer.Query",
                             LocalGraphStoreUpdateUri = "Web.SparqlServer.Update";
 
+        public const String UseRemoteSparql = "Sparql.Remote",
+                            RemoteSparqlQuery = "Sparql.Remote.Query";
+
         /// <summary>
         /// Constants for Test Configuration settings related to AllegroGraph test
         /// </summary>
@@ -34,6 +37,30 @@ namespace VDS.RDF.Test
                             DydraAccount = "Storage.Dydra.Account",
                             DydraRepository = "Storage.Dydra.Repository",
                             DydraApiKey = "Storage.Dydra.ApiKey";
+
+        public const String UseFourStore = "Storage.FourStore",
+                            FourStoreServer = "Storage.FourStore.Server";
+
+        public const String UseFuseki = "Storage.Fuseki",
+                            FusekiServer = "Storage.Fuseki.Server";
+
+        public const String UseSesame = "Storage.Sesame",
+                            SesameServer = "Storage.Sesame.Server",
+                            SesameRepository = "Storage.Sesame.Repository";
+
+        public const String UseStardog = "Storage.Stardog",
+                            StardogServer = "Storage.Stardog.Server",
+                            StardogDatabase = "Storage.Stardog.DB",
+                            StardogUser = "Storage.Stardog.User",
+                            StardogPassword = "Storage.Stardog.Password";
+
+
+        public const String UseVirtuoso = "Storage.Virtuoso",
+                            VirtuosoServer = "Storage.Virtuoso.Server",
+                            VirtuosoPort = "Storage.Virtuoso.Port",
+                            VirtuosoDatabase = "Storage.Virtuoso.DB",
+                            VirtuosoUser = "Storage.Virtuoso.User",
+                            VirtuosoPassword = "Storage.Virtuoso.Password";
 
         private static bool _init = false, _failed = false;
         private static Dictionary<String, String> _settings = new Dictionary<string,string>();
@@ -79,6 +106,7 @@ namespace VDS.RDF.Test
             else
             {
                 _failed = true;
+                Assert.Fail("UnitTestConfig.properties cannot be found, please make a copy of UnitTestConfig.template and configure for your environment in order to run this test");
             }
 
             _init = true;

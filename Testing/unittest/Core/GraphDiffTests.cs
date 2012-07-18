@@ -62,7 +62,7 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "InferenceTest.ttl");
 
             //Remove Triples about Ford Fiestas from 2nd Graph
-            h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")));
+            h.Retract(h.GetTriplesWithSubject(new Uri("http://example.org/vehicles/FordFiesta")).ToList());
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
@@ -122,7 +122,7 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "InferenceTest.ttl");
 
             //Remove MSG from 2nd Graph
-            h.Retract(h.GetTriplesWithSubject(h.GetBlankNode("autos1")));
+            h.Retract(h.GetTriplesWithSubject(h.GetBlankNode("autos1")).ToList());
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);

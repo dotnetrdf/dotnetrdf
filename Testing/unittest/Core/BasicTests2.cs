@@ -123,7 +123,7 @@ namespace VDS.RDF.Test
 
             //Remove stuff from parent graph so it won't match any more
             Console.WriteLine("Removing stuff from parent graph so that it won't have the sub-graph anymore");
-            parent.Retract(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
+            parent.Retract(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")).ToList());
             Assert.IsFalse(parent.HasSubGraph(subgraph, out mapping), "Parent should no longer contian the sub-graph");
             Assert.IsFalse(subgraph.IsSubGraphOf(parent, out mapping), "Parent should no longer contain the sub-graph");
             Console.WriteLine("OK");
@@ -150,7 +150,7 @@ namespace VDS.RDF.Test
 
             //Eliminate some of the Triples from the sub-graph
             Console.WriteLine("Eliminating some Triples from the sub-graph and seeing if the mapping still computes OK");
-            subgraph.Retract(subgraph.Triples.Skip(2).Take(5));
+            subgraph.Retract(subgraph.Triples.Skip(2).Take(5).ToList());
             Assert.IsTrue(parent.HasSubGraph(subgraph, out mapping), "Failed to match the sub-graph as expected");
             Assert.IsFalse(parent.IsSubGraphOf(subgraph, out mapping), "Parent should not be a sub-graph of the sub-graph");
             Assert.IsFalse(subgraph.HasSubGraph(parent, out mapping), "Sub-graph should not have parent as its sub-graph");
@@ -159,7 +159,7 @@ namespace VDS.RDF.Test
             Console.WriteLine();
 
             Console.WriteLine("Eliminating Blank Nodes from the parent Graph to check that the sub-graph is no longer considered as such afterwards");
-            parent.Retract(parent.Triples.Where(t => !t.IsGroundTriple));
+            parent.Retract(parent.Triples.Where(t => !t.IsGroundTriple).ToList());
             Assert.IsFalse(parent.HasSubGraph(subgraph), "Sub-graph should no longer be considered as such");
             Assert.IsFalse(subgraph.IsSubGraphOf(parent), "Sub-graph should no longer be considered as such");
 

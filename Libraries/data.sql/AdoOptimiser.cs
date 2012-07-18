@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Optimisation
     /// <typeparam name="TParameter">Parameter Type</typeparam>
     /// <typeparam name="TAdaptor">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     public abstract class BaseAdoOptimiser<TConn, TCommand, TParameter, TAdaptor, TException> 
         : IAlgebraOptimiser
         where TConn : DbConnection

@@ -11,6 +11,10 @@
 # The section then contains one/more properties that should be set to configure the
 # necessary information required to test that feature
 
+# Remote SPARQL Query
+Sparql.Remote=true
+Sparql.Remote.Query=http://dbpedia.org/sparql
+
 # Local IIS and ASP.Net tests
 Web.IIS=true
 Web.Query=http://localhost/demos/leviathan/
@@ -31,17 +35,32 @@ Storage.Dydra.Repository=test
 Storage.Dydra.ApiKey=
 
 # A 4store install to use for testing
-Storage.FourStore.Server=
+Storage.FourStore=false
+Storage.FourStore.Server=http://localhost:8080
 
 # A Fuseki install to use for testing
-Storage.Fuseki.Server=
+Storage.Fuseki=false
+Storage.Fuseki.Server=http://localhost:3030/dataset/data
 
 # A Joseki install to use for testing
 Storage.Joseki.Server=
 
 # A Sesame install to use for testing
-Storage.Sesame.Server=
-Storage.Sesame.Repository=
+Storage.Sesame=false
+Storage.Sesame.Server=http://localhost:8080/openrdf-sesame/
+Storage.Sesame.Repository=unit-test
 
 # A Stardog install to use for testing
-Storage.Stardog.Server=
+Storage.Stardog=
+Storage.Stardog.Server=http://localhost:5822
+Storage.Stardog.DB=test
+Storage.Stardog.User=admin
+Storage.Stardog.Password=admin
+
+# A Virtuoso install to use for testing
+Storage.Virtuoso=false
+Storage.Virtuoso.Server=localhost
+Storage.Virtuoso.Port=1111
+Storage.Virtuoso.DB=DB
+Storage.Virtuoso.User=dba
+Storage.Virtuoso.Password=dba

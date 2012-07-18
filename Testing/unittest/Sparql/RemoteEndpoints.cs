@@ -16,11 +16,25 @@ namespace VDS.RDF.Test.Sparql
     [TestClass]
     public class RemoteEndpoints
     {
-        const String TestQueryUri = "http://localhost/demos/leviathan/";
-        const String TestServerUpdateUri = "http://localhost/demos/server/update";
-        const String TestServerQueryUri = "http://localhost/demos/server/query";
-
         const int AsyncTimeout = 10000;
+
+        public static SparqlRemoteEndpoint GetQueryEndpoint()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
+            {
+                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+            }
+            return new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreQueryUri)));
+        }
+
+        public static SparqlRemoteUpdateEndpoint GetUpdateEndpoint()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
+            {
+                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+            }
+            return new SparqlRemoteUpdateEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUpdateUri)));
+        }
 
         [TestMethod]
         public void SparqlRemoteEndpointLongQuery()
@@ -33,7 +47,7 @@ namespace VDS.RDF.Test.Sparql
                 input.AppendLine("SELECT * WHERE {?s ?p ?o}");
                 input.AppendLine(new String('#', 2048));
 
-                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+                SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
                 Object results = endpoint.QueryWithResultSet(input.ToString());
                 if (results is SparqlResultSet)
                 {
@@ -62,7 +76,7 @@ namespace VDS.RDF.Test.Sparql
                 input.AppendLine("LOAD <http://dbpedia.org/resource/Ilkeston>");
                 input.AppendLine(new String('#', 2048));
 
-                SparqlRemoteUpdateEndpoint endpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestServerUpdateUri));
+                SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
                 endpoint.Update(input.ToString());
             }
             finally
@@ -74,7 +88,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointCountHandler()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             CountHandler handler = new CountHandler();
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT { ?s ?p ?o } WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
@@ -85,7 +99,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointResultCountHandler()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             ResultCountHandler handler = new ResultCountHandler();
             endpoint.QueryWithResultSet(handler, "SELECT * WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }");
 
@@ -96,7 +110,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointWriteThroughHandler()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             WriteThroughHandler handler = new WriteThroughHandler(typeof(NTriplesFormatter), Console.Out, false);
             endpoint.QueryWithResultGraph(handler, "CONSTRUCT WHERE { ?s ?p ?o }");
         }
@@ -104,7 +118,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultSet()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             endpoint.QueryWithResultSet("SELECT * WHERE { ?s ?p ?o }", (r, s) =>
             {
@@ -120,7 +134,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointAsyncApiQueryWithResultGraph()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             endpoint.QueryWithResultGraph("CONSTRUCT WHERE { ?s ?p ?o }", (r, s) =>
             {
@@ -136,7 +150,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteEndpointAsyncApiUpdate()
         {
-            SparqlRemoteUpdateEndpoint endpoint = new SparqlRemoteUpdateEndpoint(new Uri(TestServerUpdateUri));
+            SparqlRemoteUpdateEndpoint endpoint = RemoteEndpoints.GetUpdateEndpoint();
             ManualResetEvent signal = new ManualResetEvent(false);
             endpoint.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/async/graph>", s =>
             {
@@ -148,7 +162,7 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsTrue(signal.SafeWaitHandle.IsClosed, "Wait Handle should be closed");
 
             //Check that the Graph was really loaded
-            SparqlRemoteEndpoint queryEndpoint = new SparqlRemoteEndpoint(new Uri(TestServerQueryUri));
+            SparqlRemoteEndpoint queryEndpoint = RemoteEndpoints.GetQueryEndpoint();
             IGraph g = queryEndpoint.QueryWithResultGraph("CONSTRUCT FROM <http://example.org/async/graph> WHERE { ?s ?p ?o }");
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
@@ -319,7 +333,7 @@ namespace VDS.RDF.Test.Sparql
                 reader.Close();
             }
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestQueryUri));
+            SparqlRemoteEndpoint endpoint = RemoteEndpoints.GetQueryEndpoint();
             Stopwatch timer = new Stopwatch();
             timer.Start();
             SparqlResultSet syncGetResults = endpoint.QueryWithResultSet(query) as SparqlResultSet;

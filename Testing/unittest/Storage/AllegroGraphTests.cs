@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class AllegroGraphTests
     {
-        private AllegroGraphConnector GetConnector()
+        public static AllegroGraphConnector GetConnection()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph))
             {
@@ -32,7 +32,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-                AllegroGraphConnector agraph = this.GetConnector();
+                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
                 agraph.SaveGraph(g);
 
                 Graph h = new Graph();
@@ -56,7 +56,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/AllegroGraphTest");
 
-                AllegroGraphConnector agraph = this.GetConnector();
+                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
                 agraph.SaveGraph(g);
 
                 Console.WriteLine("Graph before deletion");
@@ -92,7 +92,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                AllegroGraphConnector agraph = this.GetConnector();
+                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
 
                 String ask = "ASK WHERE { ?s ?p ?o }";
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                AllegroGraphConnector agraph = this.GetConnector();
+                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
 
                 String describe = "DESCRIBE <http://example.org/Vehicles/FordFiesta>";
 

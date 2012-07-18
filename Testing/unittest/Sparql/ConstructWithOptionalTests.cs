@@ -155,8 +155,8 @@ namespace VDS.RDF.Test.Sparql
             Graph expected = new Graph();
             expected.NamespaceMap.Import(g.NamespaceMap);
             expected.Merge(g);
-            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")));
-            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")));
+            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")).ToList());
+            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")).ToList());
 
             String update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 
@@ -196,8 +196,8 @@ namespace VDS.RDF.Test.Sparql
             Graph expected = new Graph();
             expected.NamespaceMap.Import(g.NamespaceMap);
             expected.Merge(g);
-            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")));
-            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")));
+            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("rdf:type")).ToList());
+            expected.Retract(expected.GetTriplesWithPredicate(expected.CreateUriNode("eg:Speed")).ToList());
 
             String update = "PREFIX ex: <http://example.org/vehicles/> DELETE { ?s a ?type . ?s ex:Speed ?speed } INSERT { } USING <http://example.org/vehicles/> WHERE { ?s a ?type . OPTIONAL { ?s ex:Speed ?speed } }";
 

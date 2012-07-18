@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             {
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
+                g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
                 SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { ?s ?p ?o }") as SparqlResultSet;
                 if (results == null) Assert.Fail("Failed to generate sample SPARQL Results");
 

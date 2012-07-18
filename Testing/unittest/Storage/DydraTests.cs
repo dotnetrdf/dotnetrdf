@@ -13,9 +13,8 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class DydraTests
     {
-        private String _apiKey;
-
-        private DydraConnector GetConnection()
+       
+        public static DydraConnector GetConnection()
         {
             if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseDydra))
             {
@@ -36,7 +35,7 @@ namespace VDS.RDF.Test.Storage
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 orig.BaseUri = null;
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 dydra.SaveGraph(orig);
 
                 Graph g = new Graph();
@@ -50,10 +49,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.IsTrue(g.HasSubGraph(orig), "Original Graph should be a sub-graph of retrieved Graph");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -73,7 +68,7 @@ namespace VDS.RDF.Test.Storage
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 orig.BaseUri = new Uri("http://example.org/storage/dydra/save/named/");
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 dydra.SaveGraph(orig);
 
                 Graph g = new Graph();
@@ -93,10 +88,6 @@ namespace VDS.RDF.Test.Storage
                     Assert.IsTrue(g.HasSubGraph(orig), "Original Graph should be a sub-graph of retrieved Graph");
                 }
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 Options.HttpFullDebugging = false;
@@ -115,7 +106,7 @@ namespace VDS.RDF.Test.Storage
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 orig.BaseUri = new Uri("http://example.org/storage/dydra/tests/counting");
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 dydra.DeleteGraph(orig.BaseUri);
                 dydra.SaveGraph(orig);
 
@@ -123,10 +114,6 @@ namespace VDS.RDF.Test.Storage
                 dydra.LoadGraph(handler, orig.BaseUri);
 
                 Assert.AreEqual(orig.Triples.Count, handler.Count, "Triple Counts should be equal");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -145,7 +132,7 @@ namespace VDS.RDF.Test.Storage
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 orig.BaseUri = new Uri("http://example.org/storage/dydra/delete");
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 dydra.SaveGraph(orig);
 
                 Graph g = new Graph();
@@ -175,14 +162,6 @@ namespace VDS.RDF.Test.Storage
                 Assert.IsTrue(g.IsEmpty, "Graph should be empty as was deleted from repository");
                 Assert.AreNotEqual(orig, g, "Graphs should not be equal");
             }
-            catch (NotSupportedException)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 Options.HttpDebugging = false;
@@ -192,7 +171,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageDydraListGraphs()
         {
-            DydraConnector dydra = this.GetConnection();
+            DydraConnector dydra = DydraTests.GetConnection();
             List<Uri> graphUris = dydra.ListGraphs().ToList();
 
             Console.WriteLine("Dydra returned " + graphUris.Count + " Graph URIs");
@@ -209,7 +188,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 Object results = dydra.Query("SELECT * WHERE { { ?s a ?type } UNION { GRAPH ?g { ?s a ?type } } }");
                 if (results is SparqlResultSet)
                 {
@@ -220,10 +199,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Did not get a SPARQL Result Set as expected");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -240,7 +215,7 @@ namespace VDS.RDF.Test.Storage
                 Options.HttpDebugging = true;
                 //Options.HttpFullDebugging = true;
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
                 Object results = dydra.Query("CONSTRUCT { ?s a ?type } WHERE { { ?s a ?type } UNION { GRAPH ?g { ?s a ?type } } }");
                 if (results is IGraph)
                 {
@@ -251,10 +226,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Did not get a Graph as expected");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -270,7 +241,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
@@ -300,7 +271,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                DydraConnector dydra = this.GetConnection();
+                DydraConnector dydra = DydraTests.GetConnection();
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");

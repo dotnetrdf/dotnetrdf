@@ -133,7 +133,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlQueryTimeout()
         {
-            String query = "SELECT * WHERE { ?s ?p ?o }";
+            String query = "SELECT * WHERE { ?s ?p ?o . ?s ?p2 ?o2}";
             SparqlQuery q = this._parser.ParseFromString(query);
             q.Timeout = 1;
 

@@ -16,10 +16,16 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class FourStoreTest
     {
-        //private const String FourStoreTestUri = "http://nottm-virtual.ecs.soton.ac.uk:8080/";
-        public const String FourStoreTestUri = "http://nottm-virtual:8080";
-
         private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+        public static FourStoreConnector GetConnection()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFourStore))
+            {
+                Assert.Inconclusive("Test Config marks 4store as unavailable, test cannot be run");
+            }
+            return new FourStoreConnector(TestConfigManager.GetSetting(TestConfigManager.FourStoreServer));
+        }
 
         [TestMethod]
         public void StorageFourStoreSaveGraph()
@@ -28,7 +34,7 @@ namespace VDS.RDF.Test.Storage
             FileLoader.Load(g, "InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.SaveGraph(g);
 
             Graph h = new Graph();
@@ -46,7 +52,7 @@ namespace VDS.RDF.Test.Storage
             FileLoader.Load(g, "InferenceTest.ttl");
             g.BaseUri = new Uri("http://example.org/4storeTest");
 
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
 
             Graph h = new Graph();
             fourstore.LoadGraph(h, "http://example.org/4storeTest");
@@ -59,7 +65,7 @@ namespace VDS.RDF.Test.Storage
         {
             StorageFourStoreSaveGraph();
 
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.DeleteGraph("http://example.org/4storeTest");
 
             Graph g = new Graph();
@@ -78,7 +84,7 @@ namespace VDS.RDF.Test.Storage
             List<Triple> ts = new List<Triple>();
             ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.UpdateGraph("http://example.org/4storeTest", ts, null);
 
             fourstore.LoadGraph(g, "http://example.org/4storeTest");
@@ -95,7 +101,7 @@ namespace VDS.RDF.Test.Storage
             List<Triple> ts = new List<Triple>();
             ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.UpdateGraph("http://example.org/4storeTest", null, ts);
 
             Thread.Sleep(2500);
@@ -108,7 +114,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageFourStoreUpdate()
         {
-            FourStoreConnector fourstore = new FourStoreConnector(FourStoreTestUri);
+            FourStoreConnector fourstore = FourStoreTest.GetConnection();
             fourstore.Update("CREATE SILENT GRAPH <http://example.org/update>; INSERT DATA { GRAPH <http://example.org/update> { <http://example.org/subject> <http://example.org/predicate> <http://example.org/object> } }");
 
             Graph g = new Graph();

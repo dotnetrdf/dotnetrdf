@@ -50,7 +50,7 @@ namespace VDS.RDF.Test.Sparql
 
             SparqlParameterizedString bindingsQuery = new SparqlParameterizedString();
             bindingsQuery.Namespaces = query.Namespaces;
-            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ?subj ?type { (ex:FordFiesta ex:Car) }";
+            bindingsQuery.CommandText = "SELECT ?subj WHERE { ?subj a ?type } VALUES ( ?subj ?type ) { (ex:FordFiesta ex:Car) }";
 
             this.TestBindings(this.GetTestData(), bindingsQuery, query);
         }

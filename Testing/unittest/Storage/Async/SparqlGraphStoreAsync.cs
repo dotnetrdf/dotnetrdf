@@ -13,7 +13,7 @@ namespace VDS.RDF.Test.Storage.Async
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return new SparqlHttpProtocolConnector(SparqlGraphStoreProtocolTest.ProtocolTestUri);
+            return SparqlGraphStoreProtocolTest.GetConnection();
         }
     }
 }

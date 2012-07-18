@@ -16,11 +16,14 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class VirtuosoTest : BaseTest
     {
-        /// <summary>
-        /// Test Account to use for Virtuoso testing - set to Virtuoso default DBA login by default
-        /// </summary>
-        public const String VirtuosoTestUsername = "dba",
-                            VirtuosoTestPassword = "dba";
+        public static VirtuosoManager GetConnection()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
+            {
+                Assert.Inconclusive("Test Config marks Virtuoso as unavailable, test cannot be run");
+            }
+            return new VirtuosoManager(TestConfigManager.GetSetting(TestConfigManager.VirtuosoServer), TestConfigManager.GetSettingAsInt(TestConfigManager.VirtuosoPort), TestConfigManager.GetSetting(TestConfigManager.VirtuosoDatabase), TestConfigManager.GetSetting(TestConfigManager.VirtuosoUser), TestConfigManager.GetSetting(TestConfigManager.VirtuosoPassword));
+        }
 
         [TestMethod]
         public void StorageVirtuosoLoadGraph()
@@ -28,7 +31,7 @@ namespace VDS.RDF.Test.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -93,7 +96,7 @@ namespace VDS.RDF.Test.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -120,7 +123,7 @@ namespace VDS.RDF.Test.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -191,7 +194,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageVirtuosoDataTypes()
         {
-            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
             Assert.IsNotNull(manager);
 
             NTriplesFormatter formatter = new NTriplesFormatter();
@@ -215,7 +218,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -287,7 +290,7 @@ namespace VDS.RDF.Test.Storage
                 Assert.AreEqual(1, g.Triples.Count, "Should only be 1 Triple in the Test Graph");
 
                 //Connect to Virtuoso
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
 
                 //Save Graph
                 manager.SaveGraph(g);
@@ -358,8 +361,8 @@ namespace VDS.RDF.Test.Storage
         {
             Stopwatch timer = new Stopwatch();
             try
-            {                
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+            {
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -391,7 +394,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -435,7 +438,7 @@ namespace VDS.RDF.Test.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -535,7 +538,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -563,7 +566,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -605,7 +608,7 @@ namespace VDS.RDF.Test.Storage
         public void StorageVirtuosoEncoding()
         {
             //Get the Virtuoso Manager
-            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
 
             //Make the Test Graph
             Graph g = new Graph();
@@ -638,7 +641,7 @@ namespace VDS.RDF.Test.Storage
             NTriplesFormatter formatter = new NTriplesFormatter();
             try
             {
-                VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+                VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
                 Graph g = new Graph();
@@ -706,7 +709,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageVirtuosoQueryRegex()
         {
-            VirtuosoManager manager = new VirtuosoManager("DB", VirtuosoTestUsername, VirtuosoTestPassword);
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
 
             //Create the Test Graph
             Graph g = new Graph();
@@ -743,7 +746,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageVirtuosoBlankNodeInsert()
         {
-            VirtuosoManager manager = new VirtuosoManager(VirtuosoManager.DefaultDB, VirtuosoTestUsername, VirtuosoTestPassword);
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
             Graph g = new Graph();
             Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
 
@@ -765,7 +768,7 @@ namespace VDS.RDF.Test.Storage
         public void StorageVirtuosoBlankNodeDelete()
         {
             //First ensure data is present in the store
-            VirtuosoManager manager = new VirtuosoManager(VirtuosoManager.DefaultDB, VirtuosoTestUsername, VirtuosoTestPassword);
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
             manager.DeleteGraph("http://localhost/deleteBNodeTest");
             Graph g = new Graph();
             Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));

@@ -16,8 +16,16 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class SparqlGraphStoreProtocolTest
     {
-        public const String ProtocolTestUri = "http://localhost/demos/server/";
         private NTriplesFormatter _formatter = new NTriplesFormatter();
+
+        public static SparqlHttpProtocolConnector GetConnection()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
+            {
+                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+            }
+            return new SparqlHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
+        }
 
         [TestMethod]
         public void StorageSparqlUniformHttpProtocolSaveGraph()
@@ -31,7 +39,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Save Graph to SPARQL Uniform Protocol
-                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.SaveGraph(g);
                 Console.WriteLine("Graph saved to SPARQL Uniform Protocol OK");
 
@@ -87,7 +95,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
-                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
 
                 Graph h = new Graph();
                 sparql.LoadGraph(h, "http://example.org/sparqlTest");
@@ -136,7 +144,7 @@ namespace VDS.RDF.Test.Storage
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 //Check the Graph exists in the Store
-                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 Assert.IsTrue(sparql.GraphExists("http://example.org/sparqlTest"));
             }
             finally
@@ -153,7 +161,7 @@ namespace VDS.RDF.Test.Storage
                 Options.UriLoaderCaching = false;
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
-                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.DeleteGraph("http://example.org/sparqlTest");
 
                 //Give SPARQL Uniform Protocol time to delete stuff
@@ -192,7 +200,7 @@ namespace VDS.RDF.Test.Storage
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
                 FileLoader.Load(g, "InferenceTest.ttl");
 
-                SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
 
                 Graph h = new Graph();
@@ -222,7 +230,7 @@ namespace VDS.RDF.Test.Storage
 
                 try
                 {
-                    SparqlHttpProtocolConnector sparql = new SparqlHttpProtocolConnector(new Uri(ProtocolTestUri));
+                    SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                     sparql.UpdateGraph("http://example.org/sparqlTest", null, g.Triples);
 
                     Assert.Fail("SPARQL Uniform HTTP Protocol does not support removing Triples");

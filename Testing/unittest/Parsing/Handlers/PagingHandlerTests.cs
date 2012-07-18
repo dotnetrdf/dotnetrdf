@@ -21,7 +21,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Graph h = new Graph();
             PagingHandler handler = new PagingHandler(new GraphHandler(h), 25);
             parser.Load(handler, tempFile);
-            h.Retract(h.Triples.Where(t => !t.IsGroundTriple));
+            h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
 
             NTriplesFormatter formatter = new NTriplesFormatter();
             foreach (Triple t in h.Triples)

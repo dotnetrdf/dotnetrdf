@@ -331,7 +331,12 @@ SELECT * WHERE {
         [TestMethod]
         public void SparqlEndpointWithExtensions()
         {
-            SparqlConnector endpoint = new SparqlConnector(new Uri("http://lod.openlinksw.com/sparql"));
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseRemoteSparql))
+            {
+                Assert.Inconclusive("Test Config marks Remote SPARQL as unavailable, test cannot be run");
+            }
+
+            SparqlConnector endpoint = new SparqlConnector(new Uri(TestConfigManager.GetSetting(TestConfigManager.RemoteSparqlQuery)));
 
             String testQuery = @"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIMIT 1";

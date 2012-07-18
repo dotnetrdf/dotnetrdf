@@ -14,27 +14,27 @@ using VDS.RDF.Test.Update;
 namespace VDS.RDF.Test.Storage
 {
     [TestClass]
-    public class StardogTests : GenericUpdateProcessorTests
+    public class StardogTests
+        : GenericUpdateProcessorTests
     {
-        public const String StardogTestUri = "http://localhost:5822/";
-        public const String StardogTestKB = "test";
-        public const String StardogUser = "anonymous";
-        public const String StardogPassword = "anonymous";
-
-        private StardogConnector GetConnection()
+        public static StardogConnector GetConnection()
         {
-            return new StardogConnector(StardogTestUri, StardogTestKB, StardogUser, StardogPassword);
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
+            {
+                Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
+            }
+            return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer), TestConfigManager.GetSetting(TestConfigManager.StardogDatabase), TestConfigManager.GetSetting(TestConfigManager.StardogUser), TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
         }
 
         protected override IStorageProvider GetManager()
         {
-            return (IStorageProvider)this.GetConnection();
+            return (IStorageProvider)StardogTests.GetConnection();;
         }
 
         [TestMethod]
         public void StorageStardogLoadDefaultGraph()
         {
-            StardogConnector stardog = this.GetConnection();
+            StardogConnector stardog = StardogTests.GetConnection();;
             Graph g = new Graph();
             stardog.LoadGraph(g, (Uri)null);
 
@@ -50,7 +50,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageStardogLoadNamedGraph()
         {
-            StardogConnector stardog = this.GetConnection();
+            StardogConnector stardog = StardogTests.GetConnection();;
             Graph g = new Graph();
             stardog.LoadGraph(g, new Uri("http://example.org/graph"));
 
@@ -70,7 +70,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = null;
@@ -102,7 +102,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -126,7 +126,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 Uri u = new Uri("http://example.org/graph/" + DateTime.Now.Ticks);
@@ -152,7 +152,7 @@ namespace VDS.RDF.Test.Storage
                 //Options.UseBomForUtf8 = false;
                 Options.HttpDebugging = true;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/namedGraph");
@@ -188,7 +188,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/graph");
@@ -225,7 +225,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/addGraph");
@@ -266,7 +266,7 @@ namespace VDS.RDF.Test.Storage
             {
                 //Options.UseBomForUtf8 = false;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/tempGraph");
@@ -304,7 +304,7 @@ namespace VDS.RDF.Test.Storage
                 //Options.UseBomForUtf8 = false;
                 Options.HttpDebugging = true;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
 
                 Graph g = new Graph();
                 g.LoadFromFile("InferenceTest.ttl");
@@ -354,7 +354,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
                 stardog.Begin();
                 stardog.Commit();
                 stardog.Dispose();
@@ -372,7 +372,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                StardogConnector stardog = this.GetConnection();
+                StardogConnector stardog = StardogTests.GetConnection();;
 
                 //Save the Graph
                 Graph g = new Graph();

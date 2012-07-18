@@ -10,71 +10,61 @@ using VDS.RDF.Test.Storage;
 namespace VDS.RDF.Test
 {
     [TestClass]
-    public class NativeStoreTests : BaseTest
+    public class NativeStoreTests
+        : BaseTest
     {
         [TestMethod]
         public void StorageNativeGraph()
         {
-            try
+            //Load in our Test Graph
+            TurtleParser ttlparser = new TurtleParser();
+            Graph g = new Graph();
+            ttlparser.Load(g, "Turtle.ttl");
+
+            Console.WriteLine("Loaded Test Graph OK");
+            Console.WriteLine("Test Graph contains:");
+
+            Assert.IsFalse(g.IsEmpty, "Test Graph should be non-empty");
+
+            foreach (Triple t in g.Triples)
             {
-                //Load in our Test Graph
-                TurtleParser ttlparser = new TurtleParser();
-                Graph g = new Graph();
-                ttlparser.Load(g, "Turtle.ttl");
+                Console.WriteLine(t.ToString());
+            }
+            Console.WriteLine();
 
-                Console.WriteLine("Loaded Test Graph OK");
-                Console.WriteLine("Test Graph contains:");
+            //Create our Native Managers
+            List<IStorageProvider> managers = new List<IStorageProvider>() {
+                new InMemoryManager(),
+                VirtuosoTest.GetConnection()
+            };
 
-                Assert.IsFalse(g.IsEmpty, "Test Graph should be non-empty");
+            //Save the Graph to each Manager
+            foreach (IStorageProvider manager in managers)
+            {
+                Console.WriteLine("Saving using '" + manager.GetType().ToString() + "'");
+                manager.SaveGraph(g);
+                Console.WriteLine("Saved OK");
+                Console.WriteLine();
+            }
 
-                foreach (Triple t in g.Triples)
+            //Load Back from each Manager
+            foreach (IStorageProvider manager in managers)
+            {
+                Console.WriteLine("Loading using '" + manager.GetType().ToString() + "' with a NativeGraph");
+                StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
+                Console.WriteLine("Loaded OK");
+
+                Assert.IsFalse(native.IsEmpty, "Retrieved Graph should contain Triples");
+                Assert.AreEqual(g.Triples.Count, native.Triples.Count, "Retrieved Graph should contain same number of Triples as original Graph");
+
+                Console.WriteLine("Loaded Graph contains:");
+                foreach (Triple t in native.Triples)
                 {
                     Console.WriteLine(t.ToString());
                 }
                 Console.WriteLine();
 
-                //Create our Native Managers
-                List<IStorageProvider> managers = new List<IStorageProvider>() {
-                    new MicrosoftAdoManager("localhost", "dotnetrdf_experimental","example","password"),
-                    new VirtuosoManager("localhost", 1111, "DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword)
-                };
-
-                //Save the Graph to each Manager
-                foreach (IStorageProvider manager in managers)
-                {
-                    Console.WriteLine("Saving using '" + manager.GetType().ToString() + "'");
-                    manager.SaveGraph(g);
-                    Console.WriteLine("Saved OK");
-                    Console.WriteLine();
-                }
-
-                //Load Back from each Manager
-                foreach (IStorageProvider manager in managers)
-                {
-                    Console.WriteLine("Loading using '" + manager.GetType().ToString() + "' with a NativeGraph");
-                    StoreGraphPersistenceWrapper native = new StoreGraphPersistenceWrapper(manager, g.BaseUri);
-                    Console.WriteLine("Loaded OK");
-
-                    Assert.IsFalse(native.IsEmpty, "Retrieved Graph should contain Triples");
-                    Assert.AreEqual(g.Triples.Count, native.Triples.Count, "Retrieved Graph should contain same number of Triples as original Graph");
-
-                    Console.WriteLine("Loaded Graph contains:");
-                    foreach (Triple t in native.Triples)
-                    {
-                        Console.WriteLine(t.ToString());
-                    }
-                    Console.WriteLine();
-
-                    native.Dispose();
-                }
-            }
-            catch (RdfStorageException storeEx)
-            {
-                TestTools.ReportError("Storage Error", storeEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
+                native.Dispose();
             }
         }
     }

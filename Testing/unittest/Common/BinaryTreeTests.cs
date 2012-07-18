@@ -382,6 +382,28 @@ namespace VDS.RDF.Test
             }
         }
 
+        [TestMethod]
+        public void BinaryTreeUnbalancedDelete12()
+        {
+            List<int> input = new List<int>() { 1, 18, 17, 13, 16, 10, 7, 15, 9, 6, 3, 2, 24, 25, 8, 12, 11, 4, 14, 21, 23, 5, 20, 19, 22 };
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            foreach (int i in input)
+            {
+                tree.Add(i, i);
+            }
+            List<int> deletes = new List<int>() { 1, 6, 18, 25, 2 };
+            int count = input.Count;
+            foreach (int i in deletes)
+            {
+                Console.WriteLine("Removing Key " + i);
+                Assert.IsTrue(tree.Remove(i), "Failed to remove Key " + i);
+                input.Remove(i);
+                count--;
+                this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
+                Assert.AreEqual(count, tree.Nodes.Count(), "Removal of Key " + i + " did not reduce node count as expected");
+            }
+        }
+
         #endregion
 
         #region Scapegoat Tree

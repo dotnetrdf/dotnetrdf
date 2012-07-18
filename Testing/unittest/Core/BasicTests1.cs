@@ -825,13 +825,6 @@ namespace VDS.RDF.Test
 
                 Assert.AreEqual(8, g.Triples.Count, "Expected 8 Triples after the Merge");
 
-                //Use a GraphViz Generator to picture this
-                Console.WriteLine();
-                Console.WriteLine("Visualizing Merged Graph as SVG with GraphViz");
-                GraphVizGenerator gvzgen = new GraphVizGenerator("svg");
-                gvzgen.Generate(g, "MergeTest.svg", false);
-                Console.WriteLine("Visualisation created as MergeTest.svg");
-
                 //Same merge into an Empty Graph
                 Console.WriteLine();
                 Console.WriteLine("Combining the two Graphs with two Merge operations into an Empty Graph");
@@ -852,9 +845,6 @@ namespace VDS.RDF.Test
                 }
 
                 Assert.AreEqual(8, i.Triples.Count, "Expected 8 Triples after the Merge");
-
-
-
             }
             catch (Exception ex)
             {

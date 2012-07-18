@@ -19,7 +19,14 @@ namespace VDS.RDF.Test.Storage
     {
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
-        public const String FusekiTestUri = "http://localhost:3030/dataset/data";
+        public static FusekiConnector GetConnection()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseFuseki))
+            {
+                Assert.Inconclusive("Test Configuration marks Fuseki as unavailable, test cannot be run");
+            }
+            return new FusekiConnector(TestConfigManager.GetSetting(TestConfigManager.FusekiServer));
+        }
 
         [TestMethod]
         public void StorageFusekiSaveGraph()
@@ -33,7 +40,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -67,7 +74,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -102,7 +109,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.SaveGraph(g);
                 Console.WriteLine("Graph saved to Fuseki OK");
 
@@ -140,7 +147,7 @@ namespace VDS.RDF.Test.Storage
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
 
                 Graph h = new Graph();
                 fuseki.LoadGraph(h, "http://example.org/fusekiTest");
@@ -168,7 +175,7 @@ namespace VDS.RDF.Test.Storage
 
                 StorageFusekiSaveGraph();
 
-                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph("http://example.org/fusekiTest");
 
                 Graph g = new Graph();
@@ -201,7 +208,7 @@ namespace VDS.RDF.Test.Storage
 
                 StorageFusekiSaveDefaultGraph();
 
-                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph((Uri)null);
 
                 Graph g = new Graph();
@@ -234,7 +241,7 @@ namespace VDS.RDF.Test.Storage
 
                 StorageFusekiSaveDefaultGraph();
 
-                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.DeleteGraph((String)null);
 
                 Graph g = new Graph();
@@ -271,7 +278,7 @@ namespace VDS.RDF.Test.Storage
                 List<Triple> ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.UpdateGraph("http://example.org/fusekiTest", ts, null);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -296,7 +303,7 @@ namespace VDS.RDF.Test.Storage
                 List<Triple> ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
                 fuseki.UpdateGraph("http://example.org/fusekiTest", null, ts);
 
                 fuseki.LoadGraph(g, "http://example.org/fusekiTest");
@@ -311,7 +318,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageFusekiQuery()
         {
-            FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+            FusekiConnector fuseki = FusekiTest.GetConnection();
 
             Object results = fuseki.Query("SELECT * WHERE { {?s ?p ?o} UNION { GRAPH ?g {?s ?p ?o} } }");
             if (results is SparqlResultSet)
@@ -331,7 +338,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                FusekiConnector fuseki = new FusekiConnector(new Uri(FusekiTestUri));
+                FusekiConnector fuseki = FusekiTest.GetConnection();
 
                 //Try doing a SPARQL Update LOAD command
                 String command = "LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/Ilson>";
@@ -351,12 +358,8 @@ namespace VDS.RDF.Test.Storage
                 command = "DROP GRAPH <http://example.org/Ilson>";
                 fuseki.Update(command);
 
-                //Have to use a SPARQL CONSTRUCT here to check if the Graph has been dropped as doing a LoadGraph
-                //will get it from the cache as when we use SPARQL Update to remove a Graph the connector doesn't
-                //currently check what Graphs are affected and remove then from the Cache
-                //Also this would be very tricky to do as would involve parsing and analysing the Update Commands
-                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(new Uri(FusekiTestUri), "query"));
-                g = endpoint.QueryWithResultGraph("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH <http://example.org/Ilson> { ?s ?p ?o } }");
+                g = new Graph();
+                fuseki.LoadGraph(g, "http://example.org/Ilson");
                 Assert.IsTrue(g.IsEmpty, "Graph should be empty as it should have been DROPped by Fuseki");
             }
             finally
@@ -373,7 +376,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                FusekiConnector fuseki = new FusekiConnector(FusekiTestUri);
+                FusekiConnector fuseki = FusekiTest.GetConnection();
 
                 Object results = fuseki.Query("DESCRIBE <http://example.org/vehicles/FordFiesta>");
                 if (results is IGraph)

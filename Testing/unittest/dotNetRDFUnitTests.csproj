@@ -121,7 +121,6 @@
     <Compile Include="Storage\Async\SparqlGraphStoreAsync.cs" />
     <Compile Include="Storage\Async\StardogAsync.cs" />
     <Compile Include="Storage\Async\VirtuosoAsync.cs" />
-    <Compile Include="Storage\TalisTest.cs" />
     <Compile Include="TestConfigManager.cs" />
     <Compile Include="TestTools.cs" />
     <Compile Include="Update\UpdateTests.cs" />
@@ -247,16 +246,9 @@
     <Compile Include="Storage\PersistentTripleStoreTests.cs" />
     <Compile Include="Storage\SesameTests.cs" />
     <Compile Include="Core\EventTests.cs" />
-    <Compile Include="Storage\Sql\AdoDatasetTests.cs" />
-    <Compile Include="Storage\Sql\AdoStoreAzureTests.cs" />
-    <Compile Include="Storage\Sql\AdoStoreBasic.cs" />
-    <Compile Include="Storage\Sql\AdoStoreCeTests.cs" />
-    <Compile Include="Storage\Sql\AdoStoreVirtualRdf.cs" />
-    <Compile Include="Storage\Sql\AdoTransactionalUpdateTests.cs" />
     <Compile Include="Storage\StardogTests.cs" />
     <Compile Include="Update\GenericUpdateProcessorTests.cs" />
     <Compile Include="Update\TransactionalUpdateQuadTests.cs" />
-    <Compile Include="Update\TransactionalUpdateSqlTests.cs" />
     <Compile Include="Update\TransactionalUpdateTests.cs" />
     <Compile Include="Update\UpdateTimeouts.cs" />
     <Compile Include="Web\ConnegTests.cs" />

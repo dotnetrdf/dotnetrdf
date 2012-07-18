@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Datasets
     /// <typeparam name="TParameter">Parameter Type</typeparam>
     /// <typeparam name="TAdapter">Adaptor Type</typeparam>
     /// <typeparam name="TException">Exception Type</typeparam>
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     public abstract class BaseAdoDataset<TConn, TCommand, TParameter, TAdapter, TException> 
         : BaseTransactionalDataset
         where TConn : DbConnection
@@ -380,7 +380,7 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// Abstract implementation of a dataset against an ADO Store that uses the System.Data.SqlClient API to communicate with the database
     /// </summary>
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     public abstract class BaseAdoSqlClientDataset
         : BaseAdoDataset<SqlConnection, SqlCommand, SqlParameter, SqlDataAdapter, SqlException>
     {
@@ -395,7 +395,7 @@ namespace VDS.RDF.Query.Datasets
     /// <summary>
     /// A dataset backed by an ADO Store on Microsoft SQL Server
     /// </summary>
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     public class MicrosoftAdoDataset
         : BaseAdoSqlClientDataset
     {

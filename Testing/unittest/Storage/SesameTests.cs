@@ -13,6 +13,15 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class SesameTests
     {
+        public static SesameHttpProtocolConnector GetConnection()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseSesame))
+            {
+                Assert.Inconclusive("Test Config marks Sesame as unavailable, cannot run test");
+            }
+            return new SesameHttpProtocolConnector(TestConfigManager.GetSetting(TestConfigManager.SesameServer), TestConfigManager.GetSetting(TestConfigManager.SesameRepository));
+        }
+
         [TestMethod]
         public void StorageSesameSaveLoad()
         {
@@ -22,7 +31,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/SesameTest");
 
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 sesame.SaveGraph(g);
 
                 //Options.HttpDebugging = true;
@@ -54,7 +63,7 @@ namespace VDS.RDF.Test.Storage
                 FileLoader.Load(g, "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/SesameTest");
 
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 sesame.SaveGraph(g);
 
                 Console.WriteLine("Graph before deletion");
@@ -90,7 +99,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
                 FileLoader.Load(g, "cyrillic.rdf");
@@ -120,7 +129,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
                 String ask = "ASK WHERE { ?s ?p ?o }";
 
@@ -145,7 +154,7 @@ namespace VDS.RDF.Test.Storage
         {
             try
             {
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
                 String describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
 
@@ -172,7 +181,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 sesame.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
 
                 Graph orig = new Graph();
@@ -202,7 +211,7 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = true;
 
-                SesameHttpProtocolConnector sesame = new SesameHttpProtocolConnector("http://nottm-virtual.ecs.soton.ac.uk:8080/openrdf-sesame/", "unit-test");
+                SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlUpdateDeleteWhere");

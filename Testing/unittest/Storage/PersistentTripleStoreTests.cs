@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
-using VDS.RDF.Test.Storage.Sql;
 using VDS.RDF.Update;
 
 namespace VDS.RDF.Test.Storage
@@ -95,22 +94,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiContains()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestContains(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoContains()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestContains(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftContains()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestContains(manager);
         }
 
         #endregion
@@ -167,22 +159,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiGetGraph()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestGetGraph(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoGetGraph()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestGetGraph(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftGetGraph()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestGetGraph(manager);
         }
 
         #endregion
@@ -230,22 +215,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddTriplesFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddTriplesFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddTriplesFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddTriplesFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddTriplesFlushed(manager);
         }
 
         private void TestAddTriplesDiscarded(IStorageProvider manager)
@@ -289,22 +267,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddTriplesDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddTriplesDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddTriplesDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddTriplesDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddTriplesDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddTriplesDiscarded(manager);
         }
 
         #endregion
@@ -352,22 +323,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveTriplesFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveTriplesFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveTriplesFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveTriplesFlushed(manager);
         }
 
         private void TestRemoveTriplesDiscarded(IStorageProvider manager)
@@ -411,22 +375,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveTriplesDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveTriplesDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveTriplesDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveTriplesDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveTriplesDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveTriplesDiscarded(manager);
         }
 
         #endregion
@@ -469,22 +426,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddGraphFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddGraphFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddGraphFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddGraphFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddGraphFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddGraphFlushed(manager);
         }
 
         private void TestAddGraphDiscarded(IStorageProvider manager)
@@ -532,22 +482,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddGraphDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddGraphDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddGraphDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddGraphDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddGraphDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -596,22 +539,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveGraphFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveGraphFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveGraphFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveGraphFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveGraphFlushed(manager);
         }
 
         private void TestRemoveGraphDiscarded(IStorageProvider manager)
@@ -649,22 +585,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveGraphDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveGraphDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveGraphDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveGraphDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveGraphDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -712,22 +641,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddThenRemoveGraphFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddThenRemoveGraphFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddThenRemoveGraphFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddThenRemoveGraphFlushed(manager);
         }
 
         private void TestAddThenRemoveGraphDiscarded(IStorageProvider manager)
@@ -771,22 +693,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiAddThenRemoveGraphDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestAddThenRemoveGraphDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoAddThenRemoveGraphDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestAddThenRemoveGraphDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftAddThenRemoveGraphDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestAddThenRemoveGraphDiscarded(manager);
         }
 
         #endregion
@@ -833,22 +748,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphFlushed()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveThenAddGraphFlushed(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphFlushed()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveThenAddGraphFlushed(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveThenAddGraphFlushed()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveThenAddGraphFlushed(manager);
         }
 
         private void TestRemoveThenAddGraphDiscarded(IStorageProvider manager)
@@ -891,22 +799,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiRemoveThenAddGraphDiscarded()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestRemoveThenAddGraphDiscarded(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoRemoveThenAddGraphDiscarded()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestRemoveThenAddGraphDiscarded(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftRemoveThenAddGraphDiscarded()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestRemoveThenAddGraphDiscarded(manager);
         }
 
         #endregion
@@ -1016,22 +917,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod, ExpectedException(typeof(RdfQueryException))]
         public void StoragePersistentTripleStoreFusekiQueryUnsynced()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryUnsynced(fuseki);
         }
 
         [TestMethod, ExpectedException(typeof(RdfQueryException))]
         public void StoragePersistentTripleStoreVirtuosoQueryUnsynced()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryUnsynced(virtuoso);
-        }
-
-        [TestMethod, ExpectedException(typeof(RdfQueryException))]
-        public void StoragePersistentTripleStoreAdoMicrosoftQueryUnsynced()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestQueryUnsynced(manager);
         }
 
         [TestMethod]
@@ -1044,22 +938,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiQuerySelect()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQuerySelect(fuseki, "SELECT * WHERE { ?s a ?type }");
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoQuerySelect()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQuerySelect(virtuoso, "SELECT * WHERE { ?s a ?type }");
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftQuerySelect()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestQuerySelect(manager, "SELECT * WHERE { ?s a ?type }");
         }
 
         [TestMethod]
@@ -1073,7 +960,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiQueryAsk()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s a ?type } }", true);
             this.TestQueryAsk(fuseki, "ASK WHERE { GRAPH ?g { ?s <http://example.org/noSuchThing> ?o } }", false);
         }
@@ -1081,17 +968,9 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoQueryAsk()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryAsk(virtuoso, "ASK WHERE { ?s a ?type }", true);
             this.TestQueryAsk(virtuoso, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftQueryAsk()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestQueryAsk(manager, "ASK WHERE { ?s a ?type }", true);
-            this.TestQueryAsk(manager, "ASK WHERE { ?s <http://example.org/noSuchThing> ?o }", false);
         }
 
         [TestMethod]
@@ -1104,22 +983,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiQueryConstruct()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryConstruct(fuseki, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoQueryConstruct()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryConstruct(virtuoso, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftQueryConstruct()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestQueryConstruct(manager, "CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }");
         }
 
         [TestMethod]
@@ -1132,22 +1004,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiQueryDescribe()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestQueryDescribe(fuseki, "DESCRIBE ?type WHERE { GRAPH ?g { ?s a ?type } } LIMIT 5");
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoQueryDescribe()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestQueryDescribe(virtuoso, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftQueryDescribe()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestQueryDescribe(manager, "DESCRIBE ?type WHERE { ?s a ?type } LIMIT 5");
         }
 
         #endregion
@@ -1209,22 +1074,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
         public void StoragePersistentTripleStoreFusekiUpdateUnsynced()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestUpdateUnsynced(fuseki);
         }
 
         [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
         public void StoragePersistentTripleStoreVirtuosoUpdateUnsynced()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestUpdateUnsynced(virtuoso);
-        }
-
-        [TestMethod, ExpectedException(typeof(SparqlUpdateException))]
-        public void StoragePersistentTripleStoreAdoMicrosoftUpdateUnsynced()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestUpdateUnsynced(manager);
         }
 
         [TestMethod]
@@ -1237,22 +1095,15 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StoragePersistentTripleStoreFusekiUpdate()
         {
-            FusekiConnector fuseki = new FusekiConnector("http://localhost:3030/dataset/data");
+            FusekiConnector fuseki = FusekiTest.GetConnection();
             this.TestUpdate(fuseki);
         }
 
         [TestMethod]
         public void StoragePersistentTripleStoreVirtuosoUpdate()
         {
-            VirtuosoManager virtuoso = new VirtuosoManager("DB", VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            VirtuosoManager virtuoso = VirtuosoTest.GetConnection();
             this.TestUpdate(virtuoso);
-        }
-
-        [TestMethod]
-        public void StoragePersistentTripleStoreAdoMicrosoftUpdate()
-        {
-            MicrosoftAdoManager manager = new MicrosoftAdoManager("adostore", "example", "password");
-            this.TestUpdate(manager);
         }
 
         #endregion

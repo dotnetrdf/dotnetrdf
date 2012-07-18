@@ -415,7 +415,7 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("uri", this._uri.ToString());
+            info.AddValue("uri", this._uri.AbsoluteUri);
         }
 
         #endregion

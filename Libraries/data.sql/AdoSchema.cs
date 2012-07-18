@@ -42,7 +42,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Represents a database schema that provides the required ADO store stored procedures
     /// </summary>
-    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", false)]
+    [Obsolete("The Data.Sql Library is being deprecated in favour of the many open source and commercial triple stores supported by the core library which are far more performant.  Please switch over your code to an alternative triple store, we will no longer support/distribute this library after the 0.7.x series of releases", true)]
     public class AdoSchemaDefinition
     {
         private List<AdoSchemaScriptDefinition> _scripts = new List<AdoSchemaScriptDefinition>();

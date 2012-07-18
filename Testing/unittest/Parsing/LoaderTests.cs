@@ -214,8 +214,13 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingUriLoaderGraphIntoTripleStore()
         {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
+            {
+                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
+            }
+
             TripleStore store = new TripleStore();
-            store.LoadFromUri(new Uri("http://www.dotnetrdf.org/demos/leviathan/?query=CONSTRUCT WHERE { ?s ?p ?o }"));
+            store.LoadFromUri(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri) + "?query=" + Uri.EscapeDataString("CONSTRUCT WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }")));
 
             Assert.IsTrue(store.Triples.Count() > 0);
             Assert.AreEqual(1, store.Graphs.Count);

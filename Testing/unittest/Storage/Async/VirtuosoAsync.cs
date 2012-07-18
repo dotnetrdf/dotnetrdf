@@ -11,9 +11,9 @@ namespace VDS.RDF.Test.Storage.Async
     public class VirtuosoAsync
         : BaseAsyncTests
     {
-        protected override RDF.Storage.IAsyncStorageProvider GetAsyncProvider()
+        protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return new VirtuosoManager(VirtuosoManager.DefaultDB, VirtuosoTest.VirtuosoTestUsername, VirtuosoTest.VirtuosoTestPassword);
+            return VirtuosoTest.GetConnection();
         }
     }
 }

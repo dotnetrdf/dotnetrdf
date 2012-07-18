@@ -14,12 +14,7 @@ namespace VDS.RDF.Test.Storage.Async
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseDydra))
-            {
-                Assert.Inconclusive("Test Config marks Dydra as unavailable, cannot run this test");
-            }
-
-            return new DydraConnector(TestConfigManager.GetSetting(TestConfigManager.DydraAccount), TestConfigManager.GetSetting(TestConfigManager.DydraRepository), TestConfigManager.GetSetting(TestConfigManager.DydraApiKey));
+            return DydraTests.GetConnection();
         }
     }
 }

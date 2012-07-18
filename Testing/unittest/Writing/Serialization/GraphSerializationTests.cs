@@ -55,7 +55,13 @@ namespace VDS.RDF.Test.Writing.Serialization
             stream.Seek(0, SeekOrigin.Begin);
             Graph h = serializer.Deserialize(stream) as Graph;
             reader.Close();
-            Assert.AreEqual(g, h, "Graphs should be equal");
+
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual)
+            {
+                TestTools.ShowDifferences(report);
+            }
+            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
 
             stream.Dispose();
         }
