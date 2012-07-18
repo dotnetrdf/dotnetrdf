@@ -73,11 +73,11 @@ namespace VDS.RDF.Test
             }
             catch (RdfParseException parseEx)
             {
-                TestTools.ReportError("Parsing Exception", parseEx, true);
+                throw;
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Other Error", ex, true);
+                throw;
             }
         }
 
@@ -194,11 +194,11 @@ namespace VDS.RDF.Test
             }
             catch (RdfParseException parseEx)
             {
-                TestTools.ReportError("Parsing Exception", parseEx, true);
+                throw;
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Other Error", ex, true);
+                throw;
             }
         }
 
@@ -243,18 +243,6 @@ namespace VDS.RDF.Test
                     Console.WriteLine();
                 }
 
-            }
-            catch (WebException webEx)
-            {
-                TestTools.ReportError("HTTP Error", webEx, true);
-            }
-            catch (RdfParseException parseEx)
-            {
-                TestTools.ReportError("Parser Error", parseEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
             }
             finally
             {
@@ -310,11 +298,11 @@ namespace VDS.RDF.Test
             }
             catch (RdfException rdfEx)
             {
-                TestTools.ReportError("RDF Error", rdfEx, true);
+                throw;
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }
         }
 

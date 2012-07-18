@@ -18,8 +18,6 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingStringParser()
         {
-            try
-            {
                 String[] someRDF = { "<http://example.org/subject> <http://example.org/predicate> <http://example.org/object>.",
                                      "@prefix : <http://example.org/>.:subject :predicate :object.",
                                      "@prefix : <http://example.org/>.@keywords.subject predicate object.",
@@ -82,12 +80,6 @@ namespace VDS.RDF.Test.Parsing
                 {
                     Console.WriteLine(t.ToString());
                 }
-
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
@@ -332,8 +324,6 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingRdfXmlNamespaceAttributes()
         {
-            try
-            {
                 Graph g = new Graph();
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/Southampton");
                 request.Method = "GET";
@@ -347,12 +337,6 @@ namespace VDS.RDF.Test.Parsing
                 {
                     Console.WriteLine(t.ToString());
                 }
-
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
@@ -388,19 +372,12 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingRdfXmlStreaming()
         {
-            try
-            {
                 RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.Streaming);
                 parser.TraceParsing = true;
                 Graph g = new Graph();
                 parser.Load(g, "example.rdf");
 
                 TestTools.ShowGraph(g);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]

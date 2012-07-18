@@ -32,10 +32,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -51,10 +47,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -69,10 +61,6 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -143,10 +131,6 @@ namespace VDS.RDF.Test.Query.FullText
                 }
 
                 Assert.AreEqual(origCount, currCount, "Current Count should match original count");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {
@@ -219,10 +203,6 @@ namespace VDS.RDF.Test.Query.FullText
 
                 Assert.AreEqual(origCount, currCount, "Current Count should match original count");
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -293,10 +273,6 @@ namespace VDS.RDF.Test.Query.FullText
                 }
 
                 Assert.AreEqual(origCount, currCount, "Current Count should match original count");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
             }
             finally
             {

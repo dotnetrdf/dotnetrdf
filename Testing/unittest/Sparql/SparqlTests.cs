@@ -85,7 +85,11 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlRemoteVirtuosoWithSponging()
         {
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql?should-sponge=soft"));
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseVirtuoso))
+            {
+                Assert.Inconclusive("Test Config marks Virtuoso as unavailable, cannot run test");
+            }
+            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.VirtuosoEndpoint) + "?should-sponge=soft"));
             endpoint.HttpMode = "POST";
             String query = "CONSTRUCT { ?s ?p ?o } FROM <http://www.dotnetrdf.org/configuration#> WHERE { ?s ?p ?o }";
 
@@ -373,8 +377,6 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         [TestMethod]
         public void SparqlBNodeIDsInResults()
         {
-            try
-            {
                 SparqlXmlParser xmlparser = new SparqlXmlParser();
                 SparqlResultSet results = new SparqlResultSet();
                 xmlparser.Load(results, "bnodes.srx");
@@ -388,12 +390,6 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
 
                 TestTools.ShowResults(results);
                 Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
-
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]

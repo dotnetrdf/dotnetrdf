@@ -255,9 +255,9 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageSparqlUniformHttpProtocolPostCreate()
         {
-            SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
+            SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost/demos/server/");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri)));
             request.Method = "POST";
             request.ContentType = "application/rdf+xml";
 
@@ -300,7 +300,7 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageSparqlUniformHttpProtocolPostCreateMultiple()
         {
-            SparqlHttpProtocolConnector connector = new SparqlHttpProtocolConnector("http://localhost/demos/server/");
+            SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
@@ -308,7 +308,7 @@ namespace VDS.RDF.Test.Storage
             List<Uri> uris = new List<Uri>();
             for (int i = 0; i < 10; i++)
             {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://localhost/demos/server/");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
                 request.Method = "POST";
                 request.ContentType = "application/rdf+xml";
 

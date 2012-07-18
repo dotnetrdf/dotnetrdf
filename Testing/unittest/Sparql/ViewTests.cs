@@ -8,6 +8,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
+using VDS.RDF.Test.Storage;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -17,8 +18,6 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlViewConstruct()
         {
-            try
-            {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
                 view.BaseUri = new Uri("http://example.org/view");
@@ -41,23 +40,12 @@ namespace VDS.RDF.Test.Sparql
                 TestTools.ShowGraph(view);
 
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void SparqlViewDescribe()
         {
-            try
-            {
-                TripleStore store = new TripleStore();
+                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
                 view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
@@ -79,22 +67,11 @@ namespace VDS.RDF.Test.Sparql
                 TestTools.ShowGraph(view);
 
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void SparqlViewSelect()
         {
-            try
-            {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { ?s <http://example.org/vehicles/Speed> ?speed }", store);
                 view.BaseUri = new Uri("http://example.org/view");
@@ -117,22 +94,11 @@ namespace VDS.RDF.Test.Sparql
                 TestTools.ShowGraph(view);
 
                 Assert.IsTrue(view.Triples.Count > 0, "View should have updated to contain some Triples");
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void SparqlViewAndReasonerInteraction()
         {
-            try
-            {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }", store);
                 view.BaseUri = new Uri("http://example.org/view");
@@ -167,23 +133,12 @@ namespace VDS.RDF.Test.Sparql
                 if (view.Triples.Count == lastCount) view.UpdateView();
                 Console.WriteLine("SPARQL View Populated after Reasoner added");
                 TestTools.ShowGraph(view);
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void SparqlViewNativeAllegroGraph()
         {
-            try
-            {
-                AllegroGraphConnector agraph = new AllegroGraphConnector("http://localhost:9875", "test", "unit-test");
+                AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
                 PersistentTripleStore store = new PersistentTripleStore(agraph);
 
                 //Load a Graph into the Store to ensure there is some data for the view to retrieve
@@ -197,22 +152,11 @@ namespace VDS.RDF.Test.Sparql
                 Console.WriteLine("SPARQL View Populated");
                 TestTools.ShowGraph(view);
                 Console.WriteLine();
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void SparqlViewGraphScope()
         {
-            try
-            {
                 TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } FROM <http://example.org/data> WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
                 view.BaseUri = new Uri("http://example.org/view");
@@ -255,16 +199,6 @@ namespace VDS.RDF.Test.Sparql
                 view.UpdateView();
 
                 Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the removed Graph is not in the set of Graphs over which the query operates");
-
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("Query Error", queryEx, true);
-            }
-            catch (RdfException ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
     }
 }

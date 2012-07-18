@@ -29,8 +29,6 @@ namespace VDS.RDF.Test.Parsing
 
             foreach (IRdfWriter writer in writers)
             {
-                try
-                {
                     Console.WriteLine(writer.GetType().ToString());
                     String temp = StringWriter.Write(g, writer);
                     Console.WriteLine(temp);
@@ -38,11 +36,6 @@ namespace VDS.RDF.Test.Parsing
                     StringParser.Parse(h, temp);
                     Assert.AreEqual(g, h, "Graphs should be equal");
                     Console.WriteLine();
-                }
-                catch (Exception ex)
-                {
-                    TestTools.ReportError("Error", ex, true);
-                }
             }
         }
 

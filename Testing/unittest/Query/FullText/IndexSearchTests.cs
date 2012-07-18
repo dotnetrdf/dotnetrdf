@@ -33,10 +33,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -51,10 +47,6 @@ namespace VDS.RDF.Test.Query.FullText
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -73,10 +65,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -94,10 +82,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -116,10 +100,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -135,10 +115,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                     Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -157,10 +133,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneObjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -179,10 +151,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Assert.IsTrue(result.Score >= 1.0d, "Score should be higher than desired threshold");
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -201,10 +169,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -219,10 +183,6 @@ namespace VDS.RDF.Test.Query.FullText
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -241,10 +201,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -262,10 +218,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -284,10 +236,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -303,10 +251,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                     Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -324,10 +268,6 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 indexer = new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
             }
             finally
             {
@@ -348,10 +288,6 @@ namespace VDS.RDF.Test.Query.FullText
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
-            }
             finally
             {
                 if (provider != null) provider.Dispose();
@@ -369,10 +305,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -387,10 +319,6 @@ namespace VDS.RDF.Test.Query.FullText
                 {
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -408,10 +336,6 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
             }
             finally
             {
@@ -431,10 +355,6 @@ namespace VDS.RDF.Test.Query.FullText
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
-            }
             finally
             {
                 if (provider != null) provider.Dispose();
@@ -452,10 +372,6 @@ namespace VDS.RDF.Test.Query.FullText
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
             }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
-            }
             finally
             {
                 if (indexer != null) indexer.Dispose();
@@ -471,10 +387,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Console.WriteLine(result.Node.ToString(formatter) + " - Scores " + result.Score);
                     Assert.IsTrue(result.Score >= 0.75d, "Score should be higher than desired threshold");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {
@@ -492,10 +404,6 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 indexer = new LucenePredicatesIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema);
                 indexer.Index(this.GetTestData());
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Creation Error", ex, true);
             }
             finally
             {
@@ -515,10 +423,6 @@ namespace VDS.RDF.Test.Query.FullText
                     Assert.IsTrue(result.Score >= 1.0d, "Score should be higher than desired threshold");
                 }
                 Assert.IsTrue(i <= 5, "Should be a max of 5 results");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Index Search Error", ex, true);
             }
             finally
             {

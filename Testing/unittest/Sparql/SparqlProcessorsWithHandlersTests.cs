@@ -208,7 +208,11 @@ namespace VDS.RDF.Test.Sparql
         {
             if (this._remote == null)
             {
-                this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri("http://localhost/demos/leviathan/")));
+                if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
+                {
+                    Assert.Inconclusive("Test Config marks IIS as unavailabe, cannot run test");
+                }
+                this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.LocalQueryUri)));
             }
         }
 

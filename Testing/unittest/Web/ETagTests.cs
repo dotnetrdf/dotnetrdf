@@ -59,7 +59,7 @@ namespace VDS.RDF.Test.Web
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }
         }
     }

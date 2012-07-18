@@ -86,8 +86,6 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageSesameCyrillic()
         {
-            try
-            {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/sesame/cyrillic");
@@ -105,19 +103,11 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Failed to get a Result Set as expected");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            
-            }
         }
 
         [TestMethod]
         public void StorageSesameAsk()
         {
-            try
-            {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
                 String ask = "ASK WHERE { ?s ?p ?o }";
@@ -131,18 +121,11 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Failed to get a Result Set as expected");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageSesameDescribe()
         {
-            try
-            {
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
 
                 String describe = "DESCRIBE <http://example.org/vehicles/FordFiesta>";
@@ -156,12 +139,7 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Failed to get a Graph as expected");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
-        }
+         }
 
         [TestMethod]
         public void StorageSesameSparqlUpdate1()

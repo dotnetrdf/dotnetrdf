@@ -56,15 +56,8 @@ namespace VDS.RDF.Test.Sparql
 
         private void CheckQueryParsesIn11(String query)
         {
-            try
-            {
                 SparqlQuery q = this._parser11.ParseFromString(query);
                 Console.WriteLine("Query Parses under SPARQL 1.1 as expected");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Parsing Error using SPARQL 1.1", ex, true);
-            }
         }
 
         private void CheckQueryFailsToParseIn11(String query)
@@ -82,15 +75,8 @@ namespace VDS.RDF.Test.Sparql
 
         private void CheckQueryParsesInExtended(String query)
         {
-            try
-            {
                 SparqlQuery q = this._parserExt.ParseFromString(query);
                 Console.WriteLine("Query Parses under SPARQL 1.1 with Extensions as expected");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Parsing Error using SPARQL 1.1 with Extensions", ex, true);
-            }
         }
 
         private void CheckQueryFailsToParseInExtended(String query)

@@ -18,8 +18,6 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void PelletKBList()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
 
                 foreach (KnowledgeBase kb in server.KnowledgeBases)
@@ -35,18 +33,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletQuery()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(QueryService);
 
@@ -72,18 +63,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletRealize()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(RealizeService);
 
@@ -102,18 +86,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletConsistency()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(ConsistencyService);
 
@@ -131,18 +108,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
-        }
+         }
 
         [TestMethod]
         public void PelletSearch()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(SearchService);
 
@@ -163,18 +133,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletNamespace()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(NamespaceService);
 
@@ -196,18 +159,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletIcv()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(IntegrityConstraintValidationService);
 
@@ -233,18 +189,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletCluster()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(ClusterService);
 
@@ -268,18 +217,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletClusterWithType()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(ClusterService);
 
@@ -303,18 +245,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletSimilarity()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(SimilarityService);
 
@@ -334,18 +269,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletSimilarity2()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(SimilarityService);
 
@@ -368,18 +296,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletPredict()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(PredictService);
 
@@ -399,18 +320,11 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void PelletPredict2()
         {
-            try
-            {
                 PelletServer server = new PelletServer(PelletTestServer);
                 Type svcType = typeof(PredictService);
 
@@ -434,11 +348,6 @@ namespace VDS.RDF.Test
                     }
                     Console.WriteLine();
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
     }
 }

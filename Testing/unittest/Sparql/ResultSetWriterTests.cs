@@ -16,8 +16,6 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlXmlWriter()
         {
-            try
-            {
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
 
@@ -42,11 +40,6 @@ namespace VDS.RDF.Test.Sparql
 
                 Assert.AreEqual(((SparqlResultSet)results).Count, results2.Count, "Result Sets should have contained same number of Results");
                 Assert.IsTrue(((SparqlResultSet)results).Equals(results2), "Result Sets should have been equal");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
         }
     }
 }

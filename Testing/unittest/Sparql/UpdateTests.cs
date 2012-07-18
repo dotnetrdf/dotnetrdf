@@ -367,7 +367,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             TripleStore store = new TripleStore();
             Graph g = new Graph();
             FileLoader.Load(g, "InferenceTest.ttl");
-            g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
+            g.Retract(g.Triples.Where(t => !t.IsGroundTriple).ToList());
             g.BaseUri = null;
             store.Add(g);
 

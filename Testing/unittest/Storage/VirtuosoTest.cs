@@ -29,8 +29,6 @@ namespace VDS.RDF.Test.Storage
         public void StorageVirtuosoLoadGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -83,19 +81,12 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.AreEqual(h.Triples.Count, i.Triples.Count);
                 Assert.AreEqual(h, i);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoLoadGraphWithNullHandler()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -110,19 +101,12 @@ namespace VDS.RDF.Test.Storage
 
                 NullHandler handler = new NullHandler();
                 manager.LoadGraph(handler, testData.BaseUri);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoSaveGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -184,11 +168,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Console.WriteLine("Graphs are equal");
                 }
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
@@ -216,8 +195,6 @@ namespace VDS.RDF.Test.Storage
         [TestMethod]
         public void StorageVirtuosoDeleteGraph()
         {
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -265,18 +242,11 @@ namespace VDS.RDF.Test.Storage
                 manager.LoadGraph(i, "http://example.org/deleteMe");
 
                 Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty as it should have been deleted from the Store");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoBlankNodePersistence()
         {
-            try
-            {
                 //Create our Test Graph
                 Graph g = new Graph();
                 g.BaseUri = new Uri("http://example.org/bnodes/");
@@ -345,11 +315,6 @@ namespace VDS.RDF.Test.Storage
                 Console.WriteLine();
 
                 TestTools.CompareGraphs(j, k, false);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         /// <summary>
@@ -385,15 +350,13 @@ namespace VDS.RDF.Test.Storage
             {
                 timer.Stop();
                 Console.WriteLine(timer.ElapsedMilliseconds + "ms Elapsed");
-                TestTools.ReportError("Other Error", ex, true);
+                throw;
             }
         }
 
         [TestMethod]
         public void StorageVirtuosoUpdateGraph()
         {
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -425,19 +388,12 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(h.Triples.Contains(additions[0]), "Added Triple should be in the retrieved Graph");
                 Assert.IsFalse(h.Triples.Contains(removals[0]), "Removed Triple should not be in the retrieved Graph");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeQuery()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -522,22 +478,11 @@ namespace VDS.RDF.Test.Storage
                 //Try yet another SELECT using an aggregate function
                 result = manager.Query("SELECT AVG(?o) FROM <http://example.org/> WHERE {?s ?p ?o. FILTER(DATATYPE(?o) = <http://www.w3c.org/2001/XMLSchema#decimal>)}");
                 CheckQueryResult(result, true);
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("RDF Query Error", queryEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeQueryBifContains1()
         {
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -550,22 +495,11 @@ namespace VDS.RDF.Test.Storage
                 CheckQueryResult(result, true);
 
                 manager.Dispose();
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("RDF Query Error", queryEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeUpdate()
         {
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -593,15 +527,6 @@ namespace VDS.RDF.Test.Storage
                 //Try a SELECT query
                 result = manager.Query("ASK FROM <http://example.org/> WHERE {<http://example.org/seven> ?p ?o}");
                 CheckQueryResult(result, true);
-            }
-            catch (RdfQueryException queryEx)
-            {
-                TestTools.ReportError("RDF Query Error", queryEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]
@@ -639,8 +564,6 @@ namespace VDS.RDF.Test.Storage
         public void StorageVirtuosoConfigSerialization()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-            try
-            {
                 VirtuosoManager manager = VirtuosoTest.GetConnection();
                 Assert.IsNotNull(manager);
 
@@ -695,15 +618,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Returned an object of type '" + loadedObj.GetType().FullName + "' when deserializing");
                 }
-            }
-            catch (DotNetRdfConfigurationException configEx)
-            {
-                TestTools.ReportError("Config Error", configEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Other Error", ex, true);
-            }
         }
 
         [TestMethod]

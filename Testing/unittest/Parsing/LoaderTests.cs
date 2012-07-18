@@ -137,14 +137,6 @@ namespace VDS.RDF.Test.Parsing
                     Console.WriteLine(t.ToString());
                 }
             }
-            catch (RdfParseException parseEx)
-            {
-                TestTools.ReportError("Parser Error", parseEx, true);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
             finally
             {
                 //Options.HttpFullDebugging = false;

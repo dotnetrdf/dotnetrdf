@@ -50,7 +50,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }
         }
 

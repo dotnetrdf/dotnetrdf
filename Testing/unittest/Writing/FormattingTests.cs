@@ -116,7 +116,7 @@ namespace VDS.RDF.Test.Writing
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }       
         }
 

@@ -127,7 +127,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph bExpected = new Graph();
                 bExpected.LoadFromFile("InferenceTest.ttl");
-                bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple));
+                bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 bExpected.BaseUri = new Uri(TestGraphUri2);
                 IGraph bActual = store.Graph(bExpected.BaseUri);
                 Assert.AreEqual(bExpected, bActual, "Graph 2 should be equal when retrieved using Graph()");
@@ -136,7 +136,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph cExpected = new Graph();
                 cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
-                cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple));
+                cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 cExpected.BaseUri = new Uri(TestGraphUri3);
                 IGraph cActual = store.Graph(cExpected.BaseUri);
                 Assert.AreEqual(cExpected, cActual, "Graph 3 should be equal when retrieved using Graph()");
@@ -292,7 +292,7 @@ namespace VDS.RDF.Test.Storage
                 IGraph g = store.Graph(new Uri(TestGraphUri1));
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
-                g.Retract(g.GetTriplesWithPredicate(rdfType));
+                g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 Graph h = new Graph();
@@ -344,7 +344,7 @@ namespace VDS.RDF.Test.Storage
                 IGraph g = store.Graph(new Uri(TestGraphUri1));
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
-                g.Retract(g.GetTriplesWithPredicate(rdfType));
+                g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Assert.IsFalse(g.GetTriplesWithPredicate(rdfType).Any(), "Removed triples should not be present in in-memory view prior to Flush/Discard");
                 Graph h = new Graph();

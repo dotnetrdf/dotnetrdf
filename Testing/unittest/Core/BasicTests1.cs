@@ -540,7 +540,7 @@ namespace VDS.RDF.Test
                 //Reset Literal Equality Mode
                 Options.LiteralEqualityMode = LiteralEqualityMode.Strict;
 
-                TestTools.ReportError("Error", ex, true);
+                throw;
             }
             finally
             {
@@ -848,7 +848,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Other Exception", ex, true);
+                throw;
             }
         }
 
@@ -882,7 +882,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Exception", ex, true);
+                throw;
             }
 
             //Create a Triple with Nodes from different Graphs (should fail)
@@ -897,7 +897,7 @@ namespace VDS.RDF.Test
             }
             catch (Exception ex)
             {
-                TestTools.ReportError("Exception", ex, true);
+                throw;
             }
         }
 

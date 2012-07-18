@@ -64,8 +64,6 @@ namespace VDS.RDF.Test.Writing
         [TestMethod]
         public void WritingSerializeOwnOneOfVeryLarge()
         {
-            try
-            {
                 //Create the Graph for the Test and Generate a List of URIs
                 Graph g = new Graph();
                 List<IUriNode> nodes = new List<IUriNode>();
@@ -110,11 +108,6 @@ namespace VDS.RDF.Test.Writing
                 FileLoader.Load(j, "owl-one-of-fast.rdf");
                 Assert.AreEqual(g, j, "Graphs should be equal (FastRdfXmlWriter)");
                 Console.WriteLine("FastRdfXmlWriter serialization was OK");
-            }
-            catch (StackOverflowException ex)
-            {
-                TestTools.ReportError("Stack Overflow", ex, true);
-            }
         }
 
         public static void thingOneOf(IGraph graph, IUriNode[] listInds)
