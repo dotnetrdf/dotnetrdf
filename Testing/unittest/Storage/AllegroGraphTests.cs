@@ -13,13 +13,14 @@ namespace VDS.RDF.Test.Storage
     [TestClass]
     public class AllegroGraphTests
     {
-        public const String TestServerUri = "http://localhost:9875",
-                            TestCatalog = "test",
-                            TestRepository = "unit-test";
-
         private AllegroGraphConnector GetConnector()
         {
-            return new AllegroGraphConnector(TestServerUri, TestCatalog, TestRepository);
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph))
+            {
+                Assert.Inconclusive("Test Config marks AllegroGraph as unavailable, cannot run this test");
+            }
+
+            return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository));
         }
 
         [TestMethod]

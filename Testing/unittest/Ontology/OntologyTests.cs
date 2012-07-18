@@ -210,7 +210,6 @@ namespace VDS.RDF.Test.Ontology
         public void OntologyDomainAndRangeOfClassProperties()
         {
             OntologyGraph g = new OntologyGraph();
-            //Load your data into the Graph from somewhere...
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Get the Class of interest
@@ -239,7 +238,6 @@ namespace VDS.RDF.Test.Ontology
         public void OntologyDomainAndRangeOfClassManual()
         {
             OntologyGraph g = new OntologyGraph();
-            //Load your data into the Graph from somewhere...
             FileLoader.Load(g, "InferenceTest.ttl");
 
             //Get the Class of interest

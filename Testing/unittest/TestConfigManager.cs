@@ -10,14 +10,41 @@ namespace VDS.RDF.Test
     /// <summary>
     /// Manager for Unit Test Configuration which is basically key value properties used in various tests.  Primarily intended for tests that rely on per system software like triple stores
     /// </summary>
-    static class TestConfigManager
+    public static class TestConfigManager
     {
-        private static bool _init = false;
-        private static Dictionary<String, String> _settings;
+
+        /// <summary>
+        /// Constants for Test Configuration setings related to IIS and ASP.Net tests
+        /// </summary>
+        public const String UseIIS = "Web.IIS",
+                            LocalQueryUri = "Web.Query",
+                            LocalGraphStoreUri = "Web.SparqlServer",
+                            LocalGraphStoreQueryUri = "Web.SparqlServer.Query",
+                            LocalGraphStoreUpdateUri = "Web.SparqlServer.Update";
+
+        /// <summary>
+        /// Constants for Test Configuration settings related to AllegroGraph test
+        /// </summary>
+        public const String UseAllegroGraph = "Storage.AllegroGraph",
+                            AllegroGraphServer = "Storage.AllegroGraph.Server",
+                            AllegroGraphCatalog = "Storage.AllegroGraph.Catalog",
+                            AllegroGraphRepository = "Storage.AllegroGraph.Repository";
+
+        public const String UseDydra = "Storage.Dydra",
+                            DydraAccount = "Storage.Dydra.Account",
+                            DydraRepository = "Storage.Dydra.Repository",
+                            DydraApiKey = "Storage.Dydra.ApiKey";
+
+        private static bool _init = false, _failed = false;
+        private static Dictionary<String, String> _settings = new Dictionary<string,string>();
 
         private static void Init()
         {
             if (_init) return;
+            if (_failed)
+            {
+                Assert.Fail("UnitTestConfig.properties cannot be found, please make a copy of UnitTestConfig.template and configure for your environment in order to run this test");
+            }
 
             if (File.Exists("UnitTestConfig.properties"))
             {
@@ -49,10 +76,19 @@ namespace VDS.RDF.Test
                     }
                 }
             }
+            else
+            {
+                _failed = true;
+            }
 
             _init = true;
         }
 
+        /// <summary>
+        /// Gets a Setting by its key, if the setting doesn't exist or is null/empty the the test calling this will be marked as failing with an appropriate error message
+        /// </summary>
+        /// <param name="key">Setting Key</param>
+        /// <returns></returns>
         public static String GetSetting(String key)
         {
             if (!_init) Init();
@@ -77,6 +113,11 @@ namespace VDS.RDF.Test
             }
         }
 
+        /// <summary>
+        /// Gets a Setting by its key as an integer, if the setting doesn't exist or is an invalid integer the the test calling this will be marked as failing with an appropriate error message
+        /// </summary>
+        /// <param name="key">Setting Key</param>
+        /// <returns></returns>
         public static int GetSettingAsInt(String key)
         {
             String value = GetSetting(key);
@@ -92,6 +133,11 @@ namespace VDS.RDF.Test
             }
         }
 
+        /// <summary>
+        /// Gets a Setting by its key, if the setting doesn't exist or is an invalid boolean the the test calling this will be marked as failing with an appropriate error message
+        /// </summary>
+        /// <param name="key">Setting Key</param>
+        /// <returns></returns>
         public static bool GetSettingAsBoolean(String key)
         {
             String value = GetSetting(key);

@@ -1,21 +1,47 @@
 ﻿# This is the template for Configuration Data for Unit Tests
-# The format is simply Key=Value
+# The format is simply Key=Value in the Java properties style
 
-Storage.AllegroGraph.Server=
-Storage.AllegroGraph.Catalog=
-Storage.AllegroGraph.Store=
+# Configuration Notes
+# ===================
+#
+# Each section typically has a boolean value which states whether the feature to be
+# tested is available in the users environment.  If this is set to false tests
+# relating to this feature will be marked as Inconclusive since they cannot be run
+#
+# The section then contains one/more properties that should be set to configure the
+# necessary information required to test that feature
 
-Storage.Dydra.Account=
-Storage.Dydra.Repository=
-Storage.Dydra.GraphUri=http://example.org/dydraTest
+# Local IIS and ASP.Net tests
+Web.IIS=true
+Web.Query=http://localhost/demos/leviathan/
+Web.SparqlServer=http://localhost/demos/server/
+Web.SparqlServer.Query=http://localhost/demos/server/query
+Web.SparqlServer.Update=http://localhost/demos/server/update
 
+# An AllegroGraph install to use for testing
+Storage.AllegroGraph=false
+Storage.AllegroGraph.Server=http://localhost:9875
+Storage.AllegroGraph.Catalog=test
+Storage.AllegroGraph.Repository=unit-test
+
+# A Dydra account to use for testing
+Storage.Dyrda=false
+Storage.Dydra.Account=rvesse
+Storage.Dydra.Repository=test
+Storage.Dydra.ApiKey=
+
+# A 4store install to use for testing
 Storage.FourStore.Server=
 
+# A Fuseki install to use for testing
 Storage.Fuseki.Server=
 
+# A Joseki install to use for testing
 Storage.Joseki.Server=
 
+# A Sesame install to use for testing
 Storage.Sesame.Server=
 Storage.Sesame.Repository=
 
+# A Stardog install to use for testing
 Storage.Stardog.Server=

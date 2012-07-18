@@ -13,7 +13,12 @@ namespace VDS.RDF.Test.Storage.Async
     {
         protected override IAsyncStorageProvider GetAsyncProvider()
         {
-            return new AllegroGraphConnector(AllegroGraphTests.TestServerUri, AllegroGraphTests.TestCatalog, AllegroGraphTests.TestRepository);
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseAllegroGraph))
+            {
+                Assert.Inconclusive("Test Config marks AllegroGraph as unavailable, cannot run this test");
+            }
+
+            return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository));
         }
     }
 }

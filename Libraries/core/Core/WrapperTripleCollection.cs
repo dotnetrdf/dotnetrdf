@@ -6,9 +6,9 @@ using System.Text;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Decorator for Triple Collections to make it easier to add additional functionality to existing collections
+    /// Abstract decorator for Triple Collections to make it easier to add additional functionality to existing collections
     /// </summary>
-    public class WrapperTripleCollection
+    public abstract class WrapperTripleCollection
         : BaseTripleCollection
     {
         protected readonly BaseTripleCollection _triples;

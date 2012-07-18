@@ -96,17 +96,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseTest.cs" />
-    <Compile Include="BasicTests1.cs" />
-    <Compile Include="BasicTests2.cs" />
-    <Compile Include="BinaryTreeTests.cs" />
+    <Compile Include="Core\BasicTests1.cs" />
+    <Compile Include="Core\BasicTests2.cs" />
+    <Compile Include="Common\BinaryTreeTests.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
-    <Compile Include="NamespaceMapperTest.cs" />
-    <Compile Include="NativeStoreTests.cs" />
+    <Compile Include="Core\NamespaceMapperTest.cs" />
+    <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -176,12 +176,12 @@
     <Compile Include="..\..\Libraries\query.fulltext\FullTextHelper.cs">
       <Link>Query\FullText\FullTextHelper.cs</Link>
     </Compile>
-    <Compile Include="CompareToTests.cs" />
-    <Compile Include="GraphDiffTests.cs" />
-    <Compile Include="HardGraphMatching.cs" />
-    <Compile Include="Hypercube.cs" />
-    <Compile Include="IndexingTests.cs" />
-    <Compile Include="ListTests.cs" />
+    <Compile Include="Core\CompareToTests.cs" />
+    <Compile Include="Core\GraphDiffTests.cs" />
+    <Compile Include="Core\HardGraphMatching.cs" />
+    <Compile Include="Core\Hypercube.cs" />
+    <Compile Include="Core\IndexingTests.cs" />
+    <Compile Include="Core\ListTests.cs" />
     <Compile Include="Parsing\BaseUriAssignmentTests.cs" />
     <Compile Include="Parsing\BlockingTextReaderTests.cs" />
     <Compile Include="Parsing\EmptyFileParsing.cs" />
@@ -246,7 +246,7 @@
     <Compile Include="Storage\FusekiTest.cs" />
     <Compile Include="Storage\PersistentTripleStoreTests.cs" />
     <Compile Include="Storage\SesameTests.cs" />
-    <Compile Include="EventTests.cs" />
+    <Compile Include="Core\EventTests.cs" />
     <Compile Include="Storage\Sql\AdoDatasetTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreAzureTests.cs" />
     <Compile Include="Storage\Sql\AdoStoreBasic.cs" />

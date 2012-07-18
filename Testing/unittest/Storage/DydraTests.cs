@@ -15,33 +15,14 @@ namespace VDS.RDF.Test.Storage
     {
         private String _apiKey;
 
-        public const String DydraAccount = "rvesse",
-                            DydraRepository = "test",
-                            DydraApiKeyFile = "dydra-api-key.txt",
-                            DydraTestGraphUri = "http://example.org/dydraTest";
-
         private DydraConnector GetConnection()
         {
-            if (this._apiKey == null)
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseDydra))
             {
-                //Read in API Key if not yet read
-                if (File.Exists(DydraApiKeyFile))
-                {
-                    using (StreamReader reader = new StreamReader(DydraApiKeyFile))
-                    {
-                        this._apiKey = reader.ReadToEnd();
-                        reader.Close();
-                    }
-
-                    Console.WriteLine("API Key:" + this._apiKey);
-                }
-                else
-                {
-                    Assert.Fail("You must specify your Dydra API Key in the " + DydraApiKeyFile + " file found in the resources directory");
-                }
+                Assert.Inconclusive("Test Config marks Dydra as unavailable, cannot run this test");
             }
 
-            return new DydraConnector(DydraAccount, DydraRepository, this._apiKey);
+            return new DydraConnector(TestConfigManager.GetSetting(TestConfigManager.DydraAccount), TestConfigManager.GetSetting(TestConfigManager.DydraRepository), TestConfigManager.GetSetting(TestConfigManager.DydraApiKey));
         }
 
         [TestMethod]
@@ -90,7 +71,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                orig.BaseUri = new Uri(DydraTestGraphUri);
+                orig.BaseUri = new Uri("http://example.org/storage/dydra/save/named/");
 
                 DydraConnector dydra = this.GetConnection();
                 dydra.SaveGraph(orig);
@@ -124,54 +105,6 @@ namespace VDS.RDF.Test.Storage
         }
 
         [TestMethod]
-        public void StorageDydraLoadDefaultGraph()
-        {
-            try
-            {
-                Options.HttpDebugging = true;
-
-                DydraConnector dydra = this.GetConnection();
-                Graph g = new Graph();
-                dydra.LoadGraph(g, String.Empty);
-
-                TestTools.ShowGraph(g);
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
-        }
-
-        [TestMethod]
-        public void StorageDydraLoadNamedGraph()
-        {
-            try
-            {
-                Options.HttpDebugging = true;
-
-                DydraConnector dydra = this.GetConnection();
-                Graph g = new Graph();
-                dydra.LoadGraph(g, new Uri(DydraTestGraphUri));
-
-                TestTools.ShowGraph(g);
-
-                Assert.IsTrue(g.Triples.Count > 0, "Should be 1 or more triples returned");
-            }
-            catch (Exception ex)
-            {
-                TestTools.ReportError("Error", ex, true);
-            }
-            finally
-            {
-                Options.HttpDebugging = false;
-            }
-        }
-
-        [TestMethod]
         public void StorageDydraLoadGraphWithHandler()
         {
             try
@@ -180,10 +113,10 @@ namespace VDS.RDF.Test.Storage
 
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                orig.BaseUri = new Uri("http://example.org/dydra/tests/counting");
+                orig.BaseUri = new Uri("http://example.org/storage/dydra/tests/counting");
 
                 DydraConnector dydra = this.GetConnection();
-                dydra.DeleteGraph("http://example.org/dydra/tests/counting");
+                dydra.DeleteGraph(orig.BaseUri);
                 dydra.SaveGraph(orig);
 
                 CountHandler handler = new CountHandler();
@@ -201,7 +134,7 @@ namespace VDS.RDF.Test.Storage
             }
         }
 
-        [TestMethod/*,ExpectedException(typeof(NotSupportedException))*/]
+        [TestMethod]
         public void StorageDydraDeleteGraph()
         {
             try
@@ -210,7 +143,7 @@ namespace VDS.RDF.Test.Storage
 
                 Graph orig = new Graph();
                 orig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                orig.BaseUri = new Uri("http://example.org/dydra/deleteTest");
+                orig.BaseUri = new Uri("http://example.org/storage/dydra/delete");
 
                 DydraConnector dydra = this.GetConnection();
                 dydra.SaveGraph(orig);
@@ -275,7 +208,6 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Options.HttpDebugging = true;
-                //Options.HttpFullDebugging = true;
 
                 DydraConnector dydra = this.GetConnection();
                 Object results = dydra.Query("SELECT * WHERE { { ?s a ?type } UNION { GRAPH ?g { ?s a ?type } } }");
@@ -283,8 +215,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     SparqlResultSet rset = (SparqlResultSet)results;
                     TestTools.ShowResults(rset);
-
-                    Assert.IsFalse(rset.IsEmpty, "Results should not be empty");
                 }
                 else
                 {
@@ -316,8 +246,6 @@ namespace VDS.RDF.Test.Storage
                 {
                     IGraph g = (IGraph)results;
                     TestTools.ShowResults(g);
-
-                    Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
                 }
                 else
                 {
@@ -346,16 +274,16 @@ namespace VDS.RDF.Test.Storage
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = new Uri("http://example.org/dydra/addRemoveTest");
+                g.BaseUri = new Uri("http://example.org/storage/dydra/update/add");
                 dydra.SaveGraph(g);
 
                 List<Triple> ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", ts, null);
+                dydra.UpdateGraph(g.BaseUri, ts, null);
 
                 g = new Graph();
-                dydra.LoadGraph(g, "http://example.org/dydra/addRemoveTest");
+                dydra.LoadGraph(g, "http://example.org/storage/dydra/update/add");
 
                 Assert.IsTrue(ts.All(t => g.ContainsTriple(t)), "Added Triple should be in the Graph");
             }
@@ -376,16 +304,16 @@ namespace VDS.RDF.Test.Storage
 
                 Graph g = new Graph();
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-                g.BaseUri = new Uri("http://example.org/dydra/addRemoveTest");
+                g.BaseUri = new Uri("http://example.org/storage/dydra/update/remove");
                 dydra.SaveGraph(g);
 
                 List<Triple> ts = new List<Triple>();
                 ts.Add(new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object"))));
 
-                dydra.UpdateGraph("http://example.org/dydra/addRemoveTest", null, ts);
+                dydra.UpdateGraph(g.BaseUri, null, ts);
 
                 g = new Graph();
-                dydra.LoadGraph(g, "http://example.org/dydra/addRemoveTest");
+                dydra.LoadGraph(g, "http://example.org/storage/dydra/update/remove");
 
                 Assert.IsTrue(ts.All(t => !g.ContainsTriple(t)), "Removed Triple should be in the Graph");
             }
