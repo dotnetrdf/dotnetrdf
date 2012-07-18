@@ -126,9 +126,9 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String FormatUri(String u)
         {
-            String uri = Uri.EscapeUriString(u);
-            uri = uri.Replace(">", "\\>");
-            return uri;
+            //String uri = Uri.EscapeUriString(u);
+            u = u.Replace(">", "\\>");
+            return u;
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public virtual String FormatUri(Uri u)
         {
-            return this.FormatUri(u.ToString());
+            return this.FormatUri(u.AbsoluteUri);
         }
 
         /// <summary>
