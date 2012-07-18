@@ -88,23 +88,23 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset updating the Full Text Index appropriately
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override void AddGraph(IGraph g)
+        public override bool AddGraph(IGraph g)
         {
             this._indexer.Index(g);
-            base.AddGraph(g);
+            return base.AddGraph(g);
         }
 
         /// <summary>
         /// Removes a Graph from the Dataset updating the Full Text Index appropriately
         /// </summary>
         /// <param name="graphUri">URI of the Graph to remove</param>
-        public override void RemoveGraph(Uri graphUri)
+        public override bool RemoveGraph(Uri graphUri)
         {
             if (this.HasGraph(graphUri))
             {
                 this._indexer.Unindex(this[graphUri]);
             }
-            base.RemoveGraph(graphUri);
+            return base.RemoveGraph(graphUri);
         }
 
         /// <summary>

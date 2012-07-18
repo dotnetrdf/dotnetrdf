@@ -73,10 +73,9 @@ namespace VDS.Common
     /// <typeparam name="TValue">Type of Values</typeparam>
     /// <remarks>
     /// <para>
-    /// Essentially a Dictionary which allows multiple values for each key, unlike the newer <see cref="MultiDictionary"/> this implementation is lossy since it does not store unique keys so if you have colliding keys all values associated with them are mushed together under a single key
+    /// Essentially a Dictionary which allows multiple values for each key, unlike the newer <see cref="MultiDictionary"/> this implementation is lossy since it does not store unique keys so if you have colliding keys all values associated with them are mushed together under a single key.  However the advantage of the HashTable is that it transparently maps a key to an arbitrary list of values where a MultiDictionary requires the user to manage that if that want to map multiple values to a single key
     /// </para>
     /// </remarks>
-    [Obsolete("The HashTable is superceded by the far more powerful MultiDictionary which should be used for all new development")]
     public class HashTable<TKey, TValue> 
         : IDictionary<TKey, TValue>, IEnumerable<TValue>
     {

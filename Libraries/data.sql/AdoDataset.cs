@@ -81,9 +81,10 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the dataset
         /// </summary>
         /// <param name="g">Graph to add</param>
-        protected sealed override void AddGraphInternal(IGraph g)
+        protected sealed override bool AddGraphInternal(IGraph g)
         {
             this._manager.SaveGraph(g);
+            return true;
         }
 
         /// <summary>
@@ -101,9 +102,10 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        protected sealed override void RemoveGraphInternal(Uri graphUri)
+        protected sealed override bool RemoveGraphInternal(Uri graphUri)
         {
             this._manager.DeleteGraph(graphUri);
+            return true;
         }
 
         /// <summary>
