@@ -218,101 +218,61 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Asserts Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        public void Assert(List<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Assert(t);
-            }
-        }
-
-        /// <summary>
-        /// Asserts Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        public void Assert(Triple[] ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Assert(t);
-            }
-        }
-
-        /// <summary>
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public void Assert(Triple t)
+        public bool Assert(Triple t)
         {
             if (this._alwaysQueueActions || !this._g.Triples.Contains(t))
             {
                 this._g.Assert(t);
                 this._actions.Add(new TriplePersistenceAction(t));
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Asserts Triples in the Graph
         /// </summary>
         /// <param name="ts">Triples</param>
-        public void Assert(IEnumerable<Triple> ts)
+        public bool Assert(IEnumerable<Triple> ts)
         {
+            bool asserted = false;
             foreach (Triple t in ts)
             {
-                this.Assert(t);
+                asserted = this.Assert(t) || asserted;
             }
-        }
-
-        /// <summary>
-        /// Retracts Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        public void Retract(Triple[] ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Retract(t);
-            }
+            return asserted;
         }
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">Triple</param>
-        public void Retract(Triple t)
+        public bool Retract(Triple t)
         {
             if (this._alwaysQueueActions || this._g.Triples.Contains(t))
             {
                 this._g.Retract(t);
                 this._actions.Add(new TriplePersistenceAction(t, true));
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Retracts Triples from the Graph
         /// </summary>
         /// <param name="ts">Triples</param>
-        public void Retract(List<Triple> ts)
+        public bool Retract(IEnumerable<Triple> ts)
         {
+            bool retracted = false;
             foreach (Triple t in ts)
             {
-                this.Retract(t);
+                retracted = this.Retract(t) || retracted;
             }
-        }
-
-        /// <summary>
-        /// Retracts Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        public void Retract(IEnumerable<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Retract(t);
-            }
+            return retracted;
         }
 
         /// <summary>

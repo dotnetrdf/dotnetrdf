@@ -103,52 +103,28 @@ namespace VDS.RDF
         #region Assertion & Retraction
 
         /// <summary>
-        /// Asserts a List of Triples in the Graph
-        /// </summary>
-        /// <param name="ts">List of Triples</param>
-        void Assert(List<Triple> ts);
-
-        /// <summary>
-        /// Asserts an array of Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples</param>
-        void Assert(Triple[] ts);
-
-        /// <summary>
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">A Triple</param>
-        void Assert(Triple t);
+        bool Assert(Triple t);
 
         /// <summary>
         /// Asserts an Enumerable of Triples in the Graph
         /// </summary>
         /// <param name="ts">An Enumerable of Triples</param>
-        void Assert(IEnumerable<Triple> ts);
-
-        /// <summary>
-        /// Retracts an Array of Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples</param>
-        void Retract(Triple[] ts);
+        bool Assert(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">A Triple</param>
-        void Retract(Triple t);
-
-        /// <summary>
-        /// Retracts a List of Triples from the Graph
-        /// </summary>
-        /// <param name="ts">List of Triples</param>
-        void Retract(List<Triple> ts);
+        bool Retract(Triple t);
 
         /// <summary>
         /// Retracts an Enumerable of Triples from the Graph
         /// </summary>
         /// <param name="ts">Enumerable of Triples</param>
-        void Retract(IEnumerable<Triple> ts);
+        bool Retract(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts all Triples from the Graph

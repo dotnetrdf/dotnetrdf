@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Datasets
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Whether to merge the given Graph with any existing Graph with the same URI</param>
         /// <exception cref="RdfException">Thrown if a Graph with the given URI already exists and the <paramref name="mergeIfExists">mergeIfExists</paramref> is set to false</exception>
-        protected internal override void Add(IGraph g, bool mergeIfExists)
+        protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
             if (this.Contains(g.BaseUri))
             {
@@ -82,6 +82,7 @@ namespace VDS.RDF.Query.Datasets
                     temp.Merge(g);
                     temp.Dispose();
                     this._dataset.Flush();
+                    return true;
                 }
                 else
                 {
@@ -91,9 +92,13 @@ namespace VDS.RDF.Query.Datasets
             else
             {
                 //Safe to add a new Graph
-                this._dataset.AddGraph(g);
-                this._dataset.Flush();
-                this.RaiseGraphAdded(g);
+                if (this._dataset.AddGraph(g))
+                {
+                    this._dataset.Flush();
+                    this.RaiseGraphAdded(g);
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -101,16 +106,18 @@ namespace VDS.RDF.Query.Datasets
         /// Removes a Graph from the Collection
         /// </summary>
         /// <param name="graphUri">URI of the Graph to removed</param>
-        protected internal override void Remove(Uri graphUri)
+        protected internal override bool Remove(Uri graphUri)
         {
             if (this.Contains(graphUri))
             {
                 IGraph temp = this._dataset[graphUri];
-                this._dataset.RemoveGraph(graphUri);
+                bool removed = this._dataset.RemoveGraph(graphUri);
                 this._dataset.Flush();
                 this.RaiseGraphRemoved(temp);
                 temp.Dispose();
+                return removed;
             }
+            return false;
         }
 
         /// <summary>

@@ -370,36 +370,38 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph</param>
-        public abstract void AddGraph(IGraph g);
+        public abstract bool AddGraph(IGraph g);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public virtual void RemoveGraph(Uri graphUri)
+        public virtual bool RemoveGraph(Uri graphUri)
         {
             if (graphUri == null)
             {
                 if (this._defaultGraph != null)
                 {
                     this._defaultGraph.Value.Clear();
+                    return true;
                 }
                 else if (this.HasGraph(graphUri))
                 {
-                    this.RemoveGraphInternal(graphUri);
+                    return this.RemoveGraphInternal(graphUri);
                 }
             }
             else if (this.HasGraph(graphUri))
             {
-                this.RemoveGraphInternal(graphUri);
+                return this.RemoveGraphInternal(graphUri);
             }
+            return false;
         }
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        protected abstract void RemoveGraphInternal(Uri graphUri);
+        protected abstract bool RemoveGraphInternal(Uri graphUri);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset
@@ -790,7 +792,7 @@ namespace VDS.RDF.Query.Datasets
         /// Throws an exception since Immutable Datasets cannot be altered
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override void AddGraph(IGraph g)
+        public override bool AddGraph(IGraph g)
         {
             throw new NotSupportedException("Cannot add a Graph to an immutable Dataset");
         }
@@ -799,7 +801,7 @@ namespace VDS.RDF.Query.Datasets
         /// Throws an exception since Immutable Datasets cannot be altered
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public override void RemoveGraph(Uri graphUri)
+        public override bool RemoveGraph(Uri graphUri)
         {
             throw new NotSupportedException("Cannot remove a Graph from an immutable Dataset");
         }
@@ -871,7 +873,7 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public sealed override void AddGraph(IGraph g)
+        public sealed override bool AddGraph(IGraph g)
         {
             if (this.HasGraph(g.BaseUri))
             {
@@ -882,20 +884,20 @@ namespace VDS.RDF.Query.Datasets
             {
                 this._actions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Added));
             }
-            this.AddGraphInternal(g);
+            return this.AddGraphInternal(g);
         }
 
         /// <summary>
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph to add</param>
-        protected abstract void AddGraphInternal(IGraph g);
+        protected abstract bool AddGraphInternal(IGraph g);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public sealed override void RemoveGraph(Uri graphUri)
+        public sealed override bool RemoveGraph(Uri graphUri)
         {
             if (graphUri == null)
             {
@@ -904,18 +906,20 @@ namespace VDS.RDF.Query.Datasets
                     GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(this.InternalDefaultGraph);
                     wrapper.Clear();
                     this._actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
+                    return true;
                 }
                 else if (this.HasGraph(graphUri))
                 {
                     this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                    this.RemoveGraphInternal(graphUri);
+                    return this.RemoveGraphInternal(graphUri);
                 }
             }
             else if (this.HasGraph(graphUri))
             {
                 this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                this.RemoveGraphInternal(graphUri);
+                return this.RemoveGraphInternal(graphUri);
             }
+            return false;
         }
 
         /// <summary>

@@ -205,53 +205,29 @@ namespace VDS.RDF
         #region Triple Assertion & Retraction
 
         /// <summary>
-        /// Asserts a List of Triples in the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to add to the Graph</param>
-        public abstract void Assert(List<Triple> ts);
-
-        /// <summary>
-        /// Asserts multiple Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to add</param>
-        public abstract void Assert(Triple[] ts);
-
-        /// <summary>
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public abstract void Assert(Triple t);
+        public abstract bool Assert(Triple t);
 
         /// <summary>
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public abstract void Assert(IEnumerable<Triple> ts);
-
-        /// <summary>
-        /// Retracts multiple Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to retract</param>
-        public abstract void Retract(Triple[] ts);
+        public abstract bool Assert(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Retracts a Triple from the Graph
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public abstract void Retract(Triple t);
-
-        /// <summary>
-        /// Retracts a List of Triples from the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to retract from the Graph</param>
-        public abstract void Retract(List<Triple> ts);
+        public abstract bool Retract(Triple t);
 
         /// <summary>
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public abstract void Retract(IEnumerable<Triple> ts);
+        public abstract bool Retract(IEnumerable<Triple> ts);
 
         /// <summary>
         /// Clears all Triples from the Graph

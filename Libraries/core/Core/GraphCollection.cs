@@ -108,7 +108,7 @@ namespace VDS.RDF
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present</param>
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
-        protected internal override void Add(IGraph g, bool mergeIfExists)
+        protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
             //Graphs added to a Graph Collection must have a Base Uri
             int id;
@@ -130,6 +130,7 @@ namespace VDS.RDF
                     {
                         //Merge into the existing Graph
                         this._graphs[id].Merge(g);
+                        return true;
                     }
                     else
                     {
@@ -144,6 +145,7 @@ namespace VDS.RDF
                     {
                         //Merge into the existing Graph
                         this._graphs[id].Merge(g);
+                        return true;
                     }
                     else
                     {
@@ -161,6 +163,7 @@ namespace VDS.RDF
                         if (mergeIfExists)
                         {
                             temp.Merge(g);
+                            return true;
                         }
                         else
                         {
@@ -173,6 +176,7 @@ namespace VDS.RDF
                         //Add to collision Graphs
                         this._collisionGraphs.Add(g);
                         this.RaiseGraphAdded(g);
+                        return true;
                     }
                 }
             }
@@ -181,6 +185,7 @@ namespace VDS.RDF
                 //Safe to add a new Graph
                 this._graphs.Add(id, g);
                 this.RaiseGraphAdded(g);
+                return true;
             }
         }
 
@@ -188,7 +193,7 @@ namespace VDS.RDF
         /// Removes a Graph from the Collection
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove</param>
-        protected internal override void Remove(Uri graphUri)
+        protected internal override bool Remove(Uri graphUri)
         {
             int id;
             if (graphUri == null)
@@ -215,6 +220,7 @@ namespace VDS.RDF
                         this._graphs.Add(id, first);
                         this._collisionGraphs.Remove(first);
                     }
+                    return true;
                 }
                 else if (this._graphs[id].BaseUri == null && graphUri == null)
                 {
@@ -230,6 +236,7 @@ namespace VDS.RDF
                         this._graphs.Add(id, first);
                         this._collisionGraphs.Remove(first);
                     }
+                    return true;
                 }
                 else
                 {
@@ -238,8 +245,10 @@ namespace VDS.RDF
                     IGraph temp = this._collisionGraphs.First(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
                     this._collisionGraphs.RemoveAll(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
                     this.RaiseGraphRemoved(temp);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -396,12 +405,12 @@ namespace VDS.RDF
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present</param>
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
-        protected internal override void Add(IGraph g, bool mergeIfExists)
+        protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Add(g, mergeIfExists);
+                return base.Add(g, mergeIfExists);
             }
             finally
             {
@@ -413,12 +422,12 @@ namespace VDS.RDF
         /// Removes a Graph from the Collection
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to remove</param>
-        protected internal override void Remove(Uri graphUri)
+        protected internal override bool Remove(Uri graphUri)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Remove(graphUri);
+                return base.Remove(graphUri);
             }
             finally
             {

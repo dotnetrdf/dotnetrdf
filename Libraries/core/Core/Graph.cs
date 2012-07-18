@@ -108,54 +108,29 @@ namespace VDS.RDF
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public override void Assert(Triple t)
+        public override bool Assert(Triple t)
         {
-            //Check if we've already asserted this Triple
-            if (this._triples.Contains(t))
-            {
-                //Already asserted so exit
-                return;
-            }
-
             //Add to Triples Collection
-            this._triples.Add(t);
-            this.RaiseTripleAsserted(t);
-        }
-
-        /// <summary>
-        /// Asserts multiple Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to add</param>
-        public override void Assert(Triple[] ts)
-        {
-            foreach(Triple t in ts)
+            if (this._triples.Add(t))
             {
-                this.Assert(t);
+                this.RaiseTripleAsserted(t);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Asserts a List of Triples in the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to add to the Graph</param>
-        public override void Assert(List<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Assert(t);
-            }
+            return false;
         }
 
         /// <summary>
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public override void Assert(IEnumerable<Triple> ts)
+        public override bool Assert(IEnumerable<Triple> ts)
         {
+            bool asserted = false;
             foreach (Triple t in ts)
             {
-                this.Assert(t);
+                asserted = this.Assert(t) || asserted;
             }
+            return asserted;
         }
 
         /// <summary>
@@ -163,46 +138,28 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public override void Retract(Triple t)
+        public override bool Retract(Triple t)
         {
-            if (this._triples.Contains(t))
+            if (this._triples.Delete(t))
             {
-                this._triples.Delete(t);
                 this.RaiseTripleRetracted(t);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Retracts multiple Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to retract</param>
-        public override void Retract(Triple[] ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Retract(t);
-            }
-        }
-
-        /// <summary>
-        /// Retracts a List of Triples from the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to retract from the Graph</param>
-        public override void Retract(List<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                this.Retract(t);
-            }
+            return false;
         }
 
         /// <summary>
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public override void Retract(IEnumerable<Triple> ts)
+        public override bool Retract(IEnumerable<Triple> ts)
         {
-            this.Retract(ts.ToList());
+            bool retracted = false;
+            foreach (Triple t in ts)
+            {
+                retracted = this.Retract(t) || retracted;
+            }
+            return retracted;
         }
 
         #endregion

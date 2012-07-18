@@ -237,12 +237,14 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the dataset
         /// </summary>
         /// <param name="g">Graph</param>
-        public virtual void AddGraph(IGraph g)
+        public virtual bool AddGraph(IGraph g)
         {
+            bool added = false;
             foreach (Triple t in g.Triples)
             {
-                this.AddQuad(g.BaseUri, t);
+                added = this.AddQuad(g.BaseUri, t) || added;
             }
+            return added;
         }
 
         /// <summary>
@@ -250,20 +252,20 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal abstract void AddQuad(Uri graphUri, Triple t);
+        protected internal abstract bool AddQuad(Uri graphUri, Triple t);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public abstract void RemoveGraph(Uri graphUri);
+        public abstract bool RemoveGraph(Uri graphUri);
 
         /// <summary>
         /// Removes a Quad from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal abstract void RemoveQuad(Uri graphUri, Triple t);
+        protected internal abstract bool RemoveQuad(Uri graphUri, Triple t);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset
@@ -576,7 +578,7 @@ namespace VDS.RDF.Query.Datasets
         /// Throws an error as this dataset is immutable
         /// </summary>
         /// <param name="g">Graph</param>
-        public sealed override void AddGraph(IGraph g)
+        public sealed override bool AddGraph(IGraph g)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
@@ -586,7 +588,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal override void AddQuad(Uri graphUri, Triple t)
+        protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
@@ -595,7 +597,7 @@ namespace VDS.RDF.Query.Datasets
         /// Throws an error as this dataset is immutable
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public sealed override void RemoveGraph(Uri graphUri)
+        public sealed override bool RemoveGraph(Uri graphUri)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
@@ -605,7 +607,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal override void RemoveQuad(Uri graphUri, Triple t)
+        protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
             throw new NotSupportedException("This dataset is immutable");
         }
@@ -662,7 +664,7 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public sealed override void AddGraph(IGraph g)
+        public sealed override bool AddGraph(IGraph g)
         {
             if (this.HasGraph(g.BaseUri))
             {
@@ -673,20 +675,20 @@ namespace VDS.RDF.Query.Datasets
             {
                 this._actions.Add(new GraphPersistenceAction(g, GraphPersistenceActionType.Added));
             }
-            this.AddGraphInternal(g);
+            return this.AddGraphInternal(g);
         }
 
         /// <summary>
         /// Adds a Graph to the Dataset
         /// </summary>
         /// <param name="g">Graph to add</param>
-        protected abstract void AddGraphInternal(IGraph g);
+        protected abstract bool AddGraphInternal(IGraph g);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public sealed override void RemoveGraph(Uri graphUri)
+        public sealed override bool RemoveGraph(Uri graphUri)
         {
             if (graphUri == null)
             {
@@ -700,32 +702,35 @@ namespace VDS.RDF.Query.Datasets
                             GraphPersistenceWrapper wrapper = new GraphPersistenceWrapper(this[u]);
                             wrapper.Clear();
                             this._actions.Add(new GraphPersistenceAction(wrapper, GraphPersistenceActionType.Modified));
+                            return true;
                         }
                         else
                         {
                             //Other Graphs get actually deleted
                             this._actions.Add(new GraphPersistenceAction(this[u], GraphPersistenceActionType.Deleted));
+                            return true;
                         }
                     }
                 }
                 else if (this.HasGraph(graphUri))
                 {
                     this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                    this.RemoveGraphInternal(graphUri);
+                    return this.RemoveGraphInternal(graphUri);
                 }
             }
             else if (this.HasGraph(graphUri))
             {
                 this._actions.Add(new GraphPersistenceAction(this[graphUri], GraphPersistenceActionType.Deleted));
-                this.RemoveGraphInternal(graphUri);
+                return this.RemoveGraphInternal(graphUri);
             }
+            return false;
         }
 
         /// <summary>
         /// Removes a Graph from the dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        protected abstract void RemoveGraphInternal(Uri graphUri);
+        protected abstract bool RemoveGraphInternal(Uri graphUri);
 
         /// <summary>
         /// Gets a Graph from the dataset

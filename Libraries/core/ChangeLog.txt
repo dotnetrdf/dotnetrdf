@@ -19,6 +19,12 @@ Changed
 - Bug Fixes
  - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi
  - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
+- Core API
+ - IGraph now defines Assert() and Retract() as returning booleans
+ - ITripleStore now defines Add() and Remove() as returning booleans
+ - BaseTripleCollection now defines Add() and Delete() as returning booleans
+- Query
+ - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
 
 - Storage API
  - Refactored IStorageServer API
@@ -30,6 +36,7 @@ Changed
 Removed
 - Marked the TalisPlatformConnector as obsolete but usable
 - Marked the contents of the Data.Sql library as obsolete unusable
+- Removed the obsolete BackgroundPersistedGraph class
    
 
 

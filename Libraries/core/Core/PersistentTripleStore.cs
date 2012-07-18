@@ -324,12 +324,13 @@ namespace VDS.RDF
             }
         }
 
-        protected internal override void Remove(Uri graphUri)
+        protected internal override bool Remove(Uri graphUri)
         {
             if (this.Contains(graphUri))
             {
-                base.Remove(graphUri);
+                return base.Remove(graphUri);
             }
+            return false;
         }
 
         public override IEnumerable<Uri> GraphUris

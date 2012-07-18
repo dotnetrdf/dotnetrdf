@@ -62,7 +62,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present</param>
-        protected abstract internal void Add(IGraph g, bool mergeIfExists);
+        protected abstract internal bool Add(IGraph g, bool mergeIfExists);
 
         /// <summary>
         /// Removes a Graph from the Collection
@@ -71,7 +71,7 @@ namespace VDS.RDF
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        protected abstract internal void Remove(Uri graphUri);
+        protected abstract internal bool Remove(Uri graphUri);
 
         /// <summary>
         /// Gets the number of Graphs in the Collection

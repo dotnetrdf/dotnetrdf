@@ -107,13 +107,14 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection if it doesn't already exist
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             int hash = t.GetHashCode();
             if (!this._triples.ContainsKey(hash))
             {
                 this._triples.Add(hash, t);
                 this.Index(t);
+                return true;
             }
             else
             {
@@ -122,7 +123,9 @@ namespace VDS.RDF
                     this._triples.Add(hash, t);
                     t.Collides = true;
                     this.Index(t);
+                    return true;
                 }
+                return false;
             }
         }
 
@@ -224,7 +227,7 @@ namespace VDS.RDF
         /// Deletes a Triple from the collection
         /// </summary>
         /// <param name="t">Triple to remove</param>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             int hash = t.GetHashCode();
             if (this._triples.ContainsKey(hash))
@@ -232,8 +235,10 @@ namespace VDS.RDF
                 if (this._triples.Remove(hash, t))
                 {
                     this.UnIndex(t);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -577,13 +582,14 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection if it doesn't already exist
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             int hash = t.GetHashCode();
             if (!this._triples.ContainsKey(hash))
             {
                 this._triples.Add(hash, t);
                 this.Index(t);
+                return true;
             }
             else
             {
@@ -592,8 +598,10 @@ namespace VDS.RDF
                     this._triples.Add(hash, t);
                     t.Collides = true;
                     this.Index(t);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -621,7 +629,7 @@ namespace VDS.RDF
         /// Deletes a Triple from the collection
         /// </summary>
         /// <param name="t">Triple to remove</param>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             int hash = t.GetHashCode();
             if (this._triples.ContainsKey(hash))
@@ -629,8 +637,10 @@ namespace VDS.RDF
                 if (this._triples.Remove(hash, t))
                 {
                     this.UnIndex(t);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -831,13 +841,14 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection if it doesn't already exist
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             int hash = t.GetHashCode();
             if (!this._triples.ContainsKey(hash))
             {
                 this._triples.Add(hash, t);
                 this.Index(t);
+                return true;
             }
             else
             {
@@ -846,7 +857,9 @@ namespace VDS.RDF
                     this._triples.Add(hash, t);
                     t.Collides = true;
                     this.Index(t);
+                    return true;
                 }
+                return false;
             }
         }
 
@@ -944,7 +957,7 @@ namespace VDS.RDF
         /// Deletes a Triple from the collection
         /// </summary>
         /// <param name="t">Triple to remove</param>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             int hash = t.GetHashCode();
             if (this._triples.ContainsKey(hash))
@@ -952,8 +965,10 @@ namespace VDS.RDF
                 if (this._triples.Remove(hash, t))
                 {
                     this.UnIndex(t);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>

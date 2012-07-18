@@ -54,9 +54,9 @@ namespace VDS.RDF.Query.Datasets
             this._graphUri = graphUri;
         }
 
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
-            this._dataset.AddQuad(this._graphUri, t);
+            return this._dataset.AddQuad(this._graphUri, t);
         }
 
         public override bool Contains(Triple t)
@@ -72,9 +72,9 @@ namespace VDS.RDF.Query.Datasets
             }
         }
 
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
-            this._dataset.RemoveQuad(this._graphUri, t);
+            return this._dataset.RemoveQuad(this._graphUri, t);
         }
 
         public override Triple this[Triple t]

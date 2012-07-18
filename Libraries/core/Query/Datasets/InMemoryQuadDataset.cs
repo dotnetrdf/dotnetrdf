@@ -137,27 +137,29 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset merging it with any existing Graph with the same URI
         /// </summary>
         /// <param name="g">Graph</param>
-        protected override void AddGraphInternal(IGraph g)
+        protected override bool AddGraphInternal(IGraph g)
         {
-            this._store.Add(g, true);
+            return this._store.Add(g, true);
         }
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        protected override void RemoveGraphInternal(Uri graphUri)
+        protected override bool RemoveGraphInternal(Uri graphUri)
         {
             if (graphUri == null)
             {
                 if (this._store.HasGraph(null))
                 {
                     this._store.Graphs[null].Clear();
+                    return true;
                 }
+                return false;
             }
             else
             {
-                this._store.Remove(graphUri);
+                return this._store.Remove(graphUri);
             }
         }
 
@@ -228,7 +230,7 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal override void AddQuad(Uri graphUri, Triple t)
+        protected internal override bool AddQuad(Uri graphUri, Triple t)
         {
             if (!this._store.HasGraph(graphUri))
             {
@@ -236,7 +238,7 @@ namespace VDS.RDF.Query.Datasets
                 g.BaseUri = graphUri;
                 this._store.Add(g);
             }
-            this._store.Graph(graphUri).Assert(t);
+            return this._store.Graph(graphUri).Assert(t);
         }
 
         /// <summary>
@@ -389,12 +391,13 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        protected internal override void RemoveQuad(Uri graphUri, Triple t)
+        protected internal override bool RemoveQuad(Uri graphUri, Triple t)
         {
             if (this._store.HasGraph(graphUri))
             {
-                this._store.Graph(graphUri).Retract(t);
+                return this._store.Graph(graphUri).Retract(t);
             }
+            return false;
         }
 
         #endregion

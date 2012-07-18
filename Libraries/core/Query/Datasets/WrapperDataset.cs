@@ -192,18 +192,18 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the dataset
         /// </summary>
         /// <param name="g">Graph</param>
-        public virtual void AddGraph(IGraph g)
+        public virtual bool AddGraph(IGraph g)
         {
-            this._dataset.AddGraph(g);
+            return this._dataset.AddGraph(g);
         }
 
         /// <summary>
         /// Removes a Graph from the dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        public virtual void RemoveGraph(Uri graphUri)
+        public virtual bool RemoveGraph(Uri graphUri)
         {
-            this._dataset.RemoveGraph(graphUri);
+            return this._dataset.RemoveGraph(graphUri);
         }
 
         /// <summary>

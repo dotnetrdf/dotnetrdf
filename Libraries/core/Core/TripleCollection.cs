@@ -98,11 +98,12 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             if (!this._triples.ContainsKey(t.GetHashCode()))
             {
                 this._triples.Add(t.GetHashCode(), t);
+                return true;
             }
             else if (!this._triples[t.GetHashCode()].Equals(t))
             {
@@ -112,7 +113,9 @@ namespace VDS.RDF
 
                 //Add to Collision Triples list
                 this._collisionTriples.Add(t);
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -120,7 +123,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to remove</param>
         /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             if (this._triples.ContainsKey(t.GetHashCode()))
             {
@@ -137,14 +140,16 @@ namespace VDS.RDF
                         this._triples.Add(first.GetHashCode(), first);
                         this._collisionTriples.Remove(first);
                     }
+                    return true;
                 }
                 else
                 {
                     //Hash Code Collision
                     //Remove from Collision Triples list instead
-                    this._collisionTriples.Remove(t);
+                    return this._collisionTriples.Remove(t);
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -315,12 +320,12 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                this._triples.Add(t); ;
+                return this._triples.Add(t); ;
             }
             finally
             {
@@ -398,12 +403,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to remove</param>
         /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                this._triples.Delete(t);
+                return this._triples.Delete(t);
             }
             finally
             {
@@ -732,13 +737,14 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection if it doesn't already exist
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             int hash = t.GetHashCode();
             if (!this._triples.ContainsKey(hash))
             {
                 this._triples.Add(hash, t);
                 this.Index(t);
+                return true;
             }
             else
             {
@@ -747,7 +753,9 @@ namespace VDS.RDF
                     this._triples.Add(hash, t);
                     t.Collides = true;
                     this.Index(t);
+                    return true;
                 }
+                return false;
             }
         }
 
@@ -843,7 +851,7 @@ namespace VDS.RDF
         /// Deletes a Triple from the collection
         /// </summary>
         /// <param name="t">Triple to remove</param>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             int hash = t.GetHashCode();
             if (this._triples.ContainsKey(hash))
@@ -851,8 +859,10 @@ namespace VDS.RDF
                 if (this._triples.Remove(hash, t))
                 {
                     this.UnIndex(t);
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -1087,12 +1097,12 @@ namespace VDS.RDF
         /// Adds a Triple to the Collection
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Add(t);
+                return base.Add(t);
             }
             finally
             {
@@ -1146,12 +1156,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to remove</param>
         /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Delete(t);
+                return base.Delete(t);
             }
             finally
             {

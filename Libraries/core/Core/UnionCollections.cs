@@ -85,9 +85,9 @@ namespace VDS.RDF
         /// Adds a Triple to the base collection
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
-            this._baseCollection.Add(t);
+            return this._baseCollection.Add(t);
         }
 
         /// <summary>
@@ -118,9 +118,9 @@ namespace VDS.RDF
         /// Deletes a Triple from the base collection
         /// </summary>
         /// <param name="t">Triple to delete</param>
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
-            this._baseCollection.Delete(t);
+            return this._baseCollection.Delete(t);
         }
 
         /// <summary>

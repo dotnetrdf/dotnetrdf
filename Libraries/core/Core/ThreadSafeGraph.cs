@@ -74,46 +74,12 @@ namespace VDS.RDF
         /// Asserts a Triple in the Graph
         /// </summary>
         /// <param name="t">The Triple to add to the Graph</param>
-        public override void Assert(Triple t)
+        public override bool Assert(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Assert(t);
-            }
-            finally
-            {
-                this._lockManager.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Asserts a List of Triples in the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to add to the Graph</param>
-        public override void Assert(List<Triple> ts)
-        {
-            try
-            {
-                this._lockManager.EnterWriteLock();
-                base.Assert(ts);
-            }
-            finally
-            {
-                this._lockManager.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Asserts multiple Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to add</param>
-        public override void Assert(Triple[] ts)
-        {
-            try
-            {
-                this._lockManager.EnterWriteLock();
-                base.Assert(ts);
+                return base.Assert(t);
             }
             finally
             {
@@ -125,9 +91,17 @@ namespace VDS.RDF
         /// Asserts a List of Triples in the graph
         /// </summary>
         /// <param name="ts">List of Triples in the form of an IEnumerable</param>
-        public override void Assert(IEnumerable<Triple> ts)
+        public override bool Assert(IEnumerable<Triple> ts)
         {
-            this.Assert(ts.ToList());
+            try
+            {
+                this._lockManager.EnterWriteLock();
+                return base.Assert(ts);
+            }
+            finally
+            {
+                this._lockManager.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -135,46 +109,12 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple to Retract</param>
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
-        public override void Retract(Triple t)
+        public override bool Retract(Triple t)
         {
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Retract(t);
-            }
-            finally
-            {
-                this._lockManager.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Retracts a List of Triples from the graph
-        /// </summary>
-        /// <param name="ts">List of Triples to retract from the Graph</param>
-        public override void Retract(List<Triple> ts)
-        {
-            try
-            {
-                this._lockManager.EnterWriteLock();
-                base.Retract(ts);
-            }
-            finally
-            {
-                this._lockManager.ExitWriteLock();
-            }
-        }
-
-        /// <summary>
-        /// Retracts multiple Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Array of Triples to retract</param>
-        public override void Retract(Triple[] ts)
-        {
-            try
-            {
-                this._lockManager.EnterWriteLock();
-                base.Retract(ts);
+                return base.Retract(t);
             }
             finally
             {
@@ -186,9 +126,17 @@ namespace VDS.RDF
         /// Retracts a enumeration of Triples from the graph
         /// </summary>
         /// <param name="ts">Enumeration of Triples to retract</param>
-        public override void Retract(IEnumerable<Triple> ts)
+        public override bool Retract(IEnumerable<Triple> ts)
         {
-            this.Retract(ts.ToList());
+            try
+            {
+                this._lockManager.EnterWriteLock();
+                return this.Retract(ts);
+            }
+            finally
+            {
+                this._lockManager.ExitWriteLock();
+            }
         }
 
         #endregion

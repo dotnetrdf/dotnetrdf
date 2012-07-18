@@ -11,7 +11,7 @@ namespace VDS.RDF
     public class WrapperTripleCollection
         : BaseTripleCollection
     {
-        protected BaseTripleCollection _triples;
+        protected readonly BaseTripleCollection _triples;
 
         public WrapperTripleCollection(BaseTripleCollection tripleCollection)
         {
@@ -31,9 +31,9 @@ namespace VDS.RDF
             this.RaiseTripleRemoved(args.Triple);
         }
 
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
-            this._triples.Add(t);
+            return this._triples.Add(t);
         }
 
         public override bool Contains(Triple t)
@@ -49,9 +49,9 @@ namespace VDS.RDF
             }
         }
 
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
-            this._triples.Delete(t);
+            return this._triples.Delete(t);
         }
 
         public override Triple this[Triple t]

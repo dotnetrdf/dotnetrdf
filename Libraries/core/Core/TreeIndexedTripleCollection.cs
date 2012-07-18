@@ -124,7 +124,7 @@ namespace VDS.RDF
             }
         }
 
-        protected internal override void Add(Triple t)
+        protected internal override bool Add(Triple t)
         {
             bool created = false;
             IBinaryTreeNode<Triple, Object> node = this._triples.MoveToNode(t, out created);
@@ -136,6 +136,7 @@ namespace VDS.RDF
                 this.Index(t);
                 this.RaiseTripleAdded(t);
             }
+            return created;
         }
 
         public override bool Contains(Triple t)
@@ -152,7 +153,7 @@ namespace VDS.RDF
             }
         }
 
-        protected internal override void Delete(Triple t)
+        protected internal override bool Delete(Triple t)
         {
             if (this._triples.Remove(t))
             {
@@ -160,7 +161,9 @@ namespace VDS.RDF
                 this.Unindex(t);
                 this.RaiseTripleRemoved(t);
                 this._count--;
+                return true;
             }
+            return false;
         }
 
         public override Triple this[Triple t]

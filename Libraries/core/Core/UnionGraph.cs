@@ -89,21 +89,9 @@ namespace VDS.RDF
         /// <remarks>
         /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
         /// </remarks>
-        public override void Assert(IEnumerable<Triple> ts)
+        public override bool Assert(IEnumerable<Triple> ts)
         {
-            this._default.Assert(ts);
-        }
-
-        /// <summary>
-        /// Asserts some Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        /// <remarks>
-        /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
-        /// </remarks>
-        public override void Assert(List<Triple> ts)
-        {
-            this._default.Assert(ts);
+            return this._default.Assert(ts);
         }
 
         /// <summary>
@@ -113,21 +101,9 @@ namespace VDS.RDF
         /// <remarks>
         /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
         /// </remarks>
-        public override void Assert(Triple t)
+        public override bool Assert(Triple t)
         {
-            this._default.Assert(t);
-        }
-
-        /// <summary>
-        /// Asserts some Triples in the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        /// <remarks>
-        /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
-        /// </remarks>
-        public override void Assert(Triple[] ts)
-        {
-            this._default.Assert(ts);
+            return this._default.Assert(t);
         }
 
         /// <summary>
@@ -137,21 +113,9 @@ namespace VDS.RDF
         /// <remarks>
         /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
         /// </remarks>
-        public override void Retract(IEnumerable<Triple> ts)
+        public override bool Retract(IEnumerable<Triple> ts)
         {
-            this._default.Retract(ts);
-        }
-
-        /// <summary>
-        /// Retracts some Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        /// <remarks>
-        /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
-        /// </remarks>
-        public override void Retract(List<Triple> ts)
-        {
-            this._default.Retract(ts);
+            return this._default.Retract(ts);
         }
 
         /// <summary>
@@ -161,21 +125,9 @@ namespace VDS.RDF
         /// <remarks>
         /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
         /// </remarks>
-        public override void Retract(Triple t)
+        public override bool Retract(Triple t)
         {
-            this._default.Retract(t);
-        }
-
-        /// <summary>
-        /// Retracts some Triples from the Graph
-        /// </summary>
-        /// <param name="ts">Triples</param>
-        /// <remarks>
-        /// Assert and Retract operations are directed to the Default Graph of the Union.  We have to override the method to do this as although the <see cref="UnionTripleCollection">UnionTripleCollection</see> will direct asserts/retracts to Triple Collection of the default Graph we cannot guarantee that the Graph will be able to carry out any assertion/retraction logic (e.g. persistence) it might have implemented if the Assert/Retract bypasses the Assert/Retract method of the Default Graph
-        /// </remarks>
-        public override void Retract(Triple[] ts)
-        {
-            this._default.Retract(ts);
+            return this._default.Retract(t);
         }
 
         /// <summary>

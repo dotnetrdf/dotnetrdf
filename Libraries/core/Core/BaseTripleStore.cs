@@ -45,7 +45,8 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Base Class for a Triple Store
     /// </summary>
-    public abstract class BaseTripleStore : ITripleStore
+    public abstract class BaseTripleStore 
+        : ITripleStore
     {
         /// <summary>
         /// Collection of Graphs that comprise the Triple Store
@@ -123,9 +124,9 @@ namespace VDS.RDF
         /// Adds a Graph into the Triple Store
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public virtual void Add(IGraph g)
+        public virtual bool Add(IGraph g)
         {
-            this._graphs.Add(g, false);
+            return this._graphs.Add(g, false);
         }
 
         /// <summary>
@@ -133,18 +134,18 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Whether the Graph should be merged with an existing Graph with the same Base Uri</param>
-        public virtual void Add(IGraph g, bool mergeIfExists)
+        public virtual bool Add(IGraph g, bool mergeIfExists)
         {
-            this._graphs.Add(g, mergeIfExists);
+            return this._graphs.Add(g, mergeIfExists);
         }
 
         /// <summary>
         /// Adds a Graph into the Triple Store which is retrieved from the given Uri
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to load</param>
-        public virtual void AddFromUri(Uri graphUri)
+        public virtual bool AddFromUri(Uri graphUri)
         {
-            this.AddFromUri(graphUri, false);
+            return this.AddFromUri(graphUri, false);
         }
 
         /// <summary>
@@ -155,14 +156,15 @@ namespace VDS.RDF
         /// <remarks>
         /// <strong>Important:</strong> Under Silverlight/Windows Phone 7 this will happen asynchronously so the Graph may not be immediatedly available in the store
         /// </remarks>
-        public virtual void AddFromUri(Uri graphUri, bool mergeIfExists)
+        public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
             Graph g = new Graph();
 #if !SILVERLIGHT
             UriLoader.Load(g, graphUri);
-            this._graphs.Add(g, mergeIfExists);
+            return this._graphs.Add(g, mergeIfExists);
 #else
             UriLoader.Load(g, graphUri, (gr, _) => { this._graphs.Add(gr, mergeIfExists); }, null);
+            return true;
 #endif
         }
 
@@ -170,9 +172,9 @@ namespace VDS.RDF
         /// Removes a Graph from the Triple Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to Remove</param>
-        public virtual void Remove(Uri graphUri)
+        public virtual bool Remove(Uri graphUri)
         {
-            this._graphs.Remove(graphUri);
+            return this._graphs.Remove(graphUri);
         }
 
         #endregion

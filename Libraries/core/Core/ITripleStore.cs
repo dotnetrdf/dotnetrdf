@@ -84,33 +84,33 @@ namespace VDS.RDF
         /// Adds a Graph into the Triple Store
         /// </summary>
         /// <param name="g">Graph to add</param>
-        void Add(IGraph g);
+        bool Add(IGraph g);
 
         /// <summary>
         /// Adds a Graph into the Triple Store
         /// </summary>
         /// <param name="g">Graph to add</param>
         /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store</param>
-        void Add(IGraph g, bool mergeIfExists);
+        bool Add(IGraph g, bool mergeIfExists);
 
         /// <summary>
         /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to be added</param>
-        void AddFromUri(Uri graphUri);
+        bool AddFromUri(Uri graphUri);
 
         /// <summary>
         /// Adds a Graph into the Triple Store by dereferencing the Graph Uri to get the RDF and then load the resulting Graph into the Triple Store
         /// </summary>
         /// <param name="graphUri">Uri of the Graph to be added</param>
         /// <param name="mergeIfExists">Controls whether the Graph should be merged with an existing Graph of the same Uri if it already exists in the Triple Store</param>
-        void AddFromUri(Uri graphUri, bool mergeIfExists);
+        bool AddFromUri(Uri graphUri, bool mergeIfExists);
 
         /// <summary>
         /// Removes a Graph from the Triple Store
         /// </summary>
         /// <param name="graphUri">Graph Uri of the Graph to remove</param>
-        void Remove(Uri graphUri);
+        bool Remove(Uri graphUri);
 
         #endregion
 

@@ -136,14 +136,14 @@ namespace VDS.RDF.Query.Datasets
         /// </summary>
         /// <param name="g">Graph</param>
         /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable</exception>
-        void AddGraph(IGraph g);
+        bool AddGraph(IGraph g);
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable i.e. Updates not supported</exception>        /// <exception cref="NotSupportedException">May be thrown if the Dataset is immutable</exception>
-        void RemoveGraph(Uri graphUri);
+        bool RemoveGraph(Uri graphUri);
 
         /// <summary>
         /// Gets whether a Graph with the given URI is the Dataset

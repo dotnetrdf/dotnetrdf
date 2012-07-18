@@ -137,27 +137,29 @@ namespace VDS.RDF.Query.Datasets
         /// Adds a Graph to the Dataset merging it with any existing Graph with the same URI
         /// </summary>
         /// <param name="g">Graph</param>
-        protected override void AddGraphInternal(IGraph g)
+        protected override bool AddGraphInternal(IGraph g)
         {
-            this._store.Add(g, true);
+            return this._store.Add(g, true);
         }
 
         /// <summary>
         /// Removes a Graph from the Dataset
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
-        protected override void RemoveGraphInternal(Uri graphUri)
+        protected override bool RemoveGraphInternal(Uri graphUri)
         {
             if (graphUri == null)
             {
                 if (this._store.HasGraph(null))
                 {
                     this._store.Graphs[null].Clear();
+                    return true;
                 }
+                return false;
             }
             else
             {
-                this._store.Remove(graphUri);
+                return this._store.Remove(graphUri);
             }
         }
 
