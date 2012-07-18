@@ -19,7 +19,7 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlViewConstruct()
         {
                 TripleStore store = new TripleStore();
-                SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                SparqlView view = new SparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store);
                 view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
@@ -45,7 +45,7 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlViewDescribe()
         {
-                 TripleStore store = new TripleStore();
+                TripleStore store = new TripleStore();
                 SparqlView view = new SparqlView("DESCRIBE <http://example.org/vehicles/FordFiesta>", store);
                 view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
@@ -73,7 +73,7 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlViewSelect()
         {
                 TripleStore store = new TripleStore();
-                SparqlView view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { ?s <http://example.org/vehicles/Speed> ?speed }", store);
+                SparqlView view = new SparqlView("SELECT ?s (<http://example.org/vehicles/TurbochargedSpeed>) AS ?p (?speed * 1.25) AS ?o  WHERE { GRAPH ?g { ?s <http://example.org/vehicles/Speed> ?speed } }", store);
                 view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlViewAndReasonerInteraction()
         {
                 TripleStore store = new TripleStore();
-                SparqlView view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { ?s a ?type }", store);
+                SparqlView view = new SparqlView("CONSTRUCT { ?s a ?type } WHERE { GRAPH ?g { ?s a ?type } }", store);
                 view.BaseUri = new Uri("http://example.org/view");
                 store.Add(view);
 
@@ -147,7 +147,7 @@ namespace VDS.RDF.Test.Sparql
                 agraph.SaveGraph(g);
 
                 //Create the SPARQL View
-                NativeSparqlView view = new NativeSparqlView("CONSTRUCT { ?s ?p ?o } WHERE { ?s ?p ?o . FILTER(IsLiteral(?o)) }", store);
+                NativeSparqlView view = new NativeSparqlView("CONSTRUCT { ?s ?p ?o } WHERE { GRAPH ?g { ?s ?p ?o . FILTER(IsLiteral(?o)) } }", store);
 
                 Console.WriteLine("SPARQL View Populated");
                 TestTools.ShowGraph(view);

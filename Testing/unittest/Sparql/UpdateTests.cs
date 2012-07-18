@@ -383,7 +383,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             //This should give us a Graph equivalent to the one created by the previous INSERT commands
             Graph h = new Graph();
             FileLoader.Load(h, "InferenceTest.ttl");
-            h.Retract(h.Triples.Where(t => !t.IsGroundTriple));
+            h.Retract(h.Triples.Where(t => !t.IsGroundTriple).ToList());
             RdfsReasoner reasoner = new RdfsReasoner();
             reasoner.Apply(h);
 
