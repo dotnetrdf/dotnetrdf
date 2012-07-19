@@ -223,7 +223,7 @@ namespace VDS.RDF.Test
 
                 foreach (Uri u in testUris)
                 {
-                    Console.WriteLine("# Testing URI '" + u.ToString() + "'");
+                    Console.WriteLine("# Testing URI '" + u.AbsoluteUri + "'");
 
                     //Load the Test RDF
                     Graph g = new Graph();

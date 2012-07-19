@@ -1135,7 +1135,7 @@ namespace VDS.RDF.Utilities.StoreManager
                 {
                     if (u != null)
                     {
-                        this.CrossThreadAdd(this.lvwGraphs, u.ToString());
+                        this.CrossThreadAdd(this.lvwGraphs, u.AbsoluteUri);
                     }
                     else
                     {

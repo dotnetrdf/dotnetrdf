@@ -326,9 +326,9 @@ namespace VDS.RDF.Web
             if (config.ProtocolProcessor != null && (type == ServiceDescriptionType.Protocol || type == ServiceDescriptionType.All))
             {
                 //Add the Top Level Node representing the Service
-                if (descripUri.ToString().EndsWith("/description"))
+                if (descripUri.AbsoluteUri.EndsWith("/description"))
                 {
-                    String actualUri = descripUri.ToString();
+                    String actualUri = descripUri.AbsoluteUri;
                     actualUri = actualUri.Substring(0, actualUri.LastIndexOf("/description") + 1);
                     protocolNode = g.CreateUriNode(UriFactory.Create(actualUri));
                 }

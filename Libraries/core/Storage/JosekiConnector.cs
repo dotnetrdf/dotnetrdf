@@ -262,7 +262,7 @@ namespace VDS.RDF.Storage
                 String query = "CONSTRUCT {?s ?p ?o}";
                 if (!graphUri.Equals(String.Empty))
                 {
-                    query += " FROM <" + graphUri.ToString().Replace(">", "\\>") + ">";
+                    query += " FROM <" + graphUri.Replace(">", "\\>") + ">";
                 }
                 query += " WHERE {?s ?p ?o}";
                 serviceParams.Add("query", query);
@@ -317,7 +317,7 @@ namespace VDS.RDF.Storage
                 postData.Append("INSERT DATA");
                 if (g.BaseUri != null)
                 {
-                    postData.Append(" INTO <" + g.BaseUri.ToString().Replace(">", "\\>") + ">");
+                    postData.Append(" INTO <" + g.BaseUri.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
                 postData.AppendLine(" {");
                 foreach (Triple t in g.Triples)
@@ -373,7 +373,7 @@ namespace VDS.RDF.Storage
                 StringBuilder modify = new StringBuilder();
                 if (graphUri != null)
                 {
-                    modify.AppendLine("MODIFY <" + graphUri.ToString().Replace(">", "\\>") + ">");
+                    modify.AppendLine("MODIFY <" + graphUri.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
                 else
                 {
@@ -716,7 +716,7 @@ namespace VDS.RDF.Storage
                 postData.Append("INSERT DATA");
                 if (g.BaseUri != null)
                 {
-                    postData.Append(" INTO <" + g.BaseUri.ToString().Replace(">", "\\>") + ">");
+                    postData.Append(" INTO <" + g.BaseUri.AbsoluteUri.Replace(">", "\\>") + ">");
                 }
                 postData.AppendLine(" {");
                 foreach (Triple t in g.Triples)
@@ -814,7 +814,7 @@ namespace VDS.RDF.Storage
             String query = "CONSTRUCT {?s ?p ?o}";
             if (!graphUri.Equals(String.Empty))
             {
-                query += " FROM <" + graphUri.ToString().Replace(">", "\\>") + ">";
+                query += " FROM <" + graphUri.Replace(">", "\\>") + ">";
             }
             query += " WHERE {?s ?p ?o}";
             serviceParams.Add("query", query);
@@ -842,7 +842,7 @@ namespace VDS.RDF.Storage
             StringBuilder modify = new StringBuilder();
             if (!String.IsNullOrEmpty(graphUri))
             {
-                modify.AppendLine("MODIFY <" + graphUri.ToString().Replace(">", "\\>") + ">");
+                modify.AppendLine("MODIFY <" + graphUri.Replace(">", "\\>") + ">");
             }
             else
             {

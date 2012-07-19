@@ -55,7 +55,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatUri(Uri u)
         {
-            return this.FormatUri(u.ToString());
+            return this.FormatUri(u.AbsoluteUri);
         }
 
         /// <summary>

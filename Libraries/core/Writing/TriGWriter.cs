@@ -313,7 +313,7 @@ namespace VDS.RDF.Writing
                 //Named Graph
                 String gname;
                 String sep = (globalContext.N3CompatabilityMode) ? " = " : " ";
-                if (globalContext.CompressionLevel > WriterCompressionLevel.None && globalContext.QNameMapper.ReduceToQName(context.Graph.BaseUri.ToString(), out gname))
+                if (globalContext.CompressionLevel > WriterCompressionLevel.None && globalContext.QNameMapper.ReduceToQName(context.Graph.BaseUri.AbsoluteUri, out gname))
                 {
                     if (TurtleSpecsHelper.IsValidQName(gname))
                     {

@@ -182,7 +182,7 @@ namespace VDS.RDF.Utilities.Convert
             {
                 foreach (String prefix in this._g.NamespaceMap.Prefixes)
                 {
-                    Console.WriteLine(prefix + ": <" + this._g.NamespaceMap.GetNamespaceUri(prefix).ToString() + ">");
+                    Console.WriteLine(prefix + ": <" + this._g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
             }
 

@@ -129,7 +129,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfException("The Prefix for the given URI '" + uri.ToString() + "' is not known by the in-scope NamespaceMapper");
+                throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
             }
         }
 
@@ -157,6 +157,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace Uri</param>
         public virtual void AddNamespace(String prefix, Uri uri)
         {
+            if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
             int hash = uri.GetEnhancedHashCode();
             if (!this._uris.ContainsKey(prefix))
             {
@@ -175,7 +176,7 @@ namespace VDS.RDF
                     //If the existing Uri is the same as the old one then we change the prefix
                     //but we don't raise the OnNamespaceModified event
                     this._prefixes[hash] = prefix;
-                    if (!this._uris[prefix].ToString().Equals(uri.ToString(), StringComparison.Ordinal))
+                    if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                     {
                         //Raise modified event
                         this.OnNamespaceModified(prefix, uri);
@@ -186,7 +187,7 @@ namespace VDS.RDF
             {
                 //Check whether the Namespace is actually being changed
                 //If the existing Uri is the same as the old one no change is needed
-                if (!this._uris[prefix].ToString().Equals(uri.ToString(), StringComparison.Ordinal))
+                if (!this._uris[prefix].AbsoluteUri.Equals(uri.AbsoluteUri, StringComparison.Ordinal))
                 {
                     //Update the existing Prefix
                     this._uris[prefix] = uri;
@@ -263,7 +264,7 @@ namespace VDS.RDF
         {
             foreach (Uri u in this._uris.Values)
             {
-                String baseuri = u.ToString();
+                String baseuri = u.AbsoluteUri;
 
                 //Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -305,7 +306,7 @@ namespace VDS.RDF
                 {
                     //Colliding Namespaces get remapped to new prefixes
                     //Assuming the prefixes aren't already used for the same Uri
-                    if (!this._uris[prefix].ToString().Equals(nsmap.GetNamespaceUri(prefix).ToString(), StringComparison.Ordinal))
+                    if (!this._uris[prefix].AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
                         while (this._uris.ContainsKey(tempPrefix))
                         {
@@ -438,7 +439,7 @@ namespace VDS.RDF
 
             foreach (Uri u in this._uris.Values)
             {
-                String baseuri = u.ToString();
+                String baseuri = u.AbsoluteUri;
 
                 //Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))
@@ -494,7 +495,7 @@ namespace VDS.RDF
             //Try and find a Namespace URI that is the prefix of the URI
             foreach (Uri u in this._uris.Values)
             {
-                String baseuri = u.ToString();
+                String baseuri = u.AbsoluteUri;
 
                 //Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))

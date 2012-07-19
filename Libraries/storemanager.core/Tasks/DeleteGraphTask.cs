@@ -67,7 +67,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
             {
-                this.Information = "Deleting Graph " + this._graphUri.ToString() + "...";
+                this.Information = "Deleting Graph " + this._graphUri + "...";
             }
             else
             {
@@ -76,7 +76,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
             this._manager.DeleteGraph(this._graphUri);
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
             {
-                this.Information = "Deleted Graph " + this._graphUri.ToString() + " OK";
+                this.Information = "Deleted Graph " + this._graphUri + " OK";
             }
             else
             {

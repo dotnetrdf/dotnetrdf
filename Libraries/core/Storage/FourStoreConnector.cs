@@ -300,7 +300,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (g.BaseUri != null)
                 {
-                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.ToString()));
+                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.AbsoluteUri));
                 }
                 else
                 {
@@ -527,7 +527,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                this.DeleteGraph(graphUri.ToString());
+                this.DeleteGraph(graphUri.AbsoluteUri);
             }
         }
 
@@ -647,7 +647,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (g.BaseUri != null)
                 {
-                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + Uri.EscapeUriString(g.BaseUri.ToString()));
+                    request = (HttpWebRequest)WebRequest.Create(this._baseUri + "data/" + g.BaseUri.AbsoluteUri);
                 }
                 else
                 {

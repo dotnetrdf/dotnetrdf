@@ -49,7 +49,8 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Provides caching services to the <see cref="UriLoader">UriLoader</see> class
     /// </summary>
-    class UriLoaderCache : IUriLoaderCache
+    class UriLoaderCache 
+        : IUriLoaderCache
     {
         private String _cacheDir;
         private TimeSpan _cacheDuration = new TimeSpan(1, 0, 0);
@@ -248,7 +249,7 @@ namespace VDS.RDF.Parsing
         {
             if (this._canCacheETag)
             {
-                if (this._nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.ToString());
+                if (this._nocache.Contains(u.GetSha256Hash())) throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
                 int id = u.GetEnhancedHashCode();
                 if (this._etags.ContainsKey(id))
                 {
@@ -256,12 +257,12 @@ namespace VDS.RDF.Parsing
                 }
                 else
                 {
-                    throw new KeyNotFoundException("No ETag was found for the URI " + u.ToString());
+                    throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
                 }
             }
             else
             {
-                throw new KeyNotFoundException("No ETag was found for the URI " + u.ToString());
+                throw new KeyNotFoundException("No ETag was found for the URI " + u.AbsoluteUri);
             }
         }
 
@@ -409,7 +410,7 @@ namespace VDS.RDF.Parsing
             IRdfHandler handler = null;
             try
             {
-                bool cacheTwice = !requestUri.ToString().Equals(responseUri.ToString(), StringComparison.OrdinalIgnoreCase);
+                bool cacheTwice = !requestUri.AbsoluteUri.Equals(responseUri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
 
                 //Cache the ETag if present
                 if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
@@ -493,104 +494,6 @@ namespace VDS.RDF.Parsing
                 //Ignore - if we get an RDF Output Exception then we failed to cache
             }
             return handler;
-        }
-
-        /// <summary>
-        /// Caches a Graph in the Cache
-        /// </summary>
-        /// <param name="requestUri">URI from which the Graph was requested</param>
-        /// <param name="responseUri">The actual URI which responded to the request</param>
-        /// <param name="g">Graph</param>
-        /// <param name="etag">ETag</param>
-        [Obsolete("This form of the ToCache() method is obsolete and should not be used", true)]
-        public void ToCache(Uri requestUri, Uri responseUri, IGraph g, String etag)
-        {
-            //Cache a local copy of the Graph
-            try
-            {
-                bool cacheTwice = !requestUri.ToString().Equals(responseUri.ToString() , StringComparison.OrdinalIgnoreCase);
-
-                if (this._canCacheGraphs)
-                {
-                    String graph = Path.Combine(this._graphDir, requestUri.GetSha256Hash());
-                    this._ttlwriter.Save(g, graph);
-
-                    //If applicable also cache under the responseUri
-                    if (cacheTwice)
-                    {
-                        graph = Path.Combine(this._graphDir, responseUri.GetSha256Hash());
-                        this._ttlwriter.Save(g, graph);
-                    }
-                }
-
-                //Cache the ETag if present
-                if (this._canCacheETag && etag != null && !etag.Equals(String.Empty))
-                {
-                    int id = requestUri.GetEnhancedHashCode();
-                    bool requireAdd = false;
-                    if (this._etags.ContainsKey(id))
-                    {
-                        if (!this._etags[id].Equals(etag))
-                        {
-                            //If the ETag has changed remove it and then re-add it
-                            this.RemoveETag(requestUri);
-                            requireAdd = true;
-                        }
-                    }
-                    else
-                    {
-                        requireAdd = true;
-                    }
-
-                    if (requireAdd)
-                    {
-                        //Add a New ETag
-                        this._etags.Add(id, etag);
-                        using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
-                        {
-                            writer.WriteLine(id + "\t" + etag);
-                            writer.Close();
-                        }
-                    }
-
-                    //Cache under the Response URI as well if applicable
-                    if (cacheTwice)
-                    {
-                        id = responseUri.GetEnhancedHashCode();
-                        requireAdd = false;
-                        if (this._etags.ContainsKey(id))
-                        {
-                            if (!this._etags[id].Equals(etag))
-                            {
-                                //If the ETag has changed remove it and then re-add it
-                                this.RemoveETag(responseUri);
-                                requireAdd = true;
-                            }
-                        }
-                        else
-                        {
-                            requireAdd = true;
-                        }
-
-                        if (requireAdd)
-                        {
-                            using (StreamWriter writer = new StreamWriter(this._etagFile, true, Encoding.UTF8))
-                            {
-                                writer.WriteLine(id + "\t" + etag);
-                                writer.Close();
-                            }
-                        }
-                    }
-                }
-            }
-            catch (IOException)
-            {
-                //Ignore - if we get an IO Exception we failed to cache somehow
-            }
-            catch (RdfOutputException)
-            {
-                //Ignore - if we get an RDF Output Exception then we failed to cache
-            }
         }
     }
 }

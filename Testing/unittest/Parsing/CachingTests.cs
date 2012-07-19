@@ -41,10 +41,10 @@ namespace VDS.RDF.Test.Parsing
             Uri a = new Uri(ConfigurationLoader.ConfigurationNamespace + "TripleStore");
             Uri b = new Uri(ConfigurationLoader.ConfigurationNamespace + "Graph");
 
-            Console.WriteLine("URI A: " + a.ToString() + " is equivalent to " + Tools.StripUriFragment(a).ToString());
-            Console.WriteLine("URI B:" + b.ToString() + " is equivalent to " + Tools.StripUriFragment(b).ToString());
+            Console.WriteLine("URI A: " + a.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(a).AbsoluteUri);
+            Console.WriteLine("URI B:" + b.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(b).AbsoluteUri);
 
-            Assert.AreEqual(Tools.StripUriFragment(a).ToString(), Tools.StripUriFragment(b).ToString(), "URIs stripped of their Fragment IDs should have been equal");
+            Assert.AreEqual(Tools.StripUriFragment(a).AbsoluteUri, Tools.StripUriFragment(b).AbsoluteUri, "URIs stripped of their Fragment IDs should have been equal");
 
             Graph g = new Graph();
             UriLoader.Load(g, a);

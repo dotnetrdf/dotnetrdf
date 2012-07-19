@@ -123,7 +123,7 @@ namespace VDS.RDF.Writing.Formatting
                                 output.Append("<literal");
                                 if (lit.DataType != null)
                                 {
-                                    output.Append(" datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.ToString()) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</literal>");
+                                    output.Append(" datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</literal>");
                                 }
                                 else if (!lit.Language.Equals(String.Empty))
                                 {

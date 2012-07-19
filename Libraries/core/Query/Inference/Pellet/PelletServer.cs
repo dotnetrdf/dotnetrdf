@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         public PelletServer(Uri serverUri)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            this._serverUri = serverUri.ToString();
+            this._serverUri = serverUri.AbsoluteUri;
             if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
 
             this.Discover();
@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         private PelletServer(Uri serverUri, PelletServerReadyCallback callback, Object state)
         {
             if (serverUri == null) throw new ArgumentNullException("serverUri", "A Server URI must be specified in order to connect to a Pellet Server");
-            this._serverUri = serverUri.ToString();
+            this._serverUri = serverUri.AbsoluteUri;
             if (!this._serverUri.EndsWith("/")) this._serverUri += "/";
 
             this.Discover(callback, state);

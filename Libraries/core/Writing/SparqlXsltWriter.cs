@@ -58,7 +58,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="stylesheetUri">Stylesheet URI</param>
         public SparqlXsltWriter(Uri stylesheetUri)
-            : this(stylesheetUri.ToString()) { }
+            : this(stylesheetUri.AbsoluteUri) { }
 
         /// <summary>
         /// Creates a new SPARQL XSLT Writer

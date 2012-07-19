@@ -99,7 +99,7 @@ namespace VDS.RDF.Query
         {
             if (defaultGraphUri != null)
             {
-                this._defaultGraphUris.Add(defaultGraphUri.ToString());
+                this._defaultGraphUris.Add(defaultGraphUri.AbsoluteUri);
             }
         }
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, Uri defaultGraphUri, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUri)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.ToString()));
+            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris)
             : this(endpointUri)
         {
-            this._defaultGraphUris.AddRange(defaultGraphUris.Where(u => u != null).Select(u => u.ToString()));
+            this._defaultGraphUris.AddRange(defaultGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<String> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.ToString()));
+            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace VDS.RDF.Query
         public SparqlRemoteEndpoint(Uri endpointUri, IEnumerable<Uri> defaultGraphUris, IEnumerable<Uri> namedGraphUris)
             : this(endpointUri, defaultGraphUris)
         {
-            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.ToString()));
+            this._namedGraphUris.AddRange(namedGraphUris.Where(u => u != null).Select(u => u.AbsoluteUri));
         }
 
         #endregion
@@ -477,7 +477,7 @@ namespace VDS.RDF.Query
 
             //Build the Query Uri
             StringBuilder queryUri = new StringBuilder();
-            queryUri.Append(this.Uri.ToString());
+            queryUri.Append(this.Uri.AbsoluteUri);
             bool longQuery = true;
             if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= LongQueryLength)
             {

@@ -160,11 +160,11 @@ namespace VDS.RDF.Update.Protocol
             context.Response.StatusCode = (int)HttpStatusCode.Created;
             try
             {
-                context.Response.Headers.Add("Location", graphUri.ToString());
+                context.Response.Headers.Add("Location", graphUri.AbsoluteUri);
             }
             catch (PlatformNotSupportedException)
             {
-                context.Response.AddHeader("Location", graphUri.ToString());
+                context.Response.AddHeader("Location", graphUri.AbsoluteUri);
             }
         }
 

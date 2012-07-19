@@ -240,7 +240,7 @@ namespace VDS.RDF.Storage
                 Dictionary<String, String> requestParams = new Dictionary<string, string>();
                 if (g.BaseUri != null)
                 {
-                    requestParams.Add("context", g.BaseUri.ToString());
+                    requestParams.Add("context", g.BaseUri.AbsoluteUri);
                     request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
                 }
                 else
@@ -724,7 +724,7 @@ namespace VDS.RDF.Storage
             Dictionary<String, String> requestParams = new Dictionary<string, string>();
             if (g.BaseUri != null)
             {
-                requestParams.Add("context", g.BaseUri.ToString());
+                requestParams.Add("context", g.BaseUri.AbsoluteUri);
                 request = this.CreateRequest("/statements", MimeTypesHelper.Any, "PUT", requestParams);
             }
             else

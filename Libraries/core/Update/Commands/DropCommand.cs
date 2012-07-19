@@ -133,7 +133,7 @@ namespace VDS.RDF.Update.Commands
                     }
                     else
                     {
-                        return this._graphUri.ToString().Equals(graphUri.ToSafeString());
+                        return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
                     }
                 default:
                     //No Other Clear Modes but have to keep the compiler happy
@@ -188,7 +188,7 @@ namespace VDS.RDF.Update.Commands
                     case ClearMode.Graph:
                         if (!context.Data.HasGraph(this._graphUri))
                         {
-                            if (!this._silent) throw new SparqlUpdateException("Cannot remove a Named Graph with URI '" + this._graphUri.ToString() + "' since a Graph with this URI does not exist in the Store");
+                            if (!this._silent) throw new SparqlUpdateException("Cannot remove a Named Graph with URI '" + this._graphUri.AbsoluteUri + "' since a Graph with this URI does not exist in the Store");
                         }
                         else
                         {
@@ -270,7 +270,7 @@ namespace VDS.RDF.Update.Commands
                     break;
                 case ClearMode.Graph:
                     output.Append("GRAPH <");
-                    output.Append(this._graphUri.ToString().Replace(">", "\\>"));
+                    output.Append(this._graphUri.AbsoluteUri.Replace(">", "\\>"));
                     output.Append('>');
                     break;
             }

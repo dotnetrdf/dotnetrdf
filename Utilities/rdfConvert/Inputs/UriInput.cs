@@ -31,7 +31,7 @@ namespace VDS.RDF.Utilities.Convert.Inputs
 
         public override string ToString()
         {
-            return "URI '" + this.SourceUri.ToString() + "'";
+            return "URI '" + this.SourceUri.AbsoluteUri + "'";
         }
     }
 }

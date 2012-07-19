@@ -147,7 +147,7 @@ namespace VDS.RDF
             }
             else
             {
-                String temp = u.ToString();
+                String temp = u.AbsoluteUri;
                 temp = temp.Substring(0, temp.Length - u.Fragment.Length);
                 return UriFactory.Create(temp);
             }
@@ -185,6 +185,7 @@ namespace VDS.RDF
 
                         //Check that the Base Uri is valid for resolving Relative URIs
                         //If the Uri Reference is a Fragment ID then Base Uri validity is irrelevant
+                        //We have to use ToString() here because this is a Relative URI so AbsoluteUri would be invalid here
                         if (u.ToString().StartsWith("#"))
                         {
                             return Tools.ResolveUri(u, b).AbsoluteUri;
@@ -248,7 +249,7 @@ namespace VDS.RDF
                 if (nsmap.HasNamespace(String.Empty))
                 {
                     //Default Namespace Defined
-                    output = nsmap.GetNamespaceUri(String.Empty).ToString() + qname.Substring(1);
+                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + qname.Substring(1);
                 }
                 else
                 {
@@ -257,7 +258,7 @@ namespace VDS.RDF
                     //i.e. these always result in Hash URIs
                     if (baseUri != null)
                     {
-                        output = baseUri.ToString();
+                        output = baseUri.AbsoluteUri;
                         if (output.EndsWith("#"))
                         {
                             output += qname.Substring(1);
@@ -279,11 +280,11 @@ namespace VDS.RDF
                 String[] parts = qname.Split(new char[] { ':' }, 2);
                 if (parts.Length == 1)
                 {
-                    output = nsmap.GetNamespaceUri(String.Empty).ToString() + parts[0];
+                    output = nsmap.GetNamespaceUri(String.Empty).AbsoluteUri + parts[0];
                 }
                 else
                 {
-                    output = nsmap.GetNamespaceUri(parts[0]).ToString() + parts[1];
+                    output = nsmap.GetNamespaceUri(parts[0]).AbsoluteUri + parts[1];
                 }
             }
 
@@ -305,7 +306,7 @@ namespace VDS.RDF
             }
             else if (t.TokenType == Token.URI)
             {
-                String uriBase = (baseUri == null) ? String.Empty : baseUri.ToString();
+                String uriBase = (baseUri == null) ? String.Empty : baseUri.AbsoluteUri;
                 return Tools.ResolveUri(t.Value, uriBase);
             }
             else

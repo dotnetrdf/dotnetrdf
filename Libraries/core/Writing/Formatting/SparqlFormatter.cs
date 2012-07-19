@@ -152,11 +152,11 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     if (query.BaseUri != null)
                     {
-                        output.AppendLine("BASE <" + this.FormatUri(query.BaseUri.ToString()) + ">");
+                        output.AppendLine("BASE <" + this.FormatUri(query.BaseUri.AbsoluteUri) + ">");
                     }
                     foreach (String prefix in this._qnameMapper.Prefixes)
                     {
-                        output.AppendLine("PREFIX " + prefix + ": <" + this.FormatUri(this._qnameMapper.GetNamespaceUri(prefix).ToString()) + ">");
+                        output.AppendLine("PREFIX " + prefix + ": <" + this.FormatUri(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri) + ">");
                     }
 
                     //Use a Blank Line to separate Prologue from Query where necessary
@@ -649,7 +649,7 @@ namespace VDS.RDF.Writing.Formatting
                         //If the QName has the same Namespace URI in this Formatter as in the Query then format
                         //as a QName otherwise expand to a full URI
                         String prefix = t.Value.Substring(0, t.Value.IndexOf(':'));
-                        if (this._qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).ToString().Equals(this._qnameMapper.GetNamespaceUri(prefix).ToString()))
+                        if (this._qnameMapper.HasNamespace(prefix) && q.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri.Equals(this._qnameMapper.GetNamespaceUri(prefix).AbsoluteUri))
                         {
                             output.AppendLine(t.Value);
                             onLine += 2;

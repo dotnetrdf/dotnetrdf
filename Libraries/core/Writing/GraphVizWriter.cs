@@ -166,7 +166,7 @@ namespace VDS.RDF.Writing
 
             //Try QName reduction
             String qname;
-            if (context.QNameMapper.ReduceToQName(u.Uri.ToString(), out qname))
+            if (context.QNameMapper.ReduceToQName(u.Uri.AbsoluteUri, out qname))
             {
                 //Use the QName
                 output.Append(qname);
@@ -222,7 +222,7 @@ namespace VDS.RDF.Writing
             else if (!(l.DataType == null))
             {
                 output.Append("^^");
-                output.Append(l.DataType.ToString());
+                output.Append(l.DataType.AbsoluteUri);
             }
 
 

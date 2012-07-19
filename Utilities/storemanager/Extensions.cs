@@ -19,5 +19,15 @@ namespace VDS.RDF.Utilities.StoreManager
         {
             return (obj != null ? obj.ToString() : String.Empty);
         }
+
+        /// <summary>
+        /// Gets the Safe string form of a URI
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns>Either the AbolsuteUri or an empty string</returns>
+        internal static String ToSafeString(this Uri u)
+        {
+            return (u != null ? u.AbsoluteUri : String.Empty);
+        }
     }
 }

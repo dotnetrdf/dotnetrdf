@@ -146,7 +146,7 @@ namespace VDS.RDF.Update.Commands
                     }
                     else
                     {
-                        return this._graphUri.ToString().Equals(graphUri.ToSafeString());
+                        return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
                     }
                 default:
                     //No Other Clear Modes but have to keep the compiler happy
@@ -250,7 +250,7 @@ namespace VDS.RDF.Update.Commands
                 case ClearMode.Default:
                     return "CLEAR " + silent + "DEFAULT";
                 case ClearMode.Graph:
-                    return "CLEAR " + silent + "GRAPH <" + this._graphUri.ToString().Replace(">", "\\>") + ">";
+                    return "CLEAR " + silent + "GRAPH <" + this._graphUri.AbsoluteUri.Replace(">", "\\>") + ">";
                 case ClearMode.Named:
                     return "CLEAR " + silent + "NAMED";
                 default:

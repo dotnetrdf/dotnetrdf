@@ -309,7 +309,7 @@ namespace VDS.RDF.Storage
             String getTriples;
             if (graphUri != null)
             {
-                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + graphUri.ToString() + "> WHERE {?s ?p ?o}";
+                getTriples = "SPARQL define output:format '_JAVA_' SELECT * FROM <" + graphUri.AbsoluteUri + "> WHERE {?s ?p ?o}";
             }
             else
             {
@@ -469,7 +469,7 @@ namespace VDS.RDF.Storage
                 this.Open(false);
 
                 //Delete the existing Graph (if it exists)
-                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + g.BaseUri.ToString() + "')");
+                this.ExecuteNonQuery("DELETE FROM DB.DBA.RDF_QUAD WHERE G = DB.DBA.RDF_MAKE_IID_OF_QNAME('" + g.BaseUri.AbsoluteUri + "')");
 
                 //Make a call to the TTLP() Virtuoso function
                 VirtuosoCommand cmd = new VirtuosoCommand();
@@ -554,7 +554,7 @@ namespace VDS.RDF.Storage
                         }
                         if (graphUri != null)
                         {
-                            delete.AppendLine(" FROM <" + graphUri.ToString() + ">");
+                            delete.AppendLine(" FROM <" + graphUri.AbsoluteUri + ">");
                         }
                         else
                         {
@@ -597,7 +597,7 @@ namespace VDS.RDF.Storage
                             insert.AppendLine("SPARQL define output:format '_JAVA_' INSERT DATA");
                             if (graphUri != null)
                             {
-                                insert.AppendLine(" INTO <" + graphUri.ToString() + ">");
+                                insert.AppendLine(" INTO <" + graphUri.AbsoluteUri + ">");
                             }
                             else
                             {

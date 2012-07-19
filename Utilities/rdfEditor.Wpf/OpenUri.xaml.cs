@@ -37,7 +37,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             {
                 Uri u = new Uri(this.txtUri.Text);
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u.ToString());
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(u.AbsoluteUri);
                 request.Accept = MimeTypesHelper.HttpAcceptHeader + ",*.*";
                 String data;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())

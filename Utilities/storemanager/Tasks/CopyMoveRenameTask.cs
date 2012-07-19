@@ -152,7 +152,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                             update.SetUri("target", this._targetUri);
                         }
                         ((IUpdateableStorage)this._source).Update(update.ToString());
-                        this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.ToString() + "'";
+                        this.Information = "MOVE command completed OK, Graph renamed to '" + this._targetUri.AbsoluteUri + "'";
                     }
                     else
                     {

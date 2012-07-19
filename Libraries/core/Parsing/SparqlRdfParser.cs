@@ -230,7 +230,7 @@ namespace VDS.RDF.Parsing
                             ILiteralNode lit = (ILiteralNode)result;
                             if (lit.DataType != null)
                             {
-                                if (lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+                                if (lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                                 {
                                     bool b;
                                     if (Boolean.TryParse(lit.Value, out b))

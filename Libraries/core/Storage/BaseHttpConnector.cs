@@ -214,7 +214,7 @@ namespace VDS.RDF.Storage
 
                 context.Graph.Assert(new Triple(objNode, usesProxy, proxy));
                 context.Graph.Assert(new Triple(proxy, rdfType, proxyType));
-                context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.ToString())));
+                context.Graph.Assert(new Triple(proxy, server, context.Graph.CreateLiteralNode(this._proxy.Address.AbsoluteUri)));
 
                 if (this._proxy.Credentials is NetworkCredential)
                 {

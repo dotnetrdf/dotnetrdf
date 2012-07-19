@@ -123,7 +123,7 @@ namespace VDS.RDF.Update.Commands
                     {
                         if (this._sourceUri != null)
                         {
-                            throw new SparqlUpdateException("Cannot MOVE from Graph <" + this._sourceUri.ToString() + "> as it does not exist");
+                            throw new SparqlUpdateException("Cannot MOVE from Graph <" + this._sourceUri.AbsoluteUri + "> as it does not exist");
                         }
                         else
                         {

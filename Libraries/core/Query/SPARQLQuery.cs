@@ -940,11 +940,11 @@ namespace VDS.RDF.Query
             {
                 if (this._baseUri != null)
                 {
-                    output.AppendLine("BASE <" + this._baseUri.ToString() + ">");
+                    output.AppendLine("BASE <" + this._baseUri.AbsoluteUri + ">");
                 }
                 foreach (String prefix in this._nsmapper.Prefixes)
                 {
-                    output.AppendLine("PREFIX " + prefix + ": <" + this._nsmapper.GetNamespaceUri(prefix).ToString() + ">");
+                    output.AppendLine("PREFIX " + prefix + ": <" + this._nsmapper.GetNamespaceUri(prefix).AbsoluteUri + ">");
                 }
                 if (output.Length > 0)
                 {
@@ -955,11 +955,11 @@ namespace VDS.RDF.Query
                 if (this._defaultGraphs.Count > 0 || this._namedGraphs.Count > 0) from.Append(' ');
                 foreach (Uri u in this._defaultGraphs)
                 {
-                    from.AppendLine("FROM <" + u.ToString() + ">");
+                    from.AppendLine("FROM <" + u.AbsoluteUri + ">");
                 }
                 foreach (Uri u in this._namedGraphs)
                 {
-                    from.AppendLine("FROM NAMED <" + u.ToString() + ">");
+                    from.AppendLine("FROM NAMED <" + u.AbsoluteUri + ">");
                 }
             }
 
@@ -1123,7 +1123,7 @@ namespace VDS.RDF.Query
             {
                 foreach (String prefix in this._nsmapper.Prefixes)
                 {
-                    String uri = this._nsmapper.GetNamespaceUri(prefix).ToString();
+                    String uri = this._nsmapper.GetNamespaceUri(prefix).AbsoluteUri;
                     if (preOutput.Contains("<" + uri))
                     {
                         preOutput = Regex.Replace(preOutput, "<" + uri + "([^/#>]+)>\\.", prefix + ":$1 .");

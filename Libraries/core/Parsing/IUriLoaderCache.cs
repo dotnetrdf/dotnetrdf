@@ -131,16 +131,6 @@ namespace VDS.RDF.Parsing
         /// <param name="etag">ETag of the response (if any)</param>
         /// <returns>Either an instance of an <see cref="IRdfHandler">IRdfHandler</see> that will do the caching or null if no caching is possible</returns>
         IRdfHandler ToCache(Uri requestUri, Uri responseUri, String etag);
-
-        /// <summary>
-        /// Caches a Graph in the Cache
-        /// </summary>
-        /// <param name="requestUri">URI from which the Graph was requested</param>
-        /// <param name="responseUri">The actual URI which responded to the request</param>
-        /// <param name="g">Graph</param>
-        /// <param name="etag">ETag</param>
-        [Obsolete("This form of the ToCache() method is obsolete and should not be used", true)]
-        void ToCache(Uri requestUri, Uri responseUri, IGraph g, String etag);
     }
 }
 

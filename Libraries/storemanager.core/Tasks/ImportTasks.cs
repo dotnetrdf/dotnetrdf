@@ -112,7 +112,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <param name="handler">Handler</param>
         protected override void ImportUsingHandler(IRdfHandler handler)
         {
-            this.Information = "Importing from URI " + this._u.ToString();
+            this.Information = "Importing from URI " + this._u.AbsoluteUri;
             try
             {
                 //Assume a RDF Graph

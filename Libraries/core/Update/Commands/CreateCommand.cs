@@ -90,7 +90,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                return this._graphUri.ToString().Equals(graphUri.ToSafeString());
+                return this._graphUri.AbsoluteUri.Equals(graphUri.ToSafeString());
             }
         }
 
@@ -124,7 +124,7 @@ namespace VDS.RDF.Update.Commands
         {
             if (context.Data.HasGraph(this._graphUri))
             {
-                if (!this._silent) throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + this._graphUri.ToString() + "' since a Graph with this URI already exists in the Store");
+                if (!this._silent) throw new SparqlUpdateException("Cannot create a Named Graph with URI '" + this._graphUri.AbsoluteUri + "' since a Graph with this URI already exists in the Store");
             }
             else
             {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Update.Commands
             output.Append("CREATE ");
             if (this._silent) output.Append("SILENT ");
             output.Append("GRAPH <");
-            output.Append(this._graphUri.ToString().Replace(">", "\\>"));
+            output.Append(this._graphUri.AbsoluteUri.Replace(">", "\\>"));
             output.Append('>');
             return output.ToString();
         }

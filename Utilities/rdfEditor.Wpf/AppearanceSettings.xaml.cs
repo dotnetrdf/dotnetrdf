@@ -258,7 +258,7 @@ namespace VDS.RDF.Utilities.Editor.Wpf
         {
             try
             {
-                System.Diagnostics.Process.Start(this.lnkAdvancedSettings.NavigateUri.ToString());
+                System.Diagnostics.Process.Start(this.lnkAdvancedSettings.NavigateUri.AbsoluteUri);
             }
             catch
             {

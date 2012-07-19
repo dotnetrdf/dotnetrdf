@@ -87,7 +87,7 @@ namespace VDS.RDF
                 try
                 {
                     Graph g = new Graph();
-                    FileLoader.Load(g, graphUri.ToString().Substring(8));
+                    FileLoader.Load(g, graphUri.AbsoluteUri.Substring(8));
 
                     this.Add(g, false);
                     return true;

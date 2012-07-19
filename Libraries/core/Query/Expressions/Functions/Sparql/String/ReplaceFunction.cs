@@ -232,7 +232,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 //Execute
                 ILiteralNode lit = (ILiteralNode)textNode;
-                if (lit.DataType != null && !lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
+                if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Text Argument to Replace must be of type xsd:string if a datatype is specified");
                 string text = lit.Value;
                 string output = Regex.Replace(text, this._find, this._replace, this._options);
 

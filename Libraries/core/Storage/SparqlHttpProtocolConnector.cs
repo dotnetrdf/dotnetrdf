@@ -357,7 +357,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.ToString());
+                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
             }
             else
             {
@@ -623,7 +623,7 @@ namespace VDS.RDF.Storage
             String saveUri = this._serviceUri;
             if (g.BaseUri != null)
             {
-                saveUri += "?graph=" + Uri.EscapeDataString(g.BaseUri.ToString());
+                saveUri += "?graph=" + g.BaseUri.AbsoluteUri;
             }
             else
             {

@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Algebra
                                         //OR there were no Named Graphs (hence any Graph URI is permitted) 
                                         //OR the specified URI was a Named Graph URI
                                         //In any case we can go ahead and set the active Graph
-                                        activeGraphs.Add(activeGraphUri.ToString());
+                                        activeGraphs.Add(activeGraphUri.AbsoluteUri);
                                     }
                                     else
                                     {
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Algebra
                             if (context.Query != null && context.Query.NamedGraphs.Any())
                             {
                                 //Query specifies one/more named Graphs
-                                activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.ToString()));
+                                activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
                             }
                             else
                             {

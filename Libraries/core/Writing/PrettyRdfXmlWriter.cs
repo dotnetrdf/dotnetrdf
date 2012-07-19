@@ -263,20 +263,25 @@ namespace VDS.RDF.Writing
                 entities.Append('\n');
                 foreach (String prefix in context.NamespaceMap.Prefixes)
                 {
-                    uri = context.NamespaceMap.GetNamespaceUri(prefix).ToString();
+                    uri = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;
+                    if (!uri.Equals(context.NamespaceMap.GetNamespaceUri(prefix).ToString()))
+                    {
+                        context.UseDtd = false;
+                        break;
+                    }
                     if (!prefix.Equals(String.Empty))
                     {
                         entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
                     }
                 }
-                context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());
+                if (context.UseDtd) context.Writer.WriteDocType("rdf:RDF", null, null, entities.ToString());
             }
 
             //Create the rdf:RDF element
             context.Writer.WriteStartElement("rdf", "RDF", NamespaceMapper.RDF);
             if (context.Graph.BaseUri != null)
             {
-                context.Writer.WriteAttributeString("xml", "base", null, Uri.EscapeUriString(context.Graph.BaseUri.ToString()));
+                context.Writer.WriteAttributeString("xml", "base", null, context.Graph.BaseUri.AbsoluteUri);
             }
 
             //Add all the existing Namespace Definitions here
@@ -288,13 +293,13 @@ namespace VDS.RDF.Writing
                 if (!prefix.Equals(String.Empty))
                 {
                     context.Writer.WriteStartAttribute("xmlns", prefix, null);
-                    context.Writer.WriteString(Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
+                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
                     context.Writer.WriteEndAttribute();
                 }
                 else
                 {
                     context.Writer.WriteStartAttribute("xmlns");
-                    context.Writer.WriteString(Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).ToString()));
+                    context.Writer.WriteString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);//Uri.EscapeUriString(context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri));
                     context.Writer.WriteEndAttribute();
                 }
             }
@@ -443,7 +448,7 @@ namespace VDS.RDF.Writing
                     if (uriref.Contains(':'))
                     {
                         //Create an element with appropriate namespace
-                        String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).ToString();
+                        String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                         context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
                     }
                     else
@@ -473,7 +478,7 @@ namespace VDS.RDF.Writing
             //Always remember to add rdf:about or rdf:nodeID as appropriate
             if (subj.NodeType == NodeType.Uri)
             {
-                context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, Uri.EscapeUriString(subj.ToString()));
+                context.Writer.WriteAttributeString("rdf", "about", NamespaceMapper.RDF, subj.ToString());//Uri.EscapeUriString(subj.ToString()));
             }
             else
             {
@@ -549,7 +554,7 @@ namespace VDS.RDF.Writing
                 if (uriref.Contains(':'))
                 {
                     //Create an attribute in appropriate namespace
-                    String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).ToString();
+                    String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                     context.Writer.WriteAttributeString(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns, t.Object.ToString());
                 }
                 else
@@ -593,7 +598,7 @@ namespace VDS.RDF.Writing
             if (uriref.Contains(':'))
             {
                 //Create an element in the appropriate namespace
-                String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).ToString();
+                String ns = context.NamespaceMap.GetNamespaceUri(uriref.Substring(0, uriref.IndexOf(':'))).AbsoluteUri;
                 context.Writer.WriteStartElement(uriref.Substring(0, uriref.IndexOf(':')), uriref.Substring(uriref.IndexOf(':') + 1), ns);
             }
             else
@@ -639,7 +644,7 @@ namespace VDS.RDF.Writing
                     ILiteralNode lit = (ILiteralNode)t.Object;
                     if (lit.DataType != null)
                     {
-                        if (lit.DataType.ToString().Equals(RdfSpecsHelper.RdfXmlLiteral))
+                        if (lit.DataType.AbsoluteUri.Equals(RdfSpecsHelper.RdfXmlLiteral))
                         {
                             //XML Literal
                             context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Literal");
@@ -648,7 +653,7 @@ namespace VDS.RDF.Writing
                         else
                         {
                             //Datatyped Literal
-                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, Uri.EscapeUriString(lit.DataType.ToString()));
+                            context.Writer.WriteAttributeString("rdf", "datatype", NamespaceMapper.RDF, lit.DataType.AbsoluteUri);//Uri.EscapeUriString(lit.DataType.ToString()));
                             context.Writer.WriteString(lit.Value);
                         }
                     }
@@ -668,7 +673,7 @@ namespace VDS.RDF.Writing
                 case NodeType.Uri:
                     //Simple rdf:resource
                     //TODO: Compress this into UriRef where possible
-                    context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, Uri.EscapeUriString(t.Object.ToString()));
+                    context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, t.Object.ToString());//Uri.EscapeUriString(t.Object.ToString()));
                     break;
 
                 case NodeType.Variable:
@@ -752,7 +757,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.NamespaceMap.ReduceToQName(u.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.NamespaceMap.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -761,7 +766,7 @@ namespace VDS.RDF.Writing
             else
             {
                 //Just use the Uri
-                uriref = u.ToString();
+                uriref = u.AbsoluteUri;
                 outType = UriRefType.Uri;
             }
 
@@ -780,7 +785,7 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(prefix).ToString() + uriref.Substring(uriref.IndexOf(':') + 1);
+                        uriref = context.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
                         outType = UriRefType.Uri;
                     }
                 }
@@ -788,12 +793,12 @@ namespace VDS.RDF.Writing
                 {
                     if (context.NamespaceMap.HasNamespace(String.Empty))
                     {
-                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).ToString() + uriref.Substring(1);
+                        uriref = context.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
                         outType = UriRefType.Uri;
                     }
                     else
                     {
-                        String baseUri = context.Graph.BaseUri.ToString();
+                        String baseUri = context.Graph.BaseUri.AbsoluteUri;
                         if (!baseUri.EndsWith("#")) baseUri += "#";
                         uriref = baseUri + uriref;
                         outType = UriRefType.Uri;
@@ -806,7 +811,7 @@ namespace VDS.RDF.Writing
 
         private void GenerateTemporaryNamespace(RdfXmlWriterContext context, IUriNode u, out String tempPrefix, out String tempUri)
         {
-            String uri = u.Uri.ToString();
+            String uri = u.Uri.AbsoluteUri;
             String nsUri;
             if (uri.Contains("#"))
             {

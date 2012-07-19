@@ -33,7 +33,7 @@ namespace VDS.RDF.Test.Parsing
             {
                 Uri u = new Uri(uri);
 
-                Console.WriteLine("Testing URI " + u.ToString());
+                Console.WriteLine("Testing URI " + u.AbsoluteUri);
 
                 Graph g = new Graph();
                 UriLoader.Load(g, u);

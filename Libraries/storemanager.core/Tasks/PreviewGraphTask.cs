@@ -75,7 +75,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         {
             if (this._graphUri != null && !this._graphUri.Equals(String.Empty))
             {
-                this.Information = "Previewing Graph " + this._graphUri.ToString() + "...";
+                this.Information = "Previewing Graph " + this._graphUri + "...";
             }
             else
             {

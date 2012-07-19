@@ -628,7 +628,7 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void LogImportSuccess(Uri u, int graphs, int triples)
         {
-            this.Log("IMPORT", "Import from URI '" + u.ToString() + "' - " + graphs + " Graphs with " + triples + " Triples");
+            this.Log("IMPORT", "Import from URI '" + u.AbsoluteUri + "' - " + graphs + " Graphs with " + triples + " Triples");
         }
 
         private void LogImportFailure(String file, Exception ex)
@@ -638,7 +638,7 @@ namespace VDS.RDF.Utilities.Sparql
 
         private void LogImportFailure(Uri u, Exception ex)
         {
-            this.Log("IMPORT FAILURE", "Import from URI '" + u.ToString() + "' failed\n" + this.GetFullErrorTrace(ex));
+            this.Log("IMPORT FAILURE", "Import from URI '" + u.AbsoluteUri + "' failed\n" + this.GetFullErrorTrace(ex));
         }
 
         private void LogMalformedQuery(Exception ex)

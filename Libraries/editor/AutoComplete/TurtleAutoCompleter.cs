@@ -722,7 +722,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             List<ICompletionData> qnames = new List<ICompletionData>();
             foreach (String prefix in this._nsmap.Prefixes)
             {
-                String nsUri = this._nsmap.GetNamespaceUri(prefix).ToString();
+                String nsUri = this._nsmap.GetNamespaceUri(prefix).AbsoluteUri;
                 if (this._namespaceTerms.ContainsKey(nsUri))
                 {
                     foreach (NamespaceTerm term in this._namespaceTerms[nsUri])

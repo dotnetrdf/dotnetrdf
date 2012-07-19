@@ -187,7 +187,7 @@ namespace VDS.RDF.Ontology
         public bool AddLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.AddLiteralProperty(propertyUri.ToString(), value, persist);
+            return this.AddLiteralProperty(propertyUri.AbsoluteUri, value, persist);
         }
 
         /// <summary>
@@ -228,7 +228,7 @@ namespace VDS.RDF.Ontology
         public bool AddResourceProperty(Uri propertyUri, INode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.AddResourceProperty(propertyUri.ToString(), value, persist);
+            return this.AddResourceProperty(propertyUri.AbsoluteUri, value, persist);
         }
 
         /// <summary>
@@ -258,7 +258,7 @@ namespace VDS.RDF.Ontology
         public bool ClearLiteralProperty(Uri propertyUri, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.ClearLiteralProperty(propertyUri.ToString(), persist);
+            return this.ClearLiteralProperty(propertyUri.AbsoluteUri, persist);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace VDS.RDF.Ontology
         public bool ClearResourceProperty(Uri propertyUri, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.ClearResourceProperty(propertyUri.ToString(), persist);
+            return this.ClearResourceProperty(propertyUri.AbsoluteUri, persist);
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace VDS.RDF.Ontology
         public bool RemoveLiteralProperty(Uri propertyUri, ILiteralNode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.RemoveLiteralProperty(propertyUri.ToString(), value, persist);
+            return this.RemoveLiteralProperty(propertyUri.AbsoluteUri, value, persist);
         }
 
         /// <summary>
@@ -366,7 +366,7 @@ namespace VDS.RDF.Ontology
         public bool RemoveResourceProperty(Uri propertyUri, INode value, bool persist)
         {
             if (propertyUri == null) throw new ArgumentException("propertyUri");
-            return this.RemoveResourceProperty(propertyUri.ToString(), value, persist);
+            return this.RemoveResourceProperty(propertyUri.AbsoluteUri, value, persist);
         }
 
 #endregion
@@ -934,7 +934,7 @@ namespace VDS.RDF.Ontology
         public IEnumerable<ILiteralNode> GetLiteralProperty(Uri propertyUri)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.GetLiteralProperty(propertyUri.ToString());
+            return this.GetLiteralProperty(propertyUri.AbsoluteUri);
         }
 
         /// <summary>
@@ -962,7 +962,7 @@ namespace VDS.RDF.Ontology
         public IEnumerable<INode> GetResourceProperty(Uri propertyUri)
         {
             if (propertyUri == null) throw new ArgumentNullException("propertyUri");
-            return this.GetResourceProperty(propertyUri.ToString());
+            return this.GetResourceProperty(propertyUri.AbsoluteUri);
         }
 
         /// <summary>

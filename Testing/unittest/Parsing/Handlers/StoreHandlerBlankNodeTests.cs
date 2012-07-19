@@ -62,7 +62,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Console.WriteLine("Subjects:");
             foreach (INode subj in subjects)
             {
-                Console.WriteLine(subj.ToString() + " from Graph " + (subj.GraphUri != null ? subj.GraphUri.ToString() : "Default"));
+                Console.WriteLine(subj.ToString() + " from Graph " + (subj.GraphUri != null ? subj.GraphUri.AbsoluteUri : "Default"));
             }
             Assert.AreEqual(4, subjects.Count, "Expected 4 distinct subjects");
         }

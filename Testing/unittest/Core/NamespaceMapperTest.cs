@@ -33,14 +33,14 @@ namespace VDS.RDF.Test
             nsmap.AddNamespace("ex", new Uri("http://example.org/"));
             Assert.AreEqual(true, eventRaised, "Adding a new Namespace should raise the NamespaceAdded event");
             eventRaised = false;
-            Console.WriteLine(nsmap.GetNamespaceUri("ex").ToString());
+            Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
             Console.WriteLine();
 
             Console.WriteLine("Trying to modify the example Namespace");
             nsmap.AddNamespace("ex", new Uri("http://example.org/test/"));
             Assert.AreEqual(true, eventRaised, "Modifying a Namespace should raise the NamespaceModified event");
             eventRaised = false;
-            Console.WriteLine(nsmap.GetNamespaceUri("ex").ToString());
+            Console.WriteLine(nsmap.GetNamespaceUri("ex").AbsoluteUri);
             Console.WriteLine();
 
             Console.WriteLine("Trying to remove the example Namespace");
@@ -68,7 +68,7 @@ namespace VDS.RDF.Test
             Console.WriteLine("NamespaceMapper now contains the following Namespaces:");
             foreach (String prefix in nsmap.Prefixes)
             {
-                Console.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).ToString() + ">");
+                Console.WriteLine("\t" + prefix + " <" + nsmap.GetNamespaceUri(prefix).AbsoluteUri + ">");
             }
             Assert.AreEqual(nsmap.GetNamespaceUri("ex"), new Uri("http://example.org/"), "ex prefix should be mapped to the original URI");
             Assert.AreEqual(nsmap.GetNamespaceUri("ns1"), new Uri("http://example.org/test/"), "ex prefix from other NamespaceMapper should get remapped to ns1 since ns0 is already in use");

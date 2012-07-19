@@ -381,7 +381,7 @@ namespace VDS.RDF.Parsing
             {
                 if (uri.TokenType == Token.URI)
                 {
-                    String baseUri = (context.BaseUri != null) ? context.BaseUri.ToString() : String.Empty;
+                    String baseUri = (context.BaseUri != null) ? context.BaseUri.AbsoluteUri : String.Empty;
                     Uri u = UriFactory.Create(Tools.ResolveUri(uri.Value, baseUri));
                     if (prefix.Value.Length == 1)
                     {
@@ -946,7 +946,7 @@ namespace VDS.RDF.Parsing
         {
             if (context.Tokens.Count > 0)
             {
-                String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.ToString();
+                String baseUri = (context.BaseUri == null) ? String.Empty : context.BaseUri.AbsoluteUri;
                 IToken next = context.Tokens.Peek();
                 bool named = false;
 

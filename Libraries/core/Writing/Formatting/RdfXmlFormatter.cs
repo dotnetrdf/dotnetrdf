@@ -37,17 +37,17 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     if (prefix.Equals(String.Empty))
                     {
-                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).ToString()) + "\"");
+                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                     else
                     {
-                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).ToString()) + "\"");
+                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                 }
             }
             if (g.BaseUri != null)
             {
-                output.Append(" xml:base=\"" + WriterHelper.EncodeForXml(g.BaseUri.ToString()) + "\"");
+                output.Append(" xml:base=\"" + WriterHelper.EncodeForXml(g.BaseUri.AbsoluteUri) + "\"");
             }
             output.Append(">");
             return output.ToString();
@@ -69,11 +69,11 @@ namespace VDS.RDF.Writing.Formatting
                 {
                     if (prefix.Equals(String.Empty))
                     {
-                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(namespaces.GetNamespaceUri(prefix).ToString()) + "\"");
+                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(namespaces.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                     else
                     {
-                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(namespaces.GetNamespaceUri(prefix).ToString()) + "\"");
+                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(namespaces.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                 }
             }
@@ -101,7 +101,7 @@ namespace VDS.RDF.Writing.Formatting
 
         private void GetQName(Uri u, out String qname, out String ns)
         {
-            if (this._mapper != null && this._mapper.ReduceToQName(u.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (this._mapper != null && this._mapper.ReduceToQName(u.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Succesfully reduced to a QName using the known namespaces
                 ns = String.Empty;
@@ -109,7 +109,7 @@ namespace VDS.RDF.Writing.Formatting
             }
             else if (!u.Fragment.Equals(String.Empty))
             {
-                ns = u.ToString().Substring(0, u.ToString().Length - u.Fragment.Length + 1);
+                ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - u.Fragment.Length + 1);
                 qname = u.Fragment.Substring(1);
             }
             else
@@ -120,7 +120,7 @@ namespace VDS.RDF.Writing.Formatting
                 qname = u.Segments().LastOrDefault();
 #endif
                 if (qname == null || !RdfXmlSpecsHelper.IsValidQName(qname)) throw new RdfOutputException(WriterErrorMessages.UnreducablePropertyURIUnserializable);
-                ns = u.ToString().Substring(0, u.ToString().Length - qname.Length);
+                ns = u.AbsoluteUri.Substring(0, u.AbsoluteUri.Length - qname.Length);
             }
         }
 
@@ -199,7 +199,7 @@ namespace VDS.RDF.Writing.Formatting
                         }
                         else
                         {
-                            output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.ToString()) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
+                            output.AppendLine(" rdf:datatype=\"" + WriterHelper.EncodeForXml(lit.DataType.AbsoluteUri) + "\">" + WriterHelper.EncodeForXml(lit.Value) + "</" + qname + ">");
                         }
                     } 
                     else if (!lit.Language.Equals(String.Empty))

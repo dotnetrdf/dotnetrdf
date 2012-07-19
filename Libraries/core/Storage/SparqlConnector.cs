@@ -496,7 +496,7 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override string ToString()
         {
-            return "[SPARQL Query] " + this._endpoint.Uri.ToString();
+            return "[SPARQL Query] " + this._endpoint.Uri.AbsoluteUri;
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace VDS.RDF.Storage
                 INode defGraphUri = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyDefaultGraphUri);
                 INode namedGraphUri = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyNamedGraphUri);
                 
-                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.ToString())));
+                context.Graph.Assert(new Triple(manager, endpointUri, context.Graph.CreateLiteralNode(this._endpoint.Uri.AbsoluteUri)));
                 foreach (String u in this._endpoint.DefaultGraphs)
                 {
                     context.Graph.Assert(new Triple(manager, defGraphUri, context.Graph.CreateUriNode(UriFactory.Create(u))));

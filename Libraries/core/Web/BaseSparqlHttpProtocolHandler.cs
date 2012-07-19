@@ -116,7 +116,7 @@ namespace VDS.RDF.Web
                         break;
                     case "POST":
                         Uri serviceUri = new Uri(UriFactory.Create(context.Request.Url.AbsoluteUri), this._basePath);
-                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri.ToString()))
+                        if (context.Request.Url.AbsoluteUri.Equals(serviceUri.AbsoluteUri))
                         {
                             //If there is a ?graph parameter or ?default parameter then this is a normal Post
                             //Otherwise it is a PostCreate

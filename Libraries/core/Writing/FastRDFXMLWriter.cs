@@ -240,7 +240,7 @@ namespace VDS.RDF.Writing
             if (context.Graph.BaseUri != null)
             {
                 XmlAttribute baseUri = doc.CreateAttribute("xml:base");
-                baseUri.Value = Uri.EscapeUriString(context.Graph.BaseUri.ToString());
+                baseUri.Value = context.Graph.BaseUri.AbsoluteUri;//Uri.EscapeUriString(context.Graph.BaseUri.ToSting());
                 rdf.Attributes.Append(baseUri);
             }
 
@@ -249,24 +249,31 @@ namespace VDS.RDF.Writing
             entities.Append('\n');
             foreach (String prefix in context.Graph.NamespaceMap.Prefixes)
             {
-                uri = context.Graph.NamespaceMap.GetNamespaceUri(prefix).ToString();
+                uri = context.Graph.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri;//.ToString();
                 if (!prefix.Equals(String.Empty))
                 {
-                    entities.AppendLine("\t<!ENTITY " + prefix + " '" + uri + "'>");
+                    entities.AppendLine("\t<!ENTITY " + prefix + " '" + Uri.EscapeUriString(uri) + "'>");
                     ns = doc.CreateAttribute("xmlns:" + prefix);
-                    ns.Value = Uri.EscapeUriString(uri.Replace("'", "&apos;"));
+                    ns.Value = uri;//Uri.EscapeUriString(uri.Replace("'", "&apos;"));
                 }
                 else
                 {
                     ns = doc.CreateAttribute("xmlns");
-                    ns.Value = Uri.EscapeUriString(uri);
+                    ns.Value = uri;// Uri.EscapeUriString(uri);
                 }
                 rdf.Attributes.Append(ns);
             }
             if (context.UseDtd)
             {
-                XmlDocumentType doctype = doc.CreateDocumentType("rdf:RDF", null, null, entities.ToString());
-                doc.AppendChild(doctype);
+                try
+                {
+                    XmlDocumentType doctype = doc.CreateDocumentType("rdf:RDF", null, null, entities.ToString());
+                    doc.AppendChild(doctype);
+                }
+                catch
+                {
+                    context.UseDtd = false;
+                }
             }
             doc.AppendChild(rdf);
 
@@ -318,7 +325,7 @@ namespace VDS.RDF.Writing
                         {
                             tprefix = String.Empty;
                         } 
-                        subj = doc.CreateElement(tref, context.Graph.NamespaceMap.GetNamespaceUri(tprefix).ToString());
+                        subj = doc.CreateElement(tref, context.Graph.NamespaceMap.GetNamespaceUri(tprefix).AbsoluteUri);
                     }
                     else
                     {
@@ -454,7 +461,7 @@ namespace VDS.RDF.Writing
                         {
                             tprefix = String.Empty;
                         }
-                        subj = doc.CreateElement(tref, context.Graph.NamespaceMap.GetNamespaceUri(tprefix).ToString());
+                        subj = doc.CreateElement(tref, context.Graph.NamespaceMap.GetNamespaceUri(tprefix).AbsoluteUri);
 
                         doc.DocumentElement.AppendChild(subj);
 
@@ -664,7 +671,7 @@ namespace VDS.RDF.Writing
             }
             else if (lit.DataType != null)
             {
-                if (RdfSpecsHelper.RdfXmlLiteral.Equals(lit.DataType.ToString()))
+                if (RdfSpecsHelper.RdfXmlLiteral.Equals(lit.DataType.AbsoluteUri))
                 {
                     XmlAttribute parseType = doc.CreateAttribute("rdf:parseType");
                     parseType.Value = "Literal";
@@ -678,7 +685,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     XmlAttribute dt = doc.CreateAttribute("rdf:datatype");
-                    dt.Value = Uri.EscapeUriString(lit.DataType.ToString());
+                    dt.Value = lit.DataType.AbsoluteUri;//Uri.EscapeUriString(lit.DataType.ToString());
                     pred.Attributes.Append(dt);
                 }
             }
@@ -691,7 +698,7 @@ namespace VDS.RDF.Writing
             //Get a Uri Reference if the Uri can be reduced
             UriRefType rtype;
             String uriref = this.GenerateUriRef(context, u, UriRefType.UriRef, tempNamespaceIDs, out rtype);
-            attr.InnerXml = Uri.EscapeUriString(WriterHelper.EncodeForXml(uriref));
+            attr.InnerXml = WriterHelper.EncodeForXml(uriref);//Uri.EscapeUriString(WriterHelper.EncodeForXml(uriref));
             //Append the attribute
             node.Attributes.Append(attr);
         }
@@ -700,7 +707,7 @@ namespace VDS.RDF.Writing
         {
             String uriref, qname;
 
-            if (context.Graph.NamespaceMap.ReduceToQName(u.Uri.ToString(), out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
+            if (context.Graph.NamespaceMap.ReduceToQName(u.Uri.AbsoluteUri, out qname) && RdfXmlSpecsHelper.IsValidQName(qname))
             {
                 //Reduced to QName OK
                 uriref = qname;
@@ -709,7 +716,7 @@ namespace VDS.RDF.Writing
             else
             {
                 //Just use the Uri
-                uriref = u.Uri.ToString();
+                uriref = u.Uri.AbsoluteUri;
                 outType = UriRefType.Uri;
             }
 
@@ -727,18 +734,18 @@ namespace VDS.RDF.Writing
                     }
                     else
                     {
-                        uriref = context.Graph.NamespaceMap.GetNamespaceUri(prefix).ToString() + uriref.Substring(uriref.IndexOf(':') + 1);
+                        uriref = context.Graph.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri + uriref.Substring(uriref.IndexOf(':') + 1);
                     }
                 }
                 else
                 {
                     if (context.Graph.NamespaceMap.HasNamespace(String.Empty))
                     {
-                        uriref = context.Graph.NamespaceMap.GetNamespaceUri(String.Empty).ToString() + uriref.Substring(1);
+                        uriref = context.Graph.NamespaceMap.GetNamespaceUri(String.Empty).AbsoluteUri + uriref.Substring(1);
                     }
                     else
                     {
-                        String baseUri = context.Graph.BaseUri.ToString();
+                        String baseUri = context.Graph.BaseUri.AbsoluteUri;
                         if (!baseUri.EndsWith("#")) baseUri += "#";
                         uriref = baseUri + uriref;
                     }
@@ -792,7 +799,7 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    return doc.CreateElement(qname, context.Graph.NamespaceMap.GetNamespaceUri(qname.Substring(0, qname.IndexOf(':'))).ToString());
+                    return doc.CreateElement(qname, context.Graph.NamespaceMap.GetNamespaceUri(qname.Substring(0, qname.IndexOf(':'))).AbsoluteUri);
                 }
             }
             else
@@ -811,7 +818,7 @@ namespace VDS.RDF.Writing
                 }
                 else
                 {
-                    return doc.CreateAttribute(qname, context.Graph.NamespaceMap.GetNamespaceUri(qname.Substring(0, qname.IndexOf(':'))).ToString());
+                    return doc.CreateAttribute(qname, context.Graph.NamespaceMap.GetNamespaceUri(qname.Substring(0, qname.IndexOf(':'))).AbsoluteUri);
                 }
             }
             else

@@ -104,7 +104,7 @@ namespace VDS.RDF.Query
                 if (predItem == null) continue;
                 IUriNode predNode = predItem.Node as IUriNode;
                 if (predNode == null) continue;
-                if (predNode.Uri.ToString().Equals(FullTextMatchPredicateUri))
+                if (predNode.Uri.AbsoluteUri.Equals(FullTextMatchPredicateUri))
                 {
                     ftPatterns.Add(tp.Subject, new List<TriplePattern>());
                     ftPatterns[tp.Subject].Add(tp);
@@ -156,11 +156,11 @@ namespace VDS.RDF.Query
                     if (predItem == null) continue;
                     IUriNode predNode = predItem.Node as IUriNode;
                     if (predNode == null) continue;
-                    if (predNode.Uri.ToString().Equals(RdfSpecsHelper.RdfListFirst))
+                    if (predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListFirst))
                     {
                         ftPatterns[key].Add(tp);
                     }
-                    else if (predNode.Uri.ToString().Equals(RdfSpecsHelper.RdfListRest))
+                    else if (predNode.Uri.AbsoluteUri.Equals(RdfSpecsHelper.RdfListRest))
                     {
                         ftPatterns[key].Add(tp);
                         recurse = tp.Object.VariableName != null;

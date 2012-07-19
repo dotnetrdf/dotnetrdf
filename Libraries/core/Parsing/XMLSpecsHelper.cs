@@ -314,7 +314,7 @@ namespace VDS.RDF.Parsing
         public static bool IsSupportedType(Uri type)
         {
             if (type == null) return false;
-            return IsSupportedType(type.ToString());
+            return IsSupportedType(type.AbsoluteUri);
         }
 
         /// <summary>
@@ -355,7 +355,7 @@ namespace VDS.RDF.Parsing
                     }
                     else
                     {
-                        String type = l.DataType.ToString();
+                        String type = l.DataType.AbsoluteUri;
                         if (XmlSpecsHelper.IsSupportedType(type))
                         {
                             return type;

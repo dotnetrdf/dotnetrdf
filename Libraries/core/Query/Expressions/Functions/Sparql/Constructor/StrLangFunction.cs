@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         }
                         else
                         {
-                            if (langLit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                            if (langLit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
                             {
                                 langSpec = langLit.Value;
                             }

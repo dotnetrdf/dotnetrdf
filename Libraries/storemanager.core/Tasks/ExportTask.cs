@@ -121,21 +121,21 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
                         if (writer is IFormatterBasedWriter)
                         {
                             //Stream via a WriteThroughHandler
-                            this.Information = "Stream Exporting Graph " + (u != null ? u.ToString() : "Default");
+                            this.Information = "Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default");
                             WriteThroughHandler handler = new WriteThroughHandler(((IFormatterBasedWriter)writer).TripleFormatterType, new StreamWriter(stream), true);
                             ExportProgressHandler progHandler = new ExportProgressHandler(handler, this, tripleCount);
                             this._manager.LoadGraph(progHandler, u);
                             graphCount++;
                             tripleCount = progHandler.TripleCount;
 
-                            this.Information = "Finished Stream Exporting Graph " + (u != null ? u.ToString() : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
+                            this.Information = "Finished Stream Exporting Graph " + (u != null ? u.AbsoluteUri : "Default") + ", exported " + tripleCount + " Triple(s) in " + graphCount + " Graph(s) so far...";
                         }
                         else
                         {
                             //Load Graph into memory
                             Graph g = new Graph();
                             g.BaseUri = u;
-                            this.Information = "Loading Graph " + (u != null ? u.ToString() : "Default");
+                            this.Information = "Loading Graph " + (u != null ? u.AbsoluteUri : "Default");
                             this._manager.LoadGraph(g, u);
                             g.BaseUri = u;
 

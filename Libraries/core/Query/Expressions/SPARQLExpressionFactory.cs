@@ -115,7 +115,7 @@ namespace VDS.RDF.Query.Expressions
         /// </remarks>
         public static ISparqlExpression CreateExpression(Uri u, List<ISparqlExpression> args, Dictionary<String,ISparqlExpression> scalarArgs, IEnumerable<ISparqlCustomExpressionFactory> factories)
         {
-            if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.ToString()))
+            if (SparqlSpecsHelper.SupportedCastFunctions.Contains(u.AbsoluteUri))
             {
                 //Should only have 1 argument
                 if (args.Count != 1)
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions
 
                 //One of the Supported XPath Cast functions
                 ISparqlExpression arg = args[0];
-                String cast = u.ToString();
+                String cast = u.AbsoluteUri;
                 if (cast.Equals(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
                 {
                     return new BooleanCast(arg);
@@ -156,7 +156,7 @@ namespace VDS.RDF.Query.Expressions
                 }
                 else
                 {
-                    throw new RdfParseException("Unable to parse a supported XPath Cast Function with IRI <" + u.ToString() + ">, it appears to be a valid Cast function URI but it couldn't be parsed");
+                    throw new RdfParseException("Unable to parse a supported XPath Cast Function with IRI <" + u.AbsoluteUri + ">, it appears to be a valid Cast function URI but it couldn't be parsed");
                 }
             }
             else
@@ -196,7 +196,7 @@ namespace VDS.RDF.Query.Expressions
                 }
 
                 //If we get here we haven't been able to create an expression so we error
-                throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.ToString() + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");
+                throw new RdfParseException("Unable to parse a SPARQL Extension Function with IRI <" + u.AbsoluteUri + ">, it is not a supported Casting function and no Custom Expression Factories are able to generate an Expression from this IRI");
             }
         }
 

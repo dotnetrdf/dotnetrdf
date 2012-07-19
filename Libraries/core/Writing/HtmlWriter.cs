@@ -131,7 +131,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteEncodedText("RDF Graph");
             if (context.Graph.BaseUri != null)
             {
-                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.ToString());
+                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
             if (!this.Stylesheet.Equals(String.Empty))
@@ -156,7 +156,7 @@ namespace VDS.RDF.Writing
             context.HtmlWriter.WriteEncodedText("RDF Graph");
             if (context.Graph.BaseUri != null)
             {
-                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.ToString());
+                context.HtmlWriter.WriteEncodedText(" - " + context.Graph.BaseUri.AbsoluteUri);
             }
             context.HtmlWriter.RenderEndTag();
 #if !NO_WEB
@@ -417,7 +417,7 @@ namespace VDS.RDF.Writing
                         {
                             //Need to embed the datatype in the @datatype attribute
                             String dtcurie, dtnamespace;
-                            if (context.QNameMapper.ReduceToQName(lit.DataType.ToString(), out dtcurie, out dtnamespace))
+                            if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out dtcurie, out dtnamespace))
                             {
                                 //Extract the Namespace and make sure it's registered on this Attribute
                                 String ns = dtcurie.Substring(0, dtcurie.IndexOf(':'));
@@ -428,7 +428,7 @@ namespace VDS.RDF.Writing
 
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassLiteral);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.Span);
-                        if (lit.DataType.ToString().Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
+                        if (lit.DataType.AbsoluteUri.Equals(Parsing.RdfSpecsHelper.RdfXmlLiteral))
                         {
                             context.HtmlWriter.Write(lit.Value);
                         }
@@ -440,16 +440,16 @@ namespace VDS.RDF.Writing
 
                         //Output the Datatype
                         context.HtmlWriter.WriteEncodedText("^^");
-                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.ToString());
+                        context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Href, lit.DataType.AbsoluteUri);
                         context.HtmlWriter.AddAttribute(HtmlTextWriterAttribute.Class, this.CssClassDatatype);
                         context.HtmlWriter.RenderBeginTag(HtmlTextWriterTag.A);
-                        if (context.QNameMapper.ReduceToQName(lit.DataType.ToString(), out qname))
+                        if (context.QNameMapper.ReduceToQName(lit.DataType.AbsoluteUri, out qname))
                         {
                             context.HtmlWriter.WriteEncodedText(qname);
                         }
                         else
                         {
-                            context.HtmlWriter.WriteEncodedText(lit.DataType.ToString());
+                            context.HtmlWriter.WriteEncodedText(lit.DataType.AbsoluteUri);
                         }
                         context.HtmlWriter.RenderEndTag();
                     }

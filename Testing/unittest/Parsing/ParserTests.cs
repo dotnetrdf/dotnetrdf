@@ -357,7 +357,7 @@ namespace VDS.RDF.Test.Parsing
 
             foreach (Uri u in testUris) 
             {
-                Console.WriteLine("Testing URI " + u.ToString());
+                Console.WriteLine("Testing URI " + u.AbsoluteUri);
                 Graph g = new Graph();
                 UriLoader.Load(g, u, parser);
 

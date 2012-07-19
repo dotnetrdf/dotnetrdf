@@ -454,7 +454,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string AsString()
         {
-            return this._uri.ToString();
+            return this._uri.AbsoluteUri;
         }
 
         /// <summary>

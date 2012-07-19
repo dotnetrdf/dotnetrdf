@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         }
 
                         //Have to ensure that if Typed is an xsd:string
-                        if (lit.DataType != null && !lit.DataType.ToString().Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
+                        if (lit.DataType != null && !lit.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString)) throw new RdfQueryException("Cannot evaluate the SPARQL CONCAT() function when an argument is a Typed Literal which is not an xsd:string");
                         allString = allString && lit.DataType != null;
 
                         output.Append(lit.Value);

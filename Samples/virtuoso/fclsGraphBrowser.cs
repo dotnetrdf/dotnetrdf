@@ -49,7 +49,7 @@ namespace dotNetRDFVirtuosoSample
             : this()
         {
             this._graphUri = u;
-            this.txtURI.Text = u.ToString();
+            this.txtURI.Text = u.AbsoluteUri;
             this.ViewGraph(u);
         }
 
@@ -73,7 +73,7 @@ namespace dotNetRDFVirtuosoSample
         private void ViewGraph(Uri u)
         {
             this._graphUri = u;
-            this.Text = "Browsing Graph '" + u.ToString() + "'";
+            this.Text = "Browsing Graph '" + u.AbsoluteUri + "'";
 
             Graph g = new Graph();
             try
@@ -84,18 +84,18 @@ namespace dotNetRDFVirtuosoSample
                 if (g.IsEmpty)
                 {
                     //If we get an Empty Graph then we want to try DESCRIBing the resource instead
-                    Object result = this._manager.Query("DESCRIBE <" + u.ToString().Replace(">","\\>") + ">");
+                    Object result = this._manager.Query("DESCRIBE <" + u.AbsoluteUri.Replace(">","\\>") + ">");
                     if (result is Graph)
                     {
                         g = (Graph)result;
-                        this.Text = "Browsing DESCRIBE of '" + u.ToString() + "'";
+                        this.Text = "Browsing DESCRIBE of '" + u.AbsoluteUri + "'";
                     }
 
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error trying to load the Graph '" + u.ToString() + "'\n\n" + ex.Message);
+                MessageBox.Show("Error trying to load the Graph '" + u.AbsoluteUri + "'\n\n" + ex.Message);
             }
 
             //Create a DataTable

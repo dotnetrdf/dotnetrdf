@@ -40,7 +40,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                         {
                             String prefix = qname.StartsWith(":") ? String.Empty : qname.Substring(0, qname.IndexOf(':'));
                             String label = this._termLabels.ContainsKey(term) ? this._termLabels[term] : (this._termComments.ContainsKey(term) ? this._termComments[term] : String.Empty);
-                            results.Add(new NamespaceTerm(this._nsmap.GetNamespaceUri(prefix).ToString(), qname, label));
+                            results.Add(new NamespaceTerm(this._nsmap.GetNamespaceUri(prefix).AbsoluteUri, qname, label));
                         }
                     }
 

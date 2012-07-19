@@ -611,7 +611,7 @@ namespace VDS.RDF.Storage
             foreach (INode subj in subjects)
             {
                 //Create a ChangeSet for this Subject
-                IUriNode report = g.CreateUriNode(UriFactory.Create(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.ToString())));
+                IUriNode report = g.CreateUriNode(UriFactory.Create(Tools.ResolveUri(subj.GetHashCode() + "/changes/" + DateTime.Now.ToString(TalisChangeSetIDFormat), g.BaseUri.AbsoluteUri)));
                 g.Assert(new Triple(report, rdfType, changeSet));
                 g.Assert(new Triple(report, subjOfChange, Tools.CopyNode(subj, g)));
                 g.Assert(new Triple(report, createdDate, now));

@@ -244,7 +244,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                             {
                                 //May be a URI as the object
                                 IUriNode u = ConfigurationLoader.GetConfigurationNode(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom)) as IUriNode;
-                                if (u != null) property.SetValue(this, u.Uri.ToString(), null);
+                                if (u != null) property.SetValue(this, u.Uri.AbsoluteUri, null);
                             }
                             break;
 

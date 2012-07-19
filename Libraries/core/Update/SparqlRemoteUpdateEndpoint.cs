@@ -106,7 +106,7 @@ namespace VDS.RDF.Update
             {
                 //Build the Request URI and POST Data
                 StringBuilder requestUri = new StringBuilder();
-                requestUri.Append(this.Uri.ToString());
+                requestUri.Append(this.Uri.AbsoluteUri);
                 StringBuilder postData = new StringBuilder();
                 bool longUpdate = false;
                 if (!this.HttpMode.Equals("POST") && sparqlUpdate.Length <= LongUpdateLength)

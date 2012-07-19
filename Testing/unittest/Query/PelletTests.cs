@@ -27,7 +27,7 @@ namespace VDS.RDF.Test
                     foreach (PelletService svc in kb.Services)
                     {
                         Console.WriteLine("  " + svc.Name);
-                        Console.WriteLine("    Uri: " + svc.Endpoint.Uri.ToString());
+                        Console.WriteLine("    Uri: " + svc.Endpoint.Uri);
                         Console.WriteLine("    HTTP Methods: " + String.Join(",", svc.Endpoint.HttpMethods.ToArray()));
                         Console.WriteLine("    Response MIME Types: " + String.Join(",", svc.MimeTypes.ToArray()));
                     }
@@ -150,7 +150,7 @@ namespace VDS.RDF.Test
                         NamespaceMapper nsmap = svc.GetNamespaces();
                         foreach (String prefix in nsmap.Prefixes)
                         {
-                            Console.WriteLine(prefix + ": " + nsmap.GetNamespaceUri(prefix).ToString());
+                            Console.WriteLine(prefix + ": " + nsmap.GetNamespaceUri(prefix).AbsoluteUri);
                         }
                     }
                     else

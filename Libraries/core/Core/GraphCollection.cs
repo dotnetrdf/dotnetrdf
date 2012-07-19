@@ -81,7 +81,7 @@ namespace VDS.RDF
             if (this._graphs.ContainsKey(id)) 
             {
                 //Check Ordinal Equality of String form of URIs to detect Hash Code collision
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToSafeString(), StringComparison.Ordinal))
+                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.ToSafeString(), StringComparison.Ordinal))
                 {
                     return true;
                 }
@@ -93,7 +93,7 @@ namespace VDS.RDF
                 {
                     //Hash Code Collision
                     //See if is in list of Collision Graphs
-                    return this._collisionGraphs.Any(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToSafeString(), StringComparison.Ordinal));
+                    return this._collisionGraphs.Any(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.ToSafeString(), StringComparison.Ordinal));
                   }
             } 
             else 
@@ -123,7 +123,7 @@ namespace VDS.RDF
             if (this._graphs.ContainsKey(id))
             {
                 //Check for Hash Code collisions
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(g.BaseUri.ToString(), StringComparison.Ordinal))
+                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(g.BaseUri.AbsoluteUri, StringComparison.Ordinal))
                 {
                     //Already exists in the Graph Collection
                     if (mergeIfExists)
@@ -156,7 +156,7 @@ namespace VDS.RDF
                 else
                 {
                     //Hash Code collision
-                    IGraph temp = this._collisionGraphs.FirstOrDefault(graph => (graph.BaseUri == null && g.BaseUri == null) || graph.BaseUri.ToString().Equals(g.BaseUri.ToString(), StringComparison.Ordinal));
+                    IGraph temp = this._collisionGraphs.FirstOrDefault(graph => (graph.BaseUri == null && g.BaseUri == null) || graph.BaseUri.AbsoluteUri.Equals(g.BaseUri.AbsoluteUri, StringComparison.Ordinal));
                     if (temp != null)
                     {
                         //Aready exists in Collision Graphs
@@ -206,7 +206,7 @@ namespace VDS.RDF
             }
             if (this._graphs.ContainsKey(id))
             {
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal))
+                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal))
                 {
                     IGraph temp = this._graphs[id];
                     this._graphs.Remove(id);
@@ -242,8 +242,8 @@ namespace VDS.RDF
                 {
                     //Hash Code collision
                     //Remove from Collision Graphs list
-                    IGraph temp = this._collisionGraphs.First(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
-                    this._collisionGraphs.RemoveAll(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
+                    IGraph temp = this._collisionGraphs.First(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
+                    this._collisionGraphs.RemoveAll(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
                     this.RaiseGraphRemoved(temp);
                     return true;
                 }
@@ -295,7 +295,7 @@ namespace VDS.RDF
                 if (this._graphs.ContainsKey(id))
                 {
                     //Check for collisions here
-                    if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal))
+                    if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal))
                     {
                         return this._graphs[id];
                     }
@@ -306,7 +306,7 @@ namespace VDS.RDF
                     else
                     {
                         //Is the relevant Graph in the Collision Graphs List
-                        IGraph temp = this._collisionGraphs.FirstOrDefault(g => g.BaseUri.ToString().Equals(graphUri.ToString(), StringComparison.Ordinal));
+                        IGraph temp = this._collisionGraphs.FirstOrDefault(g => g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
                         if (temp == null)
                         {
                             throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");

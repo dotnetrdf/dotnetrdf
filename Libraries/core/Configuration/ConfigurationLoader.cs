@@ -995,7 +995,7 @@ namespace VDS.RDF.Configuration
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
-            String uri = ((IUriNode)n).Uri.ToString();
+            String uri = ((IUriNode)n).Uri.AbsoluteUri;
             if (!uri.StartsWith("appsetting:")) return n;
 
             String key = uri.Substring(uri.IndexOf(':') + 1);

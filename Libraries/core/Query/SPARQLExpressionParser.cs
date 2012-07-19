@@ -972,7 +972,7 @@ namespace VDS.RDF.Query
                         //Should be a Number
                         return this.TryParseNumericLiteral(dtlit, tokens);
                     }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.ToString()))
+                    else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
                     {
                         //Appears to be a Boolean
                         bool b;
@@ -1051,7 +1051,7 @@ namespace VDS.RDF.Query
                     String dtUri;
                     if (dt.StartsWith("<"))
                     {
-                        String baseUri = (this._baseUri == null) ? String.Empty : this._baseUri.ToString();
+                        String baseUri = (this._baseUri == null) ? String.Empty : this._baseUri.AbsoluteUri;
                         dtUri = Tools.ResolveUri(dt.Substring(1, dt.Length - 2), baseUri);
                     }
                     else

@@ -78,6 +78,7 @@ namespace VDS.RDF
         /// <param name="uri">Namespace URI</param>
         public void AddNamespace(string prefix, Uri uri)
         {
+            if (uri == null) throw new ArgumentNullException("Cannot set a prefix to the null URI");
             NestedMapping mapping = new NestedMapping(prefix, uri, this._level);
             if (!this._prefixes.ContainsKey(uri.GetEnhancedHashCode())) this._prefixes.Add(uri.GetEnhancedHashCode(), new List<NestedMapping>());
 
@@ -152,7 +153,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfException("The Prefix for the given URI '" + uri.ToString() + "' is not known by the in-scope NamespaceMapper");
+                throw new RdfException("The Prefix for the given URI '" + uri.AbsoluteUri + "' is not known by the in-scope NamespaceMapper");
             }
         }
 
@@ -202,7 +203,7 @@ namespace VDS.RDF
                 {
                     //Colliding Namespaces get remapped to new prefixes
                     //Assuming the prefixes aren't already used for the same Uri
-                    if (!this.GetNamespaceUri(prefix).ToString().Equals(nsmap.GetNamespaceUri(prefix).ToString(), StringComparison.Ordinal))
+                    if (!this.GetNamespaceUri(prefix).AbsoluteUri.Equals(nsmap.GetNamespaceUri(prefix).AbsoluteUri, StringComparison.Ordinal))
                     {
                         while (this._uris.ContainsKey(tempPrefix))
                         {
@@ -342,7 +343,7 @@ namespace VDS.RDF
         {
             foreach (Uri u in this._uris.Values.Select(l => l.Last().Uri))
             {
-                String baseuri = u.ToString();
+                String baseuri = u.AbsoluteUri;
 
                 //Does the Uri start with the Base Uri
                 if (uri.StartsWith(baseuri))

@@ -141,9 +141,9 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                return graphUri.ToString().Equals(this._sourceUri.ToSafeString()) || graphUri.ToString().Equals(this._destUri.ToSafeString());
+                return graphUri.AbsoluteUri.Equals(this._sourceUri.ToSafeString()) || graphUri.AbsoluteUri.Equals(this._destUri.ToSafeString());
             }
-            }
+        }
 
         /// <summary>
         /// Gets the String representation of the Command
@@ -175,7 +175,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                output.Append(" GRAPH <" + this._sourceUri.ToString().Replace(">", "\\>") + ">");
+                output.Append(" GRAPH <" + this._sourceUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
             output.Append(" TO ");
             if (this._destUri == null)
@@ -184,7 +184,7 @@ namespace VDS.RDF.Update.Commands
             }
             else
             {
-                output.Append(" GRAPH <" + this._destUri.ToString().Replace(">", "\\>") + ">");
+                output.Append(" GRAPH <" + this._destUri.AbsoluteUri.Replace(">", "\\>") + ">");
             }
 
             return output.ToString();

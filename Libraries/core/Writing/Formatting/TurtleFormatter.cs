@@ -232,7 +232,7 @@ namespace VDS.RDF.Writing.Formatting
                 else if (l.DataType != null)
                 {
                     output.Append("^^");
-                    if (this._qnameMapper.ReduceToQName(l.DataType.ToString(), out qname))
+                    if (this._qnameMapper.ReduceToQName(l.DataType.AbsoluteUri, out qname))
                     {
                         if (TurtleSpecsHelper.IsValidQName(qname))
                         {

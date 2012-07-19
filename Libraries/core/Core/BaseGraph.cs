@@ -1139,7 +1139,7 @@ namespace VDS.RDF
             info.AddValue("base", this.BaseUri.ToSafeString());
             info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
             IEnumerable<KeyValuePair<String,String>> ns = from p in this.NamespaceMap.Prefixes
-                                                          select new KeyValuePair<String,String>(p, this.NamespaceMap.GetNamespaceUri(p).ToString());
+                                                          select new KeyValuePair<String,String>(p, this.NamespaceMap.GetNamespaceUri(p).AbsoluteUri);
             info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
         }
 
@@ -1230,7 +1230,7 @@ namespace VDS.RDF
             //Serialize Base Uri
             if (this.BaseUri != null)
             {
-                writer.WriteAttributeString("base", this.BaseUri.ToString());
+                writer.WriteAttributeString("base", this.BaseUri.AbsoluteUri);
             }
 
             //Serialize Namespace Map
@@ -1239,7 +1239,7 @@ namespace VDS.RDF
             {
                 writer.WriteStartElement("namespace");
                 writer.WriteAttributeString("prefix", prefix);
-                writer.WriteAttributeString("uri", this.NamespaceMap.GetNamespaceUri(prefix).ToString());
+                writer.WriteAttributeString("uri", this.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();

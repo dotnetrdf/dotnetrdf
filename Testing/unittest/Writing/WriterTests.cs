@@ -374,6 +374,7 @@ namespace VDS.RDF.Test.Writing
                 writer.Save(g, strWriter);
                 Console.WriteLine(strWriter.ToString());
                 Console.WriteLine();
+                Console.Out.Flush();
 
                 IRdfReader parser = parsers[i];
                 Graph h = new Graph(true);
