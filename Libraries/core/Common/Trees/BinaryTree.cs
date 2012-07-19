@@ -333,9 +333,18 @@ namespace VDS.Common.Trees
                                 }
                             }
                             //Move value up to this node and delete the rightmost child
-                            successor.Parent.RightChild = null;
                             current.Key = successor.Key;
                             current.Value = successor.Value;
+
+                            //Watch out for the case where the rightmost child had a left child
+                            if (successor.Parent.RightChild.HasChildren)
+                            {
+                                successor.Parent.RightChild = successor.LeftChild;
+                            }
+                            else
+                            {
+                                successor.Parent.RightChild = null;
+                            }
                             this.AfterDelete(current);
                             return true;
                         }
@@ -364,9 +373,18 @@ namespace VDS.Common.Trees
                                 }
                             }
                             //Move value up to this node and delete the leftmost child
-                            successor.Parent.LeftChild = null;
                             current.Key = successor.Key;
                             current.Value = successor.Value;
+
+                            //Watch out for the case where the lefttmost child had a right child
+                            if (successor.Parent.LeftChild.HasChildren)
+                            {
+                                successor.Parent.LeftChild = successor.RightChild;
+                            }
+                            else
+                            {
+                                successor.Parent.LeftChild = null;
+                            }
                             this.AfterDelete(current);
                             return true;
                         }
