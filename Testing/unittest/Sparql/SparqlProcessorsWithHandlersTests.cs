@@ -254,23 +254,17 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlWithHandlersPelletCount()
         {
-            this.EnsurePelletReady();
-            this.TestCountHandlers(this._pellet);
+            try
+            {
+                this.EnsurePelletReady();
+                Options.HttpDebugging = true;
+                this.TestCountHandlers(this._pellet);
+            }
+            finally
+            {
+                Options.HttpDebugging = false;
+            }
         }
-
-        //[TestMethod]
-        //public void SparqlWithHandlersPelletGraph()
-        //{
-        //    this.EnsurePelletReady();
-        //    this.TestGraphHandlers(this._pellet);
-        //}
-
-        //[TestMethod]
-        //public void SparqlWithHandlersPelletWriteThrough()
-        //{
-        //    this.EnsurePelletReady();
-        //    this.TestWriteThroughHandlers(this._pellet);
-        //}
 
         #endregion
 

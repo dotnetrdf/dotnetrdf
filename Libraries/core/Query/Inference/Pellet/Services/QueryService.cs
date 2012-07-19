@@ -79,21 +79,21 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             {
                 try
                 {
-                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                    SparqlResultSet results = new SparqlResultSet();
-                    sparqlParser.Load(results, new StreamReader(response.GetResponseStream()));
-
-                    response.Close();
-                    return results;
-                }
-                catch (RdfParserSelectionException)
-                {
                     IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
                     Graph g = new Graph();
                     parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                     response.Close();
                     return g;
+                }
+                catch (RdfParserSelectionException)
+                {
+                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    SparqlResultSet results = new SparqlResultSet();
+                    sparqlParser.Load(results, new StreamReader(response.GetResponseStream()));
+
+                    response.Close();
+                    return results;
                 }
             }
         }
@@ -112,13 +112,13 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
             {
                 try
                 {
-                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
-                    sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
+                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
+                    parser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
                 }
                 catch (RdfParserSelectionException)
                 {
-                    IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                    parser.Load(rdfHandler, new StreamReader(response.GetResponseStream()));
+                    ISparqlResultsReader sparqlParser = MimeTypesHelper.GetSparqlParser(response.ContentType);
+                    sparqlParser.Load(resultsHandler, new StreamReader(response.GetResponseStream()));
                 }
                 response.Close();
             }

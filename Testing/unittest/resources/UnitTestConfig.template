@@ -29,7 +29,7 @@ Storage.AllegroGraph.Catalog=test
 Storage.AllegroGraph.Repository=unit-test
 
 # A Dydra account to use for testing
-Storage.Dyrda=false
+Storage.Dydra=false
 Storage.Dydra.Account=rvesse
 Storage.Dydra.Repository=test
 Storage.Dydra.ApiKey=
