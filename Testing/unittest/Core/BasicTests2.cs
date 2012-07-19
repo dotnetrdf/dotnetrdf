@@ -205,9 +205,11 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void ParsingUriLoader()
         {
+            int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
                 Options.UriLoaderCaching = false;
+                Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
                     new Uri("http://www.bbc.co.uk/programmes/b0080bbs#programme"),
@@ -247,6 +249,7 @@ namespace VDS.RDF.Test
             finally
             {
                 Options.UriLoaderCaching = true;
+                Options.UriLoaderTimeout = defaultTimeout;
             }
         }
 

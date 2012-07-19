@@ -55,6 +55,7 @@ namespace VDS.RDF.Test.Parsing
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/resource/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
+            request.Timeout = 45000;
 
             try
             {
@@ -78,6 +79,7 @@ namespace VDS.RDF.Test.Parsing
             request = (HttpWebRequest)WebRequest.Create("http://dbpedia.org/data/London");
             request.Accept = "application/rdf+xml";
             request.Method = "GET";
+            request.Timeout = 45000;
 
             try
             {
@@ -149,10 +151,12 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingUriLoaderDBPedia()
         {
+            int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
                 Options.HttpDebugging = true;
                 Options.UriLoaderCaching = false;
+                Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Barack_Obama"));
@@ -167,6 +171,7 @@ namespace VDS.RDF.Test.Parsing
             {
                 Options.HttpDebugging = false;
                 Options.UriLoaderCaching = true;
+                Options.UriLoaderTimeout = defaultTimeout;
             }
         }
 

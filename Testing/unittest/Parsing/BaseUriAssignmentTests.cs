@@ -35,11 +35,21 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingBaseUriAssignmentUriLoader()
         {
-            Graph g = new Graph();
-            UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
-            Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
-            Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
-
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                //DBPedia can be slow so up the timeout for this test
+                Options.UriLoaderTimeout = 45000;
+                Graph g = new Graph();
+                UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
+                Console.WriteLine("Base URI: " + ShowBaseUri(g.BaseUri));
+                Assert.IsNotNull(g.BaseUri, "Base URI should not be null");
+            }
+            finally
+            {
+                //Remember to reset timeout afterwards
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
         }
 
         [TestMethod]

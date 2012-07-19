@@ -315,9 +315,11 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingBlockingTextReaderNetworkStreamNotation3()
         {
+            int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
                 Options.UriLoaderCaching = false;
+                Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Southampton"), new Notation3Parser());
@@ -327,6 +329,7 @@ namespace VDS.RDF.Test.Parsing
             finally
             {
                 Options.UriLoaderCaching = true;
+                Options.UriLoaderTimeout = defaultTimeout;
             }
         }
 

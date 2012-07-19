@@ -60,16 +60,25 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingUriLoaderResponseUriCaching()
         {
-            Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
-            Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
-            Uri sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
+            int defaultTimeout = Options.UriLoaderTimeout;
+            try
+            {
+                Options.UriLoaderTimeout = 45000;
+                Uri soton = new Uri("http://dbpedia.org/resource/Southampton");
+                Uri sotonPage = new Uri("http://dbpedia.org/page/Southampton.html");
+                Uri sotonData = new Uri("http://dbpedia.org/data/Southampton.xml");
 
-            Graph g = new Graph();
-            UriLoader.Load(g, soton);
+                Graph g = new Graph();
+                UriLoader.Load(g, soton);
 
-            Assert.IsTrue(UriLoader.IsCached(soton), "Resource URI should have been cached");
-            Assert.IsTrue(UriLoader.IsCached(sotonData), "Data URI should have been cached");
-            Assert.IsFalse(UriLoader.IsCached(sotonPage), "Page URI should not have been cached");
+                Assert.IsTrue(UriLoader.IsCached(soton), "Resource URI should have been cached");
+                Assert.IsTrue(UriLoader.IsCached(sotonData), "Data URI should have been cached");
+                Assert.IsFalse(UriLoader.IsCached(sotonPage), "Page URI should not have been cached");
+            }
+            finally
+            {
+                Options.UriLoaderTimeout = defaultTimeout;
+            }
         }
     }
 }
