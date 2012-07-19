@@ -134,6 +134,7 @@ namespace VDS.RDF.Query
             this._store.GraphChanged += this.OnGraphChanged;
             this._store.GraphAdded += this.OnGraphAdded;
             this._store.GraphAdded += this.OnGraphRemoved;
+            this._store.GraphMerged += this.OnGraphMerged;
 
             //Fill the Graph with the results of the Query
             this.UpdateViewInternal();
@@ -224,6 +225,33 @@ namespace VDS.RDF.Query
                 if (g != null)
                 {
                     //Ignore Changes to self
+                    if (ReferenceEquals(g, this)) return;
+
+                    if (this._graphs == null)
+                    {
+                        //No specific Graphs so any change causes an invalidation
+                        this.InvalidateView();
+                    }
+                    else
+                    {
+                        //If specific Graphs only invalidate when those Graphs change
+                        if (this._graphs.Contains(g.BaseUri.ToSafeString()))
+                        {
+                            this.InvalidateView();
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnGraphMerged(Object sender, TripleStoreEventArgs args)
+        {
+            if (args.GraphEvent != null)
+            {
+                IGraph g = args.GraphEvent.Graph;
+                if (g != null)
+                {
+                    //Ignore merges to self
                     if (ReferenceEquals(g, this)) return;
 
                     if (this._graphs == null)

@@ -57,8 +57,8 @@ namespace VDS.RDF.Test.Sparql
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
-                g.BaseUri = new Uri("http://example.org/data");
-                store.Add(g);
+                g.BaseUri = null;
+                store.Add(g, true);
 
                 Thread.Sleep(200);
                 if (view.Triples.Count == 0) view.UpdateView();
