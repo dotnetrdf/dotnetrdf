@@ -43,6 +43,7 @@ Storage.Fuseki=false
 Storage.Fuseki.Server=http://localhost:3030/dataset/data
 
 # A Joseki install to use for testing
+Storage.Joseki=false
 Storage.Joseki.Server=
 
 # A Sesame install to use for testing
@@ -51,7 +52,7 @@ Storage.Sesame.Server=http://localhost:8080/openrdf-sesame/
 Storage.Sesame.Repository=unit-test
 
 # A Stardog install to use for testing
-Storage.Stardog=
+Storage.Stardog=false
 Storage.Stardog.Server=http://localhost:5822
 Storage.Stardog.DB=test
 Storage.Stardog.User=admin

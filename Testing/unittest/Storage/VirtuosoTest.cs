@@ -29,7 +29,9 @@ namespace VDS.RDF.Test.Storage
         public void StorageVirtuosoLoadGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -81,13 +83,20 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.AreEqual(h.Triples.Count, i.Triples.Count);
                 Assert.AreEqual(h, i);
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoLoadGraphWithNullHandler()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -101,21 +110,28 @@ namespace VDS.RDF.Test.Storage
 
                 NullHandler handler = new NullHandler();
                 manager.LoadGraph(handler, testData.BaseUri);
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoSaveGraph()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
 
                 //Load in our Test Graph
-                TurtleParser ttlparser = new TurtleParser();
                 Graph g = new Graph();
-                ttlparser.Load(g, "Turtle.ttl");
+                g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+                g.BaseUri = new Uri("http://example.org/storage/virtuoso/save");
 
                 Console.WriteLine();
                 Console.WriteLine("Loaded Test Graph OK");
@@ -136,7 +152,7 @@ namespace VDS.RDF.Test.Storage
 
                 //Try to retrieve
                 Graph h = new Graph();
-                manager.LoadGraph(h, "http://example.org");
+                manager.LoadGraph(h, g.BaseUri);
 
                 Assert.IsFalse(h.IsEmpty, "Retrieved Graph should be non-empty");
 
@@ -150,52 +166,26 @@ namespace VDS.RDF.Test.Storage
                 Assert.AreEqual(g.Triples.Count, h.Triples.Count, "Graph should have same number of Triples before and after saving");
 
                 GraphDiffReport diff = h.Difference(g);
-
-                Console.WriteLine();
                 if (!diff.AreEqual)
                 {
-                    Console.WriteLine("Some Differences in Graphs detected (should only be due to Virtuoso not running xsd:boolean as true/false");
-                    Console.WriteLine();
-
                     TestTools.ShowDifferences(diff);
-
-                    IUriNode allowedDiffSubject = g.CreateUriNode(":four");
-                    IUriNode allowedDiffSubject2 = g.CreateUriNode(":six");
-                    Assert.IsTrue(diff.RemovedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("true^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean) || t.Object.ToString().Equals("false^^" + XmlSpecsHelper.XmlSchemaDataTypeBoolean)))), "Removed Triples should only be those with subject :four and boolean object");
-                    Assert.IsTrue(diff.AddedTriples.All(t => t.Subject.Equals(allowedDiffSubject2) || (t.Subject.Equals(allowedDiffSubject) && (t.Object.ToString().Equals("1") || t.Object.ToString().Equals("0")))), "Added Triples should only be those with subject :four and 1/0 in place of boolean object");
                 }
-                else
-                {
-                    Console.WriteLine("Graphs are equal");
-                }
-        }
 
-        [TestMethod]
-        public void StorageVirtuosoDataTypes()
-        {
-            VirtuosoManager manager = VirtuosoTest.GetConnection();
-            Assert.IsNotNull(manager);
-
-            NTriplesFormatter formatter = new NTriplesFormatter();
-
-            //Try to retrieve
-            Graph g = new Graph();
-            manager.LoadGraph(g, "http://localhost/TurtleImportTest");
-
-            Assert.IsFalse(g.IsEmpty, "Retrieved Graph should be non-empty");
-
-            Console.WriteLine("Retrieved the Graph from Virtuoso OK");
-            Console.WriteLine("Retrieved Graph contains:");
-            foreach (Triple t in g.Triples)
+                Console.WriteLine();
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
             {
-                Console.WriteLine(t.ToString(formatter));
+                if (manager != null) manager.Dispose();
             }
         }
 
         [TestMethod]
         public void StorageVirtuosoDeleteGraph()
         {
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -242,26 +232,33 @@ namespace VDS.RDF.Test.Storage
                 manager.LoadGraph(i, "http://example.org/deleteMe");
 
                 Assert.IsTrue(i.IsEmpty, "Retrieved Graph should be empty as it should have been deleted from the Store");
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoBlankNodePersistence()
         {
-                //Create our Test Graph
-                Graph g = new Graph();
-                g.BaseUri = new Uri("http://example.org/bnodes/");
+            //Create our Test Graph
+            Graph g = new Graph();
+            g.BaseUri = new Uri("http://example.org/bnodes/");
 
-                IBlankNode b = g.CreateBlankNode("blank");
-                IUriNode rdfType = g.CreateUriNode("rdf:type");
-                IUriNode bnode = g.CreateUriNode(":BlankNode");
+            IBlankNode b = g.CreateBlankNode("blank");
+            IUriNode rdfType = g.CreateUriNode("rdf:type");
+            IUriNode bnode = g.CreateUriNode(":BlankNode");
 
-                g.Assert(new Triple(b, rdfType, bnode));
+            g.Assert(new Triple(b, rdfType, bnode));
 
-                Assert.AreEqual(1, g.Triples.Count, "Should only be 1 Triple in the Test Graph");
+            Assert.AreEqual(1, g.Triples.Count, "Should only be 1 Triple in the Test Graph");
 
-                //Connect to Virtuoso
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            //Connect to Virtuoso
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
 
+            try
+            {
                 //Save Graph
                 manager.SaveGraph(g);
 
@@ -315,49 +312,19 @@ namespace VDS.RDF.Test.Storage
                 Console.WriteLine();
 
                 TestTools.CompareGraphs(j, k, false);
-        }
-
-        /// <summary>
-        /// Tests retrieving the Default Graph
-        /// </summary>
-        /// <remarks>Excluded from Unit Tests because while this works it takes an extremely long time since the Default Graph will potentially have a very large number of Triples and the Virtuoso Manager only reads in a single threaded manner</remarks>
-        //[TestMethod]
-        public void StorageVirtuosoDefaultGraph()
-        {
-            Stopwatch timer = new Stopwatch();
-            try
-            {
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
-                Assert.IsNotNull(manager);
-
-                Console.WriteLine("Got the Virtuoso Manager OK");
-
-                //Try to get the Default Graph
-                Graph g = new Graph();
-                timer.Start();
-                manager.LoadGraph(g, (Uri)null);
-                timer.Stop();
-
-                Console.WriteLine();
-                Console.WriteLine("Default Graph Contains:");
-                foreach (Triple t in g.Triples)
-                {
-                    Console.WriteLine(t.ToString());
-                }
-                Console.WriteLine();
             }
-            catch (Exception ex)
+            finally
             {
-                timer.Stop();
-                Console.WriteLine(timer.ElapsedMilliseconds + "ms Elapsed");
-                throw;
+                if (manager != null) manager.Dispose();
             }
         }
 
         [TestMethod]
         public void StorageVirtuosoUpdateGraph()
         {
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -388,13 +355,20 @@ namespace VDS.RDF.Test.Storage
 
                 Assert.IsTrue(h.Triples.Contains(additions[0]), "Added Triple should be in the retrieved Graph");
                 Assert.IsFalse(h.Triples.Contains(removals[0]), "Removed Triple should not be in the retrieved Graph");
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeQuery()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -468,7 +442,7 @@ namespace VDS.RDF.Test.Storage
                 CheckQueryResult(result, true);
 
                 Console.WriteLine("AVG integer objects");
-               
+
                 //Try another SELECT using an aggregate function
                 result = manager.Query("SELECT AVG(?o) FROM <http://example.org/> WHERE {?s ?p ?o. FILTER(DATATYPE(?o) = <http://www.w3.org/2001/XMLSchema#integer>)}");
                 CheckQueryResult(result, true);
@@ -478,12 +452,19 @@ namespace VDS.RDF.Test.Storage
                 //Try yet another SELECT using an aggregate function
                 result = manager.Query("SELECT AVG(?o) FROM <http://example.org/> WHERE {?s ?p ?o. FILTER(DATATYPE(?o) = <http://www.w3c.org/2001/XMLSchema#decimal>)}");
                 CheckQueryResult(result, true);
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeQueryBifContains1()
         {
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -494,13 +475,19 @@ namespace VDS.RDF.Test.Storage
                 result = manager.Query("ASK { ?s ?p ?o . ?o bif:contains 'example' }");
                 CheckQueryResult(result, true);
 
-                manager.Dispose();
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoNativeUpdate()
         {
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Console.WriteLine("Got the Virtuoso Manager OK");
@@ -527,6 +514,11 @@ namespace VDS.RDF.Test.Storage
                 //Try a SELECT query
                 result = manager.Query("ASK FROM <http://example.org/> WHERE {<http://example.org/seven> ?p ?o}");
                 CheckQueryResult(result, true);
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
@@ -535,36 +527,46 @@ namespace VDS.RDF.Test.Storage
             //Get the Virtuoso Manager
             VirtuosoManager manager = VirtuosoTest.GetConnection();
 
-            //Make the Test Graph
-            Graph g = new Graph();
-            g.BaseUri = new Uri("http://example.org/VirtuosoEncodingTest");
-            IUriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
-            ILiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
-            g.Assert(new Triple(g.CreateUriNode(), encodedString, encodedText));
+            try
+            {
 
-            Console.WriteLine("Test Graph created OK");
-            TestTools.ShowGraph(g);
+                //Make the Test Graph
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/VirtuosoEncodingTest");
+                IUriNode encodedString = g.CreateUriNode(new Uri("http://example.org/encodedString"));
+                ILiteralNode encodedText = g.CreateLiteralNode("William Jørgensen");
+                g.Assert(new Triple(g.CreateUriNode(), encodedString, encodedText));
 
-            //Save to Virtuoso
-            Console.WriteLine();
-            Console.WriteLine("Saving to Virtuoso");
-            manager.SaveGraph(g);
+                Console.WriteLine("Test Graph created OK");
+                TestTools.ShowGraph(g);
 
-            //Load back from Virtuoso
-            Console.WriteLine();
-            Console.WriteLine("Retrieving from Virtuoso");
-            Graph h = new Graph();
-            manager.LoadGraph(h, new Uri("http://example.org/VirtuosoEncodingTest"));
-            TestTools.ShowGraph(h);
+                //Save to Virtuoso
+                Console.WriteLine();
+                Console.WriteLine("Saving to Virtuoso");
+                manager.SaveGraph(g);
 
-            Assert.AreEqual(g, h, "Graphs should be equal");
+                //Load back from Virtuoso
+                Console.WriteLine();
+                Console.WriteLine("Retrieving from Virtuoso");
+                Graph h = new Graph();
+                manager.LoadGraph(h, new Uri("http://example.org/VirtuosoEncodingTest"));
+                TestTools.ShowGraph(h);
+
+                Assert.AreEqual(g, h, "Graphs should be equal");
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoConfigSerialization()
         {
             NTriplesFormatter formatter = new NTriplesFormatter();
-                VirtuosoManager manager = VirtuosoTest.GetConnection();
+            VirtuosoManager manager = VirtuosoTest.GetConnection();
+            try
+            {
                 Assert.IsNotNull(manager);
 
                 Graph g = new Graph();
@@ -618,6 +620,11 @@ namespace VDS.RDF.Test.Storage
                 {
                     Assert.Fail("Returned an object of type '" + loadedObj.GetType().FullName + "' when deserializing");
                 }
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
@@ -625,56 +632,70 @@ namespace VDS.RDF.Test.Storage
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
 
-            //Create the Test Graph
-            Graph g = new Graph();
-            g.BaseUri = new Uri("http://example.org/VirtuosoRegexTest");
-            INode subj1 = g.CreateUriNode(new Uri("http://example.org/one"));
-            INode subj2 = g.CreateUriNode(new Uri("http://example.org/two"));
-            INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
-            INode obj1 = g.CreateLiteralNode("search term");
-            INode obj2 = g.CreateLiteralNode("no term");
-            g.Assert(subj1, pred, obj1);
-            g.Assert(subj2, pred, obj2);
-            manager.SaveGraph(g);
+            try
+            {
 
-            Graph h = new Graph();
-            manager.LoadGraph(h, g.BaseUri);
-            Assert.AreEqual(g, h, "Graphs should be equal");
+                //Create the Test Graph
+                Graph g = new Graph();
+                g.BaseUri = new Uri("http://example.org/VirtuosoRegexTest");
+                INode subj1 = g.CreateUriNode(new Uri("http://example.org/one"));
+                INode subj2 = g.CreateUriNode(new Uri("http://example.org/two"));
+                INode pred = g.CreateUriNode(new Uri("http://example.org/predicate"));
+                INode obj1 = g.CreateLiteralNode("search term");
+                INode obj2 = g.CreateLiteralNode("no term");
+                g.Assert(subj1, pred, obj1);
+                g.Assert(subj2, pred, obj2);
+                manager.SaveGraph(g);
 
-            String query = "SELECT * FROM <" + g.BaseUri.ToString() + "> WHERE { ?s ?p ?o . FILTER(REGEX(STR(?o), 'search', 'i')) }";
-            SparqlResultSet results = manager.Query(query) as SparqlResultSet;
-            if (results == null) Assert.Fail("Did not get a Result Set as expected");
-            Console.WriteLine("Results obtained via VirtuosoManager.Query()");
-            TestTools.ShowResults(results);
-            Assert.AreEqual(1, results.Count);
+                Graph h = new Graph();
+                manager.LoadGraph(h, g.BaseUri);
+                Assert.AreEqual(g, h, "Graphs should be equal");
 
-            SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
-            SparqlResultSet results2 = endpoint.QueryWithResultSet(query);
-            Console.WriteLine("Results obtained via SparqlRemoteEndpoint.QueryWithResultSet()");
-            TestTools.ShowResults(results2);
-            Assert.AreEqual(1, results2.Count);
+                String query = "SELECT * FROM <" + g.BaseUri.ToString() + "> WHERE { ?s ?p ?o . FILTER(REGEX(STR(?o), 'search', 'i')) }";
+                SparqlResultSet results = manager.Query(query) as SparqlResultSet;
+                if (results == null) Assert.Fail("Did not get a Result Set as expected");
+                Console.WriteLine("Results obtained via VirtuosoManager.Query()");
+                TestTools.ShowResults(results);
+                Assert.AreEqual(1, results.Count);
 
-            manager.Dispose();
+                SparqlRemoteEndpoint endpoint = new SparqlRemoteEndpoint(new Uri("http://localhost:8890/sparql"));
+                SparqlResultSet results2 = endpoint.QueryWithResultSet(query);
+                Console.WriteLine("Results obtained via SparqlRemoteEndpoint.QueryWithResultSet()");
+                TestTools.ShowResults(results2);
+                Assert.AreEqual(1, results2.Count);
+
+            }
+            finally
+            {
+                if (manager != null) manager.Dispose();
+            }
         }
 
         [TestMethod]
         public void StorageVirtuosoBlankNodeInsert()
         {
             VirtuosoManager manager = VirtuosoTest.GetConnection();
-            Graph g = new Graph();
-            Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
-
-            manager.UpdateGraph("http://localhost/insertBNodeTest", t.AsEnumerable(), null);
-
-            Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/insertBNodeTest> { ?s a <http:///example.org/object> } }");
-            if (results is SparqlResultSet)
+            try
             {
-                TestTools.ShowResults(results);
-                Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+                Graph g = new Graph();
+                Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+
+                manager.UpdateGraph("http://localhost/insertBNodeTest", t.AsEnumerable(), null);
+
+                Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/insertBNodeTest> { ?s a <http:///example.org/object> } }");
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                    Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+                }
+                else
+                {
+                    Assert.Fail("Didn't get a SPARQL Result Set as expected");
+                }
             }
-            else
+            finally
             {
-                Assert.Fail("Didn't get a SPARQL Result Set as expected");
+                if (manager != null) manager.Dispose();
             }
         }
 
@@ -683,35 +704,42 @@ namespace VDS.RDF.Test.Storage
         {
             //First ensure data is present in the store
             VirtuosoManager manager = VirtuosoTest.GetConnection();
-            manager.DeleteGraph("http://localhost/deleteBNodeTest");
-            Graph g = new Graph();
-            Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
-            g.Assert(t);
-
-            manager.UpdateGraph("http://localhost/deleteBNodeTest", t.AsEnumerable(), null);
-
-            Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/deleteBNodeTest> { ?s a <http://example.org/object> } }");
-            if (results is SparqlResultSet)
+            try
             {
-                TestTools.ShowResults(results);
-                Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+                manager.DeleteGraph("http://localhost/deleteBNodeTest");
+                Graph g = new Graph();
+                Triple t = new Triple(g.CreateBlankNode(), g.CreateUriNode("rdf:type"), g.CreateUriNode(UriFactory.Create("http://example.org/object")));
+                g.Assert(t);
 
-                //Now we've ensured data is present we can first load the graph and then try to delete the given triple
-                Graph h = new Graph();
-                manager.LoadGraph(h, "http://localhost/deleteBNodeTest");
-                Assert.AreEqual(g, h, "Graphs should be equal");
+                manager.UpdateGraph("http://localhost/deleteBNodeTest", t.AsEnumerable(), null);
 
-                //Then we can go ahead and delete the triples from this graph
-                manager.UpdateGraph("http://localhost/deleteBNodeTest", null, h.Triples);
-                Graph i = new Graph();
-                manager.LoadGraph(i, "http://localhost/deleteBNodeTest");
-                Assert.IsTrue(i.IsEmpty, "Graph should be empty");
-                Assert.AreNotEqual(h, i);
-                Assert.AreNotEqual(g, i);
+                Object results = manager.Query("ASK WHERE { GRAPH <http://localhost/deleteBNodeTest> { ?s a <http://example.org/object> } }");
+                if (results is SparqlResultSet)
+                {
+                    TestTools.ShowResults(results);
+                    Assert.IsTrue(((SparqlResultSet)results).Result, "Expected a true result");
+
+                    //Now we've ensured data is present we can first load the graph and then try to delete the given triple
+                    Graph h = new Graph();
+                    manager.LoadGraph(h, "http://localhost/deleteBNodeTest");
+                    Assert.AreEqual(g, h, "Graphs should be equal");
+
+                    //Then we can go ahead and delete the triples from this graph
+                    manager.UpdateGraph("http://localhost/deleteBNodeTest", null, h.Triples);
+                    Graph i = new Graph();
+                    manager.LoadGraph(i, "http://localhost/deleteBNodeTest");
+                    Assert.IsTrue(i.IsEmpty, "Graph should be empty");
+                    Assert.AreNotEqual(h, i);
+                    Assert.AreNotEqual(g, i);
+                }
+                else
+                {
+                    Assert.Fail("Didn't get a SPARQL Result Set as expected");
+                }
             }
-            else
+            finally
             {
-                Assert.Fail("Didn't get a SPARQL Result Set as expected");
+                if (manager != null) manager.Dispose();
             }
         }
 

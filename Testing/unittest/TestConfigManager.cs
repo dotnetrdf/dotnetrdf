@@ -69,48 +69,47 @@ namespace VDS.RDF.Test
         private static void Init()
         {
             if (_init) return;
-            if (_failed)
-            {
-                Assert.Fail("UnitTestConfig.properties cannot be found, please make a copy of UnitTestConfig.template and configure for your environment in order to run this test");
-            }
+            if (_failed) Fail();
 
             if (File.Exists("UnitTestConfig.properties"))
             {
                 using (StreamReader reader = new StreamReader("UnitTestConfig.properties"))
                 {
-                    String line = reader.ReadLine();
-                    if (line != null)
+                    do
                     {
-                        do
+                        String line = reader.ReadLine();
+                        if (line == null) break;
+                        if (line.TrimStart().StartsWith("#")) continue;
+                        if (line.Equals("")) continue;
+
+                        String[] parts = line.Split(new char[] { '=' }, 2);
+                        if (parts.Length == 2)
                         {
-                            if (line.TrimStart().StartsWith("#")) continue;
-                            if (line.Equals("")) continue;
-
-                            String[] parts = line.Split(new char[] { '=' }, 2);
-                            if (parts.Length == 2)
+                            if (_settings.ContainsKey(parts[0]))
                             {
-                                if (_settings.ContainsKey(parts[0]))
-                                {
-                                    _settings[parts[0]] = parts[1];
-                                }
-                                else
-                                {
-                                    _settings.Add(parts[0], parts[1]);
-                                }
+                                _settings[parts[0]] = parts[1];
                             }
-
-                            line = reader.ReadLine();
-                        } while (line != null);
-                    }
+                            else
+                            {
+                                _settings.Add(parts[0], parts[1]);
+                            }
+                        }
+                    } while (true);
+                    reader.Close();
                 }
             }
             else
             {
                 _failed = true;
-                Assert.Fail("UnitTestConfig.properties cannot be found, please make a copy of UnitTestConfig.template and configure for your environment in order to run this test");
+                Fail();
             }
 
             _init = true;
+        }
+
+        private static void Fail()
+        {
+            Assert.Fail("UnitTestConfig.properties cannot be found, to configure your test environment please make a copy of UnitTestConfig.template under the resources directory, add it to this project as a Content item and then edit it to match your test environment");
         }
 
         /// <summary>
