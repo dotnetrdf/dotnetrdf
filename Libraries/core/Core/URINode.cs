@@ -269,7 +269,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override string ToString()
         {
-            return this._uri.ToString();
+            return this._uri.AbsoluteUri;
         }
 
         /// <summary>
@@ -439,7 +439,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._uri.ToString());
+            writer.WriteString(this._uri.AbsoluteUri);
         }
 
         #endregion

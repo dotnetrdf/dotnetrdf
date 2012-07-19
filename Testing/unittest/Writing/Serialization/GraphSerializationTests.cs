@@ -29,7 +29,12 @@ namespace VDS.RDF.Test.Writing.Serialization
             Console.WriteLine();
 
             Graph h = serializer.Deserialize(new StringReader(writer.ToString())) as Graph;
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual)
+            {
+                TestTools.ShowDifferences(report);
+            }
+            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
         private void TestGraphSerializationXml(IEnumerable<IGraph> gs)
@@ -85,7 +90,12 @@ namespace VDS.RDF.Test.Writing.Serialization
             Console.WriteLine();
 
             Graph h = serializer.ReadObject(XmlReader.Create(new StringReader(writer.ToString()))) as Graph;
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual)
+            {
+                TestTools.ShowDifferences(report);
+            }
+            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
         private void TestGraphSerializationJson(IGraph g)
@@ -101,7 +111,12 @@ namespace VDS.RDF.Test.Writing.Serialization
 
             Object h = serializer.Deserialize<Graph>(new JsonTextReader(new StringReader(writer.ToString())));// as Graph;
             Console.WriteLine(h.GetType().FullName);
-            Assert.AreEqual(g, h, "Graphs should be equal");
+            GraphDiffReport report = g.Difference((IGraph)h);
+            if (!report.AreEqual)
+            {
+                TestTools.ShowDifferences(report);
+            }
+            Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
         [TestMethod]

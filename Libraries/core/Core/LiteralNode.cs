@@ -400,7 +400,7 @@ namespace VDS.RDF
             else if (!(this._datatype == null))
             {
                 stringOut.Append("^^");
-                stringOut.Append(this._datatype.ToString());
+                stringOut.Append(this._datatype.AbsoluteUri);
             }
 
             return stringOut.ToString();
@@ -537,7 +537,7 @@ namespace VDS.RDF
             if (this._datatype != null)
             {
                 info.AddValue("mode", (byte)2);
-                info.AddValue("datatype", this._datatype.ToString());
+                info.AddValue("datatype", this._datatype.AbsoluteUri);
             }
             else if (!this._language.Equals(String.Empty))
             {
@@ -606,7 +606,7 @@ namespace VDS.RDF
         {
             if (this._datatype != null)
             {
-                writer.WriteAttributeString("datatype", this._datatype.ToString());
+                writer.WriteAttributeString("datatype", this._datatype.AbsoluteUri);
             }
             else if (!this._language.Equals(String.Empty))
             {
