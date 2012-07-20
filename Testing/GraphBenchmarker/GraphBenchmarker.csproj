@@ -116,6 +116,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Test\Actual\CountTriplesTest.cs" />
     <Compile Include="Test\Actual\MemoryUsageCheck.cs" />
     <Compile Include="Test\Actual\LoadDataTest.cs" />
     <Compile Include="Test\Actual\SubjectLookupTest.cs" />

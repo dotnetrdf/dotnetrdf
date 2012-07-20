@@ -7,11 +7,19 @@ using VDS.Common.Trees;
 
 namespace VDS.RDF
 {
+    /// <summary>
+    /// An indexed triple collection that uses our <see cref="MultiDictionary"/> and <see cref="BinaryTree"/> implementations under the hood for the index structures
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// While the index structures may seem marginally more complex than our <see cref="HashTable"/> based <see cref="IndexedTripleCollection"/> in testing they actually perform faster, they also have the benefit of guaranteeing that index lookups never return irrelevant triples which is possible with the <see cref="IndexedTripleCollection"/> due to the way <see cref="HashTable"/> handles key collisions.
+    /// </para>
+    /// </remarks>
     public class TreeIndexedTripleCollection
         : BaseTripleCollection
     {
         //Main Storage
-        private AVLTree<Triple, Object> _triples = new AVLTree<Triple, Object>();
+        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>();
         //Simple Indexes
         private MultiDictionary<INode, List<Triple>> _s = new MultiDictionary<INode, List<Triple>>(MultiDictionaryMode.AVL),
                                                      _p = new MultiDictionary<INode, List<Triple>>(MultiDictionaryMode.AVL),
@@ -28,13 +36,16 @@ namespace VDS.RDF
         private int _count = 0;
 
         public TreeIndexedTripleCollection()
+            : this(MultiDictionaryMode.Unbalanced) { }
+
+        public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode)
         {
             if (Options.FullTripleIndexing)
             {
                 this._fullIndexing = true;
-                this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), new SPComparer(), MultiDictionaryMode.Unbalanced);
-                this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), new SOComparer(), MultiDictionaryMode.Unbalanced);
-                this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), new POComparer(), MultiDictionaryMode.Unbalanced);
+                this._sp = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Predicate), new SPComparer(), compoundIndexMode);
+                this._so = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Subject, t.Object), new SOComparer(), compoundIndexMode);
+                this._po = new MultiDictionary<Triple, List<Triple>>(t => Tools.CombineHashCodes(t.Predicate, t.Object), new POComparer(), compoundIndexMode);
             }
         }
 
@@ -126,17 +137,13 @@ namespace VDS.RDF
 
         protected internal override bool Add(Triple t)
         {
-            bool created = false;
-            IBinaryTreeNode<Triple, Object> node = this._triples.MoveToNode(t, out created);
-
-            //If newly added then index
-            if (created)
+            if (!this._triples.ContainsKey(t))
             {
+                this._triples.Add(t, null);
                 this._count++;
-                this.Index(t);
-                this.RaiseTripleAdded(t);
+                return true;
             }
-            return created;
+            return false;
         }
 
         public override bool Contains(Triple t)
@@ -170,10 +177,10 @@ namespace VDS.RDF
         {
             get 
             {
-                IBinaryTreeNode<Triple, Object> node = this._triples.Find(t);
-                if (node != null)
+                Triple actual;
+                if (this._triples.TryGetKey(t, out actual))
                 {
-                    return node.Key;
+                    return actual;
                 }
                 else
                 {
@@ -307,7 +314,7 @@ namespace VDS.RDF
 
         public override void Dispose()
         {
-            this._triples.Root = null;
+            this._triples.Clear();
             this._s.Clear();
             this._p.Clear();
             this._o.Clear();

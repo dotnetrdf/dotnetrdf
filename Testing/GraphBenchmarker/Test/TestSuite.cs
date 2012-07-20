@@ -34,6 +34,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
             //Then do a Load Test and a further Memory Usage Check
             this._tests.Add(new LoadDataTest(data));
+            this._tests.Add(new CountTriplesTest());
             this._tests.Add(new MemoryUsageCheck());
 
             //Then add the actual tests
@@ -46,10 +47,10 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
 
                 //Do an Enumerate Test again to see if index population has changed performance
                 this._tests.Add(new EnumerateTriplesTest(iterations));
-            }
 
-            //Finally add the final Memory Usage Check
-            this._tests.Add(new MemoryUsageCheck());
+                //Finally add the final Memory Usage Check
+                this._tests.Add(new MemoryUsageCheck());
+            }
         }
 
         public String Data

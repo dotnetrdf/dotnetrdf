@@ -6,11 +6,21 @@ using VDS.Common.Trees;
 
 namespace VDS.Common
 {
+    /// <summary>
+    /// Possible modes to use for the binary search tree based buckets of the <see cref="MultiDictionary"/>
+    /// </summary>
     public enum MultiDictionaryMode
     {
+        /// <summary>
+        /// Use unbalanced trees, best when you expect minimal key collisions and are willing to trade faster insert performance for slower lookup performance
+        /// </summary>
         Unbalanced,
+        /// <summary>
+        /// Use Scapegoat trees, good when there are a few key collisions and key comparisons are inexpensive.  Provides amortized O(log n) performance but ocassional operations may be O(n)
+        /// </summary>
         Scapegoat,
-        AVL    }
+        AVL   
+    }
 
 
     /// <summary>
@@ -20,7 +30,10 @@ namespace VDS.Common
     /// <typeparam name="TValue"></typeparam>
     /// <remarks>
     /// <para>
-    /// A multi-dictionary is essentially just a dictionary which deals properly with key collisions, with a normal .Net dictionary if two keys had colliding hash codes then they could interfer with each other.  With this implementation the keys are used to split the values into buckets and then each bucket uses a binary search tree to maintain full information about the keys and values.  This means that all keys and values are properly preserved and keys cannot interfer with each other in most cases.  In the case where keys have the same hash code and compare to be equal then they will interfere with each other but that is the correct behaviour.  The implementation is designed to be flexible in that it allows you to specify the hash function, the comparer used and the form of tree used for the buckets.
+    /// A multi-dictionary is essentially just a dictionary which deals properly with key collisions, with a normal .Net dictionary if two keys had colliding hash codes then their values would overwrite each other.
+    /// </para>
+    /// <para>
+    /// With this implementation the keys are used to split the values into buckets and then each bucket uses a binary search tree to maintain full information about the keys and values.  This means that all keys and values are properly preserved and keys cannot interfer with each other in most cases.  In the case where keys have the same hash code and compare to be equal then they will interfere with each other but that is the correct behaviour.  The implementation is designed to be flexible in that it allows you to specify the hash function, the comparer used and the form of tree used for the buckets.
     /// </para>
     /// </remarks>
     public class MultiDictionary<TKey, TValue>
@@ -33,31 +46,56 @@ namespace VDS.Common
         private Func<TKey, int> _hashFunc = (k => k.GetHashCode());
         private MultiDictionaryMode _mode = DefaultMode;
 
-
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
         public MultiDictionary()
             : this(null, null, DefaultMode) { }
 
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
+        /// <param name="mode">Mode to use for the buckets</param>
         public MultiDictionary(MultiDictionaryMode mode)
             : this(null, null, mode) { }
 
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
+        /// <param name="hashFunction">Hash Function to split the keys into the buckets</param>
         public MultiDictionary(Func<TKey, int> hashFunction)
             : this(hashFunction, null, DefaultMode) { }
 
+
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
+        /// <param name="comparer">Comparer used for keys within the binary search trees</param>
         public MultiDictionary(IComparer<TKey> comparer)
             : this(null, comparer, DefaultMode) { }
 
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
+        /// <param name="hashFunction">Hash Function to split the keys into the buckets</param>
+        /// <param name="mode">Mode to use for the buckets</param>
         public MultiDictionary(Func<TKey, int> hashFunction, MultiDictionaryMode mode)
             : this(hashFunction, null, mode) { }
 
+        /// <summary>
+        /// Creates a new multi-dictionary
+        /// </summary>
+        /// <param name="comparer">Comparer used for keys within the binary search trees</param>
+        /// <param name="mode">Mode to use for the buckets</param>
         public MultiDictionary(IComparer<TKey> comparer, MultiDictionaryMode mode)
             : this(null, comparer, mode) { }
 
         /// <summary>
         /// Creates a new multi-dictionary
         /// </summary>
-        /// <param name="hashFunction">Hash Function</param>
-        /// <param name="comparer">Comparer</param>
-        /// <param name="mode">Tree Mode</param>
+        /// <param name="hashFunction">Hash Function to splut the keys into the buckets</param>
+        /// <param name="comparer">Comparer used for keys within the binary search trees</param>
+        /// <param name="mode">Mode to use for the buckets</param>
         public MultiDictionary(Func<TKey, int> hashFunction, IComparer<TKey> comparer, MultiDictionaryMode mode)
         {
             this._comparer = (comparer != null ? comparer : this._comparer);
@@ -154,6 +192,31 @@ namespace VDS.Common
             else
             {
                 value = default(TValue);
+                return false;
+            }
+        }
+
+        public bool TryGetKey(TKey key, out TKey actualKey)
+        {
+            ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
+            int hash = this._hashFunc(key);
+            if (this._dict.TryGetValue(hash, out tree))
+            {
+                IBinaryTreeNode<TKey, TValue> node = tree.Find(key);
+                if (node == null)
+                {
+                    actualKey = default(TKey);
+                    return false;
+                }
+                else
+                {
+                    actualKey = node.Key;
+                    return true;
+                }
+            }
+            else
+            {
+                actualKey = default(TKey);
                 return false;
             }
         }

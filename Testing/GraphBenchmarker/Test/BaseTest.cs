@@ -79,7 +79,7 @@ namespace VDS.RDF.Utilities.GraphBenchmarker.Test
             }
             TimeSpan elapsed = DateTime.Now - start;
 
-            return new TestResult(elapsed, actions, this._unit);
+            return new TestResult(elapsed, actions, this._unit, TestMetricType.Speed);
         }
 
         protected abstract int RunIteration(TestCase testCase);

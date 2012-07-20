@@ -110,7 +110,6 @@ namespace VDS.RDF.Utilities.StoreManager
             }
 
             //Ensure Configuration Loader has any required Object Factorires registered
-            ConfigurationLoader.AddObjectFactory(new AdoObjectFactory());
             ConfigurationLoader.AddObjectFactory(new VirtuosoObjectFactory());
             ConfigurationLoader.AddObjectFactory(new FullTextObjectFactory());
 
