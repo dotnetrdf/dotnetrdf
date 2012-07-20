@@ -15,7 +15,7 @@
   <property name="dotnetrdf.nowarn" value="1591;0067" />
   
   <!-- Licensing Properties -->
-  <property name="dotnetrdf.license.exclude.exts" value="dll,pdb,xml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx" />
+  <property name="dotnetrdf.license.exclude.exts" value="dll,pdb,xml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql" />
   <property name="dotnetrdf.license.exclude.regex" value="svn" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="../license-boilerplate.txt" />
@@ -221,6 +221,57 @@
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core.silverlight/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-data-sql" description="Applies license headers to the Data.Sql library" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/data.sql/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-data-virtuoso" description="Applies license headers to the Data.Virtuoso library" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/data.virtuoso/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-query-fulltext" description="Applies license headers to the Data.Sql library" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/query.fulltext/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.license.exclude.exts}" />
       <arg value="-exclude" />
