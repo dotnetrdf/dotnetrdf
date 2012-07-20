@@ -1,9 +1,10 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
+
 This file is part of dotNetRDF.
 
 dotNetRDF is free software: you can redistribute it and/or modify

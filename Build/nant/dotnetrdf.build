@@ -13,6 +13,13 @@
 
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
+  
+  <!-- Licensing Properties -->
+  <property name="dotnetrdf.license.exclude.exts" value="dll,pdb,xml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx" />
+  <property name="dotnetrdf.license.exclude.regex" value="svn" />
+  <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
+  <property name="dotnetrdf.license.replace" value="../license-boilerplate.txt" />
+  <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
@@ -101,7 +108,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile" description="Generates the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-query-fulltext-clientprofile" description="Generates the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
@@ -111,7 +118,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
@@ -121,7 +128,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-query-fulltext-clientprofile-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/query.fulltext/dotNetRDF.Query.FullText.csproj" />
@@ -131,7 +138,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-sql-clientprofile" description="Generates the dotNetRDF Data.Sql .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-sql-clientprofile" description="Generates the dotNetRDF Data.Sql .Net 4.0 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Sql .Net 4.0 Client Profile project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
@@ -141,7 +148,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
@@ -151,7 +158,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-sql-clientprofile-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-sql-clientprofile-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
@@ -161,7 +168,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-clientprofile" description="Generates the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-virtuoso-clientprofile" description="Generates the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
@@ -171,7 +178,7 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-virtuoso-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
@@ -181,13 +188,49 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-clientprofile-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" unless="${dotnetrdf.nocompile}">
+  <target name="projectgen-data-virtuoso-clientprofile-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 Client Profile project file with the Data.Virtuoso project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/data.virtuoso/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/data.virtuoso.clientprofile.net35/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/data.virtuoso.clientprofile.net35/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
       <arg value="..\data.virtuoso\" />
+    </exec>
+  </target>
+  
+  <!-- License Targets which enforce license headers on the code -->
+
+  <target name="license-core" description="Applies license headers to the Core Library" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/core/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-core-silverlight" description="Applies license headers to the Core Library Silverlight build" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/core.silverlight/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
     </exec>
   </target>
   
@@ -209,7 +252,7 @@
 
   </target>
 
-  <target name="compile-core" description="Compiles just the dotNetRDF Core Library" unless="${dotnetrdf.nocompile}">
+  <target name="compile-core" description="Compiles just the dotNetRDF Core Library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -220,7 +263,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-core-net35">
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -270,6 +313,11 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Build/LicenseChecker/LicenseChecker.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
     </exec>

@@ -18,7 +18,7 @@ namespace LicenseChecker
             CheckerFactory.Init(options);
 
             ISourceProvider provider = options.GetProvider();
-            long good = 0, bad = 0, unknown = 0;
+            long good = 0, added = 0, bad = 0, unknown = 0;
 
             foreach (String file in provider.GetSourceFiles())
             {
@@ -37,6 +37,7 @@ namespace LicenseChecker
                     else if (options.Fix && checker.FixLicense(file))
                     {
                         Console.WriteLine("LicenseChecker: Added License to file " + file);
+                        added++;
                         good++;
                     }
                     else
@@ -47,8 +48,8 @@ namespace LicenseChecker
                 }
             }
 
-            Console.WriteLine("LicenseChecker: " + good + " Licensed Files, " + bad + " Unlicensed Files, " + unknown + " Unknown Files");
-            if (bad > 0 || unknown > 0) Environment.Exit(1);
+            Console.WriteLine("LicenseChecker: " + good + " Licensed Files (" + added + " newly added), " + bad + " Unlicensed Files, " + unknown + " Unknown Files");
+            if (bad > options.FailOnBadThreshold || unknown > options.FailOnUnknownThreshold) Environment.Exit(1);
             Environment.Exit(0);
         }
 
@@ -128,6 +129,7 @@ namespace LicenseChecker
                         else
                         {
                             Console.Error.WriteLine("LicenseChecker: Error: Value of option " + arg + " pointed to a non-existent file");
+                            Environment.Exit(1);
                         }
                         break;
                     case "-fix":
@@ -135,6 +137,35 @@ namespace LicenseChecker
                         break;
                     case "-overwrite":
                         options.OverwriteExisting = true;
+                        break;
+                    case "-preserve":
+                        options.OverwriteExisting = false;
+                        break;
+                    case "-bad":
+                        String bad = GetArgValue(arg, args, ref i);
+                        int b;
+                        if (Int32.TryParse(bad, out b))
+                        {
+                            options.FailOnBadThreshold = b;
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("LicenseChecker: Error: Value of option " + arg + " was invalid, must be an integer");
+                            Environment.Exit(1);
+                        }
+                        break;
+                    case "-unknown":
+                        String unknown = GetArgValue(arg, args, ref i);
+                        int u;
+                        if (Int32.TryParse(unknown, out u))
+                        {
+                            options.FailOnUnknownThreshold = u;
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("LicenseChecker: Error: Value of option " + arg + " was invalid, must be an integer");
+                            Environment.Exit(1);
+                        }
                         break;
                     default:
                         Console.Error.WriteLine("LicenseChecker: Error: Unknown option " + arg);
