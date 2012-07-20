@@ -1,7 +1,7 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2012
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
 

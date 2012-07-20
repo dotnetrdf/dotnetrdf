@@ -12,11 +12,11 @@ namespace LicenseChecker.Checkers
         private static ILicenseChecker _vbStyleChecker;
         private static ILicenseChecker _xmlChecker;
 
-        public static void Init(String licenseString)
+        public static void Init(CheckerOptions options)
         {
-            _cStyleChecker = new CodeChecker(licenseString);
-            _vbStyleChecker = new CodeChecker(licenseString, "'", null, null);
-            _xmlChecker = new XmlChecker(licenseString);
+            _cStyleChecker = new CodeChecker(options);
+            _vbStyleChecker = new CodeChecker(options, "'", null, null);
+            _xmlChecker = new XmlChecker(options.SearchString);
         }
 
         public static ILicenseChecker GetChecker(String file)

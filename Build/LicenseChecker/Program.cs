@@ -15,7 +15,7 @@ namespace LicenseChecker
             CheckerOptions options = new CheckerOptions();
             ParseOptions(options, args);
 
-            CheckerFactory.Init(options.LicenseSearchString);
+            CheckerFactory.Init(options);
 
             ISourceProvider provider = options.GetProvider();
             long good = 0, bad = 0, unknown = 0;
@@ -34,6 +34,11 @@ namespace LicenseChecker
                     {
                         good++;
                     }
+                    else if (options.Fix && checker.FixLicense(file))
+                    {
+                        Console.WriteLine("LicenseChecker: Added License to file " + file);
+                        good++;
+                    }
                     else
                     {
                         bad++;
@@ -49,6 +54,7 @@ namespace LicenseChecker
 
         static void ParseOptions(CheckerOptions options, String[] args)
         {
+            String file;
             for (int i = 0; i < args.Length; i++)
             {
                 String arg = args[i];
@@ -99,19 +105,36 @@ namespace LicenseChecker
                         options.InclusionPattern = GetArgValue(arg, args, ref i);
                         break;
                     case "-license-search":
-                        options.LicenseSearchString = GetArgValue(arg, args, ref i);
+                        options.SearchString = GetArgValue(arg, args, ref i);
                         break;
                     case "-license-search-file":
-                        String file = GetArgValue(arg, args, ref i);
+                        file = GetArgValue(arg, args, ref i);
                         if (File.Exists(file))
                         {
-                            options.LicenseSearchString = File.ReadAllText(file);
+                            options.SearchString = File.ReadAllText(file);
                         }
                         else
                         {
                             Console.Error.WriteLine("LicenseChecker: Error: Value of option " + arg + " pointed to a non-existent file");
                             Environment.Exit(1);
                         }
+                        break;
+                    case "-license-file":
+                        file = GetArgValue(arg, args, ref i);
+                        if (File.Exists(file))
+                        {
+                            options.LicenseString = File.ReadAllText(file);
+                        }
+                        else
+                        {
+                            Console.Error.WriteLine("LicenseChecker: Error: Value of option " + arg + " pointed to a non-existent file");
+                        }
+                        break;
+                    case "-fix":
+                        options.Fix = true;
+                        break;
+                    case "-overwrite":
+                        options.OverwriteExisting = true;
                         break;
                     default:
                         Console.Error.WriteLine("LicenseChecker: Error: Unknown option " + arg);

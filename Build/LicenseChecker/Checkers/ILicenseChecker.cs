@@ -8,5 +8,7 @@ namespace LicenseChecker.Checkers
     interface ILicenseChecker
     {
         bool IsLicensed(String file);
+
+        bool FixLicense(String file);
     }
 }

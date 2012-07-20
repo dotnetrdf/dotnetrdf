@@ -16,6 +16,10 @@ namespace LicenseChecker
             this.ExcludedFiles = new List<string>();
             this.ProjectFiles = new List<string>();
             this.Directories = new List<string>();
+
+            this.LicenseString = String.Empty;
+            this.Fix = false;
+            this.OverwriteExisting = false;
         }
 
         public List<String> IncludedExtensions { get; set; }
@@ -34,7 +38,35 @@ namespace LicenseChecker
 
         public List<String> Directories { get; set; }
 
-        public String LicenseSearchString { get; set; }
+        /// <summary>
+        /// String to search for which indicates the file is appropriately licensed
+        /// </summary>
+        public String SearchString { get; set; }
+
+        /// <summary>
+        /// Whether to attempt to fix licenses
+        /// </summary>
+        public bool Fix { get; set; }
+
+        /// <summary>
+        /// Whether to fix licenses where there is already a non-matching license header present
+        /// </summary>
+        public bool OverwriteExisting { get; set; }
+
+        /// <summary>
+        /// String to insert as a License header if the file is not licenses and fix licenses is enabled
+        /// </summary>
+        public String LicenseString { get; set; }
+
+        /// <summary>
+        /// How many bad (unlicensed) files are allowed before the program reports a failure (i.e. a non-zero exit code)
+        /// </summary>
+        public int FailOnBadThreshold { get; set; }
+
+        /// <summary>
+        /// How many unknown files are allowed before the program reports a failure (i.e. a non-zero exit code)
+        /// </summary>
+        public int FailOnUnknownThreshold { get; set; }
 
         public ISourceProvider GetProvider()
         {

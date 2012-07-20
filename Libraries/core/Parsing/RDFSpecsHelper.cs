@@ -1,7 +1,7 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
 
@@ -30,6 +30,7 @@ http://www.opensource.org/licenses/mit-license.php
 If these licenses are not suitable for your intended use please contact
 us at the above stated email address to discuss alternative
 terms.
+
 */
 
 using System;

@@ -38,5 +38,10 @@ namespace LicenseChecker.Checkers
                 return false;
             }
         }
+
+        protected override bool AddLicense(string file)
+        {
+            return false;
+        }
     }
 }

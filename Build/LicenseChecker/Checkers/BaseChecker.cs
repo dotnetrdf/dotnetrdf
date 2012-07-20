@@ -22,5 +22,19 @@ namespace LicenseChecker.Checkers
         }
 
         protected abstract bool CheckLicense(String file);
+
+        public bool FixLicense(String file)
+        {
+            if (File.Exists(file))
+            {
+                return this.AddLicense(file);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected abstract bool AddLicense(String file);
     }
 }

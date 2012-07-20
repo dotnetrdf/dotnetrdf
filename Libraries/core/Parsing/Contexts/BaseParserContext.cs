@@ -1,7 +1,7 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
 
@@ -22,7 +22,12 @@ along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
 
 ------------------------------------------------------------------------
 
-If this license is not suitable for your intended use please contact
+dotNetRDF may alternatively be used under the LGPL or MIT License
+
+http://www.gnu.org/licenses/lgpl.html
+http://www.opensource.org/licenses/mit-license.php
+
+If these licenses are not suitable for your intended use please contact
 us at the above stated email address to discuss alternative
 terms.
 
