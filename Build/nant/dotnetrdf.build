@@ -15,8 +15,8 @@
   <property name="dotnetrdf.nowarn" value="1591;0067" />
   
   <!-- Licensing Properties -->
-  <property name="dotnetrdf.license.exclude.exts" value="dll,pdb,xml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql" />
-  <property name="dotnetrdf.license.exclude.regex" value="svn" />
+  <property name="dotnetrdf.license.exclude.exts" value="dll,pdb,xml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd" />
+  <property name="dotnetrdf.license.exclude.regex" value="svn|obj|bin" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="../license-boilerplate.txt" />
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
@@ -217,7 +217,7 @@
     </exec>
   </target>
 
-  <target name="license-core-silverlight" description="Applies license headers to the Core Library Silverlight build" unless="${dotnetrdf.nocompile}">
+  <target name="license-core-silverlight" description="Applies license headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core.silverlight/" />
@@ -234,7 +234,7 @@
     </exec>
   </target>
 
-  <target name="license-data-sql" description="Applies license headers to the Data.Sql library" unless="${dotnetrdf.nocompile}">
+  <target name="license-data-sql" description="Applies license headers to the Data.Sql library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/data.sql/" />
@@ -251,7 +251,7 @@
     </exec>
   </target>
 
-  <target name="license-data-virtuoso" description="Applies license headers to the Data.Virtuoso library" unless="${dotnetrdf.nocompile}">
+  <target name="license-data-virtuoso" description="Applies license headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/data.virtuoso/" />
@@ -268,10 +268,61 @@
     </exec>
   </target>
 
-  <target name="license-query-fulltext" description="Applies license headers to the Data.Sql library" unless="${dotnetrdf.nocompile}">
+  <target name="license-query-fulltext" description="Applies license headers to the Query.FullText library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/query.fulltext/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-gui-winforms" description="Applies license headers to the dotNetRDF.WinForms library" depends="license-core" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/gui.winforms/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-editor-core" description="Applies license headers to the rdfEditor.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/editor/" />
+      <arg value="-exclude-exts" />
+      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="-exclude" />
+      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="-license-search" />
+      <arg value="${dotnetrdf.license.search}" />
+      <arg value="-license-file" />
+      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="-fix" />
+      <arg value="${dotnetrdf.license.overwrite}" />
+    </exec>
+  </target>
+
+  <target name="license-editor-wpf" description="Applies license headers to the rdfEditor.Core.Wpf library" depends="license-editor-core" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+      <arg value="-directory" />
+      <arg value="Libraries/editor.wpf/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.license.exclude.exts}" />
       <arg value="-exclude" />
@@ -336,7 +387,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="projectgen-core-silverlight">
+  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core-silverlight,projectgen-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -347,7 +398,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="projectgen-core-windowsphone">
+  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="license-core-silverlight,projectgen-core-windowsphone">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
@@ -374,7 +425,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="projectgen-core-clientprofile">
+  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -385,7 +436,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-core-clientprofile-net35">
+  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,compile-core-net35,projectgen-core-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -396,7 +447,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
+  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -407,7 +458,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-data-sql-clientprofile">
+  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-clientprofile,projectgen-data-sql-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -418,7 +469,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-data-sql-net35">
+  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-net35,projectgen-data-sql-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -429,7 +480,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
+  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -440,7 +491,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
+  <target name="compile-data-virtuoso" description="Compiles the dotNetRDF Data.Virtuoso Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -451,7 +502,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-data-virtuoso-clientprofile">
+  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectgen-data-virtuoso-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -462,7 +513,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-data-virtuoso-net35">
+  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-net35,projectgen-data-virtuoso-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -473,7 +524,7 @@
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-data-virtuoso-clientprofile-net35">
+  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectgen-data-virtuoso-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -484,7 +535,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="compile-core">
+  <target name="compile-query-fulltext" description="Complies the dotNetRDF Query.FullText Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -495,7 +546,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile,projectgen-query-fulltext-clientprofile">
+  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectgen-query-fulltext-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -506,7 +557,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="compile-core-net35,projectgen-query-fulltext-net35">
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectgen-query-fulltext-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -517,7 +568,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="compile-core-clientprofile-net35,projectgen-query-fulltext-clientprofile-net35">
+  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectgen-query-fulltext-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">

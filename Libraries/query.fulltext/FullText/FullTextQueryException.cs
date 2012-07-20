@@ -1,7 +1,7 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2009-12
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
 
@@ -32,7 +32,6 @@ us at the above stated email address to discuss alternative
 terms.
 
 */
-
 
 using System;
 using System.Collections.Generic;
