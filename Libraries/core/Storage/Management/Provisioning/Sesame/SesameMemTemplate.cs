@@ -36,6 +36,9 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+#if SILVERLIGHT
+using System.ComponentModel.DataAnnotations;
+#endif
 using System.Linq;
 using System.Text;
 
@@ -132,7 +135,11 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the sync delay
         /// </summary>
+#if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
+#else
+        [Category("Sesame Configuration"), Display(Name = "Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
+#endif
         public int SyncDelay
         {
             get;
@@ -142,7 +149,11 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
+#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
+#else
+        [Category("Sesame Reasoning"), Display(Name = "Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
+#endif
         public bool DirectTypeHierarchyInferencing
         {
             get;
@@ -152,7 +163,11 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
+#if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
+#else
+        [Category("Sesame Reasoning"), Display(Name = "RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
+#endif
         public bool RdfSchemaInferencing
         {
             get;

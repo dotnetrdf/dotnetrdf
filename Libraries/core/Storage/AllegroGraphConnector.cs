@@ -115,7 +115,7 @@ namespace VDS.RDF.Storage
 #else
             ManualResetEvent signal = new ManualResetEvent(false);
             AsyncStorageCallbackArgs resArgs = null;
-            this.GetNewTemplate(this._store, (sender, args, state) =>
+            this.GetDefaultTemplate(this._store, (sender, args, state) =>
                 {
                     if (args.WasSuccessful)
                     {
