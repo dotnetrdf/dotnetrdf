@@ -584,4 +584,20 @@ namespace VDS.RDF
             this.ApplyInference(args.Graph);
         }
     }
+
+    /// <summary>
+    /// A thread safe variant of <see cref="TripleStore"/>, simply a <see cref="TripleStore"/> instance with a <see cref="ThreadSafeGraphCollection"/> decorator around it's underlying <see cref="BaseGraphCollection"/>
+    /// </summary>
+    public class ThreadSafeTripleStore
+        : TripleStore
+    {
+        public ThreadSafeTripleStore()
+            : base(new ThreadSafeGraphCollection()) { }
+
+        public ThreadSafeTripleStore(ThreadSafeGraphCollection collection)
+            : base(collection) { }
+
+        public ThreadSafeTripleStore(BaseGraphCollection collection)
+            : this(new ThreadSafeGraphCollection(collection)) { }
+    }
 }

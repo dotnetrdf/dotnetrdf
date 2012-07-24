@@ -191,21 +191,60 @@ namespace VDS.RDF
         }
     }
 
-#if !NO_RWLOCK
-
     /// <summary>
     /// Thread Safe decorator around a Graph collection
     /// </summary>
+    /// <remarks>
+    /// Dependings on your platform this either provides MRSW concurrency via a <see cref="ReaderWriterLockSlim" /> or exclusive access concurrency via a <see cref="Monitor"/>
+    /// </remarks>
     public class ThreadSafeGraphCollection 
         : WrapperGraphCollection
     {
+#if !NO_RWLOCK
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+#endif
 
         public ThreadSafeGraphCollection()
             : base(new GraphCollection()) { }
 
         public ThreadSafeGraphCollection(BaseGraphCollection graphCollection)
             : base(graphCollection) { }
+
+        protected void EnterWriteLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.EnterWriteLock();
+#else
+            Monitor.Enter(this._graphs);
+#endif
+        }
+
+        protected void ExitWriteLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.ExitWriteLock();
+#else
+            Monitor.Exit(this._graphs);
+#endif
+        }
+
+        protected void EnterReadLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.EnterReadLock();
+#else
+            Monitor.Enter(this._graphs);
+#endif
+        }
+
+        protected void ExitReadLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.ExitReadLock();
+#else
+            Monitor.Exit(this._graphs);
+#endif
+        }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
@@ -218,12 +257,12 @@ namespace VDS.RDF
 
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 contains = this._graphs.Contains(graphUri);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return contains;
         }
@@ -238,12 +277,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 return this._graphs.Add(g, mergeIfExists);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
 
@@ -255,12 +294,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 return this._graphs.Remove(graphUri);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
 
@@ -274,12 +313,12 @@ namespace VDS.RDF
                 int c = 0;
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     c = this._graphs.Count;
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return c;
             }
@@ -294,12 +333,12 @@ namespace VDS.RDF
             List<IGraph> graphs = new List<IGraph>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 graphs = this._graphs.ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return graphs.GetEnumerator();
         }
@@ -314,12 +353,12 @@ namespace VDS.RDF
                 List<Uri> uris = new List<Uri>();
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     uris = this._graphs.GraphUris.ToList();
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return uris;
             }
@@ -337,12 +376,12 @@ namespace VDS.RDF
                 IGraph g = null;
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     g = this._graphs[graphUri];
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return g;
             }
@@ -356,16 +395,14 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 this._graphs.Dispose();
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
     }
-
-#endif
 
 }

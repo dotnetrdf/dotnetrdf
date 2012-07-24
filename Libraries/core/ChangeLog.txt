@@ -20,6 +20,7 @@ Added
   - WrapperGraph
   - WrapperGraphCollection
   - WrapperTripleCollection
+  - WrapperTripleStore
 
 Changed
 - Bug Fixes
@@ -27,11 +28,20 @@ Changed
  - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
  - Fixed a bug with GraphDiff and null reference handling
 - Core API
- - IGraph now defines Assert() and Retract() as returning booleans
- - ITripleStore now defines Add() and Remove() as returning booleans
- - BaseTripleCollection now defines Add() and Delete() as returning booleans
- - Refactored internals of TripleCollection and GraphCollection to use our new MultiDictionary data structure
- - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight
+ - IGraph changes:
+  - Changes definition of Assert() and Retract() to return booleans
+  - Removes unecessary overloads of Assert() and Retract()
+ - ITripleStore changes:
+  - Changes definition of  Add() and Remove() to return booleans
+  - Adds indexer for accessing graphs and obsoletes the Graph() method in favour of this
+ - Triple Collection changes:
+  - BaseTripleCollection now defines Add() and Delete() as returning booleans
+  - Refactored internals of TripleCollection to use our new MultiDictionary data structure
+  - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight
+ - Graph Collection changes:
+  - Refactored internals of GraphCollection to use our new MultiDictionary data structure
+  - ThreadSafeGraphCollection is now a decorator that can be applied to any BaseGraphCollection instance, also made it available on Silverlight
+  - DiskDemandGraphCollection and WebDemandGraphCollection are now both decorators and so can be combined on top of each other as desired
 - Query
  - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
 - Storage API

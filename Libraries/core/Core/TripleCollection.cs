@@ -265,7 +265,7 @@ namespace VDS.RDF
 #if !NO_RWLOCK
             this._lockManager.EnterReadLock();
 #else
-            Monitor.Enter(this);
+            Monitor.Enter(this._triples);
 #endif
         }
 
@@ -274,7 +274,7 @@ namespace VDS.RDF
 #if !NO_RWLOCK
             this._lockManager.ExitReadLock();
 #else
-            Monitor.Exit(this);
+            Monitor.Exit(this._triples);
 #endif
         }
 
