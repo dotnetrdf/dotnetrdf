@@ -82,6 +82,9 @@ namespace VDS.RDF.Parsing
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
             if (filename == null) throw new RdfParseException("Cannot read RDF from a null File");
+            
+            //Unescape the filename in case it originated from a File URI
+            filename = Uri.UnescapeDataString(filename);
 
             if (!File.Exists(filename))
             {

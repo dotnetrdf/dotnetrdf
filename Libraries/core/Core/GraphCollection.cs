@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (this._graphs.ContainsKey(g.BaseUri))
+            if (this.Contains(g.BaseUri))
             {
                 //Already exists in the Graph Collection
                 if (mergeIfExists)

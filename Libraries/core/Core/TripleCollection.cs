@@ -77,7 +77,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to add</param>
         protected internal override bool Add(Triple t)
         {
-            if (!this._triples.ContainsKey(t))
+            if (!this.Contains(t))
             {
                 this._triples.Add(t, null);
                 this.RaiseTripleAdded(t);

@@ -11,8 +11,18 @@ namespace VDS.RDF
     public abstract class WrapperGraphCollection
         : BaseGraphCollection
     {
-        protected BaseGraphCollection _graphs;
+        protected readonly BaseGraphCollection _graphs;
 
+        /// <summary>
+        /// Creates a decorator around a default <see cref="GraphCollection"/> instance
+        /// </summary>
+        public WrapperGraphCollection()
+            : this(new GraphCollection()) { }
+
+        /// <summary>
+        /// Creates a decorator around the given graph collection
+        /// </summary>
+        /// <param name="graphCollection">Graph Collection</param>
         public WrapperGraphCollection(BaseGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection");

@@ -172,7 +172,7 @@ namespace VDS.RDF
 
         protected internal override bool Add(Triple t)
         {
-            if (!this._triples.ContainsKey(t))
+            if (!this.Contains(t))
             {
                 this._triples.Add(t, null);
                 this._count++;

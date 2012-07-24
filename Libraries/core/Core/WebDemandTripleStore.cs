@@ -50,7 +50,8 @@ namespace VDS.RDF
     /// <remarks>
     /// The 'Web Demand' Triple Store is a Triple Store which automatically retrieves Graphs from the Web based on the URIs of Graphs that you ask it for
     /// </remarks>
-    public class WebDemandTripleStore : TripleStore
+    public class WebDemandTripleStore 
+        : TripleStore
     {
         /// <summary>
         /// Creates an Web Demand Triple Store
@@ -92,56 +93,7 @@ namespace VDS.RDF
             : base(new WebDemandGraphCollection()) { }
     }
 
-    /// <summary>
-    /// A Graph Collection where Graphs can be loaded on-demand from the Web as needed
-    /// </summary>
-    public class WebDemandGraphCollection : GraphCollection, IEnumerable<IGraph>
-    {
-        /// <summary>
-        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
-        /// </summary>
-        public WebDemandGraphCollection() { }
 
-        /// <summary>
-        /// Checks whether the Graph with the given Uri exists in this Graph Collection.  If it doesn't but can be successfully loaded from the Web it will be loaded into the Graph Collection
-        /// </summary>
-        /// <param name="graphUri">Graph Uri to test</param>
-        /// <returns></returns>
-        public override bool Contains(Uri graphUri)
-        {
-            if (base.Contains(graphUri))
-            {
-                return true;
-            }
-            else if (graphUri != null)
-            {
-                try
-                {
-                    Graph g = new Graph();
-                    UriLoader.Load(g, graphUri);
-
-                    this.Add(g, false);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Disposes of a Web Demand Graph Collection
-        /// </summary>
-        public override void Dispose()
-        {
-            base.Dispose();
-        }
-    }
 }
 
 #endif
