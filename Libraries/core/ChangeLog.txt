@@ -6,6 +6,8 @@ A Library for RDF manipulation and parsing in .Net using C#
 dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
 
+See Acknowledgements.txt for full list of developers and contributors
+
 Change Log
 ----------
 
@@ -29,7 +31,7 @@ Changed
  - ITripleStore now defines Add() and Remove() as returning booleans
  - BaseTripleCollection now defines Add() and Delete() as returning booleans
  - Refactored internals of TripleCollection and GraphCollection to use our new MultiDictionary data structure
- - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance
+ - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight
 - Query
  - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
 - Storage API

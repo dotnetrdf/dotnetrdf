@@ -27,8 +27,10 @@ for the following .Net profiles:
 
 Please see the Release Notes for usage details and Known Issues
 
-Robert Vesse 2009-12
-rvesse@vdesign-studios.com
+dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
+
+See Acknowledgements.txt for full list of developers and contributors
 
 License
 -------

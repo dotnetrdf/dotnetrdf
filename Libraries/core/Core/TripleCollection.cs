@@ -215,15 +215,19 @@ namespace VDS.RDF
         #endregion
     }
 
-#if !NO_RWLOCK
-
     /// <summary>
     /// Thread Safe decorator for triple collections
     /// </summary>
+    /// <remarks>
+    /// Depending on the platform this either uses <see cref="ReaderWriterLockSlim"/> to provide MRSW concurrency or it uses <see cref="Monitor"/> to provide exclusive access concurrency, either way usage is thread safe
+    /// </remarks>
+    /// <threadsafety instance="true">This decorator provides thread safe access to any underlying triple collection</threadsafety>
     public class ThreadSafeTripleCollection 
         : WrapperTripleCollection
     {
+#if !NO_RWLOCK
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+#endif
 
         /// <summary>
         /// Creates a new thread safe triple collection which wraps a new instance of the default unindexed <see cref="TripleCollection"/>
@@ -238,6 +242,42 @@ namespace VDS.RDF
         public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+        protected void EnterWriteLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.EnterWriteLock();
+#else
+            Monitor.Enter(this._triples);
+#endif
+        }
+
+        protected void ExitWriteLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.ExitWriteLock();
+#else
+            Monitor.Exit(this._triples);
+#endif
+        }
+
+        protected void EnterReadLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.EnterReadLock();
+#else
+            Monitor.Enter(this);
+#endif
+        }
+
+        protected void ExitReadLock()
+        {
+#if !NO_RWLOCK
+            this._lockManager.ExitReadLock();
+#else
+            Monitor.Exit(this);
+#endif
+        }
+
         /// <summary>
         /// Adds a Triple to the Collection
         /// </summary>
@@ -246,12 +286,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 return this._triples.Add(t); ;
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
 
@@ -265,12 +305,12 @@ namespace VDS.RDF
             bool contains = false;
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 contains = this._triples.Contains(t);
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return contains;
         }
@@ -285,12 +325,12 @@ namespace VDS.RDF
                 int c = 0;
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     c = this._triples.Count;
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return c;
             }
@@ -308,12 +348,12 @@ namespace VDS.RDF
                 Triple temp;
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     temp = this._triples[t];
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 if (temp == null) throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
                 return temp;
@@ -329,12 +369,12 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 return this._triples.Delete(t);
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
 
@@ -347,12 +387,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples.GetEnumerator();
         }
@@ -367,12 +407,12 @@ namespace VDS.RDF
                 List<INode> nodes = new List<INode>();
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     nodes = this._triples.ObjectNodes.ToList();
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return nodes;
             }
@@ -388,12 +428,12 @@ namespace VDS.RDF
                 List<INode> nodes = new List<INode>();
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     nodes = this._triples.PredicateNodes.ToList();
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return nodes;
             }
@@ -409,12 +449,12 @@ namespace VDS.RDF
                 List<INode> nodes = new List<INode>();
                 try
                 {
-                    this._lockManager.EnterReadLock();
+                    this.EnterReadLock();
                     nodes = this._triples.SubjectNodes.ToList();
                 }
                 finally
                 {
-                    this._lockManager.ExitReadLock();
+                    this.ExitReadLock();
                 }
                 return nodes;
             }
@@ -425,12 +465,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithObject(obj).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -440,12 +480,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithPredicate(pred).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -455,12 +495,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithPredicateObject(pred, obj).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -470,12 +510,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithSubject(subj).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -485,12 +525,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithSubjectObject(subj, obj).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -500,12 +540,12 @@ namespace VDS.RDF
             List<Triple> triples = new List<Triple>();
             try
             {
-                this._lockManager.EnterReadLock();
+                this.EnterReadLock();
                 triples = this._triples.WithSubjectPredicate(subj, pred).ToList();
             }
             finally
             {
-                this._lockManager.ExitReadLock();
+                this.ExitReadLock();
             }
             return triples;
         }
@@ -517,17 +557,15 @@ namespace VDS.RDF
         {
             try
             {
-                this._lockManager.EnterWriteLock();
+                this.EnterWriteLock();
                 this._triples.Dispose();
             }
             finally
             {
-                this._lockManager.ExitWriteLock();
+                this.ExitWriteLock();
             }
         }
     }
-
-#endif
 
     /// <summary>
     /// A Triple Collection which trades a little load performance for improved lookup performance
