@@ -35,7 +35,9 @@ terms.
 
 using System;
 using System.Collections.Generic;
+#if !WINDOWS_PHONE
 using System.ComponentModel;
+#endif
 using System.Linq;
 using System.Text;
 
@@ -74,7 +76,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the descriptive label for a Sesame store
         /// </summary>
+#if !WINDOWS_PHONE
         [Category("Sesame Configuration"), Description("A descriptive label for the store that Sesame will store and present when browsing the server through the Sesame workbench UI")]
+#endif
         public String Label
         {
             get;
@@ -115,7 +119,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets the Node used to refer to the store configuration context
         /// </summary>
+#if !WINDOWS_PHONE
         [Browsable(false)]
+#endif
         public INode ContextNode
         {
             get;

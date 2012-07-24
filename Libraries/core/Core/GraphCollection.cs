@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using VDS.Common;
 
 namespace VDS.RDF
 {
@@ -56,11 +57,7 @@ namespace VDS.RDF
         /// Dictionary of Graph Uri Enhanced Hash Codes to Graphs
         /// </summary>
         /// <remarks>See <see cref="Extensions.GetEnhancedHashCode">GetEnhancedHashCode()</see></remarks>
-        protected Dictionary<int, IGraph> _graphs = new Dictionary<int, IGraph>();
-        /// <summary>
-        /// List of Graphs which handles Graphs which have Hash Code collisions
-        /// </summary>
-        protected List<IGraph> _collisionGraphs = new List<IGraph>();
+        protected MultiDictionary<Uri, IGraph> _graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
@@ -69,37 +66,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            int id;
-            if (graphUri == null)
-            {
-                id = DefaultGraphID;
-            }
-            else
-            {
-                id = graphUri.GetEnhancedHashCode();
-            }
-            if (this._graphs.ContainsKey(id)) 
-            {
-                //Check Ordinal Equality of String form of URIs to detect Hash Code collision
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.ToSafeString(), StringComparison.Ordinal))
-                {
-                    return true;
-                }
-                else if (this._graphs[id].BaseUri == null && graphUri == null)
-                {
-                    return true;
-                }
-                else
-                {
-                    //Hash Code Collision
-                    //See if is in list of Collision Graphs
-                    return this._collisionGraphs.Any(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.ToSafeString(), StringComparison.Ordinal));
-                  }
-            } 
-            else 
-            {
-                return false;
-            }
+            return this._graphs.ContainsKey(graphUri);
         }
 
         /// <summary>
@@ -110,80 +77,25 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            //Graphs added to a Graph Collection must have a Base Uri
-            int id;
-            if (g.BaseUri == null)
+            if (this._graphs.ContainsKey(g.BaseUri))
             {
-                id = DefaultGraphID;
-            }
-            else
-            {
-                id = g.BaseUri.GetEnhancedHashCode();
-            }
-            if (this._graphs.ContainsKey(id))
-            {
-                //Check for Hash Code collisions
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(g.BaseUri.AbsoluteUri, StringComparison.Ordinal))
+                //Already exists in the Graph Collection
+                if (mergeIfExists)
                 {
-                    //Already exists in the Graph Collection
-                    if (mergeIfExists)
-                    {
-                        //Merge into the existing Graph
-                        this._graphs[id].Merge(g);
-                        return true;
-                    }
-                    else
-                    {
-                        //Not allowed
-                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
-                    }
-                }
-                else if (this._graphs[id].BaseUri == null && g.BaseUri == null)
-                {
-                    //Already exists in the Graph Collection
-                    if (mergeIfExists)
-                    {
-                        //Merge into the existing Graph
-                        this._graphs[id].Merge(g);
-                        return true;
-                    }
-                    else
-                    {
-                        //Not allowed
-                        throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
-                    }
+                    //Merge into the existing Graph
+                    this._graphs[g.BaseUri].Merge(g);
+                    return true;
                 }
                 else
                 {
-                    //Hash Code collision
-                    IGraph temp = this._collisionGraphs.FirstOrDefault(graph => (graph.BaseUri == null && g.BaseUri == null) || graph.BaseUri.AbsoluteUri.Equals(g.BaseUri.AbsoluteUri, StringComparison.Ordinal));
-                    if (temp != null)
-                    {
-                        //Aready exists in Collision Graphs
-                        if (mergeIfExists)
-                        {
-                            temp.Merge(g);
-                            return true;
-                        }
-                        else
-                        {
-                            //Not allowed
-                            throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
-                        }
-                    }
-                    else
-                    {
-                        //Add to collision Graphs
-                        this._collisionGraphs.Add(g);
-                        this.RaiseGraphAdded(g);
-                        return true;
-                    }
+                    //Not allowed
+                    throw new RdfException("The Graph you tried to add already exists in the Graph Collection and the mergeIfExists parameter was set to false");
                 }
             }
             else
             {
                 //Safe to add a new Graph
-                this._graphs.Add(id, g);
+                this._graphs.Add(g.BaseUri, g);
                 this.RaiseGraphAdded(g);
                 return true;
             }
@@ -195,58 +107,15 @@ namespace VDS.RDF
         /// <param name="graphUri">Uri of the Graph to remove</param>
         protected internal override bool Remove(Uri graphUri)
         {
-            int id;
-            if (graphUri == null)
+            IGraph g;
+            if (this._graphs.TryGetValue(graphUri, out g))
             {
-                id = DefaultGraphID;
-            }
-            else
-            {
-                id = graphUri.GetEnhancedHashCode();
-            }
-            if (this._graphs.ContainsKey(id))
-            {
-                if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal))
+                if (this._graphs.Remove(graphUri))
                 {
-                    IGraph temp = this._graphs[id];
-                    this._graphs.Remove(id);
-                    this.RaiseGraphRemoved(temp);
-
-                    //Were there any collisions on this Hash Code?
-                    //Q: Do we need a more general fix for null Base URI here?
-                    if (this._collisionGraphs.Any(g => g.BaseUri != null && g.BaseUri.GetEnhancedHashCode().Equals(id)))
-                    {
-                        IGraph first = this._collisionGraphs.First(g => g.BaseUri != null && g.BaseUri.GetEnhancedHashCode().Equals(id));
-                        this._graphs.Add(id, first);
-                        this._collisionGraphs.Remove(first);
-                    }
+                    this.RaiseGraphRemoved(g);
                     return true;
                 }
-                else if (this._graphs[id].BaseUri == null && graphUri == null)
-                {
-                    IGraph temp = this._graphs[id];
-                    this._graphs.Remove(id);
-                    this.RaiseGraphRemoved(temp);
-                    
-                    //Were there any collisions on this Hash Code?
-                    //Q: Do we need a more general fix for null Base URI here?
-                    if (this._collisionGraphs.Any(g => g.BaseUri != null && g.BaseUri.GetEnhancedHashCode().Equals(id)))
-                    {
-                        IGraph first = this._collisionGraphs.First(g => g.BaseUri != null && g.BaseUri.GetEnhancedHashCode().Equals(id));
-                        this._graphs.Add(id, first);
-                        this._collisionGraphs.Remove(first);
-                    }
-                    return true;
-                }
-                else
-                {
-                    //Hash Code collision
-                    //Remove from Collision Graphs list
-                    IGraph temp = this._collisionGraphs.First(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
-                    this._collisionGraphs.RemoveAll(g => (g.BaseUri == null && graphUri == null) || g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
-                    this.RaiseGraphRemoved(temp);
-                    return true;
-                }
+                return false;
             }
             return false;
         }
@@ -258,7 +127,7 @@ namespace VDS.RDF
         {
             get
             {
-                return this._graphs.Count + this._collisionGraphs.Count;
+                return this._graphs.Count;
             }
         }
 
@@ -269,8 +138,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (from g in this
-                            select g.BaseUri);
+                return this._graphs.Keys;
             }
         }
 
@@ -283,39 +151,10 @@ namespace VDS.RDF
         {
             get 
             {
-                int id;
-                if (graphUri == null)
+                IGraph g;
+                if (this._graphs.TryGetValue(graphUri, out g))
                 {
-                    id = DefaultGraphID;
-                }
-                else
-                {
-                    id = graphUri.GetEnhancedHashCode();
-                }
-                if (this._graphs.ContainsKey(id))
-                {
-                    //Check for collisions here
-                    if (this._graphs[id].BaseUri != null && this._graphs[id].BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal))
-                    {
-                        return this._graphs[id];
-                    }
-                    else if (this._graphs[id].BaseUri == null && graphUri == null)
-                    {
-                        return this._graphs[id];
-                    }
-                    else
-                    {
-                        //Is the relevant Graph in the Collision Graphs List
-                        IGraph temp = this._collisionGraphs.FirstOrDefault(g => g.BaseUri.AbsoluteUri.Equals(graphUri.AbsoluteUri, StringComparison.Ordinal));
-                        if (temp == null)
-                        {
-                            throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
-                        }
-                        else
-                        {
-                            return temp;
-                        }
-                    }
+                    return g;
                 }
                 else
                 {
@@ -330,15 +169,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
-            //Concatenate in the Collision Graphs if required
-            if (this._collisionGraphs.Count > 0)
-            {
-                return this._graphs.Values.Concat(this._collisionGraphs).GetEnumerator();
-            }
-            else
-            {
-                return this._graphs.Values.GetEnumerator();
-            }
+            return this._graphs.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -356,27 +187,25 @@ namespace VDS.RDF
         /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
         public override void Dispose()
         {
-            foreach (IGraph g in this._graphs.Values)
-            {
-                g.Dispose();
-            }
-            foreach (IGraph g in this._collisionGraphs)
-            {
-                g.Dispose();
-            }
             this._graphs.Clear();
-            this._collisionGraphs.Clear();
         }
     }
 
 #if !NO_RWLOCK
 
     /// <summary>
-    /// Thread Safe Graph Collection
+    /// Thread Safe decorator around a Graph collection
     /// </summary>
-    public class ThreadSafeGraphCollection : GraphCollection, IEnumerable<IGraph>
+    public class ThreadSafeGraphCollection 
+        : WrapperGraphCollection
     {
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
+        public ThreadSafeGraphCollection()
+            : base(new GraphCollection()) { }
+
+        public ThreadSafeGraphCollection(BaseGraphCollection graphCollection)
+            : base(graphCollection) { }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
@@ -390,7 +219,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterReadLock();
-                contains = base.Contains(graphUri);
+                contains = this._graphs.Contains(graphUri);
             }
             finally
             {
@@ -410,7 +239,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Add(g, mergeIfExists);
+                return this._graphs.Add(g, mergeIfExists);
             }
             finally
             {
@@ -427,7 +256,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterWriteLock();
-                return base.Remove(graphUri);
+                return this._graphs.Remove(graphUri);
             }
             finally
             {
@@ -446,7 +275,7 @@ namespace VDS.RDF
                 try
                 {
                     this._lockManager.EnterReadLock();
-                    c = base.Count;
+                    c = this._graphs.Count;
                 }
                 finally
                 {
@@ -466,8 +295,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterReadLock();
-                graphs = (from g in this._graphs.Values
-                          select g).ToList();
+                graphs = this._graphs.ToList();
             }
             finally
             {
@@ -487,7 +315,7 @@ namespace VDS.RDF
                 try
                 {
                     this._lockManager.EnterReadLock();
-                    uris = base.GraphUris.ToList();
+                    uris = this._graphs.GraphUris.ToList();
                 }
                 finally
                 {
@@ -510,7 +338,7 @@ namespace VDS.RDF
                 try
                 {
                     this._lockManager.EnterReadLock();
-                    g = base[graphUri];
+                    g = this._graphs[graphUri];
                 }
                 finally
                 {
@@ -529,7 +357,7 @@ namespace VDS.RDF
             try
             {
                 this._lockManager.EnterWriteLock();
-                base.Dispose();
+                this._graphs.Dispose();
             }
             finally
             {

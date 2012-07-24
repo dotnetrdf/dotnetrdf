@@ -33,7 +33,6 @@ terms.
 
 */
 
-#if UNFINISHED
 
 using System;
 using System.Collections.Generic;
@@ -54,8 +53,14 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract decorator for Graphs to make it easier to layer functionality on top of existing implementations
     /// </summary>
+#if !SILVERLIGHT
+    [Serializable, XmlRoot(ElementName="graph")]
+#endif
     public abstract class WrapperGraph 
         : IGraph
+#if !SILVERLIGHT
+        , ISerializable
+#endif
     {
         /// <summary>
         /// Underlying Graph this is a wrapper around
@@ -63,32 +68,52 @@ namespace VDS.RDF
         protected readonly IGraph _g;
         private TripleEventHandler TripleAssertedHandler, TripleRetractedHandler;
         private GraphEventHandler GraphChangedHandler, GraphClearedHandler, GraphMergedHandler;
+        private CancellableGraphEventHandler GraphClearRequestedHandler, GraphMergeRequestedHandler;
 
         /// <summary>
-        /// Creates a new wrapper around the given Graph
+        /// Creates a wrapper around the default Graph implementation, primarily required only for deserialization and requires that the caller call <see cref="WrapperGraph.AttachEventHandlers"/> to properly wire up event handling
         /// </summary>
-        /// <param name="g">Graph</param>
-        public WrapperGraph(IGraph g)
+        protected WrapperGraph()
         {
-            if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
-            this._g = g;
+            this._g = new Graph();
 
             //Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
             this.TripleAssertedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRetractedHandler = new TripleEventHandler(this.OnTripleRetracted);
             this.GraphClearedHandler = new GraphEventHandler(this.OnCleared);
             this.GraphMergedHandler = new GraphEventHandler(this.OnMerged);
-            this.AttachEventHandlers();
+            this.GraphClearRequestedHandler = new CancellableGraphEventHandler(this.OnClearRequested);
+            this.GraphMergeRequestedHandler = new CancellableGraphEventHandler(this.OnMergeRequested);
         }
 
+        /// <summary>
+        /// Creates a new wrapper around the given Graph
+        /// </summary>
+        /// <param name="g">Graph</param>
+        public WrapperGraph(IGraph g)
+            : this()
+        {
+            if (g == null) throw new ArgumentNullException("graph", "Wrapped Graph cannot be null");
+            this._g = g;
+            this.AttachEventHandlers();
+        }      
+
 #if !SILVERLIGHT
+
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected WrapperGraph(SerializationInfo info, StreamingContext context)
-            : this((IGraph)info.GetValue("graph", typeof(IGraph))) { }
+            : this() 
+        {
+            String graphType = info.GetString("graphType");
+            Type t = Type.GetType(graphType);
+            if (t == null) throw new ArgumentException("Invalid serialization information, graph type '" + graphType + "' is not available in your environment");
+            this._g = (IGraph)info.GetValue("innerGraph", t);
+            this.AttachEventHandlers();
+        }
 
 #endif
 
@@ -836,22 +861,21 @@ namespace VDS.RDF
             }
         }
 
+        protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
+        {
+            this.RaiseClearRequested(args);
+        }
+
         /// <summary>
         /// Helper method for raising the <see cref="ClearRequested">Clear Requested</see> event and returning whether any of the Event Handlers cancelled the operation
         /// </summary>
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected bool RaiseClearRequested()
+        protected void RaiseClearRequested(CancellableGraphEventArgs args)
         {
             CancellableGraphEventHandler d = this.ClearRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
                 d(this, args);
-                return !args.Cancel;
-            }
-            else
-            {
-                return true;
             }
         }
 
@@ -872,22 +896,21 @@ namespace VDS.RDF
             }
         }
 
+        protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
+        {
+            this.RaiseMergeRequested(args);
+        }
+
         /// <summary>
         /// Helper method for raising the <see cref="MergeRequested">Merge Requested</see> event and returning whether any of the Event Handlers cancelled the operation
         /// </summary>
         /// <returns>True if the operation can continue, false if it should be aborted</returns>
-        protected bool RaiseMergeRequested()
+        protected void RaiseMergeRequested(CancellableGraphEventArgs args)
         {
             CancellableGraphEventHandler d = this.MergeRequested;
             if (d != null)
             {
-                CancellableGraphEventArgs args = new CancellableGraphEventArgs(this);
                 d(this, args);
-                return !args.Cancel;
-            }
-            else
-            {
-                return true;
             }
         }
 
@@ -942,7 +965,8 @@ namespace VDS.RDF
         /// <param name="context">Streaming Context</param>
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue("graph", this._g, typeof(IGraph));
+            info.AddValue("graphType", this._g.GetType().AssemblyQualifiedName);
+            info.AddValue("innerGraph", this._g, typeof(IGraph));
         }
 
         #endregion
@@ -964,25 +988,31 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public void ReadXml(XmlReader reader)
         {
-            XmlSerializer graphDeserializer = new XmlSerializer(typeof(IGraph));
-            reader.Read();
-            if (reader.Name.Equals("graph"))
+            if (reader.MoveToAttribute("graphType"))
             {
+                String graphType = reader.Value;
+                Type t = Type.GetType(graphType);
+                if (t == null) throw new RdfParseException("Invalid graphType attribute, the type '" + graphType + "' is not available in your environment");
+                reader.MoveToElement();
+
+                XmlSerializer graphDeserializer = new XmlSerializer(t);
+                reader.Read();
+                if (reader.Name.Equals("innerGraph"))
+                {
                     reader.Read();
-                    try
-                    {
-                        Object temp = graphDeserializer.Deserialize(reader);
-                        this._g = (IGraph)temp;
-                        reader.Read();
-                    }
-                    catch
-                    {
-                        throw;
-                    }
+                    Object temp = graphDeserializer.Deserialize(reader);
+                    this._g.Merge((IGraph)temp);
+                    this.AttachEventHandlers();
+                    reader.Read();
+                }
+                else
+                {
+                    throw new RdfParseException("Expected a <graph> element inside a <graph> element");
+                }
             }
             else
             {
-                throw new RdfParseException("Expected a <graph> element inside a <graph> element");
+                throw new RdfParseException("Missing graphType attribute on the <graph> element");
             }
         }
 
@@ -992,8 +1022,9 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public void WriteXml(XmlWriter writer)
         {
-            XmlSerializer graphSerializer = new XmlSerializer(typeof(IGraph));
-            writer.WriteStartElement("graph");
+            XmlSerializer graphSerializer = new XmlSerializer(this._g.GetType());
+            writer.WriteAttributeString("graphType", this._g.GetType().AssemblyQualifiedName);
+            writer.WriteStartElement("innerGraph");
             graphSerializer.Serialize(writer, this._g);
             writer.WriteEndElement();
         }
@@ -1004,4 +1035,3 @@ namespace VDS.RDF
     }
 }
 
-#endif

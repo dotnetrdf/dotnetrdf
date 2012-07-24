@@ -80,6 +80,33 @@ namespace VDS.RDF
         {
             GraphDiffReport report = new GraphDiffReport();
 
+            if (a == null)
+            {
+                if (b == null)
+                {
+                    //Both Graphs are null so considered equal with no differences
+                    report.AreEqual = true;
+                    report.AreDifferentSizes = false;
+                    return report;
+                }
+                else
+                {
+                    //A is non-null and B is null so considered non-equal with everything from A listed as removed
+                    report.AreEqual = false;
+                    report.AreDifferentSizes = true;
+                    foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
+                    {
+                        report.AddRemovedTriple(t);
+                    }
+                    //TODO Copy removed MSGs
+                    return report;
+                }
+            }
+            else if (b == null)
+            {
+                //TODO Reverse the logic above
+            }
+
             //Firstly check for Graph Equality
             Dictionary<INode,INode> equalityMapping = new Dictionary<INode,INode>();
             if (a.Equals(b, out equalityMapping))

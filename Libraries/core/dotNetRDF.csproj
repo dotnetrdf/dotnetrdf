@@ -97,6 +97,7 @@
     <Compile Include="Core\Options.cs" />
     <Compile Include="Core\ThreadSafeGraph.cs" />
     <Compile Include="Core\TreeIndexedTripleCollection.cs" />
+    <Compile Include="Core\WrapperGraphCollection.cs" />
     <Compile Include="Core\WrapperTripleCollection.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />

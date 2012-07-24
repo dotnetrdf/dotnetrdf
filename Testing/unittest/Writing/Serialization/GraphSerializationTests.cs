@@ -53,23 +53,29 @@ namespace VDS.RDF.Test.Writing.Serialization
     [TestClass]
     public class GraphSerializationTests
     {
-        private void TestGraphSerializationXml(IGraph g)
+        private void TestGraphSerializationXml<T>(T g)
+            where T : class, IGraph
         {
             StringWriter writer = new StringWriter();
-            XmlSerializer serializer = new XmlSerializer(typeof(Graph));
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
 
             serializer.Serialize(writer, g);
             Console.WriteLine("Serialized Form:");
             Console.WriteLine(writer.ToString());
             Console.WriteLine();
 
-            Graph h = serializer.Deserialize(new StringReader(writer.ToString())) as Graph;
+            T h = serializer.Deserialize(new StringReader(writer.ToString())) as T;
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual)
             {
                 TestTools.ShowDifferences(report);
             }
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+        }
+
+        private void TestGraphSerializationXml(IGraph g)
+        {
+            this.TestGraphSerializationXml<IGraph>(g);
         }
 
         private void TestGraphSerializationXml(IEnumerable<IGraph> gs)
@@ -80,7 +86,8 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
-        private void TestGraphSerializationBinary(IGraph g)
+        private void TestGraphSerializationBinary<T>(T g)
+            where T : class, IGraph
         {
             MemoryStream stream = new MemoryStream();
             BinaryFormatter serializer = new BinaryFormatter();
@@ -93,7 +100,7 @@ namespace VDS.RDF.Test.Writing.Serialization
             Console.WriteLine();
 
             stream.Seek(0, SeekOrigin.Begin);
-            Graph h = serializer.Deserialize(stream) as Graph;
+            T h = serializer.Deserialize(stream) as T;
             reader.Close();
 
             GraphDiffReport report = g.Difference(h);
@@ -106,6 +113,11 @@ namespace VDS.RDF.Test.Writing.Serialization
             stream.Dispose();
         }
 
+        private void TestGraphSerializationBinary(IGraph g)
+        {
+            this.TestGraphSerializationBinary<IGraph>(g);
+        }
+
         private void TestGraphSerializationBinary(IEnumerable<IGraph> gs)
         {
             foreach (IGraph g in gs)
@@ -114,17 +126,18 @@ namespace VDS.RDF.Test.Writing.Serialization
             }
         }
 
-        private void TestGraphSerializationDataContract(IGraph g)
+        private void TestGraphSerializationDataContract<T>(T g)
+            where T : class, IGraph
         {
             StringWriter writer = new StringWriter();
-            DataContractSerializer serializer = new DataContractSerializer(typeof(Graph));
+            DataContractSerializer serializer = new DataContractSerializer(typeof(T));
 
             serializer.WriteObject(new XmlTextWriter(writer), g);
             Console.WriteLine("Serialized Form:");
             Console.WriteLine(writer.ToString());
             Console.WriteLine();
 
-            Graph h = serializer.ReadObject(XmlReader.Create(new StringReader(writer.ToString()))) as Graph;
+            T h = serializer.ReadObject(XmlReader.Create(new StringReader(writer.ToString()))) as T;
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual)
             {
@@ -133,7 +146,13 @@ namespace VDS.RDF.Test.Writing.Serialization
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
         }
 
-        private void TestGraphSerializationJson(IGraph g)
+        private void TestGraphSerializationDataContract(IGraph g)
+        {
+            this.TestGraphSerializationDataContract<IGraph>(g);
+        }
+
+        private void TestGraphSerializationJson<T>(T g)
+            where T : class, IGraph
         {
             StringWriter writer = new StringWriter();
             JsonSerializer serializer = new JsonSerializer();
@@ -144,7 +163,7 @@ namespace VDS.RDF.Test.Writing.Serialization
             Console.WriteLine(writer.ToString());
             Console.WriteLine();
 
-            Object h = serializer.Deserialize<Graph>(new JsonTextReader(new StringReader(writer.ToString())));// as Graph;
+            Object h = serializer.Deserialize<T>(new JsonTextReader(new StringReader(writer.ToString())));
             Console.WriteLine(h.GetType().FullName);
             GraphDiffReport report = g.Difference((IGraph)h);
             if (!report.AreEqual)
@@ -152,6 +171,11 @@ namespace VDS.RDF.Test.Writing.Serialization
                 TestTools.ShowDifferences(report);
             }
             Assert.IsTrue(report.AreEqual, "Graphs should be equal");
+        }
+
+        private void TestGraphSerializationJson(IGraph g)
+        {
+            this.TestGraphSerializationJson<IGraph>(g);
         }
 
         [TestMethod]
@@ -191,6 +215,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
+        public void SerializationXmlGraph5()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+
+            this.TestGraphSerializationXml<MockWrapperGraph>(new MockWrapperGraph(g));
+        }
+
+        [TestMethod]
         public void SerializationBinaryGraph()
         {
             Graph g = new Graph();
@@ -224,6 +257,15 @@ namespace VDS.RDF.Test.Writing.Serialization
             g.LoadFromFile("complex-collections.nt");
 
             this.TestGraphSerializationBinary(g);
+        }
+
+        [TestMethod]
+        public void SerializationBinaryGraph5()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+
+            this.TestGraphSerializationBinary<MockWrapperGraph>(new MockWrapperGraph(g));
         }
 
         [TestMethod]
@@ -263,6 +305,15 @@ namespace VDS.RDF.Test.Writing.Serialization
         }
 
         [TestMethod]
+        public void SerializationDataContractGraph5()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+
+            this.TestGraphSerializationDataContract(new MockWrapperGraph(g));
+        }
+
+        [TestMethod]
         public void SerializationJsonGraph()
         {
             Graph g = new Graph();
@@ -271,5 +322,55 @@ namespace VDS.RDF.Test.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
+        [TestMethod]
+        public void SerializationJsonGraph2()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.Configuration.configuration.ttl");
+
+            this.TestGraphSerializationJson(g);
+        }
+
+        [TestMethod]
+        public void SerializationJsonGraph3()
+        {
+            Graph g = new Graph();
+            UriLoader.Load(g, new Uri("http://dbpedia.org/resource/Ilkeston"));
+
+            this.TestGraphSerializationJson(g);
+        }
+
+        [TestMethod]
+        public void SerializationJsonGraph4()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("complex-collections.nt");
+
+            this.TestGraphSerializationJson(g);
+        }
+
+        [TestMethod]
+        public void SerializationJsonGraph5()
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+
+            this.TestGraphSerializationJson(new MockWrapperGraph(g));
+        }
+
+    }
+
+    [Serializable]
+    public class MockWrapperGraph
+        : WrapperGraph, ISerializable
+    {
+        protected MockWrapperGraph()
+            : base() { }
+
+        public MockWrapperGraph(IGraph g)
+            : base(g) { }
+
+        protected MockWrapperGraph(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }

@@ -35,9 +35,11 @@ terms.
 
 using System;
 using System.Collections.Generic;
+#if !WINDOWS_PHONE
 using System.ComponentModel;
 #if SILVERLIGHT
 using System.ComponentModel.DataAnnotations;
+#endif
 #endif
 using System.Linq;
 using System.Text;
@@ -125,7 +127,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to persist the store
         /// </summary>
+#if !WINDOWS_PHONE
         [Category("Sesame Configuration"), Description("Whether the store is persisted"), DefaultValue(true)]
+#endif
         public bool Persist
         {
             get;
@@ -135,10 +139,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets the sync delay
         /// </summary>
+#if !WINDOWS_PHONE
 #if !SILVERLIGHT
         [Category("Sesame Configuration"), DisplayName("Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
 #else
         [Category("Sesame Configuration"), Display(Name = "Sync Delay"), Description("Sets the sync delay for the store"), DefaultValue(0)]
+#endif
 #endif
         public int SyncDelay
         {
@@ -149,10 +155,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable direct type hierarchy inferencing
         /// </summary>
+#if !WINDOWS_PHONE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
 #else
         [Category("Sesame Reasoning"), Display(Name = "Direct Type Hierarchy Inference"), Description("Enables/Disables Direct Type Hierarchy Inference"), DefaultValue(false)]
+#endif
 #endif
         public bool DirectTypeHierarchyInferencing
         {
@@ -163,10 +171,12 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets/Sets whether to enable RDF Schema Inferencing
         /// </summary>
+#if !WINDOWS_PHONE
 #if !SILVERLIGHT
         [Category("Sesame Reasoning"), DisplayName("RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
 #else
         [Category("Sesame Reasoning"), Display(Name = "RDF Schema Inference"), Description("Enables/Disables RDF Schema inferencing"), DefaultValue(false)]
+#endif
 #endif
         public bool RdfSchemaInferencing
         {

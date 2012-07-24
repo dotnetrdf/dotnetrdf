@@ -34,6 +34,7 @@ terms.
 */
 
 using System;
+using System.Collections.Generic;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -820,4 +821,23 @@ namespace VDS.RDF
             return String.Compare(a.VariableName, b.VariableName, StringComparison.Ordinal);
         }
     }
+
+    /// <summary>
+    /// Comparer that compares URIs
+    /// </summary>
+    class UriComparer
+        : IComparer<Uri>
+    {
+        /// <summary>
+        /// Compares two URIs
+        /// </summary>
+        /// <param name="x">URI</param>
+        /// <param name="y">URI</param>
+        /// <returns></returns>
+        public int Compare(Uri x, Uri y)
+        {
+            return ComparisonHelper.CompareUris(x, y);
+        }
+    }
+        
 }
