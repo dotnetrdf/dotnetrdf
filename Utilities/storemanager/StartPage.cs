@@ -130,10 +130,15 @@ namespace VDS.RDF.Utilities.StoreManager
                                 StoreManagerForm storeManager = new StoreManagerForm(manager);
                                 storeManager.MdiParent = Program.MainForm;
                                 storeManager.Show();
-
-                                //Add to Recent Connections
-                                Program.MainForm.AddRecentConnection(manager);
-
+                                try
+                                {
+                                    //Add to Recent Connections
+                                    Program.MainForm.AddRecentConnection(manager);
+                                }
+                                catch (Exception ex)
+                                {
+                                    // silently ignore this error? seems like if MaxRecentConnections is hit, there is a bug in removing old connections...
+                                }
                                 this.Close();
                             }
                             catch (Exception ex)

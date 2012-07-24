@@ -535,11 +535,13 @@ namespace VDS.RDF.Utilities.StoreManager
             List<INode> conns = this._recentConnections.GetTriplesWithPredicateObject(this._recentConnections.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), this._recentConnections.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + ConfigurationLoader.ClassGenericManager.Substring(ConfigurationLoader.ClassGenericManager.IndexOf(':') + 1)))).Select(t => t.Subject).ToList();
             if (conns.Count > MaxRecentConnections)
             {
+                
                 conns.Sort();
                 conns.Reverse();
 
                 conns.RemoveRange(0, MaxRecentConnections);
 
+                // there may be a bug here -- removing something from a collection that you are enumerating... - RMZ 7/24/2012
                 foreach (INode obj in conns)
                 {
                     this._recentConnections.Retract(this._recentConnections.GetTriplesWithSubject(obj));
