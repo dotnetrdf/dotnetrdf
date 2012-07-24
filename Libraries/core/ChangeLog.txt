@@ -3,8 +3,8 @@
 
 A Library for RDF manipulation and parsing in .Net using C#
 
-Robert Vesse 2009-12
-rvesse@vdesign-studios.com
+dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 Change Log
 ----------
@@ -14,29 +14,36 @@ This represents a summary of additions, changes and removals for the 0.7.1 relea
 Added
 - Core API
  - New Indexing data structures
+ - New decorator classes to make it simpler to wrap extra functionality around existing implementations:
+  - WrapperGraph
+  - WrapperGraphCollection
+  - WrapperTripleCollection
 
 Changed
 - Bug Fixes
  - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi
  - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
+ - Fixed a bug with GraphDiff and null reference handling
 - Core API
  - IGraph now defines Assert() and Retract() as returning booleans
  - ITripleStore now defines Add() and Remove() as returning booleans
  - BaseTripleCollection now defines Add() and Delete() as returning booleans
+ - Refactored internals of TripleCollection and GraphCollection to use our new MultiDictionary data structure
+ - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance
 - Query
  - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
-
 - Storage API
  - Refactored IStorageServer API
  - Added support for creating stores with Sesame - thanks to Jeen Broekstra
  - Stardog
   - Avoid any transaction if calling UpdateGraph() without any updates - thanks to Ron Michael Zettlemoyer
 
-
 Removed
 - Marked the TalisPlatformConnector as obsolete but usable
 - Marked the contents of the Data.Sql library as obsolete unusable
 - Removed the obsolete BackgroundPersistedGraph class
+- Marked the now superseded IndexedTripleCollection and it's descendants as obsolete usable
+- Marked the obsoleted ThreadSafeIndexedTripleCollection as obsolete unusable
    
 
 
