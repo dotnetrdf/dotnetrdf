@@ -166,5 +166,45 @@ namespace VDS.RDF.Test
             Assert.IsTrue(report.RemovedMSGs.Any(), "Difference should have reported some Removed MSGs");
         }
 
+        [TestMethod]
+        public void GraphDiffNullReferenceBoth()
+        {
+            GraphDiff diff = new GraphDiff();
+            GraphDiffReport report = diff.Difference(null, null);
+
+            TestTools.ShowDifferences(report);
+
+            Assert.IsTrue(report.AreEqual, "Graphs should have been reported as equal for two null references");
+            Assert.IsFalse(report.AreDifferentSizes, "Graphs should have been reported same size for two null references");
+        }
+
+        [TestMethod]
+        public void GraphDiffNullReferenceA()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+
+            GraphDiff diff = new GraphDiff();
+            GraphDiffReport report = diff.Difference(null, g);
+            TestTools.ShowDifferences(report);
+
+            Assert.IsFalse(report.AreEqual, "Graphs should have been reported as non-equal for one null reference");
+            Assert.IsTrue(report.AreDifferentSizes, "Graphs should have been reported as different sizes for one null reference");
+            Assert.IsTrue(report.AddedTriples.Any(), "Report should list added triples");
+        }
+
+        [TestMethod]
+        public void GraphDiffNullReferenceB()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("InferenceTest.ttl");
+
+            GraphDiffReport report = g.Difference(null);
+            TestTools.ShowDifferences(report);
+
+            Assert.IsFalse(report.AreEqual, "Graphs should have been reported as non-equal for one null reference");
+            Assert.IsTrue(report.AreDifferentSizes, "Graphs should have been reported as different sizes for one null reference");
+            Assert.IsTrue(report.RemovedTriples.Any(), "Report should list removed triples");
+        }
     }
 }

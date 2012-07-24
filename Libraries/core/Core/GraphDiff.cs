@@ -91,20 +91,50 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    //A is non-null and B is null so considered non-equal with everything from A listed as removed
+                    //A is null and B is non-null so considered non-equal with everything from B listed as added
                     report.AreEqual = false;
                     report.AreDifferentSizes = true;
-                    foreach (Triple t in a.Triples.Where(t => t.IsGroundTriple))
+                    foreach (Triple t in b.Triples)
                     {
-                        report.AddRemovedTriple(t);
+                        if (t.IsGroundTriple)
+                        {
+                            report.AddAddedTriple(t);
+                        }
+                        else
+                        {
+                            this._rhsUnassigned.Add(t);
+                        }
                     }
-                    //TODO Copy removed MSGs
+                    this.ComputeMSGs(b, this._rhsUnassigned, this._rhsMSGs);
+                    foreach (IGraph msg in this._rhsMSGs)
+                    {
+                        report.AddAddedMSG(msg);
+                    }
                     return report;
                 }
             }
             else if (b == null)
             {
-                //TODO Reverse the logic above
+                //A is non-null and B is null so considered non-equal with everything from A listed as removed
+                report.AreEqual = false;
+                report.AreDifferentSizes = true;
+                foreach (Triple t in a.Triples)
+                {
+                    if (t.IsGroundTriple)
+                    {
+                        report.AddRemovedTriple(t);
+                    }
+                    else
+                    {
+                        this._lhsUnassigned.Add(t);
+                    }
+                }
+                this.ComputeMSGs(a, this._lhsUnassigned, this._lhsMSGs);
+                foreach (IGraph msg in this._lhsMSGs)
+                {
+                    report.AddRemovedMSG(msg);
+                }
+                return report;
             }
 
             //Firstly check for Graph Equality
