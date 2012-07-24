@@ -100,6 +100,7 @@
     <Compile Include="Core\TreeIndexedTripleCollection.cs" />
     <Compile Include="Core\WrapperGraphCollection.cs" />
     <Compile Include="Core\WrapperTripleCollection.cs" />
+    <Compile Include="Core\WrapperTripleStore.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
