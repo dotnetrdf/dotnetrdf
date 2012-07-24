@@ -51,19 +51,14 @@ namespace VDS.RDF
         /// <summary>
         /// Underlying Storage of the Triple Collection
         /// </summary>
-        protected Dictionary<int, Triple> _triples;
-        /// <summary>
-        /// Underlying Storage of the Triple Collection which handles the extra Triples that result from Hash Code collisions
-        /// </summary>
-        protected List<Triple> _collisionTriples;
+        protected MultiDictionary<Triple, Object> _triples;
 
         /// <summary>
         /// Creates a new Triple Collection
         /// </summary>
         public TripleCollection()
         {
-            this._triples = new Dictionary<int, Triple>();
-            this._collisionTriples = new List<Triple>();
+            this._triples = new MultiDictionary<Triple, Object>();
         }
 
         /// <summary>
@@ -73,25 +68,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple already exists in the Triple Collection</returns>
         public override bool Contains(Triple t)
         {
-            //Is the Hash Code in the Dictionary?
-            if (this._triples.ContainsKey(t.GetHashCode()))
-            {
-                //Are the two Triples equal?
-                if (this._triples[t.GetHashCode()].Equals(t))
-                {
-                    return true;
-                }
-                else
-                {
-                    //There's a Hash Code Collision
-                    //Is the Triple in the Collision Triples list?
-                    return this._collisionTriples.Contains(t);
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return this._triples.ContainsKey(t);
         }
 
         /// <summary>
@@ -100,19 +77,10 @@ namespace VDS.RDF
         /// <param name="t">Triple to add</param>
         protected internal override bool Add(Triple t)
         {
-            if (!this._triples.ContainsKey(t.GetHashCode()))
+            if (!this._triples.ContainsKey(t))
             {
-                this._triples.Add(t.GetHashCode(), t);
-                return true;
-            }
-            else if (!this._triples[t.GetHashCode()].Equals(t))
-            {
-                //Hash Code Collision
-                this._triples[t.GetHashCode()].Collides = true;
-                t.Collides = true;
-
-                //Add to Collision Triples list
-                this._collisionTriples.Add(t);
+                this._triples.Add(t, null);
+                this.RaiseTripleAdded(t);
                 return true;
             }
             return false;
@@ -125,29 +93,10 @@ namespace VDS.RDF
         /// <remarks>Deleting something that doesn't exist has no effect and gives no error</remarks>
         protected internal override bool Delete(Triple t)
         {
-            if (this._triples.ContainsKey(t.GetHashCode()))
+            if (this._triples.Remove(t))
             {
-                if (this._triples[t.GetHashCode()].Equals(t))
-                {
-                    this._triples.Remove(t.GetHashCode());
-
-                    //Were there any Collisions on this Hash Code?
-                    if (this._collisionTriples.Any(tri => tri.GetHashCode().Equals(t.GetHashCode())))
-                    {
-                        //Move the first colliding Triple to the main Triple Collection
-                        //and remove it from the Collision Triple list
-                        Triple first = this._collisionTriples.First(tri => tri.GetHashCode().Equals(t.GetHashCode()));
-                        this._triples.Add(first.GetHashCode(), first);
-                        this._collisionTriples.Remove(first);
-                    }
-                    return true;
-                }
-                else
-                {
-                    //Hash Code Collision
-                    //Remove from Collision Triples list instead
-                    return this._collisionTriples.Remove(t);
-                }
+                this.RaiseTripleRemoved(t);
+                return true;
             }
             return false;
         }
@@ -159,7 +108,7 @@ namespace VDS.RDF
         {
             get
             {
-                return (this._triples.Count + this._collisionTriples.Count);
+                return this._triples.Count;
             }
         }
 
@@ -173,24 +122,10 @@ namespace VDS.RDF
         {
             get 
             {
-                if (this.Contains(t))
+                Triple actual;
+                if (this._triples.TryGetKey(t, out actual))
                 {
-                    if (this._triples[t.GetHashCode()].Equals(t))
-                    {
-                        return this._triples[t.GetHashCode()];
-                    }
-                    else
-                    {
-#if SILVERLIGHT
-                        for (int i = 0; i < this._collisionTriples.Count; i++)
-                        {
-                            if (this._collisionTriples[i].Equals(t)) return this._collisionTriples[i];
-                        }
-                        throw new KeyNotFoundException("The given Triple does not exist in the Triple Collection");
-#else
-                        return this._collisionTriples.Find(x => x.Equals(t));
-#endif
-                    }
+                    return actual;
                 }
                 else
                 {
@@ -249,19 +184,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
-            if (this._collisionTriples.Count > 0)
-            {
-                //Some Collision Triples exist
-                //Need to concatenate the main Triple Collection with the Collision Triples list
-                return (from t in this._triples.Values
-                        select t).Concat(this._collisionTriples).GetEnumerator();
-            }
-            else
-            {
-                //No Collision Triples exists
-                //Just give back the enumerator for the main Triple Collection
-                return this._triples.Values.GetEnumerator();
-            }
+            return this._triples.Keys.GetEnumerator();
         }
 
         #endregion
@@ -287,7 +210,6 @@ namespace VDS.RDF
         public override void Dispose()
         {
             this._triples.Clear();
-            this._collisionTriples.Clear();
         }
 
         #endregion
@@ -621,6 +543,7 @@ namespace VDS.RDF
     /// In cases where you require minimal indexing and want to reduce memory usage you can set the <see cref="Options.FullTripleIndexing">Options.FullTripleIndexing</see> property to be false which disables the paired indices.  Once this is disabled any instance of this class instantiated when the option is disabled will only create basic indexes.
     /// </para>
     /// </remarks>
+    [Obsolete("This implementation is considered obsolete and will be removed in future releases, it is superceded by the more performant TreeIndexedTripleCollection", false)]
     public class IndexedTripleCollection 
         : BaseTripleCollection, IEnumerable<Triple>
     {
@@ -1422,6 +1345,7 @@ namespace VDS.RDF
     /// <summary>
     /// An Indexed Triple collection biased towards compact indexes
     /// </summary>
+    [Obsolete("This implementation is considered obsolete and will be removed in future releases, it is superceded by the more performant TreeIndexedTripleCollection", false)]
     public class CompactIndexedTripleCollection
         : IndexedTripleCollection
     {
@@ -1440,6 +1364,7 @@ namespace VDS.RDF
     /// <remarks>
     /// Not available under Silverlight/Windows Phone 7
     /// </remarks>
+    [Obsolete("This implementation is considered obsolete and will be removed in future releases, it is superceded by the more performant TreeIndexedTripleCollection", false)]
     public class IOIndexedTripleCollection
         : IndexedTripleCollection
     {
@@ -1461,6 +1386,7 @@ namespace VDS.RDF
     /// Not available under Silverlight/Windows Phone 7
     /// </para>
     /// </remarks>
+    [Obsolete("This implementation is considered obsolete and will be removed in future releases, it is superceded by the more performant TreeIndexedTripleCollection", false)]
     public class HybridIndexedTripleCollecton
         : IndexedTripleCollection
     {
