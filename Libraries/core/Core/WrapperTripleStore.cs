@@ -1,4 +1,4 @@
-/*
+﻿/*
 
 Copyright dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -89,7 +89,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        public BaseGraphCollection Graphs
+        public virtual BaseGraphCollection Graphs
         {
             get 
             {
@@ -97,7 +97,7 @@ namespace VDS.RDF.Core
             }
         }
 
-        public IEnumerable<Triple> Triples
+        public virtual IEnumerable<Triple> Triples
         {
             get 
             {
@@ -105,43 +105,43 @@ namespace VDS.RDF.Core
             }
         }
 
-        public bool Add(IGraph g)
+        public virtual bool Add(IGraph g)
         {
             return this.Add(g, false);
         }
 
-        public bool Add(IGraph g, bool mergeIfExists)
+        public virtual bool Add(IGraph g, bool mergeIfExists)
         {
             return this._store.Add(g, mergeIfExists);
         }
 
-        public bool AddFromUri(Uri graphUri)
+        public virtual bool AddFromUri(Uri graphUri)
         {
             return this.AddFromUri(graphUri, false);
         }
 
-        public bool AddFromUri(Uri graphUri, bool mergeIfExists)
+        public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
             return this._store.AddFromUri(graphUri, mergeIfExists);
         }
 
-        public bool Remove(Uri graphUri)
+        public virtual bool Remove(Uri graphUri)
         {
             return this._store.Remove(graphUri);
         }
 
-        public bool HasGraph(Uri graphUri)
+        public virtual bool HasGraph(Uri graphUri)
         {
             return this._store.HasGraph(graphUri);
         }
 
         [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", false)]
-        public IGraph Graph(Uri graphUri)
+        public virtual IGraph Graph(Uri graphUri)
         {
             return this._store.Graph(graphUri);
         }
 
-        public IGraph this[Uri graphUri]
+        public virtual IGraph this[Uri graphUri]
         {
             get
             {
@@ -314,7 +314,7 @@ namespace VDS.RDF.Core
             this.RaiseGraphMerged(args.GraphEvent);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             this._store.Dispose();
         }

@@ -963,7 +963,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("graphType", this._g.GetType().AssemblyQualifiedName);
             info.AddValue("innerGraph", this._g, typeof(IGraph));
@@ -977,7 +977,7 @@ namespace VDS.RDF
         /// Gets the Schema for XML serialization
         /// </summary>
         /// <returns></returns>
-        public XmlSchema GetSchema()
+        public virtual XmlSchema GetSchema()
         {
             return null;
         }
@@ -986,7 +986,7 @@ namespace VDS.RDF
         /// Reads the data for XML deserialization
         /// </summary>
         /// <param name="reader">XML Reader</param>
-        public void ReadXml(XmlReader reader)
+        public virtual void ReadXml(XmlReader reader)
         {
             if (reader.MoveToAttribute("graphType"))
             {
@@ -1020,7 +1020,7 @@ namespace VDS.RDF
         /// Writes the data for XML serialization
         /// </summary>
         /// <param name="writer">XML Writer</param>
-        public void WriteXml(XmlWriter writer)
+        public virtual void WriteXml(XmlWriter writer)
         {
             XmlSerializer graphSerializer = new XmlSerializer(this._g.GetType());
             writer.WriteAttributeString("graphType", this._g.GetType().AssemblyQualifiedName);
