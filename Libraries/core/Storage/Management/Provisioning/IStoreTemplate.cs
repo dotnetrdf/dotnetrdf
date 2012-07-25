@@ -77,5 +77,11 @@ namespace VDS.RDF.Storage.Management.Provisioning
         {
             get;
         }
+
+        /// <summary>
+        /// Validates the template returning an enumeration of error messages
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<String> Validate();
     }
 }

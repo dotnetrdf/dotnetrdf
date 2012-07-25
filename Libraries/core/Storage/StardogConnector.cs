@@ -2396,5 +2396,184 @@ namespace VDS.RDF.Storage
 
             base.SerializeProxyConfig(manager, context);
         }
+
+        /// <summary>
+        /// Static Class containing constants relevant to provisioning new Stardog stores
+        /// </summary>
+        public static class DatabaseOptions
+        {
+            /// <summary>
+            /// Constants for valid Stardog Options
+            /// </summary>
+            public const String Online = "database.online",
+                                IcvActiveGraphs = "icv.active.graphs",
+                                IcvEnabled = "icv.enabled",
+                                IcvReasoningType = "icv.reasoning.type",
+                                IndexDifferentialEnableLimit = "index.differential.enable.limit",
+                                IndexDifferentialMergeLimit = "index.differential.merge.limit",
+                                IndexLiteralsCanonical = "index.literals.canonical",
+                                IndexNamedGraphs = "index.named.graphs",
+                                IndexPersistTrue = "index.persist.true",
+                                IndexPersistSync = "index.persist.sync",
+                                IndexStatisticsAutoUpdate = "index.statistics.update.automatic",
+                                IndexType = "index.type",
+                                ReasoningAutoConsistency = "reasoning.consistency.automatic",
+                                ReasoningPunning = "reasoning.punning.enabled",
+                                ReasoningSchemaGraphs = "reasoning.schema.graphs",
+                                SearchEnabled = "search.enabled",
+                                SearchReIndexMode = "search.reindex.mode",
+                                TransactionsDurable = "transactions.durable";
+
+            /// <summary>
+            /// Constants for valid Stardog Database types
+            /// </summary>
+            public const String DatabaseTypeDisk = "disk",
+                                DatabaseTypeMemory = "memory";
+
+            /// <summary>
+            /// Constanst for valid Search Re-Index Modes
+            /// </summary>
+            public const String SearchReIndexModeSync = "sync",
+                                SearchReIndexModeAsync = "async";
+
+            /// <summary>
+            /// Constants for special named graph URIs
+            /// </summary>
+            public const String SpecialNamedGraphDefault = "default",
+                                SpecialNamedGraphUnionAll = "*";
+
+            /// <summary>
+            /// Constants for various Stardog reasoning settings
+            /// </summary>
+            public const StardogReasoningMode DefaultIcvReasoningMode = StardogReasoningMode.None;
+
+            /// <summary>
+            /// Constant for various Stardog integer settings
+            /// </summary>
+            public const int DefaultMinDifferentialIndexLimit = 1000000,
+                             DefaultMaxDifferentialIndexLimit = 10000;
+
+            /// <summary>
+            /// Constants for various Stardog boolean flags
+            /// </summary>
+            public const bool DefaultCanonicaliseLiterals = true,
+                              DefaultNamedGraphIndexing = true,
+                              DefaultPersistIndex = false,
+                              DefaultPersistIndexSync = true,
+                              DefaultAutoUpdateStats = true,
+                              DefaultConsistencyChecking = false,
+                              DefaultPunning = false,
+                              DefaultFullTextSearch = false,
+                              DefaultDurableTransactions = false;
+
+            /// <summary>
+            /// Pattern for valid Stardog database names
+            /// </summary>
+            public const String ValidDatabaseNamePattern = "[A-Za-z]{1}[A-Za-z0-9_-]";
+
+            /// <summary>
+            /// Validates whether a Database Name is valid
+            /// </summary>
+            /// <param name="name">Database Name</param>
+            /// <returns></returns>
+            public static bool IsValidDatabaseName(String name)
+            {
+                return !String.IsNullOrEmpty(name) && Regex.IsMatch(name, ValidDatabaseNamePattern);
+            }
+
+            /// <summary>
+            /// Validates whether a Database Type is valid
+            /// </summary>
+            /// <param name="type">Database Type</param>
+            /// <returns></returns>
+            public static bool IsValidDatabaseType(String type)
+            {
+                switch (type.ToLower())
+                {
+                    case DatabaseTypeDisk:
+                    case DatabaseTypeMemory:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            /// <summary>
+            /// Validates whether a Search Re-Index Mode is valid
+            /// </summary>
+            /// <param name="mode">Mode</param>
+            /// <returns></returns>
+            public static bool IsValidSearchReIndexMode(String mode)
+            {
+                switch (mode.ToLower())
+                {
+                    case SearchReIndexModeAsync:
+                    case SearchReIndexModeSync:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            /// <summary>
+            /// Validates whether a Named Graph URI is valid
+            /// </summary>
+            /// <param name="uri">URI</param>
+            /// <returns></returns>
+            public static bool IsValidNamedGraph(String uri)
+            {
+                if (String.IsNullOrEmpty(uri)) return false;
+                if (uri.Equals(SpecialNamedGraphDefault) || uri.Equals(SpecialNamedGraphUnionAll))
+                {
+                    return true;
+                }
+                else
+                {
+                    try
+                    {
+                        Uri u = new Uri(uri);
+                        return u.IsAbsoluteUri;
+                    }
+                    catch (UriFormatException)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            //The legal value of icv.active.graphs is a list of named graph identifiers. See reasoning.schema.graphs below for syntactic sugar URIs for default graph and all named graphs.
+
+            //The legal value of icv.reasoning.type is one of the reasoning levels (i.e, one of the following strings): NONE, RDFS, QL, RL, EL, DL.
+
+            //The legal value of index.differential.* is an integer.
+
+            //The legal value of index.type is the string "disk" or "memory" (case-insensitive).
+
+            //The legal value of reasoning.schema.graphs is a list of named graph identifiers, including (optionally) the special names, tag:stardog:api:context:default and tag:stardog:api:context:all, which represent the default graph and the union of all named graphs and the default graph, respectively. In the context of database configurations only, Stardog will recognize default and * as shorter forms of those URIs, respectively.
+
+            //The legal value of search.reindex.mode is one of the strings sync or async (case insensitive) or a legal Quartz cron expression
+
+            //Config Option	Mutability	Default	API
+            //Config Option	Mutability	Default	API
+            //database.name	false	{NO DEFAULT}	DatabaseOptions.NAME
+            //database.online	false6	true	DatabaseOptions.ONLINE
+            //icv.active.graphs	false	default	DatabaseOptions.ICV_ACTIVE_GRAPHS
+            //icv.enabled	true	false	DatabaseOptions.ICV_ENABLED
+            //icv.reasoning.type	true	NONE	DatabaseOptions.ICV_REASONING_TYPE
+            //index.differential.enable.limit	true	1000000	IndexOptions.DIFF_INDEX_MIN_LIMIT
+            //index.differential.merge.limit	true	10000	IndexOptions.DIFF_INDEX_MAX_LIMIT
+            //index.literals.canonical	false	true	IndexOptions.CANONICAL_LITERALS
+            //index.named.graphs	false	true	IndexOptions.INDEX_NAMED_GRAPHS
+            //index.persist	true	false	IndexOptions.PERSIST
+            //index.persist.sync	true	true	IndexOptions.SYNC
+            //index.statistics.update.automatic	true	true	IndexOptions.AUTO_STATS_UPDATE
+            //index.type	false	Disk	IndexOptions.INDEX_TYPE
+            //reasoning.consistency.automatic	true	false	DatabaseOptions.CONSISTENCY_AUTOMATIC
+            //reasoning.punning.enabled	false	false	DatabaseOptions.PUNNING_ENABLED
+            //reasoning.schema.graphs	true	default	DatabaseOptions.SCHEMA_GRAPHS
+            //search.enabled	false	false	DatabaseOptions.SEARCHABLE
+            //search.reindex.mode	false	wait	DatabaseOptions.SEARCH_REINDEX_MODE
+            //transactions.durable	true	false	DatabaseOptions.TRANSACTIONS_DURABLE
+        }
     }
 }

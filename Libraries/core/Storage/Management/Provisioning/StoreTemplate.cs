@@ -98,6 +98,18 @@ namespace VDS.RDF.Storage.Management.Provisioning
         }
 
         /// <summary>
+        /// Validates the template
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// This default implementation does no validation, derived classes must override this to add their required validation
+        /// </remarks>
+        public virtual IEnumerable<String> Validate()
+        {
+            return Enumerable.Empty<String>();
+        }
+
+        /// <summary>
         /// Gets the string representation of the template which is the Template Name
         /// </summary>
         /// <returns></returns>
