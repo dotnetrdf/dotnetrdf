@@ -61,12 +61,11 @@ namespace VDS.RDF.Storage
     /// See <a href="http://www.openrdf.org/doc/sesame2/system/ch08.html">here</a> for the protocol specification, this base class supports Version 5 of the protocol which does not include SPARQL Update support
     /// </para>
     /// </remarks>
-    public abstract class BaseSesameHttpProtocolConnector<T> 
+    public abstract class BaseSesameHttpProtocolConnector
         : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IQueryableStorage, IStorageServer
 #endif
-        where T : IStoreTemplate
     {
         /// <summary>
         /// System Repository ID
@@ -1685,7 +1684,7 @@ namespace VDS.RDF.Storage
     /// Connector for connecting to a Store that supports the Sesame 2.0 HTTP Communication Protocol version 5 (i.e. no SPARQL Update support)
     /// </summary>
     public class SesameHttpProtocolVersion5Connector
-        : BaseSesameHttpProtocolConnector<BaseSesameTemplate>
+        : BaseSesameHttpProtocolConnector
     {
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -1764,8 +1763,10 @@ namespace VDS.RDF.Storage
                     Dictionary<String,String> createParams = new Dictionary<string,string>();
                     BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
                     IGraph g = sesameTemplate.GetTemplateGraph();
+
+                    //Firstly we need to save the Repository Template as a new Context to Sesame
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                     request.ContentType = MimeTypesHelper.NTriples[0];
                     NTriplesWriter ntwriter = new NTriplesWriter();
@@ -1788,6 +1789,11 @@ namespace VDS.RDF.Storage
                         //If we get then it was OK
                         response.Close();
                     }
+
+                    //Then we need to declare that said Context is of type rep:RepositoryContext
+                    Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
+                    this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null);
+
                     return true;
                 }
                 catch (WebException webEx)
@@ -1862,11 +1868,12 @@ namespace VDS.RDF.Storage
             {
                 try
                 {
+                    //First we need to store the template as a new context in the SYSTEM repository
                     Dictionary<String, String> createParams = new Dictionary<string, string>();
                     BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
                     IGraph g = sesameTemplate.GetTemplateGraph();
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector<BaseSesameTemplate>.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
 
                     request.ContentType = MimeTypesHelper.NTriples[0];
                     NTriplesWriter ntwriter = new NTriplesWriter();
@@ -1875,7 +1882,19 @@ namespace VDS.RDF.Storage
                         {
                             if (args.WasSuccessful)
                             {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
+                                //Then we need to declare that said Context is of type rep:RepositoryContext
+                                Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
+                                this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
+                                    {
+                                        if (args.WasSuccessful)
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
+                                        }
+                                        else
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
+                                        }
+                                    }, st);
                             }
                             else
                             {

@@ -63,7 +63,7 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector<StoreTemplate>, IAsyncStorageServer, IConfigurationSerializable
+        : BaseSesameHttpProtocolConnector, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IStorageServer
 #endif
