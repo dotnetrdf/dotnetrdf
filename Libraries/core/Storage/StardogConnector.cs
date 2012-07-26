@@ -265,7 +265,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.StorageServer;
             }
         }
 
@@ -973,18 +973,54 @@ namespace VDS.RDF.Storage
 
         public bool CreateStore(IStoreTemplate template)
         {
-            //            POST /admin/databases
-            //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+            if (template is BaseStardogTemplate)
+            {
+                //POST /admin/databases
+                //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+                try
+                {
+                    //Get the Template
+                    BaseStardogTemplate stardogTemplate = (BaseStardogTemplate)template;
+                    IEnumerable<String> errors = stardogTemplate.Validate();
+                    if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
+                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
 
-            //Expected input:
+                    //Create the request and write the JSON
+                    HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request.ContentType = "application/json";
 
-            //JSON (application/json):
-            //  {
-            //    "dbname" : "",
-            //    "options" : { ... },
-            //    "files" : [{ "name":"fileX.ttl", "context":"some:context" }, ...]
-            //  }
-            throw new NotImplementedException();
+                    Console.WriteLine(jsonTemplate.ToString());
+                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    {
+                        writer.Write(jsonTemplate.ToString());
+                        writer.Close();
+                    }
+
+#if DEBUG
+                    if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+                    //Make the request
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    {
+#if DEBUG
+                        if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+
+                        //If we get here it completed OK
+                        response.Close();
+                    }
+                    return true;
+                }
+                catch (WebException webEx)
+                {
+                    throw StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' in");
+                }
+            }
+            else
+            {
+                throw new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate");
+            }
         }
 
         public void DeleteStore(string storeID)
@@ -2643,6 +2679,7 @@ namespace VDS.RDF.Storage
                               DefaultPersistIndex = false,
                               DefaultPersistIndexSync = true,
                               DefaultAutoUpdateStats = true,
+                              DefaultIcvEnabled = false,
                               DefaultConsistencyChecking = false,
                               DefaultPunning = false,
                               DefaultFullTextSearch = false,
@@ -2651,7 +2688,7 @@ namespace VDS.RDF.Storage
             /// <summary>
             /// Pattern for valid Stardog database names
             /// </summary>
-            public const String ValidDatabaseNamePattern = "[A-Za-z]{1}[A-Za-z0-9_-]";
+            public const String ValidDatabaseNamePattern = "^[A-Za-z]{1}[A-Za-z0-9_-]*$";
 
             /// <summary>
             /// Validates whether a Database Name is valid

@@ -42,6 +42,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 using VDS.RDF.Test.Update;
@@ -63,7 +65,7 @@ namespace VDS.RDF.Test.Storage
 
         protected override IStorageProvider GetManager()
         {
-            return (IStorageProvider)StardogTests.GetConnection();;
+            return (IStorageProvider)StardogTests.GetConnection();
         }
 
         [TestMethod]
@@ -448,6 +450,36 @@ namespace VDS.RDF.Test.Storage
             {
                 Options.HttpDebugging = false;
             }
+        }
+
+        [TestMethod]
+        public void StorageStardogCreateNewStore()
+        {
+            Guid guid;
+            do
+            {
+                guid = Guid.NewGuid();
+            } while (guid.Equals(Guid.Empty) || !Char.IsLetter(guid.ToString()[0]));
+
+
+            StardogConnector stardog = StardogTests.GetConnection();
+            IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
+            Console.WriteLine("Template ID " + template.ID);
+
+            try
+            {
+                Options.HttpDebugging = true;
+                Options.HttpFullDebugging = true;
+
+                stardog.CreateStore(template);
+            }
+            finally
+            {
+                Options.HttpFullDebugging = false;
+                Options.HttpDebugging = false;
+            }
+
+            stardog.Dispose();
         }
     }
 }

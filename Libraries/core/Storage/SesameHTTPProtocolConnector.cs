@@ -1809,7 +1809,7 @@ namespace VDS.RDF.Storage
             }
             else
             {
-                throw new RdfStorageException("Invalid templates, templates must derive from BaseSesameTemplate");
+                throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
             }
         }
 

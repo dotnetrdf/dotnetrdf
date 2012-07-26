@@ -945,6 +945,18 @@ namespace VDS.RDF.Utilities.StoreManager
                     listInfo.MdiParent = this.MdiParent;
                     listInfo.Show();
                 }
+                else if (tag is ListStoresTask)
+                {
+                    TaskErrorTraceForm<IEnumerable<String>> storeInfo = new TaskErrorTraceForm<IEnumerable<string>>((ListStoresTask)tag, this._manager.ToString());
+                    storeInfo.MdiParent = this.MdiParent;
+                    storeInfo.Show();
+                }
+                else if (tag is GetStoreTask)
+                {
+                    TaskErrorTraceForm<IStorageProvider> getStoreInfo = new TaskErrorTraceForm<IStorageProvider>((GetStoreTask)tag, this._manager.ToString());
+                    getStoreInfo.MdiParent = this.MdiParent;
+                    getStoreInfo.Show();
+                }
                 else if (tag is ITask<IGraph>)
                 {
                     TaskErrorTraceForm<IGraph> graphInfo = new TaskErrorTraceForm<IGraph>((ITask<IGraph>)tag, this._manager.ToString());
@@ -956,6 +968,12 @@ namespace VDS.RDF.Utilities.StoreManager
                     TaskErrorTraceForm<TaskResult> simpleInfo = new TaskErrorTraceForm<TaskResult>((ITask<TaskResult>)tag, this._manager.ToString());
                     simpleInfo.MdiParent = this.MdiParent;
                     simpleInfo.Show();
+                }
+                else if (tag is ITask<TaskValueResult<bool>>)
+                {
+                    TaskErrorTraceForm<TaskValueResult<bool>> boolInfo = new TaskErrorTraceForm<TaskValueResult<bool>>((ITask<TaskValueResult<bool>>)tag, this._manager.ToString());
+                    boolInfo.MdiParent = this.MdiParent;
+                    boolInfo.Show();
                 }
                 else
                 {

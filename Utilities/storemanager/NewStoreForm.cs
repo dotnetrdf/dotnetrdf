@@ -163,8 +163,18 @@ namespace VDS.RDF.Utilities.StoreManager
         private void btnCreate_Click(object sender, EventArgs e)
         {
             this.Template = this.propConfig.SelectedObject as IStoreTemplate;
-            this.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Close();
+
+            List<String> errors = this.Template.Validate().ToList();
+            if (errors.Count > 0)
+            {
+                InvalidTemplateForm invalid = new InvalidTemplateForm(errors);
+                invalid.ShowDialog();
+            }
+            else
+            {
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                this.Close();
+            }
         }
     }
 }
