@@ -1762,6 +1762,7 @@ namespace VDS.RDF.Storage
                 {
                     Dictionary<String,String> createParams = new Dictionary<string,string>();
                     BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+                    if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
                     IGraph g = sesameTemplate.GetTemplateGraph();
 
                     //Firstly we need to save the Repository Template as a new Context to Sesame
@@ -1871,6 +1872,13 @@ namespace VDS.RDF.Storage
                     //First we need to store the template as a new context in the SYSTEM repository
                     Dictionary<String, String> createParams = new Dictionary<string, string>();
                     BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+
+                    if (template.Validate().Any())
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors")), state);
+                        return;
+                    }
+
                     IGraph g = sesameTemplate.GetTemplateGraph();
                     createParams.Add("context", sesameTemplate.ContextNode.ToString());
                     HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);

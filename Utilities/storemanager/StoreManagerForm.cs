@@ -679,9 +679,11 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwGraphs.SelectedItems.Count > 0)
             {
                 String graphUri = this.lvwGraphs.SelectedItems[0].Text;
-                if (graphUri.Equals("Default Graph")) graphUri = null;
-
-                this.DeleteGraph(graphUri);
+                if (MessageBox.Show("Are you sure you wish to delete the Graph '" + graphUri + "'?  This action is non-reversible", "Delete Graph Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    if (graphUri.Equals("Default Graph")) graphUri = null;
+                    this.DeleteGraph(graphUri);
+                }
             }
         }
 
@@ -1081,11 +1083,10 @@ namespace VDS.RDF.Utilities.StoreManager
             if (this.lvwStores.SelectedItems.Count > 0)
             {
                 String id = this.lvwStores.SelectedItems[0].Text;
-                this.DeleteStore(id);
-            }
-            else
-            {
-                MessageBox.Show("No Store selected", "Delete Store Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (MessageBox.Show("Are you sure you wish to delete the Store '" + id + "'?  This action is non-reversible", "Delete Store Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    this.DeleteStore(id);
+                }
             }
         }
 
