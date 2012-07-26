@@ -155,12 +155,12 @@ namespace VDS.RDF.Storage
             {
                 if (this._store.HasGraph(graphUri))
                 {
-                    g = this._store.Graph(graphUri);
+                    g = this._store[graphUri];
                 }
             }
             else if (this._store.HasGraph(graphUri))
             {
-                g = this._store.Graph(graphUri);
+                g = this._store[graphUri];
             }
 
             if (g == null) return;

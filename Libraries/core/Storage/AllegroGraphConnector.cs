@@ -361,13 +361,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while attempting to index a Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "index");
             }
         }
 
@@ -401,13 +395,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while attempting to delete a Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "delete");
             }
         }
 
@@ -417,16 +405,23 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public override IEnumerable<String> ListStores()
         {
-            HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
             String data;
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                HttpWebRequest request = this.CreateRequest("repositories", "application/json", "GET", new Dictionary<string, string>());
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
-                    data = reader.ReadToEnd();
-                    reader.Close();
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        data = reader.ReadToEnd();
+                        reader.Close();
+                    }
+                    response.Close();
                 }
-                response.Close();
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "list Stores from");
             }
 
             JArray json = JArray.Parse(data);
@@ -497,33 +492,21 @@ namespace VDS.RDF.Storage
                         }
                         catch (WebException webEx)
                         {
-    #if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            }
-    #endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while attempting to list Stores, see inner exception for details", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "list Stores from")), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores,  new RdfStorageException("An unexpected error occurred while attempting to list Stores, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "list Stores from")), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while attempting to list Stores, see inner exception for details", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "list Stores from")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("An unexpected error occurred while attempting to list Stores, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "list Stores from")), state);
             }
         }
 
@@ -676,33 +659,21 @@ namespace VDS.RDF.Storage
                     }
                     catch (WebException webEx)
                     {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                        }
-#endif
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("A HTTP Error occurred while attempting to delete a Store, see inner exception for details", webEx)), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeID + "; from")), state);
                     }
                     catch (Exception ex)
                     {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("An unexpected error occurred while attempting to delete a Store, see inner exception for details", ex)), state);
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "delete the Store '" + storeID + "' from")), state);
                     }
                 }, state);
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("A HTTP Error occurred while attempting to delete a Store, see inner exception for details", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "delete the Store '" + storeID + "; from")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, new RdfStorageException("An unexpected error occurred while attempting to delete a Store, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "delete the Store '" + storeID + "' from")), state);
             }
         }
 
@@ -732,7 +703,6 @@ namespace VDS.RDF.Storage
             }
         }
         
-
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
