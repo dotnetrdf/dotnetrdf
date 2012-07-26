@@ -45,11 +45,15 @@ using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
+using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Params;
+using VDS.RDF.Storage.Management;
+using VDS.RDF.Storage.Management.Provisioning;
+using VDS.RDF.Storage.Management.Provisioning.Stardog;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
@@ -98,9 +102,9 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class StardogConnector 
-        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncTransactionalStorage, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, ITransactionalStorage
+        , IQueryableStorage, ITransactionalStorage, IStorageServer
 #endif
     {
         /// <summary>
@@ -108,15 +112,21 @@ namespace VDS.RDF.Storage
         /// </summary>
         public const String AnonymousUser = "anonymous";
 
-        private String _baseUri;
-        private String _kb;
-        private String _username;
-        private String _pwd;
+        private String _baseUri, _adminUri, _kb, _username, _pwd;
         private bool _hasCredentials = false;
         private StardogReasoningMode _reasoning = StardogReasoningMode.None;
 
         private String _activeTrans = null;
         private TriGWriter _writer = new TriGWriter();
+
+        /// <summary>
+        /// Available Sesame template types
+        /// </summary>
+        private List<Type> _templateTypes = new List<Type>()
+        {
+            typeof(StardogMemTemplate),
+            typeof(StardogDiskTemplate)
+        };
 
         /// <summary>
         /// Creates a new connection to a Stardog Store
@@ -158,6 +168,7 @@ namespace VDS.RDF.Storage
         {
             this._baseUri = baseUri;
             if (!this._baseUri.EndsWith("/")) this._baseUri += "/";
+            this._adminUri = this._baseUri + "admin/";
             this._kb = kbID;
             this._reasoning = reasoning;
 
@@ -414,36 +425,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        String responseText = "";
-                        try
-                        {
-                            responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                        }
-                        catch
-                        {
-                            throw new RdfQueryException("A HTTP error occurred while querying the Store. Error getting response.", webEx);
-                        }
-                        throw new RdfQueryException("A HTTP error occured while querying the Store. Store returned the following error message: " + responseText, webEx);
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("A HTTP error occurred while querying the Store. Empty response.", webEx);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("A HTTP error occurred while querying the Store. No response.", webEx);
-                }
+                throw StorageHelper.HandleHttpQueryError(webEx);
             }
         }
 
@@ -919,6 +901,129 @@ namespace VDS.RDF.Storage
                 throw new RdfStorageException("Stardog returned an error while trying to List Graphs, see inner exception for details", ex);
             }
         }
+
+        #region IStorageServer Members
+
+        public IEnumerable<string> ListStores()
+        {
+            //GET /admin/databases - application/json
+            HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+
+#if DEBUG
+            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+            try
+            {
+                List<String> stores = new List<string>();
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+
+                    String data = null;
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        data = reader.ReadToEnd();
+                    }
+                    if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+
+                    JObject obj = JObject.Parse(data);
+                    JArray dbs = (JArray)obj["databases"];
+                    foreach (JValue db in dbs.OfType<JValue>())
+                    {
+                        stores.Add(db.Value.ToString());
+                    }
+
+                    response.Close();
+                }
+                return stores;
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public IStoreTemplate GetDefaultTemplate(string id)
+        {
+            return new StardogDiskTemplate(id);
+        }
+
+        public IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
+        {
+            List<IStoreTemplate> templates = new List<IStoreTemplate>();
+            Object[] args = new Object[] { id };
+            foreach (Type t in this._templateTypes)
+            {
+                try
+                {
+                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
+                    if (template != null) templates.Add(template);
+                }
+                catch
+                {
+                    //Ignore and continue
+                }
+            }
+            return templates;
+        }
+
+        public bool CreateStore(IStoreTemplate template)
+        {
+            //            POST /admin/databases
+            //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+
+            //Expected input:
+
+            //JSON (application/json):
+            //  {
+            //    "dbname" : "",
+            //    "options" : { ... },
+            //    "files" : [{ "name":"fileX.ttl", "context":"some:context" }, ...]
+            //  }
+            throw new NotImplementedException();
+        }
+
+        public void DeleteStore(string storeID)
+        {
+            //DELETE /admin/databases/{db}
+            HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+
+#if DEBUG
+            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+                    //If we get here then it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " from");
+            }
+        }
+
+        public IStorageProvider GetStore(string storeID)
+        {
+            if (this._kb.Equals(storeID)) return this;
+#if !NO_PROXY
+            return new StardogConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
+#else
+            return new StardogConnector(this._baseUri, storeID, this._username, this._pwd);
+#endif
+        }
+
+        #endregion
 
 #endif
         /// <summary>
@@ -1853,24 +1958,62 @@ namespace VDS.RDF.Storage
             }
         }
 
+        #region IAsyncStorageServer Members
+
+        public void ListStores(AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void GetStore(string storeID, AsyncStorageCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region HTTP Helper Methods
+
+
+
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
         /// <param name="servicePath">Path to the Service requested</param>
         /// <param name="accept">Acceptable Content Types</param>
         /// <param name="method">HTTP Method</param>
-        /// <param name="queryParams">Querystring Parameters</param>
+        /// <param name="requestParams">Querystring Parameters</param>
         /// <returns></returns>
-        private HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> queryParams)
+        private HttpWebRequest CreateRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
         {
             //Build the Request Uri
             String requestUri = this._baseUri + servicePath;
-            if (queryParams.Count > 0)
+            if (requestParams.Count > 0)
             {
                 requestUri += "?";
-                foreach (String p in queryParams.Keys)
+                foreach (String p in requestParams.Keys)
                 {
-                    requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                    requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
                 }
                 requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }
@@ -1887,7 +2030,44 @@ namespace VDS.RDF.Storage
             request.Headers.Add("SD-Connection-String", "kb=" + this._kb + this.GetReasoningParameter()); // removed persist=sync, no longer needed in latest stardog versions?
             request.Headers.Add("SD-Protocol", "1.0");
 #else
-            request.Headers["SD-Connection-String"] = "kb=" + this._kb + ";persist=sync" + this.GetReasoningParameter();
+            request.Headers["SD-Connection-String"] = "kb=" + this._kb + this.GetReasoningParameter();
+            request.Headers["SD-Protocol"] = "1.0";
+#endif
+
+            //Add Credentials if needed
+            if (this._hasCredentials)
+            {
+                NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                request.Credentials = credentials;
+            }
+
+            return request;
+        }
+
+        private HttpWebRequest CreateAdminRequest(String servicePath, String accept, String method, Dictionary<String, String> requestParams)
+        {
+            //Build the Request Uri
+            String requestUri = this._adminUri + servicePath;
+            if (requestParams.Count > 0)
+            {
+                requestUri += "?";
+                foreach (String p in requestParams.Keys)
+                {
+                    requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
+                }
+                requestUri = requestUri.Substring(0, requestUri.Length - 1);
+            }
+
+            //Create our Request
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(requestUri);
+            request.Accept = accept;
+            request.Method = method;
+            request = base.GetProxiedRequest(request);
+
+            //Add the special Stardog Headers
+#if !SILVERLIGHT
+            request.Headers.Add("SD-Protocol", "1.0");
+#else
             request.Headers["SD-Protocol"] = "1.0";
 #endif
 
@@ -1920,6 +2100,8 @@ namespace VDS.RDF.Storage
                     return String.Empty;
             }
         }
+
+        #endregion
 
         #region Stardog Transaction Support
 

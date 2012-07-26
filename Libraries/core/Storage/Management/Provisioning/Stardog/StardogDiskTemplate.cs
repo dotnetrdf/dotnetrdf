@@ -40,7 +40,10 @@ using System.Text;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
-    class StardogDiskTemplate
+    public class StardogDiskTemplate
+        : BaseStardogTemplate
     {
+        public StardogDiskTemplate(String id)
+            : base(id, "Stardog Disk", "A Stardog Disk based store", StardogConnector.DatabaseOptions.DatabaseTypeDisk) { }
     }
 }

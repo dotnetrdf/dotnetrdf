@@ -302,19 +302,6 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 
         #endregion
 
-
-        //        POST /admin/databases
-//Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
-
-//Expected input:
-
-//JSON (application/json):
-//  {
-//    "dbname" : "",
-//    "options" : { ... },
-//    "files" : [{ "name":"fileX.ttl", "context":"some:context" }, ...]
-//  }
-
         public override IEnumerable<string> Validate()
         {
             List<String> errors = new List<string>();
@@ -370,24 +357,14 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             options.Add(StardogConnector.DatabaseOptions.IndexStatisticsAutoUpdate, new JValue(this.AutoUpdateStatistics));
 
             //ICV Options
-            JArray icvGraphs = new JArray();
-            foreach (String uri in this.IcvActiveGraphs)
-            {
-                icvGraphs.Add(new JValue(uri));
-            }
-            options.Add(StardogConnector.DatabaseOptions.IcvActiveGraphs, icvGraphs);
+            options.Add(StardogConnector.DatabaseOptions.IcvActiveGraphs, new JValue(String.Join(",", this.IcvActiveGraphs.ToArray())));
             options.Add(StardogConnector.DatabaseOptions.IcvEnabled, new JValue(this.IcvEnabled));
             options.Add(StardogConnector.DatabaseOptions.IcvReasoningType, new JValue(this.IcvReasoningMode.ToString()));
             
             //Reasoning
             options.Add(StardogConnector.DatabaseOptions.ReasoningAutoConsistency, new JValue(this.ConsistencyChecking));
             options.Add(StardogConnector.DatabaseOptions.ReasoningPunning, new JValue(this.EnablePunning));
-            JArray schemaGraphs = new JArray();
-            foreach (String uri in this.SchemaGraphs)
-            {
-                schemaGraphs.Add(new JValue(uri));
-            }
-            options.Add(StardogConnector.DatabaseOptions.ReasoningSchemaGraphs, schemaGraphs);
+            options.Add(StardogConnector.DatabaseOptions.ReasoningSchemaGraphs, new JValue(String.Join(",", this.SchemaGraphs.ToArray())));
 
             //Search
             options.Add(StardogConnector.DatabaseOptions.SearchEnabled, new JValue(this.FullTextSearch));

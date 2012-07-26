@@ -40,7 +40,10 @@ using System.Text;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
-    class StardogMemTemplate
+    public class StardogMemTemplate
+        : BaseStardogTemplate
     {
+        public StardogMemTemplate(String id)
+            : base(id, "Stardog Memory", "A Stardog in-memory store", StardogConnector.DatabaseOptions.DatabaseTypeMemory) { }
     }
 }
