@@ -943,8 +943,6 @@ namespace VDS.RDF.Storage
             {
                 throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
             }
-
-            throw new NotImplementedException();
         }
 
         public IStoreTemplate GetDefaultTemplate(string id)
@@ -2018,32 +2016,235 @@ namespace VDS.RDF.Storage
 
         public void ListStores(AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            //GET /admin/databases - application/json
+            HttpWebRequest request = this.CreateAdminRequest("databases", "application/json", "GET", new Dictionary<string, string>());
+
+#if DEBUG
+            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+            try
+            {
+                List<String> stores = new List<string>();
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+
+                            String data = null;
+                            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                            {
+                                data = reader.ReadToEnd();
+                            }
+                            if (String.IsNullOrEmpty(data)) throw new RdfStorageException("Invalid Empty response from Stardog when listing Stores");
+
+                            JObject obj = JObject.Parse(data);
+                            JArray dbs = (JArray)obj["databases"];
+                            foreach (JValue db in dbs.OfType<JValue>())
+                            {
+                                stores.Add(db.Value.ToString());
+                            }
+
+                            response.Close();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, stores), state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores asynchronously from")), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores asynchronously from")), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores asynchronously from")), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores asynchronously from")), state);
+            }
         }
 
         public void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StardogDiskTemplate(id)), state);
         }
 
         public void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            List<IStoreTemplate> templates = new List<IStoreTemplate>();
+            Object[] args = new Object[] { id };
+            foreach (Type t in this._templateTypes)
+            {
+                try
+                {
+                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
+                    if (template != null) templates.Add(template);
+                }
+                catch
+                {
+                    //Ignore and continue
+                }
+            }
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
         }
 
         public void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            if (template is BaseStardogTemplate)
+            {
+                //POST /admin/databases
+                //Creates a new database; expects a multipart request with a JSON specifying database name, options and filenames followed by (optional) file contents as a multipart POST request.
+                try
+                {
+                    //Get the Template
+                    BaseStardogTemplate stardogTemplate = (BaseStardogTemplate)template;
+                    IEnumerable<String> errors = stardogTemplate.Validate();
+                    if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
+                    JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+                    Console.WriteLine(jsonTemplate.ToString());
+
+                    //Create the request and write the JSON
+                    HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    String boundary = StorageHelper.HttpMultipartBoundary;
+                    byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
+
+                    request.BeginGetRequestStream(r =>
+                        {
+                            try
+                            {
+                                using (Stream stream = request.EndGetRequestStream(r))
+                                {
+                                    //Boundary
+                                    stream.Write(boundaryBytes, 0, boundaryBytes.Length);
+                                    //Then the root Item
+                                    String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                                    byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
+                                    stream.Write(itemBytes, 0, itemBytes.Length);
+                                    //Then terminating boundary
+                                    stream.Write(terminatorBytes, 0, terminatorBytes.Length);
+                                    stream.Close();
+                                }
+
+#if DEBUG
+                                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+                                //Make the request
+                                request.BeginGetResponse(r2 =>
+                                    {
+                                        try
+                                        {
+                                            using (HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2))
+                                            {
+#if DEBUG
+                                                if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+                                                //If we get here it completed OK
+                                                response.Close();
+                                            }
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID), state);
+                                        }
+                                        catch (WebException webEx)
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                                        }
+                                    }, state);
+                            }
+                            catch (WebException webEx)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                            }
+                        }, state);
+                }
+                catch (WebException webEx)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleHttpError(webEx, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                }
+                catch (Exception ex)
+                {
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(ex, "creating a new Store '" + template.ID + "' asynchronously in")), state);
+                }
+            }
+            else
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("Invalid template, templates must derive from BaseStardogTemplate")), state);
+            }
         }
 
         public void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            //DELETE /admin/databases/{db}
+            HttpWebRequest request = this.CreateAdminRequest("databases/" + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String, String>());
+
+#if DEBUG
+            if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+            try
+            {
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+                            //If we get here then it completed OK
+                            response.Close();
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID), state);
+                        }
+                        catch (WebException webEx)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " asynchronously from")), state);
+                        }
+                        catch (Exception ex)
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "deleting Store " + storeID + " asynchronously from")), state);
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleHttpError(webEx, "deleting Store " + storeID + " asynchronously from")), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, storeID, StorageHelper.HandleError(ex, "deleting Store " + storeID + " asynchronously from")), state);
+            }
         }
 
         public void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
-            throw new NotImplementedException();
+            if (this._kb.Equals(storeID))
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
+            }
+            else
+            {
+#if !NO_PROXY
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy)), state);
+#else
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, new StardogConnector(this._baseUri, storeID, this._username, this._pwd)), state);
+#endif
+            }
         }
 
         #endregion

@@ -8,11 +8,19 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Storage
 {
+    /// <summary>
+    /// Static Helper for the Storage API
+    /// </summary>
     public static class StorageHelper
     {
+        /// <summary>
+        /// Template for posting form data as part of a HTTP multipart request
+        /// </summary>
         public const String HttpMultipartContentTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
 
-
+        /// <summary>
+        /// Gets a new unique boundary for HTTP mutlipart requests
+        /// </summary>
         public static String HttpMultipartBoundary
         {
             get
@@ -78,6 +86,36 @@ namespace VDS.RDF.Storage
             {
                 return errorProvider("A HTTP error occurred while " + action + " the Store. No response, see inner exception for further details", webEx);
             }
+        }
+
+        public static RdfQueryException HandleQueryError(Exception ex)
+        {
+            if (ex is WebException)
+            {
+                return HandleHttpQueryError((WebException)ex);
+            }
+            else
+            {
+                return HandleError<RdfQueryException>(ex, "querying", (msg, e) => new RdfQueryException(msg, e));
+            }
+        }
+
+        public static RdfStorageException HandleError(Exception ex, String action)
+        {
+            if (ex is WebException)
+            {
+                return HandleHttpError((WebException)ex, action);
+            }
+            else
+            {
+                return HandleError<RdfStorageException>(ex, action, (msg, e) => new RdfStorageException(msg, e));
+            }
+        }
+
+        public static T HandleError<T>(Exception ex, String action, Func<String, Exception, T> errorProvider)
+            where T : Exception
+        {
+            return errorProvider("An unexpected error occurred while " + action + " the Store. See inner exception for further details", ex);
         }
     }
 }
