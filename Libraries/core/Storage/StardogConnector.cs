@@ -987,10 +987,10 @@ namespace VDS.RDF.Storage
 
                     //Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    request.ContentType = "application/json";
+                    request.ContentType = MimeTypesHelper.FormMultipart;
                     using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                     {
-                        writer.Write(jsonTemplate.ToString());
+                        writer.Write("root=" + HttpUtility.UrlEncode(jsonTemplate.ToString()));
                         writer.Close();
                     }
 

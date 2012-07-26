@@ -533,6 +533,11 @@ namespace VDS.RDF
         public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
 
         /// <summary>
+        /// MIME Type for Multipart Form Data
+        /// </summary>
+        public const String FormMultipart = "multipart/form-data";
+
+        /// <summary>
         /// MIME Types for Turtle
         /// </summary>
         internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
