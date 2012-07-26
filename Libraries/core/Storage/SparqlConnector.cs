@@ -228,7 +228,7 @@ namespace VDS.RDF.Storage
                     case SparqlQueryType.Unknown:
                     default:
                         //Error
-                        throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response from Talis");
+                        throw new RdfQueryException("Unknown Query Type was used, unable to determine how to process the response");
                 }
             }
             else
@@ -445,7 +445,7 @@ namespace VDS.RDF.Storage
             }
             catch (Exception ex)
             {
-                throw new RdfStorageException("SPARQL Endpoint returned an error while trying to List Graphs", ex);
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
             }
         }
 

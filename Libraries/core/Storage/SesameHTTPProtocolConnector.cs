@@ -415,35 +415,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        try
-                        {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            throw new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx);
-                        }
-                        catch
-                        {
-                            throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
-                }
+                throw StorageHelper.HandleHttpQueryError(webEx);
             }
         }
 
@@ -566,13 +538,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "load a Graph from");
             }
         }
 
@@ -631,13 +597,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "save a Graph to");
             }
         }
 
@@ -755,13 +715,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
             }
         }
 
@@ -817,13 +771,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "deleting a Graph from");
             }
         }
 
@@ -859,7 +807,7 @@ namespace VDS.RDF.Storage
             }
             catch (Exception ex)
             {
-                throw new RdfStorageException("Underlying Store returned an error while trying to List Graphs", ex);
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
             }
         }
 
@@ -872,48 +820,30 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void SaveGraph(IGraph g, AsyncStorageCallback callback, object state)
         {
-            try
-            {
-                HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+            HttpWebRequest request;
+            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
 
-                if (g.BaseUri != null)
+            if (g.BaseUri != null)
+            {
+                if (this._fullContextEncoding)
                 {
-                    if (this._fullContextEncoding)
-                    {
-                        serviceParams.Add("context", "<" + g.BaseUri.AbsoluteUri + ">");
-                    }
-                    else
-                    {
-                        serviceParams.Add("context", g.BaseUri.AbsoluteUri);
-                    }
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "PUT", serviceParams);
+                    serviceParams.Add("context", "<" + g.BaseUri.AbsoluteUri + ">");
                 }
                 else
                 {
-                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
+                    serviceParams.Add("context", g.BaseUri.AbsoluteUri);
                 }
-
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-
-                this.SaveGraphAsync(request, ntwriter, g, callback, state);
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "PUT", serviceParams);
             }
-            catch (WebException webEx)
+            else
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx)), state);
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
             }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("Unexpected error while trying to save a Graph to the Store asynchronously, see inner exception for details", ex)), state);
-                return;
-            }
+
+            request.ContentType = MimeTypesHelper.NTriples[0];
+            NTriplesWriter ntwriter = new NTriplesWriter();
+
+            this.SaveGraphAsync(request, ntwriter, g, callback, state);
         }
 
         /// <summary>
@@ -925,31 +855,18 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void LoadGraph(IRdfHandler handler, string graphUri, AsyncStorageCallback callback, object state)
         {
-            try
+            HttpWebRequest request;
+            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+
+            String requestUri = this._repositoriesPrefix + this._store + "/statements";
+            if (!graphUri.Equals(String.Empty))
             {
-                HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
-
-                String requestUri = this._repositoriesPrefix + this._store + "/statements";
-                if (!graphUri.Equals(String.Empty))
-                {
-                    serviceParams.Add("context", "<" + graphUri + ">");
-                }
-
-                request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
-
-                this.LoadGraphAsync(request, handler, callback, state);
+                serviceParams.Add("context", "<" + graphUri + ">");
             }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.LoadWithHandler, handler, new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx)), state);
-            }
+
+            request = this.CreateRequest(requestUri, MimeTypesHelper.HttpAcceptHeader, "GET", serviceParams);
+
+            this.LoadGraphAsync(request, handler, callback, state);
         }
 
         /// <summary>
@@ -962,61 +879,22 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
-            try
+            HttpWebRequest request;
+            Dictionary<String, String> serviceParams;
+            NTriplesWriter ntwriter = new NTriplesWriter();
+
+            if (removals != null)
             {
-                HttpWebRequest request;
-                Dictionary<String, String> serviceParams;
-                NTriplesWriter ntwriter = new NTriplesWriter();
-
-                if (removals != null)
+                if (removals.Any())
                 {
-                    if (removals.Any())
-                    {
-                        //For Async deletes we need to build up a sequence of requests to send
-                        Queue<HttpWebRequest> requests = new Queue<HttpWebRequest>();
+                    //For Async deletes we need to build up a sequence of requests to send
+                    Queue<HttpWebRequest> requests = new Queue<HttpWebRequest>();
 
-                        //Have to do a DELETE for each individual Triple
-                        foreach (Triple t in removals.Distinct())
-                        {
-                            //Prep Service Params
-                            serviceParams = new Dictionary<String, String>();
-                            if (!graphUri.Equals(String.Empty))
-                            {
-                                serviceParams.Add("context", "<" + graphUri + ">");
-                            }
-                            else
-                            {
-                                serviceParams.Add("context", "null");
-                            }
-
-                            this._output.Remove(0, this._output.Length);
-                            serviceParams.Add("subj", this._formatter.Format(t.Subject));
-                            serviceParams.Add("pred", this._formatter.Format(t.Predicate));
-                            serviceParams.Add("obj", this._formatter.Format(t.Object));
-                            request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
-                            requests.Enqueue(request);
-                        }
-
-                        //Run all the requests, if any error make an error callback and abort
-                        this.MakeRequestSequence(requests, (sender, args, st) =>
-                            {
-                                if (!args.WasSuccessful)
-                                {
-                                    //Invoke callbakc and bail out
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
-                                    return;
-                                }
-                            }, state);
-
-                    }
-                }
-
-                if (additions != null)
-                {
-                    if (additions.Any())
+                    //Have to do a DELETE for each individual Triple
+                    foreach (Triple t in removals.Distinct())
                     {
                         //Prep Service Params
-                        serviceParams = new Dictionary<string, string>();
+                        serviceParams = new Dictionary<String, String>();
                         if (!graphUri.Equals(String.Empty))
                         {
                             serviceParams.Add("context", "<" + graphUri + ">");
@@ -1026,31 +904,57 @@ namespace VDS.RDF.Storage
                             serviceParams.Add("context", "null");
                         }
 
-                        //Add the new Triples
-                        request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
-                        Graph h = new Graph();
-                        h.Assert(additions);
-                        request.ContentType = MimeTypesHelper.NTriples[0];
-
-                        //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
-                        this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
-                        return;
+                        this._output.Remove(0, this._output.Length);
+                        serviceParams.Add("subj", this._formatter.Format(t.Subject));
+                        serviceParams.Add("pred", this._formatter.Format(t.Predicate));
+                        serviceParams.Add("obj", this._formatter.Format(t.Object));
+                        request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+                        requests.Enqueue(request);
                     }
-                }
 
-                //If we get here then we may have done some deletes (which suceeded) but didn't do any adds so we still need to invoke the callback
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
+                    //Run all the requests, if any error make an error callback and abort
+                    this.MakeRequestSequence(requests, (sender, args, st) =>
+                        {
+                            if (!args.WasSuccessful)
+                            {
+                                //Invoke callbakc and bail out
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("An error occurred while trying to asyncrhonously delete triples from the Store, see inner exception for details", args.Error)), state);
+                                return;
+                            }
+                        }, state);
+
                 }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
             }
+
+            if (additions != null)
+            {
+                if (additions.Any())
+                {
+                    //Prep Service Params
+                    serviceParams = new Dictionary<string, string>();
+                    if (!graphUri.Equals(String.Empty))
+                    {
+                        serviceParams.Add("context", "<" + graphUri + ">");
+                    }
+                    else
+                    {
+                        serviceParams.Add("context", "null");
+                    }
+
+                    //Add the new Triples
+                    request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "POST", serviceParams);
+                    Graph h = new Graph();
+                    h.Assert(additions);
+                    request.ContentType = MimeTypesHelper.NTriples[0];
+
+                    //Thankfully Sesame lets us do additions in one request so we don't end up with horrible code like for the removals above
+                    this.UpdateGraphAsync(request, ntwriter, graphUri.ToSafeUri(), additions, callback, state);
+                    return;
+                }
+            }
+
+            //If we get here then we may have done some deletes (which suceeded) but didn't do any adds so we still need to invoke the callback
+            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri()), state);
         }
 
         /// <summary>
@@ -1061,33 +965,20 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public override void DeleteGraph(string graphUri, AsyncStorageCallback callback, object state)
         {
-            try
-            {
-                HttpWebRequest request;
-                Dictionary<String, String> serviceParams = new Dictionary<string, string>();
+            HttpWebRequest request;
+            Dictionary<String, String> serviceParams = new Dictionary<string, string>();
 
-                if (!graphUri.Equals(String.Empty))
-                {
-                    serviceParams.Add("context", "<" + graphUri + ">");
-                }
-                else
-                {
-                    serviceParams.Add("context", "null");
-                }
-
-                request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
-                this.DeleteGraphAsync(request, false, graphUri, callback, state);
-            }
-            catch (WebException webEx)
+            if (!graphUri.Equals(String.Empty))
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx)), state);
+                serviceParams.Add("context", "<" + graphUri + ">");
             }
+            else
+            {
+                serviceParams.Add("context", "null");
+            }
+
+            request = this.CreateRequest(this._repositoriesPrefix + this._store + "/statements", "*/*", "DELETE", serviceParams);
+            this.DeleteGraphAsync(request, false, graphUri, callback, state);
         }
 
         /// <summary>
@@ -1238,98 +1129,35 @@ namespace VDS.RDF.Storage
                                     }
                                     catch (RdfParseException parseEx)
                                     {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, parseEx), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, sparqlQuery, rdfHandler, resultsHandler, parseEx), state);
                                     }
                                     catch (WebException webEx)
                                     {
-                                        if (webEx.Response != null)
-                                        {
-#if DEBUG
-                                            if (Options.HttpDebugging)
-                                            {
-                                                Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                            }
-#endif
-                                            if (webEx.Response.ContentLength > 0)
-                                            {
-                                                try
-                                                {
-                                                    String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                                }
-                                                catch
-                                                {
-                                                    //Ignore and drop through to the generic error message
-                                                }
-                                            }
-                                        }
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
                                     }
                                     catch (Exception ex)
                                     {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
                                     }
                                 }, state);
                         }
                         catch (WebException webEx)
                         {
-                            if (webEx.Response != null)
-                            {
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                }
-#endif
-                                if (webEx.Response.ContentLength > 0)
-                                {
-                                    try
-                                    {
-                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                    }
-                                    catch
-                                    {
-                                        //Ignore and drop through to the generic error message
-                                    }
-                                }
-                            }
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        try
-                        {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occured while querying the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                        }
-                        catch
-                        {
-                            //Ignore and drop through to the generic error message
-                        }
-                    }
-                }
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store, see inner exception for details", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("Unexpected error while querying the store, see inner exception for details", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
             }
         }
 
@@ -1364,15 +1192,22 @@ namespace VDS.RDF.Storage
         /// <returns></returns>
         public virtual IEnumerable<String> ListStores()
         {
-            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-            ListStringsHandler handler = new ListStringsHandler("id");
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            try
             {
-                SparqlXmlParser parser = new SparqlXmlParser();
-                parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                response.Close();
+                HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+                ListStringsHandler handler = new ListStringsHandler("id");
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    SparqlXmlParser parser = new SparqlXmlParser();
+                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
+                    response.Close();
+                }
+                return handler.Strings;
             }
-            return handler.Strings;
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
+            }
         }
 
         /// <summary>
@@ -1436,37 +1271,21 @@ namespace VDS.RDF.Storage
                         }
                         catch (WebException webEx)
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            }
-#endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while trying list stores asynchronously", webEx)), state);
-                            return;
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("Unexpected error while trying to list stores asynchronously, see inner exception for details", ex)), state);
-                            return;
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores from")), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("A HTTP Error occurred while trying list stores asynchronously", webEx)), state);
-                return;
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, new RdfStorageException("Unexpected error while trying to list stores asynchronously, see inner exception for details", ex)), state);
-                return;
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores from")), state);
             }
         }
 
@@ -1799,13 +1618,7 @@ namespace VDS.RDF.Storage
                 }
                 catch (WebException webEx)
                 {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    throw new RdfStorageException("A HTTP Error occurred while trying to create a new store", webEx);
+                    throw StorageHelper.HandleHttpError(webEx, "creating a new Store in");
                 }
             }
             else
@@ -1867,64 +1680,46 @@ namespace VDS.RDF.Storage
         {
             if (template is BaseSesameTemplate)
             {
-                try
+                //First we need to store the template as a new context in the SYSTEM repository
+                Dictionary<String, String> createParams = new Dictionary<string, string>();
+                BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
+
+                if (template.Validate().Any())
                 {
-                    //First we need to store the template as a new context in the SYSTEM repository
-                    Dictionary<String, String> createParams = new Dictionary<string, string>();
-                    BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
-
-                    if (template.Validate().Any())
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors")), state);
-                        return;
-                    }
-
-                    IGraph g = sesameTemplate.GetTemplateGraph();
-                    createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
-
-                    request.ContentType = MimeTypesHelper.NTriples[0];
-                    NTriplesWriter ntwriter = new NTriplesWriter();
-
-                    this.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
-                        {
-                            if (args.WasSuccessful)
-                            {
-                                //Then we need to declare that said Context is of type rep:RepositoryContext
-                                Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                                this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
-                                    {
-                                        if (args.WasSuccessful)
-                                        {
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
-                                        }
-                                        else
-                                        {
-                                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
-                                        }
-                                    }, st);
-                            }
-                            else
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("An error occurred while trying to create a new Store, see inner exception for details", args.Error)), state);
-                            }
-                        }, state);
-                }
-                catch (WebException webEx)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("A HTTP Error occurred while trying to create a new Store asynchronously, see inner exception for details", webEx)), state);
-                }
-                catch (Exception ex)
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Unexpected error while trying to create a new Store asynchronously, see inner exception for details", ex)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors")), state);
                     return;
                 }
+
+                IGraph g = sesameTemplate.GetTemplateGraph();
+                createParams.Add("context", sesameTemplate.ContextNode.ToString());
+                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
+
+                request.ContentType = MimeTypesHelper.NTriples[0];
+                NTriplesWriter ntwriter = new NTriplesWriter();
+
+                this.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
+                    {
+                        if (args.WasSuccessful)
+                        {
+                            //Then we need to declare that said Context is of type rep:RepositoryContext
+                            Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
+                            this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
+                                {
+                                    if (args.WasSuccessful)
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
+                                    }
+                                    else
+                                    {
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(args.Error, "creating a new Store in")), state);
+                                    }
+                                }, st);
+                        }
+                        else
+                        {
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, StorageHelper.HandleError(args.Error, "creating a new Store in")), state);
+                        }
+                    }, state);
             }
             else
             {
@@ -2090,35 +1885,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        try
-                        {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            throw new RdfQueryException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx);
-                        }
-                        catch
-                        {
-                            throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                        }
-                    }
-                    else
-                    {
-                        throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                    }
-                }
-                else
-                {
-                    throw new RdfQueryException("A HTTP error occurred while updating the Store", webEx);
-                }
+                throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
 
@@ -2215,115 +1982,31 @@ namespace VDS.RDF.Storage
                                      }
                                      catch (WebException webEx)
                                      {
-                                         if (webEx.Response != null)
-                                         {
-#if DEBUG
-                                             if (Options.HttpDebugging)
-                                             {
-                                                 Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                             }
-#endif
-                                             if (webEx.Response.ContentLength > 0)
-                                             {
-                                                 try
-                                                 {
-                                                     String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                                 }
-                                                 catch
-                                                 {
-                                                     callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                                                 }
-                                             }
-                                             else
-                                             {
-                                                 callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                                             }
-                                         }
-                                         else
-                                         {
-                                             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                                         }
+                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
                                      }
                                      catch (Exception ex)
                                      {
-                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
+                                         callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
                                      }
                                  }, state);
                         }
                         catch (WebException webEx)
                         {
-                            if (webEx.Response != null)
-                            {
-#if DEBUG
-                                if (Options.HttpDebugging)
-                                {
-                                    Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                }
-#endif
-                                if (webEx.Response.ContentLength > 0)
-                                {
-                                    try
-                                    {
-                                        String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                                    }
-                                    catch
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                                    }
-                                }
-                                else
-                                {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                                }
-                            }
-                            else
-                            {
-                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                            }
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-                if (webEx.Response != null)
-                {
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                    }
-#endif
-                    if (webEx.Response.ContentLength > 0)
-                    {
-                        try
-                        {
-                            String responseText = new StreamReader(webEx.Response.GetResponseStream()).ReadToEnd();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occured while updating the Store.  Store returned the following error message: " + responseText, webEx)), state);
-                        }
-                        catch
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                        }
-                    }
-                    else
-                    {
-                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                    }
-                }
-                else
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while updating the Store", webEx)), state);
-                }
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while updating the Store", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
             }
         }
     }

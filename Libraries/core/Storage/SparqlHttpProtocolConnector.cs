@@ -273,7 +273,7 @@ namespace VDS.RDF.Storage
 #endif
                     if (((HttpWebResponse)webEx.Response).StatusCode == HttpStatusCode.NotFound) return;
                 }
-                throw new RdfStorageException("A HTTP Error occurred while trying to load a Graph from the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "loading a Graph from");
             }
         }
 
@@ -281,16 +281,16 @@ namespace VDS.RDF.Storage
         /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
         /// </summary>
         /// <param name="graphUri">URI of the Graph to check for</param>
-        public virtual bool GraphExists(Uri graphUri)
+        public virtual bool HasGraph(Uri graphUri)
         {
-            return this.GraphExists(graphUri.ToSafeString());
+            return this.HasGraph(graphUri.ToSafeString());
         }
 
         /// <summary>
         /// Sends a HEAD Command to the Protocol Server to determine whether a given Graph exists
         /// </summary>
         /// <param name="graphUri">URI of the Graph to check for</param>
-        public virtual bool GraphExists(String graphUri)
+        public virtual bool HasGraph(String graphUri)
         {
             String lookupUri = this._serviceUri;
             if (graphUri != null && !graphUri.Equals(String.Empty))
@@ -344,7 +344,7 @@ namespace VDS.RDF.Storage
                         return false;
                     }
                 }
-                throw new RdfStorageException("A HTTP Error occurred while trying to check whether a Graph exists in the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "check Graph existence in");
             }
         }
 
@@ -394,13 +394,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "saving a Graph to");
             }
         }
 
@@ -476,13 +470,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
             }
         }
 
@@ -538,17 +526,10 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-
                 //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                 if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
                 {
-                    throw new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx);
+                    throw StorageHelper.HandleHttpError(webEx, "deleting a Graph from");
                 }
             }
         }
@@ -629,29 +610,12 @@ namespace VDS.RDF.Storage
             {
                 saveUri += "?default";
             }
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
-                request.Method = "PUT";
-                request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.GetProxiedRequest(request);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(saveUri));
+            request.Method = "PUT";
+            request.ContentType = MimeTypesHelper.RdfXml[0];
+            request = base.GetProxiedRequest(request);
 
-                this.SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("A HTTP Error occurred while trying to save a Graph to the Store asychronously", webEx)), state);
-            }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SaveGraph, g, new RdfStorageException("Unexpected Error trying to save the Graph to the store asynchronously, see inner exception for details", ex)), state);
-            }
+            this.SaveGraphAsync(request, new RdfXmlWriter(), g, callback, state);
         }
 
         /// <summary>
@@ -689,31 +653,14 @@ namespace VDS.RDF.Storage
                 updateUri += "?default";
             }
 
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
-                request.Method = "POST";
-                request.ContentType = MimeTypesHelper.RdfXml[0];
-                request = base.GetProxiedRequest(request);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(UriFactory.Create(updateUri));
+            request.Method = "POST";
+            request.ContentType = MimeTypesHelper.RdfXml[0];
+            request = base.GetProxiedRequest(request);
 
-                RdfXmlWriter writer = new RdfXmlWriter();
+            RdfXmlWriter writer = new RdfXmlWriter();
 
-                this.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
-            }
-            catch (WebException webEx)
-            {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to update a Graph in the Store asynchronously", webEx)), state);
-            }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), new RdfStorageException("Unexpected error while trying to update a Graph in the Store asynchronously, see inner exception for details", ex)), state);
-            }
+            this.UpdateGraphAsync(request, writer, graphUri.ToSafeUri(), additions, callback, state);
         }
 
         /// <summary>
@@ -754,17 +701,10 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-
                 //Don't throw the error if we get a 404 - this means we couldn't do a delete as the graph didn't exist to start with
                 if (webEx.Response == null || (webEx.Response != null && ((HttpWebResponse)webEx.Response).StatusCode != HttpStatusCode.NotFound))
                 {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), new RdfStorageException("A HTTP Error occurred while trying to delete a Graph from the Store", webEx)), state);
+                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "deleting a Graph from")), state);
                 }
                 else
                 {

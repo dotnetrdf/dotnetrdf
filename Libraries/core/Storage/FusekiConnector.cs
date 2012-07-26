@@ -43,7 +43,6 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
-using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
@@ -176,13 +175,13 @@ namespace VDS.RDF.Storage
                     throw new RdfStorageException("Tried to list graphs from Fuseki but failed to get a SPARQL Result Set as expected");
                 }
             }
-                catch (RdfStorageException)
+            catch (RdfStorageException)
             {
-                    throw;
-                }
+                throw;
+            }
             catch (Exception ex)
             {
-                throw new RdfStorageException("An error occurred while trying to list graphs, see inner exception for details", ex);
+                throw StorageHelper.HandleError(ex, "listing Graphs from");
             }
         }
 
@@ -270,13 +269,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "updating a Graph in");
             }
         }
 
@@ -391,13 +384,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfQueryException("A HTTP error occurred while querying the Store", webEx);
+                throw StorageHelper.HandleHttpQueryError(webEx);
             }
         }
 
@@ -440,13 +427,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
+                throw StorageHelper.HandleHttpError(webEx, "updating");
             }
         }
 
@@ -556,49 +537,31 @@ namespace VDS.RDF.Storage
                                 }
                                 catch (WebException webEx)
                                 {
-#if DEBUG
-                                    if (Options.HttpDebugging)
-                                    {
-                                        if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                    }
-#endif
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
                                 }
                                 catch (Exception ex)
                                 {
-                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+                                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
                                 }
                             }, state);
                         }
                         catch (WebException webEx)
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            }
-#endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("A HTTP error occurred while querying the Store", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleHttpQueryError(webEx)), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, new RdfQueryException("An unexpected error occurred while querying the Store", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlQueryWithHandler, StorageHelper.HandleQueryError(ex)), state);
             }
         }
 
@@ -651,49 +614,31 @@ namespace VDS.RDF.Storage
                                     }
                                     catch (WebException webEx)
                                     {
-#if DEBUG
-                                        if (Options.HttpDebugging)
-                                        {
-                                            if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                                        }
-#endif
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
                                     }
                                     catch (Exception ex)
                                     {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
                                     }
                                 }, state);
                         }
                         catch (WebException webEx)
                         {
-#if DEBUG
-                            if (Options.HttpDebugging)
-                            {
-                                if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                            }
-#endif
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
                         }
                         catch (Exception ex)
                         {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
                         }
                     }, state);
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
             }
             catch (Exception ex)
             {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, new RdfStorageException("An unexpected error occurred while communicating with the Fuseki Server", ex)), state);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
             }
         }
 
@@ -720,16 +665,13 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Updates a Graph on the Protocol Server
+        /// Updates a Graph on the Fuseki Server
         /// </summary>
         /// <param name="graphUri">URI of the Graph to update</param>
         /// <param name="additions">Triples to be added</param>
         /// <param name="removals">Triples to be removed</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// <strong>Note:</strong> The SPARQL Graph Store HTTP Protocol for Graph Management only supports the addition of Triples to a Graph and does not support removal of Triples from a Graph.  If you attempt to remove Triples then an <see cref="RdfStorageException">RdfStorageException</see> will be thrown
-        /// </remarks>
         public override void UpdateGraph(string graphUri, IEnumerable<Triple> additions, IEnumerable<Triple> removals, AsyncStorageCallback callback, object state)
         {
             try
@@ -794,13 +736,7 @@ namespace VDS.RDF.Storage
             }
             catch (WebException webEx)
             {
-#if DEBUG
-                if (Options.HttpDebugging)
-                {
-                    if (webEx.Response != null) Tools.HttpDebugResponse((HttpWebResponse)webEx.Response);
-                }
-#endif
-                throw new RdfStorageException("A HTTP error occurred while communicating with the Fuseki Server", webEx);
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.UpdateGraph, graphUri.ToSafeUri(), StorageHelper.HandleHttpError(webEx, "updating a Graph asynchronously")), state);
             }
         }
 
