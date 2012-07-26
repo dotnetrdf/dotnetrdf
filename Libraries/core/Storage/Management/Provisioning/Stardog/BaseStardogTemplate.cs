@@ -56,6 +56,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
             this.MinDifferentialIndexLimit = StardogConnector.DatabaseOptions.DefaultMinDifferentialIndexLimit;
             this.MaxDifferentialIndexLimit = StardogConnector.DatabaseOptions.DefaultMaxDifferentialIndexLimit;
             this.CanoncialiseLiterals = StardogConnector.DatabaseOptions.DefaultCanonicaliseLiterals;
+            this.IndexNamedGraphs = StardogConnector.DatabaseOptions.DefaultNamedGraphIndexing;
             this.PersistIndexes = StardogConnector.DatabaseOptions.DefaultPersistIndex;
             this.PersistIndexesSynchronously = StardogConnector.DatabaseOptions.DefaultPersistIndexSync;
             this.AutoUpdateStatistics = StardogConnector.DatabaseOptions.DefaultAutoUpdateStats;
@@ -99,7 +100,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 
         [Category("Index Options"), 
          DisplayName("Index Type"),
-        Description("The type of the index structures used for the database")]
+         Description("The type of the index structures used for the database")]
         public String DatabaseType
         {
             get;

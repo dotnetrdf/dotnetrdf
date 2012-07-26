@@ -10,6 +10,23 @@ namespace VDS.RDF.Storage
 {
     public static class StorageHelper
     {
+        public const String HttpMultipartContentTemplate = "Content-Disposition: form-data; name=\"{0}\"\r\n\r\n{1}";
+
+
+        public static String HttpMultipartBoundary
+        {
+            get
+            {
+                Guid guid;
+                do
+                {
+                    guid = Guid.NewGuid();
+                } while (guid.Equals(Guid.Empty));
+                return "--" + guid + "--";
+            }
+        }
+
+
         public static RdfQueryException HandleHttpQueryError(WebException webEx)
         {
             return HandleHttpError<RdfQueryException>(webEx, "querying", (msg, ex) => new RdfQueryException(msg, ex));

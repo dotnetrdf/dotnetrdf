@@ -971,6 +971,16 @@ namespace VDS.RDF.Storage
             return templates;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Uses some code based off on answers <a href="http://stackoverflow.com/questions/566462/upload-files-with-httpwebrequest-multipart-form-data">here</a> to help do the multipart form data request.
+        /// </para>
+        /// </remarks>
         public bool CreateStore(IStoreTemplate template)
         {
             if (template is BaseStardogTemplate)
@@ -984,14 +994,26 @@ namespace VDS.RDF.Storage
                     IEnumerable<String> errors = stardogTemplate.Validate();
                     if (errors.Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
                     JObject jsonTemplate = stardogTemplate.GetTemplateJson();
+                    Console.WriteLine(jsonTemplate.ToString());
 
                     //Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
-                    request.ContentType = MimeTypesHelper.FormMultipart;
-                    using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                    String boundary = StorageHelper.HttpMultipartBoundary;
+                    byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+                    request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
+
+                    using (Stream stream = request.GetRequestStream())
                     {
-                        writer.Write("root=" + HttpUtility.UrlEncode(jsonTemplate.ToString()));
-                        writer.Close();
+                        //Boundary
+                        stream.Write(boundaryBytes, 0, boundaryBytes.Length);
+                        //Then the root Item
+                        String templateItem = String.Format(StorageHelper.HttpMultipartContentTemplate, "root", jsonTemplate.ToString());
+                        byte[] itemBytes = System.Text.Encoding.UTF8.GetBytes(templateItem);
+                        stream.Write(itemBytes, 0, itemBytes.Length);
+                        //Then terminating boundary
+                        stream.Write(terminatorBytes, 0, terminatorBytes.Length);
+                        stream.Close();
                     }
 
 #if DEBUG

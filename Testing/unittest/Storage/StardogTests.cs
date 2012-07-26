@@ -461,7 +461,6 @@ namespace VDS.RDF.Test.Storage
                 guid = Guid.NewGuid();
             } while (guid.Equals(Guid.Empty) || !Char.IsLetter(guid.ToString()[0]));
 
-
             StardogConnector stardog = StardogTests.GetConnection();
             IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
             Console.WriteLine("Template ID " + template.ID);
@@ -469,13 +468,13 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Options.HttpDebugging = true;
-                Options.HttpFullDebugging = true;
+                //Options.HttpFullDebugging = true;
 
                 stardog.CreateStore(template);
             }
             finally
             {
-                Options.HttpFullDebugging = false;
+                //Options.HttpFullDebugging = false;
                 Options.HttpDebugging = false;
             }
 
