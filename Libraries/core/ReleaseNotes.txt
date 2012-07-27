@@ -153,7 +153,7 @@ Release History
 
 4/7/2012 - Release of Version 0.7.0 Beta (Build 0.7.0.2246)
 
-1/8/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.2329)
+27/7/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.2329)
 
 Acknowledgements
 ----------------
