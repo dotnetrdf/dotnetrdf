@@ -216,7 +216,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void Remove()
         {
-            this._g.Retract(this._g.GetTriplesWithSubject(this._objNode));
+            this._g.Retract(this._g.GetTriplesWithSubject(this._objNode).ToList());
 
             if (this._file != null)
             {

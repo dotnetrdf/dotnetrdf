@@ -541,10 +541,10 @@ namespace VDS.RDF.Utilities.StoreManager
 
                 conns.RemoveRange(0, MaxRecentConnections);
 
-                // there may be a bug here -- removing something from a collection that you are enumerating... - RMZ 7/24/2012
+                //Remember the ToList() on the retract otherwise we'll hit an error
                 foreach (INode obj in conns)
                 {
-                    this._recentConnections.Retract(this._recentConnections.GetTriplesWithSubject(obj));
+                    this._recentConnections.Retract(this._recentConnections.GetTriplesWithSubject(obj).ToList());
                     this.RemoveFromConnectionsMenu(this.mnuRecentConnections, obj);
                 }
 

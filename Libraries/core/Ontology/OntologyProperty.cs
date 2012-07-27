@@ -312,8 +312,8 @@ namespace VDS.RDF.Ontology
         public bool ClearEquivalentProperties()
         {
             INode equivProp = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentProperty));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, equivProp));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(equivProp, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, equivProp).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(equivProp, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertyEquivalentProperty, true);
         }
 
@@ -414,8 +414,8 @@ namespace VDS.RDF.Ontology
         public bool ClearInverseProperties()
         {
             INode inverseOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyInverseOf));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, inverseOf));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(inverseOf, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, inverseOf).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(inverseOf, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertyInverseOf, true);
         }
 
@@ -515,7 +515,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSubProperties()
         {
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf)), this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf)), this._resource).ToList());
             return this.ClearResourceProperty(PropertyDerivedProperty, false);
         }
 
@@ -615,7 +615,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSuperProperties()
         {
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf))));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf))).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertySubPropertyOf, true);
         }
 

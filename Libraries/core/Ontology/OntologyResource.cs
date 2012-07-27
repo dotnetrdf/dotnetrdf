@@ -241,7 +241,7 @@ namespace VDS.RDF.Ontology
             if (this._literalProperties.ContainsKey(propertyUri))
             {
                 this._literalProperties[propertyUri].Clear();
-                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))));
+                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))).ToList());
                 return true;
             }
             else
@@ -271,7 +271,7 @@ namespace VDS.RDF.Ontology
             if (this._resourceProperties.ContainsKey(propertyUri))
             {
                 this._resourceProperties[propertyUri].Clear();
-                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))));
+                if (persist) this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(propertyUri))).ToList());
                 return true;
             }
             else
@@ -476,8 +476,8 @@ namespace VDS.RDF.Ontology
         public bool ClearDifferentFrom()
         {
             INode diffFrom = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDifferentFrom));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, diffFrom));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(diffFrom, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, diffFrom).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(diffFrom, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertyDifferentFrom, true);
         }
 
@@ -688,8 +688,8 @@ namespace VDS.RDF.Ontology
         public bool ClearSameAs()
         {
             INode sameAs = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySameAs));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, sameAs));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(sameAs, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, sameAs).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(sameAs, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertySameAs, true);
         }
 

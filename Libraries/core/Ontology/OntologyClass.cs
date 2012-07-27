@@ -156,7 +156,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSubClasses()
         {
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf)), this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf)), this._resource).ToList());
             return this.ClearResourceProperty(PropertyDerivedClass, false);
         }
 
@@ -256,7 +256,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool ClearSuperClasses()
         {
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf))));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf))).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertySubClassOf, true);
         }
 
@@ -357,8 +357,8 @@ namespace VDS.RDF.Ontology
         public bool ClearEquivalentClasses()
         {
             INode equivClass = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyEquivalentClass));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, equivClass));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(equivClass, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, equivClass).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(equivClass, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertyEquivalentClass, true);
         }
 
@@ -456,8 +456,8 @@ namespace VDS.RDF.Ontology
         public bool ClearDisjointClasses()
         {
             INode disjointClass = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertyDisjointWith));
-            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, disjointClass));
-            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(disjointClass, this._resource));
+            this._graph.Retract(this._graph.GetTriplesWithSubjectPredicate(this._resource, disjointClass).ToList());
+            this._graph.Retract(this._graph.GetTriplesWithPredicateObject(disjointClass, this._resource).ToList());
             return this.ClearResourceProperty(OntologyHelper.PropertyDisjointWith, true);
         }
 

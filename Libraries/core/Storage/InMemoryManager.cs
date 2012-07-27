@@ -189,8 +189,8 @@ namespace VDS.RDF.Storage
             if ((additions != null && additions.Any()) || (removals != null && removals.Any()))
             {
                 IGraph g = this._dataset.GetModifiableGraph(graphUri);
-                if (additions != null && additions.Any()) g.Assert(additions);
-                if (removals != null && removals.Any()) g.Retract(removals);
+                if (additions != null && additions.Any()) g.Assert(additions.ToList());
+                if (removals != null && removals.Any()) g.Retract(removals.ToList());
             }
 
             this._dataset.Flush();
