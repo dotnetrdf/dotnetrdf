@@ -230,17 +230,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-        /// <summary>
-        /// Gets the IO Behaviour of the Store
-        /// </summary>
-        public override IOBehaviour IOBehaviour
-        {
-            get
-            {
-                return base.IOBehaviour | IOBehaviour.StorageServer;
-            }
-        }
-
 #if !NO_SYNC_HTTP
 
         public override IStoreTemplate GetDefaultTemplate(String id)

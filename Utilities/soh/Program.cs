@@ -474,7 +474,7 @@ namespace VDS.RDF.Utilities.SparqlOverHttp
 
                         if (verbose) Console.Error.WriteLine("soh: Making a HEAD request to the Protocol endpoint");
 
-                        bool exists = endpoint.GraphExists(graphUri);
+                        bool exists = endpoint.HasGraph(graphUri);
                         Console.WriteLine(exists.ToString().ToLower());
                         break;
 

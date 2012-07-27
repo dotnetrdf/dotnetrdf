@@ -198,7 +198,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabFunctions.Name = "tabFunctions";
             this.tabFunctions.Padding = new System.Drawing.Point(0, 0);
             this.tabFunctions.SelectedIndex = 0;
-            this.tabFunctions.Size = new System.Drawing.Size(643, 388);
+            this.tabFunctions.Size = new System.Drawing.Size(625, 342);
             this.tabFunctions.TabIndex = 0;
             // 
             // tabGraphs
@@ -209,13 +209,16 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabGraphs.Location = new System.Drawing.Point(4, 22);
             this.tabGraphs.Name = "tabGraphs";
             this.tabGraphs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGraphs.Size = new System.Drawing.Size(635, 362);
+            this.tabGraphs.Size = new System.Drawing.Size(617, 316);
             this.tabGraphs.TabIndex = 0;
             this.tabGraphs.Text = "Graphs";
             this.tabGraphs.UseVisualStyleBackColor = true;
             // 
             // lblGraphListUnavailable
             // 
+            this.lblGraphListUnavailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGraphListUnavailable.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblGraphListUnavailable.Location = new System.Drawing.Point(23, 117);
             this.lblGraphListUnavailable.Name = "lblGraphListUnavailable";
@@ -228,8 +231,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // btnGraphRefresh
             // 
+            this.btnGraphRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnGraphRefresh.Enabled = false;
-            this.btnGraphRefresh.Location = new System.Drawing.Point(269, 279);
+            this.btnGraphRefresh.Location = new System.Drawing.Point(6, 279);
             this.btnGraphRefresh.Name = "btnGraphRefresh";
             this.btnGraphRefresh.Size = new System.Drawing.Size(76, 23);
             this.btnGraphRefresh.TabIndex = 5;
@@ -240,6 +244,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // lvwGraphs
             // 
             this.lvwGraphs.AllowDrop = true;
+            this.lvwGraphs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwGraphs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colGraphURI});
             this.lvwGraphs.ContextMenuStrip = this.mnuGraphs;
@@ -356,7 +363,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabSparqlQuery.Margin = new System.Windows.Forms.Padding(0);
             this.tabSparqlQuery.Name = "tabSparqlQuery";
             this.tabSparqlQuery.Padding = new System.Windows.Forms.Padding(10);
-            this.tabSparqlQuery.Size = new System.Drawing.Size(635, 362);
+            this.tabSparqlQuery.Size = new System.Drawing.Size(617, 316);
             this.tabSparqlQuery.TabIndex = 1;
             this.tabSparqlQuery.Text = "SPARQL Query";
             this.tabSparqlQuery.UseVisualStyleBackColor = true;
@@ -376,7 +383,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableQueryTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 68F));
-            this.tableQueryTab.Size = new System.Drawing.Size(615, 342);
+            this.tableQueryTab.Size = new System.Drawing.Size(597, 296);
             this.tableQueryTab.TabIndex = 7;
             // 
             // txtSparqlQuery
@@ -387,7 +394,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtSparqlQuery.Multiline = true;
             this.txtSparqlQuery.Name = "txtSparqlQuery";
             this.txtSparqlQuery.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlQuery.Size = new System.Drawing.Size(609, 218);
+            this.txtSparqlQuery.Size = new System.Drawing.Size(591, 172);
             this.txtSparqlQuery.TabIndex = 1;
             this.txtSparqlQuery.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
     "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
@@ -401,7 +408,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.panel1.Controls.Add(this.btnLoadQuery);
             this.panel1.Controls.Add(this.chkPageQuery);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(3, 277);
+            this.panel1.Location = new System.Drawing.Point(3, 231);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(533, 62);
             this.panel1.TabIndex = 8;
@@ -475,7 +482,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lblQueryIntro.Location = new System.Drawing.Point(0, 0);
             this.lblQueryIntro.Margin = new System.Windows.Forms.Padding(0);
             this.lblQueryIntro.Name = "lblQueryIntro";
-            this.lblQueryIntro.Size = new System.Drawing.Size(606, 48);
+            this.lblQueryIntro.Size = new System.Drawing.Size(597, 48);
             this.lblQueryIntro.TabIndex = 0;
             this.lblQueryIntro.Text = resources.GetString("lblQueryIntro.Text");
             // 
@@ -486,7 +493,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabSparqlUpdate.Margin = new System.Windows.Forms.Padding(0);
             this.tabSparqlUpdate.Name = "tabSparqlUpdate";
             this.tabSparqlUpdate.Padding = new System.Windows.Forms.Padding(10);
-            this.tabSparqlUpdate.Size = new System.Drawing.Size(635, 362);
+            this.tabSparqlUpdate.Size = new System.Drawing.Size(617, 316);
             this.tabSparqlUpdate.TabIndex = 3;
             this.tabSparqlUpdate.Text = "SPARQL Update";
             this.tabSparqlUpdate.UseVisualStyleBackColor = true;
@@ -506,14 +513,14 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableUpdateTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.tableUpdateTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableUpdateTab.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
-            this.tableUpdateTab.Size = new System.Drawing.Size(615, 342);
+            this.tableUpdateTab.Size = new System.Drawing.Size(597, 296);
             this.tableUpdateTab.TabIndex = 5;
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.lblUpdateMode);
             this.panel2.Controls.Add(this.btnSparqlUpdate);
-            this.panel2.Location = new System.Drawing.Point(3, 283);
+            this.panel2.Location = new System.Drawing.Point(3, 237);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(452, 56);
             this.panel2.TabIndex = 6;
@@ -545,7 +552,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.txtSparqlUpdate.Multiline = true;
             this.txtSparqlUpdate.Name = "txtSparqlUpdate";
             this.txtSparqlUpdate.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtSparqlUpdate.Size = new System.Drawing.Size(609, 224);
+            this.txtSparqlUpdate.Size = new System.Drawing.Size(591, 178);
             this.txtSparqlUpdate.TabIndex = 2;
             this.txtSparqlUpdate.Text = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\r\nPREFIX rdfs: <http://w" +
     "ww.w3.org/2000/01/rdf-schema#>\r\nPREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\r" +
@@ -556,7 +563,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.lblUpdateIntro.Location = new System.Drawing.Point(0, 0);
             this.lblUpdateIntro.Margin = new System.Windows.Forms.Padding(0);
             this.lblUpdateIntro.Name = "lblUpdateIntro";
-            this.lblUpdateIntro.Size = new System.Drawing.Size(609, 46);
+            this.lblUpdateIntro.Size = new System.Drawing.Size(597, 46);
             this.lblUpdateIntro.TabIndex = 0;
             this.lblUpdateIntro.Text = resources.GetString("lblUpdateIntro.Text");
             // 
@@ -568,7 +575,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabImport.Controls.Add(this.grpImport);
             this.tabImport.Location = new System.Drawing.Point(4, 22);
             this.tabImport.Name = "tabImport";
-            this.tabImport.Size = new System.Drawing.Size(635, 362);
+            this.tabImport.Size = new System.Drawing.Size(617, 316);
             this.tabImport.TabIndex = 2;
             this.tabImport.Text = "Import Data";
             this.tabImport.UseVisualStyleBackColor = true;
@@ -754,7 +761,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabExport.Controls.Add(this.lblExport);
             this.tabExport.Location = new System.Drawing.Point(4, 22);
             this.tabExport.Name = "tabExport";
-            this.tabExport.Size = new System.Drawing.Size(635, 362);
+            this.tabExport.Size = new System.Drawing.Size(617, 316);
             this.tabExport.TabIndex = 5;
             this.tabExport.Text = "Export Data";
             this.tabExport.UseVisualStyleBackColor = true;
@@ -823,15 +830,16 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabServer.Location = new System.Drawing.Point(4, 22);
             this.tabServer.Name = "tabServer";
             this.tabServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabServer.Size = new System.Drawing.Size(635, 362);
+            this.tabServer.Size = new System.Drawing.Size(617, 316);
             this.tabServer.TabIndex = 7;
             this.tabServer.Text = "Server Management";
             this.tabServer.UseVisualStyleBackColor = true;
             // 
             // btnRefreshStores
             // 
+            this.btnRefreshStores.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRefreshStores.Enabled = false;
-            this.btnRefreshStores.Location = new System.Drawing.Point(269, 279);
+            this.btnRefreshStores.Location = new System.Drawing.Point(6, 279);
             this.btnRefreshStores.Name = "btnRefreshStores";
             this.btnRefreshStores.Size = new System.Drawing.Size(76, 23);
             this.btnRefreshStores.TabIndex = 6;
@@ -842,6 +850,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // lvwStores
             // 
             this.lvwStores.AllowDrop = true;
+            this.lvwStores.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwStores.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colStoreID});
             this.lvwStores.ContextMenuStrip = this.mnuStores;
@@ -899,13 +910,16 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabInfo.Location = new System.Drawing.Point(4, 22);
             this.tabInfo.Name = "tabInfo";
             this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabInfo.Size = new System.Drawing.Size(635, 362);
+            this.tabInfo.Size = new System.Drawing.Size(617, 316);
             this.tabInfo.TabIndex = 6;
             this.tabInfo.Text = "Information";
             this.tabInfo.UseVisualStyleBackColor = true;
             // 
             // propInfo
             // 
+            this.propInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.propInfo.Location = new System.Drawing.Point(6, 57);
             this.propInfo.Name = "propInfo";
             this.propInfo.Size = new System.Drawing.Size(603, 245);
@@ -927,13 +941,14 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tabTasks.Location = new System.Drawing.Point(4, 22);
             this.tabTasks.Name = "tabTasks";
             this.tabTasks.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTasks.Size = new System.Drawing.Size(635, 362);
+            this.tabTasks.Size = new System.Drawing.Size(617, 316);
             this.tabTasks.TabIndex = 4;
             this.tabTasks.Text = "Tasks";
             this.tabTasks.UseVisualStyleBackColor = true;
             // 
             // chkRemoveOldTasks
             // 
+            this.chkRemoveOldTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkRemoveOldTasks.AutoSize = true;
             this.chkRemoveOldTasks.Checked = true;
             this.chkRemoveOldTasks.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -946,6 +961,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lvwTasks
             // 
+            this.lvwTasks.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lvwTasks.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colID,
             this.colTask,
@@ -1046,9 +1064,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             this.stsStatus.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stsCurrent});
-            this.stsStatus.Location = new System.Drawing.Point(0, 408);
+            this.stsStatus.Location = new System.Drawing.Point(0, 362);
             this.stsStatus.Name = "stsStatus";
-            this.stsStatus.Size = new System.Drawing.Size(663, 22);
+            this.stsStatus.Size = new System.Drawing.Size(645, 22);
             this.stsStatus.SizingGrip = false;
             this.stsStatus.TabIndex = 1;
             // 
@@ -1086,18 +1104,19 @@ namespace VDS.RDF.Utilities.StoreManager
             this.tableForm.Padding = new System.Windows.Forms.Padding(10);
             this.tableForm.RowCount = 1;
             this.tableForm.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableForm.Size = new System.Drawing.Size(663, 408);
+            this.tableForm.Size = new System.Drawing.Size(645, 362);
             this.tableForm.TabIndex = 3;
             // 
             // StoreManagerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 430);
+            this.ClientSize = new System.Drawing.Size(645, 384);
             this.Controls.Add(this.tableForm);
             this.Controls.Add(this.stsStatus);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "StoreManagerForm";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.Text = "fclsGenericStoreManager";
             this.Load += new System.EventHandler(this.fclsGenericStoreManager_Load);
             this.tabFunctions.ResumeLayout(false);

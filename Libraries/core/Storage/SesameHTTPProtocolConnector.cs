@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.HasMultipleStores | IOBehaviour.CanCreateStores;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.StorageServer;
             }
         }
 
@@ -1183,7 +1183,26 @@ namespace VDS.RDF.Storage
         /// </remarks>
         public virtual void DeleteStore(String storeID)
         {
-            throw new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol");
+            try
+            {
+                HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String,String>());
+#if DEBUG
+                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+                    //If we get here it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+            }
         }
 
         /// <summary>
@@ -1195,6 +1214,9 @@ namespace VDS.RDF.Storage
             try
             {
                 HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
+#if DEBUG
+                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
                 ListStringsHandler handler = new ListStringsHandler("id");
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
@@ -1245,7 +1267,42 @@ namespace VDS.RDF.Storage
         /// <param name="state">State to pass to the callback</param>
         public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
         {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.DeleteStore, new RdfStorageException("Sesame does not support deleting stores via it's HTTP Protocol")), state);
+            try
+            {
+                HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String,String>());
+#if DEBUG
+                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
+#endif
+
+                request.BeginGetResponse(r =>
+                    {
+                        try
+                        {
+                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
+#if DEBUG
+                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
+#endif
+                            //If we get here it completed OK
+                            response.Close();
+                        }
+                        catch (WebException webEx)
+                        {
+                            throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+                        }
+                        catch (Exception ex)
+                        {
+                            throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' asynchronously from");
+                        }
+                    }, state);
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
+            }
+            catch (Exception ex)
+            {
+                throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' asynchronously from");
+            }
         }
 
         /// <summary>

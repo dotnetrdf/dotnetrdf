@@ -51,13 +51,13 @@
             this.lstErrors.FormattingEnabled = true;
             this.lstErrors.Location = new System.Drawing.Point(15, 35);
             this.lstErrors.Name = "lstErrors";
-            this.lstErrors.Size = new System.Drawing.Size(626, 134);
+            this.lstErrors.Size = new System.Drawing.Size(621, 134);
             this.lstErrors.TabIndex = 1;
             // 
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point(566, 175);
+            this.btnOK.Location = new System.Drawing.Point(561, 175);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 2;
@@ -70,7 +70,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(661, 208);
+            this.ClientSize = new System.Drawing.Size(656, 208);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.lstErrors);
             this.Controls.Add(this.label1);

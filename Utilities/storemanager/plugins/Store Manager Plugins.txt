@@ -11,11 +11,10 @@ IStorageProvider
 - This is the interface which actually provides the connectivity between dotNetRDF and a Triple Store
 
 IConnectionDefinition
-- Can be found under VDS.RDF.Utilities.StoreManager.Connections in StoreManager.exe
+- Can be found under VDS.RDF.Utilities.StoreManager.Connections in StoreManager.Core.dll
 - This interface is used to specify available connection settings and instantiate connections
 - Essentially is just a class that implements the interface and annotates its properties
   with the ConnectionAttribute
   
-  
-Then simply drop your assembly as a DLL into this folder, restart Store Manager and it will automatically
-detect the available Triple Stores from your assembly.
+Then simply drop your assembly as a DLL into this folder, restart Store Manager or go to Help > About and
+hit the rescan button and it will automatically detect the available Triple Stores from your assembly.

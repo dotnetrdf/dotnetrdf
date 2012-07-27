@@ -561,7 +561,10 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.stsCurrent.Text = "Store is ready";
                 this.ListGraphs();
-                this.ListStores();
+                if (this._manager is IStorageServer)
+                {
+                    this.ListStores();
+                }
                 this.timStartup.Stop();
             }
         }

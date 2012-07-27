@@ -101,6 +101,8 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // grpRecent
             // 
+            this.grpRecent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpRecent.Controls.Add(this.lstRecent);
             this.grpRecent.Location = new System.Drawing.Point(12, 218);
             this.grpRecent.Name = "grpRecent";
@@ -111,6 +113,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lstRecent
             // 
+            this.lstRecent.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstRecent.ContextMenuStrip = this.mnuRecentConnections;
             this.lstRecent.FormattingEnabled = true;
             this.lstRecent.Location = new System.Drawing.Point(6, 19);
@@ -150,6 +155,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // grpFavourites
             // 
+            this.grpFavourites.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.grpFavourites.Controls.Add(this.lstFaves);
             this.grpFavourites.Location = new System.Drawing.Point(12, 71);
             this.grpFavourites.Name = "grpFavourites";
@@ -160,6 +168,9 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // lstFaves
             // 
+            this.lstFaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstFaves.ContextMenuStrip = this.mnuFaveConnections;
             this.lstFaves.FormattingEnabled = true;
             this.lstFaves.Location = new System.Drawing.Point(6, 19);
@@ -169,6 +180,7 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // chkAlwaysShow
             // 
+            this.chkAlwaysShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkAlwaysShow.AutoSize = true;
             this.chkAlwaysShow.Checked = true;
             this.chkAlwaysShow.CheckState = System.Windows.Forms.CheckState.Checked;
@@ -191,6 +203,7 @@ namespace VDS.RDF.Utilities.StoreManager
             // 
             // chkAlwaysEdit
             // 
+            this.chkAlwaysEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkAlwaysEdit.AutoSize = true;
             this.chkAlwaysEdit.Location = new System.Drawing.Point(12, 365);
             this.chkAlwaysEdit.Name = "chkAlwaysEdit";
@@ -211,12 +224,11 @@ namespace VDS.RDF.Utilities.StoreManager
             this.Controls.Add(this.grpFavourites);
             this.Controls.Add(this.chkAlwaysShow);
             this.Controls.Add(this.grpRecent);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "StartPage";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Get Started";
             this.Load += new System.EventHandler(this.StartPage_Load);

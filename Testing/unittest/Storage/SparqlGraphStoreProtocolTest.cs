@@ -180,7 +180,7 @@ namespace VDS.RDF.Test.Storage
 
                 //Check the Graph exists in the Store
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
-                Assert.IsTrue(sparql.GraphExists("http://example.org/sparqlTest"));
+                Assert.IsTrue(sparql.HasGraph("http://example.org/sparqlTest"));
             }
             finally
             {
