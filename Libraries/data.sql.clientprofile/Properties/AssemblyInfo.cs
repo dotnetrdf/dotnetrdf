@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("dotNetRDF.Data.Sql.ClientProfile")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2011-2012")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2011-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("rdfSqlStorage")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("0.7.0.2246")]
-[assembly: AssemblyFileVersion("0.7.0.0")]
+[assembly: AssemblyVersion("0.7.1.2329")]
+[assembly: AssemblyFileVersion("0.7.1.0")]

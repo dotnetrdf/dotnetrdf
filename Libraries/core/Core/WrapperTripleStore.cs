@@ -46,6 +46,9 @@ namespace VDS.RDF.Core
     public class WrapperTripleStore
         : ITripleStore
     {
+        /// <summary>
+        /// Underlying store
+        /// </summary>
         protected readonly ITripleStore _store;
 
         /// <summary>
@@ -81,6 +84,9 @@ namespace VDS.RDF.Core
             this._store.GraphRemoved += this.GraphRemovedHandler;
         }
 
+        /// <summary>
+        /// Gets whether the store is empty
+        /// </summary>
         public virtual bool IsEmpty
         {
             get
@@ -89,6 +95,9 @@ namespace VDS.RDF.Core
             }
         }
 
+        /// <summary>
+        /// Gets the Graphs of the store
+        /// </summary>
         public virtual BaseGraphCollection Graphs
         {
             get 
@@ -97,6 +106,9 @@ namespace VDS.RDF.Core
             }
         }
 
+        /// <summary>
+        /// Gets the triples of the store
+        /// </summary>
         public virtual IEnumerable<Triple> Triples
         {
             get 
@@ -105,42 +117,84 @@ namespace VDS.RDF.Core
             }
         }
 
+        /// <summary>
+        /// Adds a Graph to the store
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
         public virtual bool Add(IGraph g)
         {
             return this.Add(g, false);
         }
 
+        /// <summary>
+        /// Adds a Graph to the store
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="mergeIfExists">Whether to merge with an existing graph with the same URI</param>
+        /// <returns></returns>
         public virtual bool Add(IGraph g, bool mergeIfExists)
         {
             return this._store.Add(g, mergeIfExists);
         }
 
+        /// <summary>
+        /// Adds a Graph to the store from a URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual bool AddFromUri(Uri graphUri)
         {
             return this.AddFromUri(graphUri, false);
         }
 
+        /// <summary>
+        /// Adds a Graph to the store from a URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="mergeIfExists">Whether to merge with an existing graph with the same URI</param>
+        /// <returns></returns>
         public virtual bool AddFromUri(Uri graphUri, bool mergeIfExists)
         {
             return this._store.AddFromUri(graphUri, mergeIfExists);
         }
 
+        /// <summary>
+        /// Removes a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual bool Remove(Uri graphUri)
         {
             return this._store.Remove(graphUri);
         }
 
+        /// <summary>
+        /// Gets whether a Graph exists in the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual bool HasGraph(Uri graphUri)
         {
             return this._store.HasGraph(graphUri);
         }
 
+        /// <summary>
+        /// Gets a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", false)]
         public virtual IGraph Graph(Uri graphUri)
         {
             return this._store.Graph(graphUri);
         }
 
+        /// <summary>
+        /// Gets a Graph from the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public virtual IGraph this[Uri graphUri]
         {
             get
@@ -149,14 +203,29 @@ namespace VDS.RDF.Core
             }
         }
 
+        /// <summary>
+        /// Event which is raised when a graph is added
+        /// </summary>
         public event TripleStoreEventHandler GraphAdded;
 
+        /// <summary>
+        /// Events which is raised when a graph is removed
+        /// </summary>
         public event TripleStoreEventHandler GraphRemoved;
 
+        /// <summary>
+        /// Event which is raised when a graph is changed
+        /// </summary>
         public event TripleStoreEventHandler GraphChanged;
 
+        /// <summary>
+        /// Event which is raised when a graph is cleared
+        /// </summary>
         public event TripleStoreEventHandler GraphCleared;
 
+        /// <summary>
+        /// Event which is raised when a graph is merged
+        /// </summary>
         public event TripleStoreEventHandler GraphMerged;
 
         /// <summary>
@@ -314,6 +383,9 @@ namespace VDS.RDF.Core
             this.RaiseGraphMerged(args.GraphEvent);
         }
 
+        /// <summary>
+        /// Disposes of the Triple Store
+        /// </summary>
         public virtual void Dispose()
         {
             this._store.Dispose();

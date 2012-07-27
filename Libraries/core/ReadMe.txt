@@ -18,6 +18,9 @@ are provided for the following .Net profiles:
 - .Net 3.5
 - .Net 3.5 Client Profile
 
+Note that our SQL backend is obsolete and should not be used for any new development.  Many
+alternative options are provided in the Core library and by the Virtuoso backend.
+
 And it contains the a Query plugin for Full Text indexing support, builds are provided
 for the following .Net profiles:
 - .Net 4.0

@@ -5,13 +5,13 @@ A Toolkit of command line utilities and GUI tools for working with RDF data
 
 Version 0.6.1 Beta
 
-Robert Vesse 2009-12
-rvesse@vdesign-studios.com
+dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.6.0 release of the dotNetRDF Toolkit
+This represents a summary of additions, changes and removals for the 0.6.1 release of the dotNetRDF Toolkit
 for Windows/Mono detailed by Tool.
 
 Note: While some tools may have no changes all tools benefit from being upgraded to the latest release of the
@@ -19,7 +19,7 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
-
+- Picks up some fixes to parsing support around language specifiers
 
 rdfEditor (Not available under Mono)
 - Picks up some fixes to parsing support around language specifiers
@@ -43,7 +43,7 @@ soh
 
 SparqlGUI
 
-
 StoreManager
 - Adds ability to create new Stores on certain types of servers
-- Adds ability do delete existing Stores from certain types of servers
+- Adds ability to delete existing Stores from certain types of servers
+- Makes the Store Management forms resizable to allow larger working areas for those who need them

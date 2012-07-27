@@ -47,6 +47,7 @@ Changed
 - Storage API
  - Refactored IStorageServer API
  - Added support for creating stores with Sesame - thanks to Jeen Broekstra
+ - Standardized error handling across Storage Providers as far as possible - thanks to Ron Michael Zettlemoyer
  - Stardog
   - Avoid any transaction if calling UpdateGraph() without any updates - thanks to Ron Michael Zettlemoyer
 

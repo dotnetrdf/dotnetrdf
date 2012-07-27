@@ -47,7 +47,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Visual Design Studios")]
 [assembly: AssemblyProduct("rdfEditor")]
-[assembly: AssemblyCopyright("Copyright © Robert Vesse 2010-12")]
+[assembly: AssemblyCopyright("Copyright © dotNetRDF Project 2010-12")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -86,5 +86,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.6.0.2246")]
-[assembly: AssemblyFileVersion("0.6.0.0")]
+[assembly: AssemblyVersion("0.6.1.2329")]
+[assembly: AssemblyFileVersion("0.6.1.0")]

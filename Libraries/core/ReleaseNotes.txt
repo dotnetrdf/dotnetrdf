@@ -55,7 +55,7 @@ There are two data providers found under the Data directory that can be used to 
 with the dotNetRDF API.  These are as follows:
 
 - OpenLink Virtuoso -> dotNetRDF.Data.Virtuoso.dll
-- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll (This library is deprecated and not recommend for new development)
+- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll (This library is deprecated and not recommended for new development)
 
 There is a single query plugin found under the Query directory that provides full text query support using Lucene.Net:
 
@@ -153,7 +153,7 @@ Release History
 
 4/7/2012 - Release of Version 0.7.0 Beta (Build 0.7.0.2246)
 
-?/?/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.?)
+1/8/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.2329)
 
 Acknowledgements
 ----------------
