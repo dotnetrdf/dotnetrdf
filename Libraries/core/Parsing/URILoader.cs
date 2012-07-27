@@ -674,7 +674,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         parser.Warning += RaiseStoreWarning;
-                        parser.Load(handler, new StreamParams(httpResponse.GetResponseStream()));
+                        parser.Load(handler, new StreamReader(httpResponse.GetResponseStream()));
                     }
                 }
             }

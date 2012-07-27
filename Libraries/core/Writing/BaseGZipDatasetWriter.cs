@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="parameters">Storage Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");

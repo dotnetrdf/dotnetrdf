@@ -56,6 +56,8 @@ Removed
 - Removed the obsolete BackgroundPersistedGraph class
 - Marked the now superseded IndexedTripleCollection and it's descendants as obsolete usable
 - Marked the obsoleted ThreadSafeIndexedTripleCollection as obsolete unusable
+- Marked IStoreParams as obsolete unsuable
+- Marked the old overloads of IStoreReader and IStoreWriter as obsolete unusable
    
 
 

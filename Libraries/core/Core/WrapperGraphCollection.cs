@@ -46,6 +46,9 @@ namespace VDS.RDF
     public abstract class WrapperGraphCollection
         : BaseGraphCollection
     {
+        /// <summary>
+        /// Underlying Graph Collection
+        /// </summary>
         protected readonly BaseGraphCollection _graphs;
 
         /// <summary>
@@ -76,16 +79,30 @@ namespace VDS.RDF
             this.RaiseGraphRemoved(args.Graph);
         }
 
+        /// <summary>
+        /// Adds a Graph to the collection
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI</param>
+        /// <returns></returns>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
             return this._graphs.Add(g, mergeIfExists);
         }
 
+        /// <summary>
+        /// Gets whether the collection contains the given Graph
+        /// </summary>
+        /// <param name="graphUri"></param>
+        /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
             return this._graphs.Contains(graphUri);
         }
 
+        /// <summary>
+        /// Gets the number of Graphs in the collection
+        /// </summary>
         public override int Count
         {
             get
@@ -94,16 +111,26 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Disposes of the collection
+        /// </summary>
         public override void Dispose()
         {
             this._graphs.Dispose();
         }
 
+        /// <summary>
+        /// Gets the enumerator for the collection
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerator<IGraph> GetEnumerator()
         {
             return this._graphs.GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets the URIs of the Graphs in the collection
+        /// </summary>
         public override IEnumerable<Uri> GraphUris
         {
             get 
@@ -112,11 +139,21 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Removes a Graph from the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected internal override bool Remove(Uri graphUri)
         {
             return this._graphs.Remove(graphUri);
         }
 
+        /// <summary>
+        /// Gets a Graph from the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override IGraph this[Uri graphUri]
         {
             get

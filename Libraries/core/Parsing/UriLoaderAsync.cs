@@ -421,7 +421,7 @@ namespace VDS.RDF.Parsing
                                 //Only need to auto-detect the parser if a specific one wasn't specified
                                 parser = MimeTypesHelper.GetStoreParser(response.ContentType);
                                 parser.Warning += RaiseWarning;
-                                parser.Load(handler, new StreamParams(response.GetResponseStream()));
+                                parser.Load(handler, new StreamReader(response.GetResponseStream()));
                             }
                             catch (RdfParserSelectionException)
                             {
@@ -438,14 +438,14 @@ namespace VDS.RDF.Parsing
                                     String data = new StreamReader(response.GetResponseStream()).ReadToEnd();
                                     parser = StringParser.GetDatasetParser(data);
                                     parser.Warning += RaiseStoreWarning;
-                                    parser.Load(handler, new TextReaderParams(new StringReader(data)));
+                                    parser.Load(handler, new StringReader(data));
                                 }
                             }
                         }
                         else
                         {
                             parser.Warning += RaiseStoreWarning;
-                            parser.Load(handler, new StreamParams(response.GetResponseStream()));
+                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
                         }
 
                         //Finally can invoke the callback

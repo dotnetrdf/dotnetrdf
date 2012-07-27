@@ -40,7 +40,7 @@ namespace VDS.RDF.Storage.Params
     /// <summary>
     /// Marker Interface for classes which provide Parameter information to <see cref="IStoreReader">IStoreReader</see> and <see cref="IStoreWriter">IStoreWriter</see> implementations
     /// </summary>
-    [Obsolete("This interface is considered obsolete and will be removed in future releases", false)]
+    [Obsolete("This interface is considered obsolete and will be removed in future releases", true)]
     public interface IStoreParams
     {
 

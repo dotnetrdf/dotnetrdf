@@ -151,7 +151,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Store to save</param>
         /// <param name="parameters">Parameters indicating a Stream to write to</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
             //Try and determine the TextWriter to output to

@@ -48,12 +48,26 @@ namespace VDS.Common.Trees
     public sealed class UnbalancedBinaryTree<TKey, TValue>
         : BinaryTree<IBinaryTreeNode<TKey, TValue>, TKey, TValue>
     {
+        /// <summary>
+        /// Creates a new unbalanced tree
+        /// </summary>
         public UnbalancedBinaryTree()
             : base() { }
 
+        /// <summary>
+        /// Creates a new unbalanced tree
+        /// </summary>
+        /// <param name="comparer">Key Comparer</param>
         public UnbalancedBinaryTree(IComparer<TKey> comparer)
             : base(comparer) { }
 
+        /// <summary>
+        /// Creates a new node
+        /// </summary>
+        /// <param name="parent">Parent</param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         protected sealed override IBinaryTreeNode<TKey, TValue> CreateNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
         {
             return new BinaryTreeNode<TKey, TValue>(parent, key, value);

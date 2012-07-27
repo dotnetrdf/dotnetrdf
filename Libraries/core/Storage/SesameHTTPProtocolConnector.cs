@@ -1163,8 +1163,18 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        /// <summary>
+        /// Gets a default template for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public abstract IStoreTemplate GetDefaultTemplate(String id);
 
+        /// <summary>
+        /// Gets all available templates for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public abstract IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
 
         /// <summary>
@@ -1244,8 +1254,22 @@ namespace VDS.RDF.Storage
 
 #endif
 
+        /// <summary>
+        /// Gets a default template for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public abstract void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
 
+        /// <summary>
+        /// Gets all available templates for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public abstract void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
 
         /// <summary>
@@ -1606,11 +1630,21 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        /// <summary>
+        /// Gets a default template for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public override IStoreTemplate GetDefaultTemplate(string id)
         {
             return new SesameMemTemplate(id);
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public override IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
@@ -1630,6 +1664,16 @@ namespace VDS.RDF.Storage
             return templates;
         }
 
+        /// <summary>
+        /// Creates a new Store based on the given template
+        /// </summary>
+        /// <param name="template">Template</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <para>
+        /// Templates must inherit from <see cref="BaseSesameTemplate"/>
+        /// </para>
+        /// </remarks>
         public override bool CreateStore(IStoreTemplate template)
         {
             if (template is BaseSesameTemplate)
@@ -1708,12 +1752,25 @@ namespace VDS.RDF.Storage
             }
         }
 #endif
-
+        /// <summary>
+        /// Gets a default template for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new SesameMemTemplate(id)), state);
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public override void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
@@ -1733,6 +1790,17 @@ namespace VDS.RDF.Storage
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
         }
 
+        /// <summary>
+        /// Creates a new store based on the given template
+        /// </summary>
+        /// <param name="template">Template</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Template must inherit from <see cref="BaseSesameTemplate"/>
+        /// </para>
+        /// </remarks>
         public override void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
         {
             if (template is BaseSesameTemplate)

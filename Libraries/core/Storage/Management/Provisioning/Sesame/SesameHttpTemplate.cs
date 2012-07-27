@@ -49,9 +49,9 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
     /// </para>
     /// <pre>
-    /// @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-    /// @prefix rep: <http://www.openrdf.org/config/repository#>.
-    /// @prefix hr: <http://www.openrdf.org/config/repository/http#>.
+    /// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+    /// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
+    /// @prefix hr: &lt;http://www.openrdf.org/config/repository/http#&gt;.
     /// 
     /// [] a rep:Repository ;
     /// rep:repositoryImpl [
@@ -68,6 +68,10 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     public class SesameHttpTemplate
         : BaseSesameTemplate
     {
+        /// <summary>
+        /// Creates a new Template
+        /// </summary>
+        /// <param name="id">Store ID</param>
         public SesameHttpTemplate(String id)
             : base(id, "Remote Sesame Store", "A remote Sesame store is any Sesame store not residing on this Sesame server accessible via the Sesame HTTP protocol") { }
 
@@ -91,6 +95,10 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
             set;
         }
 
+        /// <summary>
+        /// Gets the template graph
+        /// </summary>
+        /// <returns></returns>
         public override IGraph GetTemplateGraph()
         {
             IGraph g = this.GetBaseTemplateGraph();

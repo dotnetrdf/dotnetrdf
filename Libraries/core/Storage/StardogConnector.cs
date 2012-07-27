@@ -2163,6 +2163,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a database from the server
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void DeleteStore(string storeID, AsyncStorageCallback callback, object state)
         {
             //DELETE /admin/databases/{db}
@@ -2206,6 +2212,12 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a database from the server
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void GetStore(string storeID, AsyncStorageCallback callback, object state)
         {
             if (this._kb.Equals(storeID))

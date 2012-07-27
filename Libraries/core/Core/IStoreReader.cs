@@ -50,7 +50,7 @@ namespace VDS.RDF
         /// <param name="store">Triple Store</param>
         /// <param name="parameters">Parameters indicating where the Reader should read from</param>
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         void Load(ITripleStore store, IStoreParams parameters);
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace VDS.RDF
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Parameters indicating where the Reader should read from</param>
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         void Load(IRdfHandler handler, IStoreParams parameters);
 
         /// <summary>

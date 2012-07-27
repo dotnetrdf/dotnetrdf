@@ -242,6 +242,9 @@ namespace VDS.RDF
         public ThreadSafeTripleCollection(BaseTripleCollection tripleCollection)
             : base(tripleCollection) { }
 
+        /// <summary>
+        /// Enters the write lock
+        /// </summary>
         protected void EnterWriteLock()
         {
 #if !NO_RWLOCK
@@ -251,6 +254,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Exists the write lock
+        /// </summary>
         protected void ExitWriteLock()
         {
 #if !NO_RWLOCK
@@ -260,6 +266,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Enters the read lock
+        /// </summary>
         protected void EnterReadLock()
         {
 #if !NO_RWLOCK
@@ -269,6 +278,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Exists the read lock
+        /// </summary>
         protected void ExitReadLock()
         {
 #if !NO_RWLOCK
@@ -460,6 +472,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all triples with the given Object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
             List<Triple> triples = new List<Triple>();
@@ -475,6 +492,11 @@ namespace VDS.RDF
             return triples;
         }
 
+        /// <summary>
+        /// Gets all triples with the given predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
             List<Triple> triples = new List<Triple>();
@@ -490,6 +512,12 @@ namespace VDS.RDF
             return triples;
         }
 
+        /// <summary>
+        /// Gets all triples with the given predicate object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
             List<Triple> triples = new List<Triple>();
@@ -505,6 +533,11 @@ namespace VDS.RDF
             return triples;
         }
 
+        /// <summary>
+        /// Gets all the triples with the given subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
             List<Triple> triples = new List<Triple>();
@@ -520,6 +553,12 @@ namespace VDS.RDF
             return triples;
         }
 
+        /// <summary>
+        /// Gets all the triples with the given subject and object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
             List<Triple> triples = new List<Triple>();
@@ -535,6 +574,12 @@ namespace VDS.RDF
             return triples;
         }
 
+        /// <summary>
+        /// Gets all triples with the given subject and predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
             List<Triple> triples = new List<Triple>();

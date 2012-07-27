@@ -50,7 +50,7 @@ namespace VDS.RDF
         /// <param name="store">Triple Store</param>
         /// <param name="parameters">Parameters indicating where the Writer should write to</param> 
         /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Writer</exception>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         void Save(ITripleStore store, IStoreParams parameters);
 
         /// <summary>

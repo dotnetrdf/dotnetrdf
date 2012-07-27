@@ -75,7 +75,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
         /// <param name="parameters">Store Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         public void Load(ITripleStore store, IStoreParams parameters)
         {
             if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
@@ -87,7 +87,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="parameters">Store Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         public void Load(IRdfHandler handler, IStoreParams parameters)
         {
             if (handler == null) throw new RdfParseException("Cannot parse RDF Dataset using a null Handler");

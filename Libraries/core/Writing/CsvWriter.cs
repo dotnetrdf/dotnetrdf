@@ -186,7 +186,7 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="store">Triple Store to save</param>
         /// <param name="parameters">A set of <see cref="StreamParams">StreamParams</see></param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", false)]
+        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
         public void Save(ITripleStore store, IStoreParams parameters)
         {
             if (parameters is StreamParams)

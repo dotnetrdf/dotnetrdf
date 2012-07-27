@@ -80,6 +80,7 @@ namespace VDS.RDF
             //Create Event Handlers and attach to relevant events so the wrapper propogates events upwards
             this.TripleAssertedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRetractedHandler = new TripleEventHandler(this.OnTripleRetracted);
+            this.GraphChangedHandler = new GraphEventHandler(this.OnChanged);
             this.GraphClearedHandler = new GraphEventHandler(this.OnCleared);
             this.GraphMergedHandler = new GraphEventHandler(this.OnMerged);
             this.GraphClearRequestedHandler = new CancellableGraphEventHandler(this.OnClearRequested);
@@ -831,6 +832,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event handler to help propogate Graph events from the underlying graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         protected virtual void OnChanged(Object sender, GraphEventArgs args)
         {
             this.RaiseGraphChanged(args.TripleEvent);
@@ -861,6 +867,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event handler to help propogate Graph events from the underlying graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         protected virtual void OnClearRequested(Object sender, CancellableGraphEventArgs args)
         {
             this.RaiseClearRequested(args);
@@ -879,6 +890,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event handler to help propogate Graph events from the underlying graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         protected virtual void OnCleared(Object sender, GraphEventArgs args)
         {
             this.RaiseCleared();
@@ -896,6 +912,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event handler to help propogate Graph events from the underlying graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         protected virtual void OnMergeRequested(Object sender, CancellableGraphEventArgs args)
         {
             this.RaiseMergeRequested(args);
@@ -914,6 +935,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Event handler to help propogate Graph events from the underlying graph
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         protected virtual void OnMerged(Object sender, GraphEventArgs args)
         {
             this.RaiseMerged();
@@ -936,7 +962,7 @@ namespace VDS.RDF
         /// </summary>
         protected void AttachEventHandlers()
         {
-            //TWire up handlers for all the Graph level events
+            //Wire up handlers for all the Graph level events
             this._g.Cleared += this.GraphClearedHandler;
             this._g.Changed += this.GraphChangedHandler;
             this._g.Merged += this.GraphMergedHandler;
