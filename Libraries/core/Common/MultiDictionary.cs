@@ -54,6 +54,9 @@ namespace VDS.Common
         /// Use Scapegoat trees, good when there are a few key collisions and key comparisons are inexpensive.  Provides amortized O(log n) performance but ocassional operations may be O(n)
         /// </summary>
         Scapegoat,
+        /// <summary>
+        /// Use AVL trees, likely gives the best overall performance
+        /// </summary>
         AVL   
     }
 
@@ -74,6 +77,9 @@ namespace VDS.Common
     public class MultiDictionary<TKey, TValue>
         : IDictionary<TKey, TValue>, IEnumerable<TValue>
     {
+        /// <summary>
+        /// Default Mode for Multi-Dictionaries
+        /// </summary>
         public const MultiDictionaryMode DefaultMode = MultiDictionaryMode.AVL;
 
         private Dictionary<int, ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue>> _dict;
@@ -160,6 +166,11 @@ namespace VDS.Common
 
         #region IDictionary<TKey,TValue> Members
 
+        /// <summary>
+        /// Adds a key value pair to the dictionary
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="value">Value</param>
         public void Add(TKey key, TValue value)
         {
             ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
@@ -178,6 +189,11 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Gets whether the dictionary contains the given key
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns></returns>
         public bool ContainsKey(TKey key)
         {
             ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
@@ -192,6 +208,9 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Gets the keys of the dictionary
+        /// </summary>
         public ICollection<TKey> Keys
         {
             get 
@@ -202,6 +221,11 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Removes a key value pair from the dictionary based on the key
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns></returns>
         public bool Remove(TKey key)
         {
             ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
@@ -216,6 +240,12 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Tries to get the value associated with a key
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
             ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
@@ -231,6 +261,12 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Tries to get the actual key instance stored for a given key
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <param name="actualKey">Actual Key</param>
+        /// <returns></returns>
         public bool TryGetKey(TKey key, out TKey actualKey)
         {
             ITree<IBinaryTreeNode<TKey, TValue>, TKey, TValue> tree;
@@ -256,6 +292,9 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Gets the values in the dictionary
+        /// </summary>
         public ICollection<TValue> Values
         {
             get
@@ -266,6 +305,12 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Gets/Sets a Value in the dictionary
+        /// </summary>
+        /// <param name="key">Key</param>
+        /// <returns></returns>
+        /// <exception cref="KeyNotFoundException">Thrown if the given key does not exist in the dictionary</exception>
         public TValue this[TKey key]
         {
             get
@@ -291,16 +336,28 @@ namespace VDS.Common
 
         #region ICollection<KeyValuePair<TKey,TValue>> Members
 
+        /// <summary>
+        /// Adds a key value pair to the dictionary
+        /// </summary>
+        /// <param name="item">Key value pair</param>
         public void Add(KeyValuePair<TKey, TValue> item)
         {
             this.Add(item.Key, item.Value);
         }
 
+        /// <summary>
+        /// Clears the dictionary
+        /// </summary>
         public void Clear()
         {
             this._dict.Clear();
         }
 
+        /// <summary>
+        /// Gets whether the dictionary contains a given key value pair
+        /// </summary>
+        /// <param name="item">Key value pair</param>
+        /// <returns></returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             TValue value;
@@ -316,6 +373,11 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Copies the dictionary into an array
+        /// </summary>
+        /// <param name="array">Array</param>
+        /// <param name="arrayIndex">Index to start copying at</param>
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             int i = arrayIndex;
@@ -329,6 +391,9 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Gets the number of values in the dictionary
+        /// </summary>
         public int Count
         {
             get
@@ -337,6 +402,9 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Returns false because this dictionary is read/write
+        /// </summary>
         public bool IsReadOnly
         {
             get
@@ -345,6 +413,11 @@ namespace VDS.Common
             }
         }
 
+        /// <summary>
+        /// Removes a key value pair from the dictionary
+        /// </summary>
+        /// <param name="item">Key value pair</param>
+        /// <returns></returns>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             return this.Remove(item.Key);
@@ -354,6 +427,10 @@ namespace VDS.Common
 
         #region IEnumerable<KeyValuePair<TKey,TValue>> Members
 
+        /// <summary>
+        /// Gets an enumerator for the key value pairs in the dictionary
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
             return (from t in this._dict.Values
@@ -365,6 +442,10 @@ namespace VDS.Common
 
         #region IEnumerable Members
 
+        /// <summary>
+        /// Gets the enumerator for the dictionary
+        /// </summary>
+        /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
@@ -374,6 +455,10 @@ namespace VDS.Common
 
         #region IEnumerable<TValue> Members
 
+        /// <summary>
+        /// Gets the enumeration of values in the dictionary
+        /// </summary>
+        /// <returns></returns>
         IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator()
         {
             return (from hashKey in this._dict.Keys

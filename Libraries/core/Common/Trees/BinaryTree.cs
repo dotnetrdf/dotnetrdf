@@ -51,6 +51,9 @@ namespace VDS.Common.Trees
         : ITree<TNode, TKey, TValue>
         where TNode : class, IBinaryTreeNode<TKey, TValue>
     {
+        /// <summary>
+        /// Key Comparer
+        /// </summary>
         protected IComparer<TKey> _comparer = Comparer<TKey>.Default;
 
         /// <summary>
@@ -521,6 +524,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the Nodes of the Tree
+        /// </summary>
         public IEnumerable<TNode> Nodes
         {
             get
@@ -536,6 +542,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the Keys of the Tree
+        /// </summary>
         public IEnumerable<TKey> Keys
         {
             get 
@@ -545,6 +554,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the Values of the Tree
+        /// </summary>
         public IEnumerable<TValue> Values
         {
             get 

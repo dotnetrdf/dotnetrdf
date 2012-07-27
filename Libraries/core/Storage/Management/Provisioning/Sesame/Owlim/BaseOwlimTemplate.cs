@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,3 +62,5 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame.Owlim
 
     }
 }
+
+#endif

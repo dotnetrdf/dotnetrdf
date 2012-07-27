@@ -232,11 +232,21 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        /// <summary>
+        /// Gets a default template for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public override IStoreTemplate GetDefaultTemplate(String id)
         {
             return new StoreTemplate(id, "AllegroGraph", "An AllgroGraph store");
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public override IEnumerable<IStoreTemplate> GetAvailableTemplates(String id)
         {
             return this.GetDefaultTemplate(id).AsEnumerable();
@@ -499,11 +509,25 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a default template for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
+        /// <returns></returns>
         public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StoreTemplate(id)), state);
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to callback</param>
+        /// <returns></returns>
         public override void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, new IStoreTemplate[] { new StoreTemplate(id) }), state);

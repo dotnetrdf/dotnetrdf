@@ -70,9 +70,16 @@ namespace VDS.RDF
         private bool _fullIndexing = false;
         private int _count = 0;
 
+        /// <summary>
+        /// Creates a new Tree Indexed triple collection
+        /// </summary>
         public TreeIndexedTripleCollection()
             : this(MultiDictionaryMode.Unbalanced) { }
 
+        /// <summary>
+        /// Creates a new Tree Indexed triple collection
+        /// </summary>
+        /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
         public TreeIndexedTripleCollection(MultiDictionaryMode compoundIndexMode)
         {
             if (Options.FullTripleIndexing)
@@ -84,6 +91,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Indexes a Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
         private void Index(Triple t)
         {
             this.IndexSimple(t.Subject, t, this._s);
@@ -98,6 +109,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper for indexing triples
+        /// </summary>
+        /// <param name="n">Node to index by</param>
+        /// <param name="t">Triple</param>
+        /// <param name="index">Index to insert into</param>
         private void IndexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             List<Triple> ts;
@@ -118,6 +135,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper for indexing triples
+        /// </summary>
+        /// <param name="t">Triple to index by</param>
+        /// <param name="index">Index to insert into</param>
         private void IndexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             List<Triple> ts;
@@ -138,6 +160,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Unindexes a triple
+        /// </summary>
+        /// <param name="t">Triple</param>
         private void Unindex(Triple t)
         {
             this.UnindexSimple(t.Subject, t, this._s);
@@ -152,6 +178,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper for unindexing triples
+        /// </summary>
+        /// <param name="n">Node to index by</param>
+        /// <param name="t">Triple</param>
+        /// <param name="index">Index to remove from</param>
         private void UnindexSimple(INode n, Triple t, MultiDictionary<INode, List<Triple>> index)
         {
             List<Triple> ts;
@@ -161,6 +193,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Helper for unindexing triples
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <param name="index">Index to remove from</param>
         private void UnindexCompound(Triple t, MultiDictionary<Triple, List<Triple>> index)
         {
             List<Triple> ts;
@@ -170,6 +207,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Adds a Triple to the collection
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected internal override bool Add(Triple t)
         {
             if (!this.Contains(t))
@@ -181,11 +223,19 @@ namespace VDS.RDF
             return false;
         }
 
+        /// <summary>
+        /// Checks whether the collection contains a given Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public override bool Contains(Triple t)
         {
             return this._triples.ContainsKey(t);
         }
 
+        /// <summary>
+        /// Gets the count of triples in the collection
+        /// </summary>
         public override int Count
         {
             get 
@@ -195,6 +245,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Deletes a triple from the collection
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected internal override bool Delete(Triple t)
         {
             if (this._triples.Remove(t))
@@ -208,6 +263,11 @@ namespace VDS.RDF
             return false;
         }
 
+        /// <summary>
+        /// Gets the specific instance of a Triple in the collection
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         public override Triple this[Triple t]
         {
             get 
@@ -224,6 +284,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given object
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithObject(INode obj)
         {
             List<Triple> ts;
@@ -237,6 +302,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given predicate
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicate(INode pred)
         {
             List<Triple> ts;
@@ -250,6 +320,11 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given subject
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubject(INode subj)
         {
             List<Triple> ts;
@@ -263,6 +338,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given predicate and object
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithPredicateObject(INode pred, INode obj)
         {
             if (this._fullIndexing)
@@ -283,6 +364,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given subject and object
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectObject(INode subj, INode obj)
         {
             if (this._fullIndexing)
@@ -303,6 +390,12 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets all the triples with a given subject and predicate
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
         public override IEnumerable<Triple> WithSubjectPredicate(INode subj, INode pred)
         {
             if (this._fullIndexing)
@@ -323,6 +416,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Object Nodes
+        /// </summary>
         public override IEnumerable<INode> ObjectNodes
         {
             get 
@@ -331,6 +427,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Predicate Nodes
+        /// </summary>
         public override IEnumerable<INode> PredicateNodes
         {
             get
@@ -339,6 +438,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Subject Nodes
+        /// </summary>
         public override IEnumerable<INode> SubjectNodes
         {
             get 
@@ -347,6 +449,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Disposes of the collection
+        /// </summary>
         public override void Dispose()
         {
             this._triples.Clear();
@@ -362,6 +467,10 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the enumerator for the collection
+        /// </summary>
+        /// <returns></returns>
         public override IEnumerator<Triple> GetEnumerator()
         {
             return this._triples.Keys.GetEnumerator();

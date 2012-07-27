@@ -191,9 +191,9 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Graph with the given Uri
+        /// Gets the Graph with the given URI
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
+        /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
         [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", false)]
         public IGraph Graph(Uri graphUri)
@@ -201,6 +201,11 @@ namespace VDS.RDF
             return this._graphs[graphUri];
         }
 
+        /// <summary>
+        /// Gets the Graph with the given URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public IGraph this[Uri graphUri]
         {
             get

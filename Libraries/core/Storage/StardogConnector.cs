@@ -870,6 +870,10 @@ namespace VDS.RDF.Storage
 
         #region IStorageServer Members
 
+        /// <summary>
+        /// Lists the database available on the server
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> ListStores()
         {
             //GET /admin/databases - application/json
@@ -911,11 +915,21 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a default template for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public IStoreTemplate GetDefaultTemplate(string id)
         {
             return new StardogDiskTemplate(id);
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <returns></returns>
         public IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
@@ -936,11 +950,14 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// 
+        /// Creates a new Store based off the given template
         /// </summary>
-        /// <param name="template"></param>
+        /// <param name="template">Template</param>
         /// <returns></returns>
         /// <remarks>
+        /// <para>
+        /// Templates must inherit from <see cref="BaseStardogTemplate"/>
+        /// </para>
         /// <para>
         /// Uses some code based off on answers <a href="http://stackoverflow.com/questions/566462/upload-files-with-httpwebrequest-multipart-form-data">here</a> to help do the multipart form data request.
         /// </para>
@@ -963,8 +980,14 @@ namespace VDS.RDF.Storage
                     //Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
+#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+#else
+                    //Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
+                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     using (Stream stream = request.GetRequestStream())
@@ -1007,6 +1030,10 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Deletes a Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
         public void DeleteStore(string storeID)
         {
             //DELETE /admin/databases/{db}
@@ -1033,6 +1060,11 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a provider for the Store with the given ID
+        /// </summary>
+        /// <param name="storeID">Store ID</param>
+        /// <returns></returns>
         public IStorageProvider GetStore(string storeID)
         {
             if (this._kb.Equals(storeID)) return this;
@@ -1921,6 +1953,11 @@ namespace VDS.RDF.Storage
 
         #region IAsyncStorageServer Members
 
+        /// <summary>
+        /// Lists all databases available on the server
+        /// </summary>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
         public void ListStores(AsyncStorageCallback callback, object state)
         {
             //GET /admin/databases - application/json
@@ -1978,11 +2015,25 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets a default template for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
         {
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new StardogDiskTemplate(id)), state);
         }
 
+        /// <summary>
+        /// Gets all available templates for creating a new Store
+        /// </summary>
+        /// <param name="id">Store ID</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <returns></returns>
         public void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
         {
             List<IStoreTemplate> templates = new List<IStoreTemplate>();
@@ -2002,6 +2053,17 @@ namespace VDS.RDF.Storage
             callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
         }
 
+        /// <summary>
+        /// Creates a new store based on the given template
+        /// </summary>
+        /// <param name="template">Template</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        /// <remarks>
+        /// <para>
+        /// Template must inherit from <see cref="BaseStardogTemplate"/>
+        /// </para>
+        /// </remarks>
         public void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
         {
             if (template is BaseStardogTemplate)
@@ -2020,8 +2082,14 @@ namespace VDS.RDF.Storage
                     //Create the request and write the JSON
                     HttpWebRequest request = this.CreateAdminRequest("databases", MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                     String boundary = StorageHelper.HttpMultipartBoundary;
+#if !SILVERLIGHT
                     byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
                     byte[] terminatorBytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+#else
+                    //Should be safe to do this for Silverlight as everything here would be in the ASCII range anyway
+                    byte[] boundaryBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "\r\n");
+                    byte[] terminatorBytes = System.Text.Encoding.UTF8.GetBytes("\r\n--" + boundary + "--\r\n");
+#endif
                     request.ContentType = MimeTypesHelper.FormMultipart + "; boundary=" + boundary;
 
                     request.BeginGetRequestStream(r =>

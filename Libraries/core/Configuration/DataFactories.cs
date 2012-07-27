@@ -163,11 +163,11 @@ namespace VDS.RDF.Configuration
                     {
                         if (source.NodeType == NodeType.Uri)
                         {
-                            output.Merge(((ITripleStore)store).Graph(((IUriNode)source).Uri));
+                            output.Merge(((ITripleStore)store)[((IUriNode)source).Uri]);
                         }
                         else if (source.NodeType == NodeType.Literal)
                         {
-                            output.Merge(((ITripleStore)store).Graph(UriFactory.Create(((ILiteralNode)source).Value)));
+                            output.Merge(((ITripleStore)store)[UriFactory.Create(((ILiteralNode)source).Value)]);
                         }
                         else
                         {

@@ -51,7 +51,13 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// </summary>
     public enum SesameNativeIndexMode
     {
+        /// <summary>
+        /// SPOC indexes
+        /// </summary>
         SPOC,
+        /// <summary>
+        /// POSC indexes
+        /// </summary>
         POSC
     }
 
@@ -63,11 +69,11 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
     /// </para>
     /// <pre>
-    /// @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
-    /// @prefix rep: <http://www.openrdf.org/config/repository#>.
-    /// @prefix sr: <http://www.openrdf.org/config/repository/sail#>.
-    /// @prefix sail: <http://www.openrdf.org/config/sail#>.
-    /// @prefix ns: <http://www.openrdf.org/config/sail/native#>.
+    /// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
+    /// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
+    /// @prefix sr: &lt;http://www.openrdf.org/config/repository/sail#&gt;.
+    /// @prefix sail: &lt;http://www.openrdf.org/config/sail#&gt;.
+    /// @prefix ns: &lt;http://www.openrdf.org/config/sail/native#&gt;.
     /// 
     /// [] a rep:Repository ;
     ///    rep:repositoryID "{this.ID}" ;

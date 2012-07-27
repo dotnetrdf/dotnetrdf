@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing.Handlers
                 g.BaseUri = t.GraphUri;
                 this._store.Add(g);
             }
-            IGraph target = this._store.Graph(t.GraphUri);
+            IGraph target = this._store[t.GraphUri];
             target.Assert(t.CopyTriple(target));
             return true;
         }

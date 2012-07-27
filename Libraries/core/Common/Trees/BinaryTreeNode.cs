@@ -41,7 +41,6 @@ using VDS.RDF;
 
 namespace VDS.Common.Trees
 {
-
     /// <summary>
     /// Binary Tree node implementation
     /// </summary>
@@ -53,6 +52,12 @@ namespace VDS.Common.Trees
         private IBinaryTreeNode<TKey, TValue> _left, _right;
         private long _height = 1;
 
+        /// <summary>
+        /// Creates a new Binary Tree Node
+        /// </summary>
+        /// <param name="parent">Parent</param>
+        /// <param name="key">Key</param>
+        /// <param name="value">Value</param>
         public BinaryTreeNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
         {
             this.Parent = parent;
@@ -60,12 +65,18 @@ namespace VDS.Common.Trees
             this.Value = value;
         }
 
+        /// <summary>
+        /// Gets/Sets the Parent Node (if any)
+        /// </summary>
         public IBinaryTreeNode<TKey, TValue> Parent
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets the Left Child (if any)
+        /// </summary>
         public IBinaryTreeNode<TKey, TValue> LeftChild
         {
             get
@@ -80,13 +91,16 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Right Child (if any)
+        /// </summary>
         public IBinaryTreeNode<TKey, TValue> RightChild
         {
             get
             {
                 return this._right;
             }
-            set//
+            set
             {
                 this._right = value;
                 if (this._right != null) this._right.Parent = this;
@@ -94,18 +108,27 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the Key
+        /// </summary>
         public TKey Key
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets the Value
+        /// </summary>
         public TValue Value
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets whether this Node has children
+        /// </summary>
         public bool HasChildren
         {
             get
@@ -114,6 +137,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the number of child nodes present (0, 1 or 2)
+        /// </summary>
         public int ChildCount
         {
             get
@@ -122,6 +148,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the height of the subtree
+        /// </summary>
         public long Height
         {
             get
@@ -134,6 +163,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Recalculates the height of the subtree
+        /// </summary>
         public void RecalculateHeight()
         {
             long newHeight = Math.Max((this._left != null ? this._left.Height : 0), (this._right != null ? this._right.Height : 0)) + 1;
@@ -144,6 +176,9 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets the nodes of the subtree including this node
+        /// </summary>
         public IEnumerable<IBinaryTreeNode<TKey, TValue>> Nodes
         {
             get
@@ -152,6 +187,10 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Gets a String representation of the node
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "Key: " + this.Key.ToString() + " Value: " + this.Value.ToSafeString();

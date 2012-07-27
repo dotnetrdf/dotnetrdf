@@ -94,7 +94,6 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
         /// <summary>
         /// Gets the basic template graph which is a graph with all the required namespaces registered and the ID and label filled in
         /// </summary>
-        /// <param name="n">Node that represents the repository for which additional properties may be stated by the calling code</param>
         /// <returns></returns>
         protected virtual IGraph GetBaseTemplateGraph()
         {

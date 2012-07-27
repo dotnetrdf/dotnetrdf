@@ -47,12 +47,24 @@ namespace VDS.RDF
     public abstract class BaseDemandGraphCollection
         : WrapperGraphCollection
     {
+        /// <summary>
+        /// Creates a new decorator
+        /// </summary>
         public BaseDemandGraphCollection()
             : base() { }
 
+        /// <summary>
+        /// Creates a new decorator over the given graph collection
+        /// </summary>
+        /// <param name="collection">Graph Collection</param>
         public BaseDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
+        /// <summary>
+        /// Checks whether the collection contains a Graph invoking an on-demand load if not present in the underlying collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
             try
@@ -101,6 +113,18 @@ namespace VDS.RDF
         /// </summary>
         public WebDemandGraphCollection() { }
 
+        /// <summary>
+        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
+        /// </summary>
+        /// <param name="collection">Collection to decorate</param>
+        public WebDemandGraphCollection(BaseGraphCollection collection)
+            : base(collection) { }
+
+        /// <summary>
+        /// Tries to load a Graph on demand from a URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
         protected override IGraph LoadOnDemand(Uri graphUri)
         {
             if (graphUri != null)
@@ -132,18 +156,23 @@ namespace VDS.RDF
         : BaseDemandGraphCollection
     {
         /// <summary>
-        /// Creates a new Web Demand Graph Collection which loads Graphs from the Web on demand
+        /// Creates a new Disk Demand Graph Collection which loads Graphs from the Web on demand
         /// </summary>
         public DiskDemandGraphCollection()
             : base() { }
 
         /// <summary>
-        /// Creates 
+        /// Creates a new Disk Demand Graph Collection
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection">Collection to decorate</param>
         public DiskDemandGraphCollection(BaseGraphCollection collection)
             : base(collection) { }
 
+        /// <summary>
+        /// Tries to load a Graph on demand
+        /// </summary>
+        /// <param name="graphUri"></param>
+        /// <returns></returns>
         protected override IGraph LoadOnDemand(Uri graphUri)
         {
             if (graphUri == null) throw new RdfException("The Graph with the given URI does not exist in this collection");

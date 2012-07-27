@@ -208,7 +208,7 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            return this._store.Graph(graphUri);
+            return this._store[graphUri];
         }
 
         /// <summary>

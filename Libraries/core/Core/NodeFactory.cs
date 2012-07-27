@@ -182,7 +182,7 @@ namespace VDS.RDF
             {
                 if (this._store.HasGraph(graphUri))
                 {
-                    return this._store.Graph(graphUri);
+                    return this._store[graphUri];
                 }
                 else
                 {
@@ -218,7 +218,7 @@ namespace VDS.RDF
             if (this._store.HasGraph(graphUri))
             {
                 created = false;
-                return this._store.Graph(graphUri);
+                return this._store[graphUri];
             }
             else
             {

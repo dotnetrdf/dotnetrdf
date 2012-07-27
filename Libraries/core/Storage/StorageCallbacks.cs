@@ -331,12 +331,24 @@ namespace VDS.RDF.Storage
             this.StorageProvider = provider;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="template">Template</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IStoreTemplate template)
             : this(operation, storeID)
         {
             this.Template = template;
         }
 
+        /// <summary>
+        /// Creates new callback arguments
+        /// </summary>
+        /// <param name="operation">Operation</param>
+        /// <param name="storeID">Store ID</param>
+        /// <param name="templates">Templates</param>
         public AsyncStorageCallbackArgs(AsyncStorageOperation operation, String storeID, IEnumerable<IStoreTemplate> templates)
             : this(operation, storeID)
         {
@@ -449,8 +461,14 @@ namespace VDS.RDF.Storage
         /// </summary>
         public AsyncStorageOperation Operation { get; private set; }
 
+        /// <summary>
+        /// Gets the template that was created (if any)
+        /// </summary>
         public IStoreTemplate Template { get; private set; }
 
+        /// <summary>
+        /// Gets the templates that were created (if any)
+        /// </summary>
         public IEnumerable<IStoreTemplate> AvailableTemplates { get; private set; }
     }
 

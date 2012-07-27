@@ -207,7 +207,7 @@ namespace VDS.RDF.Query.Datasets
         /// </remarks>
         protected override IGraph GetGraphInternal(Uri graphUri)
         {
-            return this._store.Graph(graphUri);
+            return this._store[graphUri];
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace VDS.RDF.Query.Datasets
                 g.BaseUri = graphUri;
                 this._store.Add(g);
             }
-            return this._store.Graph(graphUri).Assert(t);
+            return this._store[graphUri].Assert(t);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).ContainsTriple(t);
+                return this._store[graphUri].ContainsTriple(t);
             }
             else
             {
@@ -266,7 +266,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).Triples;
+                return this._store[graphUri].Triples;
             }
             else
             {
@@ -284,7 +284,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithObject(obj);
+                return this._store[graphUri].GetTriplesWithObject(obj);
             }
             else
             {
@@ -302,7 +302,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithPredicate(pred);
+                return this._store[graphUri].GetTriplesWithPredicate(pred);
             }
             else
             {
@@ -321,7 +321,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithPredicateObject(pred, obj);
+                return this._store[graphUri].GetTriplesWithPredicateObject(pred, obj);
             }
             else
             {
@@ -339,7 +339,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithSubject(subj);
+                return this._store[graphUri].GetTriplesWithSubject(subj);
             }
             else
             {
@@ -358,7 +358,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithSubjectObject(subj, obj);
+                return this._store[graphUri].GetTriplesWithSubjectObject(subj, obj);
             }
             else
             {
@@ -377,7 +377,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).GetTriplesWithSubjectPredicate(subj, pred);
+                return this._store[graphUri].GetTriplesWithSubjectPredicate(subj, pred);
             }
             else
             {
@@ -394,7 +394,7 @@ namespace VDS.RDF.Query.Datasets
         {
             if (this._store.HasGraph(graphUri))
             {
-                return this._store.Graph(graphUri).Retract(t);
+                return this._store[graphUri].Retract(t);
             }
             return false;
         }

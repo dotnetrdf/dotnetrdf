@@ -52,15 +52,31 @@ namespace VDS.Common.Trees
         private long _nodeCount = 0, _maxNodeCount = 0;
         private double _logBase = 1d / 0.75d;
 
+        /// <summary>
+        /// Creates a new Scapegoat Tree
+        /// </summary>
         public ScapegoatTree()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Scapegoat Tree
+        /// </summary>
+        /// <param name="comparer">Key Comparer</param>
         public ScapegoatTree(IComparer<TKey> comparer)
             : base(comparer) { }
 
+        /// <summary>
+        /// Creates a new Scapegoat Tree
+        /// </summary>
+        /// <param name="balanceFactor">Balance Factor</param>
         public ScapegoatTree(double balanceFactor)
             : this(null, balanceFactor) { }
 
+        /// <summary>
+        /// Creates a new Scapegoat Tree
+        /// </summary>
+        /// <param name="comparer">Key Comparer</param>
+        /// <param name="balanceFactor">Balance Factor</param>
         public ScapegoatTree(IComparer<TKey> comparer, double balanceFactor)
             : base(comparer)
         {
@@ -69,11 +85,23 @@ namespace VDS.Common.Trees
             this._logBase = 1d / this._balanceFactor;
         }
 
+        /// <summary>
+        /// Creates a new Node
+        /// </summary>
+        /// <param name="parent">Parent</param>
+        /// <param name="key">Key</param>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
         protected override IBinaryTreeNode<TKey, TValue> CreateNode(IBinaryTreeNode<TKey, TValue> parent, TKey key, TValue value)
         {
             return new BinaryTreeNode<TKey, TValue>(parent, key, value);
         }
 
+        /// <summary>
+        /// Applies rebalances after left inserts
+        /// </summary>
+        /// <param name="parent">Parent</param>
+        /// <param name="node">Newly inserted nodes</param>
         protected sealed override void AfterLeftInsert(IBinaryTreeNode<TKey, TValue> parent, IBinaryTreeNode<TKey, TValue> node)
         {
             this._nodeCount++;
@@ -86,6 +114,11 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Applies rebalances after right inserts
+        /// </summary>
+        /// <param name="parent">Parent</param>
+        /// <param name="node">Newly inserted nodes</param>
         protected sealed override void AfterRightInsert(IBinaryTreeNode<TKey, TValue> parent, IBinaryTreeNode<TKey, TValue> node)
         {
             this._nodeCount++;
@@ -98,16 +131,29 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Applies rebalances after inserts
+        /// </summary>
+        /// <param name="node">Newly inserted node</param>
         private void RebalanceAfterInsert(IBinaryTreeNode<TKey, TValue> node)
         {
             this.Rebalance(node, 1);
         }
 
+        /// <summary>
+        /// Applies rebalances after deletes
+        /// </summary>
+        /// <param name="node">Node the delete occurred at</param>
         private void RebalanceAfterDelete(IBinaryTreeNode<TKey, TValue> node)
         {
             this.Rebalance(node, node.GetSize<TKey, TValue>());
         }
 
+        /// <summary>
+        /// Applies rebalances
+        /// </summary>
+        /// <param name="node">Node</param>
+        /// <param name="selfSize">Size of the subtree the node represents</param>
         private void Rebalance(IBinaryTreeNode<TKey, TValue> node, long selfSize)
         {
             //Find the scapegoat
@@ -186,9 +232,15 @@ namespace VDS.Common.Trees
 
             //Reset Max Node code after a rebalance
             this._maxNodeCount = this._nodeCount;
-            //Console.WriteLine("Rebalance Done");
         }
 
+        /// <summary>
+        /// Rebalances a left subtree
+        /// </summary>
+        /// <param name="nodes">Nodes</param>
+        /// <param name="start">Range start</param>
+        /// <param name="end">Range end</param>
+        /// <returns></returns>
         private IBinaryTreeNode<TKey, TValue> RebalanceLeftSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
         {
             //Console.WriteLine("Left(" + start + "," + end + ")");
@@ -221,6 +273,13 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Rebalances a right subtree
+        /// </summary>
+        /// <param name="nodes">Nodes</param>
+        /// <param name="start">Range start</param>
+        /// <param name="end">Range end</param>
+        /// <returns></returns>
         private IBinaryTreeNode<TKey, TValue> RebalanceRightSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
         {
             //Console.WriteLine("Right(" + start + "," + end + ")");
@@ -252,6 +311,10 @@ namespace VDS.Common.Trees
             }
         }
 
+        /// <summary>
+        /// Applies rebalances after deletes
+        /// </summary>
+        /// <param name="node">Node the delete occurred at</param>
         protected sealed override void AfterDelete(IBinaryTreeNode<TKey, TValue> node)
         {
             this._nodeCount--;

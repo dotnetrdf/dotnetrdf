@@ -204,12 +204,22 @@ namespace VDS.RDF
         private ReaderWriterLockSlim _lockManager = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 #endif
 
+        /// <summary>
+        /// Creates a new Thread Safe decorator around the default <see cref="GraphCollection"/>
+        /// </summary>
         public ThreadSafeGraphCollection()
             : base(new GraphCollection()) { }
 
+        /// <summary>
+        /// Creates a new Thread Safe decorator around the supplied graph collection
+        /// </summary>
+        /// <param name="graphCollection">Graph Collection</param>
         public ThreadSafeGraphCollection(BaseGraphCollection graphCollection)
             : base(graphCollection) { }
 
+        /// <summary>
+        /// Enters the write lock
+        /// </summary>
         protected void EnterWriteLock()
         {
 #if !NO_RWLOCK
@@ -219,6 +229,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Exits the write lock
+        /// </summary>
         protected void ExitWriteLock()
         {
 #if !NO_RWLOCK
@@ -228,6 +241,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Enters the read lock
+        /// </summary>
         protected void EnterReadLock()
         {
 #if !NO_RWLOCK
@@ -237,6 +253,9 @@ namespace VDS.RDF
 #endif
         }
 
+        /// <summary>
+        /// Exits the read lock
+        /// </summary>
         protected void ExitReadLock()
         {
 #if !NO_RWLOCK

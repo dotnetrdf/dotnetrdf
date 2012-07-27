@@ -62,9 +62,17 @@ namespace VDS.RDF
         public ThreadSafeGraph()
             : this(new ThreadSafeTripleCollection(new IndexedTripleCollection())) { }
 
+        /// <summary>
+        /// Creates a new Thread Safe graph using the given Triple Collection
+        /// </summary>
+        /// <param name="tripleCollection">Triple Collection</param>
         public ThreadSafeGraph(BaseTripleCollection tripleCollection)
             : base(new ThreadSafeTripleCollection(tripleCollection)) { }
 
+        /// <summary>
+        /// Creates a new Thread Safe graph using a Thread Safe triple collection
+        /// </summary>
+        /// <param name="tripleCollection">Thread Safe triple collection</param>
         public ThreadSafeGraph(ThreadSafeTripleCollection tripleCollection)
             : base(tripleCollection) { }
 

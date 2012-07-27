@@ -40,8 +40,18 @@ using System.Text;
 
 namespace VDS.Common.Trees
 {
+    /// <summary>
+    /// Useful extensions for working with Trees
+    /// </summary>
     public static class TreeExtensions
     {
+        /// <summary>
+        /// Gets the depth of the given node in the Tree
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
         public static long GetDepth<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             long depth = 0;
@@ -53,6 +63,13 @@ namespace VDS.Common.Trees
             return depth;
         }
 
+        /// <summary>
+        /// Gets the Height of the given node in the Tree
+        /// </summary>
+        /// <typeparam name="TKey">Key</typeparam>
+        /// <typeparam name="TValue">Value</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
         public static long GetHeight<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             if (node == null) return 0;
@@ -60,6 +77,13 @@ namespace VDS.Common.Trees
             //return 1 + Math.Max(node.LeftChild.GetHeight(), node.RightChild.GetHeight());
         }
 
+        /// <summary>
+        /// Gets the balance of the given node in the Tree
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
         public static long GetBalance<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             if (node == null) return 0;
@@ -68,6 +92,13 @@ namespace VDS.Common.Trees
             return right - left;
         }
 
+        /// <summary>
+        /// Gets the sibling of a binary tree node (if any)
+        /// </summary>
+        /// <typeparam name="TKey">Key Type</typeparam>
+        /// <typeparam name="TValue">Value Type</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
         public static IBinaryTreeNode<TKey, TValue> GetSibling<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             if (node.Parent == null) return null;
@@ -75,6 +106,13 @@ namespace VDS.Common.Trees
             return (ReferenceEquals(node, parent.LeftChild) ? parent.RightChild : parent.LeftChild);
         }
 
+        /// <summary>
+        /// Gets the size of the subtree rooted at the given node
+        /// </summary>
+        /// <typeparam name="TKey">Key</typeparam>
+        /// <typeparam name="TValue">Valye</typeparam>
+        /// <param name="node">Node</param>
+        /// <returns></returns>
         public static long GetSize<TKey, TValue>(this IBinaryTreeNode<TKey, TValue> node)
         {
             if (node == null) return 0;

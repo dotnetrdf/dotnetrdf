@@ -942,7 +942,7 @@ namespace VDS.RDF.Query.Datasets
                     }
                     else if (this._modifiableGraphs.HasGraph(graphUri))
                     {
-                        return this._modifiableGraphs.Graph(graphUri);
+                        return this._modifiableGraphs[graphUri];
                     }
                     else
                     {
@@ -951,7 +951,7 @@ namespace VDS.RDF.Query.Datasets
                 }
                 else if (this._modifiableGraphs.HasGraph(graphUri))
                 {
-                    return this._modifiableGraphs.Graph(graphUri);
+                    return this._modifiableGraphs[graphUri];
                 }
                 else
                 {
@@ -976,7 +976,7 @@ namespace VDS.RDF.Query.Datasets
                 }
                 graphUri = current.BaseUri;
             }
-            ITransactionalGraph existing = (ITransactionalGraph)this._modifiableGraphs.Graph(graphUri);
+            ITransactionalGraph existing = (ITransactionalGraph)this._modifiableGraphs[graphUri];
             this._actions.Add(new GraphPersistenceAction(existing, GraphPersistenceActionType.Modified));
             return existing;
         }
