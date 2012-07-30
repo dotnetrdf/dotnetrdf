@@ -99,10 +99,6 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\data.sql\dotNetRDF.Data.Sql.csproj">
-      <Project>{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}</Project>
-      <Name>dotNetRDF.Data.Sql</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj">
       <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
       <Name>dotNetRDF.Data.Virtuoso</Name>

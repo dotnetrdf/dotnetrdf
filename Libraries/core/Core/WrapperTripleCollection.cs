@@ -52,10 +52,10 @@ namespace VDS.RDF
         protected readonly BaseTripleCollection _triples;
 
         /// <summary>
-        /// Creates a new decorator over the default <see cref="IndexedTripleCollection"/>
+        /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>
         /// </summary>
         public WrapperTripleCollection()
-            : this(new IndexedTripleCollection()) { }
+            : this(new TreeIndexedTripleCollection()) { }
 
         /// <summary>
         /// Creates a new decorator around the given triple collection

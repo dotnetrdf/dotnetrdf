@@ -52,7 +52,7 @@ namespace VDS.RDF.Storage
     /// <summary>
     /// Possible results of a Talis Update Operation
     /// </summary>
-    [Obsolete("Talis recently announced their intention to discontinue the Talis Platform in the near future, therefore Talis related classes will be removed in future releases", false)]
+    [Obsolete("Talis recently announced their intention to discontinue the Talis Platform in the near future, therefore Talis related classes will be removed in future releases", true)]
     public enum TalisUpdateResult
     {
         /// <summary>
@@ -83,7 +83,7 @@ namespace VDS.RDF.Storage
     /// <remarks>
     /// The Talis platform automatically converts all Blank Nodes input into it into Uri nodes.  This means that data saved to Talis and then retrieved may lose it's Blank Nodes or have them assigned different IDs (different IDs is perfectly acceptable behaviour for any RDF based application since Blank Node IDs are only ever scoped to a given serialization).
     /// </remarks>
-    [Obsolete("Talis recently announced their intention to discontinue the Talis Platform in the near future, therefore Talis related classes will be removed in future releases", false)]
+    [Obsolete("Talis recently announced their intention to discontinue the Talis Platform in the near future, therefore Talis related classes will be removed in future releases", true)]
     public class TalisPlatformConnector
         : BaseHttpConnector, IQueryableStorage, IQueryableGenericIOManager, IConfigurationSerializable
     {

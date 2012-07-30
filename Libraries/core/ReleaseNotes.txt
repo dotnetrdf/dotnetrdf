@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.7.1 Beta
+Version 0.7.2 Beta
 
 dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -55,7 +55,6 @@ There are two data providers found under the Data directory that can be used to 
 with the dotNetRDF API.  These are as follows:
 
 - OpenLink Virtuoso -> dotNetRDF.Data.Virtuoso.dll
-- Microsoft SQL Server and SQL Azure -> dotNetRDF.Data.Sql.dll (This library is deprecated and not recommended for new development)
 
 There is a single query plugin found under the Query directory that provides full text query support using Lucene.Net:
 
@@ -69,7 +68,7 @@ Dependencies for each library can be found in the directory with the build.
 Requirements
 ------------
 
-To use this library you will need .Net Framework 3.5 SP1 and you may need to install/have available the 
+To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
 following third party libraries:
 - JSON.Net 4.0r8 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
@@ -78,7 +77,7 @@ The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.Net35.dll) are includ
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
 
-To use either the Data.Sql or Data.Virtuoso library you must include the Core library and its dependencies
+To use either the any of the other libraries you must include the Core library and its dependencies
 
 If you wish to use the optional Data.Virtuoso library that is also included you will need the additional
 OpenLink Virtuoso ADO.Net provider which can be found in the folder with the Data.Virtuoso library
@@ -154,6 +153,8 @@ Release History
 4/7/2012 - Release of Version 0.7.0 Beta (Build 0.7.0.2246)
 
 27/7/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.2329)
+
+?/?/2012 - Release of Version 0.7.2 Beta (Build 0.7.2.?)
 
 Acknowledgements
 ----------------

@@ -371,21 +371,6 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-                case Talis:
-                    //Get the Store Name and User credentials
-                    store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
-                    if (store == null) return false;
-                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
-                    if (user != null && pwd != null)
-                    {
-                        manager = new TalisPlatformConnector(store, user, pwd);
-                    }
-                    else
-                    {
-                        manager = new TalisPlatformConnector(store);
-                    }
-                    break;
-
 #endif
             }
 

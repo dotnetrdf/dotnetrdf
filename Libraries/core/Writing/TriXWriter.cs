@@ -70,37 +70,12 @@ namespace VDS.RDF.Writing
         /// Saves a Store in TriX format
         /// </summary>
         /// <param name="store">Store to save</param>
-        /// <param name="parameters">Parameters indicating a Stream to write to</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Save(ITripleStore store, IStoreParams parameters)
-        {
-            //Try and get the TextWriter to output to
-            if (parameters is StreamParams)
-            {
-                this.Save(store, ((StreamParams)parameters).StreamWriter);
-            } 
-            else if (parameters is TextWriterParams)
-            {
-                this.Save(store, ((TextWriterParams)parameters).TextWriter);
-            }
-            else
-            {
-                throw new RdfStorageException("Parameters for the TriXWriter must be of the type StreamParams/TextWriterParams");
-            }
-        }
-
-
-        /// <summary>
-        /// Saves a Store in TriX format
-        /// </summary>
-        /// <param name="store">Store to save</param>
         /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
-
 
         /// <summary>
         /// Saves a Store in TriX format

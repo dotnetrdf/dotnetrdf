@@ -73,27 +73,6 @@ namespace VDS.RDF.Writing
         /// Saves a RDF Dataset as GZipped output
         /// </summary>
         /// <param name="store">Store to save</param>
-        /// <param name="parameters">Storage Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Save(ITripleStore store, IStoreParams parameters)
-        {
-            if (store == null) throw new RdfOutputException("Cannot output a null Triple Store");
-            if (parameters == null) throw new RdfOutputException("Cannot output using null parameters");
-
-            if (parameters is StreamParams)
-            {
-                this.Save(store, ((StreamParams)parameters).StreamWriter);
-            }
-            else
-            {
-                throw new RdfOutputException("GZip Dataset Writers can only write to StreamParams instances");
-            }
-        }
-
-        /// <summary>
-        /// Saves a RDF Dataset as GZipped output
-        /// </summary>
-        /// <param name="store">Store to save</param>
         /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {

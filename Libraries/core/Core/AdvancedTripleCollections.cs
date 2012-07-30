@@ -51,7 +51,7 @@ namespace VDS.RDF
     /// <strong>Warning: </strong> This is an experimental implementation and may be refined/removed in future releases, do not rely upon this!
     /// </para>
     /// </remarks>
-    [Obsolete("This implementation is obsolete and will be removed in future releases", false)]
+    [Obsolete("This implementation is obsolete and will be removed in future releases", true)]
     public class LazyIndexedTripleCollection
         : BaseTripleCollection, IEnumerable<Triple>
     {
@@ -476,7 +476,7 @@ namespace VDS.RDF
     /// <strong>Warning: </strong> This is an experimental implementation and may be refined/removed in future releases, do not rely upon this!
     /// </para>
     /// </remarks>
-    [Obsolete("This implementation is obsolete and will be removed in future releases", false)]
+    [Obsolete("This implementation is obsolete and will be removed in future releases", true)]
     public class ListIndexedTripleCollection 
         : BaseTripleCollection, IEnumerable<Triple>
     {
@@ -819,7 +819,7 @@ namespace VDS.RDF
     /// <summary>
     /// An indexed Triple Collection which uses Tries for the indexes
     /// </summary>
-    [Obsolete("This implementation is obsolete and will be removed in future releases", false)]
+    [Obsolete("This implementation is obsolete and will be removed in future releases", true)]
     public class TrieIndexedTripleCollection
         : BaseTripleCollection, IEnumerable<Triple>
     {

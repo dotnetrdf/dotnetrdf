@@ -11,54 +11,21 @@ See Acknowledgements.txt for full list of developers and contributors
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.7.1 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.7.2 release of dotNetRDF
 
 Added
-- Core API
- - New Indexing data structures
- - New decorator classes to make it simpler to wrap extra functionality around existing implementations:
-  - WrapperGraph
-  - WrapperGraphCollection
-  - WrapperTripleCollection
-  - WrapperTripleStore
+
 
 Changed
 - Bug Fixes
- - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi
- - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
- - Fixed a bug with GraphDiff and null reference handling
-- Core API
- - IGraph changes:
-  - Changes definition of Assert() and Retract() to return booleans
-  - Removes unecessary overloads of Assert() and Retract()
- - ITripleStore changes:
-  - Changes definition of  Add() and Remove() to return booleans
-  - Adds indexer for accessing graphs and obsoletes the Graph() method in favour of this
- - Triple Collection changes:
-  - BaseTripleCollection now defines Add() and Delete() as returning booleans
-  - Refactored internals of TripleCollection to use our new MultiDictionary data structure
-  - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight
- - Graph Collection changes:
-  - Refactored internals of GraphCollection to use our new MultiDictionary data structure
-  - ThreadSafeGraphCollection is now a decorator that can be applied to any BaseGraphCollection instance, also made it available on Silverlight
-  - DiskDemandGraphCollection and WebDemandGraphCollection are now both decorators and so can be combined on top of each other as desired
-- Query
- - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
-- Storage API
- - Refactored IStorageServer API
- - Added support for creating stores with Sesame - thanks to Jeen Broekstra
- - Standardized error handling across Storage Providers as far as possible - thanks to Ron Michael Zettlemoyer
- - Stardog
-  - Avoid any transaction if calling UpdateGraph() without any updates - thanks to Ron Michael Zettlemoyer
 
 Removed
-- Marked the TalisPlatformConnector as obsolete but usable
-- Marked the contents of the Data.Sql library as obsolete unusable
-- Removed the obsolete BackgroundPersistedGraph class
-- Marked the now superseded IndexedTripleCollection and it's descendants as obsolete usable
-- Marked the obsoleted ThreadSafeIndexedTripleCollection as obsolete unusable
-- Marked IStoreParams as obsolete unsuable
-- Marked the old overloads of IStoreReader and IStoreWriter as obsolete unusable
+- Marked the TalisPlatformConnector as obsolete unusable
+- Removed the obsolete Data.Sql library from the distribution
+- Marked the now superseded IndexedTripleCollection and it's descendants as obsolete unusable
+- Removed the obsolete ThreadSafeIndexedTripleCollection
+- Removed IStoreParams
+- Removed the old overloads of IStoreReader and IStoreWriter
    
 
 

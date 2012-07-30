@@ -460,7 +460,7 @@ namespace VDS.RDF.Query
         /// </remarks>
         public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
         {
-            IndexedTripleCollection tripleCollection = new IndexedTripleCollection();
+            BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection();
 
             foreach (SparqlResult r in this.Results)
             {

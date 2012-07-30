@@ -150,31 +150,6 @@ namespace VDS.RDF.Writing
         /// Saves a Store in TriG (Turtle with Named Graphs) format
         /// </summary>
         /// <param name="store">Store to save</param>
-        /// <param name="parameters">Parameters indicating a Stream to write to</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Save(ITripleStore store, IStoreParams parameters)
-        {
-            //Try and determine the TextWriter to output to
-            if (parameters is StreamParams)
-            {
-                //Create a new Writer Context
-                ((StreamParams)parameters).Encoding = new UTF8Encoding(Options.UseBomForUtf8);
-                this.Save(store, ((StreamParams)parameters).StreamWriter);
-            } 
-            else if (parameters is TextWriterParams)
-            {
-                this.Save(store, ((TextWriterParams)parameters).TextWriter);
-            }
-            else
-            {
-                throw new RdfStorageException("Parameters for the TriGWriter must be of the type StreamParams/TextWriterParams");
-            }
-        }
-
-        /// <summary>
-        /// Saves a Store in TriG (Turtle with Named Graphs) format
-        /// </summary>
-        /// <param name="store">Store to save</param>
         /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {

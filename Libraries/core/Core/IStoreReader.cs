@@ -48,24 +48,6 @@ namespace VDS.RDF
         /// Loads a RDF dataset into a Triple Store
         /// </summary>
         /// <param name="store">Triple Store</param>
-        /// <param name="parameters">Parameters indicating where the Reader should read from</param>
-        /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        void Load(ITripleStore store, IStoreParams parameters);
-
-        /// <summary>
-        /// Loads a RDF dataset using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="parameters">Parameters indicating where the Reader should read from</param>
-        /// <exception cref="RdfStorageException">May be thrown if the Parameters are not valid for this Reader</exception>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        void Load(IRdfHandler handler, IStoreParams parameters);
-
-        /// <summary>
-        /// Loads a RDF dataset into a Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store</param>
         /// <param name="filename">File to load from</param>
         void Load(ITripleStore store, String filename);
 

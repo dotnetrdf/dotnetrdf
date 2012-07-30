@@ -11,17 +11,15 @@ This package contains the Core Library for the following .Net profiles:
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
 
-It also contains the following Data plugins for our SQL backend and OpenLink Virtuoso, builds
+It also contains the Data plugins for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
 - .Net 4.0
 - .Net 4.0 Client Profile
 - .Net 3.5
 - .Net 3.5 Client Profile
 
-Note that our SQL backend is obsolete and should not be used for any new development.  Many
-alternative options are provided in the Core library and by the Virtuoso backend.
 
-And it contains the a Query plugin for Full Text indexing support, builds are provided
+And it contains a Query plugin for Full Text indexing support, builds are provided
 for the following .Net profiles:
 - .Net 4.0
 - .Net 4.0 Client Profile

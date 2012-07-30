@@ -61,7 +61,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GUI Libraries", "GUI Librar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{99E6AA95-7905-4997-A593-F21E11BDD2DB}"
 	ProjectSection(SolutionItems) = preProject
-		Build\nuget\Data.Sql\dotNetRDF.Data.Sql.nuspec = Build\nuget\Data.Sql\dotNetRDF.Data.Sql.nuspec
 		Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec = Build\nuget\Data.Virtuoso\dotNetRDF.Data.Virtuoso.nuspec
 		Build\nuget\Core\dotNetRDF.nuspec = Build\nuget\Core\dotNetRDF.nuspec
 		Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec = Build\nuget\Query.FullText\dotNetRDF.Query.FullText.nuspec
@@ -112,12 +111,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Clien
 		Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template = Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{646D9EC4-D09D-4FF5-8798-FB7E16BF21B7}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\data.sql.net35\Properties\AssemblyInfo.cs = Libraries\data.sql.net35\Properties\AssemblyInfo.cs
-		Libraries\data.sql.net35\dotNetRDF.Data.Sql.Net35.csproj.template = Libraries\data.sql.net35\dotNetRDF.Data.Sql.Net35.csproj.template
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA} = {DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}
@@ -153,8 +146,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfOptStats", "Utilities\rd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphBenchmarker", "Testing\GraphBenchmarker\GraphBenchmarker.csproj", "{456524B8-7F2A-45B9-9642-5CD4737D051F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Sql", "Libraries\data.sql\dotNetRDF.Data.Sql.csproj", "{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso", "Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj", "{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfEditor.Wpf", "Utilities\rdfEditor.Wpf\rdfEditor.Wpf.csproj", "{F8006AE8-6107-4297-9E19-C2E55303FCC6}"
@@ -185,21 +176,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B4901633-1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data.Virtuoso", "Data.Virtuoso", "{0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data.Sql", "Data.Sql", "{0EFAE503-2D81-4934-9938-28A48DE45504}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query.FullText", "Query.FullText", "{43561F44-F82E-4C58-9BF2-D36858EBE857}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{55778C86-2FF0-443B-8BFD-243C4EE7D14A}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\data.sql.clientprofile\Properties\AssemblyInfo.cs = Libraries\data.sql.clientprofile\Properties\AssemblyInfo.cs
-		Libraries\data.sql.clientprofile\dotNetRDF.Data.Sql.ClientProfile.csproj.template = Libraries\data.sql.clientprofile\dotNetRDF.Data.Sql.ClientProfile.csproj.template
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{929BE3C5-9103-443B-A51A-A3607A2DBBB2}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\data.sql.clientprofile.net35\Properties\AssemblyInfo.cs = Libraries\data.sql.clientprofile.net35\Properties\AssemblyInfo.cs
-		Libraries\data.sql.clientprofile.net35\dotNetRDF.Data.Sql.ClientProfile.Net35.csproj.template = Libraries\data.sql.clientprofile.net35\dotNetRDF.Data.Sql.ClientProfile.Net35.csproj.template
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{E7CCB195-F53E-474A-8DC5-E6C38963D0B9}"
 	ProjectSection(SolutionItems) = preProject
@@ -232,6 +209,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tutorials", "Samples\Tutorials\Tutorials.csproj", "{9BC05484-06DA-42E0-A36E-BDCBACACE4A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager.Core", "Libraries\storemanager.core\StoreManager.Core.csproj", "{396210A4-AEDA-4352-8458-1788083E336F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfDBStudio", "Utilities\rdfDBStudio\rdfDBStudio.csproj", "{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -436,18 +415,6 @@ Global
 		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|x64.ActiveCfg = Release|Any CPU
 		{456524B8-7F2A-45B9-9642-5CD4737D051F}.Release|x86.ActiveCfg = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|x64.ActiveCfg = Release|Any CPU
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}.Release|x86.ActiveCfg = Release|Any CPU
 		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -614,6 +581,18 @@ Global
 		{396210A4-AEDA-4352-8458-1788083E336F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{396210A4-AEDA-4352-8458-1788083E336F}.Release|x64.ActiveCfg = Release|Any CPU
 		{396210A4-AEDA-4352-8458-1788083E336F}.Release|x86.ActiveCfg = Release|Any CPU
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|x64.ActiveCfg = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|x86.ActiveCfg = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Debug|x86.Build.0 = Debug|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|Any CPU.ActiveCfg = Release|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|Mixed Platforms.Build.0 = Release|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|x64.ActiveCfg = Release|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|x86.ActiveCfg = Release|x86
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -656,7 +635,7 @@ Global
 		{F8006AE8-6107-4297-9E19-C2E55303FCC6} = {AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D}
 		{7DF4C47C-6CB5-4EC4-ABE1-956A74CB9D17} = {AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D}
 		{BB0C0B98-00F9-4244-87DF-B4B808FF69F1} = {AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D}
-		{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661} = {3B5E2EA1-394B-4137-9F62-062F0163CD9D}
+		{03E26EC4-4663-41FB-8467-4BEDBB5A99E9} = {AC3DD973-B41A-4C1F-BF02-D6BE3214FC2D}
 		{9088435D-24F9-4D53-BE71-9A9BFBAA34EE} = {3B5E2EA1-394B-4137-9F62-062F0163CD9D}
 		{0D1B8423-44F6-4ACE-8055-58D66E574F9D} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
 		{D381CE62-3B23-4BFE-847B-912F7992075B} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
@@ -664,7 +643,6 @@ Global
 		{396210A4-AEDA-4352-8458-1788083E336F} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
 		{B4901633-122A-44ED-AC2C-F033328C4A8D} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{43561F44-F82E-4C58-9BF2-D36858EBE857} = {1456B530-FB7E-41E2-9831-80691A61B85A}
-		{0EFAE503-2D81-4934-9938-28A48DE45504} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5} = {1456B530-FB7E-41E2-9831-80691A61B85A}
 		{158759E3-877B-41FD-BEE9-87D182A8FCD4} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
 		{CCF5858F-3452-4EFB-849B-5928008EDFF9} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
@@ -675,9 +653,6 @@ Global
 		{954B6783-7ECC-4FC0-9022-76A618D6F5B8} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
 		{DED37B23-101C-42B4-B7FE-919E4CE41AFE} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
 		{BCDF787B-D49E-4511-A036-1F49CCCEC279} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
-		{646D9EC4-D09D-4FF5-8798-FB7E16BF21B7} = {0EFAE503-2D81-4934-9938-28A48DE45504}
-		{55778C86-2FF0-443B-8BFD-243C4EE7D14A} = {0EFAE503-2D81-4934-9938-28A48DE45504}
-		{929BE3C5-9103-443B-A51A-A3607A2DBBB2} = {0EFAE503-2D81-4934-9938-28A48DE45504}
 		{1702A1F1-6A2C-447B-AB9A-756E71C3BF37} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}
 		{E7CCB195-F53E-474A-8DC5-E6C38963D0B9} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}
 		{5926AC3F-AA16-45A0-AD18-590C28BB91F8} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}

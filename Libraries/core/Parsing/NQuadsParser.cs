@@ -87,55 +87,6 @@ namespace VDS.RDF.Parsing
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
-        /// <param name="parameters">Parameters indicating the Stream to read from</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Load(ITripleStore store, IStoreParams parameters)
-        {
-            if (store == null) throw new RdfParseException("Cannot read a RDF dataset into a null Store");
-
-            this.Load(new StoreHandler(store), parameters);
-        }
-
-        /// <summary>
-        /// Loads a RDF Dataset from the NQuads input using a RDF Handler
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="parameters">Parameters indicating the Stream to read from</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Load(IRdfHandler handler, IStoreParams parameters)
-        {
-            if (handler == null) throw new ArgumentNullException("handler", "Cannot parse an RDF Dataset using a null RDF Handler");
-            if (parameters == null) throw new ArgumentNullException("parameters", "Cannot parse an RDF Dataset using null Parameters");
-
-            //Try and get the Input from the parameters
-            if (parameters is StreamParams)
-            {
-                //Get Input Stream
-                TextReader input = ((StreamParams)parameters).StreamReader;
-
-#if !SILVERLIGHT
-                //Issue a Warning if the Encoding of the Stream is not ASCII
-                if (!((StreamReader)input).CurrentEncoding.Equals(Encoding.ASCII))
-                {
-                    this.RaiseWarning("Expected Input Stream to be encoded as ASCII but got a Stream encoded as " + ((StreamReader)input).CurrentEncoding.EncodingName + " - Please be aware that parsing errors may occur as a result");
-                }
-#endif
-                this.Load(handler, input);
-            } 
-            else if (parameters is TextReaderParams)
-            {
-                this.Load(handler, ((TextReaderParams)parameters).TextReader);
-            }
-            else
-            {
-                throw new RdfStorageException("Parameters for the NQuadsParser must be of the type StreamParams/TextReaderParams");
-            }
-        }
-
-        /// <summary>
-        /// Loads a RDF Dataset from the NQuads input into the given Triple Store
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
         /// <param name="filename">File to load from</param>
         public void Load(ITripleStore store, String filename)
         {

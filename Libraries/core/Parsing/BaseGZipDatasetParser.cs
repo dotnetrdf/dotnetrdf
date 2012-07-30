@@ -74,39 +74,6 @@ namespace VDS.RDF.Parsing
         /// Loads a RDF dataset from GZipped input
         /// </summary>
         /// <param name="store">Triple Store to load into</param>
-        /// <param name="parameters">Store Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Load(ITripleStore store, IStoreParams parameters)
-        {
-            if (store == null) throw new RdfParseException("Cannot parse an RDF Dataset into a null store");
-            this.Load(new StoreHandler(store), parameters);
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input
-        /// </summary>
-        /// <param name="handler">RDF Handler to use</param>
-        /// <param name="parameters">Store Parameters</param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Load(IRdfHandler handler, IStoreParams parameters)
-        {
-            if (handler == null) throw new RdfParseException("Cannot parse RDF Dataset using a null Handler");
-            if (parameters == null) throw new RdfParseException("Cannot parse RDF Dataset from null parameters");
-
-            if (parameters is StreamParams)
-            {
-                this.Load(handler, ((StreamParams)parameters).StreamReader);
-            }
-            else
-            {
-                throw new RdfParseException("GZip Dataset Parsers can only read from StreamParams instances");
-            }
-        }
-
-        /// <summary>
-        /// Loads a RDF dataset from GZipped input
-        /// </summary>
-        /// <param name="store">Triple Store to load into</param>
         /// <param name="filename">File to load from</param>
         public void Load(ITripleStore store, String filename)
         {

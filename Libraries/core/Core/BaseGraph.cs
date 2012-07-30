@@ -107,10 +107,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Base Graph which uses the default <see cref="IndexedTripleCollection">IndexedTripleCollection</see> as the Triple Collection
+        /// Creates a new Base Graph which uses the default <see cref="TreeIndexedTripleCollection" /> as the Triple Collection
         /// </summary>
         protected BaseGraph()
-            : this(new IndexedTripleCollection()) { }
+            : this(new TreeIndexedTripleCollection()) { }
 
 #if !SILVERLIGHT
         /// <summary>

@@ -166,28 +166,6 @@ namespace VDS.RDF.Writing
         /// Saves a Triple Store to TSV format
         /// </summary>
         /// <param name="store">Triple Store to save</param>
-        /// <param name="parameters">A set of <see cref="StreamParams">StreamParams</see></param>
-        [Obsolete("This overload is considered obsolete, please use alternative overloads", true)]
-        public void Save(ITripleStore store, IStoreParams parameters)
-        {
-            if (parameters is StreamParams)
-            {
-                this.Save(store, ((StreamParams)parameters).StreamWriter);
-            } 
-            else if (parameters is TextWriterParams)
-            {
-                this.Save(store, ((TextWriterParams)parameters).TextWriter);
-            }
-            else
-            {
-                throw new RdfStorageException("Parameters for the TsvStoreWriter must be of the type StreamParams/TextWriterParams");
-            }
-        }
-
-        /// <summary>
-        /// Saves a Triple Store to TSV format
-        /// </summary>
-        /// <param name="store">Triple Store to save</param>
         /// <param name="filename">File to save to</param>
         public void Save(ITripleStore store, String filename)
         {
