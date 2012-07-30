@@ -39,6 +39,7 @@ using System.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
@@ -65,6 +66,14 @@ namespace VDS.RDF.Storage
         }
 
         #region IStorageProvider Members
+
+        public virtual IStorageServer ParentServer
+        {
+            get
+            {
+                return this._manager.ParentServer;
+            }
+        }
 
         /// <summary>
         /// Loads a Graph from the underlying Store

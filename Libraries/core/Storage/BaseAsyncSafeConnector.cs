@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
@@ -44,6 +45,22 @@ namespace VDS.RDF.Storage
     public abstract class BaseAsyncSafeConnector
         : IStorageProvider, IAsyncStorageProvider
     {
+        public virtual IStorageServer ParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public virtual IAsyncStorageServer AsyncParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Loads a Graph from the Store
         /// </summary>

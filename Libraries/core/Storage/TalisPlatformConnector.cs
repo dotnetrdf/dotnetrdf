@@ -44,6 +44,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Management;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Storage
@@ -85,7 +86,7 @@ namespace VDS.RDF.Storage
     /// </remarks>
     [Obsolete("Talis recently announced their intention to discontinue the Talis Platform in the near future, therefore Talis related classes will be removed in future releases", true)]
     public class TalisPlatformConnector
-        : BaseHttpConnector, IQueryableStorage, IQueryableGenericIOManager, IConfigurationSerializable
+        : BaseHttpConnector, IQueryableStorage, IConfigurationSerializable
     {
         private String _storename, _username, _password;
         private String _baseuri;
@@ -170,6 +171,14 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+
+        public IStorageServer ParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         #region Describe
 

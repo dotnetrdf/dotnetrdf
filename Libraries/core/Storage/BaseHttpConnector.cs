@@ -41,15 +41,16 @@ using System.Threading;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
     /// <summary>
-    /// Abstract Base Class for HTTP based <see cref="IStorageProvider">IStorageProvider</see> implementations
+    /// Abstract Base Class for HTTP based Storage API implementations
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Does not actually implement the interface rather it provides common functionality around HTTP Proxying
+    /// Does not actually implement any interface rather it provides common functionality around HTTP Proxying
     /// </para>
     /// <para>
     /// If the library is compiled with the NO_PROXY symbol then this code adds no functionality
@@ -246,6 +247,22 @@ namespace VDS.RDF.Storage
         public BaseAsyncHttpConnector()
         {
             this._d = new DoRequestSequenceDelgate(this.DoRequestSequence);
+        }
+
+        public virtual IStorageServer ParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        public virtual IAsyncStorageServer AsyncParentServer
+        {
+            get
+            {
+                return null;
+            }
         }
 
         /// <summary>

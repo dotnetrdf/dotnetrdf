@@ -26,6 +26,7 @@ Removed
 - Removed the obsolete ThreadSafeIndexedTripleCollection
 - Removed IStoreParams
 - Removed the old overloads of IStoreReader and IStoreWriter
+- Removed the obsolete IGenericIOManager interfaces
    
 
 

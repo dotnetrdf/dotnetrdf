@@ -151,8 +151,8 @@
     <Compile Include="Core\GraphLiteralNode.cs" />
     <Compile Include="Storage\AsyncStorageExtensions.cs" />
     <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
-    <Compile Include="Storage\IGenericIOManager.cs" />
     <Compile Include="Storage\IStorageProvider.cs" />
+    <Compile Include="Storage\Management\AllegroGraphServer.cs" />
     <Compile Include="Storage\Management\IStorageServer.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs" />
@@ -166,6 +166,8 @@
     <Compile Include="Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs" />
     <Compile Include="Storage\Management\Provisioning\StoreTemplate.cs" />
+    <Compile Include="Storage\Management\SesameServer.cs" />
+    <Compile Include="Storage\Management\StardogServer.cs" />
     <Compile Include="Storage\StorageCallbacks.cs" />
     <Compile Include="Storage\StorageHelper.cs" />
     <Compile Include="Storage\TalisPlatformConnector.cs" />

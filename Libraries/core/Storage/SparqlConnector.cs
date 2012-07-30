@@ -46,6 +46,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
@@ -119,6 +120,14 @@ namespace VDS.RDF.Storage
         /// <param name="mode">Load Method to use</param>
         public SparqlConnector(Uri endpointUri, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(endpointUri), mode) { }
+
+        public IStorageServer ParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         /// <summary>
         /// Controls whether the Query will be parsed locally to accurately determine its Query Type for processing the response

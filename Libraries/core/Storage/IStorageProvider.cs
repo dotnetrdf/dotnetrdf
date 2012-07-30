@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Storage
 {
@@ -111,6 +112,19 @@ namespace VDS.RDF.Storage
     public interface IStorageProvider
         : IStorageCapabilities, IDisposable
     {
+        /// <summary>
+        /// Gets the Parent Server on which this store is hosted (if any)
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// For storage backends which support multiple stores this is useful because it provides a way to access all the stores on that backend.  For stores which are standalone they should simply return null
+        /// </para>
+        /// </remarks>
+        IStorageServer ParentServer
+        {
+            get;
+        }
+
         /// <summary>
         /// Loads a Graph from the Store
         /// </summary>
@@ -300,6 +314,19 @@ namespace VDS.RDF.Storage
     public interface IAsyncStorageProvider
         : IStorageCapabilities, IDisposable
     {
+        /// <summary>
+        /// Gets the Parent Server on which this store is hosted (if any)
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// For storage backends which support multiple stores this is useful because it provides a way to access all the stores on that backend.  For stores which are standalone they should simply return null
+        /// </para>
+        /// </remarks>
+        IAsyncStorageServer AsyncParentServer
+        {
+            get;
+        }
+
         /// <summary>
         /// Loads a Graph from the Store asynchronously
         /// </summary>
