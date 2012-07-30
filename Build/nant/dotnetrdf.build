@@ -139,36 +139,6 @@
     </exec>
   </target>
 
-  <target name="projectgen-data-sql-clientprofile" description="Generates the dotNetRDF Data.Sql .Net 4.0 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Data.Sql .Net 4.0 Client Profile project file with the Data.Sql project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
-      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj.template" />
-      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj" />
-      <arg value="..\data.sql\" />
-    </exec>
-  </target>
-
-  <target name="projectgen-data-sql-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
-      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj.template" />
-      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
-      <arg value="..\data.sql\" />
-    </exec>
-  </target>
-
-  <target name="projectgen-data-sql-clientprofile-net35" description="Generates the dotNetRDF Data.Sql .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Data.Sql .Net 3.5 project file with the Data.Sql project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
-      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj.template" />
-      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj" />
-      <arg value="..\data.sql\" />
-    </exec>
-  </target>
-
   <target name="projectgen-data-virtuoso-clientprofile" description="Generates the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
@@ -206,7 +176,7 @@
 
   <target name="license-libs" description="Applies license headers to all library targets"
           depends="license-core,license-core-silverlight,
-                   license-data-sql,license-data-virtuoso,
+                   license-data-virtuoso,
                    license-query-fulltext,
                    license-editor-core,license-editor-wpf,
                    license-storemanager-core,
@@ -245,23 +215,6 @@
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core.silverlight/" />
-      <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
-      <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
-      <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
-      <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
-      <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
-    </exec>
-  </target>
-
-  <target name="license-data-sql" description="Applies license headers to the Data.Sql library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
-      <arg value="-directory" />
-      <arg value="Libraries/data.sql/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.license.exclude.exts}" />
       <arg value="-exclude" />
@@ -610,7 +563,6 @@
                    compile-core-silverlight,
                    compile-core-windowsphone,
                    compile-core-clientprofile,compile-core-clientprofile-net35,
-                   compile-data-sql,compile-data-sql-clientprofile,compile-data-sql-net35,compile-data-sql-clientprofile-net35,
                    compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
                    compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
 
@@ -703,50 +655,6 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-data-sql" description="Compiles the dotNetRDF Data.Sql Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/data.sql/dotNetRDF.Data.Sql.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-data-sql-clientprofile" description="Compiles the dotNetRDF Data.Sql .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-clientprofile,projectgen-data-sql-clientprofile">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/data.sql.clientprofile/dotNetRDF.Data.Sql.ClientProfile.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-data-sql-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-net35,projectgen-data-sql-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/data.sql.net35/dotNetRDF.Data.Sql.Net35.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-data-sql-clientprofile-net35" description="Compiles the dotNetRDF Data.Sql .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-sql,compile-core-clientprofile-net35,projectgen-data-sql-clientprofile-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Libraries/data.sql.clientprofile.net35/dotNetRDF.Data.Sql.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -852,7 +760,6 @@
                    build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-windowsphone,
-                   build-data-sql,build-data-sql-net35,build-data-sql-clientprofile,build-data-sql-clientprofile-net35,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35">
     
@@ -898,26 +805,6 @@
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="../bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/Newtonsoft.Json.dll" />
-  </target>
-
-  <target name="build-data-sql" description="Copy the latest Data.Sql build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql">
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
-  </target>
-
-  <target name="build-data-sql-clientprofile" description="Copy the latest Data.Sql Client Profile build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-clientprofile">
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.xml" />
-  </target>
-
-  <target name="build-data-sql-net35" description="Copy the latest Data.Sql 3.5 build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-net35">
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
-  </target>
-
-  <target name="build-data-sql-clientprofile-net35" description="Copy the latest Data.Sql 3.5 Client Profile build to the Data.Sql nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-sql-clientprofile-net35">
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="../bin/nightlies/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
@@ -1165,7 +1052,7 @@
     </zip>
   </target>
 
-  <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-sql,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
+  <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
   </target>
 
   <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release">
@@ -1235,57 +1122,6 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
-      <arg value="-verbose" />
-    </exec>
-  </target>
-
-  <target name="dist-nuget-data-sql" description="Creates the Data.Sql NuGet package" depends="build-release">
-    <!-- Firstly clean out the relevant directories -->
-    <delete>
-      <fileset basedir="Build/nuget/Data.Sql/lib/net40">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Data.Sql/lib/net40-client">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Data.Sql/lib/net35">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset basedir="Build/nuget/Data.Sql/lib/net35-client">
-        <include name="*" />
-      </fileset>
-    </delete>
-    <!-- Then create the Data.Sql package -->
-    <copy todir="Build/nuget/Data.Sql/lib/net40/">
-      <fileset basedir="../bin/stable/Data/Sql/net40/">
-        <include name="*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Data.Sql/lib/net40-client/">
-      <fileset basedir="../bin/stable/Data/Sql/net40-client/">
-        <include name="*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Data.Sql/lib/net35/">
-      <fileset basedir="../bin/stable/Data/Sql/net35/">
-        <include name="*" />
-      </fileset>
-    </copy>
-    <copy todir="Build/nuget/Data.Sql/lib/net35-client/">
-      <fileset basedir="../bin/stable/Data/Sql/net35-client/">
-        <include name="*" />
-      </fileset>
-    </copy>
-    <!-- Invoke nuget on the package -->
-    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
-      <arg value="pack" />
-      <arg value="dotNetRDF.Data.Sql.nuspec" />
       <arg value="-verbose" />
     </exec>
   </target>
@@ -1423,7 +1259,7 @@
     </ftp>
   </target>
 
-  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-sql,upload-nuget-data-virtuoso,upload-nuget-query-fulltext">
+  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-virtuoso,upload-nuget-query-fulltext">
 
   </target>
 
@@ -1431,13 +1267,6 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
-    </exec>
-  </target>
-
-  <target name="upload-nuget-data-sql" description="Uploads the Data.Sql Library package to the NuGet Gallery" depends="dist-nuget-data-sql">
-    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
