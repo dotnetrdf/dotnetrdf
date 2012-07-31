@@ -23,6 +23,7 @@ Changed
  - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
  - Bug fix to TreeIndexedTripleCollection
  - Bug fix to corner case MINUS logic in SPARQL 1.1
+ - Bug fix to corner case GROUP BY and aggregate interaction logic
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage

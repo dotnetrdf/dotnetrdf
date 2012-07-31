@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Algebra
         {
             try
             {
-                context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+                context.InputMultiset = context.Evaluate(this._pattern);
             }
             catch (RdfQueryTimeoutException)
             {
@@ -129,8 +129,13 @@ namespace VDS.RDF.Query.Algebra
                         context.OutputMultiset.AddVariable(v.Name);
                         foreach (int id in groupSet.SetIDs)
                         {
-                            INode value = groupSet.Contents[groupSet.GroupSetIDs(id).First()][v.Name];
-                            context.OutputMultiset[id].Add(v.Name, value);
+                            IEnumerable<int> memberIDs = groupSet.GroupSetIDs(id);
+                            int? setID = (memberIDs.Any() ? memberIDs.First() : (int?)null);
+                            if (setID.HasValue)
+                            {
+                                INode value = groupSet.Contents[setID.Value][v.Name];
+                                context.OutputMultiset[id].Add(v.Name, value);
+                            }
                         }
                     }
                 }
@@ -161,15 +166,31 @@ namespace VDS.RDF.Query.Algebra
                         context.Binder.SetGroupContext(true);
                         foreach (int id in groupSet.SetIDs)
                         {
-                            INode aggValue = v.Aggregate.Apply(context, groupSet.GroupSetIDs(id));
-                            context.OutputMultiset[id].Add(v.Name, aggValue);
+                            try
+                            {
+                                INode aggValue = v.Aggregate.Apply(context, groupSet.GroupSetIDs(id));
+                                context.OutputMultiset[id].Add(v.Name, aggValue);
+                            }
+                            catch
+                            {
+                                //Ignore errors here, they just result in an unbound for the variable
+                                context.OutputMultiset[id].Add(v.Name, null);
+                            }
                         }
                         context.Binder.SetGroupContext(false);
                     }
                     else
                     {
-                        INode aggValue = v.Aggregate.Apply(context, context.InputMultiset.SetIDs);
-                        aggSet.Add(v.Name, aggValue);
+                        try
+                        {
+                            INode aggValue = v.Aggregate.Apply(context, context.InputMultiset.SetIDs);
+                            aggSet.Add(v.Name, aggValue);
+                        }
+                        catch
+                        {
+                            //Ignore errors here, they just result in an unbound for the variable
+                            aggSet.Add(v.Name, null);
+                        }
                     }
                 }
                 else if (v.IsProjection)

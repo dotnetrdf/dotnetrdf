@@ -517,28 +517,30 @@ namespace VDS.RDF.Parsing
                     case SparqlQueryType.Describe:
                         //Check Variable Usage
                         List<String> projectedSoFar = new List<string>();
+                        List<String> mainBodyVars = (context.Query.RootGraphPattern != null ? context.Query.RootGraphPattern.Variables : Enumerable.Empty<String>()).Distinct().ToList();
                         foreach (SparqlVariable var in context.Query.Variables)
                         {
                             if (!var.IsResultVariable) continue;
 
                             if (projectedSoFar.Contains(var.Name) && (var.IsAggregate || var.IsProjection))
                             {
-                                throw new RdfParseException("Cannot assign the results of an Aggregate/Project Expression to the variable " + var.ToString() + " as this Variable is already Projected to earlier in the SELECT");
+                                throw new RdfParseException("Cannot assign the results of an Aggregate/Project Expression to the variable " + var.ToString() + " as this variable is already Projected to earlier in the SELECT");
                             }
 
                             if (var.IsProjection)
                             {
+                                if (mainBodyVars.Contains(var.Name)) throw new RdfParseException("Cannot project an expression to the variable " + var.Name + " as this variable is a bound variable from the main body of the query");
                                 if (context.Query.GroupBy != null)
                                 {
-                                    //if (!var.Projection.Variables.All(v => context.Query.GroupBy.ProjectableVariables.Contains(v) || projectedSoFar.Contains(v)))
                                     if (!this.IsProjectableExpression(context, var.Projection, projectedSoFar))
                                     {
-                                        throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more Variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY, projected earlier in the SELECT or within an aggregate");
+                                        throw new RdfParseException("Your SELECT uses the Project Expression " + var.Projection.ToString() + " which uses one/more variables which are either not projectable from the GROUP BY or not projected earlier in the SELECT.  All Variables used must be projectable from the GROUP BY, projected earlier in the SELECT or within an aggregate");
                                     }
                                 }
                             }
                             else if (var.IsAggregate)
                             {
+                                if (mainBodyVars.Contains(var.Name)) throw new RdfParseException("Cannot project an aggregate to the variable " + var.Name + " as this variable is a bound variable from the main body of the query");
                                 if (context.Query.GroupBy != null)
                                 {
                                     //Q: Does ISparqlAggregate needs to expose a Variables property?

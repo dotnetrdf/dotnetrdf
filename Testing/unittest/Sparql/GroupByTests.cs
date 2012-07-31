@@ -202,5 +202,24 @@ namespace VDS.RDF.Test.Sparql
             SparqlQueryParser parser = new SparqlQueryParser();
             SparqlQuery q = parser.ParseFromString(query);
         }
+
+        [TestMethod]
+        public void SparqlGroupByAggregateEmptyGroup()
+        {
+            String query = @"PREFIX ex: <http://example.com/>
+SELECT ?x (MAX(?value) AS ?max)
+WHERE {
+	?x ex:p ?value
+} GROUP BY ?x";
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            if (results == null) Assert.Fail("Null results");
+
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
+            Assert.AreEqual(1, results.Count, "Should be a single result");
+            Assert.IsTrue(results.First().All(kvp => kvp.Value == null), "Should be no bound values");
+        }
     }
 }

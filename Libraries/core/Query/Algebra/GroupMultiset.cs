@@ -58,18 +58,28 @@ namespace VDS.RDF.Query.Algebra
         {
             this._contents = contents;
 
-            bool first = true;
-            foreach (BindingGroup group in groups)
+            if (groups.Count > 0)
             {
-                Set s = new Set();
-                foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+                bool first = true;
+                foreach (BindingGroup group in groups)
                 {
-                    if (first) this.AddVariable(assignment.Key);
-                    s.Add(assignment.Key, assignment.Value);
+                    Set s = new Set();
+                    foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+                    {
+                        if (first) this.AddVariable(assignment.Key);
+                        s.Add(assignment.Key, assignment.Value);
+                    }
+                    first = false;
+                    base.Add(s);
+                    this._groups.Add(s.ID, group);
                 }
-                first = false;
+            }
+            else
+            {
+                this._contents = new Multiset();
+                Set s = new Set();
                 base.Add(s);
-                this._groups.Add(s.ID, group);
+                this._groups.Add(s.ID, new BindingGroup());
             }
         }
 
