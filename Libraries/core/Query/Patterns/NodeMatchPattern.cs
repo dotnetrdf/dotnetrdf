@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Pattern which matches specific Nodes
     /// </summary>
-    public class NodeMatchPattern : PatternItem
+    public class NodeMatchPattern
+        : PatternItem
     {
         private INode _node;
 
@@ -65,14 +66,14 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            //if (context.RigorousEvaluation)
-            //{
+            if (Options.RigorousEvaluation)
+            {
                 return this._node.Equals(obj);
-            //}
-            //else
-            //{
-            //    return true;
-            //}
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>

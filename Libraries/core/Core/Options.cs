@@ -93,6 +93,7 @@ namespace VDS.RDF
         private static bool _useDTDs = true;
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
+        private static bool _rigorousQueryEvaluation = false;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
@@ -236,6 +237,26 @@ namespace VDS.RDF
             set
             {
                 _queryAllowUnknownFunctions = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether to use rigorous query evaluation
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
+        /// </para>
+        /// </remarks>
+        public static bool RigorousEvaluation
+        {
+            get
+            {
+                return _rigorousQueryEvaluation;
+            }
+            set
+            {
+                _rigorousQueryEvaluation = value;
             }
         }
 

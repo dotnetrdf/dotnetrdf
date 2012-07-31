@@ -35,7 +35,8 @@
     
 #     :pp26 # removed by 3LC
 #     :pp27 # removed by 3LC
-    :pp28
+#     :pp28 # removed 2012-07-31
+    :pp28a
 #     :pp29 # removed by 3LC
 
     :pp30
@@ -294,15 +295,25 @@
     mf:result  <diamond-loop-4.srx>
     .
 
-:pp28  rdf:type mf:QueryEvaluationTest ;
-    dawgt:approval dawgt:Approved ;
-    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-03-29#resolution_3> ;
-    mf:name    "(pp28) Diamond, with loop -- (:p/:p)?" ;
+## :pp28  rdf:type mf:QueryEvaluationTest ;
+##     dawgt:approval dawgt:Approved ;
+##     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2011-03-29#resolution_3> ;
+## Now invalid.
+##     mf:name    "(pp28) Diamond, with loop -- (:p/:p)?" ;
+##     mf:action
+##         [ qt:query  <path-3-3.rq> ;
+##           qt:data   <data-diamond-loop.ttl> ] ;
+##     mf:result  <diamond-loop-5.srx>
+##     .
+
+:pp28a  rdf:type mf:QueryEvaluationTest ;
+    mf:name    "(pp28a) Diamond, with loop -- (:p/:p)?" ;
     mf:action
         [ qt:query  <path-3-3.rq> ;
           qt:data   <data-diamond-loop.ttl> ] ;
-    mf:result  <diamond-loop-5.srx>
-    .
+    mf:result  <diamond-loop-5a.srx>
+     .
+
 
 :pp29  rdf:type mf:QueryEvaluationTest ;
     dawgt:approval dawgt:Approved ;

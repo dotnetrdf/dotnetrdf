@@ -14,7 +14,7 @@
 :service2
 :service3
 ## To be unapproved (BINDINGS) :service4
-# :service4
+# :service4	# removed 2012-07-31
 :service4a
 :service5
 :service6
@@ -73,20 +73,20 @@
        ] ;
        mf:result  <service03.srx> .  
 
-:service4 rdf:type mf:QueryEvaluationTest ;
-       mf:name    "SERVICE test 4" ;
-       dawgt:approval dawgt:Approved ;
-       dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_2> ;
-       mf:feature sd:BasicFederatedQuery ;
-       mf:action [
-               qt:query  <service04.rq> ;
-               qt:data   <data04.ttl> ;
-               qt:serviceData [
-                       qt:endpoint <http://example.org/sparql> ;
-                       qt:data     <data04endpoint.ttl>
-               ]
-       ] ;
-       mf:result  <service04.srx> .  
+# :service4 rdf:type mf:QueryEvaluationTest ;
+#        mf:name    "SERVICE test 4" ;
+#        dawgt:approval dawgt:Approved ;
+#        dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_2> ;
+#        mf:feature sd:BasicFederatedQuery ;
+#        mf:action [
+#                qt:query  <service04.rq> ;
+#                qt:data   <data04.ttl> ;
+#                qt:serviceData [
+#                        qt:endpoint <http://example.org/sparql> ;
+#                        qt:data     <data04endpoint.ttl>
+#                ]
+#        ] ;
+#        mf:result  <service04.srx> .  
 
 :service4a rdf:type mf:QueryEvaluationTest ;
        mf:name    "SERVICE test 4a with VALUES clause" ;

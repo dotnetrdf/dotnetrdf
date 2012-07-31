@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Pattern which matches Variables
     /// </summary>
-    public class VariablePattern : PatternItem
+    public class VariablePattern 
+        : PatternItem
     {
         private String _varname;
 
@@ -65,8 +66,8 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override bool Accepts(SparqlEvaluationContext context, INode obj)
         {
-            //if (context.RigorousEvaluation)
-            //{
+            if (Options.RigorousEvaluation)
+            {
                 if (context.InputMultiset.ContainsVariable(this._varname))
                 {
                     return context.InputMultiset.ContainsValue(this._varname, obj);
@@ -79,11 +80,11 @@ namespace VDS.RDF.Query.Patterns
                 {
                     return true;
                 }
-            //}
-            //else
-            //{
-            //    return true;
-            //}
+            }
+            else
+            {
+                return true;
+            }
         }
 
         /// <summary>
