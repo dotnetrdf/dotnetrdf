@@ -673,7 +673,7 @@
 :strbefore01 rdf:type mf:QueryEvaluationTest ;
 	mf:name    "STRBEFORE()" ;
 	mf:feature sparql:strbefore ;
-    dawgt:approval dawgt:Approved ;
+    dawgt:approval dawgt:Obsoleted ;
     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
     mf:action
          [ qt:query  <strbefore01.rq> ;
@@ -704,7 +704,7 @@
 :strafter01 rdf:type mf:QueryEvaluationTest ;
 	mf:name    "STRAFTER()" ;
 	mf:feature sparql:strafter ;
-    dawgt:approval dawgt:Approved ;
+    dawgt:approval dawgt:Obsoleted ;
     dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
     mf:action
          [ qt:query  <strafter01.rq> ;

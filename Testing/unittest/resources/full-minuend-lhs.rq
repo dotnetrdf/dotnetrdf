@@ -1,0 +1,6 @@
+prefix : <http://example/>
+
+select ?a ?b ?c {
+  ?a :p1 ?b; :p2 ?c
+}
+order by ?a

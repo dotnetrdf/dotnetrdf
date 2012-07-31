@@ -618,7 +618,7 @@ namespace VDS.RDF.Query.Algebra
                 foreach (int poss in possMatches)
                 {
                     if (toMinus.Contains(poss)) continue;
-                    if (this[poss].IsCompatibleWith(y, joinVars))
+                    if (this[poss].IsMinusCompatibleWith(y, joinVars))
                     {
                         toMinus.Add(poss);
                     }

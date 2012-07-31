@@ -14,15 +14,17 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.7.2 release of dotNetRDF
 
 Added
+- Query
+ - Added IsMinusCompatibleWith() method to ISet interface
 
 
 Changed
 - Bug Fixes
  - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
  - Bug fix to TreeIndexedTripleCollection
+ - Bug fix to corner case MINUS logic in SPARQL 1.1
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
-
 - Storage
  - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer)
  - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider

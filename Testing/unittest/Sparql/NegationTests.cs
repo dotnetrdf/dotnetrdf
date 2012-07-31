@@ -147,6 +147,41 @@ namespace VDS.RDF.Test.Sparql
             this.TestNegation(this.GetTestData(), negQuery, query);
         }
 
+        [TestMethod]
+        public void SparqlNegationFullMinued()
+        {
+            SparqlQuery lhsQuery = this._parser.ParseFromFile("full-minuend-lhs.rq");
+            SparqlQuery rhsQuery = this._parser.ParseFromFile("full-minuend-rhs.rq");
+            SparqlQuery query = this._parser.ParseFromFile("full-minuend.rq");
+            Graph g = new Graph();
+            g.LoadFromFile("full-minuend.ttl");
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new InMemoryQuadDataset(g));
+
+            SparqlResultSet lhs = processor.ProcessQuery(lhsQuery) as SparqlResultSet;
+            Console.WriteLine("LHS Intermediate Results");
+            TestTools.ShowResults(lhs);
+            Console.WriteLine();
+
+            SparqlResultSet rhs = processor.ProcessQuery(rhsQuery) as SparqlResultSet;
+            Console.WriteLine("RHS Intermediate Results");
+            TestTools.ShowResults(rhs);
+            Console.WriteLine();
+
+            SparqlResultSet actual = processor.ProcessQuery(query) as SparqlResultSet;
+            if (actual == null) Assert.Fail("Null results");
+            SparqlResultSet expected = new SparqlResultSet();
+            SparqlXmlParser parser = new SparqlXmlParser();
+            parser.Load(expected, "full-minuend.srx");
+
+            Console.WriteLine("Actual Results:");
+            TestTools.ShowResults(actual);
+            Console.WriteLine();
+            Console.WriteLine("Expected Results:");
+            TestTools.ShowResults(expected);
+
+            Assert.AreEqual(expected, actual, "Result Sets should be equal");
+        }
+
         private void TestNegation(ISparqlDataset data, SparqlParameterizedString queryWithNegation, SparqlParameterizedString queryWithoutNegation)
         {
             this.TestNegation(data, queryWithNegation.ToString(), queryWithoutNegation.ToString());

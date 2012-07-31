@@ -198,6 +198,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="vars">Variables</param>
+        /// <returns></returns>
+        public override bool IsMinusCompatibleWith(ISet s, IEnumerable<string> vars)
+        {
+            return vars.Any(v => this[v] != null && this[v].Equals(s[v]));
+        }
+
+        /// <summary>
         /// Gets the Variables in the Set
         /// </summary>
         public override IEnumerable<String> Variables

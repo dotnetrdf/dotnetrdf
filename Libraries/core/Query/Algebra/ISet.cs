@@ -68,6 +68,14 @@ namespace VDS.RDF.Query.Algebra
         bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
+        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="vars">Variables</param>
+        /// <returns></returns>
+        bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
+
+        /// <summary>
         /// Gets/Sets the ID of the Set
         /// </summary>
         int ID 
@@ -125,7 +133,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Abstract Base Class for implementations of the <see cref="ISet">ISet</see> interface
     /// </summary>
-    public abstract class BaseSet : ISet
+    public abstract class BaseSet
+        : ISet
     {
         private int _id = 0;
 
@@ -150,6 +159,14 @@ namespace VDS.RDF.Query.Algebra
         /// <param name="vars">Variables</param>
         /// <returns></returns>
         public abstract bool IsCompatibleWith(ISet s, IEnumerable<String> vars);
+
+        /// <summary>
+        /// Gets whether the Set is minus compatible with a given set based on the given variables
+        /// </summary>
+        /// <param name="s">Set</param>
+        /// <param name="vars">Variables</param>
+        /// <returns></returns>
+        public abstract bool IsMinusCompatibleWith(ISet s, IEnumerable<String> vars);
 
         /// <summary>
         /// Gets/Sets the ID of the Set
