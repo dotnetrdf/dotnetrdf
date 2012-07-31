@@ -109,7 +109,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0, true, this._faveConnectionsFile);
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 //If errors occur then ignore Recent Connections
             }

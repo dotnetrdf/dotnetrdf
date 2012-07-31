@@ -19,6 +19,9 @@ Added
 Changed
 - Bug Fixes
  - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
+ - Bug fix to TreeIndexedTripleCollection
+- Core API
+ - Made TreeIndexedTripleCollection the default triple collection implementation
 
 - Storage
  - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer)

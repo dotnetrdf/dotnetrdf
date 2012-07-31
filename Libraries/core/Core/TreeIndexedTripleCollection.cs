@@ -217,6 +217,7 @@ namespace VDS.RDF
             if (!this.Contains(t))
             {
                 this._triples.Add(t, null);
+                this.Index(t);
                 this._count++;
                 return true;
             }
