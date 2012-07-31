@@ -50,12 +50,10 @@
     <Compile Include="Connections\BuiltIn\FusekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\InMemoryConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\JosekiConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\MicrosoftAdoConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SesameConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SparqlGraphStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SparqlQueryConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\StardogConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\TalisConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\VirtuosoConnectionDefinition.cs" />
     <Compile Include="Connections\ConnectionAttribute.cs" />
     <Compile Include="Connections\ConnectionDefinitionManager.cs" />

@@ -87,7 +87,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(10000, "10thou.ttl", new TurtleFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 TurtleParser parser = new TurtleParser();
 
@@ -112,7 +112,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(100000, "100thou.ttl", new TurtleFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 TurtleParser parser = new TurtleParser();
 
@@ -137,7 +137,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(500000, "500thou.ttl", new TurtleFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 TurtleParser parser = new TurtleParser();
 
@@ -216,7 +216,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(10000, "10thou.nt", new NTriplesFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 NTriplesParser parser = new NTriplesParser();
 
@@ -241,7 +241,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(100000, "100thou.nt", new NTriplesFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 NTriplesParser parser = new NTriplesParser();
 
@@ -266,7 +266,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(500000, "500thou.nt", new NTriplesFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 NTriplesParser parser = new NTriplesParser();
 
@@ -291,7 +291,7 @@ namespace VDS.RDF.Test.Parsing
                 Options.InternUris = false;
                 EnsureTestData(1000000, "million.nt", new NTriplesFormatter());
 
-                Graph g = new Graph(new IndexedTripleCollection(1));
+                Graph g = new Graph();
                 Stopwatch watch = new Stopwatch();
                 NTriplesParser parser = new NTriplesParser();
 

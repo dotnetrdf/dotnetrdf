@@ -320,7 +320,7 @@ namespace VDS.RDF.Storage
         /// <param name="handler">Handler to load with</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        protected void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, AsyncStorageCallback callback, Object state)
+        protected internal void LoadGraphAsync(HttpWebRequest request, IRdfHandler handler, AsyncStorageCallback callback, Object state)
         {
 #if DEBUG
             if (Options.HttpDebugging)
@@ -389,7 +389,7 @@ namespace VDS.RDF.Storage
         /// <param name="g">Graph to save</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        protected void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, AsyncStorageCallback callback, Object state)
+        protected internal void SaveGraphAsync(HttpWebRequest request, IRdfWriter writer, IGraph g, AsyncStorageCallback callback, Object state)
         {
             request.BeginGetRequestStream(r =>
             {
@@ -473,7 +473,7 @@ namespace VDS.RDF.Storage
         /// <param name="ts">Triples</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        protected void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, AsyncStorageCallback callback, Object state)
+        protected internal void UpdateGraphAsync(HttpWebRequest request, IRdfWriter writer, Uri graphUri, IEnumerable<Triple> ts, AsyncStorageCallback callback, Object state)
         {
             Graph g = new Graph();
             g.Assert(ts);
@@ -555,7 +555,7 @@ namespace VDS.RDF.Storage
         /// <param name="graphUri">URI of the Graph to delete</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        protected void DeleteGraphAsync(HttpWebRequest request, bool allow404, String graphUri, AsyncStorageCallback callback, Object state)
+        protected internal void DeleteGraphAsync(HttpWebRequest request, bool allow404, String graphUri, AsyncStorageCallback callback, Object state)
         {
 #if DEBUG
             if (Options.HttpDebugging)
@@ -687,7 +687,7 @@ namespace VDS.RDF.Storage
         /// <param name="requests">HTTP requests</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        protected void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
+        protected internal void MakeRequestSequence(IEnumerable<HttpWebRequest> requests, AsyncStorageCallback callback, Object state)
         {
             this._d.BeginInvoke(requests, callback, state, this.MakeRequestSequenceCallback, callback);
         }

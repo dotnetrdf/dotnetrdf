@@ -128,7 +128,7 @@ namespace VDS.RDF.Utilities.StoreManager
             }
 
             //Disable Server Management for non Storage Servers
-            if (!(this._manager is IStorageServer))
+            if (this._manager.ParentServer == null)
             {
                 this.tabFunctions.TabPages.Remove(this.tabServer);
             }
@@ -156,7 +156,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// </summary>
         public void ListStores()
         {
-            ListStoresTask task = new ListStoresTask(this._manager as IStorageServer);
+            ListStoresTask task = new ListStoresTask(this._manager.ParentServer);
             this.AddTask<IEnumerable<String>>(task, this.ListStoresCallback);
         }
 
@@ -414,7 +414,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void GetStore(String id)
         {
-            GetStoreTask task = new GetStoreTask(this._manager as IStorageServer, id);
+            GetStoreTask task = new GetStoreTask(this._manager.ParentServer, id);
             this.AddTask<IStorageProvider>(task, this.GetStoreCallback);
         }
 
@@ -424,7 +424,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void DeleteStore(String id)
         {
-            DeleteStoreTask task = new DeleteStoreTask(this._manager as IStorageServer, id);
+            DeleteStoreTask task = new DeleteStoreTask(this._manager.ParentServer, id);
             this.AddTask<TaskResult>(task, this.DeleteStoreCallback);
         }
 
@@ -434,7 +434,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <param name="id">Store ID</param>
         public void CreateStore(IStoreTemplate template)
         {
-            CreateStoreTask task = new CreateStoreTask(this._manager as IStorageServer, template);
+            CreateStoreTask task = new CreateStoreTask(this._manager.ParentServer, template);
             this.AddTask<TaskValueResult<bool>>(task, this.CreateStoreCallback);
         }
 
@@ -561,7 +561,7 @@ namespace VDS.RDF.Utilities.StoreManager
             {
                 this.stsCurrent.Text = "Store is ready";
                 this.ListGraphs();
-                if (this._manager is IStorageServer)
+                if (this._manager.ParentServer != null)
                 {
                     this.ListStores();
                 }
@@ -1046,11 +1046,18 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuStores_Opening(object sender, CancelEventArgs e)
         {
-            this.mnuNewStore.Enabled = (this._manager.IOBehaviour & IOBehaviour.CanCreateStores) != 0;
+            IStorageServer server = this._manager.ParentServer;
+            if (server == null)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            this.mnuNewStore.Enabled = (server.IOBehaviour & IOBehaviour.CanCreateStores) != 0;
             if (this.lvwStores.SelectedItems.Count > 0)
             {
                 this.mnuOpenStore.Enabled = true;
-                this.mnuDeleteStore.Enabled = (this._manager.IOBehaviour & IOBehaviour.CanDeleteStores) != 0;               
+                this.mnuDeleteStore.Enabled = (server.IOBehaviour & IOBehaviour.CanDeleteStores) != 0;               
             }
             else
             {
@@ -1061,7 +1068,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void mnuNewStore_Click(object sender, EventArgs e)
         {
-            NewStoreForm newStore = new NewStoreForm(this._manager as IStorageServer);
+            NewStoreForm newStore = new NewStoreForm(this._manager.ParentServer);
             if (newStore.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 this.CreateStore(newStore.Template);

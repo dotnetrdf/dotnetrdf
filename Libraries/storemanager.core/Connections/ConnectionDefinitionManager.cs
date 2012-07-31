@@ -126,18 +126,20 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                     else
                     {
                         _connectionDefTypes.Add(t);
+
+                        //Try to get the definition type
+                        IConnectionDefinition def = null;
+                        try
+                        {
+                            def = Activator.CreateInstance(t) as IConnectionDefinition;
+                        }
+                        catch
+                        {
+                            //Ignore Errors
+                        }
+                        if (def != null) _defs.Add(def);
                     }
                 }
-                IConnectionDefinition def = null;
-                try
-                {
-                    def = Activator.CreateInstance(t) as IConnectionDefinition;
-                }
-                catch
-                {
-                    //Ignore Errors
-                }
-                if (def != null) _defs.Add(def);
             }
         }
 

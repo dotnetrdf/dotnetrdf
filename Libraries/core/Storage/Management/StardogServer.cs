@@ -82,6 +82,13 @@ namespace VDS.RDF.Storage.Management
 
 #endif
 
+        public IOBehaviour IOBehaviour
+        {
+            get
+            {
+                return IOBehaviour.StorageServer;
+            }
+        }
 
 #if !NO_SYNC_HTTP
         #region IStorageServer Members
@@ -606,6 +613,11 @@ namespace VDS.RDF.Storage.Management
             }
 
             return request;
+        }
+
+        public void Dispose()
+        {
+            //Nothing to do
         }
 
         /// <summary>

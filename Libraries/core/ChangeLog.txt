@@ -18,6 +18,11 @@ Added
 
 Changed
 - Bug Fixes
+ - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
+
+- Storage
+ - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer)
+ - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
 
 Removed
 - Marked the TalisPlatformConnector as obsolete unusable

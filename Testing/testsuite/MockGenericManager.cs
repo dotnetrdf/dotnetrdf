@@ -40,6 +40,7 @@ using System.Text;
 using System.Threading;
 using VDS.RDF;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
 
 namespace dotNetRDFTest
 {
@@ -47,6 +48,14 @@ namespace dotNetRDFTest
         : IStorageProvider
     {
         #region IStorageProvider Members
+
+        public IStorageServer ParentServer
+        {
+            get
+            {
+                return null;
+            }
+        }
 
         public void LoadGraph(IGraph g, Uri graphUri)
         {

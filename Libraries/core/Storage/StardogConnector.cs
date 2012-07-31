@@ -173,7 +173,7 @@ namespace VDS.RDF.Storage
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
 
             //Server reference
-            this._server = new StardogServer(this._baseUri);
+            this._server = new StardogServer(this._baseUri, this._username, this._pwd);
         }
 
 #if !NO_PROXY
@@ -259,7 +259,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.StorageServer;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
             }
         }
 

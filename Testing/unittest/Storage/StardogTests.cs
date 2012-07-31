@@ -63,6 +63,15 @@ namespace VDS.RDF.Test.Storage
             return new StardogConnector(TestConfigManager.GetSetting(TestConfigManager.StardogServer), TestConfigManager.GetSetting(TestConfigManager.StardogDatabase), TestConfigManager.GetSetting(TestConfigManager.StardogUser), TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
         }
 
+        public static StardogServer GetServer()
+        {
+            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseStardog))
+            {
+                Assert.Inconclusive("Test Config marks Stardog as unavailable, test cannot be run");
+            }
+            return new StardogServer(TestConfigManager.GetSetting(TestConfigManager.StardogServer), TestConfigManager.GetSetting(TestConfigManager.StardogUser), TestConfigManager.GetSetting(TestConfigManager.StardogPassword));
+        }
+
         protected override IStorageProvider GetManager()
         {
             return (IStorageProvider)StardogTests.GetConnection();
@@ -461,7 +470,7 @@ namespace VDS.RDF.Test.Storage
                 guid = Guid.NewGuid();
             } while (guid.Equals(Guid.Empty) || !Char.IsLetter(guid.ToString()[0]));
 
-            StardogConnector stardog = StardogTests.GetConnection();
+            StardogServer stardog = StardogTests.GetServer();
             IStoreTemplate template = stardog.GetDefaultTemplate(guid.ToString());
             Console.WriteLine("Template ID " + template.ID);
 

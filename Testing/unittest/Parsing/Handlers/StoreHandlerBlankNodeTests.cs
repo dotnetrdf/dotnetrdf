@@ -64,7 +64,7 @@ namespace VDS.RDF.Test.Parsing.Handlers
             {
                 TriGParser parser = new TriGParser();
                 TripleStore store = new TripleStore();
-                parser.Load(store, new TextReaderParams(new StringReader(TestFragment)));
+                parser.Load(store, new StringReader(TestFragment));
 
                 store.SaveToFile(testFile);
             }

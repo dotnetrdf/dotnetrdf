@@ -349,7 +349,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._po.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
+                if (this._po.TryGetValue(new Triple(this._subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -375,7 +375,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._so.TryGetValue(new Triple(subj, this._predVar, obj), out ts))
+                if (this._so.TryGetValue(new Triple(subj, this._predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -401,7 +401,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._sp.TryGetValue(new Triple(subj, pred, this._objVar), out ts))
+                if (this._sp.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), this._objVar.CopyNode(subj.Graph)), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }

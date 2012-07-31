@@ -48,7 +48,16 @@ namespace VDS.RDF.Storage.Management
     /// This interface may be implemented either separately or alongside <see cref="IStorageProvider"/>.  It is quite acceptable for an implementation of <see cref="IStorageProvider"/> that provides a connection to a store sitting on a server that manages multiple stores to also provide an implementation of this interface in order to allow access to other stores on the server.
     /// </remarks>
     public interface IStorageServer
+        : IDisposable
     {
+        /// <summary>
+        /// Returns information on the IO behaviour of a Server
+        /// </summary>
+        IOBehaviour IOBehaviour
+        {
+            get;
+        }
+
         /// <summary>
         /// Gets the list of available stores
         /// </summary>
@@ -90,9 +99,6 @@ namespace VDS.RDF.Storage.Management
         /// </summary>
         /// <param name="storeID">Store ID</param>
         /// <returns></returns>
-        /// <remarks>
-        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
-        /// </remarks>
         IStorageProvider GetStore(string storeID);
     }
 
@@ -100,7 +106,16 @@ namespace VDS.RDF.Storage.Management
     /// Interface for storage providers which are capable of managing multiple stores asynchronously
     /// </summary>
     public interface IAsyncStorageServer
+        : IDisposable
     {
+        /// <summary>
+        /// Gets information on the IO Behaviour of the Server
+        /// </summary>
+        IOBehaviour IOBehaviour
+        {
+            get;
+        }
+
         /// <summary>
         /// Lists the available stores asynchronously
         /// </summary>
@@ -150,9 +165,6 @@ namespace VDS.RDF.Storage.Management
         /// <param name="storeID">Store ID</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// If the implementation also implements <see cref="IAsyncStorageProvider"/> and the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
-        /// </remarks>
         void GetStore(String storeID, AsyncStorageCallback callback, Object state);
     }
 }

@@ -62,16 +62,11 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public abstract class BaseSesameHttpProtocolConnector
-        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IAsyncStorageServer, IConfigurationSerializable
+        : BaseAsyncHttpConnector, IAsyncQueryableStorage, IConfigurationSerializable
 #if !NO_SYNC_HTTP
-        , IQueryableStorage, IStorageServer
+        , IQueryableStorage
 #endif
     {
-        /// <summary>
-        /// System Repository ID
-        /// </summary>
-        public const String SystemRepositoryID = "SYSTEM";
-
         /// <summary>
         /// Base Uri for the Store
         /// </summary>
@@ -114,19 +109,14 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected bool _postAllQueries = false;
 
+        /// <summary>
+        /// Server the store is hosted on
+        /// </summary>
+        protected SesameServer _server;
+
         private StringBuilder _output = new StringBuilder();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
-
-        /// <summary>
-        /// Available Sesame template types
-        /// </summary>
-        protected List<Type> _templateTypes = new List<Type>()
-        {
-            typeof(SesameMemTemplate),
-            typeof(SesameNativeTemplate),
-            typeof(SesameHttpTemplate)
-        };
 
         /// <summary>
         /// Creates a new connection to a Sesame HTTP Protocol supporting Store
@@ -152,6 +142,9 @@ namespace VDS.RDF.Storage
             this._username = username;
             this._pwd = password;
             this._hasCredentials = (!String.IsNullOrEmpty(username) && !String.IsNullOrEmpty(password));
+
+            //Setup server
+            this._server = new SesameServer(this._baseUri);
         }
 
 #if !NO_PROXY
@@ -212,7 +205,7 @@ namespace VDS.RDF.Storage
         {
             get
             {
-                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples | IOBehaviour.StorageServer;
+                return IOBehaviour.GraphStore | IOBehaviour.CanUpdateTriples;
             }
         }
 
@@ -272,6 +265,14 @@ namespace VDS.RDF.Storage
         }
 
 #if !NO_SYNC_HTTP
+
+        public IStorageServer ParentServer
+        {
+            get
+            {
+                return this._server;
+            }
+        }
 
         /// <summary>
         /// Makes a SPARQL Query against the underlying Store
@@ -812,6 +813,14 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+        public IAsyncStorageServer AsyncParentServer
+        {
+            get
+            {
+                return this._server;
+            }
+        }
+
         /// <summary>
         /// Saves a Graph to the Store asynchronously
         /// </summary>
@@ -1161,226 +1170,6 @@ namespace VDS.RDF.Storage
             }
         }
 
-#if !NO_SYNC_HTTP
-
-        /// <summary>
-        /// Gets a default template for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <returns></returns>
-        public abstract IStoreTemplate GetDefaultTemplate(String id);
-
-        /// <summary>
-        /// Gets all available templates for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <returns></returns>
-        public abstract IEnumerable<IStoreTemplate> GetAvailableTemplates(String id);
-
-        /// <summary>
-        /// Creates a new Store with the given ID
-        /// </summary>
-        /// <param name="template">Template for creating the new store</param>
-        /// <returns>Whether creation succeeded</returns>
-        public abstract bool CreateStore(IStoreTemplate template);
-
-        /// <summary>
-        /// Deletes the Store with the given ID
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <remarks>
-        /// Whether attempting to delete the Store that you are accessing is permissible is up to the implementation
-        /// </remarks>
-        public virtual void DeleteStore(String storeID)
-        {
-            try
-            {
-                HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String,String>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
-
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-#if DEBUG
-                    if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
-                    //If we get here it completed OK
-                    response.Close();
-                }
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
-            }
-        }
-
-        /// <summary>
-        /// Gets the list of available stores
-        /// </summary>
-        /// <returns></returns>
-        public virtual IEnumerable<String> ListStores()
-        {
-            try
-            {
-                HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
-                ListStringsHandler handler = new ListStringsHandler("id");
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    SparqlXmlParser parser = new SparqlXmlParser();
-                    parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                    response.Close();
-                }
-                return handler.Strings;
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpError(webEx, "listing Stores from");
-            }
-        }
-
-        /// <summary>
-        /// Gets the Store with the given ID
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
-        /// </remarks>
-        public abstract IStorageProvider GetStore(String storeID);
-
-#endif
-
-        /// <summary>
-        /// Gets a default template for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
-        public abstract void GetDefaultTemplate(String id, AsyncStorageCallback callback, Object state);
-
-        /// <summary>
-        /// Gets all available templates for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
-        public abstract void GetAvailableTemplates(String id, AsyncStorageCallback callback, Object state);
-
-        /// <summary>
-        /// Creates a store asynchronously
-        /// </summary>
-        /// <param name="template">Template for creating the new store</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// Behaviour with regards to whether creating a store overwrites an existing store with the same ID is at the discretion of the implementation and <em>SHOULD</em> be documented in an implementations comments
-        /// </remarks>
-        public abstract void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, Object state);
-
-        /// <summary>
-        /// Deletes a store asynchronously
-        /// </summary>
-        /// <param name="storeID">ID of the store to delete</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        public virtual void DeleteStore(String storeID, AsyncStorageCallback callback, Object state)
-        {
-            try
-            {
-                HttpWebRequest request = CreateRequest(this._repositoriesPrefix + storeID, MimeTypesHelper.Any, "DELETE", new Dictionary<String,String>());
-#if DEBUG
-                if (Options.HttpDebugging) Tools.HttpDebugRequest(request);
-#endif
-
-                request.BeginGetResponse(r =>
-                    {
-                        try
-                        {
-                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-#if DEBUG
-                            if (Options.HttpDebugging) Tools.HttpDebugResponse(response);
-#endif
-                            //If we get here it completed OK
-                            response.Close();
-                        }
-                        catch (WebException webEx)
-                        {
-                            throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
-                        }
-                        catch (Exception ex)
-                        {
-                            throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' asynchronously from");
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                throw StorageHelper.HandleHttpError(webEx, "deleting the Store '" + storeID + "' from");
-            }
-            catch (Exception ex)
-            {
-                throw StorageHelper.HandleError(ex, "deleting the Store '" + storeID + "' asynchronously from");
-            }
-        }
-
-        /// <summary>
-        /// Lists the available stores asynchronously
-        /// </summary>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        public virtual void ListStores(AsyncStorageCallback callback, Object state)
-        {
-            HttpWebRequest request = CreateRequest("repositories", MimeTypesHelper.SparqlResultsXml[0], "GET", new Dictionary<string, string>());
-            ListStringsHandler handler = new ListStringsHandler("id");
-            try
-            {
-                request.BeginGetResponse(r =>
-                    {
-                        try
-                        {
-                            HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r);
-                            SparqlXmlParser parser = new SparqlXmlParser();
-                            parser.Load(handler, new StreamReader(response.GetResponseStream()));
-                            response.Close();
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, handler.Strings), state);
-                        }
-                        catch (WebException webEx)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
-                        }
-                        catch (Exception ex)
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores from")), state);
-                        }
-                    }, state);
-            }
-            catch (WebException webEx)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleHttpError(webEx, "listing Stores from")), state);
-            }
-            catch (Exception ex)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.ListStores, StorageHelper.HandleError(ex, "listing Stores from")), state);
-            }
-        }
-
-        /// <summary>
-        /// Gets a store asynchronously
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// If the implementation also implements <see cref="IAsyncStorageProvider"/> and the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
-        /// </remarks>
-        public abstract void GetStore(String storeID, AsyncStorageCallback callback, Object state);
-
         /// <summary>
         /// Helper method for creating HTTP Requests to the Store
         /// </summary>
@@ -1520,64 +1309,6 @@ namespace VDS.RDF.Storage
             : base(baseUri, storeID, username, password, proxy) { }
 
 #endif
-
-#if !NO_SYNC_HTTP
-
-        /// <summary>
-        /// Gets the Store with the given ID
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
-        /// </remarks>
-        public override IStorageProvider GetStore(string storeID)
-        {
-            if (this._store.Equals(storeID))
-            {
-                return this;
-            }
-            else
-            {
-                return new SesameHttpProtocolConnector(this._baseUri, storeID);
-            }
-        }
-
-#endif
-
-        /// <summary>
-        /// Gets a store asynchronously
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
-        /// </remarks>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
-        {
-            try
-            {
-                if (this._store.Equals(storeID))
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
-                }
-                else
-                {
-                    IAsyncStorageProvider provider;
-#if !NO_PROXY
-                    provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                    provider = new SesameHttpProtocolConnector(this._baseUri, storeID, this._username, this._pwd);
-#endif
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
-                }
-            }
-            catch (Exception e)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
-            }
-        }
     }
 
     /// <summary>
@@ -1628,263 +1359,6 @@ namespace VDS.RDF.Storage
 
 #endif
 
-#if !NO_SYNC_HTTP
-
-        /// <summary>
-        /// Gets a default template for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <returns></returns>
-        public override IStoreTemplate GetDefaultTemplate(string id)
-        {
-            return new SesameMemTemplate(id);
-        }
-
-        /// <summary>
-        /// Gets all available templates for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <returns></returns>
-        public override IEnumerable<IStoreTemplate> GetAvailableTemplates(string id)
-        {
-            List<IStoreTemplate> templates = new List<IStoreTemplate>();
-            Object[] args = new Object[] { id };
-            foreach (Type t in this._templateTypes)
-            {
-                try
-                {
-                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
-                    if (template != null) templates.Add(template);
-                }
-                catch
-                {
-                    //Ignore and continue
-                }
-            }
-            return templates;
-        }
-
-        /// <summary>
-        /// Creates a new Store based on the given template
-        /// </summary>
-        /// <param name="template">Template</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// <para>
-        /// Templates must inherit from <see cref="BaseSesameTemplate"/>
-        /// </para>
-        /// </remarks>
-        public override bool CreateStore(IStoreTemplate template)
-        {
-            if (template is BaseSesameTemplate)
-            {
-                try
-                {
-                    Dictionary<String,String> createParams = new Dictionary<string,string>();
-                    BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
-                    if (template.Validate().Any()) throw new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors");
-                    IGraph g = sesameTemplate.GetTemplateGraph();
-
-                    //Firstly we need to save the Repository Template as a new Context to Sesame
-                    createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                    HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
-
-                    request.ContentType = MimeTypesHelper.NTriples[0];
-                    NTriplesWriter ntwriter = new NTriplesWriter();
-                    ntwriter.Save(g, new StreamWriter(request.GetRequestStream()));
-
-#if DEBUG
-                    if (Options.HttpDebugging)
-                    {
-                        Tools.HttpDebugRequest(request);
-                    }
-#endif
-                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                    {
-#if DEBUG
-                        if (Options.HttpDebugging)
-                        {
-                            Tools.HttpDebugResponse(response);
-                        }
-#endif
-                        //If we get then it was OK
-                        response.Close();
-                    }
-
-                    //Then we need to declare that said Context is of type rep:RepositoryContext
-                    Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                    this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null);
-
-                    return true;
-                }
-                catch (WebException webEx)
-                {
-                    throw StorageHelper.HandleHttpError(webEx, "creating a new Store in");
-                }
-            }
-            else
-            {
-                throw new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate");
-            }
-        }
-
-        /// <summary>
-        /// Gets the Store with the given ID
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the Store ID requested represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
-        /// </remarks>
-        public override IStorageProvider GetStore(string storeID)
-        {
-            if (this._store.Equals(storeID))
-            {
-                return this;
-            }
-            else
-            {
-#if !NO_PROXY
-                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                return new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
-            }
-        }
-#endif
-        /// <summary>
-        /// Gets a default template for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
-        public override void GetDefaultTemplate(string id, AsyncStorageCallback callback, object state)
-        {
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.NewTemplate, id, new SesameMemTemplate(id)), state);
-        }
-
-        /// <summary>
-        /// Gets all available templates for creating a store
-        /// </summary>
-        /// <param name="id">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <returns></returns>
-        public override void GetAvailableTemplates(string id, AsyncStorageCallback callback, object state)
-        {
-            List<IStoreTemplate> templates = new List<IStoreTemplate>();
-            Object[] args = new Object[] { id };
-            foreach (Type t in this._templateTypes)
-            {
-                try
-                {
-                    IStoreTemplate template = Activator.CreateInstance(t, args) as IStoreTemplate;
-                    if (template != null) templates.Add(template);
-                }
-                catch
-                {
-                    //Ignore and continue
-                }
-            }
-            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.AvailableTemplates, id, templates), state);
-        }
-
-        /// <summary>
-        /// Creates a new store based on the given template
-        /// </summary>
-        /// <param name="template">Template</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// <para>
-        /// Template must inherit from <see cref="BaseSesameTemplate"/>
-        /// </para>
-        /// </remarks>
-        public override void CreateStore(IStoreTemplate template, AsyncStorageCallback callback, object state)
-        {
-            if (template is BaseSesameTemplate)
-            {
-                //First we need to store the template as a new context in the SYSTEM repository
-                Dictionary<String, String> createParams = new Dictionary<string, string>();
-                BaseSesameTemplate sesameTemplate = (BaseSesameTemplate)template;
-
-                if (template.Validate().Any())
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, new RdfStorageException("Template is not valid, call Validate() on the template to see the list of errors")), state);
-                    return;
-                }
-
-                IGraph g = sesameTemplate.GetTemplateGraph();
-                createParams.Add("context", sesameTemplate.ContextNode.ToString());
-                HttpWebRequest request = this.CreateRequest(this._repositoriesPrefix + BaseSesameHttpProtocolConnector.SystemRepositoryID + "/statements", "*/*", "POST", createParams);
-
-                request.ContentType = MimeTypesHelper.NTriples[0];
-                NTriplesWriter ntwriter = new NTriplesWriter();
-
-                this.SaveGraphAsync(request, ntwriter, g, (sender, args, st) =>
-                    {
-                        if (args.WasSuccessful)
-                        {
-                            //Then we need to declare that said Context is of type rep:RepositoryContext
-                            Triple repoType = new Triple(sesameTemplate.ContextNode, g.CreateUriNode("rdf:type"), g.CreateUriNode("rep:RepositoryContext"));
-                            this.UpdateGraph(String.Empty, repoType.AsEnumerable(), null, (sender2, args2, st2) =>
-                                {
-                                    if (args.WasSuccessful)
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template), state);
-                                    }
-                                    else
-                                    {
-                                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, StorageHelper.HandleError(args.Error, "creating a new Store in")), state);
-                                    }
-                                }, st);
-                        }
-                        else
-                        {
-                            callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, StorageHelper.HandleError(args.Error, "creating a new Store in")), state);
-                        }
-                    }, state);
-            }
-            else
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.CreateStore, template.ID, template, new RdfStorageException("Invalid template, templates must derive from BaseSesameTemplate")), state);
-            }
-        }
-
-        /// <summary>
-        /// Gets a store asynchronously
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
-        /// </remarks>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
-        {
-            try
-            {
-                if (this._store.Equals(storeID))
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
-                }
-                else
-                {
-                    IAsyncStorageProvider provider;
-#if !NO_PROXY
-                    provider = new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                    provider = new SesameHttpProtocolVersion5Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
-                }
-            }
-            catch (Exception e)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
-            }
-        }
     }
 
     /// <summary>
@@ -1941,30 +1415,6 @@ namespace VDS.RDF.Storage
 #if !NO_SYNC_HTTP
 
         /// <summary>
-        /// Gets the Store with the given ID
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// If the implementation is also an instance of <see cref="IStorageProvider">IStorageProvider</see> and the requested Store ID represents the current instance then it is acceptable for an implementation to return itself.  Consumers of this method should be aware of this and if necessary use other means to create a connection to a store if they want a unique instance of the provider.
-        /// </remarks>
-        public override IStorageProvider GetStore(string storeID)
-        {
-            if (this._store.Equals(storeID))
-            {
-                return this;
-            }
-            else
-            {
-#if !NO_PROXY
-                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                return new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
-            }
-        }
-
-        /// <summary>
         /// Makes a SPARQL Update request to the Sesame server
         /// </summary>
         /// <param name="sparqlUpdate">SPARQL Update</param>
@@ -2015,40 +1465,6 @@ namespace VDS.RDF.Storage
         }
 
 #endif
-
-        /// <summary>
-        /// Gets a store asynchronously
-        /// </summary>
-        /// <param name="storeID">Store ID</param>
-        /// <param name="callback">Callback</param>
-        /// <param name="state">State to pass to the callback</param>
-        /// <remarks>
-        /// If the store ID requested matches the current instance an instance <em>MAY</em> invoke the callback immediately returning a reference to itself
-        /// </remarks>
-        public override void GetStore(string storeID, AsyncStorageCallback callback, object state)
-        {
-            try
-            {
-                if (this._store.Equals(storeID))
-                {
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, this), state);
-                }
-                else
-                {
-                    IAsyncStorageProvider provider;
-#if !NO_PROXY
-                    provider = new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd, this.Proxy);
-#else
-                    provider = new SesameHttpProtocolVersion6Connector(this._baseUri, storeID, this._username, this._pwd);
-#endif
-                    callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, provider), state);
-                }
-            }
-            catch (Exception e)
-            {
-                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.GetStore, storeID, e), state);
-            }
-        }
 
         /// <summary>
         /// Makes a SPARQL Update request to the Sesame server
