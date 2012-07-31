@@ -464,6 +464,11 @@ namespace VDS.RDF
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to a types");
+        }
+
         /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>

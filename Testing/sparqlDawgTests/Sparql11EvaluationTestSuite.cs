@@ -120,6 +120,7 @@ namespace dotNetRDFTest
                     "service/service02.rq",
                     "service/service03.rq",
                     "service/service04.rq",
+                    "service/service04a.rq",
                     "service/service05.rq",
                     "service/service06.rq"                    
                 };

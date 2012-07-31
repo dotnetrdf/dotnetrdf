@@ -518,6 +518,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Throws an error as a Blank Node cannot be case to a time span
+        /// </summary>
+        /// <returns></returns>
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+        }
+
+        /// <summary>
         /// Gets the Numeric Type of the Node
         /// </summary>
         public SparqlNumericType NumericType

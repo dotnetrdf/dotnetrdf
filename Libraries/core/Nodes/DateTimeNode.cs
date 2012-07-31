@@ -169,6 +169,11 @@ namespace VDS.RDF.Nodes
             return this._value;
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot convert Date Times to other types");
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>

@@ -911,6 +911,11 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot cast Blank Nodes to types");
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
@@ -1100,6 +1105,11 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
@@ -1365,6 +1375,12 @@ namespace VDS.RDF.Storage.Virtualisation
             return this._strongValue.AsDateTime();
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            this.EnsureStrongValue();
+            return this._strongValue.AsTimeSpan();
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
@@ -1558,6 +1574,11 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot cast a URI to a type");
+        }
+
         /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>
@@ -1747,6 +1768,11 @@ namespace VDS.RDF.Storage.Virtualisation
         /// </summary>
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
+        {
+            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }

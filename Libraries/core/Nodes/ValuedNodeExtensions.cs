@@ -68,7 +68,7 @@ namespace VDS.RDF.Nodes
                     //Decide what kind of valued node to produce based on node datatype
                     if (lit.DataType != null)
                     {
-                        String dt = lit.DataType.ToString();
+                        String dt = lit.DataType.AbsoluteUri;
                         switch (dt)
                         {
                             case XmlSpecsHelper.XmlSchemaDataTypeBoolean:
@@ -107,6 +107,17 @@ namespace VDS.RDF.Nodes
                                 if (DateTimeOffset.TryParse(lit.Value, out dateTime))
                                 {
                                     return new DateTimeNode(n.Graph, dateTime, lit.Value);
+                                }
+                                else
+                                {
+                                    return new StringNode(n.Graph, lit.Value, lit.DataType);
+                                }
+                            case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
+                            case XmlSpecsHelper.XmlSchemaDataTypeDuration:
+                                TimeSpan timeSpan;
+                                if (TimeSpan.TryParse(lit.Value, out timeSpan))
+                                {
+                                    return new TimeSpanNode(n.Graph, timeSpan, lit.Value, lit.DataType);
                                 }
                                 else
                                 {

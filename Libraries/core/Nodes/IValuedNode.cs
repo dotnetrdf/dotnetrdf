@@ -104,6 +104,12 @@ namespace VDS.RDF.Nodes
         DateTimeOffset AsDateTime();
 
         /// <summary>
+        /// Gets the Time Span value of the Node
+        /// </summary>
+        /// <returns></returns>
+        TimeSpan AsTimeSpan();
+
+        /// <summary>
         /// Gets the Numeric Type of the Node
         /// </summary>
         SparqlNumericType NumericType

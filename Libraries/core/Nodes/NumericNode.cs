@@ -126,6 +126,11 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Numeric Types cannot be converted into Time spans");
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>

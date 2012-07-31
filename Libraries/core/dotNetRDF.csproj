@@ -102,6 +102,7 @@
     <Compile Include="Core\WrapperTripleCollection.cs" />
     <Compile Include="Core\WrapperTripleStore.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Nodes\TimeSpanNode.cs" />
     <Compile Include="Parsing\BaseGZipParser.cs" />
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\BaseGZipDatasetParser.cs" />

@@ -456,6 +456,11 @@ namespace VDS.RDF
             throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Unable to cast a Graph Literal Node to a type");
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>

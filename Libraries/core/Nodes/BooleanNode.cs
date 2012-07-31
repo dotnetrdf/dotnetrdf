@@ -134,6 +134,11 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot case Boolean to other types");
+        }
+
         /// <summary>
         /// Gets the numeric type of the node
         /// </summary>

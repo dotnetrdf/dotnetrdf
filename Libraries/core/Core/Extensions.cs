@@ -1425,7 +1425,7 @@ namespace VDS.RDF
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(XmlConvert.ToString(t), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
+            return factory.CreateLiteralNode(XmlConvert.ToString(t), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration));
         }
 
         /// <summary>

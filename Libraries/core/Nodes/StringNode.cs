@@ -139,6 +139,11 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Cannot cast this literal node to a type");
         }
 
+        public TimeSpan AsTimeSpan()
+        {
+            throw new RdfQueryException("Cannot case this literal node to a type");
+        }
+
         /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>
