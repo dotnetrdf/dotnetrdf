@@ -266,5 +266,77 @@ WHERE { ?s ?p ?o . }"
             Assert.AreEqual(2, sourceGraph.Triples.Count, "Source Graph should have be modified and now contain 2 triples");
             Assert.AreEqual(expectedGraph, sourceGraph, "Source Graph should match expected Graph");
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertDeleteWithBlankNodes()
+        {
+            //This test adapted from a contribution by Tomasz Pluskiewicz
+            //It was thought to be a bug in SPARQL Update but actually appears to demonstrate two bugs:
+            // 1 - Graph equality incorrectly reports false between Expected and Input - suspect a pathological case
+            // 2 - Query Engine fails to join between blank nodes returned by two triple patterns - likely related to how the blank nodes were constructed
+            String initData = @"@prefix ex: <http://www.example.com/>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+ex:triplesMap rr:predicateObjectMap _:blank .
+_:blank rr:object ex:Employee, ex:Worker .";
+
+            String update = @"PREFIX rr: <http://www.w3.org/ns/r2rml#>
+
+DELETE { ?map rr:object ?value . }
+INSERT { ?map rr:objectMap [ rr:constant ?value ] . }
+WHERE { ?map rr:object ?value }";
+
+            String query = @"prefix ex: <http://www.example.com/>
+prefix rr: <http://www.w3.org/ns/r2rml#>
+
+select *
+where
+{
+ex:triplesMap rr:predicateObjectMap ?predObjMap .
+?predObjMap rr:objectMap ?objMap .
+}";
+
+            String expectedData = @"@prefix ex: <http://www.example.com/>.
+@prefix rr: <http://www.w3.org/ns/r2rml#>.
+
+ex:triplesMap rr:predicateObjectMap _:blank.
+_:blank rr:objectMap _:autos1.
+_:autos1 rr:constant ex:Employee.
+_:autos2 rr:constant ex:Worker.
+_:blank rr:objectMap _:autos2.";
+
+            // given
+            IGraph graph = new Graph();
+            graph.LoadFromString(initData);
+            IGraph expectedGraph = new Graph();
+            expectedGraph.LoadFromString(expectedData);
+
+            Console.WriteLine("Initial Graph:");
+            TestTools.ShowGraph(graph);
+            Console.WriteLine();
+
+            // when
+            TripleStore store = new TripleStore();
+            store.Add(graph);
+
+            var dataset = new InMemoryDataset(store, graph.BaseUri);
+            ISparqlUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            var updateParser = new SparqlUpdateParser();
+            processor.ProcessCommandSet(updateParser.ParseFromString(update));
+
+            Console.WriteLine("Resulting Graph:");
+            TestTools.ShowGraph(graph);
+            Console.WriteLine();
+
+            //Graphs should be equal
+            //GraphDiffReport diff = graph.Difference(expectedGraph);
+            //if (!diff.AreEqual) TestTools.ShowDifferences(diff);
+            //Assert.AreEqual(expectedGraph, graph, "Graphs should be equal");
+
+            //Test the Query
+            SparqlResultSet results = graph.ExecuteQuery(query) as SparqlResultSet;
+            TestTools.ShowResults(results);
+            Assert.IsFalse(results.IsEmpty, "Should be some results");
+        }
     }
 }
