@@ -70,7 +70,6 @@ namespace VDS.RDF.Storage.Virtualisation
         /// The materialised value of the Virtual Node
         /// </summary>
         protected INode _value;
-        private bool _collides = false;
 
         /// <summary>
         /// Creates a new Base Virtual Node
@@ -211,24 +210,6 @@ namespace VDS.RDF.Storage.Virtualisation
             set
             {
                 this._graphUri = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether the Nodes Hash Code collides with other Nodes in the Graph
-        /// </summary>
-        /// <remarks>
-        /// Designed for internal use only, exposed via the Interface in order to simplify implementation.  For Triples the equivalent method is protected internal since we pass a concrete class as the parameter and can do this but without switching the entire API to use <see cref="BaseNode">BaseNode</see> as the type for Nodes the same is not possible and this is not a change we wish to make to the API as it limits extensibility
-        /// </remarks>
-        public bool Collides
-        {
-            get
-            {
-                return this._collides;
-            }
-            set
-            {
-                this._collides = value;
             }
         }
 

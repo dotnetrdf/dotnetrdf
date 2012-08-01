@@ -487,21 +487,6 @@ namespace VDS.RDF
             }
         }
 
-        /// <summary>
-        /// Gets/Sets whether the Triple collides with other Triples in this Graph
-        /// </summary>
-        protected internal bool Collides
-        {
-            get
-            {
-                return this._collides;
-            }
-            set
-            {
-                this._collides = value;
-            }
-        }
-
 #if !SILVERLIGHT
 
         #region ISerializable Members

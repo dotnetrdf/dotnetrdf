@@ -121,7 +121,6 @@ namespace VDS.RDF
                 if (!this._triples.Contains(hash, t))
                 {
                     this._triples.Add(hash, t);
-                    t.Collides = true;
                     this.Index(t);
                     return true;
                 }
@@ -596,7 +595,6 @@ namespace VDS.RDF
                 if (!this._triples.Contains(hash, t))
                 {
                     this._triples.Add(hash, t);
-                    t.Collides = true;
                     this.Index(t);
                     return true;
                 }
@@ -855,7 +853,6 @@ namespace VDS.RDF
                 if (!this._triples.Contains(hash, t))
                 {
                     this._triples.Add(hash, t);
-                    t.Collides = true;
                     this.Index(t);
                     return true;
                 }

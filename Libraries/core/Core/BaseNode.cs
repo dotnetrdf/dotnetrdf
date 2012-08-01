@@ -64,8 +64,6 @@ namespace VDS.RDF
         /// </summary>
         protected int _hashcode;
 
-        private bool _collides = false;
-
         /// <summary>
         /// Base Constructor which instantiates the Graph reference, Graph Uri and Node Type of the Node
         /// </summary>
@@ -112,21 +110,6 @@ namespace VDS.RDF
             set
             {
                 this._graphUri = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether the Nodes Hash Code collides with other Nodes in the Node Collection it is contained within
-        /// </summary>
-        public bool Collides
-        {
-            get
-            {
-                return this._collides;
-            }
-            set
-            {
-                this._collides = value;
             }
         }
 
