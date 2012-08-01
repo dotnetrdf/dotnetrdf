@@ -185,7 +185,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Assert(Triple t)
         {
-            return this._g.Assert(t);
+            return this._g.Assert(t.CopyTriple(this._g));
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         public virtual bool Assert(IEnumerable<Triple> ts)
         {
-            return this._g.Assert(ts);
+            return this._g.Assert(ts.Select(t => t.CopyTriple(this._g)));
         }
 
         /// <summary>

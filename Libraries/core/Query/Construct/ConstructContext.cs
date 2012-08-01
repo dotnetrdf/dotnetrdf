@@ -51,7 +51,7 @@ namespace VDS.RDF.Query.Construct
         private IGraph _g;
         private bool _preserveBNodes = false;
         private Dictionary<String, INode> _bnodeMap;
-        private Dictionary<INode, INode> _nodeMap;
+        private MultiDictionary<INode, INode> _nodeMap;
 
         /// <summary>
         /// Creates a new Construct Context
@@ -180,7 +180,7 @@ namespace VDS.RDF.Query.Construct
         /// </remarks>
         public INode GetNode(INode n)
         {
-            if (this._nodeMap == null) this._nodeMap = new Dictionary<INode,INode>();
+            if (this._nodeMap == null) this._nodeMap = new MultiDictionary<INode,INode>();
 
             if (this._nodeMap.ContainsKey(n)) return this._nodeMap[n];
 

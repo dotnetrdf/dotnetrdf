@@ -225,6 +225,7 @@ namespace VDS.RDF
         {
             if (this._alwaysQueueActions || !this._g.Triples.Contains(t))
             {
+                t = t.CopyTriple(this._g);
                 this._g.Assert(t);
                 this._actions.Add(new TriplePersistenceAction(t));
                 return true;

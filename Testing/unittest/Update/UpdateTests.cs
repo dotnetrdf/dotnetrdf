@@ -271,9 +271,8 @@ WHERE { ?s ?p ?o . }"
         public void SparqlUpdateInsertDeleteWithBlankNodes()
         {
             //This test adapted from a contribution by Tomasz Pluskiewicz
-            //It was thought to be a bug in SPARQL Update but actually appears to demonstrate two bugs:
-            // 1 - Graph equality incorrectly reports false between Expected and Input - suspect a pathological case
-            // 2 - Query Engine fails to join between blank nodes returned by two triple patterns - likely related to how the blank nodes were constructed
+            //It demonstrates an issue in SPARQL Update caused by incorrect Graph
+            //references that can result when using GraphPersistenceWrapper in a SPARQL Update
             String initData = @"@prefix ex: <http://www.example.com/>.
 @prefix rr: <http://www.w3.org/ns/r2rml#>.
 
@@ -328,10 +327,19 @@ _:blank rr:objectMap _:autos2.";
             TestTools.ShowGraph(graph);
             Console.WriteLine();
 
+            Triple x = graph.GetTriplesWithPredicate(graph.CreateUriNode("rr:predicateObjectMap")).FirstOrDefault();
+            INode origBNode = x.Object;
+            Assert.IsTrue(graph.GetTriples(origBNode).Count() > 1, "Should be more than one Triple using the BNode");
+            IEnumerable<Triple> ys = graph.GetTriplesWithSubject(origBNode);
+            foreach (Triple y in ys)
+            {
+                Assert.AreEqual(origBNode, y.Subject, "Blank Nodes should be equal");
+            }
+
             //Graphs should be equal
-            //GraphDiffReport diff = graph.Difference(expectedGraph);
-            //if (!diff.AreEqual) TestTools.ShowDifferences(diff);
-            //Assert.AreEqual(expectedGraph, graph, "Graphs should be equal");
+            GraphDiffReport diff = graph.Difference(expectedGraph);
+            if (!diff.AreEqual) TestTools.ShowDifferences(diff);
+            Assert.AreEqual(expectedGraph, graph, "Graphs should be equal");
 
             //Test the Query
             SparqlResultSet results = graph.ExecuteQuery(query) as SparqlResultSet;
