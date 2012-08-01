@@ -126,6 +126,11 @@
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Operators\ISparqlOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\AdditionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\BaseNumericOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperator.cs" />
+    <Compile Include="Query\Operators\SparqlOperatorType.cs" />
     <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />
     <Compile Include="Query\Optimisation\ImplicitJoinOptimiser.cs" />
     <Compile Include="Query\Optimisation\VariableSubstitutionTransformer.cs" />
