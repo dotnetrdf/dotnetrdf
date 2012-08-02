@@ -898,6 +898,17 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
         public SparqlNumericType NumericType
@@ -1093,6 +1104,17 @@ namespace VDS.RDF.Storage.Virtualisation
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
+        }
+
+        /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return String.Empty;
+            }
         }
 
         /// <summary>
@@ -1363,6 +1385,18 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                this.EnsureStrongValue();
+                return this._strongValue.EffectiveType;
+            }
+        }
+
+        /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
         public SparqlNumericType NumericType
@@ -1561,6 +1595,17 @@ namespace VDS.RDF.Storage.Virtualisation
         }
 
         /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return String.Empty;
+            }
+        }
+
+        /// <summary>
         /// Gets the numeric type of the expression
         /// </summary>
         public SparqlNumericType NumericType
@@ -1756,6 +1801,17 @@ namespace VDS.RDF.Storage.Virtualisation
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
+        }
+
+        /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return String.Empty;
+            }
         }
 
         /// <summary>

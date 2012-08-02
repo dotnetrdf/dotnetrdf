@@ -28,7 +28,7 @@ namespace VDS.RDF.Query.Operators.Numeric
         /// <returns></returns>
         public bool IsApplicable(params IValuedNode[] ns)
         {
-            return ns.Any() && ns.All(n => n.NumericType != SparqlNumericType.NaN);
+            return ns.Length > 0 && ns.All(n => n != null && n.NumericType != SparqlNumericType.NaN);
         }
 
         /// <summary>

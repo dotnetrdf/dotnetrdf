@@ -110,6 +110,17 @@ namespace VDS.RDF.Nodes
         TimeSpan AsTimeSpan();
 
         /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        /// <remarks>
+        /// Either String.Empty if no type or the string form of the type URI
+        /// </remarks>
+        String EffectiveType
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets the Numeric Type of the Node
         /// </summary>
         SparqlNumericType NumericType

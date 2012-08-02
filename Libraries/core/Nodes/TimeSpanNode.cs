@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
@@ -15,6 +16,9 @@ namespace VDS.RDF.Nodes
         : LiteralNode, IValuedNode
     {
         private TimeSpan _value;
+
+        public TimeSpanNode(IGraph g, TimeSpan value)
+            : this(g, value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
@@ -91,6 +95,17 @@ namespace VDS.RDF.Nodes
         public TimeSpan AsTimeSpan()
         {
             return this._value;
+        }
+
+        /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return this.DataType.AbsoluteUri;
+            }
         }
 
         /// <summary>

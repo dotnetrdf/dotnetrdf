@@ -138,6 +138,17 @@ namespace VDS.RDF.Nodes
         {
             throw new RdfQueryException("Cannot case Boolean to other types");
         }
+        /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return XmlSpecsHelper.XmlSchemaDataTypeBoolean;
+            }
+        }
+
 
         /// <summary>
         /// Gets the numeric type of the node

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators.Numeric;
+using VDS.RDF.Query.Operators.DateTime;
 
 namespace VDS.RDF.Query.Operators
 {
@@ -32,10 +33,17 @@ namespace VDS.RDF.Query.Operators
                 }
 
                 //Register default operators
+                //Numerics
                 _operators[SparqlOperatorType.Add].Add(new AdditionOperator());
                 _operators[SparqlOperatorType.Subtract].Add(new SubtractionOperator());
                 _operators[SparqlOperatorType.Divide].Add(new DivisionOperator());
                 _operators[SparqlOperatorType.Multiply].Add(new MultiplicationOperator());
+                //Date Time
+                _operators[SparqlOperatorType.Add].Add(new DateTimeAddition());
+                _operators[SparqlOperatorType.Subtract].Add(new DateTimeSubtraction());
+                //Time Span
+                _operators[SparqlOperatorType.Add].Add(new TimeSpanAddition());
+                _operators[SparqlOperatorType.Subtract].Add(new TimeSpanSubtraction());
 
                 _init = true;
             }

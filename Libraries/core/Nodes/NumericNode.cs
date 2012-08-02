@@ -132,6 +132,17 @@ namespace VDS.RDF.Nodes
         }
 
         /// <summary>
+        /// Gets the URI of the datatype this valued node represents as a String
+        /// </summary>
+        public String EffectiveType
+        {
+            get
+            {
+                return this.DataType.AbsoluteUri;
+            }
+        }
+
+        /// <summary>
         /// Gets the numeric type of the node
         /// </summary>
         public SparqlNumericType NumericType

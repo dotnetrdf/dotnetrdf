@@ -93,7 +93,7 @@ namespace VDS.RDF
         private static bool _useDTDs = true;
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
-        private static bool _rigorousQueryEvaluation = false;
+        private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
@@ -257,6 +257,29 @@ namespace VDS.RDF
             set
             {
                 _rigorousQueryEvaluation = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether to use strict operators
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Strict Operators refers to the interpretation of certian operators like + and - in SPARQL expression evaluation.  If enabled then the operators will function only as specified in the SPARQL specification, if disabled (which is the default) then certain extensions (which the SPARQL specification allows an implementation to provide) will be allowed e.g. date time arithmetic.
+        /// </para>
+        /// <para>
+        /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
+        /// </para>
+        /// </remarks>
+        public static bool StrictOperators
+        {
+            get
+            {
+                return _strictOperators;
+            }
+            set
+            {
+                _strictOperators = value;
             }
         }
 

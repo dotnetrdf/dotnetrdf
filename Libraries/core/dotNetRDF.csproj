@@ -126,6 +126,12 @@
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanSubtraction.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeSubtraction.cs" />
+    <Compile Include="Query\Operators\DateTime\DateTimeAddition.cs" />
+    <Compile Include="Query\Operators\DateTime\TimeSpanAddition.cs" />
     <Compile Include="Query\Operators\ISparqlOperator.cs" />
     <Compile Include="Query\Operators\Numeric\AdditionOperator.cs" />
     <Compile Include="Query\Operators\Numeric\BaseNumericOperator.cs" />
