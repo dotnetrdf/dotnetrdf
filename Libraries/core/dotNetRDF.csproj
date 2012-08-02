@@ -129,6 +129,9 @@
     <Compile Include="Query\Operators\ISparqlOperator.cs" />
     <Compile Include="Query\Operators\Numeric\AdditionOperator.cs" />
     <Compile Include="Query\Operators\Numeric\BaseNumericOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\MultiplicationOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\DivisionOperator.cs" />
+    <Compile Include="Query\Operators\Numeric\SubtractionOperator.cs" />
     <Compile Include="Query\Operators\SparqlOperator.cs" />
     <Compile Include="Query\Operators\SparqlOperatorType.cs" />
     <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />

@@ -11,6 +11,14 @@ namespace VDS.RDF.Query.Operators.Numeric
     public class SubtractionOperator
         : BaseNumericOperator
     {
+        public override SparqlOperatorType Operator
+        {
+            get
+            {
+                return SparqlOperatorType.Subtract;
+            }
+        }
+
         public override Nodes.IValuedNode Apply(params Nodes.IValuedNode[] ns)
         {
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply subtraction when any arguments are null");

@@ -12,6 +12,14 @@ namespace VDS.RDF.Query.Operators
     public interface ISparqlOperator
     {
         /// <summary>
+        /// Gets the Operator this is an implementation of
+        /// </summary>
+        SparqlOperatorType Operator
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets whether the operator can be applied to the given inputs
         /// </summary>
         /// <param name="ns">Inputs</param>

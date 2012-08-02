@@ -11,6 +11,14 @@ namespace VDS.RDF.Query.Operators.Numeric
     public class AdditionOperator
         : BaseNumericOperator
     {
+        public override SparqlOperatorType Operator
+        {
+            get
+            {
+                return SparqlOperatorType.Add;
+            }
+        }
+
         public override Nodes.IValuedNode Apply(params Nodes.IValuedNode[] ns)
         {
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply addition when any arguments are null");

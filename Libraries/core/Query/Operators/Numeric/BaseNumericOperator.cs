@@ -7,14 +7,35 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Operators.Numeric
 {
+    /// <summary>
+    /// Abstract base class for numeric operators
+    /// </summary>
     public abstract class BaseNumericOperator
         : ISparqlOperator
     {
-        public bool IsApplicable(params IValuedNode[] ns)
+        /// <summary>
+        /// Gets the operator this implementation represents
+        /// </summary>
+        public abstract SparqlOperatorType Operator
         {
-            return ns.All(n => n.NumericType != SparqlNumericType.NaN);
+            get;
         }
 
+        /// <summary>
+        /// Operator is applicable if at least one input and all inputs are numeric
+        /// </summary>
+        /// <param name="ns">Inputs</param>
+        /// <returns></returns>
+        public bool IsApplicable(params IValuedNode[] ns)
+        {
+            return ns.Any() && ns.All(n => n.NumericType != SparqlNumericType.NaN);
+        }
+
+        /// <summary>
+        /// Applies the operator
+        /// </summary>
+        /// <param name="ns">Inputs</param>
+        /// <returns></returns>
         public abstract IValuedNode Apply(params IValuedNode[] ns);
     }
 }
