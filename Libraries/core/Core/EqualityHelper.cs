@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -727,6 +728,36 @@ namespace VDS.RDF
                                         return 1;
                                     }
                                     else
+                                    {
+                                        return a.Value.CompareTo(b.Value);
+                                    }
+                                }
+
+                            case XmlSpecsHelper.XmlSchemaDataTypeDuration:
+                            case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
+                                //Extract the TimeSpan's and compare
+                                TimeSpan aTimeSpan, bTimeSpan;
+                                try
+                                {
+                                    aTimeSpan = XmlConvert.ToTimeSpan(a.Value);
+                                    try
+                                    {
+                                        bTimeSpan = XmlConvert.ToTimeSpan(b.Value);
+                                        return aTimeSpan.CompareTo(bTimeSpan);
+                                    }
+                                    catch
+                                    {
+                                        return -1;
+                                    }
+                                }
+                                catch
+                                {
+                                    try
+                                    {
+                                        bTimeSpan = XmlConvert.ToTimeSpan(b.Value);
+                                        return 1;
+                                    }
+                                    catch
                                     {
                                         return a.Value.CompareTo(b.Value);
                                     }

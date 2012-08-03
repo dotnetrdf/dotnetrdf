@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Linq;
+using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -115,11 +116,12 @@ namespace VDS.RDF.Nodes
                             case XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration:
                             case XmlSpecsHelper.XmlSchemaDataTypeDuration:
                                 TimeSpan timeSpan;
-                                if (TimeSpan.TryParse(lit.Value, out timeSpan))
+                                try
                                 {
+                                    timeSpan = XmlConvert.ToTimeSpan(lit.Value);
                                     return new TimeSpanNode(n.Graph, timeSpan, lit.Value, lit.DataType);
                                 }
-                                else
+                                catch
                                 {
                                     return new StringNode(n.Graph, lit.Value, lit.DataType);
                                 }
