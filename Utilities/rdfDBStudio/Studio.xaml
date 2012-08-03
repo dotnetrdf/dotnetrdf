@@ -1,0 +1,45 @@
+﻿<Window x:Class="rdfDBStudio.Studio"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="RDF Database Studio" Height="642" Width="1479">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Menu>
+            <MenuItem Header="File" />
+            <MenuItem Header="View" />
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Name="mnuAbout" />
+            </MenuItem>
+        </Menu>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100*" />
+                <ColumnDefinition Width="1" />
+                <ColumnDefinition Width="500*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <TreeView>
+                <TreeViewItem Header="Servers"></TreeViewItem>
+                <TreeViewItem Header="Connections"></TreeViewItem>
+             </TreeView>
+            
+            <GridSplitter Grid.Column="1" />
+            
+            <TabControl Name="tabDocuments" Grid.Column="2">
+                
+            </TabControl>
+        </Grid>
+
+        <StatusBar Name="stsInformation" Grid.Row="2" />
+    </Grid>
+</Window>
