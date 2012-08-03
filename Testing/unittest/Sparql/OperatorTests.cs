@@ -73,6 +73,43 @@ namespace VDS.RDF.Test.Sparql
             }
         }
 
+        private void TestApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected, bool shouldFail)
+        {
+            ISparqlOperator op = null;
+            if (SparqlOperators.TryGetOperator(opType, out op, ns.ToArray()))
+            {
+                IValuedNode actual;
+                try
+                {
+                    actual = op.Apply(ns.ToArray());
+                }
+                catch (Exception ex)
+                {
+                    if (shouldFail) return;
+                    throw;
+                }
+
+                Assert.AreEqual(expected, actual);
+            }
+            else
+            {
+                if (!shouldFail) Assert.Fail("Expected to be able to select an operator to apply to the inputs");
+            }
+        }
+
+        private void TestStrictApplication(SparqlOperatorType opType, IEnumerable<IValuedNode> ns, IValuedNode expected, bool shouldFail)
+        {
+            try
+            {
+                Options.StrictOperators = true;
+                this.TestApplication(opType, ns, expected, shouldFail);
+            }
+            finally
+            {
+                Options.StrictOperators = false;
+            }
+        }
+
         [TestMethod]
         public void SparqlOperatorLookup1()
         {
@@ -131,6 +168,32 @@ namespace VDS.RDF.Test.Sparql
         {
             this.TestLookup(SparqlOperatorType.Subtract, typeof(TimeSpanSubtraction), this._tsArgs, true);
             this.TestStrictLookup(SparqlOperatorType.Subtract, null, this._tsArgs, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric1()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new LongNode(null, 2)
+            };
+            IValuedNode expected = new LongNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddDateTime1()
+        {
+            DateTimeOffset now = DateTimeOffset.Now;
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DateTimeNode(null, now),
+                new TimeSpanNode(null, new TimeSpan(1, 0, 0))
+            };
+            IValuedNode expected = new DateTimeNode(null, now.AddHours(1));
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+            this.TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
         }
     }
 }
