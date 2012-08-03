@@ -74,6 +74,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\Debug\Sparql11EvaluationTestSuite.txt" />
+    <Content Include="bin\Debug\SparqlEvaluationTestSuite.txt" />
     <Content Include="sparql11_tests\add\add-01.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

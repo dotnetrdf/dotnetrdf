@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Query.Expressions.Arithmetic
 {
@@ -65,23 +66,35 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
         {
             IValuedNode a = this._leftExpr.Evaluate(context, bindingID);
             IValuedNode b = this._rightExpr.Evaluate(context, bindingID);
-            if (a == null || b == null) throw new RdfQueryException("Cannot apply subtraction when one/both arguments are null");
-            
-            SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
 
-            switch (type)
+            IValuedNode[] inputs = new IValuedNode[] { a, b };
+            ISparqlOperator op = null;
+            if (SparqlOperators.TryGetOperator(SparqlOperatorType.Subtract, out op, inputs))
             {
-                case SparqlNumericType.Integer:
-                    return new LongNode(null, a.AsInteger() - b.AsInteger());
-                case SparqlNumericType.Decimal:
-                    return new DecimalNode(null, a.AsDecimal() - b.AsDecimal());
-                case SparqlNumericType.Float:
-                    return new FloatNode(null, a.AsFloat() - b.AsFloat());
-                case SparqlNumericType.Double:
-                    return new DoubleNode(null, a.AsDouble() - b.AsDouble());
-                default:
-                    throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+                return op.Apply(inputs);
             }
+            else
+            {
+                throw new RdfQueryException("Cannot apply addition to the given inputs");
+            }
+
+            //if (a == null || b == null) throw new RdfQueryException("Cannot apply subtraction when one/both arguments are null");
+            
+            //SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
+
+            //switch (type)
+            //{
+            //    case SparqlNumericType.Integer:
+            //        return new LongNode(null, a.AsInteger() - b.AsInteger());
+            //    case SparqlNumericType.Decimal:
+            //        return new DecimalNode(null, a.AsDecimal() - b.AsDecimal());
+            //    case SparqlNumericType.Float:
+            //        return new FloatNode(null, a.AsFloat() - b.AsFloat());
+            //    case SparqlNumericType.Double:
+            //        return new DoubleNode(null, a.AsDouble() - b.AsDouble());
+            //    default:
+            //        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
+            //}
         }
 
         /// <summary>
