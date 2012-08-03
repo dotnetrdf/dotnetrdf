@@ -183,6 +183,42 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric1()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new LongNode(null, 2)
+            };
+            IValuedNode expected = new LongNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric1()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new LongNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, 0.5m);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric1()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 3),
+                new LongNode(null, 6)
+            };
+            IValuedNode expected = new LongNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
         public void SparqlOperatorApplicationAddDateTime1()
         {
             DateTimeOffset now = DateTimeOffset.Now;
@@ -194,6 +230,20 @@ namespace VDS.RDF.Test.Sparql
             IValuedNode expected = new DateTimeNode(null, now.AddHours(1));
             this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
             this.TestStrictApplication(SparqlOperatorType.Add, ns, expected, true);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractDateTime1()
+        {
+            DateTimeOffset now = DateTimeOffset.Now;
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DateTimeNode(null, now),
+                new TimeSpanNode(null, new TimeSpan(1, 0, 0))
+            };
+            IValuedNode expected = new DateTimeNode(null, now.AddHours(-1));
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+            this.TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }
     }
 }
