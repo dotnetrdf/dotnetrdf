@@ -5,7 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Windows;
 
-namespace rdfDBStudio
+namespace VDS.RDF.Utilities.Studio
 {
     /// <summary>
     /// Interaction logic for App.xaml
