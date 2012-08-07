@@ -249,6 +249,9 @@ namespace VDS.RDF.Query.Patterns
         }
     }
 
+    /// <summary>
+    /// Interface for Triple Patterns that do property paths
+    /// </summary>
     public interface IPropertyPathPattern
         : ITriplePattern, IComparable<IPropertyPathPattern>
     {
@@ -274,15 +277,18 @@ namespace VDS.RDF.Query.Patterns
         }
     }
 
+    /// <summary>
+    /// Interface for Triple Patterns that do property functions
+    /// </summary>
     public interface IPropertyFunctionPattern
         : ITriplePattern, IComparable<IPropertyFunctionPattern>
     {
-        IEnumerable<PatternItem> LhsArgs
+        IEnumerable<PatternItem> SubjectArgs
         {
             get;
         }
 
-        IEnumerable<PatternItem> RhsArgs
+        IEnumerable<PatternItem> ObjectArgs
         {
             get;
         }

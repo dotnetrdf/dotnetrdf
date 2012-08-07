@@ -46,7 +46,15 @@ namespace VDS.RDF.Query.PropertyFunctions
     /// </summary>
     public static class PropertyFunctionFactory
     {
-        private static List<IPropertyFunctionFactory> _factories;
+        private static List<IPropertyFunctionFactory> _factories = new List<IPropertyFunctionFactory>();
+
+        public static int FactoryCount
+        {
+            get
+            {
+                return _factories.Count;
+            }
+        }
 
         public static void AddFactory(IPropertyFunctionFactory factory)
         {
@@ -61,6 +69,22 @@ namespace VDS.RDF.Query.PropertyFunctions
             lock (_factories)
             {
                 _factories.Remove(factory);
+            }
+        }
+
+        public static bool IsRegisteredFactory(Type factoryType)
+        {
+            lock (_factories)
+            {
+                return _factories.Any(f => f.GetType().Equals(factoryType));
+            }
+        }
+
+        public static bool IsRegisteredFactory(IPropertyFunctionFactory factory)
+        {
+            lock (_factories)
+            {
+                return _factories.Contains(factory);
             }
         }
 

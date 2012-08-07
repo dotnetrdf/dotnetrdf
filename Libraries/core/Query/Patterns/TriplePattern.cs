@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing Triple Patterns in SPARQL Queries
     /// </summary>
     public class TriplePattern
-        : BaseTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
+        : BaseTriplePattern, IMatchTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
     {
         private TripleIndexType _indexType = TripleIndexType.None;
         private PatternItem _subj, _pred, _obj;
@@ -633,6 +633,11 @@ namespace VDS.RDF.Query.Patterns
         }
 
         public int CompareTo(TriplePattern other)
+        {
+            return base.CompareTo(other);
+        }
+
+        public int CompareTo(IMatchTriplePattern other)
         {
             return base.CompareTo(other);
         }

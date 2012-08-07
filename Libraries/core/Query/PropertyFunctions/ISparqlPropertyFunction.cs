@@ -37,10 +37,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.PropertyFunctions
 {
+    /// <summary>
+    /// Interface for SPARQL property functions
+    /// </summary>
     public interface ISparqlPropertyFunction
     {
+        /// <summary>
+        /// Gets the Function URI
+        /// </summary>
+        Uri FunctionUri
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Evaluates the function in the given context
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns></returns>
+        BaseMultiset Evaluate(SparqlEvaluationContext context);
     }
 }

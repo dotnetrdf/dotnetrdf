@@ -48,6 +48,9 @@ namespace VDS.RDF.Query.Patterns
         private List<PatternItem> _lhsArgs, _rhsArgs;
         private ISparqlPropertyFunction _function;
 
+        public PropertyFunctionPattern(PropertyFunctionInfo info, ISparqlPropertyFunction propertyFunction)
+            : this(info.Patterns, info.SubjectArgs, info.ObjectArgs, propertyFunction) { }
+
         public PropertyFunctionPattern(IEnumerable<ITriplePattern> origPatterns, IEnumerable<PatternItem> lhsArgs, IEnumerable<PatternItem> rhsArgs, ISparqlPropertyFunction propertyFunction)
         {
             this._patterns = origPatterns.ToList();
@@ -64,7 +67,7 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
-        public IEnumerable<PatternItem> LhsArgs
+        public IEnumerable<PatternItem> SubjectArgs
         {
             get
             {
@@ -72,7 +75,7 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
-        public IEnumerable<PatternItem> RhsArgs
+        public IEnumerable<PatternItem> ObjectArgs
         {
             get
             {
@@ -98,7 +101,7 @@ namespace VDS.RDF.Query.Patterns
 
         public override void Evaluate(SparqlEvaluationContext context)
         {
-            throw new NotImplementedException();
+            context.OutputMultiset = this._function.Evaluate(context);
         }
 
         public override bool IsAcceptAll

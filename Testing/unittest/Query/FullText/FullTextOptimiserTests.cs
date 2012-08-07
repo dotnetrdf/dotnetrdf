@@ -75,7 +75,7 @@ namespace VDS.RDF.Test.Query.FullText
 
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);
-            Assert.IsTrue(algebra.Contains("FullTextMatch("), "Optimised Algebra should use FullTextMatch operator");
+            Assert.IsTrue(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
         }
 
         [TestMethod]

@@ -48,6 +48,7 @@ using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Query.Optimisation;
+using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Query.FullText
@@ -99,8 +100,10 @@ namespace VDS.RDF.Test.Query.FullText
             Console.WriteLine(formatter.Format(q));
 
             LuceneSearchProvider provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
+            FullTextPropertyFunctionFactory factory = new FullTextPropertyFunctionFactory();
             try
             {
+                PropertyFunctionFactory.AddFactory(factory);
                 q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(provider) };
 
                 LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._dataset);
@@ -125,6 +128,7 @@ namespace VDS.RDF.Test.Query.FullText
             }
             finally
             {
+                PropertyFunctionFactory.RemoveFactory(factory);
                 provider.Dispose();
                 LuceneTestHarness.Index.Close();
             }

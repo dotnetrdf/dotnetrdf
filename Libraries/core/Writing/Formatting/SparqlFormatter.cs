@@ -515,7 +515,40 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append(")");
                     break;
                 case TriplePatternType.PropertyFunction:
-                    throw new NotImplementedException();
+                    IPropertyFunctionPattern propFunc = (IPropertyFunctionPattern)tp;
+                    if (propFunc.SubjectArgs.Count() > 1)
+                    {
+                        output.Append("( ");
+                        foreach (PatternItem arg in propFunc.SubjectArgs)
+                        {
+                            output.Append(this.Format(arg, TripleSegment.Subject));
+                            output.Append(' ');
+                        }
+                        output.Append(')');
+                    }
+                    else
+                    {
+                        output.Append(this.Format(propFunc.SubjectArgs.First(), TripleSegment.Subject));
+                    }
+                    output.Append(" <");
+                    output.Append(this.FormatUri(propFunc.PropertyFunction.FunctionUri));
+                    output.Append("> ");
+                    if (propFunc.ObjectArgs.Count() > 1)
+                    {
+                        output.Append("( ");
+                        foreach (PatternItem arg in propFunc.ObjectArgs)
+                        {
+                            output.Append(this.Format(arg, TripleSegment.Object));
+                            output.Append(' ');
+                        }
+                        output.Append(')');
+                    }
+                    else
+                    {
+                        output.Append(this.Format(propFunc.ObjectArgs.First(), TripleSegment.Object));
+                    }
+                    output.Append(" .");
+                    break;
                 default:
                     throw new RdfOutputException("Unable to Format an unknown ITriplePattern implementation as a String");
             }

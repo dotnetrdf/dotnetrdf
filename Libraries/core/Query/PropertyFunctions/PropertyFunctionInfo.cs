@@ -41,12 +41,15 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.PropertyFunctions
 {
+    /// <summary>
+    /// Represents information about a property function
+    /// </summary>
     public class PropertyFunctionInfo
     {
         private Uri _funcUri;
         private List<IMatchTriplePattern> _patterns = new List<IMatchTriplePattern>();
-        private List<PatternItem> _lhsArgs = new List<PatternItem>();
-        private List<PatternItem> _rhsArgs = new List<PatternItem>();
+        private List<PatternItem> _subjArgs = new List<PatternItem>();
+        private List<PatternItem> _objArgs = new List<PatternItem>();
 
         public PropertyFunctionInfo(Uri u)
         {
@@ -69,19 +72,19 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
-        public List<PatternItem> LhsArgs
+        public List<PatternItem> SubjectArgs
         {
             get
             {
-                return this._lhsArgs;
+                return this._subjArgs;
             }
         }
 
-        public List<PatternItem> RhsArgs
+        public List<PatternItem> ObjectArgs
         {
             get
             {
-                return this._rhsArgs;
+                return this._objArgs;
             }
         }
     }

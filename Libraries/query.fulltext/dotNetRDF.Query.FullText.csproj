@@ -69,8 +69,9 @@
     <Compile Include="..\data.virtuoso\DataExtensions.cs">
       <Link>DataExtensions.cs</Link>
     </Compile>
-    <Compile Include="Algebra\BaseFullTextOperator.cs" />
-    <Compile Include="Algebra\FullTextMatch.cs" />
+    <Compile Include="Algebra\FullTextQuery.cs" />
+    <Compile Include="PropertyFunctions\FullTextMatchPropertyFunction.cs" />
+    <Compile Include="PropertyFunctions\FullTextPropertyFunctionFactory.cs" />
     <None Include="Expressions\FullTextFunctionFactory.cs" />
     <None Include="Expressions\Functions\FullTextMatchFunction.cs" />
     <Compile Include="Datasets\FullTextIndexedDataset.cs" />
@@ -93,7 +94,6 @@
     <Compile Include="FullText\Search\Lucene\LuceneSearchProvider.cs" />
     <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Optimisation\FullTextOptimiser.cs" />
-    <Compile Include="Patterns\FullTextPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,9 +122,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PropertyFunctions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

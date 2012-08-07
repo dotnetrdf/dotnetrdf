@@ -46,6 +46,8 @@ namespace VDS.RDF.Query.Optimisation
         private static IQueryOptimiser _queryOpt = new DefaultOptimiser();
         private static List<IAlgebraOptimiser> _algebraOpt = new List<IAlgebraOptimiser>()
         {
+            //Optimise to insert Property Functions first - this is always a no-op if none registered
+            new PropertyFunctionOptimiser(),
             //Optimise for Lazy Evaluation
             new AskBgpOptimiser(),
             new LazyBgpOptimiser(),

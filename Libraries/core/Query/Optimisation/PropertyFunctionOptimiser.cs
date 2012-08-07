@@ -1,4 +1,4 @@
-/*
+﻿/*
 
 Copyright dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -44,11 +44,21 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Query.Optimisation
 {
+    /// <summary>
+    /// An algebra optimiser that looks for property functions specified by simple triple patterns in BGPs and replaces them with actual property function patterns
+    /// </summary>
     public class PropertyFunctionOptimiser
         : IAlgebraOptimiser
     {
+        /// <summary>
+        /// Optimises the algebra to include property functions
+        /// </summary>
+        /// <param name="algebra">Algebra</param>
+        /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
+            if (PropertyFunctionFactory.FactoryCount == 0) return algebra;
+
             if (algebra is IBgp)
             {
                 IBgp current = (IBgp)algebra;
@@ -79,7 +89,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
 
                     //Make the insert
-                    if (origLocation >= ps.Count)
+                    if (origLocation >= ps.Count || ps.Count == 0)
                     {
                         ps.Add(propFunc);
                     }
@@ -110,14 +120,24 @@ namespace VDS.RDF.Query.Optimisation
             }
         }
 
+        /// <summary>
+        /// Returns that the optimiser is applicable
+        /// </summary>
+        /// <param name="q">Query</param>
+        /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
-            return true;
+            return PropertyFunctionFactory.FactoryCount > 0;
         }
 
+        /// <summary>
+        /// Returns that the optimiser is applicable
+        /// </summary>
+        /// <param name="cmds">Update Commands</param>
+        /// <returns></returns>
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
-            return true;
+            return PropertyFunctionFactory.FactoryCount > 0;
         }
     }
 }

@@ -95,6 +95,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Libraries\query.fulltext\FullTextExtensions.cs">
+      <Link>Query\FullText\FullTextExtensions.cs</Link>
+    </Compile>
     <Compile Include="BaseTest.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
@@ -171,12 +174,6 @@
     </Compile>
     <Compile Include="..\..\Libraries\data.virtuoso\DataExtensions.cs">
       <Link>DataExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Libraries\query.fulltext\FullTextExtensions.cs">
-      <Link>Query\FullText\FullTextExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Libraries\query.fulltext\FullTextHelper.cs">
-      <Link>Query\FullText\FullTextHelper.cs</Link>
     </Compile>
     <Compile Include="Core\CompareToTests.cs" />
     <Compile Include="Core\GraphDiffTests.cs" />
