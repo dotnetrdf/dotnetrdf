@@ -42,9 +42,9 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.PropertyFunctions
 {
     /// <summary>
-    /// Helper Class containing extension functions useful in working with property functions
+    /// Helper Class containing functions useful in working with property functions
     /// </summary>
-    public static class PropertyFunctionExtensions
+    public static class PropertyFunctionHelper
     {
         /// <summary>
         /// Used to extract the patterns that make up property functions
