@@ -602,7 +602,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._graphPatterns.Count == 0 && this._triplePatterns.Count == 1 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._triplePatterns[0] is SubQueryPattern);
+                return (this._graphPatterns.Count == 0 && this._triplePatterns.Count == 1 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._triplePatterns[0].PatternType == TriplePatternType.SubQuery);
             }
         }
 
@@ -836,7 +836,7 @@ namespace VDS.RDF.Query.Patterns
                         output.Append(lines[i]);
                         if (i < lines.Length - 1) output.AppendLine();
                     }
-                    if (!(tp is SubQueryPattern)) output.Append(" . ");
+                    if (tp.PatternType != TriplePatternType.SubQuery) output.Append(" . ");
                     if (linebreaks) output.AppendLine();
                 }
                 else

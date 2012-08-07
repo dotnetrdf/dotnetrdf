@@ -39,6 +39,7 @@ using System.Linq;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Storage.Virtualisation;
 using VDS.RDF.Update;
@@ -99,7 +100,7 @@ namespace VDS.RDF.Query.Optimisation
 
                     for (int i = 0; i < current.PatternCount; i++)
                     {
-                        if (ps[i] is FilterPattern || ps[i] is BindPattern)
+                        if (ps[i].PatternType == TriplePatternType.Filter || ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
                         {
                             //First ensure that if we've found any other Triple Patterns up to this point
                             //we dump this into a BGP and join with the result so far
@@ -108,20 +109,20 @@ namespace VDS.RDF.Query.Optimisation
                                 result = Join.CreateJoin(result, new Bgp(patterns));
                                 patterns.Clear();
                             }
-                            if (ps[i] is FilterPattern)
+                            if (ps[i].PatternType == TriplePatternType.Filter)
                             {
-                                result = new Filter(result, ((FilterPattern)ps[i]).Filter);
+                                result = new Filter(result, new UnaryExpressionFilter(this.Transform(((IFilterPattern)ps[i]).Filter.Expression)));
                             }
                             else
                             {
-                                BindPattern bind = (BindPattern)ps[i];
-                                result = new Extend(result, bind.AssignExpression, bind.VariableName);
+                                IAssignmentPattern bind = (IAssignmentPattern)ps[i];
+                                result = new Extend(result, this.Transform(bind.AssignExpression), bind.VariableName);
                             }
                         }
-                        else
+                        else if (ps[i].PatternType == TriplePatternType.Match)
                         {
                             //Convert Terms in the Pattern into Virtual Nodes
-                            TriplePattern tp = (TriplePattern)ps[i];
+                            IMatchTriplePattern tp = (IMatchTriplePattern)ps[i];
                             PatternItem subj, pred, obj;
                             if (tp.Subject is NodeMatchPattern)
                             {
@@ -175,6 +176,11 @@ namespace VDS.RDF.Query.Optimisation
                                 obj = tp.Object;
                             }
                             patterns.Add(new TriplePattern(subj, pred, obj));
+                        }
+                        else
+                        {
+                            //Can't optimize if other pattern types involved
+                            return current;
                         }
                     }
 

@@ -104,6 +104,6 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern</param>
         /// <returns></returns>
-        IComparer<Triple> GetComparer(TriplePattern pattern);
+        IComparer<Triple> GetComparer(IMatchTriplePattern pattern);
     }
 }

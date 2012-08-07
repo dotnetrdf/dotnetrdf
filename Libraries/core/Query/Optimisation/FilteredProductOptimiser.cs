@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Optimisation
                     if (filterVars.All(v => vars.Contains(v))) return false;
 
                     ITriplePattern p = ps[i];
-                    if (p is TriplePattern || p is SubQueryPattern)
+                    if (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.SubQuery)
                     {
                         if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
                         {
@@ -144,11 +144,11 @@ namespace VDS.RDF.Query.Optimisation
                         }
                         vars.AddRange(p.Variables);
                     }
-                    else if (p is IAssignmentPattern)
+                    else if (p.PatternType == TriplePatternType.BindAssignment || p.PatternType == TriplePatternType.LetAssignment)
                     {
                         vars.Add(((IAssignmentPattern)p).VariableName);
                     }
-                    else if (p is FilterPattern)
+                    else if (p.PatternType == TriplePatternType.Filter)
                     {
                         continue;
                     }

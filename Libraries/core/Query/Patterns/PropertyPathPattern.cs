@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing property patterns in SPARQL Queries
     /// </summary>
     public class PropertyPathPattern
-        : BaseTriplePattern
+        : BaseTriplePattern, IPropertyPathPattern, IComparable<PropertyPathPattern>
     {
         private PatternItem _subj, _obj;
         private ISparqlPath _path;
@@ -75,6 +75,14 @@ namespace VDS.RDF.Query.Patterns
                 if (!this._vars.Contains(this._obj.VariableName)) this._vars.Add(this._obj.VariableName);
             }
             this._vars.Sort();
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get
+            {
+                return TriplePatternType.Path;
+            }
         }
 
         /// <summary>
@@ -174,6 +182,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return false;
             }
+        }
+
+        public int CompareTo(PropertyPathPattern other)
+        {
+            return this.CompareTo((IPropertyPathPattern)other);
+        }
+
+        public int CompareTo(IPropertyPathPattern other)
+        {
+            return base.CompareTo(other);
         }
 
         /// <summary>

@@ -128,9 +128,9 @@ SELECT * WHERE
 
             Console.WriteLine(this._formatter.Format(q));
 
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] is FilterPattern, "First Triple Pattern should not be the FilterPattern");
-            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1] is FilterPattern, "Second Triple Pattern should be the FilterPattern");
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[2] is FilterPattern, "Third Triple Pattern should not be the FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Filter, "First Triple Pattern should not be the FilterPattern");
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1].PatternType == TriplePatternType.Filter, "Second Triple Pattern should be the FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[2].PatternType == TriplePatternType.Filter, "Third Triple Pattern should not be the FilterPattern");
         }
 
         [TestMethod]
@@ -150,12 +150,12 @@ SELECT * WHERE
 
             Console.WriteLine(this._formatter.Format(q));
 
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] is FilterPattern, "First Triple Pattern should not be a FilterPattern");
-            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1] is FilterPattern, "Second Triple Pattern should be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should be a FilterPattern");
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns[1].Variables.Count, "First Filter should have 1 Variable");
             Assert.AreEqual("label", q.RootGraphPattern.TriplePatterns[1].Variables.First(), "First Filters Variable should be label");
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[2] is FilterPattern, "Third Triple Pattern should not be a FilterPattern");
-            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[3] is FilterPattern, "Second Triple Pattern should be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[2] .PatternType == TriplePatternType.Filter, "Third Triple Pattern should not be a FilterPattern");
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns[3] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should be a FilterPattern");
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns[3].Variables.Count, "Second Filter should have 1 Variable");
             Assert.AreEqual("type", q.RootGraphPattern.TriplePatterns[3].Variables.First(), "Second Filters Variable should be type");
         }
@@ -178,8 +178,8 @@ SELECT * WHERE
 
             Console.WriteLine(this._formatter.Format(q));
 
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] is FilterPattern, "First Triple Pattern should not be a FilterPattern");
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[1] is FilterPattern, "Second Triple Pattern should not be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
             Assert.AreEqual(0, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count, "Child Graph Pattern should have no Triple Patterns");
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 
@@ -207,8 +207,8 @@ SELECT * WHERE
 
             Console.WriteLine(this._formatter.Format(q));
 
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] is FilterPattern, "First Triple Pattern should not be a FilterPattern");
-            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[1] is FilterPattern, "Second Triple Pattern should not be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[0] .PatternType == TriplePatternType.Filter, "First Triple Pattern should not be a FilterPattern");
+            Assert.IsFalse(q.RootGraphPattern.TriplePatterns[1] .PatternType == TriplePatternType.Filter, "Second Triple Pattern should not be a FilterPattern");
             Assert.AreEqual(0, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count, "Child Graph Pattern should have no Triple Patterns");
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsFiltered, "Child Graph Pattern should be filtered");
 

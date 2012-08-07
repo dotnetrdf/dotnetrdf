@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing LET Patterns in SPARQL Queries
     /// </summary>
     public class LetPattern
-        : BaseTriplePattern, IComparable<LetPattern>, IComparable<IAssignmentPattern>, IAssignmentPattern
+        : BaseTriplePattern, IComparable<LetPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;
@@ -60,7 +60,6 @@ namespace VDS.RDF.Query.Patterns
         {
             this._var = var;
             this._expr = expr;
-            this._indexType = TripleIndexType.SpecialAssignment;
             this._vars = this._var.AsEnumerable().Concat(this._expr.Variables).Distinct().ToList();
             this._vars.Sort();
         }
@@ -129,6 +128,14 @@ namespace VDS.RDF.Query.Patterns
                     }
                 }
                 context.OutputMultiset = new IdentityMultiset();
+            }
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get
+            {
+                return TriplePatternType.LetAssignment;
             }
         }
 

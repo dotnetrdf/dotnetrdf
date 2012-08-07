@@ -45,7 +45,7 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing Sub-queries which occur as part of a SPARQL query
     /// </summary>
     public class SubQueryPattern 
-        : BaseTriplePattern
+        : BaseTriplePattern, ISubQueryPattern, IComparable<SubQueryPattern>
     {
         private SparqlQuery _subquery;
 
@@ -56,7 +56,6 @@ namespace VDS.RDF.Query.Patterns
         public SubQueryPattern(SparqlQuery subquery)
         {
             this._subquery = subquery;
-            this._indexType = TripleIndexType.SpecialSubQuery;
             
             //Get the Variables this query projects out
             foreach (SparqlVariable var in this._subquery.Variables)
@@ -77,6 +76,14 @@ namespace VDS.RDF.Query.Patterns
             get
             {
                 return this._subquery;
+            }
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get 
+            {
+                return TriplePatternType.SubQuery; 
             }
         }
 
@@ -170,6 +177,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return true;
             }
+        }
+
+        public int CompareTo(SubQueryPattern other)
+        {
+            return this.CompareTo((ISubQueryPattern)other);
+        }
+
+        public int CompareTo(ISubQueryPattern other)
+        {
+            return base.CompareTo(other);
         }
 
         /// <summary>

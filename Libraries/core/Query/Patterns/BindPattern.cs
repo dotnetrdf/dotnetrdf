@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing BIND assignments in SPARQL Queries
     /// </summary>
     public class BindPattern
-        : BaseTriplePattern, IComparable<BindPattern>, IComparable<IAssignmentPattern>, IAssignmentPattern
+        : BaseTriplePattern, IComparable<BindPattern>, IAssignmentPattern
     {
         private String _var;
         private ISparqlExpression _expr;
@@ -60,7 +60,6 @@ namespace VDS.RDF.Query.Patterns
         {
             this._var = var;
             this._expr = expr;
-            this._indexType = TripleIndexType.SpecialAssignment;
             this._vars = this._var.AsEnumerable().Concat(this._expr.Variables).Distinct().ToList();
             this._vars.Sort();
         }
@@ -114,6 +113,14 @@ namespace VDS.RDF.Query.Patterns
                     }
                     context.OutputMultiset.Add(s);
                 }
+            }
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get
+            {
+                return TriplePatternType.BindAssignment;
             }
         }
 

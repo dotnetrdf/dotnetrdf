@@ -83,23 +83,7 @@ namespace VDS.RDF
         /// <summary>
         /// Subject-Object Index should be used
         /// </summary>
-        SubjectObject = 4,
-        /// <summary>
-        /// The Pattern is actually a FILTER
-        /// </summary>
-        SpecialFilter = 10,
-        /// <summary>
-        /// The Pattern is actually a LET/BIND assignment
-        /// </summary>
-        SpecialAssignment = 11,
-        /// <summary>
-        /// The Pattern is actually a Sub-query
-        /// </summary>
-        SpecialSubQuery = 12,
-        /// <summary>
-        /// The Pattern is actually a Property Path
-        /// </summary>
-        SpecialPropertyPath = 9
+        SubjectObject = 4
     }
 
     /// <summary>
@@ -130,6 +114,7 @@ namespace VDS.RDF
     /// <summary>
     /// Helper Class for indexing related operations
     /// </summary>
+    [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", false)]
     public static class IndexHelper
     {
         /// <summary>
@@ -140,6 +125,7 @@ namespace VDS.RDF
         /// <param name="comparer">Comparer to use for binary search</param>
         /// <param name="search">Item to search for</param>
         /// <returns></returns>
+        [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", false)]
         public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)
         {
             //If Index is empty then there are no results

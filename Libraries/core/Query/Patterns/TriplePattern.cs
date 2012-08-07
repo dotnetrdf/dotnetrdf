@@ -50,8 +50,9 @@ namespace VDS.RDF.Query.Patterns
     /// Class for representing Triple Patterns in SPARQL Queries
     /// </summary>
     public class TriplePattern
-        : BaseTriplePattern, IConstructTriplePattern
+        : BaseTriplePattern, IConstructTriplePattern, IComparable<TriplePattern>
     {
+        private TripleIndexType _indexType = TripleIndexType.None;
         private PatternItem _subj, _pred, _obj;
 
         /// <summary>
@@ -167,6 +168,25 @@ namespace VDS.RDF.Query.Patterns
             else
             {
                 return (this._subj.Accepts(context, obj.Subject) && obj.Subject.Equals(obj.Predicate) && obj.Subject.Equals(obj.Object));
+            }
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get 
+            {
+                return TriplePatternType.Match;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Index Type we will use for this Pattern
+        /// </summary>
+        public TripleIndexType IndexType
+        {
+            get
+            {
+                return this._indexType;
             }
         }
 
@@ -547,7 +567,7 @@ namespace VDS.RDF.Query.Patterns
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        public Set CreateResult(Triple t)
+        public ISet CreateResult(Triple t)
         {
             Set s = new Set();
             if (this._subj.VariableName != null)
@@ -610,6 +630,11 @@ namespace VDS.RDF.Query.Patterns
                        (this._pred is NodeMatchPattern || this._pred is VariablePattern || this._pred is FixedBlankNodePattern) &&
                        (this._obj is NodeMatchPattern || this._obj is VariablePattern || this._obj is FixedBlankNodePattern);
             }
+        }
+
+        public int CompareTo(TriplePattern other)
+        {
+            return base.CompareTo(other);
         }
 
         /// <summary>

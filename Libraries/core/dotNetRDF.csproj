@@ -149,8 +149,15 @@
     <Compile Include="Query\Expressions\SparqlExpressionFactory.cs" />
     <Compile Include="Query\Filters\SparqlFilterClasses.cs" />
     <Compile Include="Query\Ordering\SparqlOrderByClasses.cs" />
+    <Compile Include="Query\Patterns\PropertyFunctionPattern.cs" />
     <Compile Include="Query\Patterns\SparqlPatternClasses.cs" />
     <Compile Include="Query\Patterns\TriplePattern.cs" />
+    <Compile Include="Query\Patterns\TriplePatternType.cs" />
+    <Compile Include="Query\PropertyFunctions\IPropertyFunctionFactory.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionExtensions.cs" />
+    <Compile Include="Query\PropertyFunctions\ISparqlPropertyFunction.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
+    <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
     <Compile Include="Query\SparqlExpressionParser.cs" />
     <Compile Include="Query\SparqlResult.cs" />
     <Compile Include="Query\SparqlResultBinder.cs" />

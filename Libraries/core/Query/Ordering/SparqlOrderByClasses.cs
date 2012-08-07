@@ -47,7 +47,8 @@ namespace VDS.RDF.Query.Ordering
     /// <summary>
     /// Base Class for implementing Sparql ORDER BYs
     /// </summary>
-    public abstract class BaseOrderBy : ISparqlOrderBy
+    public abstract class BaseOrderBy 
+        : ISparqlOrderBy
     {
         /// <summary>
         /// Holds the Child Order By (if any)
@@ -152,7 +153,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern</param>
         /// <returns></returns>
-        public abstract IComparer<Triple> GetComparer(TriplePattern pattern);
+        public abstract IComparer<Triple> GetComparer(IMatchTriplePattern pattern);
 
         /// <summary>
         /// Gets the String representation of the Order By
@@ -164,7 +165,8 @@ namespace VDS.RDF.Query.Ordering
     /// <summary>
     /// An ORDER BY which orders on the values bound to a particular variable
     /// </summary>
-    public class OrderByVariable : BaseOrderBy
+    public class OrderByVariable
+        : BaseOrderBy
     {
         private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
         private String _varname = String.Empty;
@@ -220,7 +222,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern</param>
         /// <returns></returns>
-        public override IComparer<Triple> GetComparer(TriplePattern pattern)
+        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
             IComparer<Triple> child = (this._child == null) ? null : this._child.GetComparer(pattern);
             Func<Triple, Triple, int> compareFunc = null;
@@ -327,7 +329,8 @@ namespace VDS.RDF.Query.Ordering
     /// <summary>
     /// An ORDER BY which orders based on the values of a Sparql Expression
     /// </summary>
-    public class OrderByExpression : BaseOrderBy
+    public class OrderByExpression
+        : BaseOrderBy
     {
         private SparqlOrderingComparer _comparer = new SparqlOrderingComparer();
         private ISparqlExpression _expr;
@@ -407,7 +410,7 @@ namespace VDS.RDF.Query.Ordering
         /// </summary>
         /// <param name="pattern">Triple Pattern</param>
         /// <returns></returns>
-        public override IComparer<Triple> GetComparer(TriplePattern pattern)
+        public override IComparer<Triple> GetComparer(IMatchTriplePattern pattern)
         {
             if (this._expr is VariableTerm)
             {

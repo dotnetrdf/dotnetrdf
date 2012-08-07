@@ -159,8 +159,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Literal, "First Triple Pattern should have object 'example'");
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Literal, "First Triple Pattern should have object 'example'");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
 
             }
             finally
@@ -189,8 +189,8 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Literal, "Second Triple Pattern should have object 'example'");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Literal, "Second Triple Pattern should have object 'example'");
             }
             finally
             {
@@ -219,9 +219,9 @@ SELECT * WHERE
 
                 Console.WriteLine(this._formatter.Format(q));
 
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[2]).Object).Node.NodeType == NodeType.Literal, "Third Triple Pattern should have object 'example'");
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
-                Assert.IsTrue(((NodeMatchPattern)((TriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[2]).Object).Node.NodeType == NodeType.Literal, "Third Triple Pattern should have object 'example'");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[1]).Object).Node.NodeType == NodeType.Uri, "Second Triple Pattern should have object rdfs:Class");
+                Assert.IsTrue(((NodeMatchPattern)((IMatchTriplePattern)q.RootGraphPattern.TriplePatterns[0]).Object).Node.NodeType == NodeType.Uri, "First Triple Pattern should have object rdfs:Class");
 
             }
             finally

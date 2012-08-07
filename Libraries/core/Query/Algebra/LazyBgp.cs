@@ -108,7 +108,7 @@ namespace VDS.RDF.Query.Algebra
 
         private bool IsLazilyEvaluablePattern(ITriplePattern p)
         {
-            return (p is TriplePattern || p is FilterPattern || p is BindPattern);
+            return (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.Filter || p.PatternType == TriplePatternType.BindAssignment);
         }
 
         /// <summary>
@@ -231,9 +231,9 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset initialInput, localOutput, results = null;
 
             //Determine whether the Pattern modifies the existing Input rather than joining to it
-            bool modifies = (this._triplePatterns[pattern] is FilterPattern);
-            bool extended = (pattern > 0 && this._triplePatterns[pattern-1] is BindPattern);
-            bool modified = (pattern > 0 && this._triplePatterns[pattern-1] is FilterPattern);
+            bool modifies = (this._triplePatterns[pattern].PatternType == TriplePatternType.Filter);
+            bool extended = (pattern > 0 && this._triplePatterns[pattern-1].PatternType == TriplePatternType.BindAssignment);
+            bool modified = (pattern > 0 && this._triplePatterns[pattern-1].PatternType == TriplePatternType.Filter);
 
             //Set up the Input and Output Multiset appropriately
             switch (pattern)
@@ -289,10 +289,10 @@ namespace VDS.RDF.Query.Algebra
             int resultsFound = 0;
             int prevResults = -1;
 
-            if (temp is TriplePattern)
+            if (temp.PatternType == TriplePatternType.Match)
             {
                 //Find the first Triple which matches the Pattern
-                TriplePattern tp = (TriplePattern)temp;
+                IMatchTriplePattern tp = (IMatchTriplePattern)temp;
                 IEnumerable<Triple> ts = tp.GetTriples(context);
 
                 //In the case that we're lazily evaluating an optimisable ORDER BY then
@@ -408,9 +408,9 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
             }
-            else if (temp is FilterPattern)
+            else if (temp.PatternType == TriplePatternType.Filter)
             {
-                FilterPattern filter = (FilterPattern)temp;
+                IFilterPattern filter = (IFilterPattern)temp;
                 ISparqlExpression filterExpr = filter.Filter.Expression;
 
                 if (filter.Variables.IsDisjoint(context.InputMultiset.Variables))
@@ -622,7 +622,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            foreach (TriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in this._triplePatterns)
             {
                 p.AddTriplePattern(tp);
             }

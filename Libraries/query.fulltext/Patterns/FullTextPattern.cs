@@ -168,36 +168,13 @@ namespace VDS.RDF.Query.Patterns
             if (this._searchTerm == null) throw new RdfQueryException("Failed to specify search terms");
         }
 
-#if UNFINISHED
-        /// <summary>
-        /// Creates a new Full Text Pattern
-        /// </summary>
-        /// <param name="matchVar">Match Variable</param>
-        /// <param name="scoreVar">Score Variable</param>
-        /// <param name="searchTerm">Search Term</param>
-        public FullTextPattern(PatternItem matchVar, PatternItem scoreVar, PatternItem searchTerm)
+        public override TriplePatternType PatternType
         {
-            this._matchVar = matchVar;
-            this._scoreVar = scoreVar;
-            this._searchTerm = searchTerm;
-
-            NodeFactory factory = new NodeFactory();
-            if (this._scoreVar != null)
+            get 
             {
-                BlankNodePattern a = new BlankNodePattern(factory.GetNextBlankNodeID());
-                BlankNodePattern b = new BlankNodePattern(factory.GetNextBlankNodeID());
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst))), this._matchVar));
-                this._origPatterns.Add(new TriplePattern(a, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest))), b));
-                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListFirst))), this._scoreVar));
-                this._origPatterns.Add(new TriplePattern(b, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListRest))), new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfListNil)))));
-            }
-            else
-            {
-                this._origPatterns.Add(new TriplePattern(this._matchVar, new NodeMatchPattern(factory.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri))), this._searchTerm));
+                return TriplePatternType.PropertyFunction;
             }
         }
-#endif
 
         /// <summary>
         /// Gets the Original Triple Patterns

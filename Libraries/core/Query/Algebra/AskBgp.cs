@@ -87,7 +87,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         private bool IsAskEvaluablePattern(ITriplePattern p)
         {
-            return (p is TriplePattern || p is FilterPattern);
+            return (p.PatternType == TriplePatternType.Match || p.PatternType == TriplePatternType.Filter);
         }
 
         /// <summary>
@@ -202,10 +202,10 @@ namespace VDS.RDF.Query.Algebra
             ITriplePattern temp = this._triplePatterns[pattern];
             int resultsFound = 0;
 
-            if (temp is TriplePattern)
+            if (temp.PatternType == TriplePatternType.Match)
             {
                 //Find the first Triple which matches the Pattern
-                TriplePattern tp = (TriplePattern)temp;
+                IMatchTriplePattern tp = (IMatchTriplePattern)temp;
                 foreach (Triple t in tp.GetTriples(context))
                 {
                     //Remember to check for Timeout during lazy evaluation
@@ -251,9 +251,9 @@ namespace VDS.RDF.Query.Algebra
                     }
                 }
             }
-            else if (temp is FilterPattern)
+            else if (temp.PatternType == TriplePatternType.Filter)
             {
-                FilterPattern fp = (FilterPattern)temp;
+                IFilterPattern fp = (IFilterPattern)temp;
                 ISparqlFilter filter = fp.Filter;
                 ISparqlExpression expr = filter.Expression;
 
@@ -371,7 +371,7 @@ namespace VDS.RDF.Query.Algebra
         public GraphPattern ToGraphPattern()
         {
             GraphPattern p = new GraphPattern();
-            foreach (TriplePattern tp in this._triplePatterns)
+            foreach (ITriplePattern tp in this._triplePatterns)
             {
                 p.AddTriplePattern(tp);
             }

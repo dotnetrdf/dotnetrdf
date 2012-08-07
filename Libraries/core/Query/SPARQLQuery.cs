@@ -1316,7 +1316,7 @@ namespace VDS.RDF.Query
                             {
                                 if (this._rootGraphPattern.TriplePatterns.Count > 0)
                                 {
-                                    if (this._rootGraphPattern.TriplePatterns[0] is TriplePattern)
+                                    if (this._rootGraphPattern.TriplePatterns[0].PatternType == TriplePatternType.Match)
                                     {
                                         //If all the Ordering variables occur in the 1st Triple Pattern then we can optimise
                                         this._optimisableOrdering = this._orderBy.Variables.All(v => this._rootGraphPattern.TriplePatterns[0].Variables.Contains(v));

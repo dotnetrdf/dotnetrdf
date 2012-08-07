@@ -47,10 +47,6 @@ namespace VDS.RDF.Query.Patterns
         : ITriplePattern
     {
         /// <summary>
-        /// Stores the Index Type for the Triple Pattern
-        /// </summary>
-        protected TripleIndexType _indexType = TripleIndexType.None;
-        /// <summary>
         /// Stores the list of variables that are used in the Pattern
         /// </summary>
         protected List<String> _vars = new List<string>();
@@ -62,20 +58,17 @@ namespace VDS.RDF.Query.Patterns
         public abstract void Evaluate(SparqlEvaluationContext context);
 
         /// <summary>
-        /// Gets the Index Type we will use for this Pattern
-        /// </summary>
-        public TripleIndexType IndexType
-        {
-            get 
-            {
-                return this._indexType;
-            }
-        }
-
-        /// <summary>
         /// Returns whether the Triple Pattern is an accept all
         /// </summary>
         public abstract bool IsAcceptAll
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Triple Pattern Type
+        /// </summary>
+        public abstract TriplePatternType PatternType
         {
             get;
         }
@@ -146,8 +139,8 @@ namespace VDS.RDF.Query.Patterns
 
                     //If we reach this point then we contain the same variables
                     //Now we order based on our Index Types
-                    TripleIndexSorter sorter = new TripleIndexSorter();
-                    return sorter.Compare(this.IndexType, other.IndexType);
+                    TriplePatternTypeComparer sorter = new TriplePatternTypeComparer();
+                    return sorter.Compare(this.PatternType, other.PatternType);
                 }
                 else
                 {

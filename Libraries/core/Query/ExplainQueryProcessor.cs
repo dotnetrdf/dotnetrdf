@@ -291,25 +291,29 @@ namespace VDS.RDF.Query
                     StringBuilder output = new StringBuilder();
 
                     //Print what will happen
-                    if (ps[i] is FilterPattern)
+                    if (ps[i].PatternType == TriplePatternType.Filter)
                     {
                         output.Append("Apply ");
                     }
-                    else if (ps[i] is IAssignmentPattern)
+                    else if (ps[i].PatternType == TriplePatternType.BindAssignment || ps[1].PatternType == TriplePatternType.LetAssignment)
                     {
                         output.Append("Extend by Assignment with ");
                     }
-                    else if (ps[i] is SubQueryPattern)
+                    else if (ps[i].PatternType == TriplePatternType.SubQuery)
                     {
                         output.Append("Sub-query ");
                     }
-                    else if (ps[i] is PropertyPathPattern)
+                    else if (ps[i].PatternType == TriplePatternType.Path)
                     {
                         output.Append("Property Path ");
                     }
+                    else if (ps[1].PatternType == TriplePatternType.PropertyFunction)
+                    {
+                        output.Append("Property Function ");
+                    }
 
                     //Print the type of Join to be performed
-                    if (i > 0 && (ps[i] is TriplePattern || ps[i] is SubQueryPattern || ps[i] is PropertyPathPattern))
+                    if (i > 0 && (ps[i].PatternType == TriplePatternType.Match || ps[i].PatternType == TriplePatternType.SubQuery || ps[i].PatternType == TriplePatternType.Path))
                     {
                         if (vars.IsDisjoint<String>(ps[i].Variables))
                         {
@@ -329,7 +333,7 @@ namespace VDS.RDF.Query
                     output.Append(this._formatter.Format(ps[i]));
 
                     //Update variables seen so far unless a FILTER which cannot introduce new variables
-                    if (!(ps[i] is FilterPattern))
+                    if (ps[i].PatternType != TriplePatternType.Filter)
                     {
                         foreach (String var in ps[i].Variables)
                         {

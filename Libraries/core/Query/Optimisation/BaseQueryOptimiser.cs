@@ -339,7 +339,7 @@ namespace VDS.RDF.Query.Optimisation
             List<String> variablesUsed = new List<string>();
             for (int p = 0; p < gp.TriplePatterns.Count; p++)
             {
-                if (gp.TriplePatterns[p] is TriplePattern || gp.TriplePatterns[p] is IAssignmentPattern)
+                if (gp.TriplePatterns[p].PatternType == TriplePatternType.Match || gp.TriplePatterns[p].PatternType == TriplePatternType.BindAssignment || gp.TriplePatterns[p].PatternType == TriplePatternType.LetAssignment)
                 {
                     foreach (String var in gp.TriplePatterns[p].Variables)
                     {
@@ -389,7 +389,7 @@ namespace VDS.RDF.Query.Optimisation
             List<String> variablesUsed = new List<string>();
             for (int p = 0; p < gp.TriplePatterns.Count; p++)
             {
-                if (gp.TriplePatterns[p] is TriplePattern || gp.TriplePatterns[p] is IAssignmentPattern)
+                if (gp.TriplePatterns[p].PatternType == TriplePatternType.Match || gp.TriplePatterns[p].PatternType == TriplePatternType.BindAssignment || gp.TriplePatterns[p].PatternType == TriplePatternType.LetAssignment)
                 {
                     foreach (String var in gp.TriplePatterns[p].Variables)
                     {

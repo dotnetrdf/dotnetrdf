@@ -75,51 +75,6 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
-        /// Creates a BGP containing a set of Triple Patterns
-        /// </summary>
-        /// <param name="ps">Triple Patterns</param>
-        public Bgp(IEnumerable<TriplePattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
-        /// Creates a BGP containing a set of Let Patterns
-        /// </summary>
-        /// <param name="ps">Let Patterns</param>
-        public Bgp(IEnumerable<LetPattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
-        /// Creates a BGP containing a set of Assignment Patterns
-        /// </summary>
-        /// <param name="ps">Assignment Patterns</param>
-        public Bgp(IEnumerable<IAssignmentPattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
-        /// Creates a BGP containing a set of Filter Patterns
-        /// </summary>
-        /// <param name="ps">Filter Patterns</param>
-        public Bgp(IEnumerable<FilterPattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
-        /// Creates a BGP containing a set of Sub-query Patterns
-        /// </summary>
-        /// <param name="ps">Sub-query Patterns</param>
-        public Bgp(IEnumerable<SubQueryPattern> ps)
-        {
-            this._triplePatterns.AddRange(ps.Select(p => (ITriplePattern)p));
-        }
-
-        /// <summary>
         /// Gets the number of Triple Patterns in the BGP
         /// </summary>
         public int PatternCount
@@ -155,11 +110,11 @@ namespace VDS.RDF.Query.Algebra
                     if (i == 0)
                     {
                         //If the 1st thing in a BGP is a BIND/LET/FILTER the Input becomes the Identity Multiset
-                        if (this._triplePatterns[i] is FilterPattern || this._triplePatterns[i] is BindPattern || this._triplePatterns[i] is LetPattern)
+                        if (this._triplePatterns[i].PatternType == TriplePatternType.Filter || this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment || this._triplePatterns[i].PatternType == TriplePatternType.LetAssignment)
                         {
-                            if (this._triplePatterns[i] is BindPattern)
+                            if (this._triplePatterns[i].PatternType == TriplePatternType.BindAssignment)
                             {
-                                if (context.InputMultiset.ContainsVariable(((BindPattern)this._triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
+                                if (context.InputMultiset.ContainsVariable(((IAssignmentPattern)this._triplePatterns[i]).VariableName)) throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been declared");
                             }
                             else
                             {

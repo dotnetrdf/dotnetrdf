@@ -35,8 +35,12 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Filters;
+using VDS.RDF.Query.Paths;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Query.Patterns
 {
@@ -52,12 +56,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Query Evaluation Context</param>
         void Evaluate(SparqlEvaluationContext context);
 
-        /// <summary>
-        /// Gets the Index type that should be used in Pattern execution
-        /// </summary>
-        TripleIndexType IndexType 
-        { 
-            get; 
+        TriplePatternType PatternType
+        {
+            get;
         }
 
         /// <summary>
@@ -103,7 +104,7 @@ namespace VDS.RDF.Query.Patterns
     /// <summary>
     /// Interface for Triple Patterns that can be used in a CONSTRUCT pattern
     /// </summary>
-    public interface IConstructTriplePattern 
+    public interface IConstructTriplePattern
         : ITriplePattern
     {
         /// <summary>
@@ -155,6 +156,65 @@ namespace VDS.RDF.Query.Patterns
     }
 
     /// <summary>
+    /// Inteface for Triple Patterns that do simple pattern matching
+    /// </summary>
+    public interface IMatchTriplePattern
+        : ITriplePattern, IComparable<IMatchTriplePattern>
+    {
+        /// <summary>
+        /// Gets the Index type that should be used in Pattern execution
+        /// </summary>
+        TripleIndexType IndexType
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Subject of the Pattern
+        /// </summary>
+        PatternItem Subject
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Predicate of the Pattern
+        /// </summary>
+        PatternItem Predicate
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Object of the Pattern
+        /// </summary>
+        PatternItem Object
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Triples that match this pattern
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriples(SparqlEvaluationContext context);
+
+        bool Accepts(SparqlEvaluationContext context, Triple t);
+
+        ISet CreateResult(Triple t);
+    }
+
+    public interface IFilterPattern
+        : ITriplePattern, IComparable<IFilterPattern>
+    {
+        ISparqlFilter Filter
+        {
+            get;
+        }
+    }
+
+    /// <summary>
     /// Interface for Triple Patterns that represent Assignment operators
     /// </summary>
     public interface IAssignmentPattern
@@ -172,6 +232,67 @@ namespace VDS.RDF.Query.Patterns
         /// Name of the Variable which is assigned to
         /// </summary>
         String VariableName
+        {
+            get;
+        }
+    }
+
+    /// <summary>
+    /// Interface for Triple Patterns that do sub-queries
+    /// </summary>
+    public interface ISubQueryPattern
+        : ITriplePattern, IComparable<ISubQueryPattern>
+    {
+        SparqlQuery SubQuery
+        {
+            get;
+        }
+    }
+
+    public interface IPropertyPathPattern
+        : ITriplePattern, IComparable<IPropertyPathPattern>
+    {
+        /// <summary>
+        /// Gets the Subject of the Pattern
+        /// </summary>
+        PatternItem Subject
+        {
+            get;
+        }
+
+        ISparqlPath Path
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the Object of the Pattern
+        /// </summary>
+        PatternItem Object
+        {
+            get;
+        }
+    }
+
+    public interface IPropertyFunctionPattern
+        : ITriplePattern, IComparable<IPropertyFunctionPattern>
+    {
+        IEnumerable<PatternItem> LhsArgs
+        {
+            get;
+        }
+
+        IEnumerable<PatternItem> RhsArgs
+        {
+            get;
+        }
+
+        ISparqlPropertyFunction PropertyFunction
+        {
+            get;
+        }
+
+        IEnumerable<ITriplePattern> OriginalPatterns
         {
             get;
         }

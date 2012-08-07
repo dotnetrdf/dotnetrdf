@@ -364,7 +364,7 @@ namespace VDS.RDF.Writing.Formatting
             else if (gp.IsSubQuery)
             {
                 output.AppendLine("{");
-                output.AppendLineIndented(this.Format(((SubQueryPattern)gp.TriplePatterns[0]).SubQuery), 2);
+                output.AppendLineIndented(this.Format(((ISubQueryPattern)gp.TriplePatterns[0]).SubQuery), 2);
                 output.AppendLine("}");
                 return output.ToString();
             }
@@ -466,61 +466,58 @@ namespace VDS.RDF.Writing.Formatting
         public virtual String Format(ITriplePattern tp)
         {
             StringBuilder output = new StringBuilder();
-            if (tp is TriplePattern)
+            switch (tp.PatternType)
             {
-                TriplePattern match = (TriplePattern)tp;
-                output.Append(this.Format(match.Subject, TripleSegment.Subject));
-                output.Append(' ');
-                output.Append(this.Format(match.Predicate, TripleSegment.Predicate));
-                output.Append(' ');
-                output.Append(this.Format(match.Object, TripleSegment.Object));
-                output.Append(" .");
-            }
-            else if (tp is FilterPattern)
-            {
-                FilterPattern filter = (FilterPattern)tp;
-                output.Append("FILTER(");
-                output.Append(this.FormatExpression(filter.Filter.Expression));
-                output.Append(")");
-            }
-            else if (tp is SubQueryPattern)
-            {
-                SubQueryPattern subquery = (SubQueryPattern)tp;
-                output.AppendLine("{");
-                output.AppendLineIndented(this.Format(subquery.SubQuery), 2);
-                output.AppendLine("}");
-            }
-            else if (tp is PropertyPathPattern)
-            {
-                PropertyPathPattern path = (PropertyPathPattern)tp;
-                output.Append(this.Format(path.Subject, TripleSegment.Subject));
-                output.Append(' ');
-                output.Append(this.FormatPath(path.Path));
-                output.Append(' ');
-                output.Append(this.Format(path.Object, TripleSegment.Object));
-                output.Append(" .");
-            }
-            else if (tp is LetPattern)
-            {
-                LetPattern let = (LetPattern)tp;
-                output.Append("LET(?");
-                output.Append(let.VariableName);
-                output.Append(" := ");
-                output.Append(this.FormatExpression(let.AssignExpression));
-                output.Append(")");
-            }
-            else if (tp is BindPattern)
-            {
-                BindPattern bind = (BindPattern)tp;
-                output.Append("BIND (");
-                output.Append(this.FormatExpression(bind.AssignExpression));
-                output.Append(" AS ?");
-                output.Append(bind.VariableName);
-                output.Append(")");
-            }
-            else
-            {
-                throw new RdfOutputException("Unable to Format an unknown ITriplePattern implementation as a String");
+                case TriplePatternType.Match:
+                    IMatchTriplePattern match = (IMatchTriplePattern)tp;
+                    output.Append(this.Format(match.Subject, TripleSegment.Subject));
+                    output.Append(' ');
+                    output.Append(this.Format(match.Predicate, TripleSegment.Predicate));
+                    output.Append(' ');
+                    output.Append(this.Format(match.Object, TripleSegment.Object));
+                    output.Append(" .");
+                    break;
+                case TriplePatternType.Filter:
+                    IFilterPattern filter = (IFilterPattern)tp;
+                    output.Append("FILTER(");
+                    output.Append(this.FormatExpression(filter.Filter.Expression));
+                    output.Append(")");
+                    break;
+                case TriplePatternType.SubQuery:
+                    ISubQueryPattern subquery = (ISubQueryPattern)tp;
+                    output.AppendLine("{");
+                    output.AppendLineIndented(this.Format(subquery.SubQuery), 2);
+                    output.AppendLine("}");
+                    break;
+                case TriplePatternType.Path:
+                    IPropertyPathPattern path = (IPropertyPathPattern)tp;
+                    output.Append(this.Format(path.Subject, TripleSegment.Subject));
+                    output.Append(' ');
+                    output.Append(this.FormatPath(path.Path));
+                    output.Append(' ');
+                    output.Append(this.Format(path.Object, TripleSegment.Object));
+                    output.Append(" .");
+                    break;
+                case TriplePatternType.LetAssignment:
+                    IAssignmentPattern let = (IAssignmentPattern)tp;
+                    output.Append("LET(?");
+                    output.Append(let.VariableName);
+                    output.Append(" := ");
+                    output.Append(this.FormatExpression(let.AssignExpression));
+                    output.Append(")");
+                    break;
+                case TriplePatternType.BindAssignment:
+                    IAssignmentPattern bind = (IAssignmentPattern)tp;
+                    output.Append("BIND (");
+                    output.Append(this.FormatExpression(bind.AssignExpression));
+                    output.Append(" AS ?");
+                    output.Append(bind.VariableName);
+                    output.Append(")");
+                    break;
+                case TriplePatternType.PropertyFunction:
+                    throw new NotImplementedException();
+                default:
+                    throw new RdfOutputException("Unable to Format an unknown ITriplePattern implementation as a String");
             }
 
             return output.ToString();

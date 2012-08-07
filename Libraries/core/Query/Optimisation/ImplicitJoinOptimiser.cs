@@ -228,43 +228,43 @@ namespace VDS.RDF.Query.Optimisation
                     if (vars.Contains(lhsVar) && vars.Contains(rhsVar)) return false;
 
                     ITriplePattern p = ps[i];
-                    if (p is TriplePattern || p is SubQueryPattern)
+                    switch (p.PatternType)
                     {
-                        if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
-                        {
-                            //May be a filterable product if we've seen only one variable so far and have hit a point where a product occurs
-                            if (vars.Contains(lhsVar) && !vars.Contains(rhsVar))
+                        case TriplePatternType.Match:
+                        case TriplePatternType.SubQuery:
+                            if (vars.Count > 0 && vars.IsDisjoint(p.Variables))
                             {
-                                Bgp rhs = new Bgp(ps.Skip(i));
-                                if (rhs.Variables.Contains(rhsVar))
+                                //May be a filterable product if we've seen only one variable so far and have hit a point where a product occurs
+                                if (vars.Contains(lhsVar) && !vars.Contains(rhsVar))
                                 {
-                                    splitPoint = i;
-                                    return true;
+                                    Bgp rhs = new Bgp(ps.Skip(i));
+                                    if (rhs.Variables.Contains(rhsVar))
+                                    {
+                                        splitPoint = i;
+                                        return true;
+                                    }
+                                }
+                                else if (vars.Contains(rhsVar) && !vars.Contains(lhsVar))
+                                {
+                                    Bgp rhs = new Bgp(ps.Skip(i));
+                                    if (rhs.Variables.Contains(lhsVar))
+                                    {
+                                        splitPoint = i;
+                                        return true;
+                                    }
                                 }
                             }
-                            else if (vars.Contains(rhsVar) && !vars.Contains(lhsVar))
-                            {
-                                Bgp rhs = new Bgp(ps.Skip(i));
-                                if (rhs.Variables.Contains(lhsVar))
-                                {
-                                    splitPoint = i;
-                                    return true;
-                                }
-                            }
-                        }
-                        vars.AddRange(p.Variables);
-                    }
-                    else if (p is IAssignmentPattern)
-                    {
-                        vars.Add(((IAssignmentPattern)p).VariableName);
-                    }
-                    else if (p is FilterPattern)
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        return false;
+                            vars.AddRange(p.Variables);
+                            break;
+                        case TriplePatternType.BindAssignment:
+                        case TriplePatternType.LetAssignment:
+                            vars.Add(((IAssignmentPattern)p).VariableName);
+                            break;
+                        case TriplePatternType.Filter:
+                            continue;
+                        default:
+                            //Can't determine if it is a disjoint operation if other pattern types are involved
+                            return false;
                     }
                 }
                 //If we get all the way here then not a product

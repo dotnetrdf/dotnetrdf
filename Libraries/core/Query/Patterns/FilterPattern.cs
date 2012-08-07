@@ -50,7 +50,7 @@ namespace VDS.RDF.Query.Patterns
     /// A Filter Pattern is any FILTER clause that can be executed during the process of executing Triple Patterns rather than after all the Triple Patterns and Child Graph Patterns have been executed
     /// </remarks>
     public class FilterPattern 
-        : BaseTriplePattern
+        : BaseTriplePattern, IFilterPattern, IComparable<FilterPattern>
     {
         private ISparqlFilter _filter;
 
@@ -61,7 +61,6 @@ namespace VDS.RDF.Query.Patterns
         public FilterPattern(ISparqlFilter filter)
         {
             this._filter = filter;
-            this._indexType = TripleIndexType.SpecialFilter;
             this._vars = filter.Variables.Distinct().ToList();
             this._vars.Sort();
         }
@@ -103,6 +102,14 @@ namespace VDS.RDF.Query.Patterns
                 this._filter.Evaluate(context);
             }
             context.OutputMultiset = new IdentityMultiset();
+        }
+
+        public override TriplePatternType PatternType
+        {
+            get
+            {
+                return TriplePatternType.Filter;
+            }
         }
 
         /// <summary>
@@ -150,6 +157,16 @@ namespace VDS.RDF.Query.Patterns
             {
                 return true;
             }
+        }
+
+        public int CompareTo(FilterPattern other)
+        {
+            return this.CompareTo((IFilterPattern)other);
+        }
+
+        public int CompareTo(IFilterPattern other)
+        {
+            return base.CompareTo(other);
         }
 
         /// <summary>

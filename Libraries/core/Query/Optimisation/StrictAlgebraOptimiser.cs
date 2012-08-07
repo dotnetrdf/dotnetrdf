@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Optimisation
                         //Can't split the BGP if there are Blank Nodes present
                         if (!ps[i].HasNoBlankVariables) return current;
 
-                        if (!(ps[i] is TriplePattern))
+                        if (ps[i].PatternType != TriplePatternType.Match)
                         {
                             //First ensure that if we've found any other Triple Patterns up to this point
                             //we dump this into a BGP and join with the result so far
@@ -93,29 +93,26 @@ namespace VDS.RDF.Query.Optimisation
                             }
 
                             //Then generate the appropriate strict algebra operator
-                            if (ps[i] is FilterPattern)
+                            switch (ps[i].PatternType)
                             {
-                                result = new Filter(result, ((FilterPattern)ps[i]).Filter);
-                            }
-                            else if (ps[i] is BindPattern)
-                            {
-                                BindPattern bind = (BindPattern)ps[i];
-                                result = new Extend(result, bind.AssignExpression, bind.VariableName);
-                            }
-                            else if (ps[i] is LetPattern)
-                            {
-                                LetPattern let = (LetPattern)ps[i];
-                                result = new Extend(result, let.AssignExpression, let.VariableName);
-                            }
-                            else if (ps[i] is SubQueryPattern)
-                            {
-                                SubQueryPattern sq = (SubQueryPattern)ps[i];
-                                result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
-                            }
-                            else if (ps[i] is PropertyPathPattern)
-                            {
-                                PropertyPathPattern pp = (PropertyPathPattern)ps[i];
-                                result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
+                                case TriplePatternType.Filter:
+                                    result = new Filter(result, ((IFilterPattern)ps[i]).Filter);
+                                    break;
+                                case TriplePatternType.BindAssignment:
+                                case TriplePatternType.LetAssignment:
+                                    IAssignmentPattern assignment = (IAssignmentPattern)ps[i];
+                                    result = new Extend(result, assignment.AssignExpression, assignment.VariableName);
+                                    break;
+                                case TriplePatternType.SubQuery:
+                                    ISubQueryPattern sq = (ISubQueryPattern)ps[i];
+                                    result = Join.CreateJoin(result, new SubQuery(sq.SubQuery));
+                                    break;
+                                case TriplePatternType.Path:
+                                    IPropertyPathPattern pp = (IPropertyPathPattern)ps[i];
+                                    result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
+                                    break;
+                                default:
+                                    throw new RdfQueryException("Cannot apply strict algebra form to a BGP containing a unknown triple pattern type");
                             }
                         }
                         else

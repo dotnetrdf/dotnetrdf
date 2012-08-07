@@ -42,7 +42,8 @@ namespace VDS.RDF.Query.Optimisation
     /// <summary>
     /// The Weighted Optimiser is a Query Optimiser that orders Triple Patterns based on weighting computed calculated against
     /// </summary>
-    public class WeightedOptimiser : BaseQueryOptimiser
+    public class WeightedOptimiser 
+        : BaseQueryOptimiser
     {
         private Weightings _weights;
 
@@ -295,7 +296,8 @@ namespace VDS.RDF.Query.Optimisation
         }
     }
 
-    class WeightingComparer : IComparer<ITriplePattern>
+    class WeightingComparer
+        : IComparer<ITriplePattern>
     {
         private Weightings _weights;
 
@@ -327,49 +329,55 @@ namespace VDS.RDF.Query.Optimisation
 
         private void GetSelectivities(ITriplePattern x, out double subj, out double pred, out double obj)
         {
-            switch (x.IndexType)
+            switch (x.PatternType)
             {
-                case TripleIndexType.NoVariables:
-                    subj = this._weights.SubjectWeighting(((NodeMatchPattern)((TriplePattern)x).Subject).Node);
-                    pred = this._weights.PredicateWeighting(((NodeMatchPattern)((TriplePattern)x).Predicate).Node);
-                    obj = this._weights.ObjectWeighting(((NodeMatchPattern)((TriplePattern)x).Object).Node);
+                case TriplePatternType.Match:
+                    IMatchTriplePattern p = (IMatchTriplePattern)x;
+                    switch (p.IndexType)
+                    {
+                        case TripleIndexType.NoVariables:
+                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            break;
+                        case TripleIndexType.Object:
+                            subj = this._weights.DefaultVariableWeighting;
+                            pred = this._weights.DefaultVariableWeighting;
+                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            break;
+                        case TripleIndexType.Predicate:
+                            subj = this._weights.DefaultVariableWeighting;
+                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = this._weights.DefaultVariableWeighting;
+                            break;
+                        case TripleIndexType.PredicateObject:
+                            subj = this._weights.DefaultVariableWeighting;
+                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = this._weights.ObjectWeighting(((NodeMatchPattern)p.Object).Node);
+                            break;
+                        case TripleIndexType.Subject:
+                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = this._weights.DefaultVariableWeighting;
+                            obj = this._weights.DefaultVariableWeighting;
+                            break;
+                        case TripleIndexType.SubjectObject:
+                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = this._weights.DefaultVariableWeighting;
+                            obj = this._weights.PredicateWeighting(((NodeMatchPattern)p.Object).Node);
+                            break;
+                        case TripleIndexType.SubjectPredicate:
+                            subj = this._weights.SubjectWeighting(((NodeMatchPattern)p.Subject).Node);
+                            pred = this._weights.PredicateWeighting(((NodeMatchPattern)p.Predicate).Node);
+                            obj = this._weights.DefaultVariableWeighting;
+                            break;
+                        default:
+                            //Shouldn't see an unknown index type but have to keep the compiler happy
+                            subj = 1d;
+                            pred = 1d;
+                            obj = 1d;
+                            break;
+                    }
                     break;
-                case TripleIndexType.Object:
-                    subj = this._weights.DefaultVariableWeighting;
-                    pred = this._weights.DefaultVariableWeighting;
-                    obj = this._weights.ObjectWeighting(((NodeMatchPattern)((TriplePattern)x).Object).Node);
-                    break;
-                case TripleIndexType.Predicate:
-                    subj = this._weights.DefaultVariableWeighting;
-                    pred = this._weights.PredicateWeighting(((NodeMatchPattern)((TriplePattern)x).Predicate).Node);
-                    obj = this._weights.DefaultVariableWeighting;
-                    break;
-                case TripleIndexType.PredicateObject:
-                    subj = this._weights.DefaultVariableWeighting;
-                    pred = this._weights.PredicateWeighting(((NodeMatchPattern)((TriplePattern)x).Predicate).Node);
-                    obj = this._weights.ObjectWeighting(((NodeMatchPattern)((TriplePattern)x).Object).Node);
-                    break;
-                case TripleIndexType.Subject:
-                    subj = this._weights.SubjectWeighting(((NodeMatchPattern)((TriplePattern)x).Subject).Node);
-                    pred = this._weights.DefaultVariableWeighting;
-                    obj = this._weights.DefaultVariableWeighting;
-                    break;
-                case TripleIndexType.SubjectObject:
-                    subj = this._weights.SubjectWeighting(((NodeMatchPattern)((TriplePattern)x).Subject).Node);
-                    pred = this._weights.DefaultVariableWeighting;
-                    obj = this._weights.PredicateWeighting(((NodeMatchPattern)((TriplePattern)x).Object).Node);
-                    break;
-                case TripleIndexType.SubjectPredicate:
-                    subj = this._weights.SubjectWeighting(((NodeMatchPattern)((TriplePattern)x).Subject).Node);
-                    pred = this._weights.PredicateWeighting(((NodeMatchPattern)((TriplePattern)x).Predicate).Node);
-                    obj = this._weights.DefaultVariableWeighting;
-                    break;
-
-                case TripleIndexType.None:
-                case TripleIndexType.SpecialAssignment:
-                case TripleIndexType.SpecialFilter:
-                case TripleIndexType.SpecialPropertyPath:
-                case TripleIndexType.SpecialSubQuery:
                 default:
                     //Otherwise all are considered to have equivalent selectivity
                     subj = 1d;
