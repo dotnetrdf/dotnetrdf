@@ -44,7 +44,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Abstract Base Class for Handlers
     /// </summary>
-    public abstract class BaseHandler : INodeFactory
+    public abstract class BaseHandler
+        : INodeFactory
     {
         private INodeFactory _factory;
 
@@ -86,7 +87,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a Blank Node
         /// </summary>
         /// <returns></returns>
-        public IBlankNode CreateBlankNode()
+        public virtual IBlankNode CreateBlankNode()
         {
             return this._factory.CreateBlankNode();
         }
@@ -96,7 +97,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="nodeId">Node ID</param>
         /// <returns></returns>
-        public IBlankNode CreateBlankNode(string nodeId)
+        public virtual IBlankNode CreateBlankNode(string nodeId)
         {
             return this._factory.CreateBlankNode(nodeId);
         }
@@ -105,7 +106,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Creates a Graph Literal Node
         /// </summary>
         /// <returns></returns>
-        public IGraphLiteralNode CreateGraphLiteralNode()
+        public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
             return this._factory.CreateGraphLiteralNode();
         }
@@ -115,7 +116,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="subgraph">Sub-graph</param>
         /// <returns></returns>
-        public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
             return this._factory.CreateGraphLiteralNode(subgraph);
         }
@@ -126,7 +127,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="literal">Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        public virtual ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
             return this._factory.CreateLiteralNode(literal, datatype);
         }
@@ -136,7 +137,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="literal">Value</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal)
+        public virtual ILiteralNode CreateLiteralNode(string literal)
         {
             return this._factory.CreateLiteralNode(literal);
         }
@@ -147,7 +148,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="literal">Value</param>
         /// <param name="langspec">Language</param>
         /// <returns></returns>
-        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        public virtual ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
             return this._factory.CreateLiteralNode(literal, langspec);
         }
@@ -157,7 +158,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="uri">URI</param>
         /// <returns></returns>
-        public IUriNode CreateUriNode(Uri uri)
+        public virtual IUriNode CreateUriNode(Uri uri)
         {
             return this._factory.CreateUriNode(uri);
         }
@@ -167,7 +168,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="varname">Variable Name</param>
         /// <returns></returns>
-        public IVariableNode CreateVariableNode(string varname)
+        public virtual IVariableNode CreateVariableNode(string varname)
         {
             return this._factory.CreateVariableNode(varname);
         }
@@ -176,7 +177,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// Gets the next available Blank Node ID
         /// </summary>
         /// <returns></returns>
-        public string GetNextBlankNodeID()
+        public virtual string GetNextBlankNodeID()
         {
             return this._factory.GetNextBlankNodeID();
         }
@@ -187,7 +188,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Abstract Base Class for RDF Handlers
     /// </summary>
-    public abstract class BaseRdfHandler : BaseHandler, IRdfHandler
+    public abstract class BaseRdfHandler 
+        : BaseHandler, IRdfHandler
     {
         private bool _inUse = false;
 
@@ -319,7 +321,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// Abstract Base Class for SPARQL Results Handlers
     /// </summary>
-    public abstract class BaseResultsHandler : BaseHandler, ISparqlResultsHandler
+    public abstract class BaseResultsHandler
+        : BaseHandler, ISparqlResultsHandler
     {
         private bool _inUse = false;
 

@@ -109,6 +109,7 @@
     <Compile Include="Parsing\BaseGZipResultsParser.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
+    <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
     <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
     <Compile Include="Parsing\RdfJsonParser.cs" />
     <Compile Include="Parsing\RdfSpecsHelper.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Query\Operators\SparqlOperatorType.cs" />
     <Compile Include="Query\Optimisation\FilteredProductOptimiser.cs" />
     <Compile Include="Query\Optimisation\ImplicitJoinOptimiser.cs" />
+    <Compile Include="Query\Optimisation\PropertyFunctionOptimiser.cs" />
     <Compile Include="Query\Optimisation\VariableSubstitutionTransformer.cs" />
     <Compile Include="Query\Patterns\GraphPattern.cs" />
     <Compile Include="Query\Expressions\ISparqlCustomExpressionFactory.cs" />
