@@ -947,7 +947,7 @@ namespace VDS.RDF.Query.Patterns
                 if (this._unplacedAssignments.Count > 0)
                 {
                     //If we have any unplaced LETs these get Joined onto the BGP
-                    bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments));
+                    bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
                 }
                 //Apply Inline Data
                 if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
@@ -1037,7 +1037,7 @@ namespace VDS.RDF.Query.Patterns
                 if (this._unplacedAssignments.Count > 0)
                 {
                     //Unplaced assignments get Joined as a BGP here
-                    complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments));
+                    complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
                 }
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {

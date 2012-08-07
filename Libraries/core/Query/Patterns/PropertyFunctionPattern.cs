@@ -49,7 +49,7 @@ namespace VDS.RDF.Query.Patterns
         private ISparqlPropertyFunction _function;
 
         public PropertyFunctionPattern(PropertyFunctionInfo info, ISparqlPropertyFunction propertyFunction)
-            : this(info.Patterns, info.SubjectArgs, info.ObjectArgs, propertyFunction) { }
+            : this(info.Patterns.OfType<ITriplePattern>(), info.SubjectArgs, info.ObjectArgs, propertyFunction) { }
 
         public PropertyFunctionPattern(IEnumerable<ITriplePattern> origPatterns, IEnumerable<PatternItem> lhsArgs, IEnumerable<PatternItem> rhsArgs, ISparqlPropertyFunction propertyFunction)
         {
