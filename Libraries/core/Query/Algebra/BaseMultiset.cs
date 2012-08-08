@@ -78,11 +78,11 @@ namespace VDS.RDF.Query.Algebra
 
             //This is the new Join algorithm which is O(2n) so much faster and scalable
             //Downside is that it does require more memory than the old algorithm
-            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
-                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                values.Add(new MultiDictionary<INode, List<int>>());
                 nulls.Add(new List<int>());
             }
 
@@ -95,7 +95,15 @@ namespace VDS.RDF.Query.Algebra
                     INode value = x[var];
                     if (value != null)
                     {
-                        values[i].Add(value, x.ID);
+                        List<int> ids;
+                        if (values[i].TryGetValue(value, out ids))
+                        {
+                            ids.Add(x.ID);
+                        }
+                        else
+                        {
+                            values[i].Add(value, new List<int> { x.ID });
+                        }
                     }
                     else
                     {
@@ -127,7 +135,7 @@ namespace VDS.RDF.Query.Algebra
             return joinedSet;
         }
 
-        private void EvalJoin(ISet y, List<String> joinVars, List<HashTable<INode, int>> values, List<List<int>> nulls, BaseMultiset joinedSet)
+        private void EvalJoin(ISet y, List<String> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet)
         {
             IEnumerable<int> possMatches = null;
             int i = 0;
@@ -138,7 +146,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (values[i].ContainsKey(value))
                     {
-                        possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        possMatches = (possMatches == null ? values[i][value].Concat(nulls[i]) : possMatches.Intersect(values[i][value].Concat(nulls[i])));
                     }
                     else
                     {
@@ -230,11 +238,11 @@ namespace VDS.RDF.Query.Algebra
             {
                 //This is the new Join algorithm which is also correct but is O(2n) so much faster and scalable
                 //Downside is that it does require more memory than the old algorithm
-                List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+                List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
                 List<List<int>> nulls = new List<List<int>>();
                 foreach (String var in joinVars)
                 {
-                    values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                    values.Add(new MultiDictionary<INode, List<int>>());
                     nulls.Add(new List<int>());
                 }
 
@@ -249,7 +257,15 @@ namespace VDS.RDF.Query.Algebra
                         INode value = x[var];
                         if (value != null)
                         {
-                            values[i].Add(value, x.ID);
+                            List<int> ids;
+                            if (values[i].TryGetValue(value, out ids))
+                            {
+                                ids.Add(x.ID);
+                            }
+                            else
+                            {
+                                values[i].Add(value, new List<int> { x.ID });
+                            }
                         }
                         else
                         {
@@ -326,7 +342,7 @@ namespace VDS.RDF.Query.Algebra
 
 #endif
 
-        private void EvalLeftJoin(ISet y, List<String> joinVars, List<HashTable<INode, int>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr, HashSet<int> standalone, HashSet<int> matched)
+        private void EvalLeftJoin(ISet y, List<String> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr, HashSet<int> standalone, HashSet<int> matched)
         {
             IEnumerable<int> possMatches = null;
             int i = 0;
@@ -337,7 +353,7 @@ namespace VDS.RDF.Query.Algebra
                 {
                     if (values[i].ContainsKey(value))
                     {
-                        possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                        possMatches = (possMatches == null ? values[i][value].Concat(nulls[i]) : possMatches.Intersect(values[i][value].Concat(nulls[i])));
                     }
                     else
                     {
@@ -427,11 +443,11 @@ namespace VDS.RDF.Query.Algebra
 
             //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             //Downside is that it does require more memory than the old algorithm
-            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
-                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                values.Add(new MultiDictionary<INode, List<int>>());
                 nulls.Add(new List<int>());
             }
 
@@ -444,7 +460,15 @@ namespace VDS.RDF.Query.Algebra
                     INode value = x[var];
                     if (value != null)
                     {
-                        values[i].Add(value, x.ID);
+                        List<int> ids;
+                        if (values[i].TryGetValue(value, out ids))
+                        {
+                            ids.Add(x.ID);
+                        }
+                        else
+                        {
+                            values[i].Add(value, new List<int> { x.ID });
+                        }
                     }
                     else
                     {
@@ -467,7 +491,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (values[i].ContainsKey(value))
                         {
-                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                            possMatches = (possMatches == null ? values[i][value].Concat(nulls[i]) : possMatches.Intersect(values[i][value].Concat(nulls[i])));
                         }
                         else
                         {
@@ -556,11 +580,11 @@ namespace VDS.RDF.Query.Algebra
 
             //This is the new algorithm which is also correct but is O(3n) so much faster and scalable
             //Downside is that it does require more memory than the old algorithm
-            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
-                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                values.Add(new MultiDictionary<INode, List<int>>());
                 nulls.Add(new List<int>());
             }
 
@@ -573,7 +597,15 @@ namespace VDS.RDF.Query.Algebra
                     INode value = x[var];
                     if (value != null)
                     {
-                        values[i].Add(value, x.ID);
+                        List<int> ids;
+                        if (values[i].TryGetValue(value, out ids))
+                        {
+                            ids.Add(x.ID);
+                        }
+                        else
+                        {
+                            values[i].Add(value, new List<int> { x.ID });
+                        }
                     }
                     else
                     {
@@ -596,7 +628,7 @@ namespace VDS.RDF.Query.Algebra
                     {
                         if (values[i].ContainsKey(value))
                         {
-                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                            possMatches = (possMatches == null ? values[i][value].Concat(nulls[i]) : possMatches.Intersect(values[i][value].Concat(nulls[i])));
                         }
                         else
                         {
