@@ -57,11 +57,11 @@ namespace VDS.RDF
         : BaseTripleCollection
     {
         //Main Storage
-        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>();
+        private MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
         //Indexes
-        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(),
-                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(),
-                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>();
+        private MultiDictionary<INode, MultiDictionary<Triple, List<Triple>>> _s = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
+                                                                              _p = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer()),
+                                                                              _o = new MultiDictionary<INode,MultiDictionary<Triple,List<Triple>>>(new FastNodeComparer());
 
         //Placeholder Variables for compound lookups
         private VariableNode _subjVar = new VariableNode(null, "s"),
@@ -74,9 +74,9 @@ namespace VDS.RDF
                                   _oHash = (t => Tools.CombineHashCodes(t.Object, t.Subject));
 
         //Comparers
-        private IComparer<Triple> _sComparer = new SPComparer(),
-                                  _pComparer = new POComparer(),
-                                  _oComparer = new OSComparer();
+        private IComparer<Triple> _sComparer = new SubjectPredicateComparer(new FastNodeComparer()),
+                                  _pComparer = new PredicateObjectComparer(new FastNodeComparer()),
+                                  _oComparer = new ObjectSubjectComparer(new FastNodeComparer());
 
         private int _count = 0;
 

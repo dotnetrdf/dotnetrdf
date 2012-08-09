@@ -50,8 +50,17 @@ namespace VDS.RDF.Test
     {
         private void CheckCombinations(List<INode> nodes)
         {
+            this.CheckCombinations(nodes, new SparqlOrderingComparer());
+        }
+
+        private void CheckCombinations<T>(List<T> nodes) where T : IComparable<T>
+        {
+            this.CheckCombinations<T>(nodes, Comparer<T>.Default);
+        }
+
+        private void CheckCombinations(List<INode> nodes, IComparer<INode> comparer)
+        {
             if (nodes.Count == 0) Assert.Fail("No Input");
-            SparqlOrderingComparer comparer = new SparqlOrderingComparer();
 
             Console.WriteLine("INode Typed Tests");
             for (int i = 0; i < nodes.Count; i++)
@@ -66,15 +75,15 @@ namespace VDS.RDF.Test
                         Assert.AreEqual(0, b.CompareTo(a), j + " == " + i + " was expected");
                         Console.WriteLine(i + " compareTo " + j + " => i == j");
 
-                        Assert.AreEqual(0, comparer.Compare(a, b), i + " == " + j + " was expected (SPARQL)");
-                        Assert.AreEqual(0, comparer.Compare(b, a), j + " == " + i + " was expected (SPARQL)");
+                        Assert.AreEqual(0, comparer.Compare(a, b), i + " == " + j + " was expected (" + comparer.GetType().Name + ")");
+                        Assert.AreEqual(0, comparer.Compare(b, a), j + " == " + i + " was expected (" + comparer.GetType().Name + ")");
                     }
                     else
                     {
                         int c = a.CompareTo(b);
                         int d = comparer.Compare(a, b);
                         Assert.AreEqual(c * -1, b.CompareTo(a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j);
-                        Assert.AreEqual(d * -1, comparer.Compare(b, a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j + " (SPARQL)");
+                        Assert.AreEqual(d * -1, comparer.Compare(b, a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j + " (" + comparer.GetType().Name + ")");
 
                         if (c > 0)
                         {
@@ -95,7 +104,7 @@ namespace VDS.RDF.Test
             Console.WriteLine();
         }
 
-        private void CheckCombinations<T>(List<T> nodes) where T : IComparable<T>
+        private void CheckCombinations<T>(List<T> nodes, IComparer<T> comparer)
         {
             if (nodes.Count == 0) Assert.Fail("No Input");
 
@@ -108,14 +117,14 @@ namespace VDS.RDF.Test
                     T b = nodes[j];
                     if (i == j || ReferenceEquals(a, b))
                     {
-                        Assert.AreEqual(0, a.CompareTo(b), i + " compareTo " + j + " was expected");
-                        Assert.AreEqual(0, b.CompareTo(a), j + " compateTo " + i + " was expected");
+                        Assert.AreEqual(0, comparer.Compare(a, b), i + " compareTo " + j + " was expected");
+                        Assert.AreEqual(0, comparer.Compare(b, a), j + " compateTo " + i + " was expected");
                         Console.WriteLine(i + " compareTo " + j + " => i == j");
                     }
                     else
                     {
-                        int c = a.CompareTo(b);
-                        Assert.AreEqual(c * -1, b.CompareTo(a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j);
+                        int c = comparer.Compare(a, b);
+                        Assert.AreEqual(c * -1, comparer.Compare(b, a), j + " compare " + i + " was expected to be inverse of " + i + " compareTo " + j);
 
                         if (c > 0)
                         {
@@ -148,6 +157,24 @@ namespace VDS.RDF.Test
 
             Console.WriteLine("SPARQL Ordering");
             foreach (INode n in nodes.OrderBy(x => x, (IComparer<INode>)new SparqlOrderingComparer()))
+            {
+                Console.WriteLine(n.ToString(formatter));
+            }
+            Console.WriteLine();
+        }
+
+        private void ShowOrdering(IEnumerable<INode> nodes, IComparer<INode> comparer)
+        {
+            Console.WriteLine("Standard Ordering");
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            foreach (INode n in nodes.OrderBy(x => x))
+            {
+                Console.WriteLine(n.ToString(formatter));
+            }
+            Console.WriteLine();
+
+            Console.WriteLine(comparer.GetType().Name + " Ordering");
+            foreach (INode n in nodes.OrderBy(x => x, comparer))
             {
                 Console.WriteLine(n.ToString(formatter));
             }
@@ -811,5 +838,71 @@ namespace VDS.RDF.Test
         //        Console.WriteLine(n.ToString(formatter));
         //    }
         //}
+
+        [TestMethod]
+        public void NodeCompareToEquivalentLiterals1()
+        {
+            Graph g = new Graph();
+            ILiteralNode canonical = (1).ToLiteral(g);
+            ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+
+            List<INode> ns = new List<INode>()
+            {
+                canonical,
+                alternate                
+            };
+
+            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
+            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+
+            this.ShowOrdering(ns);
+            this.CheckCombinations(ns);
+            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            this.CheckCombinations(ns, new FastNodeComparer());
+        }
+
+        [TestMethod]
+        public void NodeCompareToEquivalentLiterals2()
+        {
+            Graph g = new Graph();
+            ILiteralNode canonical = (true).ToLiteral(g);
+            ILiteralNode alternate = g.CreateLiteralNode("TRUE", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean));
+
+            List<INode> ns = new List<INode>()
+            {
+                canonical,
+                alternate                
+            };
+
+            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
+            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+
+            this.ShowOrdering(ns);
+            this.CheckCombinations(ns);
+            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            this.CheckCombinations(ns, new FastNodeComparer());
+        }
+
+        [TestMethod]
+        public void NodeCompareToEquivalentLiterals3()
+        {
+            Graph g = new Graph();
+            ILiteralNode canonical = (1d).ToLiteral(g);
+            ILiteralNode alternate = g.CreateLiteralNode("1.00000", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble));
+
+            List<INode> ns = new List<INode>()
+            {
+                canonical,
+                alternate                
+            };
+
+            Assert.AreNotEqual(canonical, alternate, "Alternate lexical forms should not be equal");
+            Assert.AreEqual(0, canonical.CompareTo(alternate), "Comparison should compare alternate lexical forms as equal");
+
+            this.ShowOrdering(ns);
+            this.CheckCombinations(ns);
+            this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
+            this.CheckCombinations(ns, new FastNodeComparer());
+        }
     }
 }

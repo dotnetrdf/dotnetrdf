@@ -483,12 +483,12 @@ namespace VDS.RDF
         private List<Triple> _subjIndex, _predIndex, _objIndex;
         private bool _subjIndexReady = false, _predIndexReady = false, _objIndexReady = false;
         private bool _reindexSubjects = false, _reindexPredicates = false, _reindexObjects = false;
-        private IComparer<Triple> _s = new SComparer(),
-                                  _p = new PComparer(),
-                                  _o = new OComparer(),
-                                  _sp = new SPComparer(), 
-                                  _po = new POComparer(), 
-                                  _os = new OSComparer();
+        private IComparer<Triple> _s = new SubjectComparer(),
+                                  _p = new PredicateComparer(),
+                                  _o = new ObjectComparer(),
+                                  _sp = new SubjectPredicateComparer(), 
+                                  _po = new PredicateObjectComparer(), 
+                                  _os = new ObjectSubjectComparer();
         private VariableNode _varSubj = new VariableNode(null, "s"),
                              _varPred = new VariableNode(null, "pred"),
                              _varObj = new VariableNode(null, "obj");

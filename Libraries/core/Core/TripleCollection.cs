@@ -51,15 +51,12 @@ namespace VDS.RDF
         /// <summary>
         /// Underlying Storage of the Triple Collection
         /// </summary>
-        protected MultiDictionary<Triple, Object> _triples;
+        protected readonly MultiDictionary<Triple, Object> _triples = new MultiDictionary<Triple, object>(new FullTripleComparer(new FastNodeComparer()));
 
         /// <summary>
         /// Creates a new Triple Collection
         /// </summary>
-        public TripleCollection()
-        {
-            this._triples = new MultiDictionary<Triple, Object>();
-        }
+        public TripleCollection() { }
 
         /// <summary>
         /// Determines whether a given Triple is in the Triple Collection

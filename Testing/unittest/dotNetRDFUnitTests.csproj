@@ -169,9 +169,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Libraries\core\Core\TripleComparers.cs">
-      <Link>TripleComparers.cs</Link>
-    </Compile>
     <Compile Include="..\..\Libraries\data.virtuoso\DataExtensions.cs">
       <Link>DataExtensions.cs</Link>
     </Compile>
