@@ -50,6 +50,7 @@ using VDS.RDF.Query.Grouping;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Query
 {
@@ -128,22 +129,6 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Available SPARQL Engines
-    /// </summary>
-    public enum SparqlEngine
-    {
-        /// <summary>
-        /// Leviathan is the a powerful SPARQL engine which is based directly on the SPARQL algebra and provides full SPARQL 1.1 support
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// From Version 0.3.0 onwards Leviathan is the only SPARQL engine included in the library but the API has been enhanced so end users can introduce their own SPARQL engines or modify parts of the engines behaviour as they desire.
-        /// </para>
-        /// </remarks>
-        Leviathan
-    }
-
-    /// <summary>
     /// Class for representing SPARQL Queries
     /// </summary>
     public sealed class SparqlQuery
@@ -173,6 +158,7 @@ namespace VDS.RDF.Query
         private ISparqlDescribe _describer = null;
         private IEnumerable<IAlgebraOptimiser> _optimisers = Enumerable.Empty<IAlgebraOptimiser>();
         private IEnumerable<ISparqlCustomExpressionFactory> _exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+        private IEnumerable<IPropertyFunctionFactory> _propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
 
         /// <summary>
         /// Creates a new SPARQL Query
@@ -496,6 +482,28 @@ namespace VDS.RDF.Query
                 else
                 {
                     this._exprFactories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the locally scoped Property Function factories that may be used by the <see cref="PropertyFunctionOptimiser"/> when generating the algebra for the query
+        /// </summary>
+        public IEnumerable<IPropertyFunctionFactory> PropertyFunctionFactories
+        {
+            get
+            {
+                return this._propFuncFactories;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    this._propFuncFactories = value;
+                }
+                else
+                {
+                    this._propFuncFactories = Enumerable.Empty<IPropertyFunctionFactory>();
                 }
             }
         }

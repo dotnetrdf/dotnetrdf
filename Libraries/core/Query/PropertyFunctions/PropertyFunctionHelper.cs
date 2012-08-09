@@ -46,12 +46,23 @@ namespace VDS.RDF.Query.PropertyFunctions
     /// </summary>
     public static class PropertyFunctionHelper
     {
+
         /// <summary>
         /// Used to extract the patterns that make up property functions
         /// </summary>
         /// <param name="patterns">Triple Patterns</param>
         /// <returns></returns>
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns)
+        {
+            return ExtractPatterns(patterns, Enumerable.Empty<IPropertyFunctionFactory>());
+        }
+
+        /// <summary>
+        /// Used to extract the patterns that make up property functions
+        /// </summary>
+        /// <param name="patterns">Triple Patterns</param>
+        /// <returns></returns>
+        public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
             //Do a first pass which simply looks to find any 'magic' properties
             Dictionary<PatternItem, PropertyFunctionInfo> funcInfo = new Dictionary<PatternItem, PropertyFunctionInfo>();
@@ -63,7 +74,7 @@ namespace VDS.RDF.Query.PropertyFunctions
                 if (predItem == null) continue;
                 IUriNode predNode = predItem.Node as IUriNode;
                 if (predNode == null) continue;
-                if (PropertyFunctionFactory.IsPropertyFunction(predNode.Uri))
+                if (PropertyFunctionFactory.IsPropertyFunction(predNode.Uri, localFactories))
                 {
                     PropertyFunctionInfo info = new PropertyFunctionInfo(predNode.Uri);
                     info.Patterns.Add(tp);
@@ -122,7 +133,7 @@ namespace VDS.RDF.Query.PropertyFunctions
             foreach (PatternItem key in funcInfo.Keys)
             {
                 IPropertyFunctionPattern propFunc;
-                if (PropertyFunctionFactory.TryCreatePropertyFunction(funcInfo[key], out propFunc))
+                if (PropertyFunctionFactory.TryCreatePropertyFunction(funcInfo[key], localFactories, out propFunc))
                 {
                     propFunctions.Add(propFunc);
                 }

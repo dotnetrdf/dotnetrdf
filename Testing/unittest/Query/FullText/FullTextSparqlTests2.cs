@@ -77,7 +77,7 @@ namespace VDS.RDF.Test.Query.FullText
                 g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 store.Add(g);
 
-                this._dataset = new InMemoryDataset(store);
+                this._dataset = new InMemoryDataset(store, true);
             }
         }
 
@@ -146,8 +146,9 @@ namespace VDS.RDF.Test.Query.FullText
                                     select t.Subject).ToList();
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            Assert.IsTrue(expected.Any());
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
+            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'HTTP' . ?match a rdfs:Class }", expected);
         }
 
         [TestMethod]
@@ -161,6 +162,7 @@ namespace VDS.RDF.Test.Query.FullText
                                     select t.Subject).ToList();
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
+            Assert.IsTrue(expected.Any());
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match a rdfs:Class . { ?match pf:textMatch 'http' } }", expected);
         }
@@ -177,6 +179,7 @@ namespace VDS.RDF.Test.Query.FullText
             NodeFactory factory = new NodeFactory();
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             expected.RemoveAll(n => !this._dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
+            Assert.IsTrue(expected.Any());
 
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match }", expected);
         }
@@ -194,21 +197,22 @@ namespace VDS.RDF.Test.Query.FullText
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             expected.RemoveAll(n => !this._dataset.GetTriplesWithPredicateObject(factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "domain")), n).Any());
 
+
             this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class . ?property rdfs:domain ?match . OPTIONAL { ?property rdfs:label ?label } }", expected);
         }
 
-        //[TestMethod]
-        //public void FullTextSparqlComplexLuceneSubjects6()
-        //{
-        //    this.EnsureTestData();
+        [TestMethod]
+        public void FullTextSparqlComplexLuceneSubjects6()
+        {
+            this.EnsureTestData();
 
-        //    List<INode> expected = (from t in this._dataset.Triples
-        //                            where t.Object.NodeType == NodeType.Literal
-        //                                  && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
-        //                            select t.Subject).ToList();
-        //    NodeFactory factory = new NodeFactory();
+            List<INode> expected = (from t in this._dataset.Triples
+                                    where t.Object.NodeType == NodeType.Literal
+                                          && ((ILiteralNode)t.Object).Value.ToLower().Contains("http")
+                                    select t.Subject).ToList();
+            NodeFactory factory = new NodeFactory();
 
-        //    this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . OPTIONAL { ?match ?p ?o } }", expected);
-        //}
+            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . OPTIONAL { ?match ?p ?o } }", expected);
+        }
     }
 }

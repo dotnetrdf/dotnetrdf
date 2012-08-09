@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
@@ -50,6 +51,8 @@ namespace VDS.RDF.Query.Optimisation
     public class PropertyFunctionOptimiser
         : IAlgebraOptimiser
     {
+        private ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>> _factories = new ThreadIsolatedReference<IEnumerable<IPropertyFunctionFactory>>(() => Enumerable.Empty<IPropertyFunctionFactory>());
+
         /// <summary>
         /// Optimises the algebra to include property functions
         /// </summary>
@@ -57,15 +60,13 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
-            if (PropertyFunctionFactory.FactoryCount == 0) return algebra;
-
             if (algebra is IBgp)
             {
                 IBgp current = (IBgp)algebra;
                 if (current.PatternCount == 0) return current;
 
                 List<ITriplePattern> ps = current.TriplePatterns.ToList();
-                List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps);
+                List<IPropertyFunctionPattern> propFuncs = PropertyFunctionHelper.ExtractPatterns(ps, this._factories.Value);
                 if (propFuncs.Count == 0) return current;
 
                 //Remove raw Triple Patterns pertaining to extracted property functions
@@ -127,7 +128,8 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
-            return PropertyFunctionFactory.FactoryCount > 0;
+            this._factories.Value = q.PropertyFunctionFactories;
+            return this._factories.Value.Any() || PropertyFunctionFactory.FactoryCount > 0;
         }
 
         /// <summary>

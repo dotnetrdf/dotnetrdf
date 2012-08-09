@@ -42,6 +42,7 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 using VDS.RDF.Query.FullText.Search;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Query.Optimisation
 {
@@ -52,6 +53,7 @@ namespace VDS.RDF.Query.Optimisation
         : IAlgebraOptimiser, IConfigurationSerializable
     {
         private IFullTextSearchProvider _provider;
+        private IEnumerable<IPropertyFunctionFactory> _factories = new IPropertyFunctionFactory[] { new FullTextPropertyFunctionFactory() };
 
         /// <summary>
         /// Creates a Full Text Optimiser
@@ -80,6 +82,7 @@ namespace VDS.RDF.Query.Optimisation
         /// <returns></returns>
         public bool IsApplicable(SparqlQuery q)
         {
+            q.PropertyFunctionFactories = q.PropertyFunctionFactories.Concat(this._factories);
             return true;
         }
 
