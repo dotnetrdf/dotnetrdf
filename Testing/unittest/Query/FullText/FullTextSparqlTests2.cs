@@ -97,6 +97,13 @@ namespace VDS.RDF.Test.Query.FullText
             Console.WriteLine("Parsed Query:");
             Console.WriteLine(formatter.Format(q));
 
+            Console.WriteLine("Expected Results:");
+            foreach (INode n in expected)
+            {
+                Console.WriteLine(n.ToString(formatter));
+            }
+            Console.WriteLine();
+
             LuceneSearchProvider provider = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, LuceneTestHarness.Index);
             try
             {
@@ -148,7 +155,7 @@ namespace VDS.RDF.Test.Query.FullText
             expected.RemoveAll(n => !this._dataset.ContainsTriple(new Triple(Tools.CopyNode(n, factory), factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")))));
             Assert.IsTrue(expected.Any());
 
-            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'HTTP' . ?match a rdfs:Class }", expected);
+            this.RunTest(new LuceneSubjectsIndexer(LuceneTestHarness.Index, LuceneTestHarness.Analyzer, LuceneTestHarness.Schema), "SELECT * WHERE { ?match pf:textMatch 'http' . ?match a rdfs:Class }", expected);
         }
 
         [TestMethod]

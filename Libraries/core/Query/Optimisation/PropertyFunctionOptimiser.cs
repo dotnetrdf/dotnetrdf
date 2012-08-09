@@ -90,7 +90,7 @@ namespace VDS.RDF.Query.Optimisation
                     }
 
                     //Make the insert
-                    if (origLocation >= ps.Count || ps.Count == 0)
+                    if (origLocation >= ps.Count || origLocation < 0 || ps.Count == 0)
                     {
                         ps.Add(propFunc);
                     }
