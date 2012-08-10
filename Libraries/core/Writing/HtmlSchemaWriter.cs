@@ -494,6 +494,7 @@ namespace VDS.RDF.Writing
                 {
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
+                        if (!r.HasValue("class")) continue;
                         String qname = context.NodeFormatter.Format(r["class"]);
 
                         //Use a <div> for each Class
@@ -611,6 +612,7 @@ namespace VDS.RDF.Writing
                 {
                     foreach (SparqlResult r in (SparqlResultSet)results)
                     {
+                        if (!r.HasValue("property")) continue;
                         String qname = context.NodeFormatter.Format(r["property"]);
 
                         //Use a <div> for each Property

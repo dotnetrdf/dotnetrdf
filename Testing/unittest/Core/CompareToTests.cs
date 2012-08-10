@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
@@ -179,6 +180,46 @@ namespace VDS.RDF.Test
                 Console.WriteLine(n.ToString(formatter));
             }
             Console.WriteLine();
+        }
+
+        private void TestSpeed(IEnumerable<INode> nodes, IComparer<INode> comparer, bool expectFaster)
+        {
+            List<INode> defaultSorted = new List<INode>(nodes);
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
+            defaultSorted.Sort();
+            timer.Stop();
+
+            Console.WriteLine("Default Sort: " + timer.Elapsed);
+            long defTime = timer.ElapsedTicks;
+
+            defaultSorted.Clear();
+            defaultSorted = null;
+            GC.GetTotalMemory(true);
+
+            List<INode> custSorted = new List<INode>(nodes);
+            timer.Reset();
+            timer.Start();
+            custSorted.Sort(comparer);
+            timer.Stop();
+
+            custSorted.Clear();
+            custSorted = null;
+            GC.GetTotalMemory(true);
+
+            Console.WriteLine(comparer.GetType().Name + " Sort: " + timer.Elapsed);
+            long custTime = timer.ElapsedTicks;
+
+            if (expectFaster)
+            {
+                Console.WriteLine("Speed Up: " + ((double)defTime) / ((double)custTime));
+                Assert.IsTrue(custTime <= defTime, comparer.GetType().Name + " should be faster");
+            }
+            else
+            {
+                Console.WriteLine("Slow Down: " + ((double)defTime) / ((double)custTime));
+                Assert.IsTrue(defTime <= custTime, comparer.GetType().Name + " should be slower");
+            }
         }
 
         [TestMethod]
@@ -903,6 +944,45 @@ namespace VDS.RDF.Test
             this.CheckCombinations(ns);
             this.CheckCombinations<ILiteralNode>(ns.OfType<ILiteralNode>().ToList());
             this.CheckCombinations(ns, new FastNodeComparer());
+        }
+
+        private List<INode> GenerateIntegerNodes(int amount)
+        {
+            Graph g = new Graph();
+            List<INode> ns = new List<INode>(amount);
+            Random rnd = new Random();
+            while (ns.Count < amount)
+            {
+                ns.Add(rnd.Next(Int32.MaxValue).ToLiteral(g));
+            }
+            return ns;
+        }
+
+        [TestMethod]
+        public void NodeCompareSpeed1()
+        {
+            //Generate 10,000 node list of random integer nodes
+            List<INode> ns = this.GenerateIntegerNodes(10000);
+
+            this.TestSpeed(ns, new FastNodeComparer(), true);
+        }
+
+        [TestMethod]
+        public void NodeCompareSpeed2()
+        {
+            //Generate 100,000 node list of random integer nodes
+            List<INode> ns = this.GenerateIntegerNodes(100000);
+
+            this.TestSpeed(ns, new FastNodeComparer(), true);
+        }
+
+        [TestMethod]
+        public void NodeCompareSpeed3()
+        {
+            //Generate 1,000,000 node list of random integer nodes
+            List<INode> ns = this.GenerateIntegerNodes(1000000);
+
+            this.TestSpeed(ns, new FastNodeComparer(), true);
         }
     }
 }

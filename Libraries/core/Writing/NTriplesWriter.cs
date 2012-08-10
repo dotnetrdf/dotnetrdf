@@ -105,7 +105,7 @@ namespace VDS.RDF.Writing
             {
                 NTriplesWriterContext context = new NTriplesWriterContext(g, output);
                 List<Triple> ts = g.Triples.ToList();
-                if (this._sort) ts.Sort();
+                if (this._sort) ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
                 foreach (Triple t in ts)
                 {

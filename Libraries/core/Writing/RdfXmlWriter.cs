@@ -908,12 +908,13 @@ namespace VDS.RDF.Writing
         }
     }
 
-    class RdfXmlTripleComparer : IComparer<Triple>, IComparer<INode>
+    class RdfXmlTripleComparer 
+        : BaseTripleComparer, IComparer<INode>
     {
+        public RdfXmlTripleComparer()
+            : base(new FastNodeComparer()) { }
 
-        #region IComparer<Triple> Members
-
-        public int Compare(Triple x, Triple y)
+        public override int Compare(Triple x, Triple y)
         {
             int c = this.Compare(x.Subject, y.Subject);
             if (c == 0)
@@ -927,15 +928,11 @@ namespace VDS.RDF.Writing
             return c;
         }
 
-        #endregion
-
-        #region IComparer<INode> Members
-
         public int Compare(INode x, INode y)
         {
             if (x.NodeType == y.NodeType)
             {
-                return x.CompareTo(y);
+                return this._nodeComparer.Compare(x, y);
             }
             else
             {
@@ -971,7 +968,5 @@ namespace VDS.RDF.Writing
                 }
             }
         }
-
-        #endregion
     }
 }

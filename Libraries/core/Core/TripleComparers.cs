@@ -108,7 +108,7 @@ namespace VDS.RDF
                     if (!b.Language.Equals(String.Empty))
                     {
                         //Compare language specifiers
-                        int c = a.Language.CompareTo(b);
+                        int c = a.Language.CompareTo(b.Language);
                         if (c == 0)
                         {
                             //Same language so compare lexical values

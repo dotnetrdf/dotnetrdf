@@ -138,7 +138,7 @@ namespace VDS.RDF.Writing
 
             //Get the Triples as a Sorted List
             List<Triple> ts = g.Triples.ToList();
-            ts.Sort();
+            ts.Sort(new FullTripleComparer(new FastNodeComparer()));
 
             //Variables we need to track our writing
             INode lastSubj, lastPred;
