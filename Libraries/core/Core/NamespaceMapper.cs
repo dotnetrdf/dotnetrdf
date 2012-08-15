@@ -396,12 +396,13 @@ namespace VDS.RDF
     /// <remarks>
     /// Used primarily in outputting RDF syntax
     /// </remarks>
-    public class QNameOutputMapper : NamespaceMapper
+    public class QNameOutputMapper 
+        : NamespaceMapper
     {
         /// <summary>
         /// Mapping of URIs to QNames
         /// </summary>
-        protected HashTable<int, QNameMapping> _mapping = new HashTable<int, QNameMapping>();
+        protected MultiDictionary<String, QNameMapping> _mapping = new MultiDictionary<String, QNameMapping>();
         /// <summary>
         /// Next available Temporary Namespace ID
         /// </summary>
@@ -430,12 +431,13 @@ namespace VDS.RDF
         public override bool ReduceToQName(string uri, out string qname)
         {
             //See if we've cached this mapping
-            QNameMapping mapping = new QNameMapping(uri);
-            if (this._mapping.Contains(uri.GetHashCode(), mapping))
+            QNameMapping mapping;
+            if (this._mapping.TryGetValue(uri, out mapping))
             {
-                qname = this._mapping[uri.GetHashCode()].QName;
+                qname = mapping.QName;
                 return true;
             }
+            mapping = new QNameMapping(uri);
 
             foreach (Uri u in this._uris.Values)
             {
@@ -454,7 +456,7 @@ namespace VDS.RDF
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         //Cache the Mapping
                         mapping.QName = qname;
-                        this.AddToCache(uri.GetHashCode(), mapping);
+                        this.AddToCache(uri, mapping);
                         return true;
                     }
                 }
@@ -485,12 +487,13 @@ namespace VDS.RDF
             tempNamespace = String.Empty;
 
             //See if we've cached this mapping
-            QNameMapping mapping = new QNameMapping(uri);
-            if (this._mapping.Contains(uri.GetHashCode(), mapping))
+            QNameMapping mapping;
+            if (this._mapping.TryGetValue(uri, out mapping))
             {
-                qname = this._mapping[uri.GetHashCode()].QName;
+                qname = mapping.QName;
                 return true;
             }
+            mapping = new QNameMapping(uri);
 
             //Try and find a Namespace URI that is the prefix of the URI
             foreach (Uri u in this._uris.Values)
@@ -510,7 +513,7 @@ namespace VDS.RDF
                         if (qname.Contains("/") || qname.Contains("#")) continue;
                         //Cache the Mapping
                         mapping.QName = qname;
-                        this.AddToCache(uri.GetHashCode(), mapping);
+                        this.AddToCache(uri, mapping);
                         return true;
                     }
                 }
@@ -530,7 +533,6 @@ namespace VDS.RDF
             }
             else
             {
-
                 //Failed to find a Reduction and unable to issue a Temporary Namespace
                 qname = String.Empty;
                 return false;
@@ -541,20 +543,15 @@ namespace VDS.RDF
 
             //Cache mapping and return
             mapping.QName = nsPrefix + ":" + uri.Replace(nsUri, String.Empty);
-            this.AddToCache(uri.GetHashCode(), mapping);
+            this.AddToCache(uri, mapping);
             qname = mapping.QName;
             tempNamespace = nsPrefix;
             return true;
         }
 
-        /// <summary>
-        /// Adds a URI to QName Mapping to the Cache
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        protected virtual void AddToCache(int key, QNameMapping value)
+        protected virtual void AddToCache(String uri, QNameMapping mapping)
         {
-            this._mapping.Add(key, value);
+            this._mapping.Add(uri, mapping);
         }
 
         /// <summary>
@@ -575,7 +572,8 @@ namespace VDS.RDF
     /// <summary>
     /// Thread Safe version of the <see cref="QNameOutputMapper">QNameOutputMapper</see>
     /// </summary>
-    public class ThreadSafeQNameOutputMapper : QNameOutputMapper
+    public class ThreadSafeQNameOutputMapper
+        : QNameOutputMapper
     {
         /// <summary>
         /// Creates a new Thread Safe QName Output Mapper
@@ -589,7 +587,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="key">Key</param>
         /// <param name="value">Value</param>
-        protected override void AddToCache(int key, QNameMapping value)
+        protected override void AddToCache(String key, QNameMapping value)
         {
             try
             {

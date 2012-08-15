@@ -48,6 +48,7 @@ namespace VDS.Common
     /// The bias is a parameter used to control how the hash table stores actual multiple values in its slots.  Changing the bias parameter will cause different data structures to be used internally and thus modify the performance characteristics of the Hash Table
     /// </para>
     /// </remarks>
+    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", false)]
     public enum HashTableBias
     {
         /// <summary>
@@ -76,6 +77,7 @@ namespace VDS.Common
     /// Essentially a Dictionary which allows multiple values for each key, unlike the newer <see cref="MultiDictionary"/> this implementation is lossy since it does not store unique keys so if you have colliding keys all values associated with them are mushed together under a single key.  However the advantage of the HashTable is that it transparently maps a key to an arbitrary list of values where a MultiDictionary requires the user to manage that if that want to map multiple values to a single key
     /// </para>
     /// </remarks>
+    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", false)]
     public class HashTable<TKey, TValue> 
         : IDictionary<TKey, TValue>, IEnumerable<TValue>
     {

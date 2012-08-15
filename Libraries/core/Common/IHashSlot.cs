@@ -44,6 +44,7 @@ namespace VDS.Common
     /// Interface for internal data structure of Hash Table
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", false)]
     interface IHashSlot<T>
         : IEnumerable<T>, ICollection<T>
     {

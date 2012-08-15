@@ -150,11 +150,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             this._joinVars = context.InputMultiset.Variables.Where(v => this._result.Variables.Contains(v)).ToList();
             if (this._joinVars.Count == 0) return;
 
-            List<HashTable<INode, int>> values = new List<HashTable<INode, int>>();
+            List<MultiDictionary<INode, List<int>>> values = new List<MultiDictionary<INode, List<int>>>();
             List<List<int>> nulls = new List<List<int>>();
             foreach (System.String var in this._joinVars)
             {
-                values.Add(new HashTable<INode, int>(HashTableBias.Enumeration));
+                values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
                 nulls.Add(new List<int>());
             }
 
@@ -167,7 +167,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     INode value = x[var];
                     if (value != null)
                     {
-                        values[i].Add(value, x.ID);
+                        List<int> ids;
+                        if (values[i].TryGetValue(value, out ids))
+                        {
+                            ids.Add(x.ID);
+                        }
+                        else
+                        {
+                            values[i].Add(value, new List<int> { x.ID });
+                        }
                     }
                     else
                     {
@@ -190,7 +198,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                     {
                         if (values[i].ContainsKey(value))
                         {
-                            possMatches = (possMatches == null ? values[i].GetValues(value).Concat(nulls[i]) : possMatches.Intersect(values[i].GetValues(value).Concat(nulls[i])));
+                            possMatches = (possMatches == null ? values[i][value].Concat(nulls[i]) : possMatches.Intersect(values[i][value].Concat(nulls[i])));
                         }
                         else
                         {

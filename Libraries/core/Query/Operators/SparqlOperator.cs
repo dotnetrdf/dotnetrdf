@@ -51,6 +51,13 @@ namespace VDS.RDF.Query.Operators
         private static Dictionary<SparqlOperatorType, List<ISparqlOperator>> _operators = new Dictionary<SparqlOperatorType, List<ISparqlOperator>>();
         private static bool _init = false;
 
+#if SILVERLIGHT
+        private static SparqlOperatorType[] _operatorTypes = new[]
+                                                                 {
+                                                                     SparqlOperatorType.Add, SparqlOperatorType.Subtract,
+                                                                     SparqlOperatorType.Multiply, SparqlOperatorType.Divide
+                                                                 };
+#endif
         /// <summary>
         /// Initializes the Operators registry
         /// </summary>
@@ -61,12 +68,18 @@ namespace VDS.RDF.Query.Operators
             {
                 if (_init) return;
 
+#if !SILVERLIGHT
                 //Set up empty registry for each operator type
                 foreach (SparqlOperatorType type in Enum.GetValues(typeof(SparqlOperatorType)).OfType<SparqlOperatorType>())
                 {
                     _operators.Add(type, new List<ISparqlOperator>());
                 }
-
+#else
+                foreach(SparqlOperatorType type in _operatorTypes)
+                {
+                    _operators.Add(type, new List<ISparqlOperator>());
+                }
+#endif
                 //Register default operators
                 //Numerics
                 _operators[SparqlOperatorType.Add].Add(new AdditionOperator());
