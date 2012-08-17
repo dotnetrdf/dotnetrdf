@@ -276,6 +276,7 @@ namespace VDS.RDF.Test.Writing
                 "&amp;",
                 "&",
                 "&value&next",
+                "& &squot; < > ' \"",
                 new String('&', 1000)
             };
 
@@ -284,7 +285,8 @@ namespace VDS.RDF.Test.Writing
                 "&amp;value",
                 "&amp;",
                 "&amp;",
-                "&amp;value&amp;next"
+                "&amp;value&amp;next",
+                "&amp; &squot; &lt; &gt; &apos; &quot;"
             };
             StringBuilder temp = new StringBuilder();
             for (int i = 0; i < 1000; i++)
@@ -296,7 +298,7 @@ namespace VDS.RDF.Test.Writing
             for (int i = 0; i < inputs.Count; i++)
             {
                 Console.WriteLine("Input: " + inputs[i] + " - Expected Output: " + outputs[i] + " - Actual Output: " + WriterHelper.EncodeForXml(inputs[i]));
-                Assert.AreEqual(WriterHelper.EncodeForXml(inputs[i]), outputs[i], "Ampersands should have been encoded correctly");
+                Assert.AreEqual(outputs[i], WriterHelper.EncodeForXml(inputs[i]), "Ampersands should have been encoded correctly");
             }
         }
 
