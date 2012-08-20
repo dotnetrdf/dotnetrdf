@@ -1,4 +1,4 @@
-﻿@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
@@ -20,33 +20,15 @@ _:adoFactory a dnr:ObjectFactory ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_10.ttl" ] ] .								 									 
+																		   dnr:fromFile "~/App_Data/stats_10.ttl.gz.gz" ] ] .								 									 
 _:bsbm10 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_10.ttl" ] ] .
+ 											 dnr:fromFile "~/App_Data/dataset_10.ttl.gz" ] ] .
  											 
-																		   
-<dotnetrdf:/dotNetRDFBSBM/bsbm10ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm10ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado10 ] .
-										 						  
-_:bsbm10ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado10 ] .
-			 					  
-_:ado10 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm10" ;
-		dnr:credentials _:adoUser .
- 											 
+																		    											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm50> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm50 .
@@ -58,33 +40,15 @@ _:ado10 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_50.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_50.ttl.gz" ] ] .
 									 									 
 _:bsbm50 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_50.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm50ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm50ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado50 ] .
-										 						  
-_:bsbm50ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado50 ] .
-			 					  
-_:ado50 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm50" ;
-		dnr:credentials _:adoUser .
- 											 
+ 											 dnr:fromFile "~/App_Data/dataset_50.ttl.gz" ] ] .
+ 											  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm100> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm100 .
@@ -96,33 +60,14 @@ _:ado50 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_100.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_100.ttl.gz" ] ] .
 									 									 
 _:bsbm100 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_100.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm100ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm100ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado100 ] .
-										 						  
-_:bsbm100ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado100 ] .
-			 					  
-_:ado100 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm100" ;
-		dnr:credentials _:adoUser .
- 											 
+ 											 dnr:fromFile "~/App_Data/dataset_100.ttl.gz" ] ] .											 
  											 
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm250> a dnr:HttpHandler ;
@@ -136,32 +81,14 @@ _:ado100 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_250.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_250.ttl.gz" ] ] .
 									 									 
 _:bsbm250 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_250.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm250ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm250ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado250 ] .
-										 						  
-_:bsbm250ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado250 ] .
-			 					  
-_:ado250 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm250" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_250.ttl.gz" ] ] .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -174,32 +101,14 @@ _:ado250 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_500.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_500.ttl.gz" ] ] .
 									 									 
 _:bsbm500 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_500.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm500ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm500ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado500 ] .
-										 						  
-_:bsbm500ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado500 ] .
-			 					  
-_:ado500 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm500" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_500.ttl.gz" ] ] .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm1000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -212,32 +121,14 @@ _:ado500 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_1000.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_1000.ttl.gz" ] ] .
 									 									 
 _:bsbm1000 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_1000.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1000ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm1000ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado1000 ] .
-										 						  
-_:bsbm1000ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado1000 ] .
-			 					  
-_:ado1000 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm1000" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_1000.ttl.gz" ] ] .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm1500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -250,32 +141,14 @@ _:ado1000 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_1500.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_1500.ttl.gz" ] ] .
 									 									 
 _:bsbm1500 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_1500.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1500ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm1500ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado1500 ] .
-										 						  
-_:bsbm1500ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado1500 ] .
-			 					  
-_:ado1500 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm1500" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_1500.ttl.gz" ] ] .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm2000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -288,32 +161,14 @@ _:ado1500 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_2000.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_2000.ttl.gz" ] ] .
 									 									 
 _:bsbm2000 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2000.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2000ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm2000ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado2000 ] .
-										 						  
-_:bsbm2000ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado2000 ] .
-			 					  
-_:ado2000 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm2000" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_2000.ttl.gz" ] ] .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm2500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -326,32 +181,15 @@ _:ado2000 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_2500.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_2500.ttl.gz" ] ] .
 									 									 
 _:bsbm2500 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2500.ttl" ] ] .
+ 											 dnr:fromFile "~/App_Data/dataset_2500.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1500ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm1500ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado1500 ] .
-										 						  
-_:bsbm2500ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado2500 ] .
-			 					  
-_:ado2500 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm2500" ;
-		dnr:credentials _:adoUser .
  											 
 <dotnetrdf:/dotNetRDFBSBM/bsbm2785> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
@@ -364,30 +202,12 @@ _:ado2500 a dnr:GenericIOManager ;
 														  dnr:type "VDS.RDF.Query.Optimisation.WeightedOptimiser" ;
 														  dnr:usingGraph [ a dnr:Graph ;
 																		   dnr:type "VDS.RDF.Graph" ;
-																		   dnr:fromFile "~/App_Data/stats_2785.ttl" ] ] .
+																		   dnr:fromFile "~/App_Data/stats_2785.ttl.gz" ] ] .
 									 									 
 _:bsbm2785 a dnr:SparqlQueryProcessor ;
 		   dnr:usingStore [ a dnr:TripleStore ;
 		   					dnr:type "VDS.RDF.TripleStore" ;
  							dnr:usingGraph [ a dnr:Graph ; 
  											 dnr:type "VDS.RDF.Graph" ; 
- 											 dnr:fromFile "~/App_Data/dataset_2785.ttl" ] ] .
- 											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2785ado> a dnr:HttpHandler ;
-										 dnr:type "VDS.RDF.Web.QueryHandler" ;
-										 dnr:queryProcessor _:bsbm12785ado ;
-										 dnr:algebraOptimiser [ a dnr:AlgebraOptimiser ;
-										 						  dnr:type "VDS.RDF.Query.Optimisation.MicrosoftAdoOptimiser, dotNetRDF.Data.Sql" ;
-										 						  dnr:genericManager _:ado2785 ] .
-										 						  
-_:bsbm2785ado a dnr:SparqlQueryProcessor ;
-			 dnr:usingDataset [ a dnr:SparqlDataset ;
-			 					  dnr:type "VDS.RDF.Query.Datasets.MicrosoftAdoDataset, dotNetRDF.Data.Sql" ;
-			 					  dnr:genericManager _:ado2785 ] .
-			 					  
-_:ado12785 a dnr:GenericIOManager ;
-		dnr:type "VDS.RDF.Storage.MicrosoftAdoManager, dotNetRDF.Data.Sql" ;
-		dnr:server <appsetting:sqlserver> ;
-		dnr:database "ado_bsbm2785" ;
-		dnr:credentials _:adoUser .
+ 											 dnr:fromFile "~/App_Data/dataset_2785.ttl.gz" ] ] .
  		   
