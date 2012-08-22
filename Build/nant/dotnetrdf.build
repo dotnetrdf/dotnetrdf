@@ -7,6 +7,7 @@
   
   <!-- Disable Building and Compiling Options -->
   <property name="dotnetrdf.nobuild" value="" />
+  <property name="dotnetrdf.nosign" value="" />
   <property name="dotnetrdf.nocompile" value="" />
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
@@ -21,6 +22,9 @@
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="../license-boilerplate.txt" />
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
+  
+  <!-- Signing Properties -->
+  <property name="dotnetrdf.keyfile" value="../../Build/dotNetRDF.snk" />
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
@@ -183,10 +187,12 @@
                    license-httpserver" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-tests" description="Applies license headers to all test targets"
-          depends="license-tests-informal,license-unit-tests,license-dawg-tests" unless="${dotnetrdf.nocompile}" />
+          depends="license-libs,
+                   license-tests-informal,license-unit-tests,license-dawg-tests" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-utils" description="Applies license headers to all utility targets"
-          depends="license-util-convert,
+          depends="license-libs,
+                   license-util-convert,
                    license-util-editor-wpf,
                    license-util-opt-stats,
                    license-util-query-cmd,license-util-query-gui,
@@ -558,24 +564,48 @@
   </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-solution,
-                   compile-core,compile-core-net35,
+          depends="compile-libs-main,
+                   compile-libs-utils,
+                   compile-utils">
+
+  </target>
+
+  <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
+          depends="compile-core,compile-core-net35,
                    compile-core-silverlight,
                    compile-core-windowsphone,
                    compile-core-clientprofile,compile-core-clientprofile-net35,
                    compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
                    compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
-
   </target>
 
+  <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
+          depends="compile-editor-core,compile-editor-wpf,
+                   compile-storemanager-core,
+                   compile-httpserver">
+  </target>
+
+  <target name="compile-utils" description="Compiles the dotNetRDF Toolkit" unless="${dotnetrdf.nocompile}"
+        depends="license-utils,
+                   compile-util-convert,
+                   compile-util-editor-wpf,
+                   compile-util-opt-stats,
+                   compile-util-query-cmd,license-util-query-gui,
+                   compile-util-server-cmd,license-util-server-gui,
+                   compile-util-webdeploy,
+                   compile-util-storemanager">
+
+  </target>
+          
   <target name="compile-core" description="Compiles just the dotNetRDF Core Library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/core/dotNetRDF.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -587,17 +617,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-    </exec>
-  </target>
-
-  <target name="compile-solution" description="Compile the main dotNetRDF Solution" depends="license-libs,license-tests,license-utils" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="dotNetRDF.sln" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -647,6 +667,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -658,6 +679,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -669,6 +691,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -680,6 +703,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -691,6 +715,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -702,6 +727,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -713,6 +739,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -724,6 +751,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -735,6 +763,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <!--<arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />-->
     </exec>
   </target>
 
@@ -746,9 +775,157 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <!--<arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />-->
     </exec>
   </target>
-  
+
+  <target name="compile-editor-core" description="Compiles just the rdfEditor Core Library" depends="license-editor-core,compile-core" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Libraries/editor/rdfEditor.Core.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+    </exec>
+  </target>
+
+  <target name="compile-editor-wpf" description="Compiles just the rdfEditor WPF Library" depends="license-editor-wpf,compile-editor-core" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Libraries/editor.wpf/rdfEditor.Wpf.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+    </exec>
+  </target>
+
+  <target name="compile-storemanager-core" description="Compiles just the StoreManager Core Library" depends="license-storemanager-core,compile-core" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+    </exec>
+  </target>
+
+  <target name="compile-httpserver" description="Compiles just the VDS.Web.Server Library" depends="license-httpserver" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
+      <arg value="Libraries/httpserver/VDS.Web.Server.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+    </exec>
+  </target>
+
+  <target name="compile-util-convert" description="Compile the rdfConvert Utility" depends="license-utils,compile-core" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfConvert/rdfConvert.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-editor-wpf" description="Compile the rdfEditor Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfEditor.Wpf/rdfEditor.Wpf.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-opt-stats" description="Compile the rdfOptStats Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfOptStats/rdfOptStats.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-query-cmd" description="Compile the rdfQuery Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfQuery/rdfQuery.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-query-gui" description="Compile the SparqlGui Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/SparqlGui/SparqlGui.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-server-cmd" description="Compile the rdfServer Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfServer/rdfServer.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-server-gui" description="Compile the rdfServerGUI Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfServerGUI/rdfServerGUI.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-webdeploy" description="Compile the rdfWebDeploy Utility" depends="license-utils,compile-libs-main" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/rdfWebDeploy/rdfWebDeploy.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+
+  <target name="compile-util-storemanager" description="Compile the StoreManager Utility" depends="license-utils,compile-libs-main,compile-libs-utils" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Utilities/StoreManager/StoreManager.csproj" />
+      <arg line="/p:Configuration=Debug" />
+      <arg line="/p:PostBuildEvent="/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+    </exec>
+  </target>
+    
   <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
 
   <target name="no-build" description="Sets that no Builds should be performed" depends="no-compile">

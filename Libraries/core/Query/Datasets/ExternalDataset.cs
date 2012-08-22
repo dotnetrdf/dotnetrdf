@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if UNFINISHED
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -135,3 +137,5 @@ namespace VDS.RDF.Query.Datasets
         }
     }
 }
+
+#endif

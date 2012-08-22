@@ -66,7 +66,6 @@ namespace VDS.RDF
         private Uri _u = null;
         private IGraph _g = null;
         private int _hashcode;
-        private bool _collides = false;
 
         /// <summary>
         /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory

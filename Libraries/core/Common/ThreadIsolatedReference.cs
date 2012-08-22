@@ -184,7 +184,7 @@ namespace VDS.Common
         where T : struct
     {
 #if NET40 && !SILVERLIGHT
-        private ThreadLocal<T> _refs;
+        private ThreadLocal<T> _refs = new ThreadLocal<T>();
 #else
         private Dictionary<int, T> _refs = new Dictionary<int, T>();
 #endif
