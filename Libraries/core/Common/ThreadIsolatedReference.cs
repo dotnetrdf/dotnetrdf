@@ -48,13 +48,18 @@ namespace VDS.Common
     /// <typeparam name="T">Reference Type</typeparam>
     /// <remarks>
     /// <para>
-    /// Essentially the ThreadIsolatedReference guarantees that each thread that accesses it sees a thread-specific view of the reference.  The initial value of the reference for each Thread is generated either by an initialiser function passed to the constructor when the ThreadSafeReference is created or otherwise is null
+    /// Essentially the ThreadIsolatedReference guarantees that each thread that accesses it sees a thread-specific view of the reference.  The initial value of the reference for each Thread is generated either by an initialiser function passed to the constructor when the ThreadSafeReference is created or otherwise is null.  This is essentially what the <see cref="ThreadLocal"/> introduced in .Net 4.0 but we continue to use this our own wrapper because we need backwards compatibility with .Net 3.5
     /// </para>
     /// </remarks>
-    class ThreadIsolatedReference<T> : IDisposable
+    class ThreadIsolatedReference<T> 
+        : IDisposable
         where T : class
     {
+#if NET40 && !SILVERLIGHT
+        private ThreadLocal<T> _refs = new ThreadLocal<T>();
+#else
         private Dictionary<int, T> _refs = new Dictionary<int, T>();
+#endif
         private Func<T> _init;
 
         /// <summary>
@@ -96,7 +101,17 @@ namespace VDS.Common
             {
                 try
                 {
+                    //Even though a ThreadLocal under .Net 4.0 is thread safe we still need the monitor
+                    //to ensure only one thread is firing the initializer at any one time
                     Monitor.Enter(this._refs);
+#if NET40 && !SILVERLIGHT
+                    if (!this._refs.IsValueCreated)
+                    {
+                        this._refs.Value = this._init();
+                    }
+                    return this._refs.Value;
+#else
+
                     int id = Thread.CurrentThread.ManagedThreadId;
                     if (!this._refs.ContainsKey(id))
                     {
@@ -107,6 +122,7 @@ namespace VDS.Common
                         }
                     }
                     return this._refs[id];
+#endif
                 }
                 finally
                 {
@@ -115,6 +131,9 @@ namespace VDS.Common
             }
             set
             {
+#if NET40 && !SILVERLIGHT
+                this._refs.Value = value;
+#else
                 try
                 {
                     Monitor.Enter(this._refs);
@@ -132,6 +151,7 @@ namespace VDS.Common
                 {
                     Monitor.Exit(this._refs);
                 }
+#endif
             }
         }
 
@@ -143,6 +163,9 @@ namespace VDS.Common
         /// </remarks>
         public void Dispose()
         {
+#if NET40 && !SILVERLIGHT
+            this._refs.Dispose();
+#else
             try
             {
                 Monitor.Enter(this._refs);
@@ -152,13 +175,19 @@ namespace VDS.Common
             {
                 Monitor.Exit(this._refs);
             }
+#endif
         }
     }
 
     class ThreadIsolatedValue<T>
+        : IDisposable
         where T : struct
     {
+#if NET40 && !SILVERLIGHT
+        private ThreadLocal<T> _refs;
+#else
         private Dictionary<int, T> _refs = new Dictionary<int, T>();
+#endif
         private Func<T> _init;
 
         /// <summary>
@@ -201,6 +230,13 @@ namespace VDS.Common
                 try
                 {
                     Monitor.Enter(this._refs);
+#if NET40 && !SILVERLIGHT
+                    if (!this._refs.IsValueCreated)
+                    {
+                        this._refs.Value = (this._init != null) ? this._init() : default(T);
+                    }
+                    return this._refs.Value;
+#else
                     int id = Thread.CurrentThread.ManagedThreadId;
                     if (!this._refs.ContainsKey(id))
                     {
@@ -208,6 +244,7 @@ namespace VDS.Common
                         this._refs.Add(id, value);
                     }
                     return this._refs[id];
+#endif
                 }
                 finally
                 {
@@ -216,6 +253,9 @@ namespace VDS.Common
             }
             set
             {
+#if NET40 && !SILVERLIGHT
+                this._refs.Value = value;
+#else
                 try
                 {
                     Monitor.Enter(this._refs);
@@ -233,7 +273,25 @@ namespace VDS.Common
                 {
                     Monitor.Exit(this._refs);
                 }
+#endif
             }
+        }
+
+        public void Dispose()
+        {
+#if NET40 && !SILVERLIGHT
+            this._refs.Dispose();
+#else
+            try
+            {
+                Monitor.Enter(this._refs);
+                this._refs.Clear();
+            }
+            finally
+            {
+                Monitor.Exit(this._refs);
+            }
+#endif
         }
     }
 }
