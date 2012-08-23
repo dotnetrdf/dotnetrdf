@@ -16,6 +16,9 @@ This represents a summary of additions, changes and removals for the 0.7.2 relea
 Added
 - Query
  - Added IsMinusCompatibleWith() method to ISet interface
+ - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic
+ - Support for SPARQL property functions
+  - Refactored Query.FullText to be a true property function
 
 
 Changed
@@ -24,6 +27,8 @@ Changed
  - Bug fix to TreeIndexedTripleCollection
  - Bug fix to corner case MINUS logic in SPARQL 1.1
  - Bug fix to corner case GROUP BY and aggregate interaction logic
+ - Bug fix to improve handling of & when outputting XML - Kal Ahmed
+ - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage

@@ -307,7 +307,8 @@ namespace VDS.RDF
         {
             if (!this._persisting)
             {
-                this._removedGraphs.Add(g.BaseUri.ToSafeString());
+                String uri = g.BaseUri.ToSafeString();
+                this._removedGraphs.Add(uri);
                 if (this._manager.UpdateSupported)
                 {
                     this.DetachHandlers(g);
@@ -323,11 +324,12 @@ namespace VDS.RDF
 
         public override bool Contains(Uri graphUri)
         {
+            String uri = graphUri.ToSafeString();
             if (base.Contains(graphUri))
             {
                 return true;
             }
-            else if (!this._removedGraphs.Contains(graphUri.ToSafeString()))
+            else if (!this._removedGraphs.Contains(uri))
             {
                 //Try and load the Graph and return true if anything is returned
                 Graph g = new Graph();

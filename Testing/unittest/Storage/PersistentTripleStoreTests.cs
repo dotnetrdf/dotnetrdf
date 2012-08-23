@@ -155,7 +155,7 @@ namespace VDS.RDF.Test.Storage
                 aExpected.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
                 aExpected.Retract(aExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 aExpected.BaseUri = new Uri(TestGraphUri1);
-                IGraph aActual = store.Graph(aExpected.BaseUri);
+                IGraph aActual = store[aExpected.BaseUri];
                 Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graph()");
                 aActual = store.Graphs[aExpected.BaseUri];
                 Assert.AreEqual(aExpected, aActual, "Graph 1 should be equal when retrieved using Graphs[]");
@@ -164,7 +164,7 @@ namespace VDS.RDF.Test.Storage
                 bExpected.LoadFromFile("InferenceTest.ttl");
                 bExpected.Retract(bExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 bExpected.BaseUri = new Uri(TestGraphUri2);
-                IGraph bActual = store.Graph(bExpected.BaseUri);
+                IGraph bActual = store[bExpected.BaseUri];
                 Assert.AreEqual(bExpected, bActual, "Graph 2 should be equal when retrieved using Graph()");
                 bActual = store.Graphs[bExpected.BaseUri];
                 Assert.AreEqual(bExpected, bActual, "Graph 2 should be equal when retrieved using Graphs[]");
@@ -173,7 +173,7 @@ namespace VDS.RDF.Test.Storage
                 cExpected.LoadFromEmbeddedResource("VDS.RDF.Query.Optimisation.OptimiserStats.ttl");
                 cExpected.Retract(cExpected.Triples.Where(t => !t.IsGroundTriple).ToList());
                 cExpected.BaseUri = new Uri(TestGraphUri3);
-                IGraph cActual = store.Graph(cExpected.BaseUri);
+                IGraph cActual = store[cExpected.BaseUri];
                 Assert.AreEqual(cExpected, cActual, "Graph 3 should be equal when retrieved using Graph()");
                 cActual = store.Graphs[cExpected.BaseUri];
                 Assert.AreEqual(cExpected, cActual, "Graph 3 should be equal when retrieved using Graphs[]");

@@ -217,9 +217,6 @@
     <Content Include="resources\urlencodes-in-rdfxml.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="resources\UnitTestConfig.properties">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="resources\full-minuend.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -232,6 +229,7 @@
     <Content Include="resources\full-minuend-lhs.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="resources\UnitTestConfig.properties" />
     <None Include="Sparql\FastJoinTests.cs" />
     <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
@@ -365,10 +363,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_50.ttl">
-      <Link>resources\dataset_50.ttl</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="embedded.ttl" />
     <Content Include="resources\chado-in-owl.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -393,9 +387,6 @@
     </Content>
     <Content Include="resources\childgraphpattern2.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\dydra-api-key.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\multiple-options.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
