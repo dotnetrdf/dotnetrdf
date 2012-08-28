@@ -118,7 +118,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFTest", "Testing\testsuite\dotNetRDFTest.csproj", "{EBCF6F50-7879-4C91-9021-67E0DA05564C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Utilities\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Samples\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testing\unittest\dotNetRDFUnitTests.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
 EndProject

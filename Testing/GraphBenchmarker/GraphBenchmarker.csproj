@@ -106,6 +106,46 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_10.ttl.gz">
+      <Link>Data\dataset_10.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_100.ttl.gz">
+      <Link>Data\dataset_100.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_1000.ttl.gz">
+      <Link>Data\dataset_1000.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_1500.ttl.gz">
+      <Link>Data\dataset_1500.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_2000.ttl.gz">
+      <Link>Data\dataset_2000.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_250.ttl.gz">
+      <Link>Data\dataset_250.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_2500.ttl.gz">
+      <Link>Data\dataset_2500.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_2785.ttl.gz">
+      <Link>Data\dataset_2785.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>Data\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_500.ttl.gz">
+      <Link>Data\dataset_500.ttl.gz</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -133,48 +173,6 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_10.ttl">
-      <Link>Data\dataset_10.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_100.ttl">
-      <Link>Data\dataset_100.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1000.ttl">
-      <Link>Data\dataset_1000.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_1500.ttl">
-      <Link>Data\dataset_1500.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2000.ttl">
-      <Link>Data\dataset_2000.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_250.ttl">
-      <Link>Data\dataset_250.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2500.ttl">
-      <Link>Data\dataset_2500.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_2785.ttl">
-      <Link>Data\dataset_2785.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_50.ttl">
-      <Link>Data\dataset_50.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\..\Utilities\bsbm\App_Data\dataset_500.ttl">
-      <Link>Data\dataset_500.ttl</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
