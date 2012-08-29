@@ -14,7 +14,7 @@ we use as a central repository of our project releases and source code.
 ##### BitBucket
 
  - [https://bitbucket.org/dotnetrdf/dotnetrdf][2]
- - [https://bitbucket.org/dotnetrdf/dotnetrdf-docs][3]
+ - [https://bitbucket.org/dotnetrdf/documentation][3]
 
 ##### SourceForge
 
@@ -36,7 +36,7 @@ of our SVN repository to Mercurial.
 
 [1]: http://www.dotnetrdf.org
 [2]: https://bitbucket.org/dotnetrdf/dotnetrdf
-[3]: https://bitbucket.org/dotnetrdf/dotnetrdf-docs
+[3]: https://bitbucket.org/dotnetrdf/documentation
 [4]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/dotnetrdf
 [5]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/documentation
 [6]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-stable
