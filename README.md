@@ -11,10 +11,13 @@ Currently we our maintaining the following repositories as our official reposito
 for our day to day development and periodically push changes to the repositories at SourceForge which
 we use as a central repository of our project releases and source code.
 
-- BitBucket
+##### BitBucket
+
  - [https://bitbucket.org/dotnetrdf/dotnetrdf][2]
  - [https://bitbucket.org/dotnetrdf/dotnetrdf-docs][3]
-- SourceForge
+
+##### SourceForge
+
  - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/dotnetrdf][4]
  - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/documentation][5]
  - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-stable][6]
