@@ -60,5 +60,10 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <param name="context">Context</param>
         /// <returns></returns>
         BaseMultiset Evaluate(SparqlEvaluationContext context);
+
+        IEnumerable<String> Variables
+        {
+            get;
+        }
     }
 }

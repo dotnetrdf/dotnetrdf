@@ -111,6 +111,10 @@ namespace VDS.RDF.Query.Optimisation
                                     IPropertyPathPattern pp = (IPropertyPathPattern)ps[i];
                                     result = Join.CreateJoin(result, new PropertyPath(pp.Subject, pp.Path, pp.Object));
                                     break;
+                                case TriplePatternType.PropertyFunction:
+                                    IPropertyFunctionPattern pf = (IPropertyFunctionPattern)ps[i];
+                                    result = new PropertyFunction(result, pf.PropertyFunction);
+                                    break;
                                 default:
                                     throw new RdfQueryException("Cannot apply strict algebra form to a BGP containing a unknown triple pattern type");
                             }

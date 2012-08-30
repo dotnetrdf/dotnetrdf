@@ -160,6 +160,8 @@ namespace VDS.RDF.Query.Optimisation
                             throw new RdfQueryException("Cannot do variable substitution when a sub-query is present");
                         case TriplePatternType.Path:
                             throw new RdfQueryException("Cannot do variable substitution when a property path is present");
+                        case TriplePatternType.PropertyFunction:
+                            throw new RdfQueryException("Cannot do variable substituion when a property function is present");
                         default:
                             throw new RdfQueryException("Cannot do variable substitution on unknown triple patterns");
                     }

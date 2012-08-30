@@ -115,8 +115,8 @@ namespace VDS.RDF.Query.Patterns
         public override bool HasNoBlankVariables
         {
             get 
-            { 
-                throw new NotImplementedException();
+            {
+                return !this._vars.Any(v => v.StartsWith("_:"));
             }
         }
 
@@ -132,7 +132,40 @@ namespace VDS.RDF.Query.Patterns
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            StringBuilder output = new StringBuilder();
+            if (this._lhsArgs.Count > 1)
+            {
+                output.Append("( ");
+                foreach (PatternItem arg in this._lhsArgs)
+                {
+                    output.Append(arg.ToString());
+                    output.Append(' ');
+                }
+                output.Append(')');
+            }
+            else
+            {
+                output.Append(this._lhsArgs.First().ToString());
+            }
+            output.Append(" <");
+            output.Append(this._function.FunctionUri);
+            output.Append("> ");
+            if (this._rhsArgs.Count > 1)
+            {
+                output.Append("( ");
+                foreach (PatternItem arg in this._rhsArgs)
+                {
+                    output.Append(arg.ToString());
+                    output.Append(' ');
+                }
+                output.Append(')');
+            }
+            else
+            {
+                output.Append(this._rhsArgs.First().ToString());
+            }
+            output.Append(" .");
+            return output.ToString();
         }
     }
 }

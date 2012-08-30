@@ -76,6 +76,7 @@ namespace VDS.RDF.Test.Query.FullText
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine("Optimised Algebra: " + algebra);
             Assert.IsTrue(algebra.Contains("FullTextQuery("), "Optimised Algebra should use FullTextQuery operator");
+            Assert.IsTrue(algebra.Contains("PropertyFunction("), "Optimised Algebra should use PropertyFunction operator");
         }
 
         [TestMethod]
@@ -100,6 +101,18 @@ namespace VDS.RDF.Test.Query.FullText
         public void FullTextOptimiserSimple4()
         {
             this.TestOptimisation("SELECT * WHERE { (?match ?score) pf:textMatch 'value' }");
+        }
+
+        [TestMethod]
+        public void FullTextOptimiserComplex1()
+        {
+            this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . ?s pf:textMatch 'value' }");
+        }
+
+        [TestMethod]
+        public void FullTextOptimiserComplex2()
+        {
+            this.TestOptimisation("SELECT * WHERE { ?s ?p ?o . FILTER(ISLITERAL(?o)) . ?s pf:textMatch 'value' }");
         }
     }
 

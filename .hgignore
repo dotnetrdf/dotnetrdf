@@ -5,3 +5,5 @@ syntax: glob
 **/obj
 **/Debug
 *.suo
+TestResults/
+*.vsmdi

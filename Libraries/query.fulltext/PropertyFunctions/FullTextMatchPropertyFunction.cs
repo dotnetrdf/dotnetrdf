@@ -54,6 +54,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         : ISparqlPropertyFunction
     {
         private PatternItem _matchVar, _scoreVar, _searchVar;
+        private List<String> _vars = new List<String>();
         private int? _limit;
         private double? _threshold;
 
@@ -68,13 +69,16 @@ namespace VDS.RDF.Query.PropertyFunctions
 
             //Get basic arguments
             this._matchVar = info.SubjectArgs[0];
+            if (this._matchVar.VariableName != null) this._vars.Add(this._matchVar.VariableName);
             if (info.SubjectArgs.Count == 2)
             {
                 this._scoreVar = info.SubjectArgs[1];
+                if (this._scoreVar.VariableName != null) this._vars.Add(this._scoreVar.VariableName);
             }
 
             //Check extended arguments
             this._searchVar = info.ObjectArgs[0];
+            if (this._searchVar.VariableName != null) this._vars.Add(this._searchVar.VariableName);
             switch (info.ObjectArgs.Count)
             {
                 case 1:
@@ -132,6 +136,14 @@ namespace VDS.RDF.Query.PropertyFunctions
             get 
             {
                 return UriFactory.Create(FullTextHelper.FullTextMatchPredicateUri); 
+            }
+        }
+
+        public IEnumerable<String> Variables
+        {
+            get
+            {
+                return this._vars;
             }
         }
 
