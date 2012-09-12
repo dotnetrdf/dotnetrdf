@@ -232,7 +232,7 @@
 
 :dawg-delete-using-02 a ut:UpdateEvaluationTest ;
     mf:name    "Simple DELETE 2 (USING)" ;
-    rdfs:comment "This is a simple test to make sure the GRAPH clause overrides the USING clause" ;
+    rdfs:comment "This is a simple test to make sure the GRAPH clause is correctly interpreted in conjunction with the USING clause" ;
     dawgt:approval dawgt:NotClassified ;
     mf:action [ ut:request <delete-using-02.ru> ; 
                 ut:data <delete-pre-01.ttl> ;
@@ -241,7 +241,7 @@
                 ut:graphData [ ut:graph <delete-pre-03.ttl> ;
                                rdfs:label "http://example.org/g3" ]
               ] ;
-    mf:result [ ut:data <delete-post-01s.ttl> ;
+    mf:result [ ut:data <delete-post-01f.ttl> ;
                 ut:graphData [ ut:graph <delete-post-02f.ttl> ;
                                rdfs:label "http://example.org/g2" ] ;
                 ut:graphData [ ut:graph <delete-post-03f.ttl> ;
@@ -302,7 +302,7 @@
 
 :dawg-delete-using-06 a ut:UpdateEvaluationTest ;
     mf:name    "Graph-specific DELETE 2 (USING)" ;
-    rdfs:comment "Test 2 for DELETE only modifying the desired graph making sure the GRAPH clause overrides the USING clause" ;
+    rdfs:comment "Test 2 to make sure the GRAPH clause is correctly interpreted in conjunction with the USING claus" ;
     dawgt:approval dawgt:NotClassified ;
     mf:action [ ut:request <delete-using-06.ru> ; 
                 ut:graphData [ ut:graph <delete-pre-01.ttl> ;
@@ -314,7 +314,7 @@
               ] ;
     mf:result [ ut:graphData [ ut:graph <delete-post-01f.ttl> ;
                                rdfs:label "http://example.org/g1" ] ;
-                ut:graphData [ ut:graph <delete-post-02s.ttl> ;
+                ut:graphData [ ut:graph <delete-post-02f.ttl> ;
                                rdfs:label "http://example.org/g2" ] ;
                 ut:graphData [ ut:graph <delete-post-03f.ttl> ;
                                rdfs:label "http://example.org/g3" ]

@@ -98,7 +98,7 @@ namespace VDS.RDF.Query.Algebra
                                 {
                                     //If the Graph is explicitly specified and there are FROM NAMED present then the Graph 
                                     //URI must be in the graphs specified by a FROM NAMED or the result is null
-                                    if (context.Query == null || !context.Query.NamedGraphs.Any() || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))
+                                    if (context.Query == null || (!context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any()) || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))
                                     {
                                         //Either there was no Query
                                         //OR there were no Named Graphs (hence any Graph URI is permitted) 
@@ -154,6 +154,12 @@ namespace VDS.RDF.Query.Algebra
                             {
                                 //Query specifies one/more named Graphs
                                 activeGraphs.AddRange(context.Query.NamedGraphs.Select(u => u.AbsoluteUri));
+                            }
+                            else if (context.Query != null && context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
+                            {
+                                //Gives null since the query dataset does not include any named graphs
+                                context.OutputMultiset = new NullMultiset();
+                                return context.OutputMultiset;
                             }
                             else
                             {

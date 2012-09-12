@@ -91,6 +91,8 @@ namespace VDS.RDF.Query.Algebra
                 }
             }
 
+            //First check what variables are present, we need this if we have to create
+            //a new multiset
             IEnumerable<String> vars;
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
@@ -109,8 +111,12 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+                //Otherwise we have a limit/offset to apply
 
+                //Firstly evaluate the inner algebra
+                context.InputMultiset = context.Evaluate(this._pattern);
+
+                //Then apply the offset
                 if (offset > 0)
                 {
                     if (offset > context.InputMultiset.Count)
@@ -128,16 +134,21 @@ namespace VDS.RDF.Query.Algebra
                         }
                     }
                 }
+                //Finally apply the limit
                 if (limit > 0)
                 {
                     if (context.InputMultiset.Count > limit)
                     {
+                        //If the number of results is greater than the limit remove the extraneous
+                        //results
                         foreach (int id in context.InputMultiset.SetIDs.Skip(limit).ToList())
                         {
                             context.InputMultiset.Remove(id);
                         }
                     }
                 }
+
+                //Then return the result
                 context.OutputMultiset = context.InputMultiset;
                 return context.OutputMultiset;
             }
