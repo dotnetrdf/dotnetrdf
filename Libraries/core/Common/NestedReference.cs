@@ -44,7 +44,8 @@ namespace VDS.Common
     /// Represents a reference whose value may change based on nesting level
     /// </summary>
     /// <typeparam name="T">Reference Type</typeparam>
-    internal class NestedReference<T> where T : class
+    internal class NestedReference<T> 
+        where T : class
     {
         private Dictionary<int, T> _values = new Dictionary<int, T>();
         private int _currLevel = 0;

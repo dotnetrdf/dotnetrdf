@@ -181,5 +181,17 @@ namespace VDS.RDF.Test.Sparql
             }
             TestQuery(query);
         }
+
+        [TestMethod]
+        public void SparqlParsingPropertyPathsUnbracketedAlternatives()
+        {
+            String query = @"PREFIX : <http://www.example.org/>
+
+SELECT ?X WHERE
+{ 
+  [ :p|:q|:r ?X ]
+}";
+            TestQuery(query);
+        }
     }
 }

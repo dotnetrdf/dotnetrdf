@@ -230,6 +230,10 @@
     <Content Include="resources\full-minuend-lhs.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>resources\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="resources\UnitTestConfig.properties" />
     <None Include="Sparql\FastJoinTests.cs" />
     <Compile Include="Sparql\FilterPlacementTests.cs" />

@@ -1818,10 +1818,17 @@ namespace VDS.RDF.Parsing
                             throw ParserHelper.Error("Encountered a Right Square Bracket Token to terminate a Blank Node Collection within a Triple Pattern but there are too many Tokens to form a valid Triple Pattern", next);
                         }
                         obj = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
-                        pred = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
 
-                        //Add Pattern to the Graph Pattern
-                        p.AddTriplePattern(new TriplePattern(subj, pred, obj));
+                        if (context.LocalTokens.Peek() is PathToken)
+                        {
+                            PathToken pathToken = context.LocalTokens.Pop() as PathToken;
+                            p.AddTriplePattern(new PropertyPathPattern(subj, pathToken.Path, obj));
+                        }
+                        else
+                        {
+                            pred = this.TryCreatePatternItem(context, context.LocalTokens.Pop());
+                            p.AddTriplePattern(new TriplePattern(subj, pred, obj));
+                        }
                         context.Tokens.Dequeue();
                         return;
 

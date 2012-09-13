@@ -407,6 +407,7 @@ namespace VDS.RDF.Query.Algebra
                         }
                     }
                 }
+                context.InputMultiset = results;
             }
             else if (temp.PatternType == TriplePatternType.Filter)
             {

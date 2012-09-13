@@ -792,7 +792,7 @@ namespace VDS.RDF.Test
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "dataset_50.ttl");
+            FileLoader.Load(g, "dataset_50.ttl.gz");
             store.Add(g);
 
             SparqlQueryParser parser = new SparqlQueryParser();
@@ -1117,6 +1117,52 @@ namespace VDS.RDF.Test
             else
             {
                 Assert.Fail("Expected a SPARQL Result Set");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlLazyLimitSimple1()
+        {
+            const string query = @"PREFIX eg:
+<http://example.org/vehicles/> PREFIX rdf:
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?car ?speed WHERE
+{ ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 1";
+
+            var g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            var results = g.ExecuteQuery(q);
+            Assert.IsTrue(results is SparqlResultSet, "Expected a SPARQL results set");
+            var rset = results as SparqlResultSet;
+            foreach (var r in rset)
+            {
+                Console.WriteLine(r);
+                Assert.AreEqual(2, r.Count, "Expected 2 variable bindings per row.");
+            }
+        }
+
+        [TestMethod]
+        public void SparqlLazyLimitSimple2()
+        {
+            const string query = @"PREFIX eg:
+<http://example.org/vehicles/> PREFIX rdf:
+<http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?car ?speed WHERE
+{ ?car rdf:type eg:Car . ?car eg:Speed ?speed } LIMIT 20";
+
+            var g = new Graph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            var parser = new SparqlQueryParser();
+            var q = parser.ParseFromString(query);
+            var results = g.ExecuteQuery(q);
+            Assert.IsTrue(results is SparqlResultSet, "Expected a SPARQL results set");
+            var rset = results as SparqlResultSet;
+            foreach (var r in rset)
+            {
+                Console.WriteLine(r);
+                Assert.AreEqual(2, r.Count, "Expected 2 variable bindings per row.");
             }
         }
     }

@@ -155,7 +155,17 @@ namespace VDS.RDF.Parsing
             {
                 try
                 {
-                    parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(filename)));
+                    String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                    ext = ext.Substring(1);
+                    MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                    if (def != null)
+                    {
+                        parser = def.GetRdfParser();
+                    }
+                    else
+                    {
+                        parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(ext));
+                    }
                     RaiseWarning("Selected Parser " + parser.ToString() + " based on file extension, if this is incorrect consider specifying the parser explicitly");
                 }
                 catch (RdfParserSelectionException)
@@ -245,9 +255,19 @@ namespace VDS.RDF.Parsing
 
             if (parser == null)
             {
+                String ext = MimeTypesHelper.GetTrueFileExtension(filename);
+                ext = ext.Substring(1);
                 try
                 {
-                    parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
+                    MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                    if (def != null)
+                    {
+                        parser = def.GetRdfDatasetParser();
+                    }
+                    else
+                    {
+                        parser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
+                    }
                 }
                 catch (RdfParserSelectionException)
                 {
@@ -257,7 +277,17 @@ namespace VDS.RDF.Parsing
                     //Try selecting a RDF parser instead
                     try
                     {
-                        IRdfReader rdfParser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(filename)));
+                        IRdfReader rdfParser;
+
+                        MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                        if (def != null)
+                        {
+                            rdfParser = def.GetRdfParser();
+                        }
+                        else
+                        {
+                            rdfParser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeTypes(ext));
+                        }
                         Graph g = new Graph();
                         rdfParser.Load(handler, filename);
                         return;

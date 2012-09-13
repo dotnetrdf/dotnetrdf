@@ -29,6 +29,10 @@ Changed
  - Bug fix to corner case GROUP BY and aggregate interaction logic
  - Bug fix to improve handling of & when outputting XML - Kal Ahmed
  - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary
+ - Bug fix for a parsing error when property paths are nested in Blank Node predicate object lists
+ - Bug fix for proper parser detection when selecting based on a .abc.gz filename
+ - Bug fix for error in Lazy evaluation of some queries
+ - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage
