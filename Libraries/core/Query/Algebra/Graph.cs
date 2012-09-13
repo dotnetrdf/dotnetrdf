@@ -96,19 +96,22 @@ namespace VDS.RDF.Query.Algebra
                                 Uri activeGraphUri = UriFactory.Create(Tools.ResolveUriOrQName(this._graphSpecifier, context.Query.NamespaceMap, context.Query.BaseUri));
                                 if (context.Data.HasGraph(activeGraphUri))
                                 {
-                                    //If the Graph is explicitly specified and there are FROM NAMED present then the Graph 
-                                    //URI must be in the graphs specified by a FROM NAMED or the result is null
-                                    if (context.Query == null || (!context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any()) || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))
+                                    //If the Graph is explicitly specified and there are FROM/FROM NAMED present then the Graph 
+                                    //URI must be in the graphs specified by a FROM/FROM NAMED or the result is null
+                                    if (context.Query == null ||
+                                        ((!context.Query.DefaultGraphs.Any() && !context.Query.NamedGraphs.Any())
+                                         || context.Query.NamedGraphs.Any(u => EqualityHelper.AreUrisEqual(activeGraphUri, u)))
+                                        )
                                     {
-                                        //Either there was no Query
-                                        //OR there were no Named Graphs (hence any Graph URI is permitted) 
+                                        //Either there was no Query 
+                                        //OR there were no Default/Named Graphs (hence any Graph URI is permitted) 
                                         //OR the specified URI was a Named Graph URI
                                         //In any case we can go ahead and set the active Graph
                                         activeGraphs.Add(activeGraphUri.AbsoluteUri);
                                     }
                                     else
                                     {
-                                        //The specified URI was not present in the Default/Named Graphs so return null
+                                        //The specified URI was not present in the Named Graphs so return null
                                         context.OutputMultiset = new NullMultiset();
                                         return context.OutputMultiset;
                                     }

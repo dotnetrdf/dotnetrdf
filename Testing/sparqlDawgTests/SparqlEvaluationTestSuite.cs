@@ -526,7 +526,6 @@ namespace dotNetRDFTest
             if (!query.DefaultGraphs.Any())
             {
                 query.AddDefaultGraph(defaultGraph.BaseUri);
-                //dataset.SetActiveGraph(defaultGraph.BaseUri);
             }
             if (!query.NamedGraphs.Any())
             {
