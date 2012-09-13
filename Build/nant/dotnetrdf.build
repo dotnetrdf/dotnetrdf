@@ -17,7 +17,7 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.license.exclude.exts" 
-            value="dll,pdb,xml,xaml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd,config,properties,settings,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,html,json,xhtml,css,js,sparql,xslt,bak,csv,tsv,ico,png,jpg,tiff,bmp" />
+            value="dll,pdb,xml,xaml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd,config,properties,settings,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,html,json,xhtml,css,js,sparql,xslt,bak,csv,tsv,ico,png,jpg,tiff,bmp,orig" />
   <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
