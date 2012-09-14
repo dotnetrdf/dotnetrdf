@@ -1,4 +1,4 @@
-﻿# Copyright Robert Vesse 2009-10
+# Copyright Robert Vesse 2009-10
 # rvesse@vdesign-studios.com
 #
 # ------------------------------------------------------------------------
@@ -92,7 +92,11 @@ dnr:Graph a rdfs:Class ;
 				 
 dnr:GenericIOManager a rdfs:Class ;
 					 rdfs:label "Class of Generic IO Managers" ;
-					 rdfs:comment "A Generic IO Manager is any class which implements the IGenericIOManager interface for providing read/write access to an arbitrary store.  Define Generic IO Managers in order to define connections to arbitrary stores." .
+					 rdfs:comment "Obsolete - use dnr:StorageProvider instead.  A Generic IO Manager is any class which implements the IGenericIOManager interface for providing read/write access to an arbitrary store.  Define Generic IO Managers in order to define connections to arbitrary stores." .
+					 
+dnr:StorageProvider a rdfs:Class ;
+					  rdfs:label "Class of Storage Providers" ;
+					  rdfs:comment "A Storage Provider is any class which implements the IStorageProvider interface (the new name for IGenericIOManager) and should be used in preference to dnr:GenericIOManager.  Define Storage Providers in order to define connections to arbitrary stores." .
 					 		 
 dnr:HttpHandler a rdfs:Class ;
 				rdfs:label "Class of HTTP Handlers" ;
@@ -184,76 +188,93 @@ dnr:server a rdf:Property ;
 		   rdfs:label "Server" ;
 		   rdfs:comment "This property is used to define the server for a connection." ;
 		   rdfs:domain dnr:GenericIOManager ;
+		   rdfs:domain dnr:StorageProvider ;
 		   rdfs:domain dnr:SparqlQueryProcessor ;
 		   rdfs:domain dnr:Proxy .
 		   
 dnr:port a rdf:Property ;
 		 rdfs:label "Port" ;
 		 rdfs:comment "This property is used to define the port for a connection." ;
-		 rdfs:domain dnr:GenericIOManager .
+		 rdfs:domain dnr:GenericIOManager ;
+		 rdfs:domain dnr:StorageProvider .
 		 
 dnr:database a rdf:Property ;
 			 rdfs:label "Database" ;
 			 rdfs:comment "This property is used to define the database for a connection." ;
-		     rdfs:domain dnr:GenericIOManager .
+		     rdfs:domain dnr:GenericIOManager ;
+		     rdfs:domain dnr:StorageProvider .
 			 
 dnr:catalogID a rdf:Property ;
 			  rdfs:label "Catalog ID" ;
 			  rdfs:comment "This property is used to define the catalog for a connection." ;
-		      rdfs:domain dnr:GenericIOManager .
+		      rdfs:domain dnr:GenericIOManager ;
+		      rdfs:domain dnr:StorageProvider .
 			  
 dnr:storeID a rdf:Property ;
 			rdfs:label "Store ID" ;
 			rdfs:comment "This property is used to define the store for a connection." ;
 		    rdfs:domain dnr:GenericIOManager ;
+		    rdfs:domain dnr:StorageProvider ;
 		    rdfs:domain dnr:SparqlQueryProcessor .
 			
 dnr:queryPath a rdf:Property ;
 			  rdfs:label "Query Path" ;
 			  rdfs:comment "This property is used to define the path to the query service relative to the base URI specified with the dnr:server property." ;
-		      rdfs:domain dnr:GenericIOManager .
+		      rdfs:domain dnr:GenericIOManager ;
+		      rdfs:domain dnr:StorageProvider .
 			  
 dnr:updatePath a rdf:Property ;
 			   rdfs:label "Update Path" ;
 			   rdfs:comment "This property is used to define the path to the update service relative to the base URI specified with the dnr:server property." ;
-		       rdfs:domain dnr:GenericIOManager .
+		       rdfs:domain dnr:GenericIOManager ;
+		       rdfs:domain dnr:StorageProvider .
 			     
 dnr:readOnly a rdf:Property ;
 			 rdfs:label "Read Only" ;
 			 rdfs:comment "This property indicates whether a connection should be created in read-only mode." ;
 			 rdfs:domain dnr:GenericIOManager ;
+			 rdfs:domain dnr:StorageProvider ;
 			 rdfs:range xsd:boolean .
 			 
 dnr:enableUpdates a rdf:Property ;
 				  rdfs:label "Enable Updates" ;
 				  rdfs:comment "This property indicates whether a connections update capabilities should be enabled." ;
 				  rdfs:domain dnr:GenericIOManager ;
+				  rdfs:domain dnr:StorageProvider ;
 				  rdfs:range xsd:boolean .
 				   
 dnr:async a rdf:Property ;
 		  rdfs:label "Asynchronous" ;
 		  rdfs:comment "This property indicates whether a connection should be opened in asynchronous mode." ;
 		  rdfs:domain dnr:GenericIOManager ;
+		  rdfs:domain dnr:StorageProvider ;
 		  rdfs:range xsd:boolean .
 		  
 dnr:loadMode a rdf:Property ;
 			 rdfs:label "Load Mode" ;
 			 rdfs:comment "This property indicates the loading mode.  It is a general purpose property that can be used to indicate additional parameters for Objects, the exact meaning of this property depends on the Object being declared and the Object Factory which loads it" ;
 			 rdfs:domain dnr:GenericIOManager ;
+			 rdfs:domain dnr:StorageProvider ;
 			 rdfs:domain dnr:TripleStore .
 			 
 dnr:encryptConnection a rdf:Property ;
 					  rdfs:label "Encrypt Connection" ;
 					  rdfs:comment "This property indicates whether the connection needs to be encrypted." ;
 					  rdfs:range xsd:boolean ;
-					  rdfs:domain dnr:GenericIOManager .
+					  rdfs:domain dnr:GenericIOManager ;
+					  rdfs:domain dnr:StorageProvider .
 		  
 # Properties to associate connections with other objects
 
 dnr:genericManager a rdf:Property ;
 				   rdfs:label "Generic Manager" ;
-				   rdfs:comment "This property associates a Generic IO Manager with an object." ;
+				   rdfs:comment "Obsolete - Use dnr:storageProvider instead. This property associates a Generic IO Manager with an object." ;
 				   rdfs:range dnr:GenericIOManager .
+				   
+dnr:storageProvider a rdf:Property ;
+					  rdfs:label "Storage Provider" ;
+					  rdfs:comment "This property associates a Storage Provider with an object" ;
+					  rdfs:range dnr:StorageProvider .
 			   
 # Properties to associate SPARQL processors with other objects
 
@@ -321,9 +342,9 @@ dnr:fromString a rdf:Property ;
 				 
 dnr:fromStore a rdf:Property ;
 			  rdfs:label "From Store" ;
-			  rdfs:comment "This property states that data is retrieved from a generic store connection." ;
+			  rdfs:comment "This property states that data is retrieved from a storage provider." ;
 			  rdfs:domain dnr:Graph ;
-			  rdfs:range dnr:GenericIOManager .
+			  rdfs:range dnr:StorageProvider .
 
 dnr:fromDataset a rdf:Property ;
 				rdfs:label "From Dataset" ;
@@ -352,7 +373,8 @@ dnr:endpointUri a rdf:Property ;
 				rdfs:label "Endpoint URI" ;
 				rdfs:comment "This property defines the Endpoint URI." ;
 				rdfs:domain dnr:SparqlEndpoint ;
-				rdfs:domain dnr:GenericIOManager .
+				rdfs:domain dnr:GenericIOManager ;
+				rdfs:domain dnr:StorageProvider .
 			 
 dnr:defaultGraphUri a rdf:Property ;
 					rdfs:label "Default Graph URI" ;
