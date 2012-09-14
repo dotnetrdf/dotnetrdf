@@ -212,7 +212,8 @@ namespace VDS.RDF.Query.Paths
     /// <summary>
     /// Represents a Zero or One cardinality restriction on a Path
     /// </summary>
-    public class ZeroOrOne : Cardinality
+    public class ZeroOrOne
+        : Cardinality
     {
         /// <summary>
         /// Creates a new Zero or One cardinality restriction
@@ -262,16 +263,17 @@ namespace VDS.RDF.Query.Paths
             PathTransformContext lhsContext = new PathTransformContext(context);
             PathTransformContext rhsContext = new PathTransformContext(context);
             ISparqlAlgebra lhs = new ZeroLengthPath(lhsContext.Subject, lhsContext.Object, this._path);
-            ISparqlAlgebra rhs = this._path.ToAlgebra(context);
+            ISparqlAlgebra rhs = this._path.ToAlgebra(rhsContext);
 
-            return new Union(lhs, rhs);
+            return new Distinct(new Union(lhs, rhs));
         }
     }
 
     /// <summary>
     /// Represents a One or More cardinality restriction on a Path
     /// </summary>
-    public class OneOrMore : Cardinality
+    public class OneOrMore
+        : Cardinality
     {
         /// <summary>
         /// Creates a new One or More cardinality restriction

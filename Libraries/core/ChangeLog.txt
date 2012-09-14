@@ -33,6 +33,8 @@ Changed
  - Bug fix for proper parser detection when selecting based on a .abc.gz filename
  - Bug fix for error in Lazy evaluation of some queries
  - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
+ - Bug fix for some prefix validation bugs in SPARQL 1.1
+ - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage
