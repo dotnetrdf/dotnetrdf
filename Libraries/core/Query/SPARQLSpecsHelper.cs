@@ -707,6 +707,24 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Gets whether a given prefix declaration is valid in SPARQL
+        /// </summary>
+        /// <param name="value">Prefix declaration</param>
+        /// <returns></returns>
+        public static bool IsValidPrefix(String value)
+        {
+            //Empty string is not a valid prefix
+            if (value.Length == 0) return false;
+            //Prefix must end with a colon
+            if (!value.EndsWith(":")) return false;
+            //Empty prefix is valid
+            if (value.Length == 1) return true;
+            //Otherwise must match IsPNPrefix() production
+            //Remember to remove the terminating : which we have already validated
+            return IsPNPrefix(value.Substring(0, value.Length - 1).ToCharArray());
+        }
+
+        /// <summary>
         /// Checks whether a given Character matches the PN_CHARS_BASE rule from the Sparql Specification
         /// </summary>
         /// <param name="c">Character to test</param>

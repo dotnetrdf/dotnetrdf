@@ -458,6 +458,9 @@
     <Content Include="sparql11_tests\syntax-update-1\syntax-update-53.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="sparql11_tests\property-path\diamond-loop-5a.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="sparqlparser_tests\algebra\data-1.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

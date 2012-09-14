@@ -109,6 +109,8 @@ namespace dotNetRDFTest
                     //This one fails because we return an extra empty unbound variable so results are technically correct just
                     //not 100% accurate
                     "aggregates/agg-empty-group.rq",
+                    //The following gives correct results but Result Set equality occassionally reports the results as non-matching
+                    "bind/bind02.rq",
                     //The following are tests that fail simply because our SparqlResultSet equality algorithm doesn't cope well
                     //with lots of BNodes in the results
                     "functions/bnode01.rq",
@@ -758,6 +760,15 @@ namespace dotNetRDFTest
                         SparqlXmlParser resultSetParser = new SparqlXmlParser();
                         resultSetParser.Load(expectedResults, resultFile);
                     }
+                    catch (FileNotFoundException fnfEx)
+                    {
+                        this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
+                        this.ReportError("Missing Results", fnfEx);
+                        testsIndeterminate++;
+                        testsEvaluationIndeterminate++;
+                        Console.WriteLine("# Test Result - Missing expected results (Test Indeterminate)");
+                        return 0;
+                    }
                     catch (RdfParseException parseEx)
                     {
                         this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
@@ -844,6 +855,7 @@ namespace dotNetRDFTest
                 }
                 else
                 {
+                    this._earl.Assert(testResult, this._earl.CreateUriNode("earl:outcome"), this._earl.CreateUriNode("earl:fail"));
                     Console.WriteLine("Final Query");
                     SparqlFormatter formatter = new SparqlFormatter(query.NamespaceMap);
                     Console.WriteLine(formatter.Format(query));

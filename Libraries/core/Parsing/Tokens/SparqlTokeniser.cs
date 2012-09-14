@@ -501,6 +501,9 @@ namespace VDS.RDF.Parsing.Tokens
                         }
                         ok = false;
                         break;
+                    case '{':
+                        ok = false;
+                        break;
                     default:
                         this.ConsumeCharacter();
                         break;
@@ -666,7 +669,7 @@ namespace VDS.RDF.Parsing.Tokens
             {
                 throw new RdfParseException("Didn't find expected : Character while attempting to parse Prefix at content:\n" + this.Value + "\nPrefixes must end in a Colon Character", this.StartLine, this.CurrentLine, this.StartPosition, this.CurrentPosition);
             }
-            if (!SparqlSpecsHelper.IsValidQName(this.Value, this._syntax))
+            if (!SparqlSpecsHelper.IsValidPrefix(this.Value))
             {
                 throw new RdfParseException("The value '" + this.Value + "' is not a valid Prefix in SPARQL", new PositionInfo(this.StartLine, this.CurrentLine, this.StartPosition, this.EndPosition));
             }

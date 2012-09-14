@@ -307,6 +307,7 @@
 ##     .
 
 :pp28a  rdf:type mf:QueryEvaluationTest ;
+    dawgt:approval dawgt:Approved ;
     mf:name    "(pp28a) Diamond, with loop -- (:p/:p)?" ;
     mf:action
         [ qt:query  <path-3-3.rq> ;

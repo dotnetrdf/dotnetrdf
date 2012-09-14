@@ -510,94 +510,116 @@
    mf:action  <syntax-SELECTscope3.rq> ;.
 
 :test_pn_01 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-01" ;
    mf:action  <syn-pname-01.rq> ;.
 
 :test_pn_02 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-02" ;
    mf:action  <syn-pname-02.rq> ;.
 
 :test_pn_03 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-03" ;
    mf:action  <syn-pname-03.rq> ;.
 
 :test_pn_04 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-04" ;
    mf:action  <syn-pname-04.rq> ;.
 
 :test_pn_05 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-05" ;
    mf:action  <syn-pname-05.rq> ;.
 
 :test_pn_06 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-06" ;
    mf:action  <syn-pname-06.rq> ;.
 
 :test_pn_07 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-07" ;
    mf:action  <syn-pname-07.rq> ;.
 
 :test_pn_08 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-08" ;
    mf:action  <syn-pname-08.rq> ;.
 
 :test_pn_09 rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pname-09" ;
    mf:action  <syn-pname-09.rq> ;.
 
-
 :test_pn_bad_01 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-01" ;
    mf:action  <syn-bad-pname-01.rq> ;.
 
 :test_pn_bad_02 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-02" ;
    mf:action  <syn-bad-pname-02.rq> ;.
 
 :test_pn_bad_03 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-03" ;
    mf:action  <syn-bad-pname-03.rq> ;.
 
 :test_pn_bad_04 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-04" ;
    mf:action  <syn-bad-pname-04.rq> ;.
 
 :test_pn_bad_05 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-05" ;
    mf:action  <syn-bad-pname-05.rq> ;.
 
 :test_pn_bad_06 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-06" ;
    mf:action  <syn-bad-pname-06.rq> ;.
 
 :test_pn_bad_07 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-07" ;
    mf:action  <syn-bad-pname-07.rq> ;.
 
 :test_pn_bad_08 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-08" ;
    mf:action  <syn-bad-pname-08.rq> ;.
 
 :test_pn_bad_09 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-09" ;
    mf:action  <syn-bad-pname-09.rq> ;.
 
 :test_pn_bad_10 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-10" ;
    mf:action  <syn-bad-pname-10.rq> ;.
 
 :test_pn_bad_11 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-11" ;
    mf:action  <syn-bad-pname-11.rq> ;.
 
 :test_pn_bad_12 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-12" ;
    mf:action  <syn-bad-pname-12.rq> ;.
 
 :test_pn_bad_13 rdf:type   mf:NegativeSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-pname-13" ;
    mf:action  <syn-bad-pname-13.rq> ;.
 
 :test_pp_coll rdf:type   mf:PositiveSyntaxTest11 ;
+   dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-pp-in-collection" ;
    mf:action  <syn-pp-in-collection.rq> ;.
