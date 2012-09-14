@@ -631,14 +631,6 @@ namespace VDS.RDF.Query
                 //Must have a Colon in a QName
                 return false;
             } 
-            //else if (value.StartsWith(":"))
-            //{
-            //    //No need to validate QName
-            //    //Just validation Local Name
-            //    char[] cs = value.ToCharArray(1, value.Length - 1);
-
-            //    return IsPNLocal(cs, syntax);
-            //}
             else
             {
                 //Split into Prefix and Local Name
@@ -654,12 +646,6 @@ namespace VDS.RDF.Query
                 }
                 //Final section must match PN_LOCAL
                 return IsPNLocal(parts[parts.Length - 1].ToCharArray(), syntax);
-
-
-                //char[] prefix = value.ToCharArray(0, value.IndexOf(':'));
-                //char[] local = value.ToCharArray(value.IndexOf(':') + 1, value.Length - value.IndexOf(':')-1);
-
-                //return (IsPNPrefix(prefix) && IsPNLocal(local, syntax));
             }
         }
 
@@ -984,7 +970,6 @@ namespace VDS.RDF.Query
                         case ',':
                         case ';':
                         case '=':
-                        case ':':
                         case '/':
                         case '?':
                         case '#':
