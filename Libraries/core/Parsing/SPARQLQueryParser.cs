@@ -1496,7 +1496,7 @@ namespace VDS.RDF.Parsing
                     //Check list of Blank Node usages
                     if (context.BlankNodeIDUsages.ContainsKey(next.Value))
                     {
-                        if (context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
+                        if (context.CheckBlankNodeScope && context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
                         {
                             throw ParserHelper.Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
                         }
@@ -1734,7 +1734,7 @@ namespace VDS.RDF.Parsing
                         //Check list of Blank Node usages
                         if (context.BlankNodeIDUsages.ContainsKey(next.Value))
                         {
-                            if (context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
+                            if (context.CheckBlankNodeScope && context.BlankNodeIDUsages[next.Value] != context.GraphPatternID)
                             {
                                 throw ParserHelper.Error("Invalid use of Blank Node Label '" + next.Value + "', this Label has already been used in a different Graph Pattern", next);
                             }

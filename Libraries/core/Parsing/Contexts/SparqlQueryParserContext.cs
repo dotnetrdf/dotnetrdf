@@ -62,6 +62,7 @@ namespace VDS.RDF.Parsing.Contexts
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
         private int _nextAliasID = 0;
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
+        private bool _checkBNodeScope = true;
 
         /// <summary>
         /// Creates a new SPARQL Query Parser Context with default settings
@@ -272,6 +273,24 @@ namespace VDS.RDF.Parsing.Contexts
             get
             {
                 return this._blankNodeID;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Blank Node scoping must be checked
+        /// </summary>
+        /// <remarks>
+        /// If false then only name tracking will be done to prevent auto-generated IDs colliding with user allocated IDs
+        /// </remarks>
+        public bool CheckBlankNodeScope
+        {
+            get
+            {
+                return this._checkBNodeScope;
+            }
+            set
+            {
+                this._checkBNodeScope = value;
             }
         }
 

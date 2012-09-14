@@ -592,6 +592,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //Validate that the Graph Pattern is simple
@@ -740,6 +741,7 @@ namespace VDS.RDF.Parsing
             subContext.ExpressionParser.NamespaceMap = context.NamespaceMap;
             subContext.ExpressionParser.ExpressionFactories = context.ExpressionFactories;
             subContext.ExpressionFactories = context.ExpressionFactories;
+            subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
             //Validate that the Graph Pattern is simple
@@ -766,13 +768,13 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("An INSERT DATA Command may not contain nested Graph Patterns");
                 }
-                else if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
-                {
-                    cmd = new InsertDataCommand(gp);
-                }
                 else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph)
                 {
                     cmd = new InsertDataCommand(gp.ChildGraphPatterns[0]);
+                }
+                else if (gp.HasChildGraphPatterns)
+                {
+                    cmd = new InsertDataCommand(gp);
                 }
                 else
                 {
