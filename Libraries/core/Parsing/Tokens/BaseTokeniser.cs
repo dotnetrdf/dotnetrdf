@@ -694,6 +694,7 @@ namespace VDS.RDF.Parsing.Tokens
                 switch (next)
                 {
                     case '_':
+                    case '~':
                     case '-':
                     case '.':
                     case '|':
@@ -779,7 +780,7 @@ namespace VDS.RDF.Parsing.Tokens
                         return;
 
                     default:
-                        throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_-.|$&'()*+,;=/?#@%) in Local Names");
+                        throw Error("Unexpected Backslash Character encountered in a Local Name, the Backslash Character can only be used for Unicode escapes (\\u and \\U) and a limited set of special characters (_~-.|$&'()*+,;=/?#@%) in Local Names");
                 }
             }
             else if (next == '%')

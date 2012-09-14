@@ -798,7 +798,7 @@ namespace VDS.RDF.Parsing.Tokens
             String value = this.Value;
 
             //Backtrack if necessary
-            if (value.EndsWith("."))
+            if (value.EndsWith(".") && (this._syntax == SparqlQuerySyntax.Sparql_1_0 || value[value.Length-2] != '\\'))
             {
                 this.Backtrack();
                 value = value.Substring(0, value.Length - 1);
@@ -816,6 +816,8 @@ namespace VDS.RDF.Parsing.Tokens
             }
             else if (value.StartsWith("_:"))
             {
+                if (!SparqlSpecsHelper.IsValidBNode(value)) throw Error("The value '" + value + "' is not valid as a Blank Node identifier");
+
                 //A Blank Node QName
                 this.LastTokenType = Token.BLANKNODEWITHID;
                 return new BlankNodeWithIDToken(value, this.CurrentLine, this.StartPosition, this.EndPosition);

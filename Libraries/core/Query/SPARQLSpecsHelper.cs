@@ -711,6 +711,44 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Gets whether a given BNode ID is valid
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        public static bool IsValidBNode(String value)
+        {
+            //Must be at least 3 characters
+            if (value.Length < 3) return false;
+            //Must start with _:
+            if (!value.StartsWith("_:")) return false;
+
+            char[] cs = value.Substring(2).ToCharArray();
+
+            //First character must be PN_CHARS_U or digit
+            if (!Char.IsDigit(cs[0]) && !IsPNCharsU(cs[0])) return false;
+
+            //If only one character it's a valid identifier since we've validated the first character
+            if (cs.Length == 1) return true;
+
+            //Otherwise we need to validate the rest of the identifier
+            for (int i = 1; i < cs.Length; i++)
+            {
+                if (i < cs.Length - 1)
+                {
+                    //Middle characters may be PN_CHARS or a .
+                    if (cs[i] != '.' && !IsPNChars(cs[i])) return false;
+                }
+                else
+                {
+                    //Final character must be in PN_CHARS
+                    return IsPNChars(cs[i]);
+                }
+            }
+            //Should be impossible to get here but must keep the compiler happy
+            return false;            
+        }
+
+        /// <summary>
         /// Checks whether a given Character matches the PN_CHARS_BASE rule from the Sparql Specification
         /// </summary>
         /// <param name="c">Character to test</param>
@@ -957,6 +995,7 @@ namespace VDS.RDF.Query
                     switch (c)
                     {
                         case '_':
+                        case '~':
                         case '-':
                         case '.':
                         case '|':
@@ -1043,6 +1082,7 @@ namespace VDS.RDF.Query
                         switch (esc)
                         {
                             case '_':
+                            case '~':
                             case '-':
                             case '.':
                             case '|':
@@ -1056,7 +1096,6 @@ namespace VDS.RDF.Query
                             case ',':
                             case ';':
                             case '=':
-                            case ':':
                             case '/':
                             case '?':
                             case '#':
@@ -1066,7 +1105,7 @@ namespace VDS.RDF.Query
                                 i++;
                                 break;
                             default:
-                                throw new RdfParseException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_-.|$&\\()*+,;=:/?#@%) of characters in a Local Name");
+                                throw new RdfParseException("Invalid character after a backslash, a backslash can only be used to escape a limited set (_~-.|$&\\()*+,;=/?#@%) of characters in a Local Name");
                         }
                     }
                     else if (cs[i] == '%')

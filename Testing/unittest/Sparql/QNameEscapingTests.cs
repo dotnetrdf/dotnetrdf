@@ -49,6 +49,7 @@ namespace VDS.RDF.Test.Sparql
         List<char> _cs = new List<char>()
             {
                  '_',
+                 '~',
                  '-',
                  '.',
                  '|',
@@ -134,6 +135,18 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlQNameUnescapingDawg1()
         {
             this.TestQNameUnescaping("og:audio:title", "og:audio:title");
+        }
+
+        [TestMethod]
+        public void SparqlQNameUnescapingDawg2()
+        {
+            this.TestQNameUnescaping(@":c\~z\.", ":c~z.");
+        }
+
+        [TestMethod]
+        public void SparqlBNodeValidation1()
+        {
+            Assert.IsTrue(SparqlSpecsHelper.IsValidBNode("_:a"));
         }
     }
 }
