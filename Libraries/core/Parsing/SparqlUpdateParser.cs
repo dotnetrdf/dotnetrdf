@@ -619,13 +619,13 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("A DELETE DATA Command may not contain nested Graph Patterns");
                 }
-                else if (gp.HasChildGraphPatterns && gp.TriplePatterns.Count > 0)
-                {
-                    cmd = new DeleteDataCommand(gp);
-                }
-                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph)
+                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
                 {
                     cmd = new DeleteDataCommand(gp.ChildGraphPatterns[0]);
+                }
+                else if (gp.HasChildGraphPatterns)
+                {
+                    cmd = new DeleteDataCommand(gp);
                 }
                 else
                 {
@@ -768,7 +768,7 @@ namespace VDS.RDF.Parsing
                 {
                     throw new RdfParseException("An INSERT DATA Command may not contain nested Graph Patterns");
                 }
-                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph)
+                else if (gp.ChildGraphPatterns.Count == 1 && gp.ChildGraphPatterns[0].IsGraph && gp.TriplePatterns.Count == 0)
                 {
                     cmd = new InsertDataCommand(gp.ChildGraphPatterns[0]);
                 }
