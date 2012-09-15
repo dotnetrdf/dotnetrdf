@@ -107,7 +107,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// The QName for the Configuration Property that is used to serialize this piece of configuration for a connection created from this definition
+        /// The URI for the Configuration Property that is used to serialize this piece of configuration for a connection created from this definition
         /// </summary>
         public String PopulateFrom
         {
@@ -116,7 +116,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
         }
 
         /// <summary>
-        /// The QName for a property defining an intermediate object via which the actual properties value may be populated using the property defined via the <see cref="ConnectionAttribute.PopulateFrom"/> property
+        /// The URI for a property defining an intermediate object via which the actual properties value may be populated using the property defined via the <see cref="ConnectionAttribute.PopulateFrom"/> property
         /// </summary>
         public String PopulateVia
         {

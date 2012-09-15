@@ -107,7 +107,7 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case LeviathanQueryProcessor:
-                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (datasetObj != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, datasetObj);
@@ -123,7 +123,7 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         //If no dnr:usingDataset try dnr:usingStore instead
-                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, storeObj);
                         if (temp is IInMemoryQueryableStore)
@@ -138,7 +138,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case SimpleQueryProcessor:
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is INativelyQueryableStore)
@@ -152,7 +152,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericQueryProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IQueryableStorage)
@@ -167,7 +167,7 @@ namespace VDS.RDF.Configuration
 
 #if !SILVERLIGHT
                 case RemoteQueryProcessor:
-                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpoint));
+                    INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                     if (endpointObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, endpointObj);
                     if (temp is SparqlRemoteEndpoint)
@@ -182,9 +182,9 @@ namespace VDS.RDF.Configuration
 
 
                 case PelletQueryProcessor:
-                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer));
+                    String server = ConfigurationLoader.GetConfigurationValue(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)));
                     if (server == null) return false;
-                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyStore));
+                    String kb = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)));
                     if (kb == null) return false;
 
                     processor = new PelletQueryProcessor(UriFactory.Create(server), kb);
@@ -244,7 +244,7 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case LeviathanUpdateProcessor:
-                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (datasetObj != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, datasetObj);
@@ -259,7 +259,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, storeObj);
                         if (temp is IInMemoryQueryableStore)
@@ -274,7 +274,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case SimpleUpdateProcessor:
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                     if (storeObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IUpdateableTripleStore)
@@ -288,7 +288,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericUpdateProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)
@@ -354,8 +354,8 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case ProtocolToUpdateProcessor:
-                    INode qNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyQueryProcessor));
-                    INode uNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUpdateProcessor));
+                    INode qNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryProcessor)));
+                    INode uNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
                     if (qNode == null || uNode == null) return false;
 
                     Object queryProc = ConfigurationLoader.LoadObject(g, qNode);
@@ -380,7 +380,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case LeviathanProtocolProcessor:
-                    INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    INode datasetNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (datasetNode != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, datasetNode);
@@ -395,7 +395,7 @@ namespace VDS.RDF.Configuration
                     }
                     else
                     {
-                        INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        INode storeNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeNode == null) return false;
 
                         Object store = ConfigurationLoader.LoadObject(g, storeNode);
@@ -414,7 +414,7 @@ namespace VDS.RDF.Configuration
 #if !NO_WEB && !NO_ASP
 
                 case GenericProtocolProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)

@@ -65,7 +65,7 @@ namespace VDS.RDF.Utilities.StoreManager
             this._objNode = objNode;
             
             //Get Type
-            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyType));
+            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
             if (typeName != null)
             {
                 try

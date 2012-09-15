@@ -74,7 +74,7 @@ namespace VDS.RDF
         /// <param name="factoryType">Factory Type</param>
         internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
         {
-            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             String assm = Assembly.GetAssembly(factoryType).FullName;
             if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
@@ -87,7 +87,7 @@ namespace VDS.RDF
             if (!rset.Result)
             {
                 INode factory = context.Graph.CreateBlankNode();
-                context.Graph.Assert(new Triple(factory, rdfType, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassObjectFactory)));
+                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
                 context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
             }
         }

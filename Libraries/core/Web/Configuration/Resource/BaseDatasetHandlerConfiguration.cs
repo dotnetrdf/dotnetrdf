@@ -61,7 +61,7 @@ namespace VDS.RDF.Web.Configuration.Resource
         public BaseDatasetHandlerConfiguration(IHttpContext context, IGraph config, INode objNode)
             : base(context, config, objNode)
         {
-            INode datasetNode = ConfigurationLoader.GetConfigurationNode(config, objNode, ConfigurationLoader.CreateConfigurationNode(config, ConfigurationLoader.PropertyUsingDataset));
+            INode datasetNode = ConfigurationLoader.GetConfigurationNode(config, objNode, config.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
             if (datasetNode == null) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as there is no value given for the required dnr:usingDataset property");
 
             //Load the Dataset

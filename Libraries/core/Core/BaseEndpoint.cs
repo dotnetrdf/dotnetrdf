@@ -337,8 +337,8 @@ namespace VDS.RDF
 #endif
             {
                 INode endpoint = context.NextSubject;
-                INode user = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUser);
-                INode pwd = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyPassword);
+                INode user = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
 
                 if (this._credentials != null)
                 {
@@ -348,7 +348,7 @@ namespace VDS.RDF
 #if !NO_PROXY
                     if (this._useCredentialsForProxy)
                     {
-                        INode useCreds = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyUseCredentialsForProxy);
+                        INode useCreds = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUseCredentialsForProxy));
                         context.Graph.Assert(new Triple(endpoint, useCreds, this._useCredentialsForProxy.ToLiteral(context.Graph)));
                     }
 #endif
@@ -358,9 +358,9 @@ namespace VDS.RDF
                 {
                     INode proxy = context.NextSubject;
                     INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-                    INode usesProxy = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyProxy);
-                    INode proxyType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.ClassProxy);
-                    INode server = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyServer);
+                    INode usesProxy = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy));
+                    INode proxyType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassProxy));
+                    INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
 
                     context.Graph.Assert(new Triple(endpoint, usesProxy, proxy));
                     context.Graph.Assert(new Triple(proxy, rdfType, proxyType));

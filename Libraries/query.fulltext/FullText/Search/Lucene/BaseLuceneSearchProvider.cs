@@ -238,7 +238,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             INode searcherObj = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode searcherClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassSearcher));
             INode index = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertyIndex));
             INode schema = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.PropertySchema));

@@ -49,6 +49,7 @@ Removed
 - Removed IStoreParams
 - Removed the old overloads of IStoreReader and IStoreWriter
 - Removed the obsolete IGenericIOManager interfaces
+- Removes obsolete property and class constants in ConfigurationLoader
    
 
 

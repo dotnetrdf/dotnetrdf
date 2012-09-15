@@ -87,10 +87,10 @@ namespace VDS.RDF.Configuration
             INode storeObj;
 
             //Create the URI Nodes we're going to use to search for things
-            INode propServer = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServer),
-                  propDb = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDatabase),
-                  propStore = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyStore),
-                  propAsync = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAsync);
+            INode propServer = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)),
+                  propDb = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase)),
+                  propStore = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)),
+                  propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync));
 
             switch (targetType.FullName)
             {
@@ -99,7 +99,7 @@ namespace VDS.RDF.Configuration
                     //Get the Server, Catalog and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    String catalog = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
+                    String catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
                     store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
                     if (store == null) return false;
 
@@ -119,7 +119,7 @@ namespace VDS.RDF.Configuration
 
                 case DatasetFile:
                     //Get the Filename and whether the loading should be done asynchronously
-                    String file = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
+                    String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                     if (file == null) return false;
                     file = ConfigurationLoader.ResolvePath(file);
                     isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
@@ -129,7 +129,7 @@ namespace VDS.RDF.Configuration
 #if !NO_SYNC_HTTP
                 case Dydra:
                     //Get the Account Name and Store
-                    String account = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCatalog));
+                    String account = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
                     if (account == null) return false;
                     store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
                     if (store == null) return false;
@@ -151,7 +151,7 @@ namespace VDS.RDF.Configuration
                     //Get the Server and whether Updates are enabled
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEnableUpdates), true);
+                    bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates)), true);
                     manager = new FourStoreConnector(server, enableUpdates);
                     break;
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Configuration
 
                 case InMemory:
                     //Get the Dataset/Store
-                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingDataset));
+                    INode datasetObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingDataset)));
                     if (datasetObj != null)
                     {
                         temp = ConfigurationLoader.LoadObject(g, datasetObj);
@@ -181,7 +181,7 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         //If no dnr:usingDataset try dnr:usingStore instead
-                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUsingStore));
+                        storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingStore)));
                         if (storeObj != null)
                         {
                             temp = ConfigurationLoader.LoadObject(g, storeObj);
@@ -208,9 +208,9 @@ namespace VDS.RDF.Configuration
                     //Get the Query and Update URIs
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    String queryService = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyQueryPath));
+                    String queryService = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryPath)));
                     if (queryService == null) return false;
-                    String updateService = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUpdatePath));
+                    String updateService = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdatePath)));
                     if (updateService == null)
                     {
                         manager = new JosekiConnector(server, queryService);
@@ -225,7 +225,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnly:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IStorageProvider)
                     {
@@ -239,7 +239,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnlyQueryable:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyGenericManager));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IQueryableStorage)
                     {
@@ -274,10 +274,10 @@ namespace VDS.RDF.Configuration
 
                 case Sparql:
                     //Get the Endpoint URI or the Endpoint
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpointUri));
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpointUri)));
 
                     //What's the load mode?
-                    String loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+                    String loadModeRaw = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
                     SparqlConnectorLoadMethod loadMode = SparqlConnectorLoadMethod.Construct;
                     if (loadModeRaw != null)
                     {
@@ -297,7 +297,7 @@ namespace VDS.RDF.Configuration
 
                     if (server == null)
                     {
-                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyEndpoint));
+                        INode endpointObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEndpoint)));
                         if (endpointObj == null) return false;
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
@@ -312,10 +312,10 @@ namespace VDS.RDF.Configuration
                     else
                     {
                         //Are there any Named/Default Graph URIs
-                        IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultGraphUri))
+                        IEnumerable<Uri> defGraphs = from def in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultGraphUri)))
                                                      where def.NodeType == NodeType.Uri
                                                      select ((IUriNode)def).Uri;
-                        IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyNamedGraphUri))
+                        IEnumerable<Uri> namedGraphs = from named in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyNamedGraphUri)))
                                                        where named.NodeType == NodeType.Uri
                                                        select ((IUriNode)named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
@@ -348,7 +348,7 @@ namespace VDS.RDF.Configuration
 
                     //Get Reasoning Mode
                     StardogReasoningMode reasoning = StardogReasoningMode.None;
-                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyLoadMode));
+                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyLoadMode)));
                     if (mode != null)
                     {
                         try
@@ -378,7 +378,7 @@ namespace VDS.RDF.Configuration
             //Check whether this is a proxyable manager and if we need to load proxy settings
             if (manager is BaseHttpConnector)
             {
-                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyProxy));
+                INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
                 {
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);

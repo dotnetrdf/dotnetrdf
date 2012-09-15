@@ -197,7 +197,7 @@ namespace VDS.RDF.Query
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode indexClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassIndex));
             INode dirObj = context.NextSubject;
 
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
             else if (directory is FSDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(typeof(FSDirectory).FullName + ", Lucene.Net"));
-                context.Graph.Assert(dirObj, ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyFromFile), context.Graph.CreateLiteralNode(((FSDirectory)directory).GetDirectory().FullName));
+                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).GetDirectory().FullName));
             }
             else
             {
@@ -223,7 +223,7 @@ namespace VDS.RDF.Query
             context.EnsureObjectFactory(typeof(FullTextObjectFactory));
 
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode dnrType = ConfigurationLoader.CreateConfigurationNode(context.Graph, ConfigurationLoader.PropertyType);
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
             INode analyzerClass = context.Graph.CreateUriNode(UriFactory.Create(FullTextHelper.ClassAnalyzer));
             INode analyzerObj = context.NextSubject;
 

@@ -79,7 +79,7 @@ namespace VDS.RDF.Web.Configuration.Update
         {
             //Then get the Update Processor to be used
             ISparqlUpdateProcessor processor;
-            INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUpdateProcessor));
+            INode procNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdateProcessor)));
             if (procNode == null) throw new DotNetRdfConfigurationException("Unable to load Update Handler Configuration as the RDF configuration file does not specify a dnr:updateProcessor property for the Handler");
             Object temp = ConfigurationLoader.LoadObject(g, procNode);
             if (temp is ISparqlUpdateProcessor)
@@ -93,8 +93,8 @@ namespace VDS.RDF.Web.Configuration.Update
             this._processor = processor;
 
             //Handler Settings
-            this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyShowUpdateForm), this._showUpdateForm);
-            String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDefaultUpdateFile));
+            this._showUpdateForm = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyShowUpdateForm)), this._showUpdateForm);
+            String defUpdateFile = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDefaultUpdateFile)));
             if (defUpdateFile != null)
             {
                 defUpdateFile = ConfigurationLoader.ResolvePath(defUpdateFile);
@@ -109,7 +109,7 @@ namespace VDS.RDF.Web.Configuration.Update
             }
 
             //Get the Service Description Graph
-            INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyServiceDescription));
+            INode descripNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServiceDescription)));
             if (descripNode != null)
             {
                 Object descrip = ConfigurationLoader.LoadObject(g, descripNode);

@@ -221,21 +221,21 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
 
                     if (!String.IsNullOrEmpty(attr.PopulateVia))
                     {
-                        n = ConfigurationLoader.GetConfigurationNode(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateVia));
+                        n = ConfigurationLoader.GetConfigurationNode(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateVia)));
                         if (n == null) continue;
                     }
 
                     switch (attr.Type)
                     {
                         case ConnectionSettingType.Boolean:
-                            bool b = ConfigurationLoader.GetConfigurationBoolean(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom), (bool)property.GetValue(this, null));
+                            bool b = ConfigurationLoader.GetConfigurationBoolean(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)), (bool)property.GetValue(this, null));
                             property.SetValue(this, b, null);
                             break;
 
                         case ConnectionSettingType.File:
                         case ConnectionSettingType.Password:
                         case ConnectionSettingType.String:
-                            String s = ConfigurationLoader.GetConfigurationString(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom));
+                            String s = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
                             if (!String.IsNullOrEmpty(s))
                             {
                                 property.SetValue(this, s, null);
@@ -243,18 +243,18 @@ namespace VDS.RDF.Utilities.StoreManager.Connections
                             else
                             {
                                 //May be a URI as the object
-                                IUriNode u = ConfigurationLoader.GetConfigurationNode(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom)) as IUriNode;
+                                IUriNode u = ConfigurationLoader.GetConfigurationNode(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom))) as IUriNode;
                                 if (u != null) property.SetValue(this, u.Uri.AbsoluteUri, null);
                             }
                             break;
 
                         case ConnectionSettingType.Integer:
-                            int i = ConfigurationLoader.GetConfigurationInt32(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom), (int)property.GetValue(this, null));
+                            int i = ConfigurationLoader.GetConfigurationInt32(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)), (int)property.GetValue(this, null));
                             property.SetValue(this, i, null);
                             break;
 
                         case ConnectionSettingType.Enum:
-                            String enumStr = ConfigurationLoader.GetConfigurationString(g, n, ConfigurationLoader.CreateConfigurationNode(g, attr.PopulateFrom));
+                            String enumStr = ConfigurationLoader.GetConfigurationString(g, n, g.CreateUriNode(UriFactory.Create(attr.PopulateFrom)));
                             if (!String.IsNullOrEmpty(enumStr))
                             {
                                 try

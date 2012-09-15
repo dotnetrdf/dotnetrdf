@@ -606,10 +606,10 @@ namespace VDS.RDF.Test.Storage
 
                 Graph g = new Graph();
                 INode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                INode dnrType = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyType);
-                INode objFactory = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.ClassObjectFactory);
+                INode dnrType = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+                INode objFactory = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory));
                 INode virtFactory = g.CreateLiteralNode("VDS.RDF.Configuration.VirtuosoObjectFactory, dotNetRDF.Data.Virtuoso");
-                INode genericManager = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.ClassGenericManager);
+                INode genericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager));
                 INode virtManager = g.CreateLiteralNode("VDS.RDF.Storage.VirtuosoManager, dotNetRDF.Data.Virtuoso");
 
                 //Serialize Configuration

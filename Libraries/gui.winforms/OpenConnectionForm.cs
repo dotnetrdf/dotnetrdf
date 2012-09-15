@@ -62,7 +62,7 @@ namespace VDS.RDF.GUI.WinForms
 
             //Find connections defined in the Configuration Graph
             this._g = g;
-            INode genericManager = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.ClassGenericManager);
+            INode genericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager));
             INode rdfsLabel = g.CreateUriNode(new Uri(NamespaceMapper.RDFS + "label"));
 
             SparqlParameterizedString getConnections = new SparqlParameterizedString();

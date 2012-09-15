@@ -65,12 +65,12 @@ namespace VDS.RDF.Configuration
             switch (targetType.FullName)
             {
                 case Permission:
-                    String action = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAction));
+                    String action = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)));
                     result = new Permission(action);
                     break;
 
                 case PermissionSet:
-                    IEnumerable<String> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAction))
+                    IEnumerable<String> actions = from n in ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAction)))
                                                   where n.NodeType == NodeType.Literal
                                                   select ((ILiteralNode)n).Value;
                     result = new PermissionSet(actions);
@@ -125,7 +125,7 @@ namespace VDS.RDF.Configuration
                     result = new UserGroup();
 
                     //Get the members of the Group
-                    IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyMember));
+                    IEnumerable<INode> members = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyMember)));
                     foreach (INode member in members)
                     {
                         String username, password;
@@ -141,7 +141,7 @@ namespace VDS.RDF.Configuration
                     }
 
                     //Get the allow list for the Group
-                    IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyAllow));
+                    IEnumerable<INode> allowed = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAllow)));
                     foreach (INode allow in allowed)
                     {
                         Object temp = ConfigurationLoader.LoadObject(g, allow);
@@ -156,7 +156,7 @@ namespace VDS.RDF.Configuration
                     }
 
                     //Get the deny list for the Group
-                    IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyDeny));
+                    IEnumerable<INode> denied = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDeny)));
                     foreach (INode deny in denied)
                     {
                         Object temp = ConfigurationLoader.LoadObject(g, deny);
@@ -171,10 +171,10 @@ namespace VDS.RDF.Configuration
                     }
 
                     //Does the User Group require authentication?
-                    result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyRequiresAuthentication), true);
+                    result.AllowGuests = !ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyRequiresAuthentication)), true);
 
                     //Is there a permission model specified?
-                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPermissionModel));
+                    String mode = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPermissionModel)));
                     if (mode != null)
                     {
 #if SILVERLIGHT

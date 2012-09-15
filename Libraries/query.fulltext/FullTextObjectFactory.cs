@@ -279,7 +279,7 @@ namespace VDS.RDF.Configuration
                         }
                         else if (this._luceneDirectoryType.IsAssignableFrom(targetType))
                         {
-                            String dir = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyFromFile));
+                            String dir = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                             if (dir != null)
                             {
                                 try

@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using SysConfig = System.Configuration;
 using System.Linq;
 using System.Net;
@@ -60,134 +61,134 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// QName Constants for configuration properties for use with the CreateConfigurationNode function
         /// </summary>
-        public const String PropertyType = "dnr:type",
-                            PropertyUser = "dnr:user",
-                            PropertyPassword = "dnr:password",
-                            PropertyCredentials = "dnr:credentials",
-                            PropertyUseCredentialsForProxy = "dnr:useCredentialsForProxy",
+        public const String PropertyType = ConfigurationNamespace + "type",
+                            PropertyUser = ConfigurationNamespace + "user",
+                            PropertyPassword = ConfigurationNamespace + "password",
+                            PropertyCredentials = ConfigurationNamespace + "credentials",
+                            PropertyUseCredentialsForProxy = ConfigurationNamespace + "useCredentialsForProxy",
                             //Manager connection properties
-                            PropertyServer = "dnr:server",
-                            PropertyPort = "dnr:port",
-                            PropertyDatabase = "dnr:database",
-                            PropertyCatalog = "dnr:catalogID",
-                            PropertyStore = "dnr:storeID",
-                            PropertyQueryPath = "dnr:queryPath",
-                            PropertyUpdatePath = "dnr:updatePath",
+                            PropertyServer = ConfigurationNamespace + "server",
+                            PropertyPort = ConfigurationNamespace + "port",
+                            PropertyDatabase = ConfigurationNamespace + "database",
+                            PropertyCatalog = ConfigurationNamespace + "catalogID",
+                            PropertyStore = ConfigurationNamespace + "storeID",
+                            PropertyQueryPath = ConfigurationNamespace + "queryPath",
+                            PropertyUpdatePath = ConfigurationNamespace + "updatePath",
                             //Manager connection options
-                            PropertyReadOnly = "dnr:readOnly",
-                            PropertyEnableUpdates = "dnr:enableUpdates",
-                            PropertyAsync = "dnr:async",
-                            PropertyLoadMode = "dnr:loadMode",
-                            PropertyEncryptConnection = "dnr:encryptConnection",
+                            PropertyReadOnly = ConfigurationNamespace + "readOnly",
+                            PropertyEnableUpdates = ConfigurationNamespace + "enableUpdates",
+                            PropertyAsync = ConfigurationNamespace + "async",
+                            PropertyLoadMode = ConfigurationNamespace + "loadMode",
+                            PropertyEncryptConnection = ConfigurationNamespace + "encryptConnection",
                             //Properties for associating Managers with other things
-                            PropertySqlManager = "dnr:sqlManager",
-                            PropertyGenericManager = "dnr:genericManager",
+                            PropertyStorageProvider = ConfigurationNamespace + "storageProvider",
                             //Properties for associating Processors with other things
-                            PropertyQueryProcessor = "dnr:queryProcessor",
-                            PropertyUpdateProcessor = "dnr:updateProcessor",
-                            PropertyProtocolProcessor = "dnr:protocolProcessor",
-                            PropertyUsingDataset = "dnr:usingDataset",
+                            PropertyQueryProcessor = ConfigurationNamespace + "queryProcessor",
+                            PropertyUpdateProcessor = ConfigurationNamespace + "updateProcessor",
+                            PropertyProtocolProcessor = ConfigurationNamespace + "protocolProcessor",
+                            PropertyUsingDataset = ConfigurationNamespace + "usingDataset",
                             //Properties for associating Stores and Graphs with other things
-                            PropertyUsingStore = "dnr:usingStore",
-                            PropertyUsingGraph = "dnr:usingGraph",
+                            PropertyUsingStore = ConfigurationNamespace + "usingStore",
+                            PropertyUsingGraph = ConfigurationNamespace + "usingGraph",
                             //Properties for defining where data comes from
-                            PropertyFromFile = "dnr:fromFile",
-                            PropertyFromEmbedded = "dnr:fromEmbedded",
-                            PropertyFromUri = "dnr:fromUri",
-                            PropertyFromString = "dnr:fromString",
-                            PropertyFromDataset = "dnr:fromDataset",
-                            PropertyFromStore = "dnr:fromStore",
-                            PropertyFromGraph = "dnr:fromGraph",
-                            PropertyWithUri = "dnr:withUri",
-                            PropertyAssignUri = "dnr:assignUri",
+                            PropertyFromFile = ConfigurationNamespace + "fromFile",
+                            PropertyFromEmbedded = ConfigurationNamespace + "fromEmbedded",
+                            PropertyFromUri = ConfigurationNamespace + "fromUri",
+                            PropertyFromString = ConfigurationNamespace + "fromString",
+                            PropertyFromDataset = ConfigurationNamespace + "fromDataset",
+                            PropertyFromStore = ConfigurationNamespace + "fromStore",
+                            PropertyFromGraph = ConfigurationNamespace + "fromGraph",
+                            PropertyWithUri = ConfigurationNamespace + "withUri",
+                            PropertyAssignUri = ConfigurationNamespace + "assignUri",
                             //Properties for Endpoints
-                            PropertyEndpoint = "dnr:endpoint",
-                            PropertyEndpointUri = "dnr:endpointUri",
-                            PropertyDefaultGraphUri = "dnr:defaultGraphUri",
-                            PropertyNamedGraphUri = "dnr:namedGraphUri",
-                            PropertyUnionDefaultGraph = "dnr:unionDefaultGraph",
-                            PropertyProxy = "dnr:proxy",
+                            PropertyEndpoint = ConfigurationNamespace + "endpoint",
+                            PropertyEndpointUri = ConfigurationNamespace + "endpointUri",
+                            PropertyDefaultGraphUri = ConfigurationNamespace + "defaultGraphUri",
+                            PropertyNamedGraphUri = ConfigurationNamespace + "namedGraphUri",
+                            PropertyUnionDefaultGraph = ConfigurationNamespace + "unionDefaultGraph",
+                            PropertyProxy = ConfigurationNamespace + "proxy",
                             //Properties for reasoners
-                            PropertyReasoner = "dnr:reasoner",
-                            PropertyOwlReasoner = "dnr:owlReasoner",
+                            PropertyReasoner = ConfigurationNamespace + "reasoner",
+                            PropertyOwlReasoner = ConfigurationNamespace + "owlReasoner",
                             //Properties for permissions
-                            PropertyUserGroup = "dnr:userGroup",
-                            PropertyMember = "dnr:member",
-                            PropertyRequiresAuthentication = "dnr:requiresAuthentication",
-                            PropertyPermissionModel = "dnr:permissionModel",
-                            PropertyAllow = "dnr:allow",
-                            PropertyDeny = "dnr:deny",
-                            PropertyAction = "dnr:action",
+                            PropertyUserGroup = ConfigurationNamespace + "userGroup",
+                            PropertyMember = ConfigurationNamespace + "member",
+                            PropertyRequiresAuthentication = ConfigurationNamespace + "requiresAuthentication",
+                            PropertyPermissionModel = ConfigurationNamespace + "permissionModel",
+                            PropertyAllow = ConfigurationNamespace + "allow",
+                            PropertyDeny = ConfigurationNamespace + "deny",
+                            PropertyAction = ConfigurationNamespace + "action",
                             //Properties for HTTP Handler configuration primarily around SPARQL endpoint configuration
-                            PropertyEnableCors = "dnr:enableCors",
-                            PropertySyntax = "dnr:syntax",
-                            PropertyTimeout = "dnr:timeout",
-                            PropertyPartialResults = "dnr:partialResults",
-                            PropertyShowErrors = "dnr:showErrors",
-                            PropertyHaltOnError = "dnr:haltOnError",
-                            PropertyShowQueryForm = "dnr:showQueryForm",
-                            PropertyShowUpdateForm = "dnr:showUpdateForm",
-                            PropertyDefaultQueryFile = "dnr:defaultQueryFile",
-                            PropertyDefaultUpdateFile = "dnr:defaultUpdateFile",
-                            PropertyIntroFile = "dnr:introText",
-                            PropertyStylesheet = "dnr:stylesheet",
-                            PropertyCacheDuration = "dnr:cacheDuration",
-                            PropertyCacheSliding = "dnr:cacheSliding",
-                            PropertyExpressionFactory = "dnr:expressionFactory",
-                            PropertyDescribeAlgorithm = "dnr:describeAlgorithm",
-                            PropertyServiceDescription = "dnr:serviceDescription",
-                            PropertyQueryOptimiser = "dnr:queryOptimiser",
-                            PropertyAlgebraOptimiser = "dnr:algebraOptimiser",
+                            PropertyEnableCors = ConfigurationNamespace + "enableCors",
+                            PropertySyntax = ConfigurationNamespace + "syntax",
+                            PropertyTimeout = ConfigurationNamespace + "timeout",
+                            PropertyPartialResults = ConfigurationNamespace + "partialResults",
+                            PropertyShowErrors = ConfigurationNamespace + "showErrors",
+                            PropertyHaltOnError = ConfigurationNamespace + "haltOnError",
+                            PropertyShowQueryForm = ConfigurationNamespace + "showQueryForm",
+                            PropertyShowUpdateForm = ConfigurationNamespace + "showUpdateForm",
+                            PropertyDefaultQueryFile = ConfigurationNamespace + "defaultQueryFile",
+                            PropertyDefaultUpdateFile = ConfigurationNamespace + "defaultUpdateFile",
+                            PropertyIntroFile = ConfigurationNamespace + "introText",
+                            PropertyStylesheet = ConfigurationNamespace + "stylesheet",
+                            PropertyCacheDuration = ConfigurationNamespace + "cacheDuration",
+                            PropertyCacheSliding = ConfigurationNamespace + "cacheSliding",
+                            PropertyExpressionFactory = ConfigurationNamespace + "expressionFactory",
+                            PropertyDescribeAlgorithm = ConfigurationNamespace + "describeAlgorithm",
+                            PropertyServiceDescription = ConfigurationNamespace + "serviceDescription",
+                            PropertyQueryOptimiser = ConfigurationNamespace + "queryOptimiser",
+                            PropertyAlgebraOptimiser = ConfigurationNamespace + "algebraOptimiser",
                             //Properties for writers
-                            PropertyCompressionLevel = "dnr:compressionLevel",
-                            PropertyPrettyPrinting = "dnr:prettyPrinting",
-                            PropertyHighSpeedWriting = "dnr:highSpeedWriting",
-                            PropertyDtdWriting = "dnr:dtdWriting",
-                            PropertyAttributeWriting = "dnr:attributeWriting",
-                            PropertyMultiThreadedWriting = "dnr:multiThreadedWriting",
-                            PropertyImportNamespacesFrom = "dnr:importNamespacesFrom"
+                            PropertyCompressionLevel = ConfigurationNamespace + "compressionLevel",
+                            PropertyPrettyPrinting = ConfigurationNamespace + "prettyPrinting",
+                            PropertyHighSpeedWriting = ConfigurationNamespace + "highSpeedWriting",
+                            PropertyDtdWriting = ConfigurationNamespace + "dtdWriting",
+                            PropertyAttributeWriting = ConfigurationNamespace + "attributeWriting",
+                            PropertyMultiThreadedWriting = ConfigurationNamespace + "multiThreadedWriting",
+                            PropertyImportNamespacesFrom = ConfigurationNamespace + "importNamespacesFrom"
                             ;
 
         /// <summary>
         /// QName Constants for <strong>obsolete</strong> configuration properties for use with the CreateConfigurationNode function
         /// </summary>
         [Obsolete("Property is obsolete and no longer supported by the Configuration API", true)]
-        public const String PropertyFromDatabase = "dnr:fromDatabase";
+        public const String PropertySqlManager = ConfigurationNamespace + "sqlManager";
+
+        [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", false)]
+        public const String PropertyGenericManager = ConfigurationNamespace + "genericManager";
 
         /// <summary>
         /// QName Constants for configuration classes
         /// </summary>
-        public const String ClassObjectFactory = "dnr:ObjectFactory",
-                            ClassTripleStore = "dnr:TripleStore",
-                            ClassGraph = "dnr:Graph",
-                            ClassGenericManager = "dnr:GenericIOManager",
-                            ClassHttpHandler = "dnr:HttpHandler",
-                            ClassSparqlEndpoint = "dnr:SparqlEndpoint",
-                            ClassSparqlQueryProcessor = "dnr:SparqlQueryProcessor",
-                            ClassSparqlUpdateProcessor = "dnr:SparqlUpdateProcessor",
-                            ClassSparqlHttpProtocolProcessor = "dnr:SparqlHttpProtocolProcessor",
-                            ClassSparqlExpressionFactory = "dnr:SparqlExpressionFactory",
-                            ClassSparqlDataset = "dnr:SparqlDataset",
-                            ClassQueryOptimiser = "dnr:QueryOptimiser",
-                            ClassAlgebraOptimiser = "dnr:AlgebraOptimiser",
-                            ClassReasoner = "dnr:Reasoner",
-                            ClassOwlReasoner = "dnr:OwlReasoner",
-                            ClassProxy = "dnr:Proxy",
-                            ClassUserGroup = "dnr:UserGroup",
-                            ClassUser = "dnr:User",
-                            ClassPermission = "dnr:Permission",
-                            ClassRdfParser = "dnr:RdfParser",
-                            ClassDatasetParser = "dnr:DatasetParser",
-                            ClassSparqlResultsParser = "dnr:SparqlResultsParser",
-                            ClassRdfWriter = "dnr:RdfWriter",
-                            ClassDatasetWriter = "dnr:DatasetWriter",
-                            ClassSparqlResultsWriter = "dnr:SparqlResultsWriter";
+        public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
+                            ClassTripleStore = ConfigurationNamespace + "TripleStore",
+                            ClassGraph = ConfigurationNamespace + "Graph",
+                            ClassStorageProvider = ConfigurationNamespace + "StorageProvider",
+                            ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
+                            ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
+                            ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
+                            ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
+                            ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
+                            ClassSparqlExpressionFactory = ConfigurationNamespace + "SparqlExpressionFactory",
+                            ClassSparqlDataset = ConfigurationNamespace + "SparqlDataset",
+                            ClassQueryOptimiser = ConfigurationNamespace + "QueryOptimiser",
+                            ClassAlgebraOptimiser = ConfigurationNamespace + "AlgebraOptimiser",
+                            ClassReasoner = ConfigurationNamespace + "Reasoner",
+                            ClassOwlReasoner = ConfigurationNamespace + "OwlReasoner",
+                            ClassProxy = ConfigurationNamespace + "Proxy",
+                            ClassUserGroup = ConfigurationNamespace + "UserGroup",
+                            ClassUser = ConfigurationNamespace + "User",
+                            ClassPermission = ConfigurationNamespace + "Permission",
+                            ClassRdfParser = ConfigurationNamespace + "RdfParser",
+                            ClassDatasetParser = ConfigurationNamespace + "DatasetParser",
+                            ClassSparqlResultsParser = ConfigurationNamespace + "SparqlResultsParser",
+                            ClassRdfWriter = ConfigurationNamespace + "RdfWriter",
+                            ClassDatasetWriter = ConfigurationNamespace + "DatasetWriter",
+                            ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
 
-        /// <summary>
-        /// QName Constants for <strong>obsolete</strong> configuration classes
-        /// </summary>
-        [Obsolete("Class is obsolete and no longer supported by the Configuration API", true)]
-        public const String ClassSqlManager = "dnr:SqlIOManager";
+
+        [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", false)]
+        public const String ClassGenericManager = ConfigurationNamespace + "GenericIOManager";
 
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
@@ -198,12 +199,6 @@ namespace VDS.RDF.Configuration
                             DefaultTypeSparqlUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
                             DefaultTypeSparqlHttpProtocolProcessor = "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor",
                             DefaultTypeUserGroup = "VDS.RDF.Configuration.Permissions";
-
-        /// <summary>
-        /// QName Constants for Default Types for some <strong>obsolete</strong> configuration classes
-        /// </summary>
-        [Obsolete("Default Type is obsolete and no longer supported by the Configuration API", true)]
-        public const String DefaultTypeSqlManager = "VDS.RDF.Storage.MicrosoftSqlStoreManager";
 
         #endregion
 
@@ -269,7 +264,7 @@ namespace VDS.RDF.Configuration
         public static void AutoDetectObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode objLoader = CreateConfigurationNode(g, ClassObjectFactory);
+            INode objLoader = g.CreateUriNode(UriFactory.Create(ClassObjectFactory));
 
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, objLoader).Select(t => t.Subject))
             {
@@ -292,7 +287,7 @@ namespace VDS.RDF.Configuration
         public static void AutoDetectReadersAndWriters(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
-            INode desiredType = CreateConfigurationNode(g, ClassRdfParser);
+            INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
             INode formatMimeType = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/media_type"));
             INode formatExtension = g.CreateUriNode(UriFactory.Create("http://www.w3.org/ns/formats/preferred_suffix"));
             Object temp;
@@ -319,7 +314,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load Dataset parsers
-            desiredType = CreateConfigurationNode(g, ClassDatasetParser);
+            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -340,7 +335,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load SPARQL Result parsers
-            desiredType = CreateConfigurationNode(g, ClassSparqlResultsParser);
+            desiredType = g.CreateUriNode(UriFactory.Create(ClassSparqlResultsParser));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -361,7 +356,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load RDF Writers
-            desiredType = CreateConfigurationNode(g, ClassRdfWriter);
+            desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -382,7 +377,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load Dataset Writers
-            desiredType = CreateConfigurationNode(g, ClassDatasetWriter);
+            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -403,7 +398,7 @@ namespace VDS.RDF.Configuration
             }
 
             //Load SPARQL Result Writers
-            desiredType = CreateConfigurationNode(g, ClassDatasetWriter);
+            desiredType = g.CreateUriNode(UriFactory.Create(ClassDatasetWriter));
             foreach (INode objNode in g.GetTriplesWithPredicateObject(rdfType, desiredType).Select(t => t.Subject))
             {
                 temp = LoadObject(g, objNode);
@@ -464,19 +459,10 @@ namespace VDS.RDF.Configuration
         /// This function uses caching to ensure that URI Nodes aren't needlessly recreated in order to save memory.
         /// </para>
         /// </remarks>
+        [Obsolete("This method is obsolete and should no longer be used, constants are now URIs so you should just create URI Nodes directly on your Configuration Graph", false)]
         public static INode CreateConfigurationNode(IGraph g, String qname)
         {
-            //Is the Node already cached?
-            if (_nodeMap.ContainsKey(qname)) return Tools.CopyNode(_nodeMap[qname], g);
-
-            //Does our special namespace mapper know of the dnr prefix?
-            if (!_nsmap.HasNamespace("dnr")) _nsmap.AddNamespace("dnr", UriFactory.Create(ConfigurationNamespace));
-
-            //Create the URI Node
-            Uri propertyUri = UriFactory.Create(Tools.ResolveQName(qname, _nsmap, null));
-            IUriNode u = g.CreateUriNode(propertyUri);
-            _nodeMap.Add(qname, u);
-            return u;
+            return g.CreateUriNode(UriFactory.Create(qname));
         }
 
         /// <summary>
@@ -741,15 +727,15 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static void GetUsernameAndPassword(IGraph g, INode objNode, bool allowCredentials, out String user, out String pwd)
         {
-            INode propUser = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyUser),
-                  propPwd = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyPassword);
+            INode propUser = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser)),
+                  propPwd = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
 
             user = ConfigurationLoader.GetConfigurationString(g, objNode, propUser);
             pwd = ConfigurationLoader.GetConfigurationString(g, objNode, propPwd);
             if ((user == null || pwd == null) && allowCredentials)
             {
                 //Have they been specified as credentials instead?
-                INode propCredentials = ConfigurationLoader.CreateConfigurationNode(g, ConfigurationLoader.PropertyCredentials);
+                INode propCredentials = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCredentials));
                 INode credObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propCredentials);
                 if (credObj != null)
                 {
@@ -870,7 +856,7 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public static Object LoadObject(IGraph g, INode objNode)
         {
-            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, ConfigurationLoader.CreateConfigurationNode(g, "dnr:type"));
+            String typeName = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(PropertyType)));
             if (typeName == null)
             {
                 typeName = GetDefaultType(g, objNode);

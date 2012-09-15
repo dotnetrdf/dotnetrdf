@@ -160,7 +160,7 @@ namespace VDS.RDF.Test.Sparql
             EnsureTestData();
 
             FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path, ConfigurationLoader.CreateConfigurationNode(new Graph(), ConfigurationLoader.ClassHttpHandler), null);
+            ISparqlAlgebra algebra = this.GetAlgebra(path, new Graph().CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), null);
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
@@ -175,7 +175,7 @@ namespace VDS.RDF.Test.Sparql
             EnsureTestData();
 
             FixedCardinality path = new FixedCardinality(new Property(this._factory.CreateUriNode(new Uri(RdfSpecsHelper.RdfType))), 0);
-            ISparqlAlgebra algebra = this.GetAlgebra(path, ConfigurationLoader.CreateConfigurationNode(new Graph(), ConfigurationLoader.ClassHttpHandler), this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
+            ISparqlAlgebra algebra = this.GetAlgebra(path, new Graph().CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassHttpHandler)), this._factory.CreateUriNode(new Uri(NamespaceMapper.RDFS + "Class")));
             SparqlEvaluationContext context = new SparqlEvaluationContext(null, this._data);
             BaseMultiset results = algebra.Evaluate(context);
 
