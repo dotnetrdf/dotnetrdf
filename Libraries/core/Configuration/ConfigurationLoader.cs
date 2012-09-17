@@ -36,10 +36,12 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using SysConfig = System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using SysConfig = System.Configuration;
 
 namespace VDS.RDF.Configuration
 {
@@ -57,6 +59,12 @@ namespace VDS.RDF.Configuration
         /// Configuration Namespace URI
         /// </summary>
         public const String ConfigurationNamespace = "http://www.dotnetrdf.org/configuration#";
+
+        /// <summary>
+        /// Constants for URI Schemes with special meaning within the Configuration API
+        /// </summary>
+        public const String UriSchemeAppSettings = "appsetting",
+                            UriSchemeConfigureOptions = "dotnetrdf-configure";
 
         /// <summary>
         /// QName Constants for configuration properties for use with the CreateConfigurationNode function
@@ -364,9 +372,9 @@ namespace VDS.RDF.Configuration
                 switch (importData.NodeType)
                 {
                     case NodeType.Uri:
+                        importData = ConfigurationLoader.ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
                         {
-                            importData = ConfigurationLoader.ResolveAppSetting(g, importData);
                             UriLoader.Load(data, ((IUriNode)importData).Uri);
                             imported.Add(importData);
                         }
@@ -406,6 +414,7 @@ namespace VDS.RDF.Configuration
         {
             ConfigurationLoader.AutoConfigureObjectFactories(g);
             ConfigurationLoader.AutoConfigureReadersAndWriters(g);
+            ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
 
         /// <summary>
@@ -425,7 +434,7 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories which has the same effect", false)]
+        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories which has the same functionality", false)]
         public static void AutoDetectObjectFactories(IGraph g)
         {
             ConfigurationLoader.AutoConfigureObjectFactories(g);
@@ -458,13 +467,14 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
         /// </summary>
         /// <param name="g">Configuration Graph</param>
+        [Obsolete("This method is deprecated, use the new method name AutoConfigureReadersAndWriters which has the same functionality", false)]
         public static void AutoDetectReadersAndWriters(IGraph g)
         {
             ConfigurationLoader.AutoConfigureReadersAndWriters(g);
         }
 
         /// <summary>
-        /// Given a Configuration Graph will detect and configure static options that are specified using the dnr:configure property with special &lt;dotnetrdf:configure/Class/Property&gt; subject URIs
+        /// Given a Configuration Graph will detect and configure static options that are specified using the dnr:configure property with special &lt;dotnetrdf-configure:Class/Property&gt; subject URIs
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <remarks>
@@ -472,7 +482,7 @@ namespace VDS.RDF.Configuration
         /// An example of using this mechanism to configure a static option is as follows:
         /// </para>
         /// <pre>
-        /// &lt;dotnetrdf:configure/VDS.RDF.Options/UsePLinqEvaluation&gt; dnr:configure false .
+        /// &lt;dotnetrdf-configure:VDS.RDF.Options#UsePLinqEvaluation&gt; dnr:configure false .
         /// </pre>
         /// <para>
         /// Class and property names must be fully qualified, to specify static options outside of dotNetRDF itself you can add an additional path segment with the assembly name after the initial configure keyword.  If the class/property does not exist or the value of the literal cannot be appropriately converted to the type of the property then an exception will be thrown.  If there is a problem setting the property (e.g. it does not have a public setter) then an exception will be thrown.
@@ -487,6 +497,74 @@ namespace VDS.RDF.Configuration
                 if (t.Subject.NodeType == NodeType.Uri)
                 {
                     Uri propertyUri = ((IUriNode)t.Subject).Uri;
+                    if (propertyUri.Scheme.Equals(UriSchemeConfigureOptions))
+                    {
+                        //Parse the Class and Property out of the URI
+                        String className = propertyUri.AbsolutePath;
+                        if (propertyUri.Fragment.Length <= 1) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> is missing the fragment identifier to specify the property name");
+                        String propName = propertyUri.Fragment.Substring(1);
+
+                        //Get the Value we are setting to this property
+                        INode value = t.Object;
+
+                        //Get the type whose static option we are attempting to change
+                        Type type = Type.GetType(className);
+                        if (type == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a class '" + className + "' which could not be loaded.  Please ensure the type name is fully qualified");
+
+                        //Get the property in question
+                        PropertyInfo property = type.GetProperty(propName);
+                        if (property == null) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which does not exist or is not static");
+                        if (!property.GetSetMethod().IsStatic) throw new DotNetRdfConfigurationException("Malformed Configure Options URI used as a subject for a dnr:configure triple, <" + propertyUri.AbsoluteUri + "> specifies a property '" + propName + "' which is not static");
+                        Type valueType = property.PropertyType;
+                        try
+                        {
+                            IValuedNode valueNode = value.AsValuedNode();
+                            if (valueType.Equals(typeof(int)))
+                            {
+                                int intValue = (int)valueNode.AsInteger();
+                                property.SetValue(null, intValue, null);
+                            }
+                            else if (valueType.Equals(typeof(long)))
+                            {
+                                long longValue = valueNode.AsInteger();
+                                property.SetValue(null, longValue, null);
+                            }
+                            else if (valueType.Equals(typeof(bool)))
+                            {
+                                bool boolValue = valueNode.AsBoolean();
+                                property.SetValue(null, boolValue, null);
+                            }
+                            else if (valueType.Equals(typeof(String)))
+                            {
+                                property.SetValue(null, valueNode.AsString(), null);
+                            }
+                            else if (valueType.Equals(typeof(Uri)))
+                            {
+                                Uri uriValue = (value.NodeType == NodeType.Uri ? ((IUriNode)value).Uri : UriFactory.Create(valueNode.AsString()));
+                                property.SetValue(null, uriValue, null);
+                            }
+                            else if (valueType.IsEnum)
+                            {
+                                if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t.ToString() + " - the object must be a literal when the property being set has a enumeration type");
+                                Object enumVal = Enum.Parse(valueType, valueNode.AsString());
+                                property.SetValue(null, enumVal, null);
+                            }
+                            else
+                            {
+                                throw new DotNetRdfConfigurationException("Configure Options URIs can currently only be used to configure static properties with int, long, bool, String, URI or enumeration typed values.  The URI <" + propertyUri.AbsoluteUri + "> points to a property with the unsupported type " + valueType.FullName);
+                            }
+                        }
+                        catch (DotNetRdfConfigurationException)
+                        {
+                            //Don't rewrap
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            //Rewrap as Configuration error
+                            throw new DotNetRdfConfigurationException("Unexpected error trying to set the static property identified by the Configure Options URI <" + propertyUri.AbsoluteUri + ">, please ensure that the lexical form of the value being set is valid for the property you are trying to set", ex);
+                        }
+                    }
                 }
             }
         }
@@ -1112,12 +1190,16 @@ namespace VDS.RDF.Configuration
                     {
                         case ClassGraph:
                             return DefaultTypeGraph;
+                        case ClassGraphCollection:
+                            return DefaultTypeGraphCollection;
                         case ClassSparqlHttpProtocolProcessor:
                             return DefaultTypeSparqlHttpProtocolProcessor;
                         case ClassSparqlQueryProcessor:
                             return DefaultTypeSparqlQueryProcessor;
                         case ClassSparqlUpdateProcessor:
                             return DefaultTypeSparqlUpdateProcessor;
+                        case ClassTripleCollection:
+                            return DefaultTypeTripleCollection;
                         case ClassTripleStore:
                             return DefaultTypeTripleStore;
                         case ClassUser:
@@ -1191,10 +1273,11 @@ namespace VDS.RDF.Configuration
             if (n == null) return null;
             if (n.NodeType != NodeType.Uri) return n;
 
-            String uri = ((IUriNode)n).Uri.AbsoluteUri;
-            if (!uri.StartsWith("appsetting:")) return n;
+            Uri uri = ((IUriNode)n).Uri;
+            if (!uri.Scheme.Equals(UriSchemeAppSettings)) return n;
 
-            String key = uri.Substring(uri.IndexOf(':') + 1);
+            String strUri = uri.AbsoluteUri;
+            String key = strUri.Substring(strUri.IndexOf(':') + 1);
             if (SysConfig.ConfigurationManager.AppSettings[key] == null)
             {
                 return null;

@@ -186,7 +186,7 @@ dnr:imports a rdf:Property ;
 			
 dnr:configure a rdf:Property ;
 				rdfs:label "Configure" ;
-				rdfs:comment "This property is used to configure global options for dotNetRDF when used as the predicate for a triple which has a special <dotnetrdf:configure/Class/Property> URI" .
+				rdfs:comment "This property is used to configure global options for dotNetRDF when used as the predicate for a triple which has a special <dotnetrdf-configure:Class#Property> URI" .
 
 dnr:type a rdf:Property ;
 		 rdfs:label "Type" ;
