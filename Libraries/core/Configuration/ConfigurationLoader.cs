@@ -62,6 +62,8 @@ namespace VDS.RDF.Configuration
         /// QName Constants for configuration properties for use with the CreateConfigurationNode function
         /// </summary>
         public const String PropertyType = ConfigurationNamespace + "type",
+                            PropertyImports = ConfigurationNamespace + "imports",
+                            PropertyConfigure = ConfigurationNamespace  + "configure",
                             PropertyUser = ConfigurationNamespace + "user",
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
@@ -90,6 +92,9 @@ namespace VDS.RDF.Configuration
                             //Properties for associating Stores and Graphs with other things
                             PropertyUsingStore = ConfigurationNamespace + "usingStore",
                             PropertyUsingGraph = ConfigurationNamespace + "usingGraph",
+                            //Properties for setting low level storage for Triple Stores and Graphs
+                            PropertyUsingTripleCollection = ConfigurationNamespace + "usingTripleCollection",
+                            PropertyUsingGraphCollection = ConfigurationNamespace + "usingGraphCollection",
                             //Properties for defining where data comes from
                             PropertyFromFile = ConfigurationNamespace + "fromFile",
                             PropertyFromEmbedded = ConfigurationNamespace + "fromEmbedded",
@@ -134,6 +139,7 @@ namespace VDS.RDF.Configuration
                             PropertyCacheDuration = ConfigurationNamespace + "cacheDuration",
                             PropertyCacheSliding = ConfigurationNamespace + "cacheSliding",
                             PropertyExpressionFactory = ConfigurationNamespace + "expressionFactory",
+                            PropertyFunctionFactory = ConfigurationNamespace + "propertyFunctionFactory",
                             PropertyDescribeAlgorithm = ConfigurationNamespace + "describeAlgorithm",
                             PropertyServiceDescription = ConfigurationNamespace + "serviceDescription",
                             PropertyQueryOptimiser = ConfigurationNamespace + "queryOptimiser",
@@ -161,10 +167,17 @@ namespace VDS.RDF.Configuration
         /// QName Constants for configuration classes
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
+                            //Classes for Triple Stores and Graphs and their associated low level storage
                             ClassTripleStore = ConfigurationNamespace + "TripleStore",
+                            ClassGraphCollection = ConfigurationNamespace + "GraphCollection",
                             ClassGraph = ConfigurationNamespace + "Graph",
+                            ClassTripleCollection = ConfigurationNamespace + "TripleCollection",
+                            //Classes for Storage Providers and Servers
+                            ClassStorageServer = ConfigurationNamespace + "StorageServer",
                             ClassStorageProvider = ConfigurationNamespace + "StorageProvider",
+                            //Classes for ASP.Net integration
                             ClassHttpHandler = ConfigurationNamespace + "HttpHandler",
+                            //Classes for SPARQL features
                             ClassSparqlEndpoint = ConfigurationNamespace + "SparqlEndpoint",
                             ClassSparqlQueryProcessor = ConfigurationNamespace + "SparqlQueryProcessor",
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
@@ -173,12 +186,15 @@ namespace VDS.RDF.Configuration
                             ClassSparqlDataset = ConfigurationNamespace + "SparqlDataset",
                             ClassQueryOptimiser = ConfigurationNamespace + "QueryOptimiser",
                             ClassAlgebraOptimiser = ConfigurationNamespace + "AlgebraOptimiser",
+                            //Classes for reasoners
                             ClassReasoner = ConfigurationNamespace + "Reasoner",
                             ClassOwlReasoner = ConfigurationNamespace + "OwlReasoner",
                             ClassProxy = ConfigurationNamespace + "Proxy",
+                            //Classes for Users and permissions
                             ClassUserGroup = ConfigurationNamespace + "UserGroup",
                             ClassUser = ConfigurationNamespace + "User",
                             ClassPermission = ConfigurationNamespace + "Permission",
+                            //Classes for Parsers and Serializers
                             ClassRdfParser = ConfigurationNamespace + "RdfParser",
                             ClassDatasetParser = ConfigurationNamespace + "DatasetParser",
                             ClassSparqlResultsParser = ConfigurationNamespace + "SparqlResultsParser",
@@ -194,7 +210,9 @@ namespace VDS.RDF.Configuration
         /// QName Constants for Default Types for some configuration classes
         /// </summary>
         public const String DefaultTypeTripleStore = "VDS.RDF.TripleStore",
+                            DefaultTypeGraphCollection  = "VDS.RDF.GraphCollection",
                             DefaultTypeGraph = "VDS.RDF.Graph",
+                            DefaultTypeTripleCollection = "VDS.RDF.TreeIndexedTripleCollection",
                             DefaultTypeSparqlQueryProcessor = "VDS.RDF.Query.LeviathanQueryProcessor",
                             DefaultTypeSparqlUpdateProcessor = "VDS.RDF.Update.LeviathanUpdateProcessor",
                             DefaultTypeSparqlHttpProtocolProcessor = "VDS.RDF.Update.Protocol.LeviathanProtocolProcessor",
@@ -204,9 +222,14 @@ namespace VDS.RDF.Configuration
 
         #region Member Variables
 
-        private static Dictionary<String, IUriNode> _nodeMap = new Dictionary<string,IUriNode>();
+        /// <summary>
+        /// Cache for loaded objects
+        /// </summary>
         private static Dictionary<CachedObjectKey, Object> _cache = new Dictionary<CachedObjectKey, object>();
-        private static NamespaceMapper _nsmap = new NamespaceMapper(true);
+
+        /// <summary>
+        /// Set of built-in object factories that are automatically registered and used
+        /// </summary>
         private static List<IObjectFactory> _factories = new List<IObjectFactory>()
         {
             //Default Data Factories
@@ -240,9 +263,150 @@ namespace VDS.RDF.Configuration
             new ParserFactory(),
             new WriterFactory()
         };
+        /// <summary>
+        /// Path resolver
+        /// </summary>
         private static IPathResolver _resolver = null;
 
         #endregion
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration
+        /// </summary>
+        /// <param name="u">URI to load from</param>
+        /// <returns></returns>
+        public static IGraph LoadConfiguration(Uri u)
+        {
+            return ConfigurationLoader.LoadConfiguration(u, true);
+        }
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// </summary>
+        /// <param name="u">URI to load from</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <returns></returns>
+        public static IGraph LoadConfiguration(Uri u, bool autoConfigure)
+        {
+            Graph g = new Graph();
+            UriLoader.Load(g, u);
+            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+        }
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration
+        /// </summary>
+        /// <param name="file">File to load from</param>
+        /// <returns></returns>
+        public static IGraph LoadConfiguration(String file)
+        {
+            return ConfigurationLoader.LoadConfiguration(file, true);
+        }
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// </summary>
+        /// <param name="file">File to load from</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <returns></returns>
+        public static IGraph LoadConfiguration(String file, bool autoConfigure)
+        {
+            Graph g = new Graph();
+            FileLoader.Load(g, file);
+            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+        }
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration
+        /// </summary>
+        /// <param name="resource">Embedded Resource to load</param>
+        /// <returns></returns>
+        public static IGraph LoadEmbeddedConfiguration(String resource)
+        {
+            return ConfigurationLoader.LoadEmbeddedConfiguration(resource, true);
+        }
+
+        /// <summary>
+        /// Loads a Configuration Graph and applies auto-configuration if desired
+        /// </summary>
+        /// <param name="resource">Embedded Resource to load</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
+        /// <returns></returns>
+        public static IGraph LoadEmbeddedConfiguration(String resource, bool autoConfigure)
+        {
+            Graph g = new Graph();
+            EmbeddedResourceLoader.Load(g, resource);
+            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+        }
+
+        /// <summary>
+        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="autoConfigure"></param>
+        /// <returns></returns>
+        private static IGraph LoadCommon(IGraph g, bool autoConfigure)
+        {
+            //Find initial imports
+            HashSet<INode> imported = new HashSet<INode>();
+            INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
+            Queue<INode> importQueue = new Queue<INode>();
+            foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
+            {
+                importQueue.Enqueue(importData);
+            }
+
+            while (importQueue.Count > 0)
+            {
+                //Load data from imported configuration graph
+                INode importData = importQueue.Dequeue();
+                Graph data = new Graph();
+                switch (importData.NodeType)
+                {
+                    case NodeType.Uri:
+                        if (!imported.Contains(importData))
+                        {
+                            importData = ConfigurationLoader.ResolveAppSetting(g, importData);
+                            UriLoader.Load(data, ((IUriNode)importData).Uri);
+                            imported.Add(importData);
+                        }
+                        break;
+                    case NodeType.Literal:
+                        if (!imported.Contains(importData))
+                        {
+                            FileLoader.Load(data, ConfigurationLoader.ResolvePath(((ILiteralNode)importData).Value));
+                            imported.Add(importData);
+                        }
+                        break;
+
+                    default:
+                        throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal");
+                }
+
+                //Scan for nested imports
+                foreach (INode nestedImport in data.GetTriplesWithPredicate(imports).Select(t => t.Object))
+                {
+                    if (!imported.Contains(nestedImport)) importQueue.Enqueue(nestedImport);
+                }
+                //Merge into final graph
+                g.Merge(data);
+            }
+
+            //Apply auto-configuration if requested
+            if (autoConfigure) ConfigurationLoader.AutoConfigure(g);
+
+            return g;
+        }
+
+        /// <summary>
+        /// Given a Configuration Graph applies all available auto-configuration based on the contents of the graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        public static void AutoConfigure(IGraph g)
+        {
+            ConfigurationLoader.AutoConfigureObjectFactories(g);
+            ConfigurationLoader.AutoConfigureReadersAndWriters(g);
+        }
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader
@@ -258,10 +422,20 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Given a Configuration Graph will detect Object Factories defined in the Graph and add them to the list of available factories
+        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
+        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories which has the same effect", false)]
         public static void AutoDetectObjectFactories(IGraph g)
+        {
+            ConfigurationLoader.AutoConfigureObjectFactories(g);
+        }
+
+        /// <summary>
+        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        public static void AutoConfigureObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode objLoader = g.CreateUriNode(UriFactory.Create(ClassObjectFactory));
@@ -285,6 +459,43 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         public static void AutoDetectReadersAndWriters(IGraph g)
+        {
+            ConfigurationLoader.AutoConfigureReadersAndWriters(g);
+        }
+
+        /// <summary>
+        /// Given a Configuration Graph will detect and configure static options that are specified using the dnr:configure property with special &lt;dotnetrdf:configure/Class/Property&gt; subject URIs
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <remarks>
+        /// <para>
+        /// An example of using this mechanism to configure a static option is as follows:
+        /// </para>
+        /// <pre>
+        /// &lt;dotnetrdf:configure/VDS.RDF.Options/UsePLinqEvaluation&gt; dnr:configure false .
+        /// </pre>
+        /// <para>
+        /// Class and property names must be fully qualified, to specify static options outside of dotNetRDF itself you can add an additional path segment with the assembly name after the initial configure keyword.  If the class/property does not exist or the value of the literal cannot be appropriately converted to the type of the property then an exception will be thrown.  If there is a problem setting the property (e.g. it does not have a public setter) then an exception will be thrown.
+        /// </para>
+        /// </remarks>
+        public static void AutoConfigureStaticOptions(IGraph g)
+        {
+            IUriNode dnrConfigure = g.CreateUriNode(UriFactory.Create(PropertyConfigure));
+
+            foreach (Triple t in g.GetTriplesWithPredicate(dnrConfigure))
+            {
+                if (t.Subject.NodeType == NodeType.Uri)
+                {
+                    Uri propertyUri = ((IUriNode)t.Subject).Uri;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        public static void AutoConfigureReadersAndWriters(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode desiredType = g.CreateUriNode(UriFactory.Create(ClassRdfParser));
