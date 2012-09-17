@@ -439,7 +439,7 @@ namespace VDS.RDF.Storage
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
 
-            context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager)));
+            context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
             context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
             context.Graph.Assert(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString()));
         }

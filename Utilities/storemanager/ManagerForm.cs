@@ -330,8 +330,13 @@ namespace VDS.RDF.Utilities.StoreManager
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
             query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
 
-            query.CommandText = "SELECT * WHERE { ?obj a " + ConfigurationLoader.ClassGenericManager + " . OPTIONAL { ?obj rdfs:label ?label } }";
+            query.CommandText = "SELECT * WHERE { { ?obj a @type1 . } UNION { ?obj a @type2 . } OPTIONAL { ?obj rdfs:label ?label } }";
             query.CommandText += " ORDER BY DESC(?obj)";
+
+            Graph g = new Graph();
+            query.SetParameter("type1", g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager)));
+            query.SetParameter("type2", g.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
+
             if (maxItems > 0) query.CommandText += " LIMIT " + maxItems;
 
             SparqlResultSet results = config.ExecuteQuery(query) as SparqlResultSet;
@@ -532,7 +537,12 @@ namespace VDS.RDF.Utilities.StoreManager
             if (objNode != null) this.AddConnectionToMenu(manager, this._recentConnections, objNode, this.mnuRecentConnections, this._recentConnectionsFile, false);
 
             //Check the number of Recent Connections and delete the Oldest if more than 9
-            List<INode> conns = this._recentConnections.GetTriplesWithPredicateObject(this._recentConnections.CreateUriNode(new Uri(RdfSpecsHelper.RdfType)), this._recentConnections.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + ConfigurationLoader.ClassGenericManager.Substring(ConfigurationLoader.ClassGenericManager.IndexOf(':') + 1)))).Select(t => t.Subject).ToList();
+            INode rdfType = this._recentConnections.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode genericManager = this._recentConnections.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager));
+            INode storageProvider = this._recentConnections.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
+            List<INode> conns = (from t in
+                                 this._recentConnections.GetTriplesWithPredicateObject(rdfType, genericManager).Concat(this._recentConnections.GetTriplesWithPredicateObject(rdfType, storageProvider))
+                                 select t.Subject).ToList();
             if (conns.Count > MaxRecentConnections)
             {
                 

@@ -1442,7 +1442,7 @@ namespace VDS.RDF.Storage
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode manager = context.NextSubject;
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager));
+            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider));
             INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
             
             context.Graph.Assert(new Triple(manager, rdfType, genericManager));

@@ -661,7 +661,7 @@ namespace VDS.RDF.Storage.Management
         /// Serializes the connection's configuration
         /// </summary>
         /// <param name="context">Configuration Serialization Context</param>
-        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        public void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode manager = context.NextSubject;
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
