@@ -71,13 +71,8 @@ namespace VDS.RDF.Web.Configuration
             //Use a caching mechanism for Config Graphs
             if (context.Cache[WebConfigGraphCacheKey + Path.GetFileName(configFile)] == null)
             {
-                Graph g = new Graph();
-                FileLoader.Load(g, configFile);
+                IGraph g = ConfigurationLoader.LoadConfiguration(configFile);
                 context.Cache.Add(WebConfigGraphCacheKey + Path.GetFileName(configFile), g, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, WebConfigGraphCacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
-
-                //Make sure to auto-detect any Object Factories and custom Parsers/Writers from the Graph
-                ConfigurationLoader.AutoDetectObjectFactories(g);
-                ConfigurationLoader.AutoDetectReadersAndWriters(g);
 
                 return g;
             }
@@ -87,18 +82,13 @@ namespace VDS.RDF.Web.Configuration
                 if (temp is IGraph)
                 {
                     //Q: Do we need to call the AutoDetectX() methods again here or not?
-                    //ConfigurationLoader.AutoDetectObjectFactories((IGraph)temp);
+                    //ConfigurationLoader.AutoConfigure((IGraph)temp);
                     return (IGraph)temp;
                 }
                 else
                 {
-                    Graph g = new Graph();
-                    FileLoader.Load(g, configFile);
+                    IGraph g = ConfigurationLoader.LoadConfiguration(configFile);
                     context.Cache.Add(WebConfigGraphCacheKey + Path.GetFileName(configFile), g, new System.Web.Caching.CacheDependency(configFile), System.Web.Caching.Cache.NoAbsoluteExpiration, new TimeSpan(0, WebConfigGraphCacheDuration, 0), System.Web.Caching.CacheItemPriority.Normal, null);
-
-                    //Make sure to auto-detect any Object Factories and custom Parsers/Writers from the Graph
-                    ConfigurationLoader.AutoDetectObjectFactories(g);
-                    ConfigurationLoader.AutoDetectReadersAndWriters(g);
 
                     return g;
                 }
@@ -135,7 +125,8 @@ namespace VDS.RDF.Web.Configuration
     /// <summary>
     /// Path Resolver for Web Configuration loading
     /// </summary>
-    public class WebConfigurationPathResolver : IPathResolver
+    public class WebConfigurationPathResolver
+        : IPathResolver
     {
         private HttpServerUtility _server;
 
