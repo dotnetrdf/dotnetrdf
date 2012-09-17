@@ -255,6 +255,7 @@ namespace VDS.RDF.Utilities.Server
                 parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
                 query.AlgebraOptimisers = this._config.AlgebraOptimisers;
+                query.PropertyFunctionFactories = this._config.PropertyFunctionFactories;
 
                 //TODO: Support Authentication?
                 ////Check whether we need to use authentication

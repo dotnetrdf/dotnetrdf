@@ -67,7 +67,7 @@ namespace VDS.RDF.Configuration
                             UriSchemeConfigureOptions = "dotnetrdf-configure";
 
         /// <summary>
-        /// QName Constants for configuration properties for use with the CreateConfigurationNode function
+        /// URI Constants for configuration properties
         /// </summary>
         public const String PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
@@ -163,16 +163,19 @@ namespace VDS.RDF.Configuration
                             ;
 
         /// <summary>
-        /// QName Constants for <strong>obsolete</strong> configuration properties for use with the CreateConfigurationNode function
+        /// URI Constants for <strong>obsolete unusable</strong> configuration properties 
         /// </summary>
         [Obsolete("Property is obsolete and no longer supported by the Configuration API", true)]
         public const String PropertySqlManager = ConfigurationNamespace + "sqlManager";
 
+        /// <summary>
+        /// URI Constants for <strong>obsolete usable</strong> configuration properties
+        /// </summary>
         [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", false)]
         public const String PropertyGenericManager = ConfigurationNamespace + "genericManager";
 
         /// <summary>
-        /// QName Constants for configuration classes
+        /// URI Constants for configuration classes
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
                             //Classes for Triple Stores and Graphs and their associated low level storage

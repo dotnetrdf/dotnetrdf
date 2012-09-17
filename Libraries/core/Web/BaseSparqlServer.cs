@@ -240,6 +240,7 @@ namespace VDS.RDF.Web
                 parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
                 query.AlgebraOptimisers = this._config.AlgebraOptimisers;
+                query.PropertyFunctionFactories = this._config.PropertyFunctionFactories;
 
                 //Check whether we need to use authentication
                 //If there are no user groups then no authentication is in use so we default to authenticated with no per-action authentication needed

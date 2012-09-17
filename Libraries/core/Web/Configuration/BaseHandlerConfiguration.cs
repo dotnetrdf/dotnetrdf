@@ -41,6 +41,7 @@ using System.IO;
 using VDS.RDF.Configuration;
 using VDS.RDF.Configuration.Permissions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Web.Configuration
 {
@@ -78,6 +79,10 @@ namespace VDS.RDF.Web.Configuration
         /// List of Custom Expression Factories which have been specified in the Handler Configuration
         /// </summary>
         protected List<ISparqlCustomExpressionFactory> _expressionFactories = new List<ISparqlCustomExpressionFactory>();
+        /// <summary>
+        /// List of Property Function Factories which have been specified in the Handler Configuration
+        /// </summary>
+        protected List<IPropertyFunctionFactory> _propertyFunctionFactories = new List<IPropertyFunctionFactory>();
 
         /// <summary>
         /// Sets whether CORS headers are output
@@ -185,6 +190,21 @@ namespace VDS.RDF.Web.Configuration
                 else
                 {
                     throw new DotNetRdfConfigurationException("Unable to load Handler Configuration as the RDF Configuration file specifies a value for the Handlers dnr:expressionFactory property which cannot be loaded as an object which is a SPARQL Expression Factory");
+                }
+            }
+
+            //SPARQL Property Function Factories
+            factories = ConfigurationLoader.GetConfigurationData(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFunctionFactory)));
+            foreach (INode factory in factories)
+            {
+                Object temp = ConfigurationLoader.LoadObject(g, factory);
+                if (temp is IPropertyFunctionFactory)
+                {
+                    this._propertyFunctionFactories.Add((IPropertyFunctionFactory)temp);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Unable to load Handler Configuration as the RDF Configuration file specifies a value for the Handlers dnr:propertyFunctionFactory property which cannot be loaded as an object which is a SPARQL Property Function Factory");
                 }
             }
 
@@ -315,6 +335,22 @@ namespace VDS.RDF.Web.Configuration
             get
             {
                 return this._expressionFactories;
+            }
+        }
+
+        public bool HasPropertyFunctionFactories
+        {
+            get
+            {
+                return (this._propertyFunctionFactories.Count > 0);
+            }
+        }
+
+        public IEnumerable<IPropertyFunctionFactory> PropertyFunctionFactories
+        {
+            get
+            {
+                return this._propertyFunctionFactories;
             }
         }
 
