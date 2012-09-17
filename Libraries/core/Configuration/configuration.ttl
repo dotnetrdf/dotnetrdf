@@ -86,9 +86,17 @@ dnr:TripleStore a rdfs:Class ;
 				rdfs:label "Class of Triple Stores" ;
 				rdfs:comment "A Triple Store is any class which implements the ITripleStore interface.  A Triple Store is used to define a set of Graphs that form an in-memory store or to instantiate other kinds of stores which may be automatically populated e.g. SQL Stores or may represent external stores e.g. Native Stores." .
 				
+dnr:GraphCollection a rdfs:Class ;
+					  rdfs:label "Class of Graph Collections" ;
+					  rdfs:comment "A Graph Collection is any class which extends the BaseGraphCollection abstract class.  A Graph Collection defines the low level storage of Graphs within a Triple Store" .
+				
 dnr:Graph a rdfs:Class ;
 		  rdfs:label "Class of Graphs" ;
 		  rdfs:comment "A Graph is any class which implements the IGraph interface.  A Graph is used to define a Graph which may be composed of data from single/multiple sources, in the case of multiple sources the resulting Graph is the merge of all those sources." .
+		  
+dnr:TripleCollection a rdfs:Class ;
+					   rdfs:label "Class of Triple Collections" ;
+					   rdfs:comment "A Triple Collection is a class which extends the BaseTripleCollection abstract class.  A Triple Collection defines the low level storage of Triples within a Graph" .
 				 
 dnr:GenericIOManager a rdfs:Class ;
 					 rdfs:label "Class of Generic IO Managers" ;
@@ -97,6 +105,10 @@ dnr:GenericIOManager a rdfs:Class ;
 dnr:StorageProvider a rdfs:Class ;
 					  rdfs:label "Class of Storage Providers" ;
 					  rdfs:comment "A Storage Provider is any class which implements the IStorageProvider interface (the new name for IGenericIOManager) and should be used in preference to dnr:GenericIOManager.  Define Storage Providers in order to define connections to arbitrary stores." .
+					  
+dnr:StorageServer a rdfs:Class ;
+					rdfs:label "Class of Storage Servers" ;
+					rdfs:comment "A Storage Server is any class which implements the IStorageServer interface, a Storage Server is a class capable of creating and retrieving Storage Providers" .
 					 		 
 dnr:HttpHandler a rdfs:Class ;
 				rdfs:label "Class of HTTP Handlers" ;
@@ -121,6 +133,14 @@ dnr:SparqlHttpProtocolProcessor a rdfs:Class ;
 dnr:SparqlExpressionFactory a rdfs:Class ;
 							rdfs:label "Class of Custom SPARQL Expression factories" ;
 							rdfs:comment "A Custom SPARQL Expression Factory is a class that can generate expressions from extension functions used in SPARQL queries." .
+							
+dnr:SparqlPropertyFunctionFactory a rdfs:Class ;
+									 rdfs:label "Class of Custom SPARQL Property Function factories" ;
+									 rdfs:comment "A Custom SPARQL Property Function Factory is a class that can generate property functions." .
+									 
+dnr:SparqlOperator a rdfs:Class ;
+					 rdfs:label "Class of SPARQL Operators" ;
+					 rdfs:comment "A SPARQL Operator implements custom logic for operator evaluation in SPARQL" .
 							
 dnr:SparqlDataset a rdfs:Class ;
 				  rdfs:label "Class of SPARQL Datasets" ;
@@ -159,6 +179,14 @@ dnr:Proxy a rdfs:Class ;
 		  rdfs:comment "A Proxy Server is used to specify proxy settings." .
 			   
 # General Properties
+
+dnr:imports a rdf:Property ;
+			rdfs:label "Imports" ;
+			rdfs:comment "This property is used to declare that the final Configuration Graph is created by importing another Graph from the given URI and merging it into this Graph" .
+			
+dnr:configure a rdf:Property ;
+				rdfs:label "Configure" ;
+				rdfs:comment "This property is used to configure global options for dotNetRDF when used as the predicate for a triple which has a special <dotnetrdf:configure/Class/Property> URI" .
 
 dnr:type a rdf:Property ;
 		 rdfs:label "Type" ;
@@ -310,6 +338,20 @@ dnr:usingGraph a rdf:Property ;
 			   rdfs:comment "This property indicates that an object uses a Graph." ;
 			   rdfs:range dnr:Graph .
 			   
+# Properties which set the low level storage for Graphs and Triple Collections
+
+dnr:usingTripleCollection a rdf:Property ;
+							rdfs:label "Using Triple Collection" ;
+							rdfs:comment "This property indicates that a Graph should use the specified Triple Collection" ;
+							rdfs:range dnr:TripleCollection ;
+							rdfs:domain dnr:Graph .
+							
+dnr:usingGraphCollection a rdf:Property ;
+							rdfs:label "Using Graph Collection" ;
+							rdfs:comment "This property indicates that a Triple Store should use the specified Graph Collection" ;
+							rdfs:range dnr:GraphCollection ;
+							rdfs:domain dnr:TripleStore .							
+			   
 # Properties for defining data sources
 
 dnr:fromGraph a rdf:Property ;
@@ -458,7 +500,7 @@ dnr:action a rdf:Property ;
 
 dnr:enableCors a rdf:Property ;
 				rdfs:label "Enable CORS" ;
-				rdfs:comment "This property sets whether CORS Headers are output" ;
+				rdfs:comment "This property sets whether CORS Headers are output (typically defaults to true if not set)" ;
 				rdfs:domain dnr:HttpHandler .
 
 dnr:syntax a rdf:Property ;
@@ -540,6 +582,12 @@ dnr:expressionFactory a rdf:Property ;
 					  rdfs:comment "This property associates a custom expression factory for SPARQL parsing with a handler." ;
 					  rdfs:range dnr:SparqlExpressionFactory ;
 					  rdfs:domain dnr:HttpHandler .
+					  
+dnr:propertyFunctionFactory a rdf:Property ;
+							  rdfs:label "Property Function Factory" ;
+							  rdfs:comment "This property associates a custom property function factory for SPARQL evaluation with a handler" ;
+							  rdfs:range dnr:SparqlPropertyFunctionFactory ;
+							  rdfs:domain dnr:HttpHandler .
 					  
 dnr:describeAlgorithm a rdf:Property ;
 						rdfs:label "SPARQL Describe Algorithm" ;
