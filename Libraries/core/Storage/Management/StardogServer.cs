@@ -41,6 +41,8 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Storage.Management.Provisioning.Stardog;
 
@@ -50,7 +52,7 @@ namespace VDS.RDF.Storage.Management
     /// Represents a connection to a Stardog Server
     /// </summary>
     public class StardogServer
-        : BaseHttpConnector, IAsyncStorageServer
+        : BaseHttpConnector, IAsyncStorageServer, IConfigurationSerializable
 #if !NO_SYNC_HTTP
         , IStorageServer
 #endif
@@ -653,6 +655,35 @@ namespace VDS.RDF.Storage.Management
         public void Dispose()
         {
             //Nothing to do
+        }
+
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode storageServer = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageServer));
+            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+
+            context.Graph.Assert(new Triple(manager, rdfType, storageServer));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+
+            if (this._username != null && this._pwd != null)
+            {
+                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+            }
+
+            base.SerializeProxyConfig(manager, context);
         }
 
         /// <summary>

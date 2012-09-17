@@ -40,6 +40,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using VDS.RDF.Configuration;
+using VDS.RDF.Parsing;
 using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Storage.Management
@@ -47,7 +49,7 @@ namespace VDS.RDF.Storage.Management
     public class AllegroGraphServer
         : SesameServer
     {
-          private String _agraphBase;
+        private String _agraphBase;
         private String _catalog;
          
         /// <summary>
@@ -590,6 +592,44 @@ namespace VDS.RDF.Storage.Management
             if (accept.Contains(",;")) accept = accept.Replace(",;", ",");
 
             return base.CreateRequest(servicePath, accept, method, queryParams);
+        }
+
+        /// <summary>
+        /// Serializes the connection's configuration
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        public override void SerializeConfiguration(ConfigurationSerializationContext context)
+        {
+            INode manager = context.NextSubject;
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode storageServer = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageServer));
+            INode server = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer));
+            INode catalog = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog));
+
+            context.Graph.Assert(new Triple(manager, rdfType, storageServer));
+            context.Graph.Assert(new Triple(manager, rdfsLabel, context.Graph.CreateLiteralNode(this.ToString())));
+            context.Graph.Assert(new Triple(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().FullName)));
+            if (this._catalog != null)
+            {
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri.Substring(0, this._baseUri.IndexOf("catalogs/")))));
+                context.Graph.Assert(new Triple(manager, catalog, context.Graph.CreateLiteralNode(this._catalog)));
+            }
+            else
+            {
+                context.Graph.Assert(new Triple(manager, server, context.Graph.CreateLiteralNode(this._baseUri)));
+            }
+
+            if (this._username != null && this._pwd != null)
+            {
+                INode username = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUser));
+                INode pwd = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyPassword));
+                context.Graph.Assert(new Triple(manager, username, context.Graph.CreateLiteralNode(this._username)));
+                context.Graph.Assert(new Triple(manager, pwd, context.Graph.CreateLiteralNode(this._pwd)));
+            }
+
+            base.SerializeProxyConfig(manager, context);
         }
     }
 }
