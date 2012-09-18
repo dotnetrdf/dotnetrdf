@@ -866,7 +866,7 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static INode GetConfigurationNode(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationNode(g, objNode, p)).FirstOrDefault();
+            return properties.Select(p => ConfigurationLoader.GetConfigurationNode(g, objNode, p)).Where(n => n != null).FirstOrDefault();
         }
 
         /// <summary>
@@ -922,7 +922,7 @@ namespace VDS.RDF.Configuration
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationString(g, objNode, p)).FirstOrDefault();
+            return properties.Select(p => ConfigurationLoader.GetConfigurationString(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
 
         /// <summary>
@@ -967,7 +967,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
-            return properties.Select(p => ConfigurationLoader.GetConfigurationValue(g, objNode, p)).FirstOrDefault();
+            return properties.Select(p => ConfigurationLoader.GetConfigurationValue(g, objNode, p)).Where(s => s != null).FirstOrDefault();
         }
 
         /// <summary>

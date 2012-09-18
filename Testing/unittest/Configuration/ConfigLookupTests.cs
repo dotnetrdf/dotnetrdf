@@ -71,6 +71,71 @@ _:a dnr:type <appsetting:ConfigurationLookupNode3> .";
         }
 
         [TestMethod]
+        public void ConfigurationLookupNode5()
+        {
+            String graph = Prefixes + @"
+_:a dnr:other ""other"" ;
+  dnr:type ""literal"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
+
+            Assert.AreEqual(NodeType.Literal, value.NodeType);
+            Assert.AreEqual("other", ((ILiteralNode)value).Value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupNode6()
+        {
+            String graph = Prefixes + @"
+_:a dnr:other <http://other> ;
+  dnr:type <http://uri> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type") });
+
+            Assert.AreEqual(NodeType.Uri, value.NodeType);
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://other"), ((IUriNode)value).Uri));
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupNode7()
+        {
+            String graph = Prefixes + @"
+_:a dnr:other <http://other> ;
+  dnr:type <http://uri> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
+
+            Assert.AreEqual(NodeType.Uri, value.NodeType);
+            Assert.IsTrue(EqualityHelper.AreUrisEqual(new Uri("http://uri"), ((IUriNode)value).Uri));
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupNode8()
+        {
+            Graph g = new Graph();
+            g.NamespaceMap.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { g.CreateUriNode("dnr:missing"), g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") });
+            Assert.IsNull(value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupNode9()
+        {
+            Graph g = new Graph();
+            INode value = ConfigurationLoader.GetConfigurationNode(g, g.CreateBlankNode("a"), new INode[] { });
+            Assert.IsNull(value);
+        }
+
+        [TestMethod]
         public void ConfigurationLookupBoolean1()
         {
             String graph = Prefixes + @"
@@ -134,6 +199,32 @@ _:a dnr:type <appsetting:ConfigurationLookupBoolean5> .";
             g.LoadFromString(graph);
 
             bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), false);
+            Assert.IsTrue(value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupBoolean6()
+        {
+            String graph = Prefixes + @"
+_:a dnr:other false ; dnr:type true .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:other"), g.CreateUriNode("dnr:type")}, true);
+            Assert.IsFalse(value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupBoolean7()
+        {
+            String graph = Prefixes + @"
+_:a dnr:other false ; dnr:type true .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            bool value = ConfigurationLoader.GetConfigurationBoolean(g, g.GetBlankNode("a"), new INode[] { g.CreateUriNode("dnr:type"), g.CreateUriNode("dnr:other") }, false);
             Assert.IsTrue(value);
         }
 
