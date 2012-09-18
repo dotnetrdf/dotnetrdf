@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
+using VDS.RDF.Nodes;
+using VDS.RDF.Query.Operators;
 
 namespace VDS.RDF.Test.Configuration
 {
@@ -160,5 +162,48 @@ namespace VDS.RDF.Test.Configuration
                 Options.UsePLinqEvaluation = current;
             }
         }
+
+        [TestMethod]
+        public void ConfigurationAutoOperators()
+        {
+            String data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:SparqlOperator ;
+dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data);
+
+            ConfigurationLoader.AutoConfigureSparqlOperators(g);
+
+            ISparqlOperator op;
+            SparqlOperators.TryGetOperator(SparqlOperatorType.Add, out op, null);
+
+            Assert.AreEqual(typeof(MockSparqlOperator), op.GetType());
+            SparqlOperators.RemoveOperand(op);
+        }
+    }
+
+    public class MockSparqlOperator
+        : ISparqlOperator
+    {
+
+        #region ISparqlOperator Members
+
+        public SparqlOperatorType Operator
+        {
+            get { return SparqlOperatorType.Add; }
+        }
+
+        public bool IsApplicable(params IValuedNode[] ns)
+        {
+            return true;
+        }
+
+        public IValuedNode Apply(params Nodes.IValuedNode[] ns)
+        {
+            return null;
+        }
+
+        #endregion
     }
 }

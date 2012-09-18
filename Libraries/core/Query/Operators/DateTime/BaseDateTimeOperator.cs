@@ -54,6 +54,7 @@ namespace VDS.RDF.Query.Operators.DateTime
         public bool IsApplicable(params IValuedNode[] ns)
         {
             return !Options.StrictOperators 
+                   && ns != null
                    && ns.Length == 2
                    && ns.All(n => n!= null) 
                    && ns[0].EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDateTime) 

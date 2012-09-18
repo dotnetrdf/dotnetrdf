@@ -99,6 +99,7 @@
       <Link>Query\FullText\FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />

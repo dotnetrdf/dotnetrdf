@@ -86,6 +86,7 @@
     <Compile Include="Common\Trees\ScapegoatTree.cs" />
     <Compile Include="Common\Trees\TreeExtensions.cs" />
     <Compile Include="Common\Trees\UnbalancedBinaryTree.cs" />
+    <Compile Include="Configuration\OperatorFactory.cs" />
     <Compile Include="Core\BaseDemandGraphCollection.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Core\BaseGraphCollection.cs" />
