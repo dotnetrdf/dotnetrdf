@@ -148,6 +148,104 @@ _:c a dnr:GraphCollection ;
             Assert.IsNotNull(collection);
             Assert.AreEqual(typeof(WebDemandGraphCollection), collection.GetType());
         }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectGraphEmpty1()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.Graph"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(Graph), result.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectGraphEmpty2()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.ThreadSafeGraph"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(ThreadSafeGraph), result.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectGraphEmpty3()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:Graph ;
+  dnr:type ""VDS.RDF.Graph"" ;
+  dnr:usingTripleCollection _:b .
+_:b a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(Graph), result.GetType());
+            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectTripleStoreEmpty1()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:TripleStore ;
+  dnr:type ""VDS.RDF.TripleStore"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            ITripleStore result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as ITripleStore;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(TripleStore), result.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectTripleStoreEmpty2()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:TripleStore ;
+  dnr:type ""VDS.RDF.WebDemandTripleStore"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            ITripleStore result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as ITripleStore;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(WebDemandTripleStore), result.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationLoadObjectTripleStoreEmpty3()
+        {
+            String graph = ConfigLookupTests.Prefixes + @"
+_:a a dnr:TripleStore ;
+  dnr:type ""VDS.RDF.TripleStore"" ;
+  dnr:usingGraphCollection _:b .
+_:b a dnr:GraphCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeGraphCollection"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            ITripleStore result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as ITripleStore;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(TripleStore), result.GetType());
+            Assert.AreEqual(typeof(ThreadSafeGraphCollection), result.Graphs.GetType());
+        }
     }
 
     class MockPropertyFunctionFactory

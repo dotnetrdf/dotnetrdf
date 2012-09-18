@@ -46,7 +46,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Wrapped Triple Collection creation
                     wrappedCollection = ConfigurationLoader.LoadObject(g, wrapsNode) as BaseTripleCollection;
-                    if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of BaseTripleCollection for this collection to wrap");
+                    if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Triple Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingTripleCollection points to an object which cannot be loaded as an instance of the required type BaseTripleCollection for this collection to wrap");
                     try
                     {
                         obj = (BaseTripleCollection)Activator.CreateInstance(targetType, new Object[] { wrappedCollection });
@@ -76,7 +76,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Wrapped Graph Collection creation
                     wrappedCollection = ConfigurationLoader.LoadObject(g, wrapsNode) as BaseGraphCollection;
-                    if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of BaseGraphCollection for this collection to wrap");
+                    if (wrappedCollection == null) throw new DotNetRdfConfigurationException("Unable to load the Graph Collection identified by the Node '" + objNode.ToString() + "' as the dnr:usingGraphCollection points to an object which cannot be loaded as an instance of the required type BaseGraphCollection for this collection to wrap");
                     try
                     {
                         obj = (BaseGraphCollection)Activator.CreateInstance(targetType, new Object[] { wrappedCollection });
