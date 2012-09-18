@@ -14,12 +14,20 @@ Change Log
 This represents a summary of additions, changes and removals for the 0.7.2 release of dotNetRDF
 
 Added
+- Configuration API
+ - More auto-configuration methods
+ - Helper methods for loading configuration graphs
+  - Supports new ability to have one configuration graph import another URI/file
+ - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties
+ - Support for specifying custom Triple and Graph Collections
+ - Support for loading IStorageServer instances
+ - Support for loading SPARQL operators and property function factories
+ - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation
 - Query
  - Added IsMinusCompatibleWith() method to ISet interface
  - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic
  - Support for SPARQL property functions
   - Refactored Query.FullText to be a true property function
-
 
 Changed
 - Bug Fixes
@@ -35,10 +43,12 @@ Changed
  - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
  - Bug fix for some prefix validation bugs in SPARQL 1.1
  - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
+- Dependencies
+ - Bumped JSON.Net version to 4.5r9
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage
- - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer)
+ - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
  - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
 
 Removed
