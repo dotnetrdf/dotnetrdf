@@ -247,7 +247,7 @@ namespace VDS.RDF.Configuration
             new GraphFactory(),
             new StoreFactory(),
             //Default Manager Factories
-            new GenericManagerFactory(),
+            new StorageFactory(),
             new DatasetFactory(),
             //Endpoint Factories
             new SparqlEndpointFactory(),
@@ -281,6 +281,8 @@ namespace VDS.RDF.Configuration
 
         #endregion
 
+#if !NO_SYNC_HTTP
+
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -303,6 +305,8 @@ namespace VDS.RDF.Configuration
             UriLoader.Load(g, u);
             return ConfigurationLoader.LoadCommon(g, autoConfigure);
         }
+
+#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -374,6 +378,7 @@ namespace VDS.RDF.Configuration
                 Graph data = new Graph();
                 switch (importData.NodeType)
                 {
+#if !NO_SYNC_HTTP
                     case NodeType.Uri:
                         importData = ConfigurationLoader.ResolveAppSetting(g, importData);
                         if (!imported.Contains(importData))
@@ -382,6 +387,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
+#endif
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -391,7 +397,7 @@ namespace VDS.RDF.Configuration
                         break;
 
                     default:
-                        throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal");
+                        throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }
 
                 //Scan for nested imports
@@ -549,7 +555,7 @@ namespace VDS.RDF.Configuration
                             else if (valueType.IsEnum)
                             {
                                 if (value.NodeType != NodeType.Literal) throw new DotNetRdfConfigurationException("Malformed dnf:configure triple - " + t.ToString() + " - the object must be a literal when the property being set has a enumeration type");
-                                Object enumVal = Enum.Parse(valueType, valueNode.AsString());
+                                Object enumVal = Enum.Parse(valueType, valueNode.AsString(), true);
                                 property.SetValue(null, enumVal, null);
                             }
                             else

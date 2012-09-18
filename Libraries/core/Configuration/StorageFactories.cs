@@ -40,16 +40,18 @@ using System.Net;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Storage;
+using VDS.RDF.Storage.Management;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// Factory class for producing <see cref="IStorageProvider">IStorageProvider</see> instances from Configuration Graphs
+    /// Factory class for producing <see cref="IStorageProvider">IStorageProvider</see> and <see cref="IStorageServer"/> instances from Configuration Graphs
     /// </summary>
-    public class GenericManagerFactory
+    public class StorageFactory
         : IObjectFactory
     {
         private const String AllegroGraph = "VDS.RDF.Storage.AllegroGraphConnector",
+                             AllegroGraphServer = "VDS.RDF.Storage.Management.AllegroGraphServer",
                              DatasetFile = "VDS.RDF.Storage.DatasetFileManager",
                              Dydra = "VDS.RDF.Storage.DydraConnector",
                              FourStore = "VDS.RDF.Storage.FourStoreConnector",
@@ -61,9 +63,11 @@ namespace VDS.RDF.Configuration
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
                              SesameV5 = "VDS.RDF.Storage.SesameHttpProtocolVersion5Connector",
                              SesameV6 = "VDS.RDF.Storage.SesameHttpProtocolVersion6Connector",
+                             SesameServer = "VDS.RDF.Storage.Management.SesameServer",
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
+                             StardogServer = "VDS.RDF.Storage.Management.StardogServer",
                              Talis = "VDS.RDF.Storage.TalisPlatformConnector"
                              ;
 
@@ -77,10 +81,16 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-            IStorageProvider manager = null;
+#if !NO_SYNC_HTTP
+            IStorageProvider storageProvider = null;
+            IStorageServer storageServer = null;
+#else
+            IAsyncStorageProvider storageProvider = null;
+            IAsyncStorageServer storageServer = null;
+#endif
             obj = null;
 
-            String server, user, pwd, store;
+            String server, user, pwd, store, catalog;
             bool isAsync;
 
             Object temp;
@@ -94,12 +104,11 @@ namespace VDS.RDF.Configuration
 
             switch (targetType.FullName)
             {
-#if !NO_SYNC_HTTP
                 case AllegroGraph:
                     //Get the Server, Catalog and Store
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    String catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
+                    catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
                     store = ConfigurationLoader.GetConfigurationString(g, objNode, propStore);
                     if (store == null) return false;
 
@@ -108,14 +117,30 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        manager = new AllegroGraphConnector(server, catalog, store, user, pwd);
+                        storageProvider = new AllegroGraphConnector(server, catalog, store, user, pwd);
                     }
                     else
                     {
-                        manager = new AllegroGraphConnector(server, catalog, store);
+                        storageProvider = new AllegroGraphConnector(server, catalog, store);
                     }
                     break;
-#endif
+
+                case AllegroGraphServer:
+                    //Get the Server, Catalog and User Credentials
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
+                    if (server == null) return false;
+                    catalog = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
+                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+
+                    if (user != null && pwd != null)
+                    {
+                        storageServer = new AllegroGraphServer(server, catalog, user, pwd);
+                    }
+                    else
+                    {
+                        storageServer = new AllegroGraphServer(server, catalog);
+                    }
+                    break;
 
                 case DatasetFile:
                     //Get the Filename and whether the loading should be done asynchronously
@@ -123,10 +148,9 @@ namespace VDS.RDF.Configuration
                     if (file == null) return false;
                     file = ConfigurationLoader.ResolvePath(file);
                     isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
-                    manager = new DatasetFileManager(file, isAsync);
+                    storageProvider = new DatasetFileManager(file, isAsync);
                     break;
 
-#if !NO_SYNC_HTTP
                 case Dydra:
                     //Get the Account Name and Store
                     String account = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyCatalog)));
@@ -139,11 +163,11 @@ namespace VDS.RDF.Configuration
 
                     if (user != null)
                     {
-                        manager = new DydraConnector(account, store, user);
+                        storageProvider = new DydraConnector(account, store, user);
                     }
                     else
                     {
-                        manager = new DydraConnector(account, store);
+                        storageProvider = new DydraConnector(account, store);
                     }
                     break;
 
@@ -152,16 +176,15 @@ namespace VDS.RDF.Configuration
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
                     bool enableUpdates = ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyEnableUpdates)), true);
-                    manager = new FourStoreConnector(server, enableUpdates);
+                    storageProvider = new FourStoreConnector(server, enableUpdates);
                     break;
 
                 case Fuseki:
                     //Get the Server URI
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    manager = new FusekiConnector(server);
+                    storageProvider = new FusekiConnector(server);
                     break;
-#endif
 
                 case InMemory:
                     //Get the Dataset/Store
@@ -171,7 +194,7 @@ namespace VDS.RDF.Configuration
                         temp = ConfigurationLoader.LoadObject(g, datasetObj);
                         if (temp is ISparqlDataset)
                         {
-                            manager = new InMemoryManager((ISparqlDataset)temp);
+                            storageProvider = new InMemoryManager((ISparqlDataset)temp);
                         }
                         else
                         {
@@ -187,7 +210,7 @@ namespace VDS.RDF.Configuration
                             temp = ConfigurationLoader.LoadObject(g, storeObj);
                             if (temp is IInMemoryQueryableStore)
                             {
-                                manager = new InMemoryManager((IInMemoryQueryableStore)temp);
+                                storageProvider = new InMemoryManager((IInMemoryQueryableStore)temp);
                             }
                             else
                             {
@@ -197,12 +220,10 @@ namespace VDS.RDF.Configuration
                         else
                         {
                             //If no dnr:usingStore either then create a new empty store
-                            manager = new InMemoryManager();
+                            storageProvider = new InMemoryManager();
                         }
                     }
                     break;
-
-#if !NO_SYNC_HTTP
 
                 case Joseki:
                     //Get the Query and Update URIs
@@ -213,15 +234,15 @@ namespace VDS.RDF.Configuration
                     String updateService = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdatePath)));
                     if (updateService == null)
                     {
-                        manager = new JosekiConnector(server, queryService);
+                        storageProvider = new JosekiConnector(server, queryService);
                     }
                     else
                     {
-                        manager = new JosekiConnector(server, queryService, updateService);
+                        storageProvider = new JosekiConnector(server, queryService, updateService);
                     }
                     break;
 
-#endif
+#if !NO_SYNC_HTTP
 
                 case ReadOnly:
                     //Get the actual Manager we are wrapping
@@ -229,7 +250,7 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IStorageProvider)
                     {
-                        manager = new ReadOnlyConnector((IStorageProvider)temp);
+                        storageProvider = new ReadOnlyConnector((IStorageProvider)temp);
                     }
                     else
                     {
@@ -243,7 +264,7 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IQueryableStorage)
                     {
-                        manager = new QueryableReadOnlyConnector((IQueryableStorage)temp);
+                        storageProvider = new QueryableReadOnlyConnector((IQueryableStorage)temp);
                     }
                     else
                     {
@@ -251,7 +272,7 @@ namespace VDS.RDF.Configuration
                     }
                     break;
 
-#if !NO_SYNC_HTTP
+#endif
 
                 case Sesame:
                 case SesameV5:
@@ -264,13 +285,39 @@ namespace VDS.RDF.Configuration
                     ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
                     if (user != null && pwd != null)
                     {
-                        manager = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
+#if !NO_SYNC_HTTP
+                        storageProvider = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
+#else
+                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store, user, pwd });
+#endif
                     }
                     else
                     {
-                        manager = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
+#if !NO_SYNC_HTTP
+                        storageProvider = (IStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
+#else
+                        storageProvider = (IAsyncStorageProvider)Activator.CreateInstance(targetType, new Object[] { server, store });
+#endif
                     }
                     break;
+
+                case SesameServer:
+                    //Get the Server and User Credentials
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
+                    if (server == null) return false;
+                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+
+                    if (user != null && pwd != null)
+                    {
+                        storageServer = new SesameServer(server, user, pwd);
+                    }
+                    else
+                    {
+                        storageServer = new SesameServer(server);
+                    }
+                    break;
+
+#if !NO_SYNC_HTTP
 
                 case Sparql:
                     //Get the Endpoint URI or the Endpoint
@@ -302,7 +349,7 @@ namespace VDS.RDF.Configuration
                         temp = ConfigurationLoader.LoadObject(g, endpointObj);
                         if (temp is SparqlRemoteEndpoint)
                         {
-                            manager = new SparqlConnector((SparqlRemoteEndpoint)temp, loadMode);
+                            storageProvider = new SparqlConnector((SparqlRemoteEndpoint)temp, loadMode);
                         }
                         else
                         {
@@ -320,20 +367,22 @@ namespace VDS.RDF.Configuration
                                                        select ((IUriNode)named).Uri;
                         if (defGraphs.Any() || namedGraphs.Any())
                         {
-                            manager = new SparqlConnector(new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs), loadMode);
+                            storageProvider = new SparqlConnector(new SparqlRemoteEndpoint(UriFactory.Create(server), defGraphs, namedGraphs), loadMode);
                         }
                         else
                         {
-                            manager = new SparqlConnector(UriFactory.Create(server), loadMode);
+                            storageProvider = new SparqlConnector(UriFactory.Create(server), loadMode);
                         }                        
                     }
                     break;
+
+#endif
 
                 case SparqlHttpProtocol:
                     //Get the Service URI
                     server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
                     if (server == null) return false;
-                    manager = new SparqlHttpProtocolConnector(UriFactory.Create(server));
+                    storageProvider = new SparqlHttpProtocolConnector(UriFactory.Create(server));
                     break;
 
                 case Stardog:
@@ -353,7 +402,7 @@ namespace VDS.RDF.Configuration
                     {
                         try
                         {
-                            reasoning = (StardogReasoningMode)Enum.Parse(typeof(StardogReasoningMode), mode);
+                            reasoning = (StardogReasoningMode)Enum.Parse(typeof(StardogReasoningMode), mode, true);
                         }
                         catch
                         {
@@ -363,20 +412,44 @@ namespace VDS.RDF.Configuration
 
                     if (user != null && pwd != null)
                     {
-                        manager = new StardogConnector(server, store, reasoning, user, pwd);
+                        storageProvider = new StardogConnector(server, store, reasoning, user, pwd);
                     }
                     else
                     {
-                        manager = new StardogConnector(server, store, reasoning);
+                        storageProvider = new StardogConnector(server, store, reasoning);
                     }
                     break;
 
-#endif
+                case StardogServer:
+                    //Get the Server and User Credentials
+                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
+                    if (server == null) return false;
+                    ConfigurationLoader.GetUsernameAndPassword(g, objNode, true, out user, out pwd);
+
+                    if (user != null && pwd != null)
+                    {
+                        storageServer = new StardogServer(server, user, pwd);
+                    }
+                    else
+                    {
+                        storageServer = new StardogServer(server);
+                    }
+                    break;
+            }
+
+            //Set the return object if one has been loaded
+            if (storageProvider != null)
+            {
+                obj = storageProvider;
+            }
+            else if (storageServer != null)
+            {
+                obj = storageServer;
             }
 
 #if !NO_PROXY
             //Check whether this is a proxyable manager and if we need to load proxy settings
-            if (manager is BaseHttpConnector)
+            if (obj is BaseHttpConnector)
             {
                 INode proxyNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyProxy)));
                 if (proxyNode != null)
@@ -384,18 +457,17 @@ namespace VDS.RDF.Configuration
                     temp = ConfigurationLoader.LoadObject(g, proxyNode);
                     if (temp is WebProxy)
                     {
-                        ((BaseHttpConnector)manager).Proxy = (WebProxy)temp;
+                        ((BaseHttpConnector)obj).Proxy = (WebProxy)temp;
                     }
                     else
                     {
-                        throw new DotNetRdfConfigurationException("Unable to load Generic Manager identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
+                        throw new DotNetRdfConfigurationException("Unable to load storage provider/server identified by the Node '" + objNode.ToString() + "' as the value given for the dnr:proxy property pointed to an Object which could not be loaded as an object of the required type WebProxy");
                     }
                 }
             }
 #endif
 
-            obj = manager;
-            return (manager != null);
+            return (obj != null);
         }
 
         /// <summary>
@@ -408,6 +480,7 @@ namespace VDS.RDF.Configuration
             switch (t.FullName)
             {
                 case AllegroGraph:
+                case AllegroGraphServer:
                 case DatasetFile:
                 case Dydra:
                 case FourStore:
@@ -417,11 +490,13 @@ namespace VDS.RDF.Configuration
                 case Sesame:
                 case SesameV5:
                 case SesameV6:
+                case SesameServer:
                 case ReadOnly:
                 case ReadOnlyQueryable:
                 case Sparql:
                 case SparqlHttpProtocol:
                 case Stardog:
+                case StardogServer:
                 case Talis:
                     return true;
                 default:
