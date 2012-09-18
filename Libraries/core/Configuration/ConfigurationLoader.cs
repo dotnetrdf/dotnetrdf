@@ -41,6 +41,7 @@ using System.Net;
 using System.Reflection;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Operators;
 using SysConfig = System.Configuration;
 
 namespace VDS.RDF.Configuration
@@ -194,9 +195,11 @@ namespace VDS.RDF.Configuration
                             ClassSparqlUpdateProcessor = ConfigurationNamespace + "SparqlUpdateProcessor",
                             ClassSparqlHttpProtocolProcessor = ConfigurationNamespace + "SparqlHttpProtocolProcessor",
                             ClassSparqlExpressionFactory = ConfigurationNamespace + "SparqlExpressionFactory",
+                            ClassSparqlPropertyFunctionFactory = ConfigurationNamespace + "SparqlPropertyFunctionFactory",
                             ClassSparqlDataset = ConfigurationNamespace + "SparqlDataset",
                             ClassQueryOptimiser = ConfigurationNamespace + "QueryOptimiser",
                             ClassAlgebraOptimiser = ConfigurationNamespace + "AlgebraOptimiser",
+                            ClassSparqlOperator = ConfigurationNamespace + "SparqlOperator",
                             //Classes for reasoners
                             ClassReasoner = ConfigurationNamespace + "Reasoner",
                             ClassOwlReasoner = ConfigurationNamespace + "OwlReasoner",
@@ -280,6 +283,8 @@ namespace VDS.RDF.Configuration
         private static IPathResolver _resolver = null;
 
         #endregion
+
+        #region Graph Loading and Auto-Configuration
 
 #if !NO_SYNC_HTTP
 
@@ -423,8 +428,13 @@ namespace VDS.RDF.Configuration
         {
             ConfigurationLoader.AutoConfigureObjectFactories(g);
             ConfigurationLoader.AutoConfigureReadersAndWriters(g);
+            ConfigurationLoader.AutoConfigureSparqlOperators(g);
             ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
+
+        #endregion
+
+        #region Object Loading
 
         /// <summary>
         /// Registers an Object Factory with the Configuration Loader
@@ -599,7 +609,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -607,7 +617,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfParser but failed to load as an object which implements the required IRdfReader interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfParser but failed to load as an object which implements the required IRdfReader interface");
                 }
             }
 
@@ -620,7 +630,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -628,7 +638,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetParser but failed to load as an object which implements the required IStoreReader interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetParser but failed to load as an object which implements the required IStoreReader interface");
                 }
             }
 
@@ -641,7 +651,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Parser specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -649,7 +659,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsParser but failed to load as an object which implements the required ISparqlResultsReader interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsParser but failed to load as an object which implements the required ISparqlResultsReader interface");
                 }
             }
 
@@ -662,7 +672,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -670,7 +680,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfWriter but failed to load as an object which implements the required IRdfWriter interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:RdfWriter but failed to load as an object which implements the required IRdfWriter interface");
                 }
             }
 
@@ -683,7 +693,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -691,7 +701,7 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetWriter but failed to load as an object which implements the required IStoreWriter interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:DatasetWriter but failed to load as an object which implements the required IStoreWriter interface");
                 }
             }
 
@@ -704,7 +714,7 @@ namespace VDS.RDF.Configuration
                 {
                     //Get the formats to associate this with
                     mimeTypes = ConfigurationLoader.GetConfigurationArray(g, objNode, formatMimeType);
-                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
+                    if (mimeTypes.Length == 0) throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Writer specified by the Node '" + objNode.ToString() + "' is not associated with any MIME types");
                     extensions = ConfigurationLoader.GetConfigurationArray(g, objNode, formatExtension);
 
                     //Register
@@ -712,7 +722,30 @@ namespace VDS.RDF.Configuration
                 }
                 else
                 {
-                    throw new DotNetRdfConfigurationException("Auto-detection of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsWriter but failed to load as an object which implements the required ISparqlResultsWriter interface");
+                    throw new DotNetRdfConfigurationException("Auto-configuration of Readers and Writers failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:SparqlResultsWriter but failed to load as an object which implements the required ISparqlResultsWriter interface");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Given a Configuration Graph will detect and configure SPARQL Operators
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        public static void AutoConfigureSparqlOperators(IGraph g)
+        {
+            INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
+                  operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator));
+
+            foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
+            {
+                Object temp = ConfigurationLoader.LoadObject(g, t.Subject);
+                if (temp is ISparqlOperator)
+                {
+                    SparqlOperators.AddOperator((ISparqlOperator)temp);
+                }
+                else
+                {
+                    throw new DotNetRdfConfigurationException("Auto-configuration of SPARQL Operators failed as the Operator specified by the Node '" + t.Subject.ToString() + "' does not implement the required ISparqlOperator interface");
                 }
             }
         }
@@ -1388,32 +1421,6 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Gets/Sets the in-use Path Resolver
-        /// </summary>
-        public static IPathResolver PathResolver
-        {
-            get
-            {
-                return _resolver;
-            }
-            set
-            {
-                _resolver = value;
-            }
-        }
-
-        /// <summary>
-        /// Resolves a Path using the in-use path-resolver
-        /// </summary>
-        /// <param name="path">Path to resolve</param>
-        /// <returns></returns>
-        public static String ResolvePath(String path)
-        {
-            if (_resolver == null) return path;
-            return _resolver.ResolvePath(path);
-        }
-
-        /// <summary>
         /// Attempts to resolve special &lt;appsettings&gt; URIs into actual values
         /// </summary>
         /// <param name="g"></param>
@@ -1449,6 +1456,34 @@ namespace VDS.RDF.Configuration
                 return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
             }
 #endif
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets/Sets the in-use Path Resolver
+        /// </summary>
+        public static IPathResolver PathResolver
+        {
+            get
+            {
+                return _resolver;
+            }
+            set
+            {
+                _resolver = value;
+            }
+        }
+
+        /// <summary>
+        /// Resolves a Path using the in-use path-resolver
+        /// </summary>
+        /// <param name="path">Path to resolve</param>
+        /// <returns></returns>
+        public static String ResolvePath(String path)
+        {
+            if (_resolver == null) return path;
+            return _resolver.ResolvePath(path);
         }
     }
 
