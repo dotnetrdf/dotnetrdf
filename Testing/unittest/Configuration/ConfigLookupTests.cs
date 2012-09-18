@@ -218,5 +218,109 @@ _:a dnr:type <appsetting:ConfigurationLookupLong3> .";
             long value = ConfigurationLoader.GetConfigurationInt32(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"), 0);
             Assert.AreEqual(123, value);
         }
+
+        [TestMethod]
+        public void ConfigurationLookupString1()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type ""literal"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.AreEqual("literal", value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupString2()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type <http://uri> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.IsNull(value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupString3()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type <appsetting:ConfigurationLookupString3> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupString3"] = "literal";
+
+            String value = ConfigurationLoader.GetConfigurationString(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.AreEqual("literal", value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupString4()
+        {
+            Graph g = new Graph();
+            String value = ConfigurationLoader.GetConfigurationString(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
+            Assert.IsNull(value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupValue1()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type ""literal"" .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.AreEqual("literal", value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupValue2()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type <http://uri> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.AreEqual("http://uri/", value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupValue3()
+        {
+            String graph = Prefixes + @"
+_:a dnr:type <appsetting:ConfigurationLookupString3> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            System.Configuration.ConfigurationManager.AppSettings["ConfigurationLookupString3"] = "literal";
+
+            String value = ConfigurationLoader.GetConfigurationValue(g, g.GetBlankNode("a"), g.CreateUriNode("dnr:type"));
+
+            Assert.AreEqual("literal", value);
+        }
+
+        [TestMethod]
+        public void ConfigurationLookupValue4()
+        {
+            Graph g = new Graph();
+            String value = ConfigurationLoader.GetConfigurationValue(g, g.CreateBlankNode("a"), g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)));
+            Assert.IsNull(value);
+        }
     }
 }
