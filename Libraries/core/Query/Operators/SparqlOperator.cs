@@ -36,7 +36,6 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators.Numeric;
 using VDS.RDF.Query.Operators.DateTime;
@@ -52,6 +51,7 @@ namespace VDS.RDF.Query.Operators
         private static bool _init = false;
 
 #if SILVERLIGHT
+        //Required under Silverlight as we can't just iterate over the enumeration values with Enum.GetValues()
         private static SparqlOperatorType[] _operatorTypes = new[]
                                                                  {
                                                                      SparqlOperatorType.Add, SparqlOperatorType.Subtract,
@@ -113,13 +113,72 @@ namespace VDS.RDF.Query.Operators
         /// <summary>
         /// Removes the registration of an operator
         /// </summary>
-        /// <param name="operator">Operator</param>
-        public static void RemoveOperand( ISparqlOperator op)
+        /// <param name="operator">Operator Reference</param>
+        public static void RemoveOperator(ISparqlOperator op)
         {
             if (!_init) Init();
             lock (_operators)
             {
                 _operators[op.Operator].Remove(op);
+            }
+        }
+
+        /// <summary>
+        /// Removes the registration of an operator by instance type of the operator
+        /// </summary>
+        /// <param name="operator">Operator</param>
+        public static void RemoveOperatorByType(ISparqlOperator op)
+        {
+            if (!_init) Init();
+            lock (_operators)
+            {
+                _operators[op.Operator].RemoveAll(o => op.GetType().Equals(o.GetType()));
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the given operator is registered
+        /// </summary>
+        /// <param name="op">Operator</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Checking is done both by reference and instance type so you can check if an operator is registered even if you don't have the actual reference to the instance that registered
+        /// </remarks>
+        public static bool IsRegistered(ISparqlOperator op)
+        {
+            if (!_init) Init();
+            lock (_operators)
+            {
+                return _operators[op.Operator].Contains(op) || _operators[op.Operator].Any(o => op.GetType().Equals(o.GetType()));
+            }
+        }
+
+        /// <summary>
+        /// Gets all registered Operators
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ISparqlOperator> GetOperators()
+        {
+            if (!_init) Init();
+            lock (_operators)
+            {
+                return (from type in _operators.Keys
+                        from op in _operators[type]
+                        select op).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets all registered operators for the given Operator Type
+        /// </summary>
+        /// <param name="type">Operator Type</param>
+        /// <returns></returns>
+        public IEnumerable<ISparqlOperator> GetOperators(SparqlOperatorType type)
+        {
+            if (!_init) Init();
+            lock (_operators)
+            {
+                return _operators[type].ToList();
             }
         }
 

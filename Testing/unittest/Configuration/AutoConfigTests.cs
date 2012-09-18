@@ -179,7 +179,7 @@ dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
             SparqlOperators.TryGetOperator(SparqlOperatorType.Add, out op, null);
 
             Assert.AreEqual(typeof(MockSparqlOperator), op.GetType());
-            SparqlOperators.RemoveOperand(op);
+            SparqlOperators.RemoveOperator(op);
         }
     }
 

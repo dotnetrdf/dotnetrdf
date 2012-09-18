@@ -191,6 +191,10 @@ dnr:configure a rdf:Property ;
 dnr:type a rdf:Property ;
 		 rdfs:label "Type" ;
 		 rdfs:comment "This property is used to declare the fully qualified type name (including assembly if not from the core dotNetRDF.dll library) of an object whose configuration is defined in this vocabulary.  This type name can then be used with reflection to ensure that objects of valid types are generated." .
+
+dnr:enabled a rdf:Property ;
+			rdfs:label "Enabled" ;
+			rdfs:comment "This property is used to declare whether something is enabled, the interpretation and usage of this is left up to implementers unlike the more specific dnr:enableUpdates and dnr:enableCors properties which control specific functionality" .
 		 
 dnr:user a rdf:Property ;
 		 rdfs:label "Username" ;

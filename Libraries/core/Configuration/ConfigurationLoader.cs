@@ -73,6 +73,7 @@ namespace VDS.RDF.Configuration
         public const String PropertyType = ConfigurationNamespace + "type",
                             PropertyImports = ConfigurationNamespace + "imports",
                             PropertyConfigure = ConfigurationNamespace  + "configure",
+                            PropertyEnabled = ConfigurationNamespace + "enabled",
                             PropertyUser = ConfigurationNamespace + "user",
                             PropertyPassword = ConfigurationNamespace + "password",
                             PropertyCredentials = ConfigurationNamespace + "credentials",
@@ -718,14 +719,23 @@ namespace VDS.RDF.Configuration
         public static void AutoConfigureSparqlOperators(IGraph g)
         {
             INode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)),
-                  operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator));
+                  operatorClass = g.CreateUriNode(UriFactory.Create(ClassSparqlOperator)),
+                  enabled = g.CreateUriNode(UriFactory.Create(PropertyEnabled));
 
             foreach (Triple t in g.GetTriplesWithPredicateObject(rdfType, operatorClass))
             {
                 Object temp = ConfigurationLoader.LoadObject(g, t.Subject);
                 if (temp is ISparqlOperator)
                 {
-                    SparqlOperators.AddOperator((ISparqlOperator)temp);
+                    bool enable = ConfigurationLoader.GetConfigurationBoolean(g, t.Subject, enabled, true);
+                    if (enable)
+                    {
+                        SparqlOperators.AddOperator((ISparqlOperator)temp);
+                    }
+                    else
+                    {
+                        SparqlOperators.RemoveOperatorByType((ISparqlOperator)temp);
+                    }
                 }
                 else
                 {
