@@ -459,6 +459,114 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric2()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, 0.5m);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric3()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 0.5f);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric4()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 0.5d);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric5()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, 0.5m);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric6()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 0.5f);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric7()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 0.5d);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric8()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 0.5f);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric9()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 0.5d);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationDivideNumeric10()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DoubleNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 0.5d);
+            this.TestApplication(SparqlOperatorType.Divide, ns, expected, false);
+        }
+
+        [TestMethod]
         public void SparqlOperatorApplicationMultiplyNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -467,6 +575,114 @@ namespace VDS.RDF.Test.Sparql
                 new LongNode(null, 6)
             };
             IValuedNode expected = new LongNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric2()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 3),
+                new DecimalNode(null, 6)
+            };
+            IValuedNode expected = new DecimalNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric3()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 3),
+                new FloatNode(null, 6)
+            };
+            IValuedNode expected = new FloatNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric4()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 3),
+                new DoubleNode(null, 6)
+            };
+            IValuedNode expected = new DoubleNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric5()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 3),
+                new DecimalNode(null, 6)
+            };
+            IValuedNode expected = new DecimalNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric6()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 3),
+                new FloatNode(null, 6)
+            };
+            IValuedNode expected = new FloatNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric7()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 3),
+                new DoubleNode(null, 6)
+            };
+            IValuedNode expected = new DoubleNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric8()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 3),
+                new FloatNode(null, 6)
+            };
+            IValuedNode expected = new FloatNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric9()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 3),
+                new DoubleNode(null, 6)
+            };
+            IValuedNode expected = new DoubleNode(null, 18);
+            this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationMultiplyNumeric10()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DoubleNode(null, 3),
+                new DoubleNode(null, 6)
+            };
+            IValuedNode expected = new DoubleNode(null, 18);
             this.TestApplication(SparqlOperatorType.Multiply, ns, expected, false);
         }
 
