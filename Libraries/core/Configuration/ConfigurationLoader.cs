@@ -250,6 +250,7 @@ namespace VDS.RDF.Configuration
             //Default Data Factories
             new GraphFactory(),
             new StoreFactory(),
+            new CollectionFactory(),
             //Default Manager Factories
             new StorageFactory(),
             new DatasetFactory(),
