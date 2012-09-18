@@ -104,6 +104,11 @@ namespace VDS.RDF.Configuration
             INode storeObj;
             Object temp;
 
+            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
+                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
+
+            INode[] props = new INode[] { propStorageProvider, propGenericManager };
+
             switch (targetType.FullName)
             {
                 case LeviathanQueryProcessor:
@@ -152,7 +157,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericQueryProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IQueryableStorage)
@@ -288,7 +293,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericUpdateProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)
@@ -414,7 +419,7 @@ namespace VDS.RDF.Configuration
 #if !NO_WEB && !NO_ASP
 
                 case GenericProtocolProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props));
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)

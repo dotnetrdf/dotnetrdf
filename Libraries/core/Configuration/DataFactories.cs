@@ -333,7 +333,10 @@ namespace VDS.RDF.Configuration
 
             //Get Property Nodes we need
             INode propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)),
+                  propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
                   propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync));
+
+            INode[] props = new INode[] { propStorageProvider, propGenericManager };
 
             //Instantiate the Store Class
             switch (targetType.FullName)
@@ -349,7 +352,7 @@ namespace VDS.RDF.Configuration
 #endif
 
                 case PersistentTripleStore:
-                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propGenericManager);
+                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
                     if (subObj == null) return false;
 
                     temp = ConfigurationLoader.LoadObject(g, subObj);

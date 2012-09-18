@@ -278,7 +278,7 @@ namespace VDS.RDF.Storage
             INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
             INode rdfsLabel = context.Graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "label"));
             INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
-            INode genericManager = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
+            INode storageProvider = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             context.Graph.Assert(manager, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
             context.Graph.Assert(manager, dnrType, context.Graph.CreateLiteralNode(this.GetType().ToString()));
@@ -289,7 +289,7 @@ namespace VDS.RDF.Storage
                 INode managerObj = context.Graph.CreateBlankNode();
                 context.NextSubject = managerObj;
                 ((IConfigurationSerializable)this._manager).SerializeConfiguration(context);
-                context.Graph.Assert(manager, genericManager, managerObj);
+                context.Graph.Assert(manager, storageProvider, managerObj);
             }
             else
             {

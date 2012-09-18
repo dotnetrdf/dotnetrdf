@@ -100,7 +100,11 @@ namespace VDS.RDF.Configuration
             INode propServer = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyServer)),
                   propDb = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase)),
                   propStore = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)),
-                  propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync));
+                  propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync)),
+                  propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
+                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
+
+            INode[] props = new INode[] { propStorageProvider, propGenericManager };
 
             switch (targetType.FullName)
             {
@@ -246,7 +250,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnly:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IStorageProvider)
                     {
@@ -260,7 +264,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnlyQueryable:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)));
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IQueryableStorage)
                     {
