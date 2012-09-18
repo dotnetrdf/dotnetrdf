@@ -11,7 +11,7 @@ namespace VDS.RDF.Test.Configuration
     [TestClass]
     public class ConfigLookupTests
     {
-        private const String Prefixes = @"@prefix rdf: <" + NamespaceMapper.RDF + @"> .
+        public const String Prefixes = @"@prefix rdf: <" + NamespaceMapper.RDF + @"> .
 @prefix xsd: <"+ NamespaceMapper.XMLSCHEMA + @"> .
 @prefix dnr: <http://www.dotnetrdf.org/configuration#> .";
 

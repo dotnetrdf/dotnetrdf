@@ -36,20 +36,20 @@ terms.
 using System;
 using System.Linq;
 using System.Reflection;
-using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Configuration
 {
     /// <summary>
     /// Factory class for producing Custom SPARQL Expression Factories from Configuration Graphs
     /// </summary>
-    public class ExpressionFactoryFactory 
+    public class PropertyFunctionFactoryFactory 
         : IObjectFactory
     {
-        private Type _factoryType = typeof(ISparqlCustomExpressionFactory);
+        private Type _factoryType = typeof(IPropertyFunctionFactory);
 
         /// <summary>
-        /// Tries to load a SPARQL Custom Expression Factory based on information from the Configuration Graph
+        /// Tries to load a SPARQL Property Function Factory based on information from the Configuration Graph
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
@@ -59,10 +59,10 @@ namespace VDS.RDF.Configuration
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
             obj = null;
-            ISparqlCustomExpressionFactory output;
+            IPropertyFunctionFactory output;
             try
             {
-                output = (ISparqlCustomExpressionFactory)Activator.CreateInstance(targetType);
+                output = (IPropertyFunctionFactory)Activator.CreateInstance(targetType);
             }
             catch
             {
@@ -81,7 +81,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         public bool CanLoadObject(Type t)
         {
-            //We can load any object which implements ISparqlCustomExpressionFactory and has a public unparameterized constructor
+            //We can load any object which implements IPropertyFunctionFactory and has a public unparameterized constructor
             return t.GetInterfaces().Contains(this._factoryType) && t.GetConstructors().Any(c => c.GetParameters().Length == 0 && c.IsPublic);
         }
     }

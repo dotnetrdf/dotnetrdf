@@ -8,6 +8,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.DateTime;
 using VDS.RDF.Query.Operators.Numeric;
+using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Test.Configuration
 {

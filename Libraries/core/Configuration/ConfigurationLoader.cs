@@ -272,6 +272,7 @@ namespace VDS.RDF.Configuration
             new OptimiserFactory(),
             new ReasonerFactory(),
             new ExpressionFactoryFactory(),
+            new PropertyFunctionFactoryFactory(),
             new OperatorFactory(),
             //ObjectFactory Factory
             new ObjectFactoryFactory(),
