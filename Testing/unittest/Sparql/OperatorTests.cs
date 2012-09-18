@@ -43,6 +43,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.Numeric;
 using VDS.RDF.Query.Operators.DateTime;
+using VDS.RDF.Test.Configuration;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -218,6 +219,114 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric2()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric3()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric4()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric5()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric6()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric7()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DoubleNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric8()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric9()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationAddNumeric10()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DoubleNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, 3);
+            this.TestApplication(SparqlOperatorType.Add, ns, expected, false);
+        }
+
+        [TestMethod]
         public void SparqlOperatorApplicationSubtractNumeric1()
         {
             List<IValuedNode> ns = new List<IValuedNode>()
@@ -226,6 +335,114 @@ namespace VDS.RDF.Test.Sparql
                 new LongNode(null, 2)
             };
             IValuedNode expected = new LongNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric2()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new LongNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric3()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric4()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new LongNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric5()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new DecimalNode(null, 2)
+            };
+            IValuedNode expected = new DecimalNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric6()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric7()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DecimalNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric8()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new FloatNode(null, 2)
+            };
+            IValuedNode expected = new FloatNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric9()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new FloatNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, -1);
+            this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
+        }
+
+        [TestMethod]
+        public void SparqlOperatorApplicationSubtractNumeric10()
+        {
+            List<IValuedNode> ns = new List<IValuedNode>()
+            {
+                new DoubleNode(null, 1),
+                new DoubleNode(null, 2)
+            };
+            IValuedNode expected = new DoubleNode(null, -1);
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
         }
 
@@ -280,5 +497,56 @@ namespace VDS.RDF.Test.Sparql
             this.TestApplication(SparqlOperatorType.Subtract, ns, expected, false);
             this.TestStrictApplication(SparqlOperatorType.Subtract, ns, expected, true);
         }
+
+        [TestMethod]
+        public void SparqlOperatorRegistration1()
+        {
+            try
+            {
+                MockSparqlOperator op = new MockSparqlOperator();
+                SparqlOperators.AddOperator(op);
+                Assert.IsTrue(SparqlOperators.IsRegistered(op));
+                SparqlOperators.RemoveOperator(op);
+                Assert.IsFalse(SparqlOperators.IsRegistered(op));
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
+        [TestMethod]
+        public void SparqlOperatorRegistration2()
+        {
+            try
+            {
+                MockSparqlOperator op = new MockSparqlOperator();
+                SparqlOperators.AddOperator(op);
+                Assert.IsTrue(SparqlOperators.IsRegistered(op));
+                SparqlOperators.RemoveOperatorByType(new MockSparqlOperator());
+                Assert.IsFalse(SparqlOperators.IsRegistered(op));
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
+
+        [TestMethod]
+        public void SparqlOperatorRegistration3()
+        {
+            try
+            {
+                MockSparqlOperator op = new MockSparqlOperator();
+                SparqlOperators.AddOperator(op);
+                Assert.IsTrue(SparqlOperators.IsRegistered(op));
+                SparqlOperators.Reset();
+                Assert.IsFalse(SparqlOperators.IsRegistered(op));
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
+
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
+using VDS.RDF.Query.Operators.DateTime;
 
 namespace VDS.RDF.Test.Configuration
 {
@@ -164,22 +165,52 @@ namespace VDS.RDF.Test.Configuration
         }
 
         [TestMethod]
-        public void ConfigurationAutoOperators()
+        public void ConfigurationAutoOperators1()
         {
-            String data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+            try
+            {
+                String data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
 _:a a dnr:SparqlOperator ;
 dnr:type """ + typeof(MockSparqlOperator).AssemblyQualifiedName + @""" .";
 
-            Graph g = new Graph();
-            g.LoadFromString(data);
+                Graph g = new Graph();
+                g.LoadFromString(data);
 
-            ConfigurationLoader.AutoConfigureSparqlOperators(g);
+                ConfigurationLoader.AutoConfigureSparqlOperators(g);
 
-            ISparqlOperator op;
-            SparqlOperators.TryGetOperator(SparqlOperatorType.Add, out op, null);
+                ISparqlOperator op;
+                SparqlOperators.TryGetOperator(SparqlOperatorType.Add, out op, null);
 
-            Assert.AreEqual(typeof(MockSparqlOperator), op.GetType());
-            SparqlOperators.RemoveOperator(op);
+                Assert.AreEqual(typeof(MockSparqlOperator), op.GetType());
+                SparqlOperators.RemoveOperator(op);
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
+        }
+
+        [TestMethod]
+        public void ConfigurationAutoOperators2()
+        {
+            try
+            {
+                String data = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:SparqlOperator ;
+dnr:type ""VDS.RDF.Query.Operators.DateTime.DateTimeAddition"" ;
+dnr:enabled false .";
+
+                Graph g = new Graph();
+                g.LoadFromString(data);
+
+                ConfigurationLoader.AutoConfigureSparqlOperators(g);
+
+                Assert.IsFalse(SparqlOperators.IsRegistered(new DateTimeAddition()));
+            }
+            finally
+            {
+                SparqlOperators.Reset();
+            }
         }
     }
 

@@ -43,7 +43,7 @@ using VDS.RDF.Query.Operators.DateTime;
 namespace VDS.RDF.Query.Operators
 {
     /// <summary>
-    /// Registry of SPARQL Operands
+    /// Registry of SPARQL Operators
     /// </summary>
     public static class SparqlOperators
     {
@@ -137,6 +137,22 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
+        /// Resets Operator registry to default state
+        /// </summary>
+        public static void Reset()
+        {
+            if (_init)
+            {
+                lock (_operators)
+                {
+                    _init = false;
+                    _operators = new Dictionary<SparqlOperatorType, List<ISparqlOperator>>();
+                    Init();
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns whether the given operator is registered
         /// </summary>
         /// <param name="op">Operator</param>
@@ -157,7 +173,7 @@ namespace VDS.RDF.Query.Operators
         /// Gets all registered Operators
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ISparqlOperator> GetOperators()
+        public static IEnumerable<ISparqlOperator> GetOperators()
         {
             if (!_init) Init();
             lock (_operators)
@@ -173,7 +189,7 @@ namespace VDS.RDF.Query.Operators
         /// </summary>
         /// <param name="type">Operator Type</param>
         /// <returns></returns>
-        public IEnumerable<ISparqlOperator> GetOperators(SparqlOperatorType type)
+        public static IEnumerable<ISparqlOperator> GetOperators(SparqlOperatorType type)
         {
             if (!_init) Init();
             lock (_operators)
