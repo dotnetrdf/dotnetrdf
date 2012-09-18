@@ -43,22 +43,14 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF.Query.Operators.DateTime
 {
     public abstract class BaseTimeSpanOperator
-        : ISparqlOperator
+        : BaseOperator
     {
-
-        public abstract SparqlOperatorType Operator
-        {
-            get;
-        }
-
-        public bool IsApplicable(params IValuedNode[] ns)
+        public override bool IsApplicable(params IValuedNode[] ns)
         {
             return !Options.StrictOperators
                    && ns != null
                    && ns.Length > 0
                    && ns.All(n => n != null && (n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration) || n.EffectiveType.Equals(XmlSpecsHelper.XmlSchemaDataTypeDuration)));
         }
-
-        public abstract IValuedNode Apply(params IValuedNode[] ns);
     }
 }

@@ -433,23 +433,6 @@ namespace VDS.RDF.Configuration
             ConfigurationLoader.AutoConfigureStaticOptions(g);
         }
 
-        #endregion
-
-        #region Object Loading
-
-        /// <summary>
-        /// Registers an Object Factory with the Configuration Loader
-        /// </summary>
-        /// <param name="factory">Object Factory</param>
-        public static void AddObjectFactory(IObjectFactory factory)
-        {
-            Type loaderType = factory.GetType();
-            if (!_factories.Any(l => l.GetType().Equals(loaderType)))
-            {
-                _factories.Add(factory);
-            }
-        }
-
         /// <summary>
         /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
@@ -751,6 +734,10 @@ namespace VDS.RDF.Configuration
             }
         }
 
+        #endregion
+
+        #region Object Loading
+
         /// <summary>
         /// Checks for circular references and throws an error if there is one
         /// </summary>
@@ -912,7 +899,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="properties">Property Nodes</param>
         /// <returns>
         /// <para>
         /// String value of the first instance of the first property or a null if no values or not a literal value
@@ -964,7 +951,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="properties">Property Nodes</param>
         /// <returns></returns>
         public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
         {
@@ -1016,7 +1003,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="properties">Property Nodes</param>
         /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
         /// <returns>
         /// If there is a valid boolean value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
@@ -1092,7 +1079,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="properties">Property Nodes</param>
         /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
         /// <returns>
         /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
@@ -1168,7 +1155,7 @@ namespace VDS.RDF.Configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
         /// <param name="objNode">Object Node</param>
-        /// <param name="property">Property Node</param>
+        /// <param name="properties">Property Nodes</param>
         /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
         /// <returns>
         /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
@@ -1460,6 +1447,19 @@ namespace VDS.RDF.Configuration
         }
 
         #endregion
+
+        /// <summary>
+        /// Registers an Object Factory with the Configuration Loader
+        /// </summary>
+        /// <param name="factory">Object Factory</param>
+        public static void AddObjectFactory(IObjectFactory factory)
+        {
+            Type loaderType = factory.GetType();
+            if (!_factories.Any(l => l.GetType().Equals(loaderType)))
+            {
+                _factories.Add(factory);
+            }
+        }
 
         /// <summary>
         /// Gets/Sets the in-use Path Resolver

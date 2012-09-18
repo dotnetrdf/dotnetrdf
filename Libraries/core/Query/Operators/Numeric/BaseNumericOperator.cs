@@ -46,31 +46,16 @@ namespace VDS.RDF.Query.Operators.Numeric
     /// Abstract base class for numeric operators
     /// </summary>
     public abstract class BaseNumericOperator
-        : ISparqlOperator
+        : BaseOperator
     {
-        /// <summary>
-        /// Gets the operator this implementation represents
-        /// </summary>
-        public abstract SparqlOperatorType Operator
-        {
-            get;
-        }
-
         /// <summary>
         /// Operator is applicable if at least one input and all inputs are numeric
         /// </summary>
         /// <param name="ns">Inputs</param>
         /// <returns></returns>
-        public bool IsApplicable(params IValuedNode[] ns)
+        public override bool IsApplicable(params IValuedNode[] ns)
         {
             return ns != null && ns.Length > 0 && ns.All(n => n != null && n.NumericType != SparqlNumericType.NaN);
         }
-
-        /// <summary>
-        /// Applies the operator
-        /// </summary>
-        /// <param name="ns">Inputs</param>
-        /// <returns></returns>
-        public abstract IValuedNode Apply(params IValuedNode[] ns);
     }
 }

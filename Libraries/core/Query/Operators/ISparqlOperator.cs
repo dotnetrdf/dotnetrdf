@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Operators
         /// Gets whether the operator can be applied to the given inputs
         /// </summary>
         /// <param name="ns">Inputs</param>
-        /// <returns></returns>
+        /// <returns>True if applicable to the given inputs</returns>
         bool IsApplicable(params IValuedNode[] ns);
 
         /// <summary>

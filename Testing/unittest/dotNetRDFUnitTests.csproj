@@ -101,6 +101,7 @@
     <Compile Include="BaseTest.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
+    <Compile Include="Configuration\ConfigSerializationTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
     <Compile Include="Common\BinaryTreeTests.cs" />
