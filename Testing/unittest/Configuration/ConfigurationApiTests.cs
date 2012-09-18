@@ -197,5 +197,20 @@ namespace VDS.RDF.Test.Configuration
                 Options.UsePLinqEvaluation = current;
             }
         }
+
+        [TestMethod,ExpectedException(typeof(DotNetRdfConfigurationException))]
+        public void ConfigurationCircularReference()
+        {
+            String graph = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:Graph ;
+  dnr:fromGraph _:b .
+_:b a dnr:Graph ;
+  dnr:fromGraph _:a .";
+
+            Graph g = new Graph();
+            g.LoadFromString(graph);
+
+            ConfigurationLoader.LoadObject(g, g.GetBlankNode("a"));
+        }
     }
 }
