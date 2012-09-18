@@ -823,6 +823,20 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
+        /// Gets the first value given for the first found property of a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="properties">Properties</param>
+        /// <returns>
+        /// First value given for the first property of the Object which is matched
+        /// </returns>
+        public static INode GetConfigurationNode(IGraph g, INode objNode, IEnumerable<INode> properties)
+        {
+            return properties.Select(p => ConfigurationLoader.GetConfigurationNode(g, objNode, p)).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph where the value for the property is a Literal Node
         /// </summary>
         /// <param name="g">Configuration Graph</param>
@@ -860,6 +874,25 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
+        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph where the value for the property is a Literal Node
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <returns>
+        /// <para>
+        /// String value of the first instance of the first property or a null if no values or not a literal value
+        /// </para>
+        /// <para>
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue">GetConfigurationValue</see> function instead
+        /// </para>
+        /// </returns>
+        public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
+        {
+            return properties.Select(p => ConfigurationLoader.GetConfigurationString(g, objNode, p)).FirstOrDefault();
+        }
+
+        /// <summary>
         /// Gets the String value or null of the first instance of a property for a given Object in the Configuration Graph
         /// </summary>
         /// <param name="g">Configuration Graph</param>
@@ -890,6 +923,18 @@ namespace VDS.RDF.Configuration
                 default:
                     return null;
             }
+        }
+
+        /// <summary>
+        /// Gets the String value or null of the first instance of the first property for a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <returns></returns>
+        public static String GetConfigurationValue(IGraph g, INode objNode, IEnumerable<INode> properties)
+        {
+            return properties.Select(p => ConfigurationLoader.GetConfigurationValue(g, objNode, p)).FirstOrDefault();
         }
 
         /// <summary>
@@ -933,6 +978,42 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
+        /// Gets the Boolean value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <returns>
+        /// If there is a valid boolean value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// </returns>
+        public static bool GetConfigurationBoolean(IGraph g, INode objNode, IEnumerable<INode> properties, bool defValue)
+        {
+            foreach (INode property in properties)
+            {
+                INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+                if (n == null) continue;
+
+                //Resolve AppSettings
+                if (n.NodeType != NodeType.Literal)
+                {
+                    n = ResolveAppSetting(g, n);
+                    if (n == null) continue;
+                }
+
+                if (n.NodeType == NodeType.Literal)
+                {
+                    bool temp;
+                    if (Boolean.TryParse(((ILiteralNode)n).Value, out temp))
+                    {
+                        return temp;
+                    }
+                }
+            }
+            return defValue;
+        }
+
+        /// <summary>
         /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph
         /// </summary>
         /// <param name="g">Configuration Graph</param>
@@ -973,6 +1054,42 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
+        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <returns>
+        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// </returns>
+        public static long GetConfigurationInt64(IGraph g, INode objNode, IEnumerable<INode> properties, long defValue)
+        {
+            foreach (INode property in properties)
+            {
+                INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+                if (n == null) continue;
+
+                //Resolve AppSettings
+                if (n.NodeType != NodeType.Literal)
+                {
+                    n = ResolveAppSetting(g, n);
+                    if (n == null) continue;
+                }
+
+                if (n.NodeType == NodeType.Literal)
+                {
+                    long temp;
+                    if (Int64.TryParse(((ILiteralNode)n).Value, out temp))
+                    {
+                        return temp;
+                    }
+                }
+            }
+            return defValue;
+        }
+
+        /// <summary>
         /// Gets the 64 bit Integer value or a given default of the first instance of a property for a given Object in the Configuration Graph
         /// </summary>
         /// <param name="g">Configuration Graph</param>
@@ -1010,6 +1127,42 @@ namespace VDS.RDF.Configuration
             {
                 return defValue;
             }
+        }
+
+        /// <summary>
+        /// Gets the 64 bit Integer value or a given default of the first instance of the first property for a given Object in the Configuration Graph
+        /// </summary>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="objNode">Object Node</param>
+        /// <param name="property">Property Node</param>
+        /// <param name="defValue">Default Value to return if there is no valid boolean value</param>
+        /// <returns>
+        /// If there is a valid integer value for any property then that is returned, in any other case the given <paramref name="defValue">Default Value</paramref> is returned
+        /// </returns>
+        public static int GetConfigurationInt32(IGraph g, INode objNode, IEnumerable<INode> properties, int defValue)
+        {
+            foreach (INode property in properties)
+            {
+                INode n = g.GetTriplesWithSubjectPredicate(objNode, property).Select(t => t.Object).FirstOrDefault();
+                if (n == null) continue;
+
+                //Resolve AppSettings
+                if (n.NodeType != NodeType.Literal)
+                {
+                    n = ResolveAppSetting(g, n);
+                    if (n == null) continue;
+                }
+
+                if (n.NodeType == NodeType.Literal)
+                {
+                    int temp;
+                    if (Int32.TryParse(((ILiteralNode)n).Value, out temp))
+                    {
+                        return temp;
+                    }
+                }
+            }
+            return defValue;
         }
 
         /// <summary>
