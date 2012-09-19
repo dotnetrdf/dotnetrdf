@@ -72,8 +72,10 @@ namespace VDS.RDF.Utilities.StoreManager
             query.Namespaces.AddNamespace("rdfs", new Uri(NamespaceMapper.RDFS));
             query.Namespaces.AddNamespace("dnr", new Uri(ConfigurationLoader.ConfigurationNamespace));
 
-            query.CommandText = "SELECT * WHERE { ?obj a " + ConfigurationLoader.ClassGenericManager + " . OPTIONAL { ?obj rdfs:label ?label } }";
+            query.CommandText = "SELECT * WHERE { { ?obj a @type1 } UNION { ?obj a @type2 } OPTIONAL { ?obj rdfs:label ?label } }";
             query.CommandText += " ORDER BY DESC(?obj)";
+            query.SetParameter("type1", config.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassGenericManager)));
+            query.SetParameter("type2", config.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassStorageProvider)));
 
             SparqlResultSet results = config.ExecuteQuery(query) as SparqlResultSet;
             if (results != null)

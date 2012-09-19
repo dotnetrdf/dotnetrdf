@@ -160,8 +160,8 @@ namespace VDS.RDF.Utilities.Web.Deploy
 
                 //Detect Handlers from the Configution Graph and deploy
                 IUriNode rdfType = g.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
-                IUriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "type"));
-                IUriNode httpHandler = g.CreateUriNode(new Uri(ConfigurationLoader.ConfigurationNamespace + "HttpHandler"));
+                IUriNode dnrType = g.CreateUriNode(new Uri(ConfigurationLoader.PropertyType));
+                IUriNode httpHandler = g.CreateUriNode(new Uri(ConfigurationLoader.ClassHttpHandler));
 
                 //Deploy for IIS Classic Mode
                 if (!this._noClassicRegistration)
