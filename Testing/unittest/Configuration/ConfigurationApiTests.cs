@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -60,6 +61,143 @@ _:b a dnr:Graph ;
             g.LoadFromString(graph);
 
             ConfigurationLoader.LoadObject(g, g.GetBlankNode("a"));
+        }
+
+        [TestMethod]
+        public void ConfigurationImports1()
+        {
+            //Single Import
+            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:Graph ;
+  dnr:usingTripleCollection <ex:collection> .
+
+[] dnr:imports ""ConfigurationImports1-b.ttl"" . ";
+
+            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:collection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" .";
+
+            File.WriteAllText("ConfigurationImports1-a.ttl", graph1);
+            File.WriteAllText("ConfigurationImports1-b.ttl", graph2);
+
+            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports1-a.ttl");
+
+            TestTools.ShowGraph(g);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationImports2()
+        {
+            //Chained Import
+            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:Graph ;
+  dnr:usingTripleCollection <ex:collection> .
+
+[] dnr:imports ""ConfigurationImports2-b.ttl"" . ";
+
+            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:collection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
+  dnr:usingTripleCollection <ex:innerCollection> .
+
+[] dnr:imports ""ConfigurationImports2-c.ttl"" .";
+
+            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:innerCollection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
+
+            File.WriteAllText("ConfigurationImports2-a.ttl", graph1);
+            File.WriteAllText("ConfigurationImports2-b.ttl", graph2);
+            File.WriteAllText("ConfigurationImports2-c.ttl", graph3);
+
+            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports2-a.ttl");
+
+            TestTools.ShowGraph(g);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationImports3()
+        {
+            //Multiple Imports
+            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:Graph ;
+  dnr:usingTripleCollection <ex:collection> .
+
+[] dnr:imports ""ConfigurationImports3-b.ttl"" , ""ConfigurationImports3-c.ttl"" . ";
+
+            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:collection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
+  dnr:usingTripleCollection <ex:innerCollection> .";
+
+            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:innerCollection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
+
+            File.WriteAllText("ConfigurationImports3-a.ttl", graph1);
+            File.WriteAllText("ConfigurationImports3-b.ttl", graph2);
+            File.WriteAllText("ConfigurationImports3-c.ttl", graph3);
+
+            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports3-a.ttl");
+
+            TestTools.ShowGraph(g);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationImports4()
+        {
+            //Repeated Imports
+            String graph1 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+_:a a dnr:Graph ;
+  dnr:usingTripleCollection <ex:collection> .
+
+[] dnr:imports ""ConfigurationImports3-b.ttl"" , ""ConfigurationImports3-c.ttl"", ""ConfigurationImports3-c.ttl"" . ";
+
+            String graph2 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:collection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
+  dnr:usingTripleCollection <ex:innerCollection> .";
+
+            String graph3 = @"@prefix dnr: <http://www.dotnetrdf.org/configuration#> .
+<ex:innerCollection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.SubTreeIndexedTripleCollection"" .";
+
+            File.WriteAllText("ConfigurationImports4-a.ttl", graph1);
+            File.WriteAllText("ConfigurationImports4-b.ttl", graph2);
+            File.WriteAllText("ConfigurationImports4-c.ttl", graph3);
+
+            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImports4-a.ttl");
+
+            TestTools.ShowGraph(g);
+
+            IGraph result = ConfigurationLoader.LoadObject(g, g.GetBlankNode("a")) as IGraph;
+            Assert.IsNotNull(result);
+            Assert.AreEqual(typeof(ThreadSafeTripleCollection), result.Triples.GetType());
+        }
+
+        [TestMethod]
+        public void ConfigurationImportsCircular1()
+        {
+            String graph1 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-b.ttl"" . ";
+            String graph2 = @"[] <http://www.dotnetrdf.org/configuration#imports> ""ConfigurationImportsCircular1-a.ttl"" . ";
+
+            File.WriteAllText("ConfigurationImportsCircular1-a.ttl", graph1);
+            File.WriteAllText("ConfigurationImportsCircular1-b.ttl", graph2);
+
+            IGraph g = ConfigurationLoader.LoadConfiguration("ConfigurationImportsCircular1-a.ttl");
+            Assert.AreEqual(2, g.Triples.Count);
         }
     }
 }

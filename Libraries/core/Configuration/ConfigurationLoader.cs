@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -312,7 +313,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             UriLoader.Load(g, u);
-            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+            return ConfigurationLoader.LoadCommon(g, g.CreateUriNode(u), autoConfigure);
         }
 
 #endif
@@ -337,7 +338,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             FileLoader.Load(g, file);
-            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+            return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
 
         /// <summary>
@@ -360,7 +361,7 @@ namespace VDS.RDF.Configuration
         {
             Graph g = new Graph();
             EmbeddedResourceLoader.Load(g, resource);
-            return ConfigurationLoader.LoadCommon(g, autoConfigure);
+            return ConfigurationLoader.LoadCommon(g, g.CreateLiteralNode(resource), autoConfigure);
         }
 
         /// <summary>
@@ -369,10 +370,27 @@ namespace VDS.RDF.Configuration
         /// <param name="g"></param>
         /// <param name="autoConfigure"></param>
         /// <returns></returns>
-        private static IGraph LoadCommon(IGraph g, bool autoConfigure)
+        private static IGraph LoadCommon(IGraph g, INode source, bool autoConfigure)
         {
-            //Find initial imports
+            return ConfigurationLoader.LoadCommon(g, source.AsEnumerable(), autoConfigure);
+        }
+
+        /// <summary>
+        /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="autoConfigure"></param>
+        /// <returns></returns>
+        private static IGraph LoadCommon(IGraph g, IEnumerable<INode> sources, bool autoConfigure)
+        {
+            //Add initial sources to already imported list
             HashSet<INode> imported = new HashSet<INode>();
+            foreach (INode source in sources)
+            {
+                imported.Add(source);
+            }
+
+            //Find initial imports
             INode imports = g.CreateUriNode(UriFactory.Create(PropertyImports));
             Queue<INode> importQueue = new Queue<INode>();
             foreach (INode importData in g.GetTriplesWithPredicate(imports).Select(t => t.Object))
@@ -1380,34 +1398,7 @@ namespace VDS.RDF.Configuration
                 String typeUri = declaredType.ToString();
                 if (typeUri.StartsWith(ConfigurationNamespace))
                 {
-                    typeUri = typeUri.Replace(ConfigurationNamespace, "dnr:");
-                    switch (typeUri)
-                    {
-                        case ClassGraph:
-                            return DefaultTypeGraph;
-                        case ClassGraphCollection:
-                            return DefaultTypeGraphCollection;
-                        case ClassSparqlHttpProtocolProcessor:
-                            return DefaultTypeSparqlHttpProtocolProcessor;
-                        case ClassSparqlQueryProcessor:
-                            return DefaultTypeSparqlQueryProcessor;
-                        case ClassSparqlUpdateProcessor:
-                            return DefaultTypeSparqlUpdateProcessor;
-                        case ClassTripleCollection:
-                            return DefaultTypeTripleCollection;
-                        case ClassTripleStore:
-                            return DefaultTypeTripleStore;
-                        case ClassUser:
-                            return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
-                        case ClassUserGroup:
-                            return DefaultTypeUserGroup;
-#if !NO_PROXY
-                        case ClassProxy:
-                            return typeof(System.Net.WebProxy).AssemblyQualifiedName;
-#endif
-                        default:
-                            return null;
-                    }
+                    return ConfigurationLoader.GetDefaultType(typeUri);
                 }
                 else
                 {
@@ -1417,6 +1408,42 @@ namespace VDS.RDF.Configuration
             else
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to return the Default Type to load an Object as when there is no dnr:type property but there is a rdf:type property
+        /// </summary>
+        /// <param name="typeUri">Type URI declared by the rdf:type property</param>
+        /// <returns></returns>
+        public static String GetDefaultType(String typeUri)
+        {
+            switch (typeUri)
+            {
+                case ClassGraph:
+                    return DefaultTypeGraph;
+                case ClassGraphCollection:
+                    return DefaultTypeGraphCollection;
+                case ClassSparqlHttpProtocolProcessor:
+                    return DefaultTypeSparqlHttpProtocolProcessor;
+                case ClassSparqlQueryProcessor:
+                    return DefaultTypeSparqlQueryProcessor;
+                case ClassSparqlUpdateProcessor:
+                    return DefaultTypeSparqlUpdateProcessor;
+                case ClassTripleCollection:
+                    return DefaultTypeTripleCollection;
+                case ClassTripleStore:
+                    return DefaultTypeTripleStore;
+                case ClassUser:
+                    return typeof(System.Net.NetworkCredential).AssemblyQualifiedName;
+                case ClassUserGroup:
+                    return DefaultTypeUserGroup;
+#if !NO_PROXY
+                case ClassProxy:
+                    return typeof(System.Net.WebProxy).AssemblyQualifiedName;
+#endif
+                default:
+                    return null;
             }
         }
 
