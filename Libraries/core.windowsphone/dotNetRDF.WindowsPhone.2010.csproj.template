@@ -46,11 +46,11 @@
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.XPath" />
     <Reference Include="System.Net" />
-    <!--Reference Include="System.Windows.Browser" /-->
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.XPath">
+      <HintPath>$(ProgramFiles(x86))\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack.WindowsPhone, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\sl4-wp\HtmlAgilityPack.dll</HintPath>
