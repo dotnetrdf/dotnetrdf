@@ -836,6 +836,25 @@ namespace VDS.RDF.Parsing.Tokens
 
                                 #endregion
 
+                                #region SPARQL style BASE and PREFIX Handling
+
+                                case 'b':
+                                case 'B':
+                                    if (!anycharallowed)
+                                    {
+                                        return this.TryGetDirectiveToken();
+                                    }
+                                    break;
+                                case 'p':
+                                case 'P':
+                                    if (!anycharallowed)
+                                    {
+                                        return this.TryGetDirectiveToken();
+                                    }
+                                    break;
+
+                                #endregion
+
                                 #region Default
 
                                 default:
@@ -1146,6 +1165,16 @@ namespace VDS.RDF.Parsing.Tokens
                 {
                     //The 'of' Keyword
                     throw Error("The 'of' Keyword is not Valid in Turtle");
+                }
+                else if (value.Equals("base", StringComparison.OrdinalIgnoreCase))
+                {
+                    this.LastTokenType = Token.BASEDIRECTIVE;
+                    return new BaseDirectiveToken(this.CurrentLine, this.StartPosition);
+                }
+                else if (value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+                {
+                    this.LastTokenType = Token.PREFIXDIRECTIVE;
+                    return new PrefixDirectiveToken(this.CurrentLine, this.StartPosition);
                 }
                 else
                 {

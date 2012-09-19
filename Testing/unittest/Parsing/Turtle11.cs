@@ -198,5 +198,92 @@ WHERE
             if (this._indeterminate > 0) Assert.Inconclusive(this._indeterminate + " Tests are indeterminate");
         }
 
+        [TestMethod]
+        public void ParsingTurtleW3CBaseTurtleStyle1()
+        {
+            //Dot required
+            String graph = "@base <http://example.org/> .";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CBaseTurtleStyle2()
+        {
+            //Missing dot
+            String graph = "@base <http://example.org/>";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CBaseSparqlStyle1()
+        {
+            //Forbidden dot
+            String graph = "BASE <http://example.org/> .";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CBaseSparqlStyle2()
+        {
+            //No dot required
+            String graph = "BASE <http://example.org/>";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CPrefixTurtleStyle1()
+        {
+            //Dot required
+            String graph = "@prefix ex: <http://example.org/> .";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CPrefixTurtleStyle2()
+        {
+            //Missing dot
+            String graph = "@prefix ex: <http://example.org/>";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleW3CPrefixSparqlStyle1()
+        {
+            //Forbidden dot
+            String graph = "PREFIX ex: <http://example.org/> .";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
+
+        [TestMethod]
+        public void ParsingTurtleW3CPrefixSparqlStyle2()
+        {
+            //No dot required
+            String graph = "PREFIX ex: <http://example.org/>";
+            Graph g = new Graph();
+            this._ttlParser.Load(g, new StringReader(graph));
+
+            Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
+        }
     }
 }

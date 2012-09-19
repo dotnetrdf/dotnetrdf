@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a new Turtle Parser which uses the given Token Queue Mode
         /// </summary>
-        /// <param name="queueMode">Queue Mode for Tokenising</param>
+        /// <param name="queueMode">Queue Mode for Turtle</param>
         public TurtleParser(TokenQueueMode queueMode)
         {
             this._queueMode = queueMode;
@@ -82,7 +82,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Creates a new Turtle Parser which uses the given Token Queue Mode
         /// </summary>
-        /// <param name="queueMode">Queue Mode for Tokenising</param>
+        /// <param name="queueMode">Queue Mode for Turtle</param>
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleParser(TokenQueueMode queueMode, TurtleSyntax syntax)
             : this(syntax)
@@ -189,7 +189,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new TurtleTokeniser(input, this._syntax), this._queueMode, this._traceParsing, this._traceTokeniser);
+                TurtleParserContext context = new TurtleParserContext(handler, new TurtleTokeniser(input, this._syntax), this._syntax, this._queueMode, this._traceParsing, this._traceTokeniser);
                 this.Parse(context);
             }
             catch
@@ -226,7 +226,7 @@ namespace VDS.RDF.Parsing
         /// Internal method which does the parsing of the input
         /// </summary>
         /// <param name="context">Parser Context</param>
-        private void Parse(TokenisingParserContext context)
+        private void Parse(TurtleParserContext context)
         {
             try
             {
@@ -248,7 +248,8 @@ namespace VDS.RDF.Parsing
                     switch (next.TokenType)
                     {
                         case Token.AT:
-                            this.TryParseDirective(context);
+                            //Turtle style Base/Prefix directive
+                            this.TryParseDirective(context, true);
                             break;
 
                         case Token.COMMENT:
@@ -277,6 +278,12 @@ namespace VDS.RDF.Parsing
                             //'a' Keyword only valid as Predicate
                             throw ParserHelper.Error("Unexpected Token '" + next.GetType().ToString() + "' encountered, the 'a' Keyword is only valid as a Predicate in Turtle", next);
 
+                        case Token.PREFIXDIRECTIVE:
+                        case Token.BASEDIRECTIVE:
+                            //SPARQL style Base/Prefix directive
+                            this.TryParseDirective(context, false);
+                            break;
+
                         case Token.EOF:
                             //OK - the loop will now terminate since we've seen the End of File
                             break;
@@ -304,15 +311,17 @@ namespace VDS.RDF.Parsing
         /// Tries to parse Base/Prefix declarations
         /// </summary>
         /// <param name="context">Parse Context</param>
-        private void TryParseDirective(TokenisingParserContext context)
+        private void TryParseDirective(TurtleParserContext context, bool turtleStyle)
         {
             if (context.TraceParsing)
             {
                 Console.WriteLine("Attempting to parse a Base/Prefix Declaration");
             }
 
-            //If we've been called an AT token has been encountered which we can discard
-            context.Tokens.Dequeue();
+            if (!turtleStyle && context.Syntax == TurtleSyntax.Original) throw ParserHelper.Error("SPARQL style BASE/PREFIX declarations are not permitted in this Turtle syntax", context.Tokens.Dequeue());
+
+            //If we've been called with turtleStyle set then an AT token has been encountered which we can discard
+            if (turtleStyle) context.Tokens.Dequeue();
 
             //Then we expect either a Base Directive/Prefix Directive
             IToken directive = context.Tokens.Dequeue();
@@ -376,11 +385,22 @@ namespace VDS.RDF.Parsing
                 throw ParserHelper.Error("Unexpected Token '" + directive.GetType().ToString() + "' encountered, expected a Base/Prefix Directive after an @ symbol", directive);
             }
 
-            //All declarations are terminated with a Dot
-            IToken terminator = context.Tokens.Dequeue();
+            //Turtle sytle declarations are terminated with a Dot
+            IToken terminator = context.Tokens.Peek();
             if (terminator.TokenType != Token.DOT)
             {
-                throw ParserHelper.Error("Unexpected Token '" + terminator.GetType().ToString() + "' encountered, expected a Dot Line Terminator to terminate a Prefix/Base Directive", terminator);
+                //If Turtle style the terminating . is required
+                if (turtleStyle) throw ParserHelper.Error("Unexpected Token '" + terminator.GetType().ToString() + "' encountered, expected a . to terminate a Base/Prefix Directive", terminator);
+            }
+            else if (turtleStyle)
+            {
+                //Discard the . terminator for Turtle sytle declarations
+                context.Tokens.Dequeue();
+            }
+            else
+            {
+                //For SPARQL style the . terminator is forbidden
+                throw ParserHelper.Error("Unexpected Token '" + terminator.GetType().ToString() + "' encountered, a . is not permitted/required to terminate a SPARQL style Base/Prefix Directive", terminator);
             }
         }
 
@@ -388,7 +408,7 @@ namespace VDS.RDF.Parsing
         /// Tries to parse Triples
         /// </summary>
         /// <param name="context">Parser Context</param>
-        private void TryParseTriples(TokenisingParserContext context)
+        private void TryParseTriples(TurtleParserContext context)
         {
             IToken subjToken = context.Tokens.Dequeue();
             IToken next;
@@ -460,7 +480,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parse Context</param>
         /// <param name="subj">Subject of the Triples</param>
         /// <param name="bnodeList">Whether this is a Blank Node Predicate Object list</param>
-        private void TryParsePredicateObjectList(TokenisingParserContext context, INode subj, bool bnodeList)
+        private void TryParsePredicateObjectList(TurtleParserContext context, INode subj, bool bnodeList)
         {
             IToken predToken;
             INode pred = null;
@@ -544,7 +564,7 @@ namespace VDS.RDF.Parsing
         /// <param name="subj">Subject of the Triples</param>
         /// <param name="pred">Predicate of the Triples</param>
         /// <param name="bnodeList">Whether this is a Blank Node Object list</param>
-        private void TryParseObjectList(TokenisingParserContext context, INode subj, INode pred, bool bnodeList)
+        private void TryParseObjectList(TurtleParserContext context, INode subj, INode pred, bool bnodeList)
         {
             IToken objToken, next;
             INode obj = null;
@@ -702,7 +722,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="context">Parser Context</param>
         /// <param name="firstSubj">Blank Node which is the head of the collection</param>
-        private void TryParseCollection(TokenisingParserContext context, INode firstSubj)
+        private void TryParseCollection(TurtleParserContext context, INode firstSubj)
         {
             //The opening bracket of the collection will already have been discarded when we get called
             IToken next;
@@ -812,7 +832,7 @@ namespace VDS.RDF.Parsing
         /// <param name="context">Parser Context</param>
         /// <param name="lit">Literal Token</param>
         /// <returns></returns>
-        private INode TryParseLiteral(TokenisingParserContext context, IToken lit)
+        private INode TryParseLiteral(TurtleParserContext context, IToken lit)
         {
             IToken next;
             String dturi;

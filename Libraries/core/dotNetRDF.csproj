@@ -111,6 +111,7 @@
     <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
     <Compile Include="Parsing\BaseGZipResultsParser.cs" />
+    <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
     <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
     <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
