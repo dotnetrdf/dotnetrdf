@@ -49,6 +49,10 @@ Changed
  - Bumped HtmlAgilityPack version to 1.4.6
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
+- Parsing
+ - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax
+- Query
+ - Improves SPARQL 1.1 support to near 100% compliance
 - Storage
  - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
  - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
