@@ -48,13 +48,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.XPath" />
     <Reference Include="System.Net" />
     <!--Reference Include="System.Windows.Browser" /-->
-    <Reference Include="HtmlAgilityPack.WindowsPhone, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="HtmlAgilityPack.WindowsPhone, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\sl4-wp\HtmlAgilityPack.WindowsPhone.dll</HintPath>
+      <HintPath>..\..\Dependencies\sl4-wp\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json, Version=4.5.9.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\sl4-wp\Newtonsoft.Json.dll</HintPath>
     </Reference>
