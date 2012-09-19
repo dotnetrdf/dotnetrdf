@@ -38,6 +38,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Test
 {
@@ -305,6 +306,19 @@ namespace VDS.RDF.Test
                 Console.WriteLine("Run #" + (i + 1) + " Passed");
             }
 
+        }
+
+        [TestMethod]
+        public void GraphMatchTrivial()
+        {
+            Graph g = new Graph();
+            g.LoadFromFile("turtle11/test-13.ttl");
+            Graph h = new Graph();
+            h.LoadFromFile("turtle11/test-13.out", new NTriplesParser());
+
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual) TestTools.ShowDifferences(report);
+            Assert.AreEqual(g, h);
         }
 
         private IGraph GenerateCyclicGraph(int nodes, int seed)

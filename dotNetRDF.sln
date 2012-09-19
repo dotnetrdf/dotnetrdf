@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}"
 	ProjectSection(SolutionItems) = preProject
+		Acknowledgments.txt = Acknowledgments.txt
 		dotNetRDF.vsmdi = dotNetRDF.vsmdi
 		Tests.testrunconfig = Tests.testrunconfig
 		Todo.txt = Todo.txt
@@ -15,7 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{3CDA014A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{05FF69EA-EC65-4CD6-AC82-12D110E6D626}"
 	ProjectSection(SolutionItems) = preProject
-		..\Acknowledgments.txt = ..\Acknowledgments.txt
 		..\license-boilerplate.txt = ..\license-boilerplate.txt
 	EndProjectSection
 EndProject
