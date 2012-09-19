@@ -99,6 +99,8 @@
       <Link>Query\FullText\FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Common\BinaryTreeDeleteTests.cs" />
+    <Compile Include="Common\BinaryTreeTools.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
