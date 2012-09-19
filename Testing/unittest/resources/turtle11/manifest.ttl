@@ -211,5 +211,40 @@
         mf:result  <rdfq-results.out>
      ]
 
+#	 [  mf:name      "base1" ;
+#	    rdfs:comment "Resolution of a relative URI against an absolute base." ;
+#		mf:action [ qt:data <base1.ttl> ] ;
+#		mf:result <base1.out>
+#     ]
+#
+#	 [  mf:name      "base2" ;
+#	    rdfs:comment "Resolution of a relative URI against a relative base." ;
+#		mf:action [ qt:data <base2.ttl> ] ;
+#		mf:result <base2.out>
+#     ]
+#
+#	 [  mf:name       "prefix1" ;
+#	    rdfs:comment  "Substitution of a simple prefix" ;
+#		mf:action [ qt:data <prefix1.ttl> ] ;
+#		mf:result <prefix1.out>
+#	 ]
+#
+#     [  mf:name       "escapedNamespace1" ;
+#	    rdfs:comment  "Substitution of namespace containing some escaped characters for a prefix." ;
+#		mf:action [ qt:data <escapedNamespace1.ttl> ] ;
+#		mf:result <escapedNamespace1.out>
+#	 ]
+#
+#	 [  mf:name "default" ;
+#	    rdfs:comment "Substitution of a prefix which is the empty string." ;
+#		mf:action [ qt:data <default.ttl> ] ;
+#		mf:result <default.ttl>
+#	 ]
+#
+#	 [  mf:name "type" ;
+#	    rdfs:comment "Substitution of rdf:type for the keyword a" ;
+#		mf:action [ qt:data <type.ttl> ] ;
+#		mf:result <type.out>
+#	 ]
     # End of tests
    ).
