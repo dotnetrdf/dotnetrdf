@@ -13,6 +13,7 @@ TestResults/
 *.vsmdi
 *.temp
 *.user
+temp*.txt
 
 # Generated Project Files, templates are versioned controlled but
 # the generated files should not be
