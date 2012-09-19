@@ -775,6 +775,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Determines whether a string is ASCII
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool IsAscii(this String value)
+        {
+            if (value.Length == 0) return true;
+            return value.ToCharArray().All(c => c <= 127);
+        }
+
+        /// <summary>
         /// Determines whether a String is fully escaped
         /// </summary>
         /// <param name="value">String value</param>

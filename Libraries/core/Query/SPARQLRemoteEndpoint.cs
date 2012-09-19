@@ -479,7 +479,7 @@ namespace VDS.RDF.Query
             StringBuilder queryUri = new StringBuilder();
             queryUri.Append(this.Uri.AbsoluteUri);
             bool longQuery = true;
-            if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= LongQueryLength)
+            if (!this.HttpMode.Equals("POST") && sparqlQuery.Length <= LongQueryLength && sparqlQuery.IsAscii())
             {
                 longQuery = false;
                 try
