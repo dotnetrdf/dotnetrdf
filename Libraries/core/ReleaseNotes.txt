@@ -70,10 +70,10 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
 following third party libraries:
-- JSON.Net 4.0r8 which can be obtained from http://json.codeplex.com
-- HtmlAgilityPack 1.4.0 Stable which can be obtained from http://www.codeplex.com/htmlagilitypack
+- JSON.Net 4.5r9 which can be obtained from http://json.codeplex.com
+- HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack
 
-The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.Net35.dll) are included with
+The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.dll) are included with
 this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
 project for dotNetRDF to use.
 
@@ -92,14 +92,18 @@ We are aware of the following issues with the library.  Please remember that thi
 there are things that may be buggy still and the API is subject to change at our discretion or based upon
 user feedback.
 
+NuGet
+- There is a requirement for Silverlight/Windows Phone projects using this library to reference
+  System.Xml.XPath because it is required by HtmlAgilityPack which cannot be handled automatically by
+  NuGet at this time
+
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- Support is as close to the 1.1 specification as we can get but there are some things which are still unclear in the
-  latest editors draft and the current test suite is incomplete wrt to the latest draft so we do not guarantee complete 
-  support in this release
+- Support is almost 100% to the latest specification but there are still a couple of things that may change so
+  we do not guarantee 100% compliance
 
 Storage
 - The Async Storage API has been tested as far as possible but we cannot guarantee that there aren't bugs in this new API
