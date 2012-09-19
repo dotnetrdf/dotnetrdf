@@ -51,6 +51,7 @@ Changed
 - Storage
  - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
  - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
+ - Talis is no longer supported since the Talis Platform is in the process of winding down for public usage
 
 Removed
 - Marked the TalisPlatformConnector as obsolete unusable
