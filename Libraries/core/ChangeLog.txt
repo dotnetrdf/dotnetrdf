@@ -45,6 +45,7 @@ Changed
  - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
+ - Bumped HtmlAgilityPack version to 1.4.6
 - Core API
  - Made TreeIndexedTripleCollection the default triple collection implementation
 - Storage

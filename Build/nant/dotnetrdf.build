@@ -959,14 +959,14 @@
   <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
     <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
     <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
@@ -1061,12 +1061,12 @@
     <!-- Core Silverlight 4.0 Build -->
     <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.Silverlight.dll" />
+    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core Silverlight 4.0 Build for Windows Phone 7 Build -->
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.WindowsPhone.dll" />
+    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Data.Sql 4.0 Build -->
     <copy overwrite="true" todir="bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
