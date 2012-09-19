@@ -43,6 +43,7 @@ Changed
  - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
  - Bug fix for some prefix validation bugs in SPARQL 1.1
  - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
+ - Bug fix for pathological case of Graph isomporphism not being handled correctly in GraphMatcher
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
  - Bumped HtmlAgilityPack version to 1.4.6

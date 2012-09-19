@@ -275,16 +275,13 @@ namespace VDS.RDF
                     this._mapping.Remove(pair.Key);
                 }
 
-                //If we couldn't map a single use Node then the Graphs are not equal
-                if (!this._mapping.ContainsKey(pair.Key))
-                {
-                    return false;
-                }
-                else
-                {
-                    //Otherwise we can mark that Node as Bound
-                    this._unbound.Remove(this._mapping[pair.Key]);
-                }
+                //There is a pathological case where we can't map anything this way because
+                //there are always dependencies between the blank nodes in which case we
+                //still continue because we may figure out a mapping with the dependency based
+                //rules or brute force approach :-(
+
+                //Otherwise we can mark that Node as Bound
+                if (this._mapping.ContainsKey(pair.Key)) this._unbound.Remove(this._mapping[pair.Key]);
             }
 
             //If all the Nodes were used only once and we mapped them all then the Graphs are equal
