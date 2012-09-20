@@ -154,6 +154,50 @@ namespace VDS.RDF.Test.Common
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
         }
 
+        private void PrepareTree9(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            //Tree with a root and two children, left child has a left child
+            //
+            //     (3)
+            //    /   \
+            //  (2)    (4)
+            //  /
+            //(1)
+            BinaryTreeNode<int, int> root = new BinaryTreeNode<int, int>(null, 3, 3);
+            BinaryTreeNode<int, int> leftChild = new BinaryTreeNode<int, int>(null, 2, 2);
+            BinaryTreeNode<int, int> leftLeafChild = new BinaryTreeNode<int, int>(null, 1, 1);
+            BinaryTreeNode<int, int> rightChild = new BinaryTreeNode<int, int>(null, 4, 4);
+            leftChild.LeftChild = leftLeafChild;
+            root.LeftChild = leftChild;
+            root.RightChild = rightChild;
+
+            tree.Root = root;
+
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+        }
+
+        private void PrepareTree10(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            //Tree with a root and two children, left child has a right child
+            //
+            //     (3)
+            //    /   \
+            //  (1)    (4)
+            //    \
+            //    (2)
+            BinaryTreeNode<int, int> root = new BinaryTreeNode<int, int>(null, 3, 3);
+            BinaryTreeNode<int, int> leftChild = new BinaryTreeNode<int, int>(null, 1, 1);
+            BinaryTreeNode<int, int> rightLeafChild = new BinaryTreeNode<int, int>(null, 2, 2);
+            BinaryTreeNode<int, int> rightChild = new BinaryTreeNode<int, int>(null, 4, 4);
+            leftChild.RightChild = rightLeafChild;
+            root.LeftChild = leftChild;
+            root.RightChild = rightChild;
+
+            tree.Root = root;
+
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+        }
+
         #endregion
 
         #region Tree Test Methods
@@ -450,6 +494,142 @@ namespace VDS.RDF.Test.Common
             Assert.AreEqual(1, tree.Root.Value);
             Assert.IsNotNull(tree.Root.RightChild);
             Assert.AreEqual(3, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree9a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree9(tree);
+
+            //Remove Root
+            tree.Remove(3);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should lead to Left Child to Root with Right Child as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree9b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree9(tree);
+
+            //Remove Left Inner Child
+            tree.Remove(2);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and Right Child as-is, Left Leaf child should move up
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree9c(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree9(tree);
+
+            //Remove Left Leaf Child
+            tree.Remove(1);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and immediate children as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(2, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree9d(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree9(tree);
+
+            //Remove Right Child
+            tree.Remove(4);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and left sub-tree as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(2, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.LeftChild.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.LeftChild.Value);
+        }
+
+        private void TestTree10a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree10(tree);
+
+            //Remove Root
+            tree.Remove(3);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should lead to Rightmost Child of Left subtree to Root with Right Child as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree10b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree10(tree);
+
+            //Remove Left Inner Child
+            tree.Remove(1);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and Right Child as-is, Right Leaf of left subtree should move up
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(2, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree10c(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree10(tree);
+
+            //Remove Right Left of left subtree should leave root and immediate children as=is
+            tree.Remove(2);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and immediate children as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(4, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree10d(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree10(tree);
+
+            //Remove Right Child
+            tree.Remove(4);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and left sub-tree as-is
+            Assert.AreEqual(3, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+            Assert.IsNotNull(tree.Root.LeftChild.RightChild);
+            Assert.AreEqual(2, tree.Root.LeftChild.RightChild.Value);
         }
 
         #endregion
@@ -832,5 +1012,61 @@ namespace VDS.RDF.Test.Common
         //means the tree will not be as we expect
         //NB - Tree 4c, 5 and 6 tests also trigger the rebalance but they always leave the tree in the state
         //we expect so they can be safely run
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation9a()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree9a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation9b()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree9b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation9c()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree9c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation9d()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree9d(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation10a()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree10a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation10b()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree10b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation10c()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree10c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation10d()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree10d(tree);
+        }
     }
 }

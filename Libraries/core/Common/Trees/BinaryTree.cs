@@ -280,7 +280,7 @@ namespace VDS.Common.Trees
                         //we traversed to the rightmost child
                         current.Key = successor.Key;
                         current.Value = successor.Value;
-                        if (successor.Parent.RightChild.HasChildren)
+                        if (successor.HasChildren)
                         {
                             successor.Parent.RightChild = successor.LeftChild;
                         }
@@ -313,7 +313,7 @@ namespace VDS.Common.Trees
                         TNode successor;
                         if (current.LeftChild != null)
                         {
-                            //Has a left subtree sp get the in order successor which is the rightmost child of the left
+                            //Has a left subtree so get the in order successor which is the rightmost child of the left
                             //subtree
                             successor = this.FindRightmostChild((TNode)current.LeftChild);
                             if (ReferenceEquals(current.LeftChild, successor))
