@@ -572,6 +572,7 @@ namespace VDS.RDF.Test.Common
             {
                 tree.Add(i, i);
             }
+            this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
             List<int> deletes = new List<int>() { 10 };
             int count = input.Count;
             foreach (int i in deletes)
