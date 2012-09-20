@@ -37,16 +37,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 
 namespace VDS.RDF
 {
     /// <summary>
     /// Class for representing Graphs which can be directly queried using SPARQL
     /// </summary>
-    public class QueryableGraph : Graph
+    public class QueryableGraph
+        : Graph
     {
-        private IInMemoryQueryableStore _store;
+        private ISparqlQueryProcessor _processor;
+        private SparqlQueryParser _parser;
 
         /// <summary>
         /// Creates a new Queryable Graph
@@ -61,12 +65,8 @@ namespace VDS.RDF
         /// <returns></returns>
         public Object ExecuteQuery(String sparqlQuery)
         {
-            if (this._store == null)
-            {
-                this._store = new TripleStore();
-                this._store.Add(this);
-            }
-            return this._store.ExecuteQuery(sparqlQuery);
+            SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
+            return this.ExecuteQuery(q);
         }
 
         /// <summary>
@@ -77,12 +77,8 @@ namespace VDS.RDF
         /// <param name="sparqlQuery">SPARQL Query</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery)
         {
-            if (this._store == null)
-            {
-                this._store = new TripleStore();
-                this._store.Add(this);
-            }
-            this._store.ExecuteQuery(rdfHandler, resultsHandler, sparqlQuery);
+            SparqlQuery q = this._parser.ParseFromString(sparqlQuery);
+            this.ExecuteQuery(rdfHandler, resultsHandler, q);
         }
 
         /// <summary>
@@ -92,12 +88,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public Object ExecuteQuery(SparqlQuery query)
         {
-            if (this._store == null)
+            if (this._processor == null)
             {
-                this._store = new TripleStore();
-                this._store.Add(this);
+                InMemoryDataset ds = new InMemoryDataset(this);
+                this._processor = new LeviathanQueryProcessor(ds);
             }
-            return this._store.ExecuteQuery(query);
+            return this._processor.ProcessQuery(query);
         }
 
         /// <summary>
@@ -108,12 +104,12 @@ namespace VDS.RDF
         /// <param name="query">SPARQL Query</param>
         public void ExecuteQuery(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, SparqlQuery query)
         {
-            if (this._store == null)
+            if (this._processor == null)
             {
-                this._store = new TripleStore();
-                this._store.Add(this);
+                InMemoryDataset ds = new InMemoryDataset(this);
+                this._processor = new LeviathanQueryProcessor(ds);
             }
-            this._store.ExecuteQuery(rdfHandler, resultsHandler, query);
+            this._processor.ProcessQuery(rdfHandler, resultsHandler, query);
         }
     }
 }

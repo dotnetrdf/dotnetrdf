@@ -44,7 +44,8 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Multiset which represents a Grouping of Sets from another Multiset
     /// </summary>
-    public class GroupMultiset : Multiset
+    public class GroupMultiset 
+        : Multiset
     {
         private BaseMultiset _contents;
         private Dictionary<int, BindingGroup> _groups = new Dictionary<int, BindingGroup>();
