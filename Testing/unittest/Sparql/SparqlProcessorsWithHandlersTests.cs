@@ -247,7 +247,7 @@ namespace VDS.RDF.Test.Sparql
                 {
                     Assert.Inconclusive("Test Config marks IIS as unavailabe, cannot run test");
                 }
-                this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.LocalQueryUri)));
+                this._remote = new RemoteQueryProcessor(new SparqlRemoteEndpoint(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri))));
             }
         }
 
