@@ -119,6 +119,8 @@ namespace VDS.RDF.Test.Common
 
         private void TestOrderStructs<TKey>(List<TKey> inputs, List<TKey> outputs)
         {
+            Assert.AreEqual(inputs.Count, outputs.Count, "Expected " + inputs.Count + " Keys in tree but only found " + outputs.Count);
+
             for (int i = 0; i < inputs.Count; i++)
             {
                 if (i >= outputs.Count) Assert.Fail("Too few outputs, expected " + inputs.Count + " but got " + outputs.Count);
