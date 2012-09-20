@@ -146,8 +146,8 @@ namespace VDS.RDF.Test.Query.FullText
             IGraph g = this.GetBaseGraph();
             INode obj = g.CreateBlankNode();
             g.Assert(obj, g.CreateUriNode("rdf:type"), g.CreateUriNode("dnr-ft:Index"));
-            g.Assert(obj, g.CreateUriNode(ConfigurationLoader.PropertyType), g.CreateLiteralNode("Lucene.Net.Store.FSDirectory, Lucene.Net"));
-            g.Assert(obj, g.CreateUriNode(ConfigurationLoader.PropertyFromFile), g.CreateLiteralNode("test"));
+            g.Assert(obj, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType)), g.CreateLiteralNode("Lucene.Net.Store.FSDirectory, Lucene.Net"));
+            g.Assert(obj, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)), g.CreateLiteralNode("test"));
             System.IO.Directory.CreateDirectory("test");
 
             TestTools.ShowGraph(g);
