@@ -94,6 +94,66 @@ namespace VDS.RDF.Test.Common
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
         }
 
+        private void PrepareTree6(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            //Tree with a root and a left child which has a right child
+            //
+            //     (3)
+            //    /   
+            //  (1)
+            //     \
+            //     (2)
+            BinaryTreeNode<int, int> root = new BinaryTreeNode<int, int>(null, 3, 3);
+            BinaryTreeNode<int, int> leftChild = new BinaryTreeNode<int, int>(null, 1, 1);
+            BinaryTreeNode<int, int> rightChild = new BinaryTreeNode<int, int>(null, 2, 2);
+            leftChild.RightChild = rightChild;
+            root.LeftChild = leftChild;
+
+            tree.Root = root;
+
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+        }
+
+        private void PrepareTree7(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            //Tree with a root and a right child which has a right child
+            //
+            //     (1)
+            //       \   
+            //       (2)
+            //         \
+            //         (3)
+            BinaryTreeNode<int, int> root = new BinaryTreeNode<int, int>(null, 1, 1);
+            BinaryTreeNode<int, int> rightInnerChild = new BinaryTreeNode<int, int>(null, 2, 2);
+            BinaryTreeNode<int, int> rightLeafChild = new BinaryTreeNode<int, int>(null, 3, 3);
+            rightInnerChild.RightChild = rightLeafChild;
+            root.RightChild = rightInnerChild;
+
+            tree.Root = root;
+
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+        }
+
+        private void PrepareTree8(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            //Tree with a root and a right child which has a left child
+            //
+            //     (1)
+            //       \   
+            //       (3)
+            //       /
+            //     (2)
+            BinaryTreeNode<int, int> root = new BinaryTreeNode<int, int>(null, 1, 1);
+            BinaryTreeNode<int, int> rightChild = new BinaryTreeNode<int, int>(null, 3, 3);
+            BinaryTreeNode<int, int> leftChild = new BinaryTreeNode<int, int>(null, 2, 2);
+            rightChild.LeftChild = leftChild;
+            root.RightChild = rightChild;
+
+            tree.Root = root;
+
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+        }
+
         #endregion
 
         #region Tree Test Methods
@@ -106,7 +166,9 @@ namespace VDS.RDF.Test.Common
             tree.Remove(1);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int,int>, int>(tree);
 
+            //Should lead to empty tree
             Assert.AreEqual(0, tree.Nodes.Count());
+            Assert.IsNull(tree.Root);
         }
 
         private void TestTree2a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
@@ -117,8 +179,10 @@ namespace VDS.RDF.Test.Common
             tree.Remove(2);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should lead to Left Child as Root
             Assert.AreEqual(1, tree.Nodes.Count());
             Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNull(tree.Root.LeftChild);
         }
 
         private void TestTree2b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
@@ -129,8 +193,10 @@ namespace VDS.RDF.Test.Common
             tree.Remove(1);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should just leave Root
             Assert.AreEqual(1, tree.Nodes.Count());
             Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNull(tree.Root.LeftChild);
         }
 
         private void TestTree3a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
@@ -141,8 +207,10 @@ namespace VDS.RDF.Test.Common
             tree.Remove(1);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should lead to Right Child as Root
             Assert.AreEqual(1, tree.Nodes.Count());
             Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNull(tree.Root.RightChild);
         }
 
         private void TestTree3b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
@@ -153,8 +221,10 @@ namespace VDS.RDF.Test.Common
             tree.Remove(2);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should just leave Root
             Assert.AreEqual(1, tree.Nodes.Count());
             Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNull(tree.Root.RightChild);
         }
 
         private void TestTree4a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
@@ -165,6 +235,7 @@ namespace VDS.RDF.Test.Common
             tree.Remove(2);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should lead to Left Child to Root with Right Child as-is
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(1, tree.Root.Value);
             Assert.IsNotNull(tree.Root.RightChild);
@@ -179,6 +250,7 @@ namespace VDS.RDF.Test.Common
             tree.Remove(1);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should leave Root and Right Child as-is
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(2, tree.Root.Value);
             Assert.IsNotNull(tree.Root.RightChild);
@@ -193,6 +265,7 @@ namespace VDS.RDF.Test.Common
             tree.Remove(3);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should leave Root and Left Child as-is
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(2, tree.Root.Value);
             Assert.IsNotNull(tree.Root.LeftChild);
@@ -207,6 +280,7 @@ namespace VDS.RDF.Test.Common
             tree.Remove(3);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should leave Left Child to Root
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(2, tree.Root.Value);
             Assert.IsNotNull(tree.Root.LeftChild);
@@ -221,6 +295,7 @@ namespace VDS.RDF.Test.Common
             tree.Remove(2);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should leave Leaf as Left Child of Root
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(3, tree.Root.Value);
             Assert.IsNotNull(tree.Root.LeftChild);
@@ -235,243 +310,527 @@ namespace VDS.RDF.Test.Common
             tree.Remove(1);
             BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
 
+            //Should leave Root and Left Inner Child as-is
             Assert.AreEqual(2, tree.Nodes.Count());
             Assert.AreEqual(3, tree.Root.Value);
             Assert.IsNotNull(tree.Root.LeftChild);
             Assert.AreEqual(2, tree.Root.LeftChild.Value);
         }
 
+        private void TestTree6a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree6(tree);
+
+            //Remove Root
+            tree.Remove(3);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should move right child of Left child to Root
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+        }
+
+        private void TestTree6b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree6(tree);
+
+            //Remove Left Child
+            tree.Remove(1);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should move right child of left child to left child
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(2, tree.Root.LeftChild.Value);
+        }
+
+        private void TestTree6c(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree6(tree);
+
+            //Remove Right Child
+            tree.Remove(2);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and Left Child as-is
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(3, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.LeftChild);
+            Assert.AreEqual(1, tree.Root.LeftChild.Value);
+        }
+
+        private void TestTree7a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree7(tree);
+
+            //Remove Root
+            tree.Remove(1);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should move Right Child to Root
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(3, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree7b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree7(tree);
+
+            //Remove Right Inner Child
+            tree.Remove(2);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Leaf as Right Child of Root
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(3, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree7c(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree7(tree);
+
+            //Remove Right Leaf Child
+            tree.Remove(3);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and Left Inner Child as-is
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(2, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree8a(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree8(tree);
+
+            //Remove Root
+            tree.Remove(1);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should move left child of right child to Root
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(2, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(3, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree8b(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree8(tree);
+
+            //Remove Right Child
+            tree.Remove(3);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should move left child of right child to right child
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(2, tree.Root.RightChild.Value);
+        }
+
+        private void TestTree8c(ITree<IBinaryTreeNode<int, int>, int, int> tree)
+        {
+            this.PrepareTree8(tree);
+
+            //Remove Left Child
+            tree.Remove(2);
+            BinaryTreeTools.PrintBinaryTreeStructs<IBinaryTreeNode<int, int>, int>(tree);
+
+            //Should leave Root and Right Child as-is
+            Assert.AreEqual(2, tree.Nodes.Count());
+            Assert.AreEqual(1, tree.Root.Value);
+            Assert.IsNotNull(tree.Root.RightChild);
+            Assert.AreEqual(3, tree.Root.RightChild.Value);
+        }
+
         #endregion
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple1()
+        public void BinaryTreeAVLDeleteValidation1()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree1(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple1()
+        public void BinaryTreeUnbalancedDeleteValidation1()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree1(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple1()
+        public void BinaryTreeScapegoatDeleteValidation1()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree1(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple2a()
+        public void BinaryTreeAVLDeleteValidation2a()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree2a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple2b()
+        public void BinaryTreeAVLDeleteValidation2b()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree2b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple2a()
+        public void BinaryTreeUnbalancedDeleteValidation2a()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree2a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple2b()
+        public void BinaryTreeUnbalancedDeleteValidation2b()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree2b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple2a()
+        public void BinaryTreeScapegoatDeleteValidation2a()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree2a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple2b()
+        public void BinaryTreeScapegoatDeleteValidation2b()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree2b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple3a()
+        public void BinaryTreeAVLDeleteValidation3a()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree3a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple3b()
+        public void BinaryTreeAVLDeleteValidation3b()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree3b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple3a()
+        public void BinaryTreeUnbalancedDeleteValidation3a()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree3a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple3b()
+        public void BinaryTreeUnbalancedDeleteValidation3b()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree3b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple3a()
+        public void BinaryTreeScapegoatDeleteValidation3a()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree3a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple3b()
+        public void BinaryTreeScapegoatDeleteValidation3b()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree3b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple4a()
+        public void BinaryTreeAVLDeleteValidation4a()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree4a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple4b()
+        public void BinaryTreeAVLDeleteValidation4b()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree4b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple4c()
+        public void BinaryTreeAVLDeleteValidation4c()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree4c(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple4a()
+        public void BinaryTreeUnbalancedDeleteValidation4a()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree4a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple4b()
+        public void BinaryTreeUnbalancedDeleteValidation4b()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree4b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple4c()
+        public void BinaryTreeUnbalancedDeleteValidation4c()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree4c(tree);
         }
 
-        [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple4a()
-        {
-            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
-            this.TestTree4a(tree);
-        }
+        //Tree 7 tests are not run for Scapegoat Tree because they trigger a rebalance which
+        //means the tree will not be as we expect
+        //NB - Tree 4c, 5 and 6 tests also trigger the rebalance but they always leave the tree in the state
+        //we expect so they can be safely run
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple4b()
-        {
-            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
-            this.TestTree4b(tree);
-        }
-
-        [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple4c()
+        public void BinaryTreeScapegoatDeleteValidation4c()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree4c(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple5a()
+        public void BinaryTreeAVLDeleteValidation5a()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree5a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple5b()
+        public void BinaryTreeAVLDeleteValidation5b()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree5b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeAVLDeleteSimple5c()
+        public void BinaryTreeAVLDeleteValidation5c()
         {
             AVLTree<int, int> tree = new AVLTree<int, int>();
             this.TestTree5c(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple5a()
+        public void BinaryTreeUnbalancedDeleteValidation5a()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree5a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple5b()
+        public void BinaryTreeUnbalancedDeleteValidation5b()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree5b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeUnbalancedDeleteSimple5c()
+        public void BinaryTreeUnbalancedDeleteValidation5c()
         {
             UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
             this.TestTree5c(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple5a()
+        public void BinaryTreeScapegoatDeleteValidation5a()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree5a(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple5b()
+        public void BinaryTreeScapegoatDeleteValidation5b()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree5b(tree);
         }
 
         [TestMethod]
-        public void BinaryTreeScapegoatDeleteSimple5c()
+        public void BinaryTreeScapegoatDeleteValidation5c()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             this.TestTree5c(tree);
         }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation6a()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree6a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation6b()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree6b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation6c()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree6c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation6a()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree6a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation6b()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree6b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation6c()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree6c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDeleteValidation6a()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            this.TestTree6a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDeleteValidation6b()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            this.TestTree6b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeScapegoatDeleteValidation6c()
+        {
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
+            this.TestTree6c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation7a()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree7a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation7b()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree7b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation7c()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree7c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation7a()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree7a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation7b()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree7b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation7c()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree7c(tree);
+        }
+
+        //Tree 7 tests are not run for Scapegoat Tree because they trigger a rebalance which
+        //means the tree will not be as we expect
+        //NB - Tree 4c, 5 and 6 tests also trigger the rebalance but they always leave the tree in the state
+        //we expect so they can be safely run
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation8a()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree8a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation8b()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree8b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeAVLDeleteValidation8c()
+        {
+            AVLTree<int, int> tree = new AVLTree<int, int>();
+            this.TestTree8c(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation8a()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree8a(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation8b()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree8b(tree);
+        }
+
+        [TestMethod]
+        public void BinaryTreeUnbalancedDeleteValidation8c()
+        {
+            UnbalancedBinaryTree<int, int> tree = new UnbalancedBinaryTree<int, int>();
+            this.TestTree8c(tree);
+        }
+
+        //Tree 8 tests are not run for Scapegoat Tree because they trigger a rebalance which
+        //means the tree will not be as we expect
+        //NB - Tree 4c, 5 and 6 tests also trigger the rebalance but they always leave the tree in the state
+        //we expect so they can be safely run
     }
 }
