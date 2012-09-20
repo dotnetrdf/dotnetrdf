@@ -295,7 +295,7 @@ namespace VDS.RDF.Query
                     {
                         output.Append("Apply ");
                     }
-                    else if (ps[i].PatternType == TriplePatternType.BindAssignment || ps[1].PatternType == TriplePatternType.LetAssignment)
+                    else if (ps[i].PatternType == TriplePatternType.BindAssignment || ps[i].PatternType == TriplePatternType.LetAssignment)
                     {
                         output.Append("Extend by Assignment with ");
                     }
@@ -307,7 +307,7 @@ namespace VDS.RDF.Query
                     {
                         output.Append("Property Path ");
                     }
-                    else if (ps[1].PatternType == TriplePatternType.PropertyFunction)
+                    else if (ps[i].PatternType == TriplePatternType.PropertyFunction)
                     {
                         output.Append("Property Function ");
                     }
