@@ -40,6 +40,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -241,21 +242,6 @@ namespace VDS.RDF.Test.Parsing
             TestTools.ShowGraph(g);
 
             Assert.IsFalse(g.IsEmpty, "Graph should be non-empty");
-        }
-
-        [TestMethod]
-        public void ParsingUriLoaderGraphIntoTripleStore()
-        {
-            if (!TestConfigManager.GetSettingAsBoolean(TestConfigManager.UseIIS))
-            {
-                Assert.Inconclusive("Test Config marks IIS as unavailable, cannot run test");
-            }
-
-            TripleStore store = new TripleStore();
-            store.LoadFromUri(new Uri(TestConfigManager.GetSetting(TestConfigManager.LocalQueryUri) + "?query=" + Uri.EscapeDataString("CONSTRUCT WHERE { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } }")));
-
-            Assert.IsTrue(store.Triples.Count() > 0);
-            Assert.AreEqual(1, store.Graphs.Count);
         }
 
         [TestMethod]

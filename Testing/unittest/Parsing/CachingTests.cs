@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -46,7 +47,7 @@ namespace VDS.RDF.Test.Parsing
     [TestClass]
     public class CachingTests
     {
-        private static Uri test = new Uri("http://api.talis.com/stores/rvesse-dev1/meta?about=" + Uri.EscapeDataString("http://example.org/vehicles/FordFiesta"));
+        private static Uri test = new Uri("http://www.dotnetrdf.org/configuration#");
 
         [TestMethod]
         public void ParsingUriLoaderCache()
@@ -65,16 +66,24 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod]
         public void ParsingUriLoaderCustomCache()
         {
-            UriLoader.CacheDirectory = "E:\\Cache";
+            String original = UriLoader.CacheDirectory;
+            try
+            {
+                UriLoader.CacheDirectory = Environment.CurrentDirectory;
 
-            this.ParsingUriLoaderCache();
+                this.ParsingUriLoaderCache();
+            }
+            finally
+            {
+                UriLoader.CacheDirectory = original;
+            }
         }
 
         [TestMethod]
         public void ParsingUriLoaderUriSantisation()
         {
-            Uri a = new Uri(ConfigurationLoader.ConfigurationNamespace + "TripleStore");
-            Uri b = new Uri(ConfigurationLoader.ConfigurationNamespace + "Graph");
+            Uri a = new Uri(ConfigurationLoader.ClassTripleStore);
+            Uri b = new Uri(ConfigurationLoader.ClassGraph);
 
             Console.WriteLine("URI A: " + a.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(a).AbsoluteUri);
             Console.WriteLine("URI B:" + b.AbsoluteUri + " is equivalent to " + Tools.StripUriFragment(b).AbsoluteUri);

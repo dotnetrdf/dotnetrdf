@@ -545,7 +545,9 @@
     <None Include="resources\turtle11\type.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="resources\UnitTestConfig.properties" />
+    <Content Include="resources\UnitTestConfig.properties">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Sparql\FastJoinTests.cs" />
     <Compile Include="Sparql\FilterPlacementTests.cs" />
     <Compile Include="Sparql\NegationTests.cs" />
