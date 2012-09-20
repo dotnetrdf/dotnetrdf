@@ -39,6 +39,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+#if !NO_WEB
+using System.Web;
+#endif
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -72,7 +75,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <returns>A list of Search Results representing Nodes in the Knowledge Base that match the search term</returns>
         public List<SearchServiceResult> Search(String text)
         {
-            String search = this._searchUri + "?search=" + Uri.EscapeDataString(text);
+            String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
             request.Method = this.Endpoint.HttpMethods.First();
@@ -152,7 +155,7 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
         /// <param name="state">State to pass to the callback</param>
         public void Search(String text, PelletSearchServiceCallback callback, Object state)
         {
-            String search = this._searchUri + "?search=" + Uri.EscapeDataString(text);
+            String search = this._searchUri + "?search=" + HttpUtility.UrlEncode(text);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(search);
             request.Method = this.Endpoint.HttpMethods.First();

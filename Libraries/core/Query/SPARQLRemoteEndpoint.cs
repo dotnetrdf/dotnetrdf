@@ -492,7 +492,6 @@ namespace VDS.RDF.Query
                     {
                         queryUri.Append("?query=");
                     }
-                    //queryUri.Append(Uri.EscapeDataString(sparqlQuery));
                     queryUri.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                     //Add the Default Graph URIs
@@ -501,7 +500,7 @@ namespace VDS.RDF.Query
                         if (!defaultGraph.Equals(String.Empty))
                         {
                             queryUri.Append("&default-graph-uri=");
-                            queryUri.Append(Uri.EscapeDataString(defaultGraph));
+                            queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                         }
                     }
                     //Add the Named Graph URIs
@@ -510,7 +509,7 @@ namespace VDS.RDF.Query
                         if (!namedGraph.Equals(String.Empty))
                         {
                             queryUri.Append("&named-graph-uri=");
-                            queryUri.Append(Uri.EscapeDataString(namedGraph));
+                            queryUri.Append(HttpUtility.UrlEncode(namedGraph));
                         }
                     }
                 }
@@ -535,7 +534,7 @@ namespace VDS.RDF.Query
                     if (!defaultGraph.Equals(String.Empty))
                     {
                         queryUri.Append("&default-graph-uri=");
-                        queryUri.Append(Uri.EscapeDataString(defaultGraph));
+                        queryUri.Append(HttpUtility.UrlEncode(defaultGraph));
                     }
                 }
                 //Add the Named Graph URI(s)
@@ -544,7 +543,7 @@ namespace VDS.RDF.Query
                     if (!namedGraph.Equals(String.Empty))
                     {
                         queryUri.Append("&named-graph-uri=");
-                        queryUri.Append(Uri.EscapeDataString(namedGraph));
+                        queryUri.Append(HttpUtility.UrlEncode(namedGraph));
                     }
                 }
 
@@ -667,12 +666,12 @@ namespace VDS.RDF.Query
                     foreach (String u in this.DefaultGraphs)
                     {
                         writer.Write("&default-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
                     foreach (String u in this.NamedGraphs)
                     {
                         writer.Write("&named-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
 
                     writer.Close();
@@ -732,12 +731,12 @@ namespace VDS.RDF.Query
                     foreach (String u in this.DefaultGraphs)
                     {
                         writer.Write("&default-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
                     foreach (String u in this.NamedGraphs)
                     {
                         writer.Write("&named-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
 
                     writer.Close();
@@ -794,12 +793,12 @@ namespace VDS.RDF.Query
                     foreach (String u in this.DefaultGraphs)
                     {
                         writer.Write("&default-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
                     foreach (String u in this.NamedGraphs)
                     {
                         writer.Write("&named-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
 
                     writer.Close();
@@ -855,12 +854,12 @@ namespace VDS.RDF.Query
                     foreach (String u in this.DefaultGraphs)
                     {
                         writer.Write("&default-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
                     foreach (String u in this.NamedGraphs)
                     {
                         writer.Write("&named-graph-uri=");
-                        writer.Write(Uri.EscapeDataString(u));
+                        writer.Write(HttpUtility.UrlEncode(u));
                     }
 
                     writer.Close();

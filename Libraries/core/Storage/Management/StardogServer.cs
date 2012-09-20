@@ -40,6 +40,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+#if !NO_WEB
+using System.Web;
+#endif
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
@@ -624,7 +627,7 @@ namespace VDS.RDF.Storage.Management
                 requestUri += "?";
                 foreach (String p in requestParams.Keys)
                 {
-                    requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
+                    requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
                 requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }

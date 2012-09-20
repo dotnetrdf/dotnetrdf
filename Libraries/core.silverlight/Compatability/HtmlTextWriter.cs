@@ -382,7 +382,7 @@ namespace VDS.RDF.Writing
 
         public void WriteEncodedUrlParameter(String urlText)
         {
-            this._writer.Write(Uri.EscapeDataString(urlText));
+            this._writer.Write(HttpUtility.UrlEncode(urlText));
         }
 
         public void WriteEndTag(String tagName)

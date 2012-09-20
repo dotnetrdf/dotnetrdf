@@ -39,6 +39,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -339,7 +342,7 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
-                    postData.Append(Uri.EscapeDataString(sparqlQuery));
+                    postData.Append(HttpUtility.UrlEncode(sparqlQuery));
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
@@ -484,7 +487,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("query=");
-                postData.Append(Uri.EscapeDataString(sparqlQuery));
+                postData.Append(HttpUtility.UrlEncode(sparqlQuery));
 
                 request.BeginGetRequestStream(r =>
                     {

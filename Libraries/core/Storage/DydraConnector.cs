@@ -1102,7 +1102,7 @@ namespace VDS.RDF.Storage
                     }
                     foreach (String p in requestParams.Keys)
                     {
-                        requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
+                        requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                     }
                     requestUri = requestUri.Substring(0, requestUri.Length - 1);
                 }

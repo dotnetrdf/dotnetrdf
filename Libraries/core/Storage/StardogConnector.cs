@@ -383,7 +383,7 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
-                    postData.Append(Uri.EscapeDataString(sparqlQuery));
+                    postData.Append(HttpUtility.UrlEncode(sparqlQuery));
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
@@ -772,7 +772,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
                 {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + HttpUtility.UrlEncode(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 }
                 else
                 {
@@ -1535,7 +1535,7 @@ namespace VDS.RDF.Storage
                 HttpWebRequest request;
                 if (!graphUri.Equals(String.Empty))
                 {
-                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + Uri.EscapeDataString(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
+                    request = this.CreateRequest(this._kb + "/" + tID + "/clear/?graph-uri=" + HttpUtility.UrlEncode(graphUri), MimeTypesHelper.Any, "POST", new Dictionary<string, string>());
                 }
                 else
                 {
@@ -1771,7 +1771,7 @@ namespace VDS.RDF.Storage
                 requestUri += "?";
                 foreach (String p in requestParams.Keys)
                 {
-                    requestUri += p + "=" + Uri.EscapeDataString(requestParams[p]) + "&";
+                    requestUri += p + "=" + HttpUtility.UrlEncode(requestParams[p]) + "&";
                 }
                 requestUri = requestUri.Substring(0, requestUri.Length - 1);
             }

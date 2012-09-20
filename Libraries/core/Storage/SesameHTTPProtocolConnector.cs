@@ -41,6 +41,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -349,7 +352,7 @@ namespace VDS.RDF.Storage
                     request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                     StringBuilder postData = new StringBuilder();
                     postData.Append("query=");
-                    postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
+                    postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
                     StreamWriter writer = new StreamWriter(request.GetRequestStream());
                     writer.Write(postData);
                     writer.Close();
@@ -1075,7 +1078,7 @@ namespace VDS.RDF.Storage
 
                             StringBuilder postData = new StringBuilder();
                             postData.Append("query=");
-                            postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlQuery)));
+                            postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlQuery)));
                             StreamWriter writer = new StreamWriter(stream);
                             writer.Write(postData);
                             writer.Close();
@@ -1189,7 +1192,7 @@ namespace VDS.RDF.Storage
                     requestUri += "?";
                     foreach (String p in queryParams.Keys)
                     {
-                        requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                        requestUri += p + "=" + HttpUtility.UrlEncode(queryParams[p]) + "&";
                     }
                     requestUri = requestUri.Substring(0, requestUri.Length - 1);
                 }
@@ -1431,7 +1434,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
-                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
                 using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
                 {
                     writer.Write(postData);
@@ -1485,7 +1488,7 @@ namespace VDS.RDF.Storage
                 request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
                 StringBuilder postData = new StringBuilder();
                 postData.Append("update=");
-                postData.Append(Uri.EscapeDataString(EscapeQuery(sparqlUpdate)));
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
 
                 request.BeginGetRequestStream(r =>
                     {

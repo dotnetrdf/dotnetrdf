@@ -39,6 +39,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+#if !NO_WEB
+using System.Web;
+#endif
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
@@ -565,7 +568,7 @@ namespace VDS.RDF.Storage.Management
                     requestUri += "?";
                     foreach (String p in queryParams.Keys)
                     {
-                        requestUri += p + "=" + Uri.EscapeDataString(queryParams[p]) + "&";
+                        requestUri += p + "=" + HttpUtility.UrlEncode(queryParams[p]) + "&";
                     }
                     requestUri = requestUri.Substring(0, requestUri.Length - 1);
                 }
