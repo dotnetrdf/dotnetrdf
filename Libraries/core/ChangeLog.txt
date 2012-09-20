@@ -45,6 +45,7 @@ Changed
  - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
  - Bug fix for pathological case of Graph isomporphism not being handled correctly in GraphMatcher
  - Bug fix for use of Uri.EscapeDataString() on long strings
+ - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
  - Bumped HtmlAgilityPack version to 1.4.6

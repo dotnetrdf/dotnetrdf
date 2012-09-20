@@ -211,6 +211,9 @@ namespace VDS.Common.Trees
             root.LeftChild = this.RebalanceLeftSubtree(nodes, 0, median - 1);
             root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, nodes.Length - 1);
 
+            //Don't use this check because it's expensive, may be useful to turn of for debugging if you ever have issues with the ScapegoatTree
+            //if (root.Nodes.Count() != nodes.Length) throw new InvalidOperationException("Scapegoat rebalance lost data, expected " + nodes.Length + " Nodes in rebalanced sub-tree but got " + root.Nodes.Count());
+
             //Use the rebalanced tree in place of the current node
             if (parent == null)
             {
@@ -243,7 +246,6 @@ namespace VDS.Common.Trees
         /// <returns></returns>
         private IBinaryTreeNode<TKey, TValue> RebalanceLeftSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
         {
-            //Console.WriteLine("Left(" + start + "," + end + ")");
             if (start > end) return null;
             if (end == start) return nodes[start];
             if (end - start == 1)
@@ -267,7 +269,6 @@ namespace VDS.Common.Trees
                 //Console.WriteLine("m = " + median);
                 IBinaryTreeNode<TKey, TValue> root = nodes[median];
                 root.LeftChild = this.RebalanceLeftSubtree(nodes, start, median - 1);
-                end = (end % 2 == 0 ? end - 1 : end);
                 root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, end);
                 return root;
             }
@@ -282,7 +283,6 @@ namespace VDS.Common.Trees
         /// <returns></returns>
         private IBinaryTreeNode<TKey, TValue> RebalanceRightSubtree(IBinaryTreeNode<TKey, TValue>[] nodes, int start, int end)
         {
-            //Console.WriteLine("Right(" + start + "," + end + ")");
             if (start > end) return null;
             if (end == start) return nodes[start];
             if (end - start == 1)
@@ -305,7 +305,6 @@ namespace VDS.Common.Trees
                 //Console.WriteLine("m = " + median);
                 IBinaryTreeNode<TKey, TValue> root = nodes[median];
                 root.LeftChild = this.RebalanceLeftSubtree(nodes, start, median - 1);
-                end = (end % 2 == 0 ? end - 1 : end);
                 root.RightChild = this.RebalanceRightSubtree(nodes, median + 1, end);
                 return root;
             }

@@ -121,7 +121,7 @@ namespace VDS.Common.Trees
                         //Balanced
                         break;
                     default:
-                        throw new Exception("Illegal AVL Tree state");
+                        throw new InvalidOperationException("Illegal AVL Tree state");
                 }
                 current = current.Parent;
             }

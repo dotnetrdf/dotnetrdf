@@ -439,6 +439,24 @@ namespace VDS.RDF.Test.Common
         }
 
         [TestMethod]
+        public void BinaryTreeScapegoatInsert6()
+        {
+            List<int> input = new List<int>() { 790, 73, 443, 954, 1, 551, 592, 738, 621, 395, 775, 730, 787, 744, 887, 614, 325, 26, 607, 423, 97, 57, 521, 261, 943, 598, 259, 682, 686, 233, 18, 10, 632, 492, 583, 893, 969, 700, 823, 93, 314, 516, 230, 870, 65, 797, 609, 405, 17, 279, 468, 283, 600, 78, 953, 735, 547, 182, 13, 400, 292, 911, 55, 386, 378, 768, 106, 295, 162, 996, 653, 631, 206, 519, 116, 575, 829, 659, 201, 151, 989, 855, 669, 409, 767, 737, 410, 556, 539, 854, 341, 791, 690, 419, 805, 403, 465, 848, 486, 297, 697, 317, 246, 24, 629, 845, 83, 86, 965, 373, 913, 898, 982, 866, 412, 437, 240, 645, 620, 644, 352, 536, 752, 303, 656, 868, 941, 784, 718, 703, 112, 980, 165, 903, 448, 667, 594, 641, 780, 925, 651, 320, 581, 163, 942, 438, 806, 824, 8, 354, 161, 822, 217, 844, 940, 152, 558, 944, 358, 759, 900, 285, 351, 252, 262, 929, 723, 81, 404, 739, 833, 582, 864, 691, 988, 33, 948, 567, 355, 202, 61, 120, 771, 348, 526, 276, 751, 312, 961, 289, 102, 652, 270, 20, 28, 360, 967, 330, 894, 14, 709, 715, 408, 256, 515, 554, 958, 510, 856, 908, 199, 985, 564, 154, 695, 777, 502, 4, 712, 983, 172, 399, 124, 117, 628, 174, 311, 842, 666, 612, 66, 599, 678, 346, 481, 331, 701, 498, 827, 973, 321, 224, 456, 50, 95, 121, 87, 128, 308, 236, 841, 962, 602, 912, 834, 301, 588, 290, 613, 353, 242, 111, 847, 225, 843, 577, 293, 218, 660, 369, 77, 7, 175, 746, 648, 935, 945, 74, 30, 513, 96, 195, 527, 435, 779, 107, 2, 766, 506, 190, 731, 414, 886, 472, 720, 216, 385, 231, 203, 493, 815, 861, 457, 946, 167, 835, 788, 867, 260, 896, 364, 523, 272, 103, 265, 56, 565, 420, 452, 743, 584, 520, 705, 473, 626, 664, 126, 692, 32, 434, 546, 714, 876, 512, 706, 227, 736, 576, 268, 939, 309, 138, 499, 610, 825, 198, 137, 794, 209, 665, 637, 974, 781, 447, 907, 287, 149 };
+
+            ScapegoatTree<int, int> tree = new ScapegoatTree<int,int>();
+            int count = 0;
+            foreach (int i in input)
+            {
+                Assert.IsTrue(tree.Add(i, i), "Failed to insert key " + i);
+                count++;
+                Assert.IsTrue(tree.ContainsKey(i), "Failed to find newly inserted Key " + i);
+                Assert.AreEqual(count, tree.Nodes.Count(), "Incorrect count after Insert of " + i);
+            }
+
+            this.TestOrderPreservationOnInsertStructs<IBinaryTreeNode<int, int>, int>(input.OrderBy(i => i, Comparer<int>.Default), tree);
+        }
+
+        [TestMethod]
         public void BinaryTreeScapegoatDelete1()
         {
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
@@ -572,8 +590,16 @@ namespace VDS.RDF.Test.Common
             ScapegoatTree<int, int> tree = new ScapegoatTree<int, int>();
             foreach (int i in input)
             {
-                tree.Add(i, i);
+                Assert.IsTrue(tree.Add(i, i), "Failed to insert " + i);
             }
+
+            int current = 0;
+            foreach (int i in tree.Keys)
+            {
+                if (Math.Abs(i - current) > 1) Assert.Fail("Missing value between " + current + " and " + i);
+                current = i;
+            }
+
             this.TestOrderStructs<int>(input.OrderBy(k => k, Comparer<int>.Default).ToList(), tree.Keys.ToList());
             List<int> deletes = new List<int>() { 10 };
             int count = input.Count;
