@@ -129,9 +129,19 @@ namespace VDS.RDF.Query
     }
 
     /// <summary>
-    /// Class for representing SPARQL Queries
+    /// Represents a SPARQL Query
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// <strong>Note:</strong> This class is purposefully sealed and most setters are private/protected internal since generally you create a query by using the <see cref="SparqlQueryParser"/> to parse a query string/file.
+    /// </para>
+    /// <para>
+    /// To build a query programmatically you can use the <see cref="QueryBuilder"/> class to generate a new query and then various extension methods to modify that query using a fluent style API.  A query is not immutable
+    /// so if you use that API you are modifying the query, if you want to generate new queries by modifying an existing query consider using the <see cref="SparqlQuery.Copy()"/> method to take a copy of the existing query.
+    /// </para>
+    /// </remarks>
     public sealed class SparqlQuery
+        : NodeFactory
     {
         private Uri _baseUri = null;
         private List<Uri> _defaultGraphs;
@@ -179,6 +189,39 @@ namespace VDS.RDF.Query
             : this()
         {
             this._subquery = subquery;
+        }
+
+        /// <summary>
+        /// Creates a copy of the query
+        /// </summary>
+        /// <returns></returns>
+        public SparqlQuery Copy()
+        {
+            SparqlQuery q = new SparqlQuery();
+            q._baseUri = this._baseUri;
+            q._defaultGraphs = new List<Uri>(this._defaultGraphs);
+            q._namedGraphs = new List<Uri>(this._namedGraphs);
+            q._nsmapper = new NamespaceMapper(this._nsmapper);
+            q._type = this._type;
+            q._specialType = this._specialType;
+            q._vars = new Dictionary<string, SparqlVariable>(this._vars);
+            q._describeVars = new List<IToken>(this._describeVars);
+            q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
+            q._orderBy = this._orderBy;
+            q._groupBy = this._groupBy;
+            q._having = this._having;
+            q._constructTemplate = this._constructTemplate;
+            q._bindings = this._bindings;
+            q._limit = this._limit;
+            q._offset = this._offset;
+            q._timeout = this._timeout;
+            q._partialResultsOnTimeout = this._partialResultsOnTimeout;
+            q._optimised = this._optimised;
+            q._describer = this._describer;
+            q._optimisers = new List<IAlgebraOptimiser>(this._optimisers);
+            q._exprFactories = new List<ISparqlCustomExpressionFactory>(this._exprFactories);
+            q._propFuncFactories = new List<IPropertyFunctionFactory>(this._propFuncFactories);
+            return q;
         }
 
         #region Properties
