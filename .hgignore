@@ -15,6 +15,9 @@ TestResults/
 *.user
 temp*.txt
 
+# Developer/Environment specific config files
+Testing\unittest\resources\UnitTestConfig.properties
+
 # Generated Project Files, templates are versioned controlled but
 # the generated files should not be
 Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj
