@@ -46,7 +46,6 @@ namespace VDS.RDF.Query.PropertyFunctions
     /// </summary>
     public static class PropertyFunctionHelper
     {
-
         /// <summary>
         /// Used to extract the patterns that make up property functions
         /// </summary>
@@ -61,6 +60,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// Used to extract the patterns that make up property functions
         /// </summary>
         /// <param name="patterns">Triple Patterns</param>
+        /// <param name="localFactories">Locally scoped factories</param>
         /// <returns></returns>
         public static List<IPropertyFunctionPattern> ExtractPatterns(IEnumerable<ITriplePattern> patterns, IEnumerable<IPropertyFunctionFactory> localFactories)
         {

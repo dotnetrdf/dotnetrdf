@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Operators
         /// <summary>
         /// Registers a new operator
         /// </summary>
-        /// <param name="operator">Operator</param>
+        /// <param name="op">Operator</param>
         public static void AddOperator(ISparqlOperator op)
         {
             if (!_init) Init();
@@ -111,9 +111,9 @@ namespace VDS.RDF.Query.Operators
         }
 
         /// <summary>
-        /// Removes the registration of an operator
+        /// Removes the registration of an operator by instance reference
         /// </summary>
-        /// <param name="operator">Operator Reference</param>
+        /// <param name="op">Operator Reference</param>
         public static void RemoveOperator(ISparqlOperator op)
         {
             if (!_init) Init();
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Operators
         /// <summary>
         /// Removes the registration of an operator by instance type of the operator
         /// </summary>
-        /// <param name="operator">Operator</param>
+        /// <param name="op">Operator</param>
         public static void RemoveOperatorByType(ISparqlOperator op)
         {
             if (!_init) Init();

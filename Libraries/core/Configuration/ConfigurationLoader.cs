@@ -370,8 +370,9 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="autoConfigure"></param>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="source">Source the graph originated from</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, INode source, bool autoConfigure)
         {
@@ -381,8 +382,9 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// Common loader for Configuration Graphs, handles the resolution of dnr:imports and applies the auto-configuration if selected
         /// </summary>
-        /// <param name="g"></param>
-        /// <param name="autoConfigure"></param>
+        /// <param name="g">Configuration Graph</param>
+        /// <param name="sources">Sources the graph originated from</param>
+        /// <param name="autoConfigure">Whether to apply auto-configuration</param>
         /// <returns></returns>
         private static IGraph LoadCommon(IGraph g, IEnumerable<INode> sources, bool autoConfigure)
         {

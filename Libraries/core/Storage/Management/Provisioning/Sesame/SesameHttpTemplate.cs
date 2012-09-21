@@ -56,7 +56,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// [] a rep:Repository ;
     /// rep:repositoryImpl [
     ///       rep:repositoryType "openrdf:HTTPRepository" ;
-    ///       hr:repositoryURL <{%Sesame server location|http://localhost:8080/openrdf-sesame%}/repositories/{%Remote repository ID|SYSTEM%}>
+    ///       hr:repositoryURL &lt;{%Sesame server location|http://localhost:8080/openrdf-sesame%}/repositories/{%Remote repository ID|SYSTEM%}&gt;
     ///    ];
     ///    rep:repositoryID "{this.ID}" ;
     ///    rdfs:label "{this.Label}" .

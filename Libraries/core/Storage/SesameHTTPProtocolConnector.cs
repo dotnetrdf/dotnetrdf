@@ -269,6 +269,9 @@ namespace VDS.RDF.Storage
 
 #if !NO_SYNC_HTTP
 
+        /// <summary>
+        /// Gets the parent server
+        /// </summary>
         public override IStorageServer ParentServer
         {
             get
@@ -816,6 +819,9 @@ namespace VDS.RDF.Storage
         }
 
 #endif
+        /// <summary>
+        /// Gets the parent server
+        /// </summary>
         public override IAsyncStorageServer AsyncParentServer
         {
             get

@@ -45,6 +45,9 @@ namespace VDS.RDF.Storage
     public abstract class BaseAsyncSafeConnector
         : IStorageProvider, IAsyncStorageProvider
     {
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public virtual IStorageServer ParentServer
         {
             get
@@ -53,6 +56,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public virtual IAsyncStorageServer AsyncParentServer
         {
             get

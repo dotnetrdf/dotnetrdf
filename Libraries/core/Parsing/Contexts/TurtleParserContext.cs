@@ -54,6 +54,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         public TurtleParserContext(IGraph g, ITokeniser tokeniser, TurtleSyntax syntax)
             : this(g, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, false, false) { }
 
@@ -62,6 +63,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         public TurtleParserContext(IGraph g, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode)
             : this(g, tokeniser, syntax, queueMode, false, false) { }
@@ -71,6 +73,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public TurtleParserContext(IGraph g, ITokeniser tokeniser, TurtleSyntax syntax, bool traceParsing, bool traceTokeniser)
@@ -81,6 +84,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="g">Graph to parse into</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
@@ -95,6 +99,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax)
             : this(handler, tokeniser, syntax, TokenQueueMode.SynchronousBufferDuringParsing, false, false) { }
 
@@ -103,6 +108,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, TokenQueueMode queueMode)
             : this(handler, tokeniser, syntax, queueMode, false, false) { }
@@ -112,6 +118,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>
         public TurtleParserContext(IRdfHandler handler, ITokeniser tokeniser, TurtleSyntax syntax, bool traceParsing, bool traceTokeniser)
@@ -122,6 +129,7 @@ namespace VDS.RDF.Parsing.Contexts
         /// </summary>
         /// <param name="handler">RDF Handler</param>
         /// <param name="tokeniser">Tokeniser to use</param>
+        /// <param name="syntax">Turtle Syntax</param>
         /// <param name="queueMode">Tokeniser Queue Mode</param>
         /// <param name="traceParsing">Whether to trace parsing</param>
         /// <param name="traceTokeniser">Whether to trace tokenisation</param>

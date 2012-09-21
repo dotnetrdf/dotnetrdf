@@ -122,6 +122,9 @@ namespace VDS.RDF.Storage.Management
 
 #endif
 
+        /// <summary>
+        /// Gets the IO Behaviour of the server
+        /// </summary>
         public IOBehaviour IOBehaviour
         {
             get
@@ -655,6 +658,9 @@ namespace VDS.RDF.Storage.Management
             return request;
         }
 
+        /// <summary>
+        /// Disposes of the server
+        /// </summary>
         public void Dispose()
         {
             //Nothing to do
