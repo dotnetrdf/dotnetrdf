@@ -61,8 +61,8 @@ namespace VDS.RDF.Query.Inference
     {
         private Dictionary<INode, INode> _classMappings = new Dictionary<INode, INode>();
         private Dictionary<INode, INode> _propertyMappings = new Dictionary<INode, INode>();
-        private HashTable<INode, INode> _domainMappings = new HashTable<INode, INode>();
-        private HashTable<INode, INode> _rangeMappings = new HashTable<INode, INode>();
+        private MultiDictionary<INode, List<INode>> _domainMappings = new MultiDictionary<INode, List<INode>>(new FastNodeComparer());
+        private MultiDictionary<INode, List<INode>> _rangeMappings = new MultiDictionary<INode, List<INode>>(new FastNodeComparer());
         private IUriNode _rdfType, _rdfsClass, _rdfsSubClass, _rdfProperty, _rdfsSubProperty, _rdfsRange, _rdfsDomain;
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace VDS.RDF.Query.Inference
                 if (this._rangeMappings.ContainsKey(t.Predicate))
                 {
                     //Assert additional type information
-                    foreach (INode n in this._rangeMappings.GetValues(t.Predicate))
+                    foreach (INode n in this._rangeMappings[t.Predicate])
                     {
                         inferences.Add(new Triple(t.Object.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
                     }
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Inference
                 if (this._domainMappings.ContainsKey(t.Predicate))
                 {
                     //Assert additional type information
-                    foreach (INode n in this._domainMappings.GetValues(t.Predicate))
+                    foreach (INode n in this._domainMappings[t.Predicate])
                     {
                         inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
                     }
@@ -232,9 +232,9 @@ namespace VDS.RDF.Query.Inference
                     {
                         this._propertyMappings.Add(t.Subject, null);
                     }
-                    if (!this._rangeMappings.Contains(t.Subject, t.Object))
+                    if (!this._rangeMappings.ContainsKey(t.Subject))
                     {
-                        this._rangeMappings.Add(t.Subject, t.Object);
+                        this._rangeMappings.Add(t.Subject, new List<INode> { t.Object });
                     }
                     if (!this._classMappings.ContainsKey(t.Object))
                     {
@@ -248,9 +248,9 @@ namespace VDS.RDF.Query.Inference
                     {
                         this._propertyMappings.Add(t.Subject, null);
                     }
-                    if (!this._domainMappings.Contains(t.Subject, t.Object))
+                    if (!this._domainMappings.ContainsKey(t.Subject))
                     {
-                        this._domainMappings.Add(t.Subject, t.Object);
+                        this._domainMappings.Add(t.Subject, new List<INode> { t.Object });
                     }
                     if (!this._classMappings.ContainsKey(t.Object))
                     {
@@ -302,7 +302,8 @@ namespace VDS.RDF.Query.Inference
     /// <remarks>
     /// Does basic RDFS inferencing as detailed in the remarks for the <see cref="StaticRdfsReasoner">StaticRdfsReasoner</see> except every Graph that inference is applied to has the potential to alter the schema which is in use.
     /// </remarks>
-    public class RdfsReasoner : StaticRdfsReasoner
+    public class RdfsReasoner 
+        : StaticRdfsReasoner
     {
         /// <summary>
         /// Applies inference to the Input Graph and outputs the inferred information to the Output Graph

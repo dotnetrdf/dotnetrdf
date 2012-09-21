@@ -41,9 +41,18 @@ using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Operators.DateTime
 {
+    /// <summary>
+    /// Represents the time span subtraction operator
+    /// </summary>
+    /// <remarks>
+    /// Allows queries to subtract time spans from each other
+    /// </remarks>
     public class TimeSpanSubtraction
         : BaseTimeSpanOperator
     {
+        /// <summary>
+        /// Gets the operator type
+        /// </summary>
         public override SparqlOperatorType Operator
         {
             get 
@@ -54,6 +63,7 @@ namespace VDS.RDF.Query.Operators.DateTime
 
         public override IValuedNode Apply(params IValuedNode[] ns)
         {
+            if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
 
             return new TimeSpanNode(null, this.Subtract(ns.Select(n => n.AsTimeSpan())));

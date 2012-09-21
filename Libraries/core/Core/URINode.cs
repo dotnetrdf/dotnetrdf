@@ -511,6 +511,10 @@ namespace VDS.RDF
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot case a URI to a type");

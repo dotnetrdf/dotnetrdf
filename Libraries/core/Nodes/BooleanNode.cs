@@ -134,6 +134,11 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Cannot cast Boolean to other types");
         }
 
+
+        /// <summary>
+        /// Throws an error as booleans cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot case Boolean to other types");

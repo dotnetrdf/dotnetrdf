@@ -66,6 +66,9 @@ namespace VDS.RDF.Parsing.Handlers
             this._handler = handler;
         }
 
+        /// <summary>
+        /// Gets the inner handler
+        /// </summary>
         public IEnumerable<IRdfHandler> InnerHandlers
         {
             get
@@ -74,36 +77,67 @@ namespace VDS.RDF.Parsing.Handlers
             }
         }
 
+        /// <summary>
+        /// Creates a Blank Node
+        /// </summary>
+        /// <param name="nodeId">Node ID which will be ignored by this Handler</param>
+        /// <returns></returns>
         public override IBlankNode CreateBlankNode(string nodeId)
         {
             return base.CreateBlankNode();
         }
 
+        /// <summary>
+        /// Starts handling RDF
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._handler.StartRdf();
         }
 
+        /// <summary>
+        /// Ends handling RDF
+        /// </summary>
+        /// <param name="ok">Whether parsing completed OK</param>
         protected override void EndRdfInternal(bool ok)
         {
             this._handler.EndRdf(ok);
         }
 
+        /// <summary>
+        /// Handles a Base URI declaration
+        /// </summary>
+        /// <param name="baseUri">Base URI</param>
+        /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
             return this._handler.HandleBaseUri(baseUri);
         }
 
+        /// <summary>
+        /// Handles a Namespace declaration
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
             return this._handler.HandleNamespace(prefix, namespaceUri);
         }
 
+        /// <summary>
+        /// Handles a Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             return this._handler.HandleTriple(t);
         }
 
+        /// <summary>
+        /// Gets whether the inner handler accepts all
+        /// </summary>
         public override bool AcceptsAll
         {
             get

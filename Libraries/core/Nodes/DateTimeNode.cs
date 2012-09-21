@@ -169,6 +169,11 @@ namespace VDS.RDF.Nodes
             return this._value;
         }
 
+
+        /// <summary>
+        /// Throws an error as date times cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot convert Date Times to other types");

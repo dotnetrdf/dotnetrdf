@@ -219,6 +219,9 @@ namespace VDS.RDF.Configuration
                             ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
 
 
+        /// <summary>
+        /// URI Constants for <strong>obsolete usable</strong> configuration classes
+        /// </summary>
         [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", false)]
         public const String ClassGenericManager = ConfigurationNamespace + "GenericIOManager";
 

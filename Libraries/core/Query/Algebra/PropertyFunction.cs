@@ -36,8 +36,8 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Optimisation;
+using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 
 namespace VDS.RDF.Query.Algebra
@@ -51,12 +51,20 @@ namespace VDS.RDF.Query.Algebra
         private ISparqlPropertyFunction _function;
         private ISparqlAlgebra _algebra;
 
+        /// <summary>
+        /// Creates a new Property function algebra
+        /// </summary>
+        /// <param name="algebra">Inner algebra</param>
+        /// <param name="function">Property Function</param>
         public PropertyFunction(ISparqlAlgebra algebra, ISparqlPropertyFunction function)
         {
             this._function = function;
             this._algebra = algebra;
         }
 
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
             get 
@@ -65,17 +73,30 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Transforms this algebra with the given optimiser
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
             return new PropertyFunction(optimiser.Optimise(this._algebra), this._function);
         }
 
+        /// <summary>
+        /// Evaluates the algebra in the given context
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context.InputMultiset = context.Evaluate(this._algebra);
             return this._function.Evaluate(context);
         }
 
+        /// <summary>
+        /// Gets the variables used in the algebra
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get 
@@ -84,16 +105,28 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Throws an error because property functions cannot be converted back to queries
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Property Functions cannot be converted back into queries");
         }
 
-        public Patterns.GraphPattern ToGraphPattern()
+        /// <summary>
+        /// Throws an error because property functions cannot be converted back to graph patterns
+        /// </summary>
+        /// <returns></returns>
+        public GraphPattern ToGraphPattern()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Property Functions cannot be converted back into Graph Patterns");
         }
 
+        /// <summary>
+        /// Gets the string representation of the algebra
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "PropertyFunction(" + this._algebra.ToString() + "," + this._function.FunctionUri + ")";
