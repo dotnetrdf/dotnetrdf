@@ -77,6 +77,9 @@ namespace VDS.RDF.Query.Patterns
             this._vars.Sort();
         }
 
+        /// <summary>
+        /// Gets the pattern type
+        /// </summary>
         public override TriplePatternType PatternType
         {
             get
@@ -184,11 +187,21 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Compares a property path pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(PropertyPathPattern other)
         {
             return this.CompareTo((IPropertyPathPattern)other);
         }
 
+        /// <summary>
+        /// Compares a property path pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(IPropertyPathPattern other)
         {
             return base.CompareTo(other);

@@ -171,6 +171,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the pattern type
+        /// </summary>
         public override TriplePatternType PatternType
         {
             get 
@@ -632,11 +635,21 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Compares a triple pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(TriplePattern other)
         {
             return base.CompareTo(other);
         }
 
+        /// <summary>
+        /// Compares a triple pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(IMatchTriplePattern other)
         {
             return base.CompareTo(other);

@@ -61,6 +61,11 @@ namespace VDS.RDF.Query.Operators.DateTime
             }
         }
 
+        /// <summary>
+        /// Applies the operator
+        /// </summary>
+        /// <param name="ns">Arguments</param>
+        /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");

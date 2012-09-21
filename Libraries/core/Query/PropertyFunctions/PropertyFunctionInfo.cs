@@ -51,11 +51,18 @@ namespace VDS.RDF.Query.PropertyFunctions
         private List<PatternItem> _subjArgs = new List<PatternItem>();
         private List<PatternItem> _objArgs = new List<PatternItem>();
 
+        /// <summary>
+        /// Creates new function information
+        /// </summary>
+        /// <param name="u">Function URI</param>
         public PropertyFunctionInfo(Uri u)
         {
             this._funcUri = u;
         }
 
+        /// <summary>
+        /// Gets the function URI
+        /// </summary>
         public Uri FunctionUri
         {
             get
@@ -64,6 +71,9 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
+        /// <summary>
+        /// Gets the triple patterns that compose the property function
+        /// </summary>
         public List<IMatchTriplePattern> Patterns
         {
             get
@@ -72,6 +82,9 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
+        /// <summary>
+        /// Gets the subject arguments to the function
+        /// </summary>
         public List<PatternItem> SubjectArgs
         {
             get
@@ -80,6 +93,9 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
+        /// <summary>
+        /// Gets the object arguments to the function
+        /// </summary>
         public List<PatternItem> ObjectArgs
         {
             get

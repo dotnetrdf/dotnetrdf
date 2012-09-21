@@ -56,6 +56,9 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Query Evaluation Context</param>
         void Evaluate(SparqlEvaluationContext context);
 
+        /// <summary>
+        /// Gets the Pattern Type
+        /// </summary>
         TriplePatternType PatternType
         {
             get;
@@ -200,14 +203,31 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         IEnumerable<Triple> GetTriples(SparqlEvaluationContext context);
 
+        /// <summary>
+        /// Gets whether a given triple is accepted by this pattern
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         bool Accepts(SparqlEvaluationContext context, Triple t);
 
+        /// <summary>
+        /// Creates a set from a Triple
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         ISet CreateResult(Triple t);
     }
 
+    /// <summary>
+    /// Interface for Triple Patterns that apply filters
+    /// </summary>
     public interface IFilterPattern
         : ITriplePattern, IComparable<IFilterPattern>
     {
+        /// <summary>
+        /// Gets the filter to apply
+        /// </summary>
         ISparqlFilter Filter
         {
             get;
@@ -243,6 +263,9 @@ namespace VDS.RDF.Query.Patterns
     public interface ISubQueryPattern
         : ITriplePattern, IComparable<ISubQueryPattern>
     {
+        /// <summary>
+        /// Gets the sub-query
+        /// </summary>
         SparqlQuery SubQuery
         {
             get;
@@ -263,6 +286,9 @@ namespace VDS.RDF.Query.Patterns
             get;
         }
 
+        /// <summary>
+        /// Gets the property path
+        /// </summary>
         ISparqlPath Path
         {
             get;
@@ -283,21 +309,33 @@ namespace VDS.RDF.Query.Patterns
     public interface IPropertyFunctionPattern
         : ITriplePattern, IComparable<IPropertyFunctionPattern>
     {
+        /// <summary>
+        /// Gets the Subject arguments of the function
+        /// </summary>
         IEnumerable<PatternItem> SubjectArgs
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the Object arguments of the function
+        /// </summary>
         IEnumerable<PatternItem> ObjectArgs
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the property function
+        /// </summary>
         ISparqlPropertyFunction PropertyFunction
         {
             get;
         }
 
+        /// <summary>
+        /// Gets the original triple patterns that made up this pattern
+        /// </summary>
         IEnumerable<ITriplePattern> OriginalPatterns
         {
             get;

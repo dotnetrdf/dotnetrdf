@@ -116,6 +116,9 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Gets the Pattern Type
+        /// </summary>
         public override TriplePatternType PatternType
         {
             get

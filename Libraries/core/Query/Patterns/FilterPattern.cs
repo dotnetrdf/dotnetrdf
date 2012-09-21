@@ -104,6 +104,9 @@ namespace VDS.RDF.Query.Patterns
             context.OutputMultiset = new IdentityMultiset();
         }
 
+        /// <summary>
+        /// Gets the Pattern Type
+        /// </summary>
         public override TriplePatternType PatternType
         {
             get
@@ -159,11 +162,21 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
+        /// <summary>
+        /// Compares a filter pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(FilterPattern other)
         {
             return this.CompareTo((IFilterPattern)other);
         }
 
+        /// <summary>
+        /// Compares a filter pattern to another
+        /// </summary>
+        /// <param name="other">Pattern</param>
+        /// <returns></returns>
         public int CompareTo(IFilterPattern other)
         {
             return base.CompareTo(other);
