@@ -114,6 +114,12 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// Will attempt to autodetect the format of the RDF based on the Content-Type header of the HTTP response
         /// </para>
+        /// <para>
+        /// In the event that the URI is a File URI the <see cref="FileLoader">FileLoader</see> will be used instead. If the URI is a Data URI then the <see cref="DataUriLoader">DataUriLoader</see> will be used instead.
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> UriLoader will assign the Graph the source URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
         /// </remarks>
         public static void Load(IGraph g, Uri u, GraphCallback callback, Object state)
         {
