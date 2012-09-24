@@ -70,16 +70,12 @@ namespace VDS.RDF
     ///     <li>Any Sesame HTTP Protocol compliant store e.g. Sesame, OWLIM</li>
     ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
     ///     <li>Stardog</li>
-    ///     <li>Talis Platform</li>
     ///     <li>Virtuoso</li>
     /// </ul>
     /// </para>
     /// <h4>SQL Storage</h4>
     /// <para>
-    /// <strong>Warning:</strong> The SQL Storage feature is being deprecated in future releases, please transition to one of the aforementioned 3rd party triple stores which are far more performant and all use the same <see cref="IStorageProvider">IStorageProvider</see> interface.  Do not use this support for any new development
-    /// </para>
-    /// <para>
-    /// From 0.5.0 onwards the release includes a new SQL backend called the ADO Store provided in a separate library <strong>dotNetRDF.Data.Sql.dll</strong> - for information on how to migrate from the old format to the new format please see the <a href="http://www.dotnetrdf.org?content.asp?pageID=dotNetRDF%20Store#migration">Migration guide</a>
+    /// <strong>Warning:</strong> The SQL Storage feature is now deprecated and no longer included in the release, please transition to one of the aforementioned 3rd party triple stores which are far more performant and all use the same <see cref="IStorageProvider">IStorageProvider</see> interface.  Do not use this support for any new development
     /// </para>
     /// <h3>ASP.Net Integration</h3>
     /// <para>
@@ -87,7 +83,7 @@ namespace VDS.RDF
     /// </para>
     /// <h3>Ontology API</h3>
     /// <para>
-    /// There is also a fairly new and experimental <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs
+    /// There is also an <see cref="VDS.RDF.Ontology">Ontology</see> namespace which provides a more resource and ontology centric API for working with RDF than the standard Graph and Triple centric APIs
     /// </para>
     /// <h3>Configuration API</h3>
     /// <para>
@@ -187,7 +183,7 @@ namespace VDS.RDF.Configuration.Permissions
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are used internally in the SPARQL engine.  These all derive from the standard Node implementations so can be used interchangeably with those if desired.
+    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are primarily used internally in the SPARQL engine.  These all derive from the standard Node implementations so can be used interchangeably with those if desired.
     /// </summary>
     class NamespaceDoc
     {
@@ -756,6 +752,45 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
     }
 }
 
+namespace VDS.RDF.Query.Operators
+{
+    /// <summary>
+    /// <para>
+    /// Namespace which provides classes which represent the implementation of various operators in SPARQL.  This allows for some of the basic operators like + and - to be extended to allow functionality beyond the SPARQL specification such as date time arithmetic.
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Operators.DateTime
+{
+    /// <summary>
+    /// <para>
+    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which allow for embedding date time arithmetic into SPARQL queries
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Query.Operators.Numeric
+{
+    /// <summary>
+    /// <para>
+    /// Namespace which provides implementations of <see cref="ISparqlOperator"/> which provide the default numeric implementations of operators as required by the SPARQL specification
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF.Query.Optimisation
 {
     /// <summary>
@@ -806,11 +841,22 @@ namespace VDS.RDF.Query.Patterns
     }
 }
 
+namespace VDS.RDF.Query.PropertyFunctions
+{
+    /// <summary>
+    /// Namespace which provide classes relating to the property function extension point of SPARQL
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
 namespace VDS.RDF.Storage
 {
     /// <summary>
     /// <para>
-    /// Namespace for Storage Classes which provide support for using arbitrary backing Stores
+    /// Namespace for ctorage classes which provide support for using arbitrary backing Stores
     /// </para>
     /// <para>
     /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
@@ -818,7 +864,7 @@ namespace VDS.RDF.Storage
     /// <para>
     /// Note that this is the new name for the old <see cref="IGenericIOManager"/> interface, the following table summarizes name changes to the interfaces in this API which were made in the 0.7.x releases.  Note that in the 0.7.x initial release the old interface names were preserved as marker interfaces to enable backwards compatibility with existing code.
     /// </para>
-    /// <table>
+    /// <table class="dtTABLE" cellspacing="0">
     ///     <tr><th>Old Name</th><th>New Name</th></tr>
     ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
     ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
@@ -831,7 +877,6 @@ namespace VDS.RDF.Storage
     /// </para>
     /// <ul>
     ///     <li>Virtuoso - Virtuoso support can be found in the <strong>dotNetRDF.Data.Virtuoso.dll</strong> library and requires one additional dependency.</li>
-    ///     <li><strong>Deprecated</strong> Microsoft SQL Server - Our new SQL backend called the ADO Store can be found in the <strong>dotNetRDF.Data.Sql.dll</strong> library and currently has no additional dependencies.</li>
     /// </ul>
     /// </summary>
     class NamespaceDoc
@@ -840,13 +885,61 @@ namespace VDS.RDF.Storage
     }
 }
 
-namespace VDS.RDF.Storage.Params
+namespace VDS.RDF.Storage.Management
 {
     /// <summary>
-    /// Namespace for Parameter Classes which provide Parameter information to <see cref="IStoreReader">IStoreReader</see> and <see cref="IStoreWriter">IStoreWriter</see> implementations
+    /// <para>
+    /// Namespace for storage classes which provide support for managing servers that provide multiple backing Stores
+    /// </para>
+    /// <para>
+    /// Servers are managed via the <see cref="IStorageServer"/> interface, a server can provide lists of available stores, retrieve a reference to a store, create new stores and delete existing stores.  The exact capabilites may depend on the implementation and may be inspected via the <see cref="IStorageServer.IOBehaviour"/> property.
+    /// </para>
     /// </summary>
     class NamespaceDoc
     {
+
+    }
+}
+
+namespace VDS.RDF.Storage.Management.Provisioning
+{
+    /// <summary>
+    /// <para>
+    /// Namespace for storage classes which provide support for creating new stores in conjunction with a <see cref="IStorageServer"/>
+    /// </para>
+    /// <para>
+    /// In order for an <see cref="IStorageServer"/> to create a new store it requires an instance of the <see cref="IStoreTemplate"/> interface from this namespace.  The basic interface provides only a Store ID, specific implementations may provide many more customizable properties to allow new stores to be created that take advantage of the capabilties of the server the store is being created on.  A <see cref="IStorageServer"/> provides methods to generate the basic templates that it accepts and should be used in preference to creating any of the implementations directly.
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Storage.Management.Provisioning.Sesame
+{
+    /// <summary>
+    /// <para>
+    /// Namespace containing implementations of <see cref="IStorageTemplate"/> which provide templates for creating new stores on Sesame servers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
+    }
+}
+
+namespace VDS.RDF.Storage.Management.Provisioning.Stardog
+{
+    /// <summary>
+    /// <para>
+    /// Namespace containing implementations of <see cref="IStorageTemplate"/> which provide templates for creating new stores on Stardog servers
+    /// </para>
+    /// </summary>
+    class NamespaceDoc
+    {
+
     }
 }
 
