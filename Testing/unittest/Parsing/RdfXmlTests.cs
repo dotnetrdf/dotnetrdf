@@ -202,5 +202,28 @@ namespace VDS.RDF.Test.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingRdfXmlPropertyInDefaultNamespaceBad()
+        {
+            Graph g = new Graph();
+            RdfXmlParser parser = new RdfXmlParser();
+            g.LoadFromFile("rdfxml-bad-property.rdf", parser);
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlPropertyInDefaultNamespaceGood()
+        {
+            Graph g = new Graph();
+            RdfXmlParser parser = new RdfXmlParser();
+            g.LoadFromFile("rdfxml-good-property.rdf", parser);
+
+            Assert.IsFalse(g.IsEmpty);
+            Assert.AreEqual(1, g.Triples.Count);
+
+            IUriNode property = g.Triples.First().Predicate as IUriNode;
+            Assert.AreEqual("default", property.Uri.Host);
+            Assert.AreEqual("good", property.Uri.Segments[1]);
+        }
 	}
 }

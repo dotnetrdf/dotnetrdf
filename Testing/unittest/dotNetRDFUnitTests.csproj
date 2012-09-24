@@ -426,6 +426,12 @@
     <Content Include="resources\rdfxml-relative-uri.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\rdfxml-bad-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-good-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\turtle11\base1.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

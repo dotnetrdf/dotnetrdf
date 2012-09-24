@@ -11,10 +11,10 @@ namespace VDS.RDF.Test.Parsing
     [TestClass]
     public class NamespaceTests
     {
-        private const String TurtleExample = @"[] a <Class> .";
+        private const String TurtleExample = @"[] a <relative> .";
 
         [TestMethod]
-        public void ParsingRelativeUriAppDefinedRdfXml1()
+        public void ParsingRelativeUriAppBaseRdfXml1()
         {
             //This invocation succeeds because when invoking via the FileLoader
             //the Base URI will be set to the file URI
@@ -28,14 +28,15 @@ namespace VDS.RDF.Test.Parsing
             Assert.AreEqual(1, g.Triples.Count);
             Triple t = g.Triples.First();
 
-            //Predicate should get it's relative URI resolved into
+            //Object should get it's relative URI resolved into
             //a File URI
-            Uri property = ((IUriNode)t.Predicate).Uri;
-            Assert.IsTrue(property.IsFile);
+            Uri obj = ((IUriNode)t.Object).Uri;
+            Assert.IsTrue(obj.IsFile);
+            Assert.AreEqual("relative", obj.Segments[obj.Segments.Length - 1]);
         }
 
         [TestMethod]
-        public void ParsingRelativeUriAppDefinedRdfXml2()
+        public void ParsingRelativeUriAppBaseRdfXml2()
         {
             //This invocation succeeds because when invoking because
             //we manually set the Base URI prior to invoking the parser
@@ -50,15 +51,16 @@ namespace VDS.RDF.Test.Parsing
             Assert.AreEqual(1, g.Triples.Count);
             Triple t = g.Triples.First();
 
-            //Predicate should get it's relative URI resolved into
+            //Object should get it's relative URI resolved into
             //the correct HTTP URI
-            Uri property = ((IUriNode)t.Predicate).Uri;
-            Assert.AreEqual("http", property.Scheme);
-            Assert.AreEqual("example.org", property.Host);
+            Uri obj = ((IUriNode)t.Object).Uri;
+            Assert.AreEqual("http", obj.Scheme);
+            Assert.AreEqual("example.org", obj.Host);
+            Assert.AreEqual("relative", obj.Segments[1]);
         }
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
-        public void ParsingRelativeUriUndefinedRdfXml()
+        public void ParsingRelativeUriNoBaseRdfXml()
         {
             //This invocation fails because when invoking the parser directly
             //the Base URI is not set to the file URI
@@ -69,7 +71,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
-        public void ParsingRelativeUriUndefinedTurtle()
+        public void ParsingRelativeUriNoBaseTurtle()
         {
             //This invocation fails because there is no Base URI to
             //resolve against
@@ -79,7 +81,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingRelativeUriAppDefinedTurtle()
+        public void ParsingRelativeUriAppBaseTurtle()
         {
             //This invocation succeeds because we define a Base URI
             //resolve against
@@ -98,6 +100,7 @@ namespace VDS.RDF.Test.Parsing
             Uri obj = ((IUriNode)t.Object).Uri;
             Assert.AreEqual("http", obj.Scheme);
             Assert.AreEqual("example.org", obj.Host);
+            Assert.AreEqual("relative", obj.Segments[1]);
         }
     }
 }
