@@ -99,6 +99,8 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
+- Turtle W3C support is almost 100% to the latest specification, there are some things that may change and the
+  test suite is a little limited so we do not guarantee 100% compliance
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
@@ -158,7 +160,7 @@ Release History
 
 27/7/2012 - Release of Version 0.7.1 Beta (Build 0.7.1.2329)
 
-?/?/2012 - Release of Version 0.7.2 Beta (Build 0.7.2.?)
+26/9/2012 - Release of Version 0.7.2 Beta (Build 0.7.2.1527)
 
 Acknowledgements
 ----------------
