@@ -944,6 +944,11 @@ namespace VDS.RDF
     /// </summary>
     public static class GraphExtensions
     {
+        /// <summary>
+        /// Turns a Graph into a Triple Store
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <returns></returns>
         internal static IInMemoryQueryableStore AsTripleStore(this IGraph g)
         {
             TripleStore store = new TripleStore();
@@ -1040,7 +1045,15 @@ namespace VDS.RDF
         /// <param name="file">File to load from</param>
         /// <param name="parser">Parser to use</param>
         /// <remarks>
+        /// <para>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
+        /// <para>
+        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// </para>
         /// </remarks>
         public static void LoadFromFile(this IGraph g, String file, IRdfReader parser)
         {
@@ -1053,7 +1066,15 @@ namespace VDS.RDF
         /// <param name="g">Graph to load into</param>
         /// <param name="file">File to load from</param>
         /// <remarks>
+        /// <para>
         /// This is just a shortcut to using the static <strong>Load()</strong> methods from the <see cref="FileLoader">FileLoader</see> class located in the <see cref="VDS.RDF.Parsing">Parsing</see> namespace
+        /// </para>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
+        /// <para>
+        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// </para>
         /// </remarks>
         public static void LoadFromFile(this IGraph g, String file)
         {
