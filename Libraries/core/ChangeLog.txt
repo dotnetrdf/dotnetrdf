@@ -47,6 +47,7 @@ Changed
  - Bug fix for use of Uri.EscapeDataString() on long strings
  - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance
  - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour
+ - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
  - Bumped HtmlAgilityPack version to 1.4.6

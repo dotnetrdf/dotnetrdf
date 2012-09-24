@@ -549,6 +549,11 @@ namespace VDS.RDF
             return true;
         }
 
+        /// <summary>
+        /// Adds a QName mapping to the cache
+        /// </summary>
+        /// <param name="uri">URI</param>
+        /// <param name="mapping">Mapping</param>
         protected virtual void AddToCache(String uri, QNameMapping mapping)
         {
             this._mapping.Add(uri, mapping);

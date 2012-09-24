@@ -311,6 +311,7 @@ namespace VDS.RDF.Parsing
         /// Tries to parse Base/Prefix declarations
         /// </summary>
         /// <param name="context">Parse Context</param>
+        /// <param name="turtleStyle">Whether declarations are Turtle style (if false SPARQL style is assumed)</param>
         private void TryParseDirective(TurtleParserContext context, bool turtleStyle)
         {
             if (context.TraceParsing)

@@ -147,6 +147,9 @@ namespace VDS.RDF.Storage.Management
 
 #endif
 
+        /// <summary>
+        /// Gets the IO Behaviour of the server
+        /// </summary>
         public IOBehaviour IOBehaviour
         {
             get
@@ -589,6 +592,9 @@ namespace VDS.RDF.Storage.Management
             return base.GetProxiedRequest(request);
         }
 
+        /// <summary>
+        /// Ensures the connection to the Sesame SYSTEM repository is prepared if it isn't already
+        /// </summary>
         protected virtual void EnsureSystemConnection()
         {
             if (this._sysConnection == null)
@@ -601,6 +607,9 @@ namespace VDS.RDF.Storage.Management
             }
         }
 
+        /// <summary>
+        /// Disposes of the server
+        /// </summary>
         public virtual void Dispose()
         {
             this._sysConnection.Dispose();

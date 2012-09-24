@@ -96,7 +96,8 @@ namespace VDS.RDF.Parsing
     /// <summary>
     /// Parser for RDF/XML syntax
     /// </summary>
-    public class RdfXmlParser : IRdfReader, ITraceableParser
+    public class RdfXmlParser
+        : IRdfReader, ITraceableParser
     {
 
         #region Variables and Properties
@@ -657,7 +658,9 @@ namespace VDS.RDF.Parsing
                 {
                     throw ParserHelper.Error("Unexpected Subject generated for a Triple", "Node Element", element.Subject);
                 }
-            } else {
+            } 
+            else
+            {
                 subj = element.SubjectNode;
             }
 
@@ -697,7 +700,7 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Generate a Property Triple
-                        pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(attr.QName, context.Namespaces, context.BaseUri)));
+                        pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(attr.QName, context.Namespaces, null)));
 
                         //Add Language to Literal if necessary
                         if (element.Language.Equals(String.Empty))
@@ -1719,7 +1722,7 @@ namespace VDS.RDF.Parsing
                         {
 #endif
                             //Create the Predicate from the Attribute QName
-                            pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, context.BaseUri)));
+                            pred = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(a.QName, context.Namespaces, null)));
 
                             //Create the Object from the Attribute Value
                             if (element.Language.Equals(String.Empty))
@@ -1804,7 +1807,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, context.BaseUri)));
+                IUriNode u = context.Handler.CreateUriNode(UriFactory.Create(Tools.ResolveQName(el.QName, context.Namespaces, null)));
                 return u;
             }
             catch (Exception ex)

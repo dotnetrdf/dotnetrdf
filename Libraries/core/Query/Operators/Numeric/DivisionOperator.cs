@@ -43,9 +43,15 @@ using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Operators.Numeric
 {
+    /// <summary>
+    /// Represents the numeric division operator
+    /// </summary>
     public class DivisionOperator
         : BaseNumericOperator
     {
+        /// <summary>
+        /// Gets the operator type
+        /// </summary>
         public override SparqlOperatorType Operator
         {
             get
@@ -54,7 +60,12 @@ namespace VDS.RDF.Query.Operators.Numeric
             }
         }
 
-        public override Nodes.IValuedNode Apply(params Nodes.IValuedNode[] ns)
+        /// <summary>
+        /// Applies the operator
+        /// </summary>
+        /// <param name="ns">Arguments</param>
+        /// <returns></returns>
+        public override IValuedNode Apply(params IValuedNode[] ns)
         {
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply division when any arguments are null");
 

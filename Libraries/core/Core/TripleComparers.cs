@@ -179,9 +179,16 @@ namespace VDS.RDF
     public class FullTripleComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Full Triple comparer
+        /// </summary>
         public FullTripleComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Full Triple comparer that uses a specific Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node comparer</param>
         public FullTripleComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -212,9 +219,16 @@ namespace VDS.RDF
     public class SubjectComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Subject comparer
+        /// </summary>
         public SubjectComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Subject comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node comparer</param>
         public SubjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -236,10 +250,16 @@ namespace VDS.RDF
     public class PredicateComparer
         : BaseTripleComparer
     {
-
+        /// <summary>
+        /// Creates a new Predicate comparer
+        /// </summary>
         public PredicateComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Predicate comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node Comparer</param>
         public PredicateComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -261,9 +281,16 @@ namespace VDS.RDF
     public class ObjectComparer 
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Object comparer
+        /// </summary>
         public ObjectComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Object comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node comparer</param>
         public ObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -285,9 +312,16 @@ namespace VDS.RDF
     public class SubjectPredicateComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Subject Predicate comparer
+        /// </summary>
         public SubjectPredicateComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Subject Predicate comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node Comparer</param>
         public SubjectPredicateComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -314,9 +348,16 @@ namespace VDS.RDF
     public class SubjectObjectComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Subject Object comparer
+        /// </summary>
         public SubjectObjectComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Subject Object comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node comparer</param>
         public SubjectObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -343,9 +384,16 @@ namespace VDS.RDF
     public class PredicateObjectComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Predicate Object comparer
+        /// </summary>
         public PredicateObjectComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Predicate Object comparer using the provided Node comparer
+        /// </summary>
+        /// <param name="nodeComparer">Node comparer</param>
         public PredicateObjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 
@@ -372,9 +420,15 @@ namespace VDS.RDF
     public class ObjectSubjectComparer
         : BaseTripleComparer
     {
+        /// <summary>
+        /// Creates a new Object Subject comparer
+        /// </summary>
         public ObjectSubjectComparer()
             : base() { }
 
+        /// <summary>
+        /// Creates a new Object Subject comparer using the provided Node comparer
+        /// </summary>
         public ObjectSubjectComparer(IComparer<INode> nodeComparer)
             : base(nodeComparer) { }
 

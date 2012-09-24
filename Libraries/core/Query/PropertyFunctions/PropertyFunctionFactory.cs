@@ -99,7 +99,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Gets whether a factory is registered
         /// </summary>
-        /// <param name="factoryType">Factory Type</param>
+        /// <param name="factory">Factory</param>
         /// <returns></returns>
         public static bool IsRegisteredFactory(IPropertyFunctionFactory factory)
         {
@@ -109,8 +109,8 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
-                /// <summary>
-        /// Gets whether a URI is considered a property function 
+        /// <summary>
+        /// Gets whether a URI is considered a property function by the global factories
         /// </summary>
         /// <param name="u">Function URI</param>
         /// <returns></returns>
@@ -120,16 +120,17 @@ namespace VDS.RDF.Query.PropertyFunctions
         }
 
         /// <summary>
-        /// Gets whether a URI is considered a property function 
+        /// Gets whether a URI is considered a property function by any global/local factory
         /// </summary>
         /// <param name="u">Function URI</param>
+        /// <param name="localFactories">Locally scoped factories</param>
         /// <returns></returns>
         public static bool IsPropertyFunction(Uri u, IEnumerable<IPropertyFunctionFactory> localFactories)
         {
             return localFactories.Any(f => f.IsPropertyFunction(u)) || _factories.Any(f => f.IsPropertyFunction(u));
         }
 
-                /// <summary>
+        /// <summary>
         /// Tries to create a property function
         /// </summary>
         /// <param name="info">Property Function information</param>
@@ -144,7 +145,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// Tries to create a property function
         /// </summary>
         /// <param name="info">Property Function information</param>
-        /// <param name="localFactories">Locally Scoped function factories</param>
+        /// <param name="localFactories">Locally Scoped factories</param>
         /// <param name="function">Property Function</param>
         /// <returns></returns>
         public static bool TryCreatePropertyFunction(PropertyFunctionInfo info, IEnumerable<IPropertyFunctionFactory> localFactories, out IPropertyFunctionPattern function)

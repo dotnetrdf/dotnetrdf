@@ -50,7 +50,7 @@ namespace VDS.RDF
         : Graph
     {
         private ISparqlQueryProcessor _processor;
-        private SparqlQueryParser _parser;
+        private SparqlQueryParser _parser = new SparqlQueryParser();
 
         /// <summary>
         /// Creates a new Queryable Graph

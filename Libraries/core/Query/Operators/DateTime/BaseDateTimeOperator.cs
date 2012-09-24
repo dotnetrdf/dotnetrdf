@@ -44,9 +44,17 @@ using VDS.RDF.Query;
 
 namespace VDS.RDF.Query.Operators.DateTime
 {
+    /// <summary>
+    /// Abstract base operator for date time operations
+    /// </summary>
     public abstract class BaseDateTimeOperator
         : BaseOperator
     {
+        /// <summary>
+        /// Gets whether the arguments are applicable for this operator
+        /// </summary>
+        /// <param name="ns">Arguments</param>
+        /// <returns></returns>
         public override bool IsApplicable(params IValuedNode[] ns)
         {
             return !Options.StrictOperators 

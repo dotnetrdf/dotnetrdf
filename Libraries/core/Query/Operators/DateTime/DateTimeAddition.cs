@@ -41,9 +41,20 @@ using VDS.RDF.Nodes;
 
 namespace VDS.RDF.Query.Operators.DateTime
 {
+    /// <summary>
+    /// Represents the date time addition operator
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Allows for queries to add durations to date times
+    /// </para>
+    /// </remarks>
     public class DateTimeAddition
         : BaseDateTimeOperator
     {
+        /// <summary>
+        /// Gets the operator type
+        /// </summary>
         public override SparqlOperatorType Operator
         {
             get
@@ -52,8 +63,14 @@ namespace VDS.RDF.Query.Operators.DateTime
             }
         }
 
+        /// <summary>
+        /// Applies the operator
+        /// </summary>
+        /// <param name="ns">Arguments</param>
+        /// <returns></returns>
         public override IValuedNode Apply(params IValuedNode[] ns)
         {
+            if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Length != 2) throw new RdfQueryException("Incorrect number of arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
 

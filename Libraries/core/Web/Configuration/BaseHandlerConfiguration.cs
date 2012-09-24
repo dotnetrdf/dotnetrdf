@@ -338,6 +338,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets whether there are any custom property function factories registered for this Handler
+        /// </summary>
         public bool HasPropertyFunctionFactories
         {
             get
@@ -346,6 +349,9 @@ namespace VDS.RDF.Web.Configuration
             }
         }
 
+        /// <summary>
+        /// Gets the custom property function factories registered for this Handler
+        /// </summary>
         public IEnumerable<IPropertyFunctionFactory> PropertyFunctionFactories
         {
             get

@@ -46,6 +46,9 @@ using VDS.RDF.Storage.Management.Provisioning;
 
 namespace VDS.RDF.Storage.Management
 {
+    /// <summary>
+    /// Represents an AllegroGraph server, may be used to access and manage stores within a catalog on the server
+    /// </summary>
     public class AllegroGraphServer
         : SesameServer
     {

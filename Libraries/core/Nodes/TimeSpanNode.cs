@@ -52,12 +52,30 @@ namespace VDS.RDF.Nodes
     {
         private TimeSpan _value;
 
+        /// <summary>
+        /// Creates a new Time span node
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="value">Time Span</param>
         public TimeSpanNode(IGraph g, TimeSpan value)
             : this(g, value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
+        /// <summary>
+        /// Creates a new Time span node 
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="value">Time Span</param>
+        /// <param name="lexicalValue">Lexical value</param>
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue)
             : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
+        /// <summary>
+        /// Creates a new Time span node
+        /// </summary>
+        /// <param name="g">Graph</param>
+        /// <param name="value">Time Span</param>
+        /// <param name="lexicalValue">Lexical value</param>
+        /// <param name="dtUri">Data type URI</param>
         public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue, Uri dtUri)
             : base(g, lexicalValue, dtUri)
         {
@@ -127,6 +145,10 @@ namespace VDS.RDF.Nodes
             throw new RdfQueryException("Cannot convert Time Spans to other types");
         }
 
+        /// <summary>
+        /// Gets the time span value of the node
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             return this._value;

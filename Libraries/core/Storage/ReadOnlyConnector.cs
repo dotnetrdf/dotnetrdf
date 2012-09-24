@@ -67,6 +67,9 @@ namespace VDS.RDF.Storage
 
         #region IStorageProvider Members
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public virtual IStorageServer ParentServer
         {
             get

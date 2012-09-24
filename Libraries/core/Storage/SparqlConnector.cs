@@ -121,6 +121,9 @@ namespace VDS.RDF.Storage
         public SparqlConnector(Uri endpointUri, SparqlConnectorLoadMethod mode)
             : this(new SparqlRemoteEndpoint(endpointUri), mode) { }
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public IStorageServer ParentServer
         {
             get

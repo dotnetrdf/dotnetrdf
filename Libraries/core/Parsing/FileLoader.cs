@@ -61,10 +61,10 @@ namespace VDS.RDF.Parsing
         /// Should this fail then the contents of the file will be read into a String, the <see cref="StringParser">StringParser</see> is then used to attempt to parse it.  The <see cref="StringParser">StringParser</see> uses some simple rules to guess which format the input is likely to be and chooses a parser based on it's guess.
         /// </para>
         /// <para>
-        /// <strong>Note:</strong> FileLoader will assign the Graph a file Uri prior to attempting Parsing, any Base Uri specified in the RDF contained in the file will override this Uri.
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
         /// </para>
         /// <para>
-        /// The File Uri assigned will always be an absolute Uri for the File
+        /// If a File URI is assigned it will always be an absolute URI for the file
         /// </para>
         /// </remarks>
         public static void Load(IGraph g, String filename)
@@ -78,6 +78,14 @@ namespace VDS.RDF.Parsing
         /// <param name="g">Graph to load into</param>
         /// <param name="filename">File to load from</param>
         /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
+        /// <para>
+        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// </para>
+        /// </remarks>
         public static void Load(IGraph g, String filename, IRdfReader parser)
         {
             if (g == null) throw new RdfParseException("Cannot read RDF into a null Graph");
@@ -127,12 +135,6 @@ namespace VDS.RDF.Parsing
         /// <para>
         /// Should this fail then the contents of the file will be read into a String, the <see cref="StringParser">StringParser</see> is then used to attempt to parse it.  The <see cref="StringParser">StringParser</see> uses some simple rules to guess which format the input is likely to be and chooses a parser based on it's guess.
         /// </para>
-        /// <para>
-        /// <strong>Note:</strong> FileLoader will assign the Graph a file Uri prior to attempting Parsing, any Base Uri specified in the RDF contained in the file will override this Uri.
-        /// </para>
-        /// <para>
-        /// The File Uri assigned will always be an absolute Uri for the File
-        /// </para>
         /// </remarks>
         public static void Load(IRdfHandler handler, String filename)
         {
@@ -145,6 +147,14 @@ namespace VDS.RDF.Parsing
         /// <param name="handler">RDF Handler to use</param>
         /// <param name="filename">File to load from</param>
         /// <param name="parser">Parser to use</param>
+        /// <remarks>
+        /// <para>
+        /// <strong>Note:</strong> FileLoader will assign the Graph a file URI as it's Base URI unless the Graph already has a Base URI or is non-empty prior to attempting parsing.  Note that any Base URI specified in the RDF contained in the file will override this initial Base URI.  In some cases this may lead to invalid RDF being accepted and generating strange relative URIs, if you encounter this either set a Base URI prior to calling this method or create an instance of the relevant parser and invoke it directly.
+        /// </para>
+        /// <para>
+        /// If a File URI is assigned it will always be an absolute URI for the file
+        /// </para>
+        /// </remarks>
         public static void Load(IRdfHandler handler, String filename, IRdfReader parser)
         {
             if (handler == null) throw new RdfParseException("Cannot read RDF using a null RDF Handler");

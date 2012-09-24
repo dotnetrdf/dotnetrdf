@@ -83,7 +83,6 @@ namespace VDS.RDF
         /// <summary>
         /// Creates a new Tree Indexed triple collection
         /// </summary>
-        /// <param name="compoundIndexMode">Mode to use for compound indexes</param>
         public SubTreeIndexedTripleCollection()
         { }
 

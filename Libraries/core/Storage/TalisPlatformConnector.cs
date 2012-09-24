@@ -175,6 +175,9 @@ namespace VDS.RDF.Storage
 
 #endif
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public IStorageServer ParentServer
         {
             get

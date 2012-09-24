@@ -71,6 +71,10 @@ namespace VDS.RDF.Query.Operators
         /// <returns></returns>
         public abstract IValuedNode Apply(params IValuedNode[] ns);
 
+        /// <summary>
+        /// Serializes the configuration of the operator
+        /// </summary>
+        /// <param name="context">Serialization Context</param>
         public virtual void SerializeConfiguration(ConfigurationSerializationContext context)
         {
             INode op = context.NextSubject;

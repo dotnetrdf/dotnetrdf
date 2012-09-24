@@ -249,6 +249,9 @@ namespace VDS.RDF.Storage
             this._d = new DoRequestSequenceDelgate(this.DoRequestSequence);
         }
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public virtual IStorageServer ParentServer
         {
             get
@@ -257,6 +260,9 @@ namespace VDS.RDF.Storage
             }
         }
 
+        /// <summary>
+        /// Gets the parent server (if any)
+        /// </summary>
         public virtual IAsyncStorageServer AsyncParentServer
         {
             get

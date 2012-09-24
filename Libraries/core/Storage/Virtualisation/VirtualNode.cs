@@ -892,6 +892,10 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as blank nodes cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Blank Nodes to types");
@@ -1101,6 +1105,10 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as graph literals cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Graph Literal Nodes to types");
@@ -1378,6 +1386,13 @@ namespace VDS.RDF.Storage.Virtualisation
             return this._strongValue.AsDateTime();
         }
 
+        /// <summary>
+        /// Gets the value as a time span
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Forces a materialisation of the value
+        /// </remarks>
         public TimeSpan AsTimeSpan()
         {
             this.EnsureStrongValue();
@@ -1589,6 +1604,10 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast a URI to a type");
         }
 
+        /// <summary>
+        /// Throws an error as URIs cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast a URI to a type");
@@ -1798,6 +1817,10 @@ namespace VDS.RDF.Storage.Virtualisation
             throw new RdfQueryException("Cannot cast Variable Nodes to types");
         }
 
+        /// <summary>
+        /// Throws an error as variables cannot be cast to a time span
+        /// </summary>
+        /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
             throw new RdfQueryException("Cannot cast Variable Nodes to types");

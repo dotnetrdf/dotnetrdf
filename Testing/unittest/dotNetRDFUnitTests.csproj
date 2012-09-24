@@ -115,6 +115,7 @@
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\RelativeUriTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\Turtle11.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
@@ -423,6 +424,15 @@
       <Link>resources\dataset_50.ttl.gz</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <Content Include="resources\rdfxml-relative-uri.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-bad-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-good-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\turtle11\base1.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
