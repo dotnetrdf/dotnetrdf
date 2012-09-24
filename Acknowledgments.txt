@@ -88,3 +88,6 @@ improvements in the code:
  - Tomasz Pluskiewicz
  - Rob Styles
  - Alexandre Bouffard
+ - Uldis Bojars
+ - Antonio Nunziante
+ - Constantinos Orphinades
