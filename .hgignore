@@ -10,6 +10,7 @@ TestResults/
 Build/ndoc3/docs
 Build/nuget/*/*.nupkg
 Build/nuget/*/lib/*
+dotNetRDF*.zip
 
 # Files not to version control
 *.suo

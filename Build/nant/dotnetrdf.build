@@ -1032,7 +1032,7 @@
     <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
 
-  <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
+  <target name="build-release-core" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
     <!-- Documentation -->
     <copy overwrite="true" todir="bin/stable/" file="Acknowledgments.txt" />
     <copy overwrite="true" todir="bin/stable/" file="Libraries/core/ChangeLog.txt" />
@@ -1115,11 +1115,11 @@
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
-  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit,dist-nuget">
+  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-core,dist-nightly,dist-toolkit,dist-nuget">
     
   </target>
 
-  <target name="dist-release" description="Creates the ZIP files for the Release" depends="build-release">
+  <target name="dist-core" description="Creates the ZIP files for the Core Library Release" depends="build-release-core">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
       <fileset basedir="bin/stable/" failonempty="true">
         <include name="/**/*" />
@@ -1128,6 +1128,7 @@
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
       <fileset failonempty="true">
         <include name="**/*" />
+        <exclude name=".hg/*" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
 	      <exclude name="**/*.dll" />
@@ -1138,7 +1139,7 @@
         <exclude name="Samples/" />
 	      <exclude name="*.zip" />
 	      <exclude name="Utilities/bsbm/" />
-	      <exclude name="Build/ndoc3/doc/" />
+	      <exclude name="Build/ndoc3/docs/" />
 	      <exclude name="Build/NuGet/*/lib/**/*" />
       </fileset>
     </zip>
@@ -1221,7 +1222,7 @@
   <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
   </target>
 
-  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release">
+  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-core">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1292,7 +1293,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release">
+  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-core">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1343,7 +1344,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release">
+  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-core">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">
@@ -1408,7 +1409,7 @@
     </ftp>
   </target>
 
-  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-release">
+  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-core">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
         <include name="/${dotnetrdf.libzip}" />
