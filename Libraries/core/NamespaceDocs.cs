@@ -104,7 +104,7 @@ namespace VDS.RDF
     /// <para>
     /// The more noticeable but mostly backwards compatible change is the reorganisation of the <see cref="VDS.RDF.Storage"/> namespace, the interfaces in that namespace have been renamed to have more descriptive and consistent naming and we have introduced new interfaces for asynchronous access to storage.  The old interfaces remain as marker interfaces which inherit from the new interfaces so existing code will not need to be changed but will result in compiler warnings reminding you to upgrade to the new interface names.  The following table summarizes the old and new interface names:
     /// </para>
-    /// <table>
+    /// <table class="dtTABLE" cellspacing="0">
     ///     <tr><th>Old Name</th><th>New Name</th></tr>
     ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
     ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
