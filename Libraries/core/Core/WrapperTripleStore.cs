@@ -38,7 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Core
+namespace VDS.RDF
 {
     /// <summary>
     /// Abstract decorator for Triple Stores to make it easier to add new functionality on top of existing implementations
