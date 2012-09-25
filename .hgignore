@@ -7,6 +7,7 @@ bin/
 **/obj
 **/Debug
 TestResults/
+Build/ndoc3/docs
 
 # Files not to version control
 *.suo
@@ -14,7 +15,7 @@ TestResults/
 *.temp
 *.user
 temp*.txt
-_ReSharper.dotNetRDF.Core/
+_ReSharper*/
 
 # Developer/Environment specific config files
 Testing\unittest\resources\UnitTestConfig.properties

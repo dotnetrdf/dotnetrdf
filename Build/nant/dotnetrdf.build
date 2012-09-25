@@ -1034,7 +1034,7 @@
 
   <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
     <!-- Documentation -->
-    <copy overwrite="true" todir="bin/stable/" file="../Acknowledgments.txt" />
+    <copy overwrite="true" todir="bin/stable/" file="Acknowledgments.txt" />
     <copy overwrite="true" todir="bin/stable/" file="Libraries/core/ChangeLog.txt" />
     <copy overwrite="true" todir="bin/stable/" file="Libraries/core/ReleaseNotes.txt" />
     <copy overwrite="true" todir="bin/stable/" file="Libraries/core/Readme.txt" />
@@ -1068,18 +1068,6 @@
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Data.Sql 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
     <!-- Data.Virtuoso 4.0 Build -->
     <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
@@ -1168,7 +1156,7 @@
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
-        <include name="../../Acknowlegments.txt" />
+        <include name="../Acknowlegments.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
