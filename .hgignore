@@ -14,6 +14,7 @@ TestResults/
 *.temp
 *.user
 temp*.txt
+_ReSharper.dotNetRDF.Core/
 
 # Developer/Environment specific config files
 Testing\unittest\resources\UnitTestConfig.properties
@@ -31,4 +32,3 @@ Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj
 Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj
 Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj
 Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj
-

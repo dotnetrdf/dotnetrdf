@@ -281,6 +281,10 @@ namespace VDS.RDF.Storage
         /// </summary>
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <returns><see cref="SparqlResultSet">SparqlResultSet</see> or a <see cref="Graph">Graph</see> depending on the Sparql Query</returns>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results</exception>
+        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand</exception>
         Object Query(String sparqlQuery);
 
         /// <summary>
@@ -289,6 +293,10 @@ namespace VDS.RDF.Storage
         /// <param name="rdfHandler">RDF Handler</param>
         /// <param name="resultsHandler">SPARQL Results Handler</param>
         /// <param name="sparqlQuery">SPARQL Query</param>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results</exception>
+        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand</exception>
         void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery);
     }
 
@@ -427,6 +435,10 @@ namespace VDS.RDF.Storage
         /// <param name="sparqlQuery">SPARQL Query</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results</exception>
+        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand</exception>
         void Query(String sparqlQuery, AsyncStorageCallback callback, Object state);
 
         /// <summary>
@@ -437,6 +449,10 @@ namespace VDS.RDF.Storage
         /// <param name="resultsHandler">Results Handler</param>
         /// <param name="callback">Callback</param>
         /// <param name="state">State to pass to the callback</param>
+        /// <exception cref="RdfQueryException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfStorageException">Thrown if an error occurs performing the query</exception>
+        /// <exception cref="RdfParseException">Thrown if the query is invalid when validated by dotNetRDF prior to passing the query request to the store or if the request succeeds but the store returns malformed results</exception>
+        /// <exception cref="RdfParserSelectionException">Thrown if the store returns results in a format dotNetRDF does not understand</exception>
         void Query(IRdfHandler rdfHandler, ISparqlResultsHandler resultsHandler, String sparqlQuery, AsyncStorageCallback callback, Object state);
     }
 
