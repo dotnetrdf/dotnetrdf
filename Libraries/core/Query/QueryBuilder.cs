@@ -15,7 +15,7 @@ namespace VDS.RDF.Query
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public class QueryBuilder : IQueryBuilder
+    public sealed class QueryBuilder : IQueryBuilder
     {
         private readonly SparqlQuery _query = new SparqlQuery();
 
