@@ -38,11 +38,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Test.Parsing
 {

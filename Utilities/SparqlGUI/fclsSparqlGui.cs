@@ -41,9 +41,7 @@ using System.Text;
 using System.Windows.Forms;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Index;
-using Lucene.Net.Search;
 using Lucene.Net.Store;
-using VDS.RDF;
 using VDS.RDF.GUI;
 using VDS.RDF.GUI.WinForms;
 using VDS.RDF.Parsing;
@@ -55,7 +53,6 @@ using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Query.Optimisation;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
