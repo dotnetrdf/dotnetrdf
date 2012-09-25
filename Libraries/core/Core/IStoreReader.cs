@@ -35,7 +35,6 @@ terms.
 
 using System;
 using System.IO;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF
 {

@@ -42,7 +42,6 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Test.Parsing
 {

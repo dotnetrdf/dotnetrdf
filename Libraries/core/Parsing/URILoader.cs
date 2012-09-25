@@ -39,7 +39,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
 {

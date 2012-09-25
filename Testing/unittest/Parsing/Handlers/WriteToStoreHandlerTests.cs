@@ -43,7 +43,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Test.Storage;
 
 namespace VDS.RDF.Test.Parsing.Handlers

@@ -48,7 +48,6 @@ using System.Xml.Xsl;
 #endif
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing

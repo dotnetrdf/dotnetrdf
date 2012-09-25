@@ -40,7 +40,6 @@ using System.Text;
 using System.IO;
 using VDS.RDF;
 using VDS.RDF.Parsing;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 
 namespace dotNetRDFTest

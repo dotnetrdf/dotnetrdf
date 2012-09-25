@@ -38,7 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Query.Inference.Pellet.Services
 {

@@ -42,7 +42,6 @@ using VDS.RDF.Parsing.Contexts;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing
 {

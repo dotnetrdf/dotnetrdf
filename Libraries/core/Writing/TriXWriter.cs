@@ -41,7 +41,6 @@ using System.Text;
 using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Writing
 {

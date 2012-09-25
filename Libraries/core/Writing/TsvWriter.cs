@@ -41,7 +41,6 @@ using System.IO;
 using System.Threading;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 

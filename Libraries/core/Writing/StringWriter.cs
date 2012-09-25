@@ -39,7 +39,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using VDS.RDF.Query;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Writing
 {
