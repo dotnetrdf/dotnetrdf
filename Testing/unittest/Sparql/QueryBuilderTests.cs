@@ -76,5 +76,19 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[1].TriplePatterns.Count());
         }
+
+        [TestMethod]
+        public void GetExectuableQueryReturnsNewInstance()
+        {
+            // given
+            IQueryBuilder builder = QueryBuilder.SelectAll().Where("s", "p", "o");
+
+            // when
+            SparqlQuery query1 = builder.GetExecutableQuery();
+            SparqlQuery query2 = builder.GetExecutableQuery();
+
+            // then
+            Assert.AreNotSame(query1, query2);
+        }
     }
 }
