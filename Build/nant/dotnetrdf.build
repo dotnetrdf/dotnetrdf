@@ -933,14 +933,17 @@
   </target>
   
   <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" 
+          depends="build-libs">
+    
+  </target>
+
+  <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-core,build-core-net35,
                    build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-windowsphone,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
-                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35">
-    
-  </target>
+                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
   
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
@@ -1033,9 +1036,9 @@
   </target>
 
   <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
-          depends="build-release-libs" />
+          depends="build-release-libs,build-release-utils" />
 
-  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build">
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
     <!-- Documentation -->
     <copy overwrite="true" todir="bin/stable/Libraries/" file="Acknowledgments.txt" />
     <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/ChangeLog.txt" />
@@ -1104,17 +1107,53 @@
     <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
     <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
+
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}"
+          depends="compile-utils" />
   
   <!-- Clean Targets -->
 
-  <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary">
-    <delete failonerror="false">
+  <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary"
+          depends="clean-nightlies,clean-stable,clean-intermediaries">
+  </target>
+
+  <target name="clean-nightlies" description="Cleans the nightly build directory">
+    <delete failonerror="true">
       <fileset>
         <include name="bin/nightlies/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-stable" description="Cleans the stable build directory">
+    <delete failonerror="true">
+      <fileset>
         <include name="bin/stable/**/*" />
-        <include name="dotNetRDF*.zip" />
-        <include name="**/obj/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-intermediaries" description="Cleans the intermediary bin/ and obj/ directories of all projects">
+    <delete failonerror="false">
+      <fileset>
         <include name="**/bin/**/*" />
+        <include name="**/obj/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-dist" description="Cleans the distibution zip files">
+    <delete failonerror="false">
+      <fileset>
+        <include name="dotNetRDF*.zip" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-ndoc" description="Cleans the NDoc working directory">
+    <delete failonerror="false">
+      <fileset>
+        <include name="Build/ndoc3/docs/*" />
       </fileset>
     </delete>
   </target>
