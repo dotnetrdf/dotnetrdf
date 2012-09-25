@@ -22,7 +22,7 @@ For Windows Phone 7 projects you will need to add the following since this DLL i
 HAP developers that it is fully compatible with Windows Phone:
 
     <Reference Include="System.Xml.XPath">
-      <HintPath>$(ProgramFiles(x86))\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
+      <HintPath>C:\Program Files(x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
     </Reference>
 
 Note if you add this DLL to a Windows Phone project via VS you will receive a warning message, we suggest you add this manually to Windows Phone
