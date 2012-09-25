@@ -1117,7 +1117,7 @@
   <!-- Clean Targets -->
 
   <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary">
-    <delete>
+    <delete failonerror="false">
       <fileset>
         <include name="**/obj/**/*" />
         <include name="**/bin/**/*" />

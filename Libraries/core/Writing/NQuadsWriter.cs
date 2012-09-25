@@ -40,7 +40,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;
 

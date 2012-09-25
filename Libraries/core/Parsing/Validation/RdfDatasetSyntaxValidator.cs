@@ -35,9 +35,7 @@ terms.
 
 using System;
 using System.IO;
-using System.Linq;
 using VDS.RDF.Parsing.Handlers;
-using VDS.RDF.Storage.Params;
 
 namespace VDS.RDF.Parsing.Validation
 {
