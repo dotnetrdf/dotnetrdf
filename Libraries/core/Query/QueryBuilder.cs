@@ -15,7 +15,7 @@ namespace VDS.RDF.Query
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public class QueryBuilder
+    public class QueryBuilder : IQueryBuilder
     {
         private readonly SparqlQuery _query = new SparqlQuery();
 
@@ -28,7 +28,7 @@ namespace VDS.RDF.Query
         /// Creates a new SELECT * query
         /// </summary>
         /// <returns></returns>
-        public static QueryBuilder SelectAll()
+        public static IQueryBuilder SelectAll()
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.SelectAll;
@@ -40,7 +40,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="q">Query</param>
         /// <returns></returns>
-        public QueryBuilder Distinct()
+        public IQueryBuilder Distinct()
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.HasDistinctModifier) return this;
@@ -73,7 +73,7 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// To mix variables and RDF terms (URIs and Literals) you should use the overload that takes <see cref="INode"/> arguments instead
         /// </remarks>
-        public QueryBuilder Where(String s, String p, String o)
+        public IQueryBuilder Where(String s, String p, String o)
         {
             return Where(_query.CreateVariableNode(s), _query.CreateVariableNode(p), _query.CreateVariableNode(o));
         }
@@ -86,12 +86,12 @@ namespace VDS.RDF.Query
         /// <param name="p">Predicate to match</param>
         /// <param name="o">Object to match</param>
         /// <returns></returns>
-        public QueryBuilder Where(INode s, INode p, INode o)
+        public IQueryBuilder Where(INode s, INode p, INode o)
         {
             return Where(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(o)));
         }
 
-        public QueryBuilder Where(ITriplePattern tp)
+        public IQueryBuilder Where(ITriplePattern tp)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query
             return this;
         }
 
-        public QueryBuilder Where(IEnumerable<Triple> ts)
+        public IQueryBuilder Where(IEnumerable<Triple> ts)
         {
             foreach (Triple t in ts)
             {
@@ -123,7 +123,7 @@ namespace VDS.RDF.Query
             return this;
         }
 
-        public QueryBuilder Where(IEnumerable<ITriplePattern> tps)
+        public IQueryBuilder Where(IEnumerable<ITriplePattern> tps)
         {
             foreach (ITriplePattern tp in tps)
             {
@@ -132,7 +132,7 @@ namespace VDS.RDF.Query
             return this;
         }
 
-        public QueryBuilder Where(GraphPattern gp)
+        public IQueryBuilder Where(GraphPattern gp)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.RootGraphPattern == null)
@@ -146,12 +146,12 @@ namespace VDS.RDF.Query
             return this;
         }
 
-        public QueryBuilder Optional(INode s, INode p, INode o)
+        public IQueryBuilder Optional(INode s, INode p, INode o)
         {
             return Optional(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(p)));
         }
 
-        public QueryBuilder Optional(ITriplePattern tp)
+        public IQueryBuilder Optional(ITriplePattern tp)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsOptional = true;
@@ -174,7 +174,7 @@ namespace VDS.RDF.Query
             return Where(gp);
         }
 
-        public QueryBuilder Filter(ISparqlExpression expr)
+        public IQueryBuilder Filter(ISparqlExpression expr)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
@@ -182,23 +182,31 @@ namespace VDS.RDF.Query
             return this;
         }
 
-        public QueryBuilder Limit(int limit)
+        public IQueryBuilder Limit(int limit)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             _query.Limit = limit;
             return this;
         }
 
-        public QueryBuilder Offset(int offset)
+        public IQueryBuilder Offset(int offset)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             _query.Offset = offset;
             return this;
         }
 
-        public QueryBuilder Slice(int limit, int offset)
+        public IQueryBuilder Slice(int limit, int offset)
         {
             return Limit(limit).Offset(offset);
+        }
+
+        public SparqlQuery GetExecutableQuery()
+        {
+            // returns a copy to prevent changes in either
+            // QueryBuilder or the retrieved SparqlQuery(s) from
+            // being reflected in one another
+            return _query.Copy();
         }
 
         /// <summary>
