@@ -209,6 +209,60 @@ namespace VDS.RDF.Query
             return _query.Copy();
         }
 
+        #region Implementation of INodeFactory
+
+        public IBlankNode CreateBlankNode()
+        {
+            return _query.CreateBlankNode();
+        }
+
+        public IBlankNode CreateBlankNode(string nodeId)
+        {
+            return _query.CreateBlankNode(nodeId);
+        }
+
+        public IGraphLiteralNode CreateGraphLiteralNode()
+        {
+            return _query.CreateGraphLiteralNode();
+        }
+
+        public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
+        {
+            return _query.CreateGraphLiteralNode(subgraph);
+        }
+
+        public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
+        {
+            return _query.CreateLiteralNode(literal, datatype);
+        }
+
+        public ILiteralNode CreateLiteralNode(string literal)
+        {
+            return _query.CreateLiteralNode(literal);
+        }
+
+        public ILiteralNode CreateLiteralNode(string literal, string langspec)
+        {
+            return _query.CreateLiteralNode(literal, langspec);
+        }
+
+        public IUriNode CreateUriNode(Uri uri)
+        {
+            return _query.CreateUriNode(uri);
+        }
+
+        public IVariableNode CreateVariableNode(string varname)
+        {
+            return _query.CreateVariableNode(varname);
+        }
+
+        public string GetNextBlankNodeID()
+        {
+            return _query.GetNextBlankNodeID();
+        }
+
+        #endregion
+
         /// <summary>
         /// Turns a Node into a Pattern item for use in a Triple Pattern
         /// </summary>

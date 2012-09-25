@@ -15,7 +15,8 @@ namespace VDS.RDF.Test.Sparql
         public void SparqlBuilderSelect1()
         {
             SparqlQuery q = QueryBuilder
-                .SelectAll();
+                .SelectAll()
+                .GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNull(q.RootGraphPattern);
         }
@@ -25,7 +26,7 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
-                .Distinct();
+                .Distinct().GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAllDistinct, q.QueryType);
             Assert.IsTrue(q.HasDistinctModifier);
             Assert.IsNull(q.RootGraphPattern);
@@ -37,7 +38,8 @@ namespace VDS.RDF.Test.Sparql
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
-                .Where("s", "p", "o");
+                .Where("s", "p", "o")
+                .GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
@@ -46,9 +48,11 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlBuilderSelect4()
         {
-            SparqlQuery q = QueryBuilder.SelectAll();
-            q = q.Where("s", "p", "o")
-                 .Optional(q.CreateVariableNode("s"), q.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), q.CreateVariableNode("type"));
+            IQueryBuilder builder = QueryBuilder.SelectAll();
+            builder.Where("s", "p", "o")
+                 .Optional(builder.CreateVariableNode("s"), builder.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), builder.CreateVariableNode("type"));
+
+            var q = builder.GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
@@ -59,10 +63,12 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void SparqlBuilderSelect5()
         {
-            SparqlQuery q = QueryBuilder.SelectAll();
-            q = q.Where("s", "p", "o")
-                 .Optional(q.CreateVariableNode("s"), q.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), q.CreateVariableNode("type"))
+            IQueryBuilder builder = QueryBuilder.SelectAll();
+            builder.Where("s", "p", "o")
+                 .Optional(builder.CreateVariableNode("s"), builder.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), builder.CreateVariableNode("type"))
                  .Where("x", "y", "z");
+
+            var q = builder.GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
