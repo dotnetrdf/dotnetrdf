@@ -8,6 +8,8 @@ bin/
 **/Debug
 TestResults/
 Build/ndoc3/docs
+Build/nuget/*/*.nupkg
+Build/nuget/*/lib/*
 
 # Files not to version control
 *.suo

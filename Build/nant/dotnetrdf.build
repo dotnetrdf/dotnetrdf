@@ -1256,32 +1256,32 @@
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net40/">
       <fileset basedir="bin/stable/Core/net40/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net40-client/">
       <fileset basedir="bin/stable/Core/net40-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35/">
       <fileset basedir="bin/stable/Core/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35-client/">
       <fileset basedir="bin/stable/Core/net35-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4/">
       <fileset basedir="bin/stable/Core/sl4/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4-wp/">
       <fileset basedir="bin/stable/Core/sl4-wp/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
