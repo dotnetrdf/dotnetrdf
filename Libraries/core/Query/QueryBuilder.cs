@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
@@ -17,17 +15,24 @@ namespace VDS.RDF.Query
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public static class QueryBuilder
+    public class QueryBuilder
     {
+        private readonly SparqlQuery _query = new SparqlQuery();
+
+        private QueryBuilder(SparqlQuery query)
+        {
+            this._query = query;
+        }
+
         /// <summary>
         /// Creates a new SELECT * query
         /// </summary>
         /// <returns></returns>
-        public static SparqlQuery SelectAll()
+        public static QueryBuilder SelectAll()
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.SelectAll;
-            return q;
+            return new QueryBuilder(q);
         }
 
         /// <summary>
@@ -35,26 +40,26 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="q">Query</param>
         /// <returns></returns>
-        public static SparqlQuery Distinct(this SparqlQuery q)
+        public QueryBuilder Distinct()
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            if (q.HasDistinctModifier) return q;
-            switch (q.QueryType)
+            if (_query == null) throw new ArgumentNullException("Null query");
+            if (_query.HasDistinctModifier) return this;
+            switch (_query.QueryType)
             {
                 case SparqlQueryType.Select:
-                    q.QueryType = SparqlQueryType.SelectDistinct;
+                    _query.QueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAll:
-                    q.QueryType = SparqlQueryType.SelectAllDistinct;
+                    _query.QueryType = SparqlQueryType.SelectAllDistinct;
                     break;
                 case SparqlQueryType.SelectReduced:
-                    q.QueryType = SparqlQueryType.SelectDistinct;
+                    _query.QueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAllReduced:
-                    q.QueryType = SparqlQueryType.SelectAllDistinct;
+                    _query.QueryType = SparqlQueryType.SelectAllDistinct;
                     break;
             }
-            return q;
+            return this;
         }
 
         /// <summary>
@@ -68,9 +73,9 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// To mix variables and RDF terms (URIs and Literals) you should use the overload that takes <see cref="INode"/> arguments instead
         /// </remarks>
-        public static SparqlQuery Where(this SparqlQuery q, String s, String p, String o)
+        public QueryBuilder Where(String s, String p, String o)
         {
-            return q.Where(q.CreateVariableNode(s), q.CreateVariableNode(p), q.CreateVariableNode(o));
+            return Where(_query.CreateVariableNode(s), _query.CreateVariableNode(p), _query.CreateVariableNode(o));
         }
 
         /// <summary>
@@ -81,72 +86,72 @@ namespace VDS.RDF.Query
         /// <param name="p">Predicate to match</param>
         /// <param name="o">Object to match</param>
         /// <returns></returns>
-        public static SparqlQuery Where(this SparqlQuery q, INode s, INode p, INode o)
+        public QueryBuilder Where(INode s, INode p, INode o)
         {
-            return q.Where(new TriplePattern(s.ToPatternItem(), p.ToPatternItem(), o.ToPatternItem()));
+            return Where(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(o)));
         }
 
-        public static SparqlQuery Where(this SparqlQuery q, ITriplePattern tp)
+        public QueryBuilder Where(ITriplePattern tp)
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            if (q.RootGraphPattern == null) q.RootGraphPattern = new GraphPattern();
+            if (_query == null) throw new ArgumentNullException("Null query");
+            if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
             switch (tp.PatternType)
             {
                 case TriplePatternType.Match:
                 case TriplePatternType.Path:
                 case TriplePatternType.PropertyFunction:
                 case TriplePatternType.SubQuery:
-                    q.RootGraphPattern.AddTriplePattern(tp);
+                    _query.RootGraphPattern.AddTriplePattern(tp);
                     break;
                 case TriplePatternType.LetAssignment:
                 case TriplePatternType.BindAssignment:
-                    q.RootGraphPattern.AddAssignment((IAssignmentPattern)tp);
+                    _query.RootGraphPattern.AddAssignment((IAssignmentPattern)tp);
                     break;
                 case TriplePatternType.Filter:
-                    q.RootGraphPattern.AddFilter(((IFilterPattern)tp).Filter);
+                    _query.RootGraphPattern.AddFilter(((IFilterPattern)tp).Filter);
                     break;
             }
-            return q;
+            return this;
         }
 
-        public static SparqlQuery Where(this SparqlQuery q, IEnumerable<Triple> ts)
+        public QueryBuilder Where(IEnumerable<Triple> ts)
         {
             foreach (Triple t in ts)
             {
-                q = q.Where(t.Subject, t.Predicate, t.Object);
+                Where(t.Subject, t.Predicate, t.Object);
             }
-            return q;
+            return this;
         }
 
-        public static SparqlQuery Where(this SparqlQuery q, IEnumerable<ITriplePattern> tps)
+        public QueryBuilder Where(IEnumerable<ITriplePattern> tps)
         {
             foreach (ITriplePattern tp in tps)
             {
-                q = q.Where(tp);
+                Where(tp);
             }
-            return q;
+            return this;
         }
 
-        public static SparqlQuery Where(this SparqlQuery q, GraphPattern gp)
+        public QueryBuilder Where(GraphPattern gp)
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            if (q.RootGraphPattern == null)
+            if (_query == null) throw new ArgumentNullException("Null query");
+            if (_query.RootGraphPattern == null)
             {
-                q.RootGraphPattern = gp;
+                _query.RootGraphPattern = gp;
             }
             else
             {
-                q.RootGraphPattern.AddGraphPattern(gp);
+                _query.RootGraphPattern.AddGraphPattern(gp);
             }
-            return q;
+            return this;
         }
 
-        public static SparqlQuery Optional(this SparqlQuery q, INode s, INode p, INode o)
+        public QueryBuilder Optional(INode s, INode p, INode o)
         {
-            return q.Optional(new TriplePattern(s.ToPatternItem(), p.ToPatternItem(), o.ToPatternItem()));
+            return Optional(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(p)));
         }
 
-        public static SparqlQuery Optional(this SparqlQuery q, ITriplePattern tp)
+        public QueryBuilder Optional(ITriplePattern tp)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsOptional = true;
@@ -166,34 +171,34 @@ namespace VDS.RDF.Query
                     gp.AddFilter(((IFilterPattern)tp).Filter);
                     break;
             }
-            return q.Where(gp);
+            return Where(gp);
         }
 
-        public static SparqlQuery Filter(this SparqlQuery q, ISparqlExpression expr)
+        public QueryBuilder Filter(ISparqlExpression expr)
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            if (q.RootGraphPattern == null) q.RootGraphPattern = new GraphPattern();
-            q.RootGraphPattern.AddFilter(new UnaryExpressionFilter(expr));
-            return q;
+            if (_query == null) throw new ArgumentNullException("Null query");
+            if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
+            _query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(expr));
+            return this;
         }
 
-        public static SparqlQuery Limit(this SparqlQuery q, int limit)
+        public QueryBuilder Limit(int limit)
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            q.Limit = limit;
-            return q;
+            if (_query == null) throw new ArgumentNullException("Null query");
+            _query.Limit = limit;
+            return this;
         }
 
-        public static SparqlQuery Offset(this SparqlQuery q, int offset)
+        public QueryBuilder Offset(int offset)
         {
-            if (q == null) throw new ArgumentNullException("Null query");
-            q.Offset = offset;
-            return q;
+            if (_query == null) throw new ArgumentNullException("Null query");
+            _query.Offset = offset;
+            return this;
         }
 
-        public static SparqlQuery Slice(this SparqlQuery q, int limit, int offset)
+        public QueryBuilder Slice(int limit, int offset)
         {
-            return q.Limit(limit).Offset(offset);
+            return Limit(limit).Offset(offset);
         }
 
         /// <summary>
@@ -201,7 +206,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Node</param>
         /// <returns></returns>
-        private static PatternItem ToPatternItem(this INode n)
+        private static PatternItem ToPatternItem(INode n)
         {
             switch (n.NodeType)
             {
@@ -224,7 +229,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="n">Node</param>
         /// <returns></returns>
-        private static ISparqlExpression ToSparqlExpression(this INode n)
+        private static ISparqlExpression ToSparqlExpression(INode n)
         {
             switch (n.NodeType)
             {
