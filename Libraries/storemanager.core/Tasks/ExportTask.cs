@@ -37,11 +37,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
-using VDS.RDF.Storage.Params;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.StoreManager.Tasks

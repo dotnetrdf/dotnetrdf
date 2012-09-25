@@ -38,7 +38,6 @@ using System.Text;
 using System.IO;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Tokens;
-using VDS.RDF.Storage;
 
 namespace VDS.RDF.Parsing
 {

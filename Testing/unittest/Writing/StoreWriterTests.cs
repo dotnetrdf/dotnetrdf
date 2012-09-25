@@ -34,14 +34,10 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Writing
 {

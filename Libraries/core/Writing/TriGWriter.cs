@@ -40,7 +40,6 @@ using System.Text;
 using System.IO;
 using System.Threading;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Contexts;
 using VDS.RDF.Writing.Formatting;

@@ -933,213 +933,247 @@
   </target>
   
   <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" 
+          depends="build-libs">
+    
+  </target>
+
+  <target name="build-libs" description="Builds dotNetRDF library nightlies" unless="${dotnetrdf.nobuild}"
           depends="build-core,build-core-net35,
                    build-core-silverlight,
                    build-core-clientprofile,build-core-clientprofile-net35,
                    build-core-windowsphone,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
-                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35">
-    
-  </target>
+                   build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
   
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
-    <copy overwrite="true" todir="bin/nightlies/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40/" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-net35" description="Copy the latest 3.5 build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-net35">
-    <copy overwrite="true" todir="bin/nightlies/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35/" file="Libraries/core.net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35/" file="Libraries/core.net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/Newtonsoft.Json.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-data-virtuoso-clientprofile" description="Copy the latest Data.Virtuoso Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-data-virtuoso-net35" description="Copy the latest Data.Virtuoso 3.5 build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-net35">
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-data-virtuoso-clientprofile-net35" description="Copy the latest Data.Virtuoso 3.5 Client Profile build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
   </target>
 
   <target name="build-query-fulltext" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext">
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-clientprofile" description="Copy the latest Query.FullText build to the Query.FullText Client Profile nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile">
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-net35">
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
   </target>
 
   <target name="build-query-fulltext-clientprofile-net35" description="Copy the latest Query.FullText build to the Query.FullText nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-query-fulltext-clientprofile-net35">
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/nightlies/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
 
-  <target name="build-release" description="Copy the builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="compile">
+  <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
+          depends="build-release-libs,build-release-utils" />
+
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
     <!-- Documentation -->
-    <copy overwrite="true" todir="bin/stable/" file="../Acknowledgments.txt" />
-    <copy overwrite="true" todir="bin/stable/" file="Libraries/core/ChangeLog.txt" />
-    <copy overwrite="true" todir="bin/stable/" file="Libraries/core/ReleaseNotes.txt" />
-    <copy overwrite="true" todir="bin/stable/" file="Libraries/core/Readme.txt" />
+    <copy overwrite="true" todir="bin/stable/Libraries/" file="Acknowledgments.txt" />
+    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/ChangeLog.txt" />
+    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/ReleaseNotes.txt" />
+    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/Readme.txt" />
     <!-- Core 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/net40/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net40/" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/net35/" file="Libraries/core.net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net35/" file="Libraries/core.net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core.net35/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core.clientprofile/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core.clientprofile.net35/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core Silverlight 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core.silverlight/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Core Silverlight 4.0 Build for Windows Phone 7 Build -->
-    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Data.Sql 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40/" file="Libraries/data.sql/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net40-client/" file="Libraries/data.sql.clientprofile/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35/" file="Libraries/data.sql.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
-    <!-- Data.Sql 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Sql/net35-client/" file="Libraries/data.sql.clientprofile.net35/bin/Debug/dotNetRDF.Data.Sql.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/dotNetRDF.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/HtmlAgilityPack.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core.windowsphone/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Data.Virtuoso 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/data.virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Data.Virtuoso 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/data.virtuoso.clientprofile/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Data.Virtuoso 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/data.virtuoso.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Data.Virtuoso 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/data.virtuoso.clientprofile.net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Query.FullText 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/query.fulltext/bin/Debug/Lucene.Net.dll" />
     <!-- Query.FullText 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/query.fulltext.clientprofile/bin/Debug/Lucene.Net.dll" />
     <!-- Query.FullText 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/query.fulltext.net35/bin/Debug/Lucene.Net.dll" />
     <!-- Query.FullText 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/query.fulltext.clientprofile.net35/bin/Debug/Lucene.Net.dll" />
   </target>
+
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}"
+          depends="compile-utils" />
   
   <!-- Clean Targets -->
 
-  <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary">
-    <delete>
+  <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary"
+          depends="clean-nightlies,clean-stable,clean-intermediaries">
+  </target>
+
+  <target name="clean-nightlies" description="Cleans the nightly build directory">
+    <delete failonerror="true">
       <fileset>
-        <include name="**/obj/**/*" />
+        <include name="bin/nightlies/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-stable" description="Cleans the stable build directory">
+    <delete failonerror="true">
+      <fileset>
+        <include name="bin/stable/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-intermediaries" description="Cleans the intermediary bin/ and obj/ directories of all projects">
+    <delete failonerror="false">
+      <fileset>
         <include name="**/bin/**/*" />
+        <include name="**/obj/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-dist" description="Cleans the distibution zip files">
+    <delete failonerror="false">
+      <fileset>
+        <include name="dotNetRDF*.zip" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-ndoc" description="Cleans the NDoc working directory">
+    <delete failonerror="false">
+      <fileset>
+        <include name="Build/ndoc3/docs/*" />
       </fileset>
     </delete>
   </target>
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
-  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-release,dist-nightly,dist-toolkit,dist-nuget">
+  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-libs,dist-nightly,dist-toolkit,dist-nuget">
     
   </target>
 
-  <target name="dist-release" description="Creates the ZIP files for the Release" depends="build-release">
+  <target name="dist-libs" description="Creates the ZIP files for the Core Library Release" depends="build-release-libs">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
-      <fileset basedir="bin/stable/" failonempty="true">
-        <include name="/**/*" />
+      <fileset basedir="bin/stable/Libraries/" failonempty="true">
+        <include name="**/*" />
       </fileset>
     </zip>
     <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
       <fileset failonempty="true">
         <include name="**/*" />
+        <exclude name=".hg/*" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
 	      <exclude name="**/*.dll" />
@@ -1150,7 +1184,7 @@
         <exclude name="Samples/" />
 	      <exclude name="*.zip" />
 	      <exclude name="Utilities/bsbm/" />
-	      <exclude name="Build/ndoc3/doc/" />
+	      <exclude name="Build/ndoc3/docs/" />
 	      <exclude name="Build/NuGet/*/lib/**/*" />
       </fileset>
     </zip>
@@ -1158,7 +1192,7 @@
 
   <target name="dist-nightly" description="Creates the Nightly ZIP files" depends="build">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
-      <fileset basedir="bin/nightlies/" failonempty="true">
+      <fileset basedir="bin/nightlies/Libraries/" failonempty="true">
         <include name="/**/*" />
       </fileset>
     </zip>
@@ -1168,7 +1202,7 @@
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
-        <include name="../../Acknowlegments.txt" />
+        <include name="../Acknowlegments.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
       <fileset basedir="Utilities/rdfConvert/bin/Debug">
@@ -1233,7 +1267,7 @@
   <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
   </target>
 
-  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release">
+  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1267,33 +1301,33 @@
     </delete>
     <!-- Then create the Core library package -->
     <copy todir="Build/nuget/Core/lib/net40/">
-      <fileset basedir="bin/stable/Core/net40/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/net40/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net40-client/">
-      <fileset basedir="bin/stable/Core/net40-client/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/net40-client/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35/">
-      <fileset basedir="bin/stable/Core/net35/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/net35/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/net35-client/">
-      <fileset basedir="bin/stable/Core/net35-client/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/net35-client/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4/">
-      <fileset basedir="bin/stable/Core/sl4/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/sl4/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Core/lib/sl4-wp/">
-      <fileset basedir="bin/stable/Core/sl4-wp/">
-        <include name="*" />
+      <fileset basedir="bin/stable/Libraries/Core/sl4-wp/">
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <!-- Finally invoke nuget on the package -->
@@ -1304,7 +1338,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release">
+  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1328,22 +1362,22 @@
     </delete>
     <!-- Then create the Data.Virtuoso package -->
     <copy todir="Build/nuget/Data.Virtuoso/lib/net40/">
-      <fileset basedir="bin/stable/Data/Virtuoso/net40/">
+      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net40/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net40-client/">
-      <fileset basedir="bin/stable/Data/Virtuoso/net40-client/">
+      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net40-client/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35/">
-      <fileset basedir="bin/stable/Data/Virtuoso/net35/">
+      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Data.Virtuoso/lib/net35-client/">
-      <fileset basedir="bin/stable/Data/Virtuoso/net35-client/">
+      <fileset basedir="bin/stable/Libraries/Data/Virtuoso/net35-client/">
         <include name="*" />
       </fileset>
     </copy>
@@ -1355,7 +1389,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release">
+  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">
@@ -1379,22 +1413,22 @@
     </delete>
     <!-- Then create the Query.FullText package -->
     <copy todir="Build/nuget/Query.FullText/lib/net40/">
-      <fileset basedir="bin/stable/Query/FullText/net40/">
+      <fileset basedir="bin/stable/Libraries/Query/FullText/net40/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
-      <fileset basedir="bin/stable/Query/FullText/net40-client/">
+      <fileset basedir="bin/stable/Libraries/Query/FullText/net40-client/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
-      <fileset basedir="bin/stable/Query/FullText/net35/">
+      <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
         <include name="*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
-      <fileset basedir="bin/stable/Query/FullText/net35-client/">
+      <fileset basedir="bin/stable/Libraries/Query/FullText/net35-client/">
         <include name="*" />
       </fileset>
     </copy>
@@ -1420,7 +1454,7 @@
     </ftp>
   </target>
 
-  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-release">
+  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-libs">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
         <include name="/${dotnetrdf.libzip}" />

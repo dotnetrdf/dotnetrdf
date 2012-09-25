@@ -45,16 +45,12 @@ using System.Threading;
 #if !NO_WEB
 using System.Web;
 #endif
-using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
 using VDS.RDF.Storage.Management;
-using VDS.RDF.Storage.Management.Provisioning;
-using VDS.RDF.Storage.Management.Provisioning.Stardog;
 using VDS.RDF.Writing;
-using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
