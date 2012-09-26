@@ -11,56 +11,14 @@ See Acknowledgements.txt for full list of developers and contributors
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.7.2 release of dotNetRDF
+This represents a summary of additions, changes and removals for the 0.8.0 release of dotNetRDF
 
 Added
-- Configuration API
- - More auto-configuration methods
- - Helper methods for loading configuration graphs
-  - Supports new ability to have one configuration graph import another URI/file
- - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties
- - Support for specifying custom Triple and Graph Collections
- - Support for loading IStorageServer instances
- - Support for loading SPARQL operators and property function factories
- - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation
-- Query
- - Added IsMinusCompatibleWith() method to ISet interface
- - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic
- - Support for SPARQL property functions
-  - Refactored Query.FullText to be a true property function
 
 Changed
 - Bug Fixes
- - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
- - Bug fix to TreeIndexedTripleCollection
- - Bug fix to corner case MINUS logic in SPARQL 1.1
- - Bug fix to corner case GROUP BY and aggregate interaction logic
- - Bug fix to improve handling of & when outputting XML - Kal Ahmed
- - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary
- - Bug fix for a parsing error when property paths are nested in Blank Node predicate object lists
- - Bug fix for proper parser detection when selecting based on a .abc.gz filename
- - Bug fix for error in Lazy evaluation of some queries
- - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
- - Bug fix for some prefix validation bugs in SPARQL 1.1
- - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
- - Bug fix for pathological case of Graph isomporphism not being handled correctly in GraphMatcher
- - Bug fix for use of Uri.EscapeDataString() on long strings
- - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance
- - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour
- - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames
+
 - Dependencies
- - Bumped JSON.Net version to 4.5r9
- - Bumped HtmlAgilityPack version to 1.4.6
-- Core API
- - Made TreeIndexedTripleCollection the default triple collection implementation
-- Parsing
- - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax
-- Query
- - Improves SPARQL 1.1 support to near 100% compliance
-- Storage
- - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
- - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
- - Talis is no longer supported since the Talis Platform is in the process of winding down for public usage
 
 Removed
 - Marked the TalisPlatformConnector as obsolete unusable

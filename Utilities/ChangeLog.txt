@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 0.6.2 Beta
+Version 0.7.0 Beta
 
 dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -19,16 +19,13 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
-- Picks up some fixes to parsing support for RDF/XML
-- Picks up fixes to format detection for GZipped input files
+
 
 rdfEditor (Not available under Mono)
-- Picks up some fixes to parsing support for RDF/XML
  
 rdfOptStats
    
 rdfQuery
-- Picks up various fixes to SPARQL 1.1 support
 
 rdfServer
 
@@ -39,7 +36,6 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
-- Picks up various fixes to SPARQL 1.1 support
 
 StoreManager
 

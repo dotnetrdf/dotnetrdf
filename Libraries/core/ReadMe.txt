@@ -46,8 +46,8 @@ alternative terms
 Security
 --------
 
-As of the 0.6.0 release the library is no longer strong named, if you need it strong named then you
-should build it form source using your own key.
+From 0.7.2 onwards most builds of dotNetRDF are once again strong named signed, if you need unsigned
+builds for any reason please build yourself from source code.
 
 Acknowledgements
 ----------------
