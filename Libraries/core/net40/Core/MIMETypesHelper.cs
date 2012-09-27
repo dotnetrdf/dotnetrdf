@@ -518,6 +518,27 @@ namespace VDS.RDF
                     
         }
 
+        /// <summary>
+        /// Gets all MIME Types definitions which are associated with a given file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IEnumerable<MimeTypeDefinition> GetDefinitionsByFileExtension(String fileExt)
+        {
+            if (fileExt == null) return Enumerable.Empty<MimeTypeDefinition>();
+
+            //Remove leading "."
+            if (fileExt.StartsWith("."))
+            {
+                fileExt = fileExt.Substring(1);
+            }
+
+            if (!_init) Init();
+            return (from def in MimeTypesHelper.Definitions
+                    where def.FileExtensions.Contains(fileExt)
+                    select def);
+        }
+
 #endregion
 
         #region MIME Type Constants
@@ -1053,6 +1074,14 @@ namespace VDS.RDF
 
         #region Reader and Writer Selection
 
+        private static void ApplyWriterOptions(Object writer)
+        {
+            if (writer is ICompressingWriter)
+            {
+                ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+            }
+        }
+
         /// <summary>
         /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
         /// </summary>
@@ -1123,10 +1152,7 @@ namespace VDS.RDF
                         if (definition.CanWriteRdf)
                         {
                             IRdfWriter writer = definition.GetRdfWriter();
-                            if (writer is ICompressingWriter)
-                            {
-                                ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
-                            }
+                            MimeTypesHelper.ApplyWriterOptions(writer);
                             contentType = definition.CanonicalMimeType;
                             return writer;
                         }
@@ -1188,6 +1214,47 @@ namespace VDS.RDF
         {
             String temp;
             return GetWriter(acceptHeader, out temp);
+        }
+
+        /// <summary>
+        /// Selects a RDF writer based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <returns></returns>
+        public static IRdfWriter GetWriterByFileExtension(String fileExt)
+        {
+            String temp;
+            return MimeTypesHelper.GetWriterByFileExtension(fileExt, out temp);
+        }
+
+        /// <summary>
+        /// Selects a RDF writer based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <param name="contentType">Content Type of the chosen writer</param>
+        /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <returns></returns>
+        public static IRdfWriter GetWriterByFileExtension(String fileExt, out String contentType)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
+
+            //See if there are any MIME Type Definition for the file extension
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                //If so return the Writer from the first match found
+                if (definition.CanWriteRdf)
+                {
+                    IRdfWriter writer = definition.GetRdfWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    contentType = definition.CanonicalMimeType;
+                    return writer;
+                }
+            }
+
+            //Error if unable to select
+            contentType = null;
+            throw new RdfWriterSelectionException("Unable to select a RDF writer, no writers are associated with the file extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1544,6 +1611,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <returns></returns>
+        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static String GetMimeType(String fileExt)
         {
             //Remove leading "."
@@ -1570,6 +1638,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <returns></returns>
+        [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static IEnumerable<String> GetMimeTypes(String fileExt)
         {
             //Remove leading "."

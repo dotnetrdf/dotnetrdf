@@ -51,7 +51,7 @@ namespace VDS.RDF.Test.Update
             return new InMemoryQuadDataset();
         }
 
-        protected virtual ISparqlDataset GetNonEmptyDataset()
+        protected override ISparqlDataset GetNonEmptyDataset()
         {
             InMemoryQuadDataset dataset = new InMemoryQuadDataset();
 
