@@ -1281,7 +1281,7 @@ namespace VDS.RDF
             }
 
             String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
-            throw new RdfParserSelectionException("The Library does not contain any Parsers which understand RDF Graphs in any of the following MIME Types: " + types);
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs in any of the following MIME Types: " + types);
         }
 
         /// <summary>
@@ -1306,7 +1306,28 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF Graphs in the format '" + contentType + "'");
+            throw new RdfParserSelectionException("The Library does not contain a Parser for RDF Graphs in the format '" + contentType + "'");
+        }
+
+        /// <summary>
+        /// Selects a RDF Parser based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IRdfReader GetParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanParseRdf)
+                {
+                    IRdfReader parser = def.GetRdfParser();
+                    return parser;
+                }
+            }
+
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs associated with the File Extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1331,7 +1352,7 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");
+            throw new RdfParserSelectionException("The Library does not contain a Parser for SPARQL Results in the format '" + contentType + "'");
         }
 
         /// <summary>
@@ -1364,6 +1385,26 @@ namespace VDS.RDF
                     throw;
                 }
             }
+        }
+
+        /// <summary>
+        /// Selects a SPARQL Parser based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static ISparqlResultsReader GetSparqlParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanParseSparqlResults)
+                {
+                    return def.GetSparqlResultsParser();
+                }
+            }
+
+            throw new RdfParserSelectionException("The Library does not contain a Parser for SPARQL Results associated with the file extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1488,7 +1529,7 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF datasets in the format '" + contentType + "'");
+            throw new RdfParserSelectionException("The Library does not contain a Parser for RDF datasets in the format '" + contentType + "'");
         }
 
         /// <summary>
