@@ -1051,9 +1051,9 @@
     <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
     <!-- Data.Virtuoso 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/bin/Debug/OpenLink.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
+    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/OpenLink.Data.Virtuoso.dll" />
     <!-- Data.Virtuoso 4.0 Client Profile Build -->
     <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
     <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
