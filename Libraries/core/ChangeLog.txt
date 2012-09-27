@@ -21,14 +21,10 @@ Changed
 - Dependencies
 
 Removed
-- Marked the TalisPlatformConnector as obsolete unusable
-- Removed the obsolete Data.Sql library from the distribution
-- Marked the now superseded IndexedTripleCollection and it's descendants as obsolete unusable
-- Removed the obsolete ThreadSafeIndexedTripleCollection
-- Removed IStoreParams
-- Removed the old overloads of IStoreReader and IStoreWriter
-- Removed the obsolete IGenericIOManager interfaces
-- Removes obsolete property and class constants in ConfigurationLoader
+- Removed the obsolete TalisPlatformConnector
+- Removed the obsolete IndexedTripleCollection and it's descendants
+- Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
+- Removes the previously obsoleted property and class constants in ConfigurationLoader
    
 
 

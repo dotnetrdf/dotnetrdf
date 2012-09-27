@@ -104,10 +104,7 @@ namespace VDS.RDF.Configuration
             INode storeObj;
             Object temp;
 
-            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
-
-            INode[] props = new INode[] { propStorageProvider, propGenericManager };
+            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             switch (targetType.FullName)
             {
@@ -157,7 +154,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericQueryProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IQueryableStorage)
@@ -247,10 +244,7 @@ namespace VDS.RDF.Configuration
             INode storeObj;
             Object temp;
 
-            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
-
-            INode[] props = new INode[] { propStorageProvider, propGenericManager };
+            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             switch (targetType.FullName)
             {
@@ -299,7 +293,7 @@ namespace VDS.RDF.Configuration
                     break;
 
                 case GenericUpdateProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)
@@ -363,10 +357,7 @@ namespace VDS.RDF.Configuration
             ISparqlHttpProtocolProcessor processor = null;
             Object temp;
 
-            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
-
-            INode[] props = new INode[] { propStorageProvider, propGenericManager };
+            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             switch (targetType.FullName)
             {
@@ -431,7 +422,7 @@ namespace VDS.RDF.Configuration
 #if !NO_WEB && !NO_ASP
 
                 case GenericProtocolProcessor:
-                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    INode managerObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     if (managerObj == null) return false;
                     temp = ConfigurationLoader.LoadObject(g, managerObj);
                     if (temp is IStorageProvider)

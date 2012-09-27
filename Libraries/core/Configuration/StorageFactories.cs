@@ -101,10 +101,7 @@ namespace VDS.RDF.Configuration
                   propDb = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyDatabase)),
                   propStore = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStore)),
                   propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync)),
-                  propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
-                  propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager));
-
-            INode[] props = new INode[] { propStorageProvider, propGenericManager };
+                  propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider));
 
             switch (targetType.FullName)
             {
@@ -250,7 +247,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnly:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IStorageProvider)
                     {
@@ -264,7 +261,7 @@ namespace VDS.RDF.Configuration
 
                 case ReadOnlyQueryable:
                     //Get the actual Manager we are wrapping
-                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    storeObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     temp = ConfigurationLoader.LoadObject(g, storeObj);
                     if (temp is IQueryableStorage)
                     {

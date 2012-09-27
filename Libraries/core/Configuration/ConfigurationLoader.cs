@@ -166,15 +166,9 @@ namespace VDS.RDF.Configuration
                             ;
 
         /// <summary>
-        /// URI Constants for <strong>obsolete unusable</strong> configuration properties 
-        /// </summary>
-        [Obsolete("Property is obsolete and no longer supported by the Configuration API", true)]
-        public const String PropertySqlManager = ConfigurationNamespace + "sqlManager";
-
-        /// <summary>
         /// URI Constants for <strong>obsolete usable</strong> configuration properties
         /// </summary>
-        [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", false)]
+        [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", true)]
         public const String PropertyGenericManager = ConfigurationNamespace + "genericManager";
 
         /// <summary>
@@ -222,7 +216,7 @@ namespace VDS.RDF.Configuration
         /// <summary>
         /// URI Constants for <strong>obsolete usable</strong> configuration classes
         /// </summary>
-        [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", false)]
+        [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", true)]
         public const String ClassGenericManager = ConfigurationNamespace + "GenericIOManager";
 
         /// <summary>

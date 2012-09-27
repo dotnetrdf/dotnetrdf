@@ -348,11 +348,8 @@ namespace VDS.RDF.Configuration
             Object temp;
 
             //Get Property Nodes we need
-            INode propGenericManager = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyGenericManager)),
-                  propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
+            INode propStorageProvider = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyStorageProvider)),
                   propAsync = g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyAsync));
-
-            INode[] props = new INode[] { propStorageProvider, propGenericManager };
 
             //Check whether to use a specific Graph Collection
             INode collectionNode = ConfigurationLoader.GetConfigurationNode(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUsingGraphCollection)));
@@ -380,7 +377,7 @@ namespace VDS.RDF.Configuration
 #endif
 
                 case PersistentTripleStore:
-                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, props);
+                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
                     if (subObj == null) return false;
 
                     temp = ConfigurationLoader.LoadObject(g, subObj);
