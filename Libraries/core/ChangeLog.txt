@@ -25,6 +25,7 @@ Removed
 - Removed the obsolete IndexedTripleCollection and it's descendants
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
+- Marks the obsolete HashTable classes as obsolete unusable
    
 
 

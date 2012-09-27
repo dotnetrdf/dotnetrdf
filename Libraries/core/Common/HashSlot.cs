@@ -47,7 +47,7 @@ namespace VDS.Common
     /// <remarks>
     /// Hash Slots may contain duplicate values
     /// </remarks>
-    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", false)]
+    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", true)]
     class ListSlot<T> 
         : IHashSlot<T>
     {

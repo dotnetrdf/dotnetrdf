@@ -48,7 +48,7 @@ namespace VDS.Common
     /// The bias is a parameter used to control how the hash table stores actual multiple values in its slots.  Changing the bias parameter will cause different data structures to be used internally and thus modify the performance characteristics of the Hash Table
     /// </para>
     /// </remarks>
-    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", false)]
+    [Obsolete("The HashTable class has known deficiencies in hash code collision behaviour and has been superceded by MultiDictionary which should be used instead, HashTable will be removed in subsequent releases", true)]
     public enum HashTableBias
     {
         /// <summary>
