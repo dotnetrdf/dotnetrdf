@@ -10,6 +10,8 @@ namespace ExportCoreContentsToTemplate
     class Program
     {
         public const String MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
+        public const String DefaultRelativePath = @"..\net40\";
+
         static void Main(string[] args)
         {
             if (args.Length < 3)
@@ -18,7 +20,7 @@ namespace ExportCoreContentsToTemplate
                 Console.WriteLine();
                 Console.WriteLine("This tool is used to export the compilable contents of the some Core/Base Project to a Template Project file to create an up to date Project file for building the templated project targetted at a specific platform");
                 Console.WriteLine("Usage is ExportCoreContentsToTemplate CoreProject.csproj Target.csproj.template Output.csproj [relPath]");
-                Console.WriteLine("Relative Path is ..\\core\\ by default");
+                Console.WriteLine("Relative Path is " + DefaultRelativePath + " by default");
                 return;
             }
 
@@ -31,7 +33,7 @@ namespace ExportCoreContentsToTemplate
                 coreProject.Load(args[0]);
 
                 //Set Relative Path
-                String relativePath = (args.Length >= 4) ? args[3] : "..\\core\\";
+                String relativePath = (args.Length >= 4) ? args[3] : DefaultRelativePath;
 
                 //Open Target Project Template
                 XmlDocument template = new XmlDocument();
