@@ -1024,11 +1024,19 @@ namespace VDS.RDF
             return filter;
         }
 
+        /// <summary>
+        /// Applies global options to a writer
+        /// </summary>
+        /// <param name="writer">Writer</param>
         private static void ApplyWriterOptions(Object writer)
         {
             if (writer is ICompressingWriter)
             {
                 ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+            }
+            if (writer is IDtdWriter)
+            {
+                ((IDtdWriter)writer).UseDtd = Options.UseDtd;
             }
         }
 
@@ -1042,7 +1050,7 @@ namespace VDS.RDF
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// Global options pertaining to writers will be applied to the selected writer
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes)
@@ -1056,6 +1064,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         /// <returns></returns>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
         {
@@ -1107,7 +1123,7 @@ namespace VDS.RDF
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// Global options pertaining to writers will be applied to the selected writer
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader, out String contentType)
@@ -1140,7 +1156,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader)
         {
             String temp;
@@ -1152,6 +1175,11 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <remarks>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         /// <returns></returns>
         public static IRdfWriter GetWriterByFileExtension(String fileExt)
         {
@@ -1165,6 +1193,11 @@ namespace VDS.RDF
         /// <param name="fileExt">File Extension</param>
         /// <param name="contentType">Content Type of the chosen writer</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <remarks>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         /// <returns></returns>
         public static IRdfWriter GetWriterByFileExtension(String fileExt, out String contentType)
         {
@@ -1343,7 +1376,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes)
         {
             String temp;
@@ -1356,7 +1396,14 @@ namespace VDS.RDF
         /// <param name="ctypes">String array of accepted Content Types</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
         /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
             String type;
@@ -1395,7 +1442,14 @@ namespace VDS.RDF
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
         /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader, out String contentType)
         {
             String[] ctypes;
@@ -1419,7 +1473,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader)
         {
             String temp;
