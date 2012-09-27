@@ -488,34 +488,9 @@ namespace VDS.RDF
         {
             if (!_init) Init();
 
-            return GetDefinitions(mimeTypes.ToArray());
-        }
-
-        /// <summary>
-        /// Gets all MIME Type definition which support the given MIME Types
-        /// </summary>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <returns></returns>
-        public static IEnumerable<MimeTypeDefinition> GetDefinitions(String[] mimeTypes)
-        {
-            if (!_init) Init();
-
-            if (mimeTypes == null) return Enumerable.Empty<MimeTypeDefinition>();
-            if (mimeTypes.Length == 0) return Enumerable.Empty<MimeTypeDefinition>();
-
-            //Clean up the MIME Types to remove any Charset/Quality parameters
-            for (int i = 0; i < mimeTypes.Length; i++)
-            {
-                if (mimeTypes[i].Contains(";"))
-                {
-                    mimeTypes[i] = mimeTypes[i].Substring(0, mimeTypes[i].IndexOf(';'));
-                }
-            }
-
             return (from mimeType in mimeTypes
-                    from definition in MimeTypesHelper.GetDefinitions(mimeType)
+                    from definition in MimeTypesHelper.GetDefinitions(mimeType.Contains(";") ? mimeType.Substring(0, mimeType.IndexOf(';')) : mimeType)
                     select definition).Distinct();
-                    
         }
 
         /// <summary>
@@ -1109,25 +1084,6 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            return GetWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>
-        /// <para>
-        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
-        /// </para>
-        /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
-        /// </para>
-        /// </remarks>
-        public static IRdfWriter GetWriter(String[] ctypes, out String contentType)
-        {
             String type;
 
             if (ctypes != null)
@@ -1428,18 +1384,6 @@ namespace VDS.RDF
         /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            return GetSparqlWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
-        public static ISparqlResultsWriter GetSparqlWriter(String[] ctypes, out String contentType)
-        {
             String type;
 
             foreach (String ctype in ctypes)
@@ -1566,18 +1510,6 @@ namespace VDS.RDF
         /// </para>
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
-        {
-            return GetStoreWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
-        public static IStoreWriter GetStoreWriter(String[] ctypes, out String contentType)
         {
             String type;
             foreach (String ctype in ctypes)
