@@ -46,13 +46,12 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Helper Class containing arrays of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
+    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
     /// </summary>
-    /// <remarks>
-    /// The first type in each array is the canonical type that should be used
-    /// </remarks>
-    public class MimeTypesHelper
+    public static class MimeTypesHelper
     {
+        #region Constants
+
         /// <summary>
         /// Constant for Valid MIME Types
         /// </summary>
@@ -63,7 +62,188 @@ namespace VDS.RDF
         /// </summary>
         private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
 
-        #region Initialisation of MIME Type Definitions
+        /// <summary>
+        /// MIME Type for accept any content Type
+        /// </summary>
+        public const String Any = "*/*";
+
+        /// <summary>
+        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
+        /// </summary>
+        public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
+
+        /// <summary>
+        /// MIME Type for Multipart Form Data
+        /// </summary>
+        public const String FormMultipart = "multipart/form-data";
+
+        /// <summary>
+        /// MIME Types for Turtle
+        /// </summary>
+        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+
+        /// <summary>
+        /// MIME Types for RDF/XML
+        /// </summary>
+        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+
+        /// <summary>
+        /// MIME Types for Notation 3
+        /// </summary>
+        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+
+        /// <summary>
+        /// MIME Types for NTriples
+        /// </summary>
+        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
+
+        /// <summary>
+        /// MIME Types for NQuads
+        /// </summary>
+        internal static string[] NQuads = { "text/x-nquads" };
+
+        /// <summary>
+        /// MIME Types for TriG
+        /// </summary>
+        internal static string[] TriG = { "application/x-trig" };
+
+        /// <summary>
+        /// MIME Types for TriX
+        /// </summary>
+        internal static string[] TriX = { "application/trix" };
+
+        /// <summary>
+        /// MIME Types for RDF/JSON
+        /// </summary>
+        internal static string[] Json = { "application/json", "text/json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Result Sets
+        /// </summary>
+        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Results XML
+        /// </summary>
+        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Results JSON
+        /// </summary>
+        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Boolean Result
+        /// </summary>
+        internal static string[] SparqlResultsBoolean = { "text/boolean" };
+
+        /// <summary>
+        /// MIME Types for CSV
+        /// </summary>
+        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
+
+        /// <summary>
+        /// MIME Types for TSV
+        /// </summary>
+        internal static string[] Tsv = { "text/tab-separated-values" };
+
+        /// <summary>
+        /// MIME Types for HTML
+        /// </summary>
+        internal static string[] Html = { "text/html", "application/xhtml+xml" };
+
+        /// <summary>
+        /// MIME Type for SPARQL Queries
+        /// </summary>
+        public const String SparqlQuery = "application/sparql-query";
+
+        /// <summary>
+        /// MIME Type for SPARQL Updates
+        /// </summary>
+        public const String SparqlUpdate = "application/sparql-update";
+
+        /// <summary>
+        /// Default File Extension for Turtle Files
+        /// </summary>
+        public const String DefaultTurtleExtension = "ttl";
+        /// <summary>
+        /// Default File Extension for RDF/XML
+        /// </summary>
+        public const String DefaultRdfXmlExtension = "rdf";
+        /// <summary>
+        /// Default File Extension for Notation 3
+        /// </summary>
+        public const String DefaultNotation3Extension = "n3";
+        /// <summary>
+        /// Default File Extension for NTriples
+        /// </summary>
+        public const String DefaultNTriplesExtension = "nt";
+        /// <summary>
+        /// Default File Extension for Json formats
+        /// </summary>
+        public const String DefaultJsonExtension = "json";
+        /// <summary>
+        /// Default File Extension for RDF/JSON
+        /// </summary>
+        public const String DefaultRdfJsonExtension = "rj";
+        /// <summary>
+        /// Default File Extension for SPARQL XML Results Format
+        /// </summary>
+        public const String DefaultSparqlXmlExtension = "srx";
+        /// <summary>
+        /// Default File Extension for SPARQL JSON Results Format
+        /// </summary>
+        public const String DefaultSparqlJsonExtension = "srj";
+        /// <summary>
+        /// Default File Extension for TriG
+        /// </summary>
+        public const String DefaultTriGExtension = "trig";
+        /// <summary>
+        /// Default File Extension for NQuads
+        /// </summary>
+        public const String DefaultNQuadsExtension = "nq";
+        /// <summary>
+        /// Default File Extension for TriX
+        /// </summary>
+        public const String DefaultTriXExtension = "xml";
+        /// <summary>
+        /// Default File Extension for CSV
+        /// </summary>
+        public const String DefaultCsvExtension = "csv";
+        /// <summary>
+        /// Default File Extension for TSV
+        /// </summary>
+        public const String DefaultTsvExtension = "tsv";
+        /// <summary>
+        /// Default File Extension for HTML
+        /// </summary>
+        public const String DefaultHtmlExtension = "html";
+        /// <summary>
+        /// Default File Extension for XHTML
+        /// </summary>
+        public const String DefaultXHtmlExtension = "xhtml";
+        /// <summary>
+        /// Default File Extension for SPARQL Queries
+        /// </summary>
+        public const String DefaultSparqlQueryExtension = "rq";
+        /// <summary>
+        /// Default File Extension for SPARQL Updates
+        /// </summary>
+        public const String DefaultSparqlUpdateExtension = "ru";
+        /// <summary>
+        /// Default File Extension for GZip
+        /// </summary>
+        public const String DefaultGZipExtension = "gz";
+
+        /// <summary>
+        /// Extensions which are considered stackable
+        /// </summary>
+        private static String[] AllowedStackableExtensions = new String[] 
+        {
+            DefaultGZipExtension
+        };
+
+        #endregion 
 
         /// <summary>
         /// List of MIME Type Definition
@@ -194,10 +374,6 @@ namespace VDS.RDF
                 }
             }
          }
-
-        #endregion
-
-        #region Definition, Parser and Writer Management
 
         /// <summary>
         /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
@@ -514,199 +690,6 @@ namespace VDS.RDF
                     select def);
         }
 
-#endregion
-
-        #region MIME Type Constants
-
-        /// <summary>
-        /// MIME Type for accept any content Type
-        /// </summary>
-        public const String Any = "*/*";
-
-        /// <summary>
-        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
-        /// </summary>
-        public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
-
-        /// <summary>
-        /// MIME Type for Multipart Form Data
-        /// </summary>
-        public const String FormMultipart = "multipart/form-data";
-
-        /// <summary>
-        /// MIME Types for Turtle
-        /// </summary>
-        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
-
-        /// <summary>
-        /// MIME Types for RDF/XML
-        /// </summary>
-        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
-
-        /// <summary>
-        /// MIME Types for Notation 3
-        /// </summary>
-        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
-
-        /// <summary>
-        /// MIME Types for NTriples
-        /// </summary>
-        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
-
-        /// <summary>
-        /// MIME Types for NQuads
-        /// </summary>
-        internal static string[] NQuads = { "text/x-nquads" };
-
-        /// <summary>
-        /// MIME Types for TriG
-        /// </summary>
-        internal static string[] TriG = { "application/x-trig" };
-
-        /// <summary>
-        /// MIME Types for TriX
-        /// </summary>
-        internal static string[] TriX = { "application/trix" };
-
-        /// <summary>
-        /// MIME Types for RDF/JSON
-        /// </summary>
-        internal static string[] Json = { "application/json", "text/json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Result Sets
-        /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results XML
-        /// </summary>
-        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results JSON
-        /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Boolean Result
-        /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
-
-        /// <summary>
-        /// MIME Types for CSV
-        /// </summary>
-        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
-
-        /// <summary>
-        /// MIME Types for TSV
-        /// </summary>
-        internal static string[] Tsv = { "text/tab-separated-values" };
-
-        /// <summary>
-        /// MIME Types for HTML
-        /// </summary>
-        internal static string[] Html = { "text/html", "application/xhtml+xml" };
-
-        /// <summary>
-        /// MIME Type for SPARQL Queries
-        /// </summary>
-        public const String SparqlQuery = "application/sparql-query";
-
-        /// <summary>
-        /// MIME Type for SPARQL Updates
-        /// </summary>
-        public const String SparqlUpdate = "application/sparql-update";
-
-        #endregion
-
-        #region File Extension Constants
-
-        /// <summary>
-        /// Default File Extension for Turtle Files
-        /// </summary>
-        public const String DefaultTurtleExtension = "ttl";
-        /// <summary>
-        /// Default File Extension for RDF/XML
-        /// </summary>
-        public const String DefaultRdfXmlExtension = "rdf";
-        /// <summary>
-        /// Default File Extension for Notation 3
-        /// </summary>
-        public const String DefaultNotation3Extension = "n3";
-        /// <summary>
-        /// Default File Extension for NTriples
-        /// </summary>
-        public const String DefaultNTriplesExtension = "nt";
-        /// <summary>
-        /// Default File Extension for Json formats
-        /// </summary>
-        public const String DefaultJsonExtension = "json";
-        /// <summary>
-        /// Default File Extension for RDF/JSON
-        /// </summary>
-        public const String DefaultRdfJsonExtension = "rj";
-        /// <summary>
-        /// Default File Extension for SPARQL XML Results Format
-        /// </summary>
-        public const String DefaultSparqlXmlExtension = "srx";
-        /// <summary>
-        /// Default File Extension for SPARQL JSON Results Format
-        /// </summary>
-        public const String DefaultSparqlJsonExtension = "srj";
-        /// <summary>
-        /// Default File Extension for TriG
-        /// </summary>
-        public const String DefaultTriGExtension = "trig";
-        /// <summary>
-        /// Default File Extension for NQuads
-        /// </summary>
-        public const String DefaultNQuadsExtension = "nq";
-        /// <summary>
-        /// Default File Extension for TriX
-        /// </summary>
-        public const String DefaultTriXExtension = "xml";
-        /// <summary>
-        /// Default File Extension for CSV
-        /// </summary>
-        public const String DefaultCsvExtension = "csv";
-        /// <summary>
-        /// Default File Extension for TSV
-        /// </summary>
-        public const String DefaultTsvExtension = "tsv";
-        /// <summary>
-        /// Default File Extension for HTML
-        /// </summary>
-        public const String DefaultHtmlExtension = "html";
-        /// <summary>
-        /// Default File Extension for XHTML
-        /// </summary>
-        public const String DefaultXHtmlExtension = "xhtml";
-        /// <summary>
-        /// Default File Extension for SPARQL Queries
-        /// </summary>
-        public const String DefaultSparqlQueryExtension = "rq";
-        /// <summary>
-        /// Default File Extension for SPARQL Updates
-        /// </summary>
-        public const String DefaultSparqlUpdateExtension = "ru";
-        /// <summary>
-        /// Default File Extension for GZip
-        /// </summary>
-        public const String DefaultGZipExtension = "gz";
-
-        /// <summary>
-        /// Extensions which are considered stackable
-        /// </summary>
-        private static String[] AllowedStackableExtensions = new String[] 
-        {
-            DefaultGZipExtension
-        };
-
-        #endregion
-
-        #region HTTP Header Properties
-
         /// <summary>
         /// Builds the String for the HTTP Accept Header that should be used when you want to ask for content in RDF formats (except Sparql Results)
         /// </summary>
@@ -988,10 +971,6 @@ namespace VDS.RDF
             }
         }
 
-        #endregion
-
-        #region File Filters
-
         /// <summary>
         /// Generates a Filename Filter that can be used with any .Net application and includes all formats that dotNetRDF is aware of
         /// </summary>
@@ -1044,10 +1023,6 @@ namespace VDS.RDF
 
             return filter;
         }
-
-        #endregion
-
-        #region Reader and Writer Selection
 
         private static void ApplyWriterOptions(Object writer)
         {
@@ -1575,10 +1550,6 @@ namespace VDS.RDF
             return GetStoreWriter(acceptHeader, out temp);
         }
 
-        #endregion
-
-        #region MIME Type Selection
-
         /// <summary>
         /// Selects the appropriate MIME Type for the given File Extension if the File Extension is a standard extension for an RDF format
         /// </summary>
@@ -1636,10 +1607,6 @@ namespace VDS.RDF
             throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
 
         }
-
-        #endregion
-
-        #region File Extension Selection
 
         /// <summary>
         /// Gets the true file extension for a filename
@@ -1747,7 +1714,5 @@ namespace VDS.RDF
                 
             throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType().ToString() + "'");
         }
-
-        #endregion
    }
 }
