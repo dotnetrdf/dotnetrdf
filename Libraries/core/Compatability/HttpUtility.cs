@@ -33,6 +33,8 @@ terms.
 
 */
 
+#if NO_WEB
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +45,6 @@ using VDS.RDF.Parsing;
 namespace VDS.RDF
 {
 
-#if NO_WEB
 
     /// <summary>
     /// An implementation of HttpUtility for use with Silverlight builds which require it
@@ -299,6 +300,6 @@ namespace VDS.RDF
             }
         }
     }
+}
 
 #endif
-}

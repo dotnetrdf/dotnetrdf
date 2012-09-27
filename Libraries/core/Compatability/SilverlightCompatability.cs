@@ -33,8 +33,6 @@ terms.
 
 */
 
-#define SILVERLIGHT
-
 #if SILVERLIGHT
 
 using System;

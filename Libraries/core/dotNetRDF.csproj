@@ -86,6 +86,13 @@
     <Compile Include="Common\Trees\ScapegoatTree.cs" />
     <Compile Include="Common\Trees\TreeExtensions.cs" />
     <Compile Include="Common\Trees\UnbalancedBinaryTree.cs" />
+    <Compile Include="Compatability\HashSet.cs" />
+    <Compile Include="Compatability\HtmlTextWriter.cs" />
+    <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
+    <Compile Include="Compatability\HtmlTextWriterStyle.cs" />
+    <Compile Include="Compatability\HtmlTextWriterTag.cs" />
+    <Compile Include="Compatability\HttpUtility.cs" />
+    <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Configuration\CollectionFactory.cs" />
     <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\OperatorFactory.cs" />

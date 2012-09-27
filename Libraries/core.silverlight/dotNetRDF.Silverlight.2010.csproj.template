@@ -67,16 +67,7 @@
     </Reference>
   </ItemGroup> 
   <ItemGroup>
-    <Compile Include="Compatability\HtmlTextWriter.cs" />
-    <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
-    <Compile Include="Compatability\HtmlTextWriterStyle.cs" />
-    <Compile Include="Compatability\HtmlTextWriterTag.cs" />
-    <Compile Include="Compatability\HttpUtility.cs" />
-    <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="VDSOpenSourceKey.pfx" />
   </ItemGroup>
 
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

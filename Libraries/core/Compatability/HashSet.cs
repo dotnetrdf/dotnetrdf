@@ -1,7 +1,7 @@
-﻿/*
+/*
 
-Copyright Robert Vesse 2009-10
-rvesse@vdesign-studios.com
+Copyright dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
 
 ------------------------------------------------------------------------
 
@@ -33,22 +33,16 @@ terms.
 
 */
 
-#define WINDOWS_PHONE
+//Uncomment when working on this code, don't forget to comment out afterwards
+//#define WINDOWS_PHONE
 
 //This code contributed by Peter Kahle as part of his Windows Phone 7 porting efforts
 
 #if WINDOWS_PHONE 
 
 using System;
+using System.Linq;
 using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.Collections;
 using System.Collections.Generic;
 using VDS.Common;
@@ -64,11 +58,11 @@ namespace VDS.RDF
     public class HashSet<T> 
         : ICollection<T>
     {
-        private HashTable<int, T> _table;
+        private MultiDictionary<T, List<T>> _dictionary;
 
         public HashSet()
         {
-            this._table = new HashTable<int, T>(HashTableBias.Enumeration);
+            this._dictionary = new MultiDictionary<T, List<T>>();
         }
 
         public HashSet(IEnumerable<T> items)
@@ -76,29 +70,34 @@ namespace VDS.RDF
         {
             foreach (T item in items)
             {
-                if (!this._table.Contains(item.GetHashCode(), item))
-                {
-                    this._table.Add(item.GetHashCode(), item);
-                }
+                this.Add(item);
             }
         }
         // Methods
         public void Add(T item)
         {
-            if (!this._table.Contains(item.GetHashCode(), item))
+            if (!this.Contains(item))
             {
-                this._table.Add(item.GetHashCode(), item);
+                this._dictionary.Add(item, new List<T> { item });
             }
         }
 
         public void Clear()
         {
-            this._table.Clear();
+            this._dictionary.Clear();
         }
 
         public bool Contains(T item)
         {
-            return this._table.Contains(item.GetHashCode(), item);
+            List<T> values;
+            if (this._dictionary.TryGetValue(item, out values))
+            {
+                return values.Contains(item);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
@@ -108,13 +107,24 @@ namespace VDS.RDF
 
         public bool Remove(T item)
         {
-            this._table.Remove(item.GetHashCode(), item);
-            return true;
+            List<T> values;
+            if (this._dictionary.TryGetValue(item, out values))
+            {
+                bool result = values.Remove(item);
+                if (result && values.Count == 0) this._dictionary.Remove(item);
+                return result;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            return this._table.Values.GetEnumerator();
+            return (from items in this._dictionary.Values
+                    from item in items
+                    select item).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -126,10 +136,7 @@ namespace VDS.RDF
         {
             foreach (T item in other)
             {
-                if (!this._table.Contains(item.GetHashCode(), item))
-                {
-                    this._table.Add(item.GetHashCode(), item);
-                }
+                this.Add(item);
             }
         }
 
@@ -138,7 +145,8 @@ namespace VDS.RDF
         {
             get
             {
-                return this._table.Count;
+                return (from items in this._dictionary.Values
+                        select items.Count).Sum();
             }
         }
 

@@ -68,48 +68,30 @@
     </exec>    
   </target>
 
-  <target name="projectgen-core-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="projectgen-core-silverlight" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectgen-core-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="compile-buildtools" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
       <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.template" />
-      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
-    </exec>
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj.temp" />
       <arg value="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
-      <arg value="..\core.silverlight\" />
     </exec>
   </target>
 
-  <target name="projectgen-core-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="projectgen-core-silverlight" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->
+  <target name="projectgen-core-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+    <!-- This exec task syncs the Client Profile project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
       <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.template" />
-      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
-    </exec>
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj.temp" />
       <arg value="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
-      <arg value="..\core.silverlight\" />
     </exec>
   </target>
 
   <target name="projectgen-core-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-core-net35,projectgen-core-clientprofile" unless="${dotnetrdf.nocompile}">
-    <!-- This exec task syncs the Client Profile project file with the Core Library and Silverlight (for the System.Web compatability stuff) -->    
+    <!-- This exec task syncs the Client Profile project file with the Core Library -->    
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
       <arg value="Libraries/core/dotNetRDF.csproj" />
       <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj.template" />
-      <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj.temp" />
-    </exec>
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
-      <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj.temp" />
       <arg value="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj" />
-      <arg value="..\core.silverlight\" />
     </exec>
   </target>
 
@@ -1114,7 +1096,10 @@
   <!-- Clean Targets -->
 
   <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary"
-          depends="clean-nightlies,clean-stable,clean-intermediaries">
+          depends="clean-nightlies,clean-stable,
+                   clean-intermediaries,clean-projectgen,
+                   clean-dist,
+                   clean-ndoc">
   </target>
 
   <target name="clean-nightlies" description="Cleans the nightly build directory">
@@ -1129,6 +1114,27 @@
     <delete failonerror="true">
       <fileset>
         <include name="bin/stable/**/*" />
+      </fileset>
+    </delete>
+  </target>
+
+  <target name="clean-projectgen" description="Cleans the generated project files">
+    <delete failonerror="true">
+      <fileset>
+        <!-- Core Library Projects -->
+        <include name="Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj" />
+        <include name="Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj" />
+        <include name="Libraries/core.net35/dotNetRDF.Net35.csproj" />
+        <include name="Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj" />
+        <include name="Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj" />
+        <!-- Data.Virtuoso Projects -->
+        <include name="Libraries/data.virtuoso.clientprofile/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
+        <include name="Libraries/data.virtuoso.clientprofile.net35/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
+        <include name="Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
+        <!-- Query.FullText Projects -->
+        <include name="Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj" />
+        <include name="Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
+        <include name="Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj" />
       </fileset>
     </delete>
   </target>
