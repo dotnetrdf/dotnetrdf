@@ -25,14 +25,14 @@ Testing\unittest\resources\UnitTestConfig.properties
 
 # Generated Project Files, templates are versioned controlled but
 # the generated files should not be
-Libraries/core.clientprofile.net35/dotNetRDF.ClientProfile.Net35.csproj
-Libraries/core.clientprofile/dotNetRDF.ClientProfile.csproj
-Libraries/core.net35/dotNetRDF.Net35.csproj
-Libraries/core.silverlight/dotNetRDF.Silverlight.2010.csproj
-Libraries/core.windowsphone/dotNetRDF.WindowsPhone.2010.csproj
-Libraries/data.virtuoso.clientprofile.net35/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj
-Libraries/data.virtuoso.clientprofile/dotNetRDF.Data.Virtuoso.ClientProfile.csproj
-Libraries/data.virtuoso.net35/dotNetRDF.Data.Virtuoso.Net35.csproj
-Libraries/query.fulltext.clientprofile.net35/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj
-Libraries/query.fulltext.clientprofile/dotNetRDF.Query.FullText.ClientProfile.csproj
-Libraries/query.fulltext.net35/dotNetRDF.Query.FullText.Net35.csproj
+Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj
+Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj
+Libraries/core/net35/dotNetRDF.Net35.csproj
+Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj
+Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj
+Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj
+Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj
+Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj
+Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj
+Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj
+Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj
