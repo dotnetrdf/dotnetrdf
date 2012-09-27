@@ -71,19 +71,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriter.cs">
+    <Compile Include="..\..\Libraries\core\net40\Compatability\HtmlTextWriter.cs">
       <Link>HtmlTextWriter.cs</Link>
     </Compile>
-    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterAttribute.cs">
+    <Compile Include="..\..\Libraries\core\net40\Compatability\HtmlTextWriterAttribute.cs">
       <Link>HtmlTextWriterAttribute.cs</Link>
     </Compile>
-    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterStyle.cs">
+    <Compile Include="..\..\Libraries\core\net40\Compatability\HtmlTextWriterStyle.cs">
       <Link>HtmlTextWriterStyle.cs</Link>
     </Compile>
-    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HtmlTextWriterTag.cs">
+    <Compile Include="..\..\Libraries\core\net40\Compatability\HtmlTextWriterTag.cs">
       <Link>HtmlTextWriterTag.cs</Link>
     </Compile>
-    <Compile Include="..\..\Libraries\core.silverlight\Compatability\HttpUtility.cs">
+    <Compile Include="..\..\Libraries\core\net40\Compatability\HttpUtility.cs">
       <Link>HttpUtility.cs</Link>
     </Compile>
     <Compile Include="ListenerContext.cs" />

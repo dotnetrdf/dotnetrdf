@@ -144,7 +144,7 @@
       <Project>{0D1B8423-44F6-4ACE-8055-58D66E574F9D}</Project>
       <Name>dotNetRDF.WinForms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\query.fulltext\dotNetRDF.Query.FullText.csproj">
+    <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
       <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
       <Name>dotNetRDF.Query.FullText</Name>
     </ProjectReference>

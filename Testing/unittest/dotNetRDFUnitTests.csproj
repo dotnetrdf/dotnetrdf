@@ -53,34 +53,14 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IKVM.OpenJDK.Core, Version=0.42.0.3, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\IKVM.OpenJDK.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="IKVM.Runtime, Version=0.42.0.3, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\IKVM.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="LinkedDataTools.JenaDotNet, Version=2.6.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\LinkedDataTools.JenaDotNet.dll</HintPath>
-    </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\net40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="MySql.Data, Version=6.0.3.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\MySql.Data.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.7.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Dependencies\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SemWeb, Version=1.0.7.0, Culture=neutral, PublicKeyToken=3e1051c7e190e42e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Dependencies\SemWeb.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -95,7 +75,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Libraries\query.fulltext\FullTextExtensions.cs">
+    <Compile Include="..\..\Libraries\Data\Virtuoso\net40\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Query\FullText\net40\FullTextExtensions.cs">
       <Link>Query\FullText\FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
@@ -149,11 +132,11 @@
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj">
+    <ProjectReference Include="..\..\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj">
       <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
       <Name>dotNetRDF.Data.Virtuoso</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\query.fulltext\dotNetRDF.Query.FullText.csproj">
+    <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
       <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
       <Name>dotNetRDF.Query.FullText</Name>
     </ProjectReference>
@@ -179,9 +162,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Libraries\data.virtuoso\DataExtensions.cs">
-      <Link>DataExtensions.cs</Link>
-    </Compile>
     <Compile Include="Core\CompareToTests.cs" />
     <Compile Include="Core\GraphDiffTests.cs" />
     <Compile Include="Core\HardGraphMatching.cs" />
