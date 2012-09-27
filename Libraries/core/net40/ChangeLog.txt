@@ -1,0 +1,33 @@
+﻿dotNetRDF
+=========
+
+A Library for RDF manipulation and parsing in .Net using C#
+
+dotNetRDF Project 2009-12
+dotnetrdf-develop@lists.sf.net
+
+See Acknowledgements.txt for full list of developers and contributors
+
+Change Log
+----------
+
+This represents a summary of additions, changes and removals for the 0.8.0 release of dotNetRDF
+
+Added
+
+Changed
+- Bug Fixes
+
+- Dependencies
+
+Removed
+- Removed the obsolete TalisPlatformConnector
+- Removed the obsolete IndexedTripleCollection and it's descendants
+- Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
+- Removes the previously obsoleted property and class constants in ConfigurationLoader
+- Marks the obsolete HashTable classes as obsolete unusable
+   
+
+
+
+

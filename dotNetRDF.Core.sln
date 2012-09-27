@@ -21,11 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Library", "Core Library", "{D0EBD311-D634-4254-B787-3573CE8E808C}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\core\ChangeLog.txt = Libraries\core\ChangeLog.txt
-		Libraries\core\Compiler Symbols.txt = Libraries\core\Compiler Symbols.txt
-		Libraries\core\Compiling.txt = Libraries\core\Compiling.txt
-		Libraries\core\ReadMe.txt = Libraries\core\ReadMe.txt
-		Libraries\core\ReleaseNotes.txt = Libraries\core\ReleaseNotes.txt
+		Libraries\core\net40\ChangeLog.txt = Libraries\core\net40\ChangeLog.txt
+		Libraries\core\net40\Compiler Symbols.txt = Libraries\core\net40\Compiler Symbols.txt
+		Libraries\core\net40\Compiling.txt = Libraries\core\net40\Compiling.txt
+		Libraries\core\net40\ReadMe.txt = Libraries\core\net40\ReadMe.txt
+		Libraries\core\net40\ReleaseNotes.txt = Libraries\core\net40\ReleaseNotes.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NDoc", "NDoc", "{BF556CC4-9192-4D6B-9BA4-CDFF06FD0E53}"
@@ -57,8 +57,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4", "Client Profile 4", "{1A8E3A21-D934-4BA4-8147-5FDAB29D175E}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\core.clientprofile\Properties\AssemblyInfo.cs = Libraries\core.clientprofile\Properties\AssemblyInfo.cs
-		Libraries\core.clientprofile\dotNetRDF.ClientProfile.csproj.template = Libraries\core.clientprofile\dotNetRDF.ClientProfile.csproj.template
+		Libraries\core\net40-client\Properties\AssemblyInfo.cs = Libraries\core\net40-client\Properties\AssemblyInfo.cs
+		Libraries\core\net40-client\dotNetRDF.ClientProfile.csproj.template = Libraries\core\net40-client\dotNetRDF.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight 4", "Silverlight 4", "{158759E3-877B-41FD-BEE9-87D182A8FCD4}"
@@ -83,17 +83,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{A8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{954B6783-7ECC-4FC0-9022-76A618D6F5B8}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\query.fulltext.net35\Properties\AssemblyInfo.cs = Libraries\query.fulltext.net35\Properties\AssemblyInfo.cs
-		Libraries\query.fulltext.net35\dotNetRDF.Query.FullText.Net35.csproj.template = Libraries\query.fulltext.net35\dotNetRDF.Query.FullText.Net35.csproj.template
+		Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs
+		Libraries\Query\FullText\net35\dotNetRDF.Query.FullText.Net35.csproj.template = Libraries\Query\FullText\net35\dotNetRDF.Query.FullText.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\core.clientprofile.net35\Properties\AssemblyInfo.cs = Libraries\core.clientprofile.net35\Properties\AssemblyInfo.cs
-		Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template = Libraries\core.clientprofile.net35\dotNetRDF.ClientProfile.Net35.csproj.template
+		Libraries\core\net35-client\Properties\AssemblyInfo.cs = Libraries\core\net35-client\Properties\AssemblyInfo.cs
+		Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj.template = Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\net40\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA} = {DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}
 	EndProjectSection
@@ -104,16 +104,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportCoreContentsToTemplate", "Build\ExportCoreContentsToTemplate\ExportCoreContentsToTemplate.csproj", "{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso", "Libraries\data.virtuoso\dotNetRDF.Data.Virtuoso.csproj", "{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso", "Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj", "{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.FullText", "Libraries\query.fulltext\dotNetRDF.Query.FullText.csproj", "{09097771-84FD-4DC8-A259-1CB0591714EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.FullText", "Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj", "{09097771-84FD-4DC8-A259-1CB0591714EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sparqlDawgTester", "Testing\sparqlDawgTests\sparqlDawgTester.csproj", "{D54B96E7-46EB-4183-9C5D-898BE5DEBE2B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{1702A1F1-6A2C-447B-AB9A-756E71C3BF37}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\data.virtuoso.net35\Properties\AssemblyInfo.cs = Libraries\data.virtuoso.net35\Properties\AssemblyInfo.cs
-		Libraries\data.virtuoso.net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template = Libraries\data.virtuoso.net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template
+		Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs
+		Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template = Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B4901633-122A-44ED-AC2C-F033328C4A8D}"
@@ -124,26 +124,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query.FullText", "Query.Ful
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{E7CCB195-F53E-474A-8DC5-E6C38963D0B9}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\data.virtuoso.clientprofile\Properties\AssemblyInfo.cs = Libraries\data.virtuoso.clientprofile\Properties\AssemblyInfo.cs
-		Libraries\data.virtuoso.clientprofile\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template = Libraries\data.virtuoso.clientprofile\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template
+		Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs
+		Libraries\Data\Virtuoso\net40-client\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template = Libraries\Data\Virtuoso\net40-client\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{5926AC3F-AA16-45A0-AD18-590C28BB91F8}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\data.virtuoso.clientprofile.net35\Properties\AssemblyInfo.cs = Libraries\data.virtuoso.clientprofile.net35\Properties\AssemblyInfo.cs
-		Libraries\data.virtuoso.clientprofile.net35\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template = Libraries\data.virtuoso.clientprofile.net35\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template
+		Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs
+		Libraries\Data\Virtuoso\net35-client\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template = Libraries\Data\Virtuoso\net35-client\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{DED37B23-101C-42B4-B7FE-919E4CE41AFE}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\query.fulltext.clientprofile\Properties\AssemblyInfo.cs = Libraries\query.fulltext.clientprofile\Properties\AssemblyInfo.cs
-		Libraries\query.fulltext.clientprofile\dotNetRDF.Query.FullText.ClientProfile.csproj.template = Libraries\query.fulltext.clientprofile\dotNetRDF.Query.FullText.ClientProfile.csproj.template
+		Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs
+		Libraries\Query\FullText\net40-client\dotNetRDF.Query.FullText.ClientProfile.csproj.template = Libraries\Query\FullText\net40-client\dotNetRDF.Query.FullText.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{BCDF787B-D49E-4511-A036-1F49CCCEC279}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\query.fulltext.clientprofile.net35\Properties\AssemblyInfo.cs = Libraries\query.fulltext.clientprofile.net35\Properties\AssemblyInfo.cs
-		Libraries\query.fulltext.clientprofile.net35\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template = Libraries\query.fulltext.clientprofile.net35\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template
+		Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs
+		Libraries\Query\FullText\net35-client\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template = Libraries\Query\FullText\net35-client\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicenseChecker", "Build\LicenseChecker\LicenseChecker.csproj", "{B5C5E154-B17E-4A4A-B670-108553391A29}"
