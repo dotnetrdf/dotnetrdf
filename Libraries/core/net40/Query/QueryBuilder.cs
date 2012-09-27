@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
@@ -33,6 +34,33 @@ namespace VDS.RDF.Query
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.SelectAll;
             return new QueryBuilder(q);
+        }
+
+        /// <summary>
+        /// Creates a new SELECT query which will return the given 
+        /// <paramref name="variables"/>
+        /// </summary>
+        /// <param name="variables">query result variables</param>
+        public static IQueryBuilder Select(params SparqlVariable[] variables)
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.QueryType = SparqlQueryType.Select;
+            foreach (var sparqlVariable in variables)
+            {
+                q.AddVariable(sparqlVariable);
+            }
+            return new QueryBuilder(q);
+        }
+
+        /// <summary>
+        /// Creates a new SELECT query which will return the given 
+        /// <paramref name="variables"/>
+        /// </summary>
+        /// <param name="variables">query result variables</param>
+        public static IQueryBuilder Select(params string[] variables)
+        {
+            SparqlVariable[] sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
+            return Select(sparqlVariables);
         }
 
         /// <summary>
