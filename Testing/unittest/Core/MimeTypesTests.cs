@@ -703,5 +703,282 @@ namespace VDS.RDF.Test.Core
             Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
         }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeSparqlXml1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+xml");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlXml1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlXml2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlXmlWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlXml3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srx.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlXml4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srx.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlXmlParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlXmlWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeSparqlJson1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/sparql-results+json");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlJson1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlJson2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlJsonWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlJson3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".srj.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlJson4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("srj.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlJsonParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlJsonWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeSparqlCsv1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/csv");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeSparqlCsv2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/comma-separated-values");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlCsv1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlCsv2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlCsv3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".csv.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlCsv4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("csv.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlCsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlCsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeSparqlTsv1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/tab-separated-values");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlTsv1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlTsv2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(SparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(SparqlTsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlTsv3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tsv.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtSparqlTsv4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("tsv.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
+            Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
+        }
     }
 }
