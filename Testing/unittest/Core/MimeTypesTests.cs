@@ -2152,5 +2152,73 @@ namespace VDS.RDF.Test.Core
             ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("csv.gz");
             Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
         }
+
+        [TestMethod]
+        public void MimeTypesApplyWriterOptions1()
+        {
+            int compressionLevel = Options.DefaultCompressionLevel;
+            try
+            {
+                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
+                IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle");
+                Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+                Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
+            }
+            finally
+            {
+                Options.DefaultCompressionLevel = compressionLevel;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyWriterOptions2()
+        {
+            int compressionLevel = Options.DefaultCompressionLevel;
+            try
+            {
+                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
+                IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(".ttl");
+                Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+                Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
+            }
+            finally
+            {
+                Options.DefaultCompressionLevel = compressionLevel;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyWriterOptions3()
+        {
+            int compressionLevel = Options.DefaultCompressionLevel;
+            try
+            {
+                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
+                IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/x-trig");
+                Assert.IsInstanceOfType(writer, typeof(TriGWriter));
+                Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
+            }
+            finally
+            {
+                Options.DefaultCompressionLevel = compressionLevel;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyWriterOptions4()
+        {
+            int compressionLevel = Options.DefaultCompressionLevel;
+            try
+            {
+                Options.DefaultCompressionLevel = WriterCompressionLevel.High;
+                IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(".trig");
+                Assert.IsInstanceOfType(writer, typeof(TriGWriter));
+                Assert.AreEqual(WriterCompressionLevel.High, ((ICompressingWriter)writer).CompressionLevel);
+            }
+            finally
+            {
+                Options.DefaultCompressionLevel = compressionLevel;
+            }
+        }
     }
 }

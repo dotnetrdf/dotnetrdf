@@ -1091,7 +1091,9 @@ namespace VDS.RDF
 
             //Default to NTriples
             contentType = MimeTypesHelper.NTriples[0];
-            return new NTriplesWriter();
+            IRdfWriter defaultWriter = new NTriplesWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1153,7 +1155,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a RDF writer based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
@@ -1170,7 +1172,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a RDF writer based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <param name="contentType">Content Type of the chosen writer</param>
@@ -1236,7 +1238,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a RDF Parser based on the file extension
+        /// Selects a <see cref="IRdfReader"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <returns></returns>
@@ -1256,6 +1258,12 @@ namespace VDS.RDF
             throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs associated with the File Extension '" + fileExt + "'");
         }
 
+        /// <summary>
+        /// Selects a SPARQL Parser based on the MIME types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <param name="allowPlainTextResults">Whether to allow for plain text results</param>
+        /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(IEnumerable<String> ctypes, bool allowPlainTextResults)
         {
             foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
@@ -1299,7 +1307,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a SPARQL Parser based on the file extension
+        /// Selects a <see cref="ISparqlResultsReader"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <returns></returns>
@@ -1358,13 +1366,17 @@ namespace VDS.RDF
                 if (definition.CanWriteSparqlResults)
                 {
                     contentType = definition.CanonicalMimeType;
-                    return definition.GetSparqlResultsWriter();
+                    ISparqlResultsWriter writer = definition.GetSparqlResultsWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    return writer;
                 }
             }
 
             //Default to SPARQL XML Output
             contentType = MimeTypesHelper.SparqlResultsXml[0];
-            return new SparqlXmlWriter();
+            ISparqlResultsWriter defaultWriter = new SparqlXmlWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1418,15 +1430,26 @@ namespace VDS.RDF
             return GetSparqlWriter(acceptHeader, out temp);
         }
 
+        /// <summary>
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt)
         {
             String temp;
             return MimeTypesHelper.GetSparqlWriterByFileExtension(fileExt, out temp);
         }
 
+        /// <summary>
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <returns></returns>
         public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt, out String contentType)
         {
-            if (fileExt == null) throw new ArgumentNullException(fileExt, "File Extension cannot be null");
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
 
             foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
             {
@@ -1442,6 +1465,11 @@ namespace VDS.RDF
             throw new RdfWriterSelectionException("Unable to select a SPARQL Results Writer, no writers are associated with the file extension '" + fileExt + "'");
         }
 
+        /// <summary>
+        /// Selects a Store parser based on the MIME types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns></returns>
         public static IStoreReader GetStoreParser(IEnumerable<String> ctypes)
         {
             foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitions(ctypes))
@@ -1464,6 +1492,26 @@ namespace VDS.RDF
         public static IStoreReader GetStoreParser(String contentType)
         {
             return MimeTypesHelper.GetStoreParser(contentType.AsEnumerable());
+        }
+
+        /// <summary>
+        /// Selects a Store parser based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IStoreReader GetStoreParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanParseRdfDatasets)
+                {
+                    return def.GetRdfDatasetParser();
+                }
+            }
+
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Datasets associated with the File Extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1512,7 +1560,10 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfWriterSelectionException("The Library does not contain a writer which can output RDF datasets in a format supported by the Client");
+            contentType = NQuads[0];
+            IStoreWriter defaultWriter = new NQuadsWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1550,6 +1601,41 @@ namespace VDS.RDF
         {
             String temp;
             return GetStoreWriter(acceptHeader, out temp);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IStoreWriter GetStoreWriterByFileExtension(String fileExt)
+        {
+            String temp;
+            return MimeTypesHelper.GetStoreWriterByFileExtension(fileExt, out temp);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <returns></returns>
+        public static IStoreWriter GetStoreWriterByFileExtension(String fileExt, out String contentType)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanWriteRdfDatasets)
+                {
+                    IStoreWriter writer = def.GetRdfDatasetWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    contentType = def.CanonicalMimeType;
+                    return writer;
+                }
+            }
+
+            throw new RdfWriterSelectionException("Unable to select a RDF Dataset writer, no writers are associated with the file extension '" + fileExt + "'");
         }
 
         /// <summary>
