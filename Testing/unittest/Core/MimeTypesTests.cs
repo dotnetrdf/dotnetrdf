@@ -2153,6 +2153,229 @@ namespace VDS.RDF.Test.Core
             Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
         }
 
+        [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
+        public void MimeTypesGetStoreParserByTypeUnknown()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParser("application/unknown");
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByTypeNQuads1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByTypeTriG1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParser("application/x-trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByTypeTriX1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParser("application/trix");
+            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtNQuads1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtNQuads2()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("nq");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtNQuads3()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtNQuads4()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("nq.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriG1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriG2()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriG3()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".trig.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriGParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriG4()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("trig.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriGParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriX1()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".xml");
+            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriX2()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("xml");
+            Assert.IsInstanceOfType(parser, typeof(TriXParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriX3()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".xml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriXParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreParserByExtTriX4()
+        {
+            IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension("xml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriXParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByTypeUnknown()
+        {
+            IStoreWriter writer = MimeTypesHelper.GetStoreWriter("application/unknown");
+            Assert.IsInstanceOfType(writer, typeof(NQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByTypeNQuads1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriter("text/x-nquads");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByTypeTriG1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriter("application/x-trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByTypeTriX1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriter("application/trix");
+            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtNQuads1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".nq");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtNQuads2()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("nq");
+            Assert.IsInstanceOfType(parser, typeof(NQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtNQuads3()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".nq.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtNQuads4()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("nq.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNQuadsWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriG1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriG2()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("trig");
+            Assert.IsInstanceOfType(parser, typeof(TriGWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriG3()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".trig.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriGWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriG4()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("trig.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriGWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriX1()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".xml");
+            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriX2()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("xml");
+            Assert.IsInstanceOfType(parser, typeof(TriXWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriX3()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension(".xml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriXWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetStoreWriterByExtTriX4()
+        {
+            IStoreWriter parser = MimeTypesHelper.GetStoreWriterByFileExtension("xml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTriXWriter));
+        }
+
         [TestMethod]
         public void MimeTypesApplyWriterOptions1()
         {
