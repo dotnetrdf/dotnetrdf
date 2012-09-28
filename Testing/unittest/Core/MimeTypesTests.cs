@@ -1865,5 +1865,292 @@ namespace VDS.RDF.Test.Core
             ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParser("text/tab-separated-values");
             Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
         }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlXml1()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srx");
+            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlXml2()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srx");
+            Assert.IsInstanceOfType(parser, typeof(SparqlXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlXml3()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srx.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlXml4()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srx.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlJson1()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srj");
+            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlJson2()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srj");
+            Assert.IsInstanceOfType(parser, typeof(SparqlJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlJson3()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".srj.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlJson4()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("srj.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlTsv1()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".tsv");
+            Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlTsv2()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("tsv");
+            Assert.IsInstanceOfType(parser, typeof(SparqlTsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlTsv3()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".tsv.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlTsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlTsv4()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("tsv.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlTsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlCsv1()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".csv");
+            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlCsv2()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("csv");
+            Assert.IsInstanceOfType(parser, typeof(SparqlCsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlCsv3()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension(".csv.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlCsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlParserByExtSparqlCsv4()
+        {
+            ISparqlResultsReader parser = MimeTypesHelper.GetSparqlParserByFileExtension("csv.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedSparqlCsvParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeUnknown()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/unknown");
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeAny()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter(MimeTypesHelper.Any);
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlXml1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/sparql-results+xml");
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlXml2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/xml");
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlJson1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/sparql-results+json");
+            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlJson2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("application/json");
+            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlCsv1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/csv");
+            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlCsv2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/comma-separated-values");
+            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByTypeSparqlTsv1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriter("text/tab-separated-values");
+            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlXml1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srx");
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlXml2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srx");
+            Assert.IsInstanceOfType(writer, typeof(SparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlXml3()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srx.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlXml4()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srx.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlJson1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srj");
+            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlJson2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srj");
+            Assert.IsInstanceOfType(writer, typeof(SparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlJson3()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".srj.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlJson4()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("srj.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlTsv1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".tsv");
+            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlTsv2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("tsv");
+            Assert.IsInstanceOfType(writer, typeof(SparqlTsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlTsv3()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".tsv.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlTsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlTsv4()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("tsv.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlTsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlCsv1()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".csv");
+            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlCsv2()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("csv");
+            Assert.IsInstanceOfType(writer, typeof(SparqlCsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlCsv3()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension(".csv.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetSparqlWriterByExtSparqlCsv4()
+        {
+            ISparqlResultsWriter writer = MimeTypesHelper.GetSparqlWriterByFileExtension("csv.gz");
+            Assert.IsInstanceOfType(writer, typeof(GZippedSparqlCsvWriter));
+        }
     }
 }
