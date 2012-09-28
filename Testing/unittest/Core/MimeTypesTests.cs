@@ -32,6 +32,14 @@ namespace VDS.RDF.Test.Core
         }
 
         [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeAll()
+        {
+            int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
+            Console.WriteLine(count + " Definitions registered");
+            Assert.AreEqual(30, count);
+        }
+
+        [TestMethod]
         public void MimeTypesGetDefinitionsByTypeNotation3_1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/n3");
@@ -1088,6 +1096,111 @@ namespace VDS.RDF.Test.Core
             d = defs.Last();
             Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNTriples1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/plain");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNTriples2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/ntriples");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNTriples3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/ntriples+turtle");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNTriples4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/rdf-triples");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNTriples5()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/x-ntriples");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeTurtle1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/turtle");
+            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeTurtle2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/x-turtle");
+            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeTurtle3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
+            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNotation3_1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/n3");
+            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeNotation3_2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/rdf+n3");
+            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfXml1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/xml");
+            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfXml2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/rdf+xml");
+            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfXml3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/xml");
+            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfJson1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/json");
+            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfJson2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/json");
+            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
         }
     }
 }

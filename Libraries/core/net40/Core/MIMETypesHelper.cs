@@ -115,7 +115,7 @@ namespace VDS.RDF
         /// <summary>
         /// MIME Types for RDF/JSON
         /// </summary>
-        internal static string[] Json = { "application/json", "text/json" };
+        internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
 
         /// <summary>
         /// MIME Types for SPARQL Result Sets
