@@ -32,7 +32,7 @@ namespace VDS.RDF.Test.Core
         }
 
         [TestMethod]
-        public void MimeTypesGetDefinitionsByTypeAll()
+        public void MimeTypesGetDefinitionsByTypeAny()
         {
             int count = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).Count();
             Console.WriteLine(count + " Definitions registered");
@@ -1445,6 +1445,146 @@ namespace VDS.RDF.Test.Core
         {
             IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml.gz");
             Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeUnknown()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/unknown");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeAny()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.Any);
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNTriples1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/plain");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNTriples2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/ntriples");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNTriples3()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/ntriples+turtle");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNTriples4()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf-triples");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNTriples5()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/x-ntriples");
+            Assert.IsInstanceOfType(writer, typeof(NTriplesWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeTurtle1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/turtle");
+            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeTurtle2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/x-turtle");
+            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeTurtle3()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/turtle");
+            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNotation3_1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/n3");
+            Assert.IsInstanceOfType(writer, typeof(Notation3Writer));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeNotation3_2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/rdf+n3");
+            Assert.IsInstanceOfType(writer, typeof(Notation3Writer));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfXml1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/xml");
+            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfXml2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/xml");
+            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfXml3()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf+xml");
+            Assert.IsInstanceOfType(writer, typeof(RdfXmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfJson1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/json");
+            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfJson2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/json");
+            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfJson3()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/rdf+json");
+            Assert.IsInstanceOfType(writer, typeof(RdfJsonWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfA1()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("text/html");
+            Assert.IsInstanceOfType(writer, typeof(HtmlWriter));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetWriterByTypeRdfA2()
+        {
+            IRdfWriter writer = MimeTypesHelper.GetWriter("application/xhtml+xml");
+            Assert.IsInstanceOfType(writer, typeof(HtmlWriter));
         }
     }
 }
