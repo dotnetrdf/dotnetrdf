@@ -443,5 +443,265 @@ namespace VDS.RDF.Test.Core
             Assert.AreEqual(typeof(GZippedRdfXmlParser), d.RdfParserType);
             Assert.AreEqual(typeof(GZippedRdfXmlWriter), d.RdfWriterType);
         }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeRdfJson1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/json");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeRdfJson2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/json");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfJson1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfJson2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(RdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfJson3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".rj.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfJson4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("rj.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfJsonParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfJsonWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeRdfA1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("application/xhtml+xml");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeRdfA2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/html");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".html.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA4()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("html.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA5()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA6()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA7()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".htm.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA8()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("htm.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA9()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA10()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(RdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(HtmlWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA11()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".xhtml.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtRdfA12()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension("xhtml.gz");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check GZipped definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(GZippedRdfAParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedRdfAWriter), d.RdfWriterType);
+        }
     }
 }
