@@ -259,7 +259,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool SupportsMimeType(String mimeType)
         {
-            return this._mimeTypes.Contains(mimeType) || mimeType.Equals(MimeTypesHelper.Any);
+            String type = mimeType.ToLowerInvariant();
+            type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
+            return this._mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
         }
 
         #endregion
@@ -292,7 +294,7 @@ namespace VDS.RDF
         private String CheckFileExtension(String ext)
         {
             if (ext.StartsWith(".")) return ext.Substring(1);
-            return ext;
+            return ext.ToLowerInvariant();
         }
 
         /// <summary>
@@ -330,6 +332,18 @@ namespace VDS.RDF
                     throw new RdfException("Cannot set the Canonical File Extension for " + this._name + " to " + value + " as this is no such File Extension listed in this definition.  Use AddFileExtension to add a File Extension prior to setting the CanonicalFileExtension.");
                 }
             }
+        }
+
+        /// <summary>
+        /// Determines whether the Definition supports a particular File Extension
+        /// </summary>
+        /// <param name="ext">File Extension</param>
+        /// <returns></returns>
+        public bool SupportsFileExtension(String ext)
+        {
+            ext = ext.ToLowerInvariant();
+            if (ext.StartsWith(".")) ext = ext.Substring(1);
+            return this._fileExtensions.Contains(ext);
         }
 
         #endregion

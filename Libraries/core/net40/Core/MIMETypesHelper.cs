@@ -646,9 +646,9 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(String mimeType)
         {
-            if (!_init) Init();
-
             if (mimeType == null) return Enumerable.Empty<MimeTypeDefinition>();
+
+            if (!_init) Init();
 
             return (from definition in MimeTypesHelper.Definitions
                     where definition.SupportsMimeType(mimeType)
@@ -662,10 +662,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<String> mimeTypes)
         {
+            if (mimeTypes == null) return Enumerable.Empty<MimeTypeDefinition>();
+
             if (!_init) Init();
 
             return (from mimeType in mimeTypes
-                    from definition in MimeTypesHelper.GetDefinitions(mimeType.Contains(";") ? mimeType.Substring(0, mimeType.IndexOf(';')) : mimeType)
+                    from definition in MimeTypesHelper.Definitions
+                    where definition.SupportsMimeType(mimeType)
                     select definition).Distinct();
         }
 
@@ -678,16 +681,11 @@ namespace VDS.RDF
         {
             if (fileExt == null) return Enumerable.Empty<MimeTypeDefinition>();
 
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
+
             return (from def in MimeTypesHelper.Definitions
-                    where def.FileExtensions.Contains(fileExt)
-                    select def);
+                    where def.SupportsFileExtension(fileExt)
+                    select def).Distinct();
         }
 
         /// <summary>
@@ -1005,7 +1003,7 @@ namespace VDS.RDF
                     || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
                     || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
                 {
-                    exts.AddRange(def.FileExtensions/*.Where(e => !e.Contains("."))*/);
+                    exts.AddRange(def.FileExtensions);
                     filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
                 }
             }
@@ -1562,16 +1560,10 @@ namespace VDS.RDF
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static String GetMimeType(String fileExt)
         {
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.FileExtensions.Contains(fileExt))
+                if (definition.SupportsFileExtension(fileExt))
                 {
                     return definition.CanonicalMimeType;
                 }
@@ -1589,17 +1581,11 @@ namespace VDS.RDF
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static IEnumerable<String> GetMimeTypes(String fileExt)
         {
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
             List<String> types = new List<string>();
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.FileExtensions.Contains(fileExt))
+                if (definition.SupportsFileExtension(fileExt))
                 {
                     types.AddRange(definition.MimeTypes);
                 }
@@ -1661,16 +1647,10 @@ namespace VDS.RDF
         /// <returns></returns>
         public static String GetFileExtension(String mimeType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (mimeType.Contains(";"))
-            {
-                mimeType = mimeType.Substring(0, mimeType.IndexOf(";"));
-            }
-
             if (!_init) Init();
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.MimeTypes.Contains(mimeType))
+                if (definition.SupportsMimeType(mimeType))
                 {
                     return definition.CanonicalFileExtension;
                 }

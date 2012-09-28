@@ -980,5 +980,90 @@ namespace VDS.RDF.Test.Core
             Assert.AreEqual(typeof(GZippedSparqlTsvParser), d.SparqlResultsParserType);
             Assert.AreEqual(typeof(GZippedSparqlTsvWriter), d.SparqlResultsWriterType);
         }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeCaseSensitivity1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/TURTLE");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeCaseSensitivity2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TEXT/turtle");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeCaseSensitivity3()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("TeXt/TuRtLe");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeExtraParams1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByTypeExtraParams2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; q=1.0");
+            Assert.AreEqual(2, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+
+            //Check GZipped definition
+            d = defs.Last();
+            Assert.AreEqual(typeof(GZippedTurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(GZippedTurtleWriter), d.RdfWriterType);
+        }
     }
 }
