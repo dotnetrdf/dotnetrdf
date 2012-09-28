@@ -1033,6 +1033,30 @@ namespace VDS.RDF.Test.Core
         }
 
         [TestMethod]
+        public void MimeTypesGetDefinitionsByExtCaseSensitivity1()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".TTL");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
+        public void MimeTypesGetDefinitionsByExtCaseSensitivity2()
+        {
+            IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(".tTl");
+            Assert.AreEqual(1, defs.Count());
+
+            //Check normal definition
+            MimeTypeDefinition d = defs.First();
+            Assert.AreEqual(typeof(TurtleParser), d.RdfParserType);
+            Assert.AreEqual(typeof(CompressingTurtleWriter), d.RdfWriterType);
+        }
+
+        [TestMethod]
         public void MimeTypesGetDefinitionsByTypeExtraParams1()
         {
             IEnumerable<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions("text/turtle; charset=utf-8");
