@@ -1202,5 +1202,249 @@ namespace VDS.RDF.Test.Core
             IRdfReader parser = MimeTypesHelper.GetParser("application/json");
             Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
         }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfA1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("text/html");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByTypeRdfA2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParser("application/xhtml+xml");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParserSelectionException))]
+        public void MimeTypesGetParserByTypeUnknown()
+        {
+            IRdfReader reader = MimeTypesHelper.GetParser("application/unknown");
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNTriples1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".nt");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNTriples2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("nt");
+            Assert.IsInstanceOfType(parser, typeof(NTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNTriples3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".nt.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNTriples4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("nt.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNTriplesParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtTurtle1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
+            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtTurtle2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("ttl");
+            Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtTurtle3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtTurtle4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("ttl.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedTurtleParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNotation3_1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".n3");
+            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNotation3_2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("n3");
+            Assert.IsInstanceOfType(parser, typeof(Notation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNotation3_3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".n3.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtNotation3_4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("n3.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedNotation3Parser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfXml1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rdf");
+            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfXml2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rdf");
+            Assert.IsInstanceOfType(parser, typeof(RdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfXml3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rdf.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfXml4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rdf.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfXmlParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfJson1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rj");
+            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfJson2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rj");
+            Assert.IsInstanceOfType(parser, typeof(RdfJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfJson3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".rj.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfJson4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("rj.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfJsonParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA1()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".html");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA2()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("html");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA3()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".html.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA4()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("html.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA5()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".htm");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA6()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("htm");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA7()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".htm.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA8()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("htm.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA9()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".xhtml");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA10()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml");
+            Assert.IsInstanceOfType(parser, typeof(RdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA11()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".xhtml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
+
+        [TestMethod]
+        public void MimeTypesGetParserByExtRdfA12()
+        {
+            IRdfReader parser = MimeTypesHelper.GetParserByFileExtension("xhtml.gz");
+            Assert.IsInstanceOfType(parser, typeof(GZippedRdfAParser));
+        }
     }
 }
