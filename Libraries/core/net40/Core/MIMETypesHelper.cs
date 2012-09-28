@@ -1075,34 +1075,18 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            String type;
-
             if (ctypes != null)
             {
-                foreach (String ctype in ctypes)
+                //See if there are any MIME Type Definitions for the given MIME Types
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
                 {
-                    //Strip off the Charset/Quality if specified
-                    if (ctype.Contains(";"))
+                    //If so return the Writer from the first match found
+                    if (definition.CanWriteRdf)
                     {
-                        type = ctype.Substring(0, ctype.IndexOf(";"));
-                    }
-                    else
-                    {
-                        type = ctype;
-                    }
-                    type = type.ToLowerInvariant();
-
-                    //See if there are any MIME Type Definitions for this MIME Type
-                    foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                    {
-                        //If so return the Writer from the first match found
-                        if (definition.CanWriteRdf)
-                        {
-                            IRdfWriter writer = definition.GetRdfWriter();
-                            MimeTypesHelper.ApplyWriterOptions(writer);
-                            contentType = definition.CanonicalMimeType;
-                            return writer;
-                        }
+                        IRdfWriter writer = definition.GetRdfWriter();
+                        MimeTypesHelper.ApplyWriterOptions(writer);
+                        contentType = definition.CanonicalMimeType;
+                        return writer;
                     }
                 }
             }
@@ -1230,16 +1214,11 @@ namespace VDS.RDF
         {
             if (ctypes != null)
             {
-                foreach (String ctype in ctypes)
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
                 {
-                    try
+                    if (definition.CanParseRdf)
                     {
-                        IRdfReader parser = GetParser(ctype);
-                        return parser;
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        //Ignore
+                        return definition.GetRdfParser();
                     }
                 }
             }
@@ -1255,22 +1234,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParser(String contentType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
-
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
-            {
-                if (definition.CanParseRdf)
-                {
-                    return definition.GetRdfParser();
-                }
-            }
-
-            throw new RdfParserSelectionException("The Library does not contain a Parser for RDF Graphs in the format '" + contentType + "'");
+            return MimeTypesHelper.GetParser(contentType.AsEnumerable());
         }
 
         /// <summary>
@@ -1294,21 +1258,9 @@ namespace VDS.RDF
             throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs associated with the File Extension '" + fileExt + "'");
         }
 
-        /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response
-        /// </summary>
-        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
-        /// <returns></returns>
-        public static ISparqlResultsReader GetSparqlParser(String contentType)
+        public static ISparqlResultsReader GetSparqlParser(IEnumerable<String> ctypes, bool allowPlainTextResults)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
-
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
             {
                 if (definition.CanParseSparqlResults)
                 {
@@ -1316,7 +1268,25 @@ namespace VDS.RDF
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser for SPARQL Results in the format '" + contentType + "'");
+            if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
+            {
+                return new SparqlBooleanParser();
+            }
+            else
+            {
+                String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+                throw new RdfParserSelectionException("The Library does not contain any Parsers for SPARQL Results in any of the following MIME Types: " + types);
+            }
+        }
+
+        /// <summary>
+        /// Selects an appropriate <see cref="ISparqlResultsReader">ISparqlResultsReader</see> based on the HTTP Content-Type header from a HTTP Response
+        /// </summary>
+        /// <param name="contentType">Value of the HTTP Content-Type Header</param>
+        /// <returns></returns>
+        public static ISparqlResultsReader GetSparqlParser(String contentType)
+        {
+            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), false);
         }
 
         /// <summary>
@@ -1327,28 +1297,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType, bool allowPlainTextResults)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
-
-            try
-            {
-                return GetSparqlParser(contentType);
-            }
-            catch (RdfParserSelectionException)
-            {
-                if (allowPlainTextResults && (contentType.Equals("text/plain") || contentType.Equals("text/boolean")))
-                {
-                    return new SparqlBooleanParser();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), allowPlainTextResults);
         }
 
         /// <summary>
@@ -1406,28 +1355,12 @@ namespace VDS.RDF
         /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            String type;
-
-            foreach (String ctype in ctypes)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
             {
-                //Strip off the Charset/Quality if specified
-                if (ctype.Contains(";"))
+                if (definition.CanWriteSparqlResults)
                 {
-                    type = ctype.Substring(0, ctype.IndexOf(";"));
-                }
-                else
-                {
-                    type = ctype;
-                }
-                type = type.ToLowerInvariant();
-
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                {
-                    if (definition.CanWriteSparqlResults)
-                    {
-                        contentType = definition.CanonicalMimeType;
-                        return definition.GetSparqlResultsWriter();
-                    }
+                    contentType = definition.CanonicalMimeType;
+                    return definition.GetSparqlResultsWriter();
                 }
             }
 
@@ -1487,6 +1420,44 @@ namespace VDS.RDF
             return GetSparqlWriter(acceptHeader, out temp);
         }
 
+        public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt)
+        {
+            String temp;
+            return MimeTypesHelper.GetSparqlWriterByFileExtension(fileExt, out temp);
+        }
+
+        public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt, out String contentType)
+        {
+            if (fileExt == null) throw new ArgumentNullException(fileExt, "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanWriteSparqlResults)
+                {
+                    ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    contentType = def.CanonicalMimeType;
+                    return writer;
+                }
+            }
+
+            throw new RdfWriterSelectionException("Unable to select a SPARQL Results Writer, no writers are associated with the file extension '" + fileExt + "'");
+        }
+
+        public static IStoreReader GetStoreParser(IEnumerable<String> ctypes)
+        {
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitions(ctypes))
+            {
+                if (def.CanParseRdfDatasets)
+                {
+                    return def.GetRdfDatasetParser();
+                }
+            }
+
+            String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Datasets in any of the following MIME Types: " + types);
+        }
+
         /// <summary>
         /// Selects an appropriate <see cref="IStoreReader">IStoreReader</see> based on the HTTP Content-Type header from a HTTP Response
         /// </summary>
@@ -1494,22 +1465,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParser(String contentType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
-
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
-            {
-                if (definition.CanParseRdfDatasets)
-                {
-                    return definition.GetRdfDatasetParser();
-                }
-            }
-
-            throw new RdfParserSelectionException("The Library does not contain a Parser for RDF datasets in the format '" + contentType + "'");
+            return MimeTypesHelper.GetStoreParser(contentType.AsEnumerable());
         }
 
         /// <summary>
@@ -1547,27 +1503,14 @@ namespace VDS.RDF
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            String type;
-            foreach (String ctype in ctypes)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
             {
-                //Strip off the Charset/Quality if specified
-                if (ctype.Contains(";"))
+                if (definition.CanWriteRdfDatasets)
                 {
-                    type = ctype.Substring(0, ctype.IndexOf(";"));
-                }
-                else
-                {
-                    type = ctype;
-                }
-                type = type.ToLowerInvariant();
-
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                {
-                    if (definition.CanWriteRdfDatasets)
-                    {
-                        contentType = definition.CanonicalMimeType;
-                        return definition.GetRdfDatasetWriter();
-                    }
+                    contentType = definition.CanonicalMimeType;
+                    IStoreWriter writer = definition.GetRdfDatasetWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    return writer;
                 }
             }
 

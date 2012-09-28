@@ -93,6 +93,7 @@
     <Compile Include="Core\BasicTests2.cs" />
     <Compile Include="Common\BinaryTreeTests.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
+    <Compile Include="Core\MimeTypesTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
