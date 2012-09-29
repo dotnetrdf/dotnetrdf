@@ -161,7 +161,7 @@ namespace VDS.RDF.Utilities.OptimiserStats
                         {
                             h.GetStats(g);
                         }
-                        IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._file)));
+                        IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._file));
                         if (writer is ICompressingWriter)
                         {
                             ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.High;

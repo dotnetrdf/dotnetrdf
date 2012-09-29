@@ -216,7 +216,7 @@ namespace VDS.RDF.Utilities.Editor
                 try
                 {
                     //Try filename based syntax detection
-                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(this._filename))).FirstOrDefault();
+                    MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._filename)).FirstOrDefault();
                     if (def != null)
                     {
                         this.Syntax = def.SyntaxName.GetSyntaxName();

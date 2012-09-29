@@ -135,7 +135,7 @@ namespace VDS.RDF.Utilities.Sparql
                 try
                 {
                     //Try and get a Graph Parser and load
-                    IRdfReader parser = MimeTypesHelper.GetParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text)));
+                    IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text));
                     Graph g = new Graph();
                     FileLoader.Load(g, this.txtSourceFile.Text);
                     this.LogImportSuccess(this.txtSourceFile.Text, 1, g.Triples.Count);
@@ -158,7 +158,7 @@ namespace VDS.RDF.Utilities.Sparql
                     try
                     {
                         //Try and get a Store Parser and load
-                        IStoreReader storeparser = MimeTypesHelper.GetStoreParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text)));
+                        IStoreReader storeparser = MimeTypesHelper.GetStoreParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(this.txtSourceFile.Text));
                         TripleStore store = new TripleStore();
                         storeparser.Load(store, this.txtSourceFile.Text);
 

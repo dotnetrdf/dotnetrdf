@@ -1697,7 +1697,7 @@ namespace VDS.RDF
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
         /// </para>
         /// <para>
-        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong>
+        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevan to the library
         /// </para>
         /// </remarks>
         public static String GetTrueFileExtension(String filename)
@@ -1722,6 +1722,36 @@ namespace VDS.RDF
             //Otherwise we have a double extension
             actualFilename = actualFilename.Substring(0, stdIndex);
             String realExt = Path.GetExtension(actualFilename);
+
+            return realExt + stdExt;
+        }
+
+        /// <summary>
+        /// Gets the true extension for a resource
+        /// </summary>
+        /// <param name="resource">Resource</param>
+        /// <returns></returns>
+        public static String GetTrueResourceExtension(String resource)
+        {
+            int extIndex = resource.IndexOf('.');
+            
+            //if no extensions(s) return empty
+            if (extIndex == -1) return String.Empty;
+
+            //Get the standard extension
+            String stdExt = resource.Substring(resource.LastIndexOf('.'));
+
+            //Only proceed to do double extension checking if the extension is known to be stackable
+            if (!AllowedStackableExtensions.Contains(stdExt.Substring(1))) return stdExt;
+
+            int stdIndex = resource.Length - stdExt.Length;
+
+            //If the indexes match then the standard method returned the only extension present
+            if (extIndex == stdIndex) return stdExt;
+
+            //Otherwise we have a double extension
+            String partialResource = resource.Substring(0, stdIndex);
+            String realExt = partialResource.Substring(partialResource.LastIndexOf('.'));
 
             return realExt + stdExt;
         }

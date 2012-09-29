@@ -1203,7 +1203,7 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this IGraph g, String file)
         {
-            IRdfWriter writer = MimeTypesHelper.GetWriter(MimeTypesHelper.GetMimeTypes(MimeTypesHelper.GetTrueFileExtension(file)));
+            IRdfWriter writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(g, file);
         }
     }
@@ -1350,7 +1350,7 @@ namespace VDS.RDF
         /// <param name="file">File to save to</param>
         public static void SaveToFile(this ITripleStore store, String file)
         {
-            IStoreWriter writer = MimeTypesHelper.GetStoreWriter(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(file)));
+            IStoreWriter writer = MimeTypesHelper.GetStoreWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(file));
             writer.Save(store, file);
         }
     }
