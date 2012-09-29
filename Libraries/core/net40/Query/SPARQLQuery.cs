@@ -206,7 +206,8 @@ namespace VDS.RDF.Query
             q._specialType = this._specialType;
             q._vars = new Dictionary<string, SparqlVariable>(this._vars);
             q._describeVars = new List<IToken>(this._describeVars);
-            q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
+            if(this._rootGraphPattern != null)
+                q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
             q._orderBy = this._orderBy;
             q._groupBy = this._groupBy;
             q._having = this._having;
