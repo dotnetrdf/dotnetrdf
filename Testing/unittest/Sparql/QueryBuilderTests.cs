@@ -90,5 +90,41 @@ namespace VDS.RDF.Test.Sparql
             // then
             Assert.AreNotSame(query1, query2);
         }
+
+        [TestMethod]
+        public void CanStartQueryWithGivenVariablesStrings()
+        {
+            // given
+            IQueryBuilder queryBuilder = QueryBuilder.Select("s", "p", "o");
+
+            // when
+            SparqlQuery query = queryBuilder.GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(3, query.Variables);
+            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("s")));
+            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("p")));
+            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("o")));
+            Assert.IsTrue(query.Variables.All(var => var.IsResultVariable));
+        }
+
+        [TestMethod]
+        public void CanStartQueryWithGivenVariables()
+        {
+            // given
+            var s = new SparqlVariable("s", true);
+            var p = new SparqlVariable("p", true);
+            var o = new SparqlVariable("o", true);
+            IQueryBuilder queryBuilder = QueryBuilder.Select(s, p ,o);
+
+            // when
+            SparqlQuery query = queryBuilder.GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(3, query.Variables.Count());
+            Assert.IsTrue(query.Variables.Contains(s));
+            Assert.IsTrue(query.Variables.Contains(p));
+            Assert.IsTrue(query.Variables.Contains(o));
+        }
     }
 }
