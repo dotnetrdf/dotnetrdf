@@ -53,11 +53,6 @@ namespace VDS.RDF
         #region Constants
 
         /// <summary>
-        /// Constant for Valid MIME Types
-        /// </summary>
-        internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
-
-        /// <summary>
         /// Constant for W3C File Formats Namespace
         /// </summary>
         private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
@@ -254,6 +249,56 @@ namespace VDS.RDF
         /// </summary>
         private static bool _init = false;
         private static Object _initLock = new Graph();
+
+        /// <summary>
+        /// Checks whether something is a valid MIME Type
+        /// </summary>
+        /// <param name="type">MIME Type</param>
+        /// <returns></returns>
+        internal static bool IsValidMimeType(String type)
+        {
+            String[] parts = type.Split('/');
+            if (parts.Length != 2) return false;
+            return IsValidMimeTypePart(parts[0]) && IsValidMimeTypePart(parts[1]);
+        }
+
+        /// <summary>
+        /// Determines whether the given string is valid as a type/subtype for a MIME type
+        /// </summary>
+        /// <param name="part">String</param>
+        /// <returns></returns>
+        internal static bool IsValidMimeTypePart(String part)
+        {
+            foreach (char c in part.ToCharArray())
+            {
+                if (c <= 31) return false;
+                if (c == 127) return false;
+                switch (c)
+                {
+                    case '(':
+                    case ')':
+                    case '<':
+                    case '>':
+                    case '@':
+                    case ',':
+                    case ';':
+                    case ':':
+                    case '\\':
+                    case '"':
+                    case '/':
+                    case '[':
+                    case ']':
+                    case '?':
+                    case '=':
+                    case '{':
+                    case '}':
+                    case ' ':
+                    case '\t':
+                        return false;
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// Initialises the MIME Type definitions
@@ -650,8 +695,9 @@ namespace VDS.RDF
 
             if (!_init) Init();
 
+            MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
             return (from definition in MimeTypesHelper.Definitions
-                    where definition.SupportsMimeType(mimeType)
+                    where definition.SupportsMimeType(selector)
                     select definition);
         }
 
@@ -666,9 +712,10 @@ namespace VDS.RDF
 
             if (!_init) Init();
 
-            return (from mimeType in mimeTypes
+            IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
+            return (from selector in selectors
                     from definition in MimeTypesHelper.Definitions
-                    where definition.SupportsMimeType(mimeType)
+                    where definition.SupportsMimeType(selector)
                     select definition).Distinct();
         }
 
@@ -1764,9 +1811,10 @@ namespace VDS.RDF
         public static String GetFileExtension(String mimeType)
         {
             if (!_init) Init();
+            MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.SupportsMimeType(mimeType))
+                if (definition.SupportsMimeType(selector))
                 {
                     return definition.CanonicalFileExtension;
                 }

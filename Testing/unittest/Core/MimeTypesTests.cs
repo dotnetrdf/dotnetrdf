@@ -2443,5 +2443,131 @@ namespace VDS.RDF.Test.Core
                 Options.DefaultCompressionLevel = compressionLevel;
             }
         }
+
+        [TestMethod]
+        public void MimeTypesContentNegotiation1()
+        {
+            String[] types = new String[] { "application/turtle" , "application/rdf+xml", "text/plain" };
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
+            Assert.IsNotNull(def);
+            Assert.AreEqual(typeof(TurtleParser), def.RdfParserType);
+        }
+
+        [TestMethod]
+        public void MimeTypesContentNegotiation2()
+        {
+            String[] types = new String[] { "application/rdf+xml", "application/turtle", "text/plain" };
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
+            Assert.IsNotNull(def);
+            Assert.AreEqual(typeof(RdfXmlParser), def.RdfParserType);
+        }
+
+        [TestMethod]
+        public void MimeTypesContentNegotiation3()
+        {
+            String[] types = new String[] { "text/plain", "application/rdf+xml", "application/turtle" };
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
+            Assert.IsNotNull(def);
+            Assert.AreEqual(typeof(NTriplesParser), def.RdfParserType);
+        }
+
+        [TestMethod]
+        public void MimeTypesContentNegotiation4()
+        {
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.Any).FirstOrDefault();
+            Assert.IsNotNull(def);
+        }
+
+        [TestMethod]
+        public void MimeTypesContentNegotiation5()
+        {
+            String[] types = new String[] { "application/turtle; q=0.8", "application/rdf+xml", "text/plain; q=0.9" };
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(types).FirstOrDefault();
+            Assert.IsNotNull(def);
+            Assert.AreEqual(typeof(RdfXmlParser), def.RdfParserType);
+        }
+
+        private void PrintSelectors(IEnumerable<MimeTypeSelector> selectors)
+        {
+            foreach (MimeTypeSelector selector in selectors)
+            {
+                Console.WriteLine(selector.ToString());
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors1()
+        {
+            String[] types = new String[] { "audio/*; q=0.2", "audio/basic" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.IsFalse(selectors[0].IsRange);
+            Assert.AreEqual("audio/basic", selectors[0].Type);
+            Assert.IsTrue(selectors[1].IsRange);
+            Assert.AreEqual("audio/*", selectors[1].Type);
+            Assert.AreEqual(0.2d, selectors[1].Quality);
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors2()
+        {
+            String[] types = new String[] { "text/plain; q=0.5", "text/turtle" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.AreEqual("text/turtle", selectors[0].Type);
+            Assert.AreEqual("text/plain", selectors[1].Type);
+            Assert.AreEqual(0.5d, selectors[1].Quality);
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors3()
+        {
+            String[] types = new String[] { "text/plain", "text/turtle" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.AreEqual("text/plain", selectors[0].Type);
+            Assert.AreEqual("text/turtle", selectors[1].Type);
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors4()
+        {
+            String[] types = new String[] { "text/*", "text/html", "*/*" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.AreEqual("text/html", selectors[0].Type);
+            Assert.AreEqual("text/*", selectors[1].Type);
+            Assert.AreEqual(MimeTypesHelper.Any, selectors[2].Type);
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors5()
+        {
+            String[] types = new String[] { "text/plain; q=0.5", "text/turtle; q=0.5" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.AreEqual("text/plain", selectors[0].Type);
+            Assert.AreEqual(0.5d, selectors[0].Quality);
+            Assert.AreEqual("text/turtle", selectors[1].Type);
+            Assert.AreEqual(0.5d, selectors[1].Quality);
+        }
+
+        [TestMethod]
+        public void MimeTypesSelectors6()
+        {
+            String[] types = new String[] { "text/turtle; q=0.5", "text/plain; q=0.5" };
+            List<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(types).ToList();
+            this.PrintSelectors(selectors);
+
+            Assert.AreEqual("text/turtle", selectors[0].Type);
+            Assert.AreEqual(0.5d, selectors[0].Quality);
+            Assert.AreEqual("text/plain", selectors[1].Type);
+            Assert.AreEqual(0.5d, selectors[1].Quality);
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace VDS.RDF
     /// <summary>
     /// Represents the definition of a MIME Type including mappings to relevant readers and writers
     /// </summary>
-    public class MimeTypeDefinition
+    public sealed class MimeTypeDefinition
     {
         private String _name, _canonicalType, _canonicalExt, _formatUri;
         private Encoding _encoding = Encoding.UTF8;
@@ -67,11 +67,7 @@ namespace VDS.RDF
         {
             if (mimeTypes == null) throw new ArgumentNullException("MIME Types enumeration cannot be null");
             this._name = syntaxName;
-            foreach (String type in mimeTypes)
-            {
-                this.CheckValidMimeType(type);
-            }
-            this._mimeTypes.AddRange(mimeTypes);
+            this._mimeTypes.AddRange(mimeTypes.Select(t => this.CheckValidMimeType(t)));
 
             foreach (String ext in fileExtensions)
             {
@@ -195,12 +191,14 @@ namespace VDS.RDF
         /// Checks that MIME Types are valid
         /// </summary>
         /// <param name="type">Type</param>
-        public void CheckValidMimeType(String type)
+        public String CheckValidMimeType(String type)
         {
-            if (!Regex.IsMatch(type, MimeTypesHelper.ValidMimeTypePattern))
+            type = type.Trim().ToLowerInvariant();
+            if (!MimeTypesHelper.IsValidMimeType(type))
             {
                 throw new RdfException(type + " is not a valid MIME Type");
             }
+            return type;
         }
 
         /// <summary>
@@ -209,9 +207,9 @@ namespace VDS.RDF
         /// <param name="type">MIME Type</param>
         public void AddMimeType(String type)
         {
-            if (!this._mimeTypes.Contains(type))
+            if (!this._mimeTypes.Contains(this.CheckValidMimeType(type)))
             {
-                this._mimeTypes.Add(type);
+                this._mimeTypes.Add(this.CheckValidMimeType(type));
             }
         }
 
@@ -257,11 +255,32 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="mimeType">MIME Type</param>
         /// <returns></returns>
+        [Obsolete("Deprecated in favour of the alternative overload which takes a MimeTypeSelector", false)]
         public bool SupportsMimeType(String mimeType)
         {
             String type = mimeType.ToLowerInvariant();
             type = type.Contains(';') ? type.Substring(0, type.IndexOf(';')) : type;
             return this._mimeTypes.Contains(type) || mimeType.Equals(MimeTypesHelper.Any);
+        }
+
+        /// <summary>
+        /// Determines whether the definition supports the MIME type specified by the selector
+        /// </summary>
+        /// <param name="selector">MIME Type selector</param>
+        /// <returns></returns>
+        public bool SupportsMimeType(MimeTypeSelector selector)
+        {
+            if (selector.IsInvalid) return false;
+            if (selector.IsAny) return true;
+            if (selector.IsRange)
+            {
+                if (selector.RangeType == null) return false;
+                return this._mimeTypes.Any(type => type.StartsWith(selector.RangeType));
+            }
+            else
+            {
+                return this._mimeTypes.Contains(selector.Type);
+            }
         }
 
         #endregion
@@ -800,5 +819,306 @@ namespace VDS.RDF
 
         #endregion
 
+    }
+
+    /// <summary>
+    /// Selector used in selecting which MIME type to use
+    /// </summary>
+    public sealed class MimeTypeSelector
+        : IComparable<MimeTypeSelector>
+    {
+        private String _type, _rangeType, _charset;
+        private double _quality = 1.0d;
+        private int _order;
+        private bool _isSpecific = false, _isRange = false, _isAny = false, _isInvalid = false;
+
+        /// <summary>
+        /// Creates a MIME Type selector
+        /// </summary>
+        /// <param name="contentType">MIME Type</param>
+        /// <param name="order">Order the selector appears in the input</param>
+        /// <returns></returns>
+        public static MimeTypeSelector Create(String contentType, int order)
+        {
+            if (contentType.Contains(';'))
+            {
+                String[] parts = contentType.Split(';');
+                String type = parts[0].Trim().ToLowerInvariant();
+
+                double quality = 1.0d;
+                String charset = null;
+                for (int i = 1; i < parts.Length; i++)
+                {
+                    String[] data = parts[i].Split('=');
+                    if (data.Length == 1) continue;
+                    switch (data[0].Trim().ToLowerInvariant())
+                    {
+                        case "charset":
+                            charset = data[1].Trim();
+                            break;
+                        case "q":
+                            if (!Double.TryParse(data[1].Trim(), out quality))
+                            {
+                                quality = 1.0d;
+                            }
+                            break;
+                    }
+                }
+
+                return new MimeTypeSelector(type, charset, quality, order);
+            }
+            else
+            {
+                return new MimeTypeSelector(contentType.Trim().ToLowerInvariant(), null, 1.0d, order);
+            }
+        }
+
+        /// <summary>
+        /// Creates an enumeration of MIME type selectors
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns></returns>
+        public static IEnumerable<MimeTypeSelector> CreateSelectors(IEnumerable<String> ctypes)
+        {
+            List<MimeTypeSelector> selectors = new List<MimeTypeSelector>();
+
+            //Convert types into selectors
+            if (ctypes != null)
+            {
+                int order = 1;
+                foreach (String type in ctypes)
+                {
+                    selectors.Add(MimeTypeSelector.Create(type, order));
+                    order++;
+                }
+            }
+
+            //Adjust resulting selectors appropriately
+            if (selectors.Count == 0)
+            {
+                //If no MIME types treat as if a single any selector
+                selectors.Add(new MimeTypeSelector(MimeTypesHelper.Any, null, 1.0d, 1));
+            }
+            else
+            {
+                //Sort the selectors
+                selectors.Sort();
+            }
+            return selectors;
+        }
+
+        public MimeTypeSelector(String type, String charset, double quality, int order)
+        {
+            if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
+            this._type = type.Trim().ToLowerInvariant();
+            this._charset = charset != null ? charset.Trim() : null;
+            this._quality = quality;
+            this._order = order;
+
+            //Validate parameters
+            if (this._quality < 0) this._quality = 0;
+            if (this._quality > 1) this._quality = 1;
+            if (this._order < 1) this._order = 1;
+
+            //Check what type of selector this is
+            if (!MimeTypesHelper.IsValidMimeType(this._type))
+            {
+                //Invalid
+                this._isInvalid = true;
+            }
+            else if (this._type.Equals(MimeTypesHelper.Any))
+            {
+                //Is a */* any
+                this._isAny = true;
+            }
+            else if (this._type.EndsWith("/*"))
+            {
+                //Is a blah/* range
+                this._isRange = true;
+                this._rangeType = this._type.Substring(0, this._type.Length - 1);
+            }
+            else if (this._type.Contains('*'))
+            {
+                //If it contains a * and is not */* or blah/* it is invalid
+                this._isInvalid = true;
+            }
+            else
+            {
+                //Must be a specific type
+                this._isSpecific = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets the selected type
+        /// </summary>
+        /// <returns>A type string of the form <strong>type/subtype</strong> assuming the type if valid</returns>
+        public String Type
+        {
+            get
+            {
+                return this._type;
+            }
+        }
+
+        /// <summary>
+        /// Gets the range type if this is a range selector
+        /// </summary>
+        /// <returns>A type string of the form <strong>type/</strong> if this is a range selector, otherwise null</returns>
+        public String RangeType
+        {
+            get
+            {
+                return this._rangeType;
+            }
+        }
+
+        public String Charset
+        {
+            get
+            {
+                return this._charset;
+            }
+        }
+
+        public double Quality
+        {
+            get
+            {
+                return this._quality;
+            }
+        }
+
+        public int Order
+        {
+            get
+            {
+                return this._order;
+            }
+        }
+
+        public bool IsAny
+        {
+            get
+            {
+                return this._isAny;
+            }
+        }
+
+        public bool IsRange
+        {
+            get
+            {
+                return this._isRange;
+            }
+        }
+
+        public bool IsInvalid
+        {
+            get
+            {
+                return this._isInvalid;
+            }
+        }
+
+        public int CompareTo(MimeTypeSelector other)
+        {
+            if (this._isInvalid)
+            {
+                if (other.IsInvalid)
+                {
+                    //If both invalid use order
+                    return this.Order.CompareTo(other.Order);
+                }
+                else
+                {
+                    //Invalid types are less than valid types
+                    return 1;
+                }
+            }
+            else if (other.IsInvalid)
+            {
+                //Valid types are greater than invalid types
+                return -1;
+            }
+
+            if (this._isAny)
+            {
+                if (other.IsAny)
+                {
+                    //If both Any use quality
+                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    if (c == 0)
+                    {
+                        //If same quality use order
+                        c = this.Order.CompareTo(other.Order);
+                    }
+                    return c;
+                }
+                else
+                {
+                    //Any is less than range/specific type
+                    return 1;
+                }
+            }
+            else if (this._isRange)
+            {
+                if (other.IsAny)
+                {
+                    //Range types are greater than Any
+                    return -1;
+                }
+                else if (other.IsRange)
+                {
+                    //If both Range use quality
+                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    if (c == 0)
+                    {
+                        //If same quality use order
+                        c = this.Order.CompareTo(other.Order);
+                    }
+                    return c;
+                }
+                else
+                {
+                    //Range is less that specific type
+                    return 1;
+                }
+            }
+            else
+            {
+                if (other.IsAny || other.IsRange)
+                {
+                    //Specific types are greater than Any/Range
+                    return -1;
+                }
+                else
+                {
+                    //Both specific so use quality
+                    int c = -1 * this.Quality.CompareTo(other.Quality);
+                    if (c == 0)
+                    {
+                        //If same quality use order
+                        c = this.Order.CompareTo(other.Order);
+                    }
+                    return c;
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this._type);
+            if (this._quality != 1.0d)
+            {
+                builder.Append("; q=" + this._quality.ToString("g3"));
+            }
+            if (this._charset != null)
+            {
+                builder.Append("; charset=" + this._charset);
+            }
+            return builder.ToString();
+        }
     }
 }
