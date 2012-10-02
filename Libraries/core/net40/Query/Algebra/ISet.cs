@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -260,15 +261,30 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Hash Code of the Set
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return this.ToString().GetHashCode();
+        }
+
+        /// <summary>
         /// Gets the String representation of the Set
         /// </summary>
         /// <returns></returns>
-        public abstract override string ToString();
-
-        /// <summary>
-        /// Gets the hash code of the Set
-        /// </summary>
-        /// <returns></returns>
-        public abstract override int GetHashCode();
+        public override string ToString()
+        {
+            StringBuilder output = new StringBuilder();
+            int count = 0;
+            foreach (String var in this.Variables.OrderBy(v => v))
+            {
+                output.Append("?" + var + " = " + this[var].ToSafeString());
+                output.Append(" , ");
+                count++;
+            }
+            if (count > 0) output.Remove(output.Length - 3, 3);
+            return output.ToString();
+        }
     }
 }

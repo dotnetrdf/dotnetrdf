@@ -107,6 +107,7 @@
     <Compile Include="Core\NamespaceMapperTest.cs" />
     <Compile Include="Sparql\OperatorTests.cs" />
     <Compile Include="Sparql\DatasetTests.cs" />
+    <Compile Include="Sparql\SetTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
