@@ -363,7 +363,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+            context.InputMultiset = context.Evaluate(this._pattern);
 
             HashSet<SparqlVariable> vars;
             bool selectAll = false;
@@ -395,11 +395,16 @@ namespace VDS.RDF.Query.Algebra
                         //If not a Result variable then trim from results
                         context.InputMultiset.Trim(var);
                     }
-                    else if (!context.InputMultiset.ContainsVariable(var))
-                    {
-                        context.InputMultiset.AddVariable(var);
-                    }
                 }
+
+                ////Ensure all SELECTed variables are present
+                //foreach (SparqlVariable var in vars)
+                //{
+                //    if (!context.InputMultiset.ContainsVariable(var.Name))
+                //    {
+                //        context.InputMultiset.AddVariable(var.Name);
+                //    }
+                //}
             }
 
             context.OutputMultiset = context.InputMultiset;
