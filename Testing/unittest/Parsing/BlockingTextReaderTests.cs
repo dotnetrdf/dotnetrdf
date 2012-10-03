@@ -35,6 +35,7 @@ terms.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -55,13 +56,13 @@ namespace VDS.RDF.Test.Parsing
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void ParsingBlockingTextReaderBadInstantiation()
         {
-            BlockingTextReader reader = BlockingTextReader.Create((TextReader)null);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking((TextReader)null);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
         public void ParsingBlockingTextReaderBadInstantiation2()
         {
-            BlockingTextReader reader = BlockingTextReader.Create(new StringReader(String.Empty), 0);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(new StringReader(String.Empty), 0);
         }
 
         [TestMethod]
@@ -69,7 +70,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             StringBuilder output = new StringBuilder();
             while (!reader.EndOfStream)
@@ -91,7 +92,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[100];
             int read = reader.Read(cs, 0, cs.Length);
@@ -111,7 +112,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[100];
             int read = reader.ReadBlock(cs, 0, cs.Length);
@@ -131,7 +132,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadToEnd();
             Assert.AreEqual(TestData, s);
@@ -146,7 +147,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData, s);
@@ -161,7 +162,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData2);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData2.Substring(0, 26), s);
@@ -178,7 +179,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData3);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData3.Substring(0, 26), s);
@@ -195,7 +196,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData4);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData4.Substring(0, 26), s);
@@ -214,7 +215,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData5);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData5.Substring(0, 26), s);
@@ -231,7 +232,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             for (int i = 1; i <= 100; i++)
             {
@@ -250,7 +251,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[10];
             int start = 0;
@@ -274,7 +275,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 5);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader, 5);
 
             char[] cs = new char[10];
             int start = 0;
@@ -300,7 +301,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 5);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader, 5);
 
             char[] cs = new char[8];
             int start = 0;
@@ -326,7 +327,7 @@ namespace VDS.RDF.Test.Parsing
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 2);
+            BlockingTextReader reader = BlockingTextReader.CreateBlocking(strReader, 2);
 
             char[] cs = new char[10];
             int start = 0;
@@ -420,6 +421,81 @@ namespace VDS.RDF.Test.Parsing
             {
                 Options.UriLoaderCaching = true;
             }
+        }
+
+        private void EnsureNIOData()
+        {
+            if (!File.Exists("nio.ttl"))
+            {
+                using (StreamWriter writer = new StreamWriter("nio.ttl"))
+                {
+                    using (StreamReader reader = new StreamReader("dataset_50.ttl.gz"))
+                    {
+                        String line = reader.ReadLine();
+                        while (line != null)
+                        {
+                            writer.WriteLine(line);
+                            line = reader.ReadLine();
+                        }
+                        reader.Close();
+                    }
+                    writer.Close();
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking1()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Console.WriteLine("Run #" + (i + 1));
+                timer.Reset();
+
+                //Test Blocking
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("nio.ttl"));
+                timer.Start();
+                int totalBlocking = 0;
+                int read;
+                while (!blocking.EndOfStream)
+                {
+                    read = blocking.Read();
+                    if (read >= 0) totalBlocking++;
+                }
+                timer.Stop();
+                blocking.Close();
+                blockingTime = blockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+
+                //Reset
+                timer.Reset();
+                int totalNonBlocking = 0;
+
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("nio.ttl"));
+                timer.Start();
+                while (!nonBlocking.EndOfStream)
+                {
+                    read = nonBlocking.Read();
+                    if (read >= 0) totalNonBlocking++;
+                }
+                timer.Stop();
+                nonBlocking.Close();
+                nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+
+                Assert.AreEqual(totalBlocking, totalNonBlocking);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Blocking Total Time = " + blockingTime);
+            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
         }
     }
 }
