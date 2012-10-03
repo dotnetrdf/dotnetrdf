@@ -45,6 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Projection step of Query Evaluation
     /// </summary>
+    [Obsolete("The Project class is no longer used", true)]
     public class Project 
         : IUnaryOperator
     {
@@ -393,6 +394,10 @@ namespace VDS.RDF.Query.Algebra
                     {
                         //If not a Result variable then trim from results
                         context.InputMultiset.Trim(var);
+                    }
+                    else if (!context.InputMultiset.ContainsVariable(var))
+                    {
+                        context.InputMultiset.AddVariable(var);
                     }
                 }
             }

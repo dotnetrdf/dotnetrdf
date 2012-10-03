@@ -50,16 +50,19 @@ namespace VDS.RDF.Query.Algebra
     {
         private ISparqlAlgebra _pattern;
         private ISparqlGroupBy _grouping;
+        private List<SparqlVariable> _aggregates = new List<SparqlVariable>();
 
         /// <summary>
         /// Creates a new Group By
         /// </summary>
         /// <param name="pattern">Pattern</param>
         /// <param name="grouping">Grouping to use</param>
-        public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping)
+        /// <param name="aggregates">Aggregates to calculate</param>
+        public GroupBy(ISparqlAlgebra pattern, ISparqlGroupBy grouping, IEnumerable<SparqlVariable> aggregates)
         {
             this._pattern = pattern;
             this._grouping = grouping;
+            this._aggregates.AddRange(aggregates.Where(var => var.IsAggregate));
         }
 
         /// <summary>
@@ -99,10 +102,40 @@ namespace VDS.RDF.Query.Algebra
             {
                 foreach (KeyValuePair<String, INode> assignment in group.Assignments)
                 {
-                    if (!vars.Contains(assignment.Key)) groupSet.AddVariable(assignment.Key);
+                    if (!vars.Contains(assignment.Key))
+                    {
+                        groupSet.AddVariable(assignment.Key);
+                        vars.Add(assignment.Key);
+                    }
                 }
                 groupSet.AddGroup(group);
             }
+
+            //Apply the aggregates
+            context.InputMultiset = groupSet;
+            context.Binder.SetGroupContext(true);
+            foreach (SparqlVariable var in this._aggregates)
+            {
+                if (!vars.Contains(var.Name))
+                {
+                    groupSet.AddVariable(var.Name);
+                    vars.Add(var.Name);
+                }
+
+                foreach (ISet s in groupSet.Sets)
+                {
+                    try
+                    {
+                        INode value = var.Aggregate.Apply(context, groupSet.GroupSetIDs(s.ID));
+                        s.Add(var.Name, value);
+                    }
+                    catch (RdfQueryException)
+                    {
+                        s.Add(var.Name, null);
+                    }
+                }
+            }
+            context.Binder.SetGroupContext(false);
 
             context.OutputMultiset = groupSet;
             return context.OutputMultiset;
@@ -145,6 +178,17 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Gets the Aggregates that will be applied
+        /// </summary>
+        public IEnumerable<SparqlVariable> Aggregates
+        {
+            get
+            {
+                return this._aggregates;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the 
         /// </summary>
         /// <returns></returns>
@@ -181,7 +225,7 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public ISparqlAlgebra Transform(IAlgebraOptimiser optimiser)
         {
-            return new GroupBy(optimiser.Optimise(this._pattern), this._grouping);
+            return new GroupBy(optimiser.Optimise(this._pattern), this._grouping, this._aggregates);
         }
     }
 }

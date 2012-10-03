@@ -724,16 +724,6 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Processes a Projection
-        /// </summary>
-        /// <param name="project">Projection</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        public override BaseMultiset ProcessProject(Project project, SparqlEvaluationContext context)
-        {
-            return this.ExplainAndEvaluate<Project>(project, context, base.ProcessProject);
-        }
-
-        /// <summary>
         /// Processes a Property Path
         /// </summary>
         /// <param name="path">Path</param>
