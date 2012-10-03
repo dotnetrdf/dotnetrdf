@@ -70,9 +70,18 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Creates a new Binding Group from the specified IDs
+        /// </summary>
+        /// <param name="ids">IDs</param>
+        public BindingGroup(IEnumerable<int> ids)
+        {
+            this._bindingIDs.AddRange(ids);
+        }
+
+        /// <summary>
         /// Adds a Binding ID to the Group
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID</param>
         public void Add(int id)
         {
             this._bindingIDs.Add(id);

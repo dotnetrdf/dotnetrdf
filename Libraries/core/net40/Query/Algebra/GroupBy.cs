@@ -69,20 +69,42 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);
+            BaseMultiset results = context.Evaluate(this._pattern);
 
+            //Identity/Null yields
+            if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
+            {
+                results = new Multiset();
+            }
+            GroupMultiset groupSet = new GroupMultiset(results);
+            List<BindingGroup> groups;
+
+            //Calculate Groups
             if (context.Query.GroupBy != null)
             {
-                context.OutputMultiset = new GroupMultiset(context.InputMultiset, context.Query.GroupBy.Apply(context));
+                groups = context.Query.GroupBy.Apply(context);
             }
             else if (this._grouping != null)
             {
-                context.OutputMultiset = new GroupMultiset(context.InputMultiset, this._grouping.Apply(context));
+                groups = this._grouping.Apply(context);
             }
             else
             {
-                context.OutputMultiset = context.InputMultiset;
+                groups = new List<BindingGroup>() { new BindingGroup(results.SetIDs) };
             }
+
+            //Add Groups to the GroupMultiset
+            HashSet<String> vars = new HashSet<String>();
+            foreach (BindingGroup group in groups)
+            {
+                foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+                {
+                    if (!vars.Contains(assignment.Key)) groupSet.AddVariable(assignment.Key);
+                }
+                groupSet.AddGroup(group);
+            }
+
+            context.OutputMultiset = groupSet;
             return context.OutputMultiset;
         }
 
