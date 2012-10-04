@@ -385,6 +385,23 @@ namespace VDS.RDF.Query.Algebra
                 vars = new HashSet<SparqlVariable>(this._variables);
             }
 
+            if (context.InputMultiset is NullMultiset)
+            {
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+            }
+            else if (context.InputMultiset is IdentityMultiset)
+            {
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+                context.InputMultiset.Add(new Set());
+            }
+            else if (context.InputMultiset.IsEmpty)
+            {
+                foreach (SparqlVariable var in vars)
+                {
+                    context.InputMultiset.AddVariable(var.Name);
+                }
+            }
+
             if (!selectAll)
             {
                 //Trim Variables that aren't being SELECTed
