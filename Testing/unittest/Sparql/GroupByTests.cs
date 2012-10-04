@@ -248,5 +248,34 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             Assert.IsNotNull(results);
             Assert.AreEqual(6, results.Variables.Count());
         }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor2()
+        {
+            String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
+PREFIX : <http://example/>
+
+SELECT * FROM <http://two-nested-opt.ttl>
+WHERE 
+{ 
+  :x1 :p ?v . 
+  OPTIONAL { 
+    :x3 :q ?w . 
+    OPTIONAL { :x2 :p ?v . } 
+  }
+}";
+
+            String data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
+<http://example/x2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
+<http://example/x3> <http://example/q> ""3""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .
+<http://example/x3> <http://example/q> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://two-nested-opt.ttl> .";
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(2, results.Variables.Count());
+        }
     }
 }
