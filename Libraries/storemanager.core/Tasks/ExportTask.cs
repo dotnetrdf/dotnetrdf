@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// <returns></returns>
         protected override TaskResult RunTaskInternal()
         {
-            MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(this._file))).FirstOrDefault(d => d.CanWriteRdfDatasets);
+            MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(MimeTypesHelper.GetTrueFileExtension(this._file)).FirstOrDefault(d => d.CanWriteRdfDatasets);
             if (def == null)
             {
                 throw new RdfOutputException("Cannot Export the Store to the selected File since dotNetRDF was unable to select a writer to use based on the File Extension");

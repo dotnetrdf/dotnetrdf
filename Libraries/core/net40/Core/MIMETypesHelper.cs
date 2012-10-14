@@ -46,24 +46,199 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Helper Class containing arrays of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
+    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
     /// </summary>
-    /// <remarks>
-    /// The first type in each array is the canonical type that should be used
-    /// </remarks>
-    public class MimeTypesHelper
+    public static class MimeTypesHelper
     {
-        /// <summary>
-        /// Constant for Valid MIME Types
-        /// </summary>
-        internal const String ValidMimeTypePattern = @"[\w\-]+/\w+(-\w+)*";
+        #region Constants
 
         /// <summary>
         /// Constant for W3C File Formats Namespace
         /// </summary>
         private const String W3CFormatsNamespace = "http://www.w3.org/ns/formats/";
 
-        #region Initialisation of MIME Type Definitions
+        /// <summary>
+        /// MIME Type for accept any content Type
+        /// </summary>
+        public const String Any = "*/*";
+
+        /// <summary>
+        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
+        /// </summary>
+        public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
+
+        /// <summary>
+        /// MIME Type for Multipart Form Data
+        /// </summary>
+        public const String FormMultipart = "multipart/form-data";
+
+        /// <summary>
+        /// MIME Types for Turtle
+        /// </summary>
+        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
+
+        /// <summary>
+        /// MIME Types for RDF/XML
+        /// </summary>
+        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
+
+        /// <summary>
+        /// MIME Types for Notation 3
+        /// </summary>
+        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
+
+        /// <summary>
+        /// MIME Types for NTriples
+        /// </summary>
+        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
+
+        /// <summary>
+        /// MIME Types for NQuads
+        /// </summary>
+        internal static string[] NQuads = { "text/x-nquads" };
+
+        /// <summary>
+        /// MIME Types for TriG
+        /// </summary>
+        internal static string[] TriG = { "application/x-trig" };
+
+        /// <summary>
+        /// MIME Types for TriX
+        /// </summary>
+        internal static string[] TriX = { "application/trix" };
+
+        /// <summary>
+        /// MIME Types for RDF/JSON
+        /// </summary>
+        internal static string[] Json = { "application/json", "text/json", "application/rdf+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Result Sets
+        /// </summary>
+        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Results XML
+        /// </summary>
+        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Results JSON
+        /// </summary>
+        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
+
+        /// <summary>
+        /// MIME Types for SPARQL Boolean Result
+        /// </summary>
+        internal static string[] SparqlResultsBoolean = { "text/boolean" };
+
+        /// <summary>
+        /// MIME Types for CSV
+        /// </summary>
+        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
+
+        /// <summary>
+        /// MIME Types for TSV
+        /// </summary>
+        internal static string[] Tsv = { "text/tab-separated-values" };
+
+        /// <summary>
+        /// MIME Types for HTML
+        /// </summary>
+        internal static string[] Html = { "text/html", "application/xhtml+xml" };
+
+        /// <summary>
+        /// MIME Type for SPARQL Queries
+        /// </summary>
+        public const String SparqlQuery = "application/sparql-query";
+
+        /// <summary>
+        /// MIME Type for SPARQL Updates
+        /// </summary>
+        public const String SparqlUpdate = "application/sparql-update";
+
+        /// <summary>
+        /// Default File Extension for Turtle Files
+        /// </summary>
+        public const String DefaultTurtleExtension = "ttl";
+        /// <summary>
+        /// Default File Extension for RDF/XML
+        /// </summary>
+        public const String DefaultRdfXmlExtension = "rdf";
+        /// <summary>
+        /// Default File Extension for Notation 3
+        /// </summary>
+        public const String DefaultNotation3Extension = "n3";
+        /// <summary>
+        /// Default File Extension for NTriples
+        /// </summary>
+        public const String DefaultNTriplesExtension = "nt";
+        /// <summary>
+        /// Default File Extension for Json formats
+        /// </summary>
+        public const String DefaultJsonExtension = "json";
+        /// <summary>
+        /// Default File Extension for RDF/JSON
+        /// </summary>
+        public const String DefaultRdfJsonExtension = "rj";
+        /// <summary>
+        /// Default File Extension for SPARQL XML Results Format
+        /// </summary>
+        public const String DefaultSparqlXmlExtension = "srx";
+        /// <summary>
+        /// Default File Extension for SPARQL JSON Results Format
+        /// </summary>
+        public const String DefaultSparqlJsonExtension = "srj";
+        /// <summary>
+        /// Default File Extension for TriG
+        /// </summary>
+        public const String DefaultTriGExtension = "trig";
+        /// <summary>
+        /// Default File Extension for NQuads
+        /// </summary>
+        public const String DefaultNQuadsExtension = "nq";
+        /// <summary>
+        /// Default File Extension for TriX
+        /// </summary>
+        public const String DefaultTriXExtension = "xml";
+        /// <summary>
+        /// Default File Extension for CSV
+        /// </summary>
+        public const String DefaultCsvExtension = "csv";
+        /// <summary>
+        /// Default File Extension for TSV
+        /// </summary>
+        public const String DefaultTsvExtension = "tsv";
+        /// <summary>
+        /// Default File Extension for HTML
+        /// </summary>
+        public const String DefaultHtmlExtension = "html";
+        /// <summary>
+        /// Default File Extension for XHTML
+        /// </summary>
+        public const String DefaultXHtmlExtension = "xhtml";
+        /// <summary>
+        /// Default File Extension for SPARQL Queries
+        /// </summary>
+        public const String DefaultSparqlQueryExtension = "rq";
+        /// <summary>
+        /// Default File Extension for SPARQL Updates
+        /// </summary>
+        public const String DefaultSparqlUpdateExtension = "ru";
+        /// <summary>
+        /// Default File Extension for GZip
+        /// </summary>
+        public const String DefaultGZipExtension = "gz";
+
+        /// <summary>
+        /// Extensions which are considered stackable
+        /// </summary>
+        private static String[] AllowedStackableExtensions = new String[] 
+        {
+            DefaultGZipExtension
+        };
+
+        #endregion 
 
         /// <summary>
         /// List of MIME Type Definition
@@ -74,6 +249,56 @@ namespace VDS.RDF
         /// </summary>
         private static bool _init = false;
         private static Object _initLock = new Graph();
+
+        /// <summary>
+        /// Checks whether something is a valid MIME Type
+        /// </summary>
+        /// <param name="type">MIME Type</param>
+        /// <returns></returns>
+        internal static bool IsValidMimeType(String type)
+        {
+            String[] parts = type.Split('/');
+            if (parts.Length != 2) return false;
+            return IsValidMimeTypePart(parts[0]) && IsValidMimeTypePart(parts[1]);
+        }
+
+        /// <summary>
+        /// Determines whether the given string is valid as a type/subtype for a MIME type
+        /// </summary>
+        /// <param name="part">String</param>
+        /// <returns></returns>
+        internal static bool IsValidMimeTypePart(String part)
+        {
+            foreach (char c in part.ToCharArray())
+            {
+                if (c <= 31) return false;
+                if (c == 127) return false;
+                switch (c)
+                {
+                    case '(':
+                    case ')':
+                    case '<':
+                    case '>':
+                    case '@':
+                    case ',':
+                    case ';':
+                    case ':':
+                    case '\\':
+                    case '"':
+                    case '/':
+                    case '[':
+                    case ']':
+                    case '?':
+                    case '=':
+                    case '{':
+                    case '}':
+                    case ' ':
+                    case '\t':
+                        return false;
+                }
+            }
+            return true;
+        }
 
         /// <summary>
         /// Initialises the MIME Type definitions
@@ -194,10 +419,6 @@ namespace VDS.RDF
                 }
             }
          }
-
-        #endregion
-
-        #region Definition, Parser and Writer Management
 
         /// <summary>
         /// Resets the MIME Type Definitions (the associations between file extensions, MIME types and their respective parsers and writers) to the library defaults
@@ -470,12 +691,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(String mimeType)
         {
-            if (!_init) Init();
-
             if (mimeType == null) return Enumerable.Empty<MimeTypeDefinition>();
 
+            if (!_init) Init();
+
+            MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
             return (from definition in MimeTypesHelper.Definitions
-                    where definition.SupportsMimeType(mimeType)
+                    where definition.SupportsMimeType(selector)
                     select definition);
         }
 
@@ -486,36 +708,15 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IEnumerable<MimeTypeDefinition> GetDefinitions(IEnumerable<String> mimeTypes)
         {
-            if (!_init) Init();
-
-            return GetDefinitions(mimeTypes.ToArray());
-        }
-
-        /// <summary>
-        /// Gets all MIME Type definition which support the given MIME Types
-        /// </summary>
-        /// <param name="mimeTypes">MIME Types</param>
-        /// <returns></returns>
-        public static IEnumerable<MimeTypeDefinition> GetDefinitions(String[] mimeTypes)
-        {
-            if (!_init) Init();
-
             if (mimeTypes == null) return Enumerable.Empty<MimeTypeDefinition>();
-            if (mimeTypes.Length == 0) return Enumerable.Empty<MimeTypeDefinition>();
 
-            //Clean up the MIME Types to remove any Charset/Quality parameters
-            for (int i = 0; i < mimeTypes.Length; i++)
-            {
-                if (mimeTypes[i].Contains(";"))
-                {
-                    mimeTypes[i] = mimeTypes[i].Substring(0, mimeTypes[i].IndexOf(';'));
-                }
-            }
+            if (!_init) Init();
 
-            return (from mimeType in mimeTypes
-                    from definition in MimeTypesHelper.GetDefinitions(mimeType)
+            IEnumerable<MimeTypeSelector> selectors = MimeTypeSelector.CreateSelectors(mimeTypes);
+            return (from selector in selectors
+                    from definition in MimeTypesHelper.Definitions
+                    where definition.SupportsMimeType(selector)
                     select definition).Distinct();
-                    
         }
 
         /// <summary>
@@ -527,210 +728,12 @@ namespace VDS.RDF
         {
             if (fileExt == null) return Enumerable.Empty<MimeTypeDefinition>();
 
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
+
             return (from def in MimeTypesHelper.Definitions
-                    where def.FileExtensions.Contains(fileExt)
-                    select def);
+                    where def.SupportsFileExtension(fileExt)
+                    select def).Distinct();
         }
-
-#endregion
-
-        #region MIME Type Constants
-
-        /// <summary>
-        /// MIME Type for accept any content Type
-        /// </summary>
-        public const String Any = "*/*";
-
-        /// <summary>
-        /// MIME Type for URL Encoded WWW Form Content used when POSTing over HTTP
-        /// </summary>
-        public const String WWWFormURLEncoded = "application/x-www-form-urlencoded";
-
-        /// <summary>
-        /// MIME Type for Multipart Form Data
-        /// </summary>
-        public const String FormMultipart = "multipart/form-data";
-
-        /// <summary>
-        /// MIME Types for Turtle
-        /// </summary>
-        internal static string[] Turtle = { "text/turtle", "application/x-turtle", "application/turtle" };
-
-        /// <summary>
-        /// MIME Types for RDF/XML
-        /// </summary>
-        internal static string[] RdfXml = { "application/rdf+xml", "text/xml", "application/xml" };
-
-        /// <summary>
-        /// MIME Types for Notation 3
-        /// </summary>
-        internal static string[] Notation3 = { "text/n3", "text/rdf+n3" };
-
-        /// <summary>
-        /// MIME Types for NTriples
-        /// </summary>
-        internal static string[] NTriples = { "text/plain", "text/ntriples", "text/ntriples+turtle", "application/rdf-triples", "application/x-ntriples" };
-
-        /// <summary>
-        /// MIME Types for NQuads
-        /// </summary>
-        internal static string[] NQuads = { "text/x-nquads" };
-
-        /// <summary>
-        /// MIME Types for TriG
-        /// </summary>
-        internal static string[] TriG = { "application/x-trig" };
-
-        /// <summary>
-        /// MIME Types for TriX
-        /// </summary>
-        internal static string[] TriX = { "application/trix" };
-
-        /// <summary>
-        /// MIME Types for RDF/JSON
-        /// </summary>
-        internal static string[] Json = { "application/json", "text/json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Result Sets
-        /// </summary>
-        internal static string[] SparqlResults = { "application/sparql-results+xml", "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results XML
-        /// </summary>
-        internal static string[] SparqlResultsXml = { "application/sparql-results+xml" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Results JSON
-        /// </summary>
-        internal static string[] SparqlResultsJson = { "application/sparql-results+json" };
-
-        /// <summary>
-        /// MIME Types for SPARQL Boolean Result
-        /// </summary>
-        internal static string[] SparqlResultsBoolean = { "text/boolean" };
-
-        /// <summary>
-        /// MIME Types for CSV
-        /// </summary>
-        internal static string[] Csv = { "text/csv", "text/comma-separated-values" };
-
-        /// <summary>
-        /// MIME Types for TSV
-        /// </summary>
-        internal static string[] Tsv = { "text/tab-separated-values" };
-
-        /// <summary>
-        /// MIME Types for HTML
-        /// </summary>
-        internal static string[] Html = { "text/html", "application/xhtml+xml" };
-
-        /// <summary>
-        /// MIME Type for SPARQL Queries
-        /// </summary>
-        public const String SparqlQuery = "application/sparql-query";
-
-        /// <summary>
-        /// MIME Type for SPARQL Updates
-        /// </summary>
-        public const String SparqlUpdate = "application/sparql-update";
-
-        #endregion
-
-        #region File Extension Constants
-
-        /// <summary>
-        /// Default File Extension for Turtle Files
-        /// </summary>
-        public const String DefaultTurtleExtension = "ttl";
-        /// <summary>
-        /// Default File Extension for RDF/XML
-        /// </summary>
-        public const String DefaultRdfXmlExtension = "rdf";
-        /// <summary>
-        /// Default File Extension for Notation 3
-        /// </summary>
-        public const String DefaultNotation3Extension = "n3";
-        /// <summary>
-        /// Default File Extension for NTriples
-        /// </summary>
-        public const String DefaultNTriplesExtension = "nt";
-        /// <summary>
-        /// Default File Extension for Json formats
-        /// </summary>
-        public const String DefaultJsonExtension = "json";
-        /// <summary>
-        /// Default File Extension for RDF/JSON
-        /// </summary>
-        public const String DefaultRdfJsonExtension = "rj";
-        /// <summary>
-        /// Default File Extension for SPARQL XML Results Format
-        /// </summary>
-        public const String DefaultSparqlXmlExtension = "srx";
-        /// <summary>
-        /// Default File Extension for SPARQL JSON Results Format
-        /// </summary>
-        public const String DefaultSparqlJsonExtension = "srj";
-        /// <summary>
-        /// Default File Extension for TriG
-        /// </summary>
-        public const String DefaultTriGExtension = "trig";
-        /// <summary>
-        /// Default File Extension for NQuads
-        /// </summary>
-        public const String DefaultNQuadsExtension = "nq";
-        /// <summary>
-        /// Default File Extension for TriX
-        /// </summary>
-        public const String DefaultTriXExtension = "xml";
-        /// <summary>
-        /// Default File Extension for CSV
-        /// </summary>
-        public const String DefaultCsvExtension = "csv";
-        /// <summary>
-        /// Default File Extension for TSV
-        /// </summary>
-        public const String DefaultTsvExtension = "tsv";
-        /// <summary>
-        /// Default File Extension for HTML
-        /// </summary>
-        public const String DefaultHtmlExtension = "html";
-        /// <summary>
-        /// Default File Extension for XHTML
-        /// </summary>
-        public const String DefaultXHtmlExtension = "xhtml";
-        /// <summary>
-        /// Default File Extension for SPARQL Queries
-        /// </summary>
-        public const String DefaultSparqlQueryExtension = "rq";
-        /// <summary>
-        /// Default File Extension for SPARQL Updates
-        /// </summary>
-        public const String DefaultSparqlUpdateExtension = "ru";
-        /// <summary>
-        /// Default File Extension for GZip
-        /// </summary>
-        public const String DefaultGZipExtension = "gz";
-
-        /// <summary>
-        /// Extensions which are considered stackable
-        /// </summary>
-        private static String[] AllowedStackableExtensions = new String[] 
-        {
-            DefaultGZipExtension
-        };
-
-        #endregion
-
-        #region HTTP Header Properties
 
         /// <summary>
         /// Builds the String for the HTTP Accept Header that should be used when you want to ask for content in RDF formats (except Sparql Results)
@@ -1013,10 +1016,6 @@ namespace VDS.RDF
             }
         }
 
-        #endregion
-
-        #region File Filters
-
         /// <summary>
         /// Generates a Filename Filter that can be used with any .Net application and includes all formats that dotNetRDF is aware of
         /// </summary>
@@ -1051,7 +1050,7 @@ namespace VDS.RDF
                     || (sparqlQuery && def.CanParseObject<SparqlQuery>()) 
                     || (sparqlUpdate && def.CanParseObject<SparqlUpdateCommandSet>()))
                 {
-                    exts.AddRange(def.FileExtensions/*.Where(e => !e.Contains("."))*/);
+                    exts.AddRange(def.FileExtensions);
                     filter += def.SyntaxName + " Files|*." + String.Join(";*.", def.FileExtensions.ToArray()) + "|";
                 }
             }
@@ -1070,15 +1069,19 @@ namespace VDS.RDF
             return filter;
         }
 
-        #endregion
-
-        #region Reader and Writer Selection
-
+        /// <summary>
+        /// Applies global options to a writer
+        /// </summary>
+        /// <param name="writer">Writer</param>
         private static void ApplyWriterOptions(Object writer)
         {
             if (writer is ICompressingWriter)
             {
                 ((ICompressingWriter)writer).CompressionLevel = Options.DefaultCompressionLevel;
+            }
+            if (writer is IDtdWriter)
+            {
+                ((IDtdWriter)writer).UseDtd = Options.UseDtd;
             }
         }
 
@@ -1092,7 +1095,7 @@ namespace VDS.RDF
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// Global options pertaining to writers will be applied to the selected writer
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(IEnumerable<String> ctypes)
@@ -1106,63 +1109,38 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns></returns>
-        public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
-        {
-            return GetWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
         /// <remarks>
         /// <para>
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// Global options pertaining to writers will be applied to the selected writer
         /// </para>
         /// </remarks>
-        public static IRdfWriter GetWriter(String[] ctypes, out String contentType)
+        /// <returns></returns>
+        public static IRdfWriter GetWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            String type;
-
             if (ctypes != null)
             {
-                foreach (String ctype in ctypes)
+                //See if there are any MIME Type Definitions for the given MIME Types
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
                 {
-                    //Strip off the Charset/Quality if specified
-                    if (ctype.Contains(";"))
+                    //If so return the Writer from the first match found
+                    if (definition.CanWriteRdf)
                     {
-                        type = ctype.Substring(0, ctype.IndexOf(";"));
-                    }
-                    else
-                    {
-                        type = ctype;
-                    }
-                    type = type.ToLowerInvariant();
-
-                    //See if there are any MIME Type Definitions for this MIME Type
-                    foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                    {
-                        //If so return the Writer from the first match found
-                        if (definition.CanWriteRdf)
-                        {
-                            IRdfWriter writer = definition.GetRdfWriter();
-                            MimeTypesHelper.ApplyWriterOptions(writer);
-                            contentType = definition.CanonicalMimeType;
-                            return writer;
-                        }
+                        IRdfWriter writer = definition.GetRdfWriter();
+                        MimeTypesHelper.ApplyWriterOptions(writer);
+                        contentType = definition.CanonicalMimeType;
+                        return writer;
                     }
                 }
             }
 
             //Default to NTriples
             contentType = MimeTypesHelper.NTriples[0];
-            return new NTriplesWriter();
+            IRdfWriter defaultWriter = new NTriplesWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1176,7 +1154,7 @@ namespace VDS.RDF
         /// This method does not take account of any quality/charset preference parameters included in the Accept Header
         /// </para>
         /// <para>
-        /// For writers which support <see cref="ICompressingWriter">ICompressingWriter</see> they will be instantiated with the Compression Level specified by <see cref="Options.DefaultCompressionLevel">Options.DefaultCompressionLevel</see>
+        /// Global options pertaining to writers will be applied to the selected writer
         /// </para>
         /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader, out String contentType)
@@ -1209,7 +1187,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static IRdfWriter GetWriter(String acceptHeader)
         {
             String temp;
@@ -1217,10 +1202,15 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a RDF writer based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <remarks>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         /// <returns></returns>
         public static IRdfWriter GetWriterByFileExtension(String fileExt)
         {
@@ -1229,11 +1219,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Selects a RDF writer based on the file extension
+        /// Selects a <see cref="IRdfWriter"/> based on the file extension
         /// </summary>
         /// <param name="fileExt">File Extension</param>
         /// <param name="contentType">Content Type of the chosen writer</param>
         /// <exception cref="RdfWriterSelectionException">Thrown if no writers are associated with the given file extension</exception>
+        /// <remarks>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         /// <returns></returns>
         public static IRdfWriter GetWriterByFileExtension(String fileExt, out String contentType)
         {
@@ -1266,22 +1261,17 @@ namespace VDS.RDF
         {
             if (ctypes != null)
             {
-                foreach (String ctype in ctypes)
+                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
                 {
-                    try
+                    if (definition.CanParseRdf)
                     {
-                        IRdfReader parser = GetParser(ctype);
-                        return parser;
-                    }
-                    catch (RdfParserSelectionException)
-                    {
-                        //Ignore
+                        return definition.GetRdfParser();
                     }
                 }
             }
 
             String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
-            throw new RdfParserSelectionException("The Library does not contain any Parsers which understand RDF Graphs in any of the following MIME Types: " + types);
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs in any of the following MIME Types: " + types);
         }
 
         /// <summary>
@@ -1291,22 +1281,55 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IRdfReader GetParser(String contentType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
+            return MimeTypesHelper.GetParser(contentType.AsEnumerable());
+        }
 
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
+        /// <summary>
+        /// Selects a <see cref="IRdfReader"/> based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IRdfReader GetParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
             {
-                if (definition.CanParseRdf)
+                if (def.CanParseRdf)
                 {
-                    return definition.GetRdfParser();
+                    IRdfReader parser = def.GetRdfParser();
+                    return parser;
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF Graphs in the format '" + contentType + "'");
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Graphs associated with the File Extension '" + fileExt + "'");
+        }
+
+        /// <summary>
+        /// Selects a SPARQL Parser based on the MIME types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <param name="allowPlainTextResults">Whether to allow for plain text results</param>
+        /// <returns></returns>
+        public static ISparqlResultsReader GetSparqlParser(IEnumerable<String> ctypes, bool allowPlainTextResults)
+        {
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
+            {
+                if (definition.CanParseSparqlResults)
+                {
+                    return definition.GetSparqlResultsParser();
+                }
+            }
+
+            if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
+            {
+                return new SparqlBooleanParser();
+            }
+            else
+            {
+                String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+                throw new RdfParserSelectionException("The Library does not contain any Parsers for SPARQL Results in any of the following MIME Types: " + types);
+            }
         }
 
         /// <summary>
@@ -1316,22 +1339,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
-
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
-            {
-                if (definition.CanParseSparqlResults)
-                {
-                    return definition.GetSparqlResultsParser();
-                }
-            }
-
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands SPARQL Results in the format '" + contentType + "'");
+            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), false);
         }
 
         /// <summary>
@@ -1342,28 +1350,27 @@ namespace VDS.RDF
         /// <returns></returns>
         public static ISparqlResultsReader GetSparqlParser(String contentType, bool allowPlainTextResults)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
+            return MimeTypesHelper.GetSparqlParser(contentType.AsEnumerable(), allowPlainTextResults);
+        }
 
-            try
+        /// <summary>
+        /// Selects a <see cref="ISparqlResultsReader"/> based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static ISparqlResultsReader GetSparqlParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
             {
-                return GetSparqlParser(contentType);
-            }
-            catch (RdfParserSelectionException)
-            {
-                if (allowPlainTextResults && (contentType.Equals("text/plain") || contentType.Equals("text/boolean")))
+                if (def.CanParseSparqlResults)
                 {
-                    return new SparqlBooleanParser();
-                }
-                else
-                {
-                    throw;
+                    return def.GetSparqlResultsParser();
                 }
             }
+
+            throw new RdfParserSelectionException("The Library does not contain a Parser for SPARQL Results associated with the file extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1371,7 +1378,14 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes)
         {
             String temp;
@@ -1384,49 +1398,32 @@ namespace VDS.RDF
         /// <param name="ctypes">String array of accepted Content Types</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
         /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            return GetSparqlWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="ISparqlResultsWriter">ISparqlResultsWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
-        public static ISparqlResultsWriter GetSparqlWriter(String[] ctypes, out String contentType)
-        {
-            String type;
-
-            foreach (String ctype in ctypes)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
             {
-                //Strip off the Charset/Quality if specified
-                if (ctype.Contains(";"))
+                if (definition.CanWriteSparqlResults)
                 {
-                    type = ctype.Substring(0, ctype.IndexOf(";"));
-                }
-                else
-                {
-                    type = ctype;
-                }
-                type = type.ToLowerInvariant();
-
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                {
-                    if (definition.CanWriteSparqlResults)
-                    {
-                        contentType = definition.CanonicalMimeType;
-                        return definition.GetSparqlResultsWriter();
-                    }
+                    contentType = definition.CanonicalMimeType;
+                    ISparqlResultsWriter writer = definition.GetSparqlResultsWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    return writer;
                 }
             }
 
             //Default to SPARQL XML Output
             contentType = MimeTypesHelper.SparqlResultsXml[0];
-            return new SparqlXmlWriter();
+            ISparqlResultsWriter defaultWriter = new SparqlXmlWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1435,7 +1432,14 @@ namespace VDS.RDF
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
         /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader, out String contentType)
         {
             String[] ctypes;
@@ -1459,11 +1463,72 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="acceptHeader">Value of the HTTP Accept Header</param>
         /// <returns>A Writer for a Content Type the client accepts</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
+        /// <remarks>
+        /// <para>
+        /// This method does not take account of any quality/charset preference parameters included in the Accept Header
+        /// </para>
+        /// <para>
+        /// Global options pertaining to writers will be applied to the selected writer
+        /// </para>
+        /// </remarks>
         public static ISparqlResultsWriter GetSparqlWriter(String acceptHeader)
         {
             String temp;
             return GetSparqlWriter(acceptHeader, out temp);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt)
+        {
+            String temp;
+            return MimeTypesHelper.GetSparqlWriterByFileExtension(fileExt, out temp);
+        }
+
+        /// <summary>
+        /// Selects a <see cref="ISparqlResultsWriter"/> based on a file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <returns></returns>
+        public static ISparqlResultsWriter GetSparqlWriterByFileExtension(String fileExt, out String contentType)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanWriteSparqlResults)
+                {
+                    ISparqlResultsWriter writer = def.GetSparqlResultsWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    contentType = def.CanonicalMimeType;
+                    return writer;
+                }
+            }
+
+            throw new RdfWriterSelectionException("Unable to select a SPARQL Results Writer, no writers are associated with the file extension '" + fileExt + "'");
+        }
+
+        /// <summary>
+        /// Selects a Store parser based on the MIME types
+        /// </summary>
+        /// <param name="ctypes">MIME Types</param>
+        /// <returns></returns>
+        public static IStoreReader GetStoreParser(IEnumerable<String> ctypes)
+        {
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitions(ctypes))
+            {
+                if (def.CanParseRdfDatasets)
+                {
+                    return def.GetRdfDatasetParser();
+                }
+            }
+
+            String types = (ctypes == null) ? String.Empty : String.Join(",", ctypes.ToArray());
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Datasets in any of the following MIME Types: " + types);
         }
 
         /// <summary>
@@ -1473,22 +1538,27 @@ namespace VDS.RDF
         /// <returns></returns>
         public static IStoreReader GetStoreParser(String contentType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (contentType.Contains(";"))
-            {
-                contentType = contentType.Substring(0, contentType.IndexOf(";"));
-            }
-            contentType = contentType.ToLowerInvariant();
+            return MimeTypesHelper.GetStoreParser(contentType.AsEnumerable());
+        }
 
-            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(contentType))
+        /// <summary>
+        /// Selects a Store parser based on the file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IStoreReader GetStoreParserByFileExtension(String fileExt)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
             {
-                if (definition.CanParseRdfDatasets)
+                if (def.CanParseRdfDatasets)
                 {
-                    return definition.GetRdfDatasetParser();
+                    return def.GetRdfDatasetParser();
                 }
             }
 
-            throw new RdfParserSelectionException("The Library does not contain a Parser which understands RDF datasets in the format '" + contentType + "'");
+            throw new RdfParserSelectionException("The Library does not contain any Parsers for RDF Datasets associated with the File Extension '" + fileExt + "'");
         }
 
         /// <summary>
@@ -1526,43 +1596,21 @@ namespace VDS.RDF
         /// </remarks>
         public static IStoreWriter GetStoreWriter(IEnumerable<String> ctypes, out String contentType)
         {
-            return GetStoreWriter(ctypes.ToArray(), out contentType);
-        }
-
-        /// <summary>
-        /// Selects an appropriate <see cref="IStoreWriter">IStoreWriter</see> based on the HTTP Accept header form a HTTP Request
-        /// </summary>
-        /// <param name="ctypes">String array of accepted Content Types</param>
-        /// <param name="contentType">The Content Type header that should be sent in the Response to the Request</param>
-        /// <returns>A Writer for a Content Type the client accepts and the Content Type that should be sent to the client</returns>
-        /// <remarks>This method does not take account of any quality/charset preference parameters included in the Accept Header</remarks>
-        public static IStoreWriter GetStoreWriter(String[] ctypes, out String contentType)
-        {
-            String type;
-            foreach (String ctype in ctypes)
+            foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(ctypes))
             {
-                //Strip off the Charset/Quality if specified
-                if (ctype.Contains(";"))
+                if (definition.CanWriteRdfDatasets)
                 {
-                    type = ctype.Substring(0, ctype.IndexOf(";"));
-                }
-                else
-                {
-                    type = ctype;
-                }
-                type = type.ToLowerInvariant();
-
-                foreach (MimeTypeDefinition definition in MimeTypesHelper.GetDefinitions(type))
-                {
-                    if (definition.CanWriteRdfDatasets)
-                    {
-                        contentType = definition.CanonicalMimeType;
-                        return definition.GetRdfDatasetWriter();
-                    }
+                    contentType = definition.CanonicalMimeType;
+                    IStoreWriter writer = definition.GetRdfDatasetWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    return writer;
                 }
             }
 
-            throw new RdfWriterSelectionException("The Library does not contain a writer which can output RDF datasets in a format supported by the Client");
+            contentType = NQuads[0];
+            IStoreWriter defaultWriter = new NQuadsWriter();
+            MimeTypesHelper.ApplyWriterOptions(defaultWriter);
+            return defaultWriter;
         }
 
         /// <summary>
@@ -1602,9 +1650,40 @@ namespace VDS.RDF
             return GetStoreWriter(acceptHeader, out temp);
         }
 
-        #endregion
+        /// <summary>
+        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <returns></returns>
+        public static IStoreWriter GetStoreWriterByFileExtension(String fileExt)
+        {
+            String temp;
+            return MimeTypesHelper.GetStoreWriterByFileExtension(fileExt, out temp);
+        }
 
-        #region MIME Type Selection
+        /// <summary>
+        /// Selects a <see cref="IStoreWriter"/> by file extension
+        /// </summary>
+        /// <param name="fileExt">File Extension</param>
+        /// <param name="contentType">Content Type of the selected writer</param>
+        /// <returns></returns>
+        public static IStoreWriter GetStoreWriterByFileExtension(String fileExt, out String contentType)
+        {
+            if (fileExt == null) throw new ArgumentNullException("fileExt", "File Extension cannot be null");
+
+            foreach (MimeTypeDefinition def in MimeTypesHelper.GetDefinitionsByFileExtension(fileExt))
+            {
+                if (def.CanWriteRdfDatasets)
+                {
+                    IStoreWriter writer = def.GetRdfDatasetWriter();
+                    MimeTypesHelper.ApplyWriterOptions(writer);
+                    contentType = def.CanonicalMimeType;
+                    return writer;
+                }
+            }
+
+            throw new RdfWriterSelectionException("Unable to select a RDF Dataset writer, no writers are associated with the file extension '" + fileExt + "'");
+        }
 
         /// <summary>
         /// Selects the appropriate MIME Type for the given File Extension if the File Extension is a standard extension for an RDF format
@@ -1614,16 +1693,10 @@ namespace VDS.RDF
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static String GetMimeType(String fileExt)
         {
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.FileExtensions.Contains(fileExt))
+                if (definition.SupportsFileExtension(fileExt))
                 {
                     return definition.CanonicalMimeType;
                 }
@@ -1641,17 +1714,11 @@ namespace VDS.RDF
         [Obsolete("This method is deprecated, please use GetDefinitionsForExtension() to find relevant definitions and extract the MIME types from there", false)]
         public static IEnumerable<String> GetMimeTypes(String fileExt)
         {
-            //Remove leading "."
-            if (fileExt.StartsWith("."))
-            {
-                fileExt = fileExt.Substring(1);
-            }
-
             if (!_init) Init();
             List<String> types = new List<string>();
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.FileExtensions.Contains(fileExt))
+                if (definition.SupportsFileExtension(fileExt))
                 {
                     types.AddRange(definition.MimeTypes);
                 }
@@ -1663,10 +1730,6 @@ namespace VDS.RDF
             throw new RdfParserSelectionException("Unable to determine the appropriate MIME Type for the File Extension '" + fileExt + "' as this is not a standard extension for an RDF format");
 
         }
-
-        #endregion
-
-        #region File Extension Selection
 
         /// <summary>
         /// Gets the true file extension for a filename
@@ -1681,7 +1744,7 @@ namespace VDS.RDF
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.
         /// </para>
         /// <para>
-        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong>
+        /// <strong>Important:</strong> This method does not blindly return double extensions whenever they are present (since they may simply by period characters in the filename and not double extensions at all) rather it returns double extensions only when the standard extension is an extension is known to be used with double extensions e.g. <strong>.gz</strong> that is relevan to the library
         /// </para>
         /// </remarks>
         public static String GetTrueFileExtension(String filename)
@@ -1711,22 +1774,47 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the true extension for a resource
+        /// </summary>
+        /// <param name="resource">Resource</param>
+        /// <returns></returns>
+        public static String GetTrueResourceExtension(String resource)
+        {
+            int extIndex = resource.IndexOf('.');
+            
+            //if no extensions(s) return empty
+            if (extIndex == -1) return String.Empty;
+
+            //Get the standard extension
+            String stdExt = resource.Substring(resource.LastIndexOf('.'));
+
+            //Only proceed to do double extension checking if the extension is known to be stackable
+            if (!AllowedStackableExtensions.Contains(stdExt.Substring(1))) return stdExt;
+
+            int stdIndex = resource.Length - stdExt.Length;
+
+            //If the indexes match then the standard method returned the only extension present
+            if (extIndex == stdIndex) return stdExt;
+
+            //Otherwise we have a double extension
+            String partialResource = resource.Substring(0, stdIndex);
+            String realExt = partialResource.Substring(partialResource.LastIndexOf('.'));
+
+            return realExt + stdExt;
+        }
+
+        /// <summary>
         /// Selects the appropriate File Extension for the given MIME Type
         /// </summary>
         /// <param name="mimeType">MIME Type</param>
         /// <returns></returns>
         public static String GetFileExtension(String mimeType)
         {
-            //Strip off Charset specifier of the Content Type if any
-            if (mimeType.Contains(";"))
-            {
-                mimeType = mimeType.Substring(0, mimeType.IndexOf(";"));
-            }
-
             if (!_init) Init();
+            MimeTypeSelector selector = MimeTypeSelector.Create(mimeType, 1);
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
-                if (definition.MimeTypes.Contains(mimeType))
+                if (definition.SupportsMimeType(selector))
                 {
                     return definition.CanonicalFileExtension;
                 }
@@ -1774,7 +1862,5 @@ namespace VDS.RDF
                 
             throw new RdfException("Unable to determine the appropriate File Extension for the Store Writer '" + writer.GetType().ToString() + "'");
         }
-
-        #endregion
    }
 }

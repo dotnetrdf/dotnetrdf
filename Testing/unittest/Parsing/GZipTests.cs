@@ -205,7 +205,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingGZipByFilenameManual()
+        public void ParsingGZipByFilenameManual1()
         {
             foreach (String filename in this._manualTestFiles)
             {
@@ -213,11 +213,37 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, filename);
+
+                Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipByFilenameManual2()
+        {
+            foreach (String filename in this._manualTestFiles)
+            {
+                Graph g = new Graph();
+
+                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+                reader.Load(g, filename);
+
+                Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipByFilenameManual3()
+        {
+            foreach (String filename in this._manualTestFiles)
+            {
+                Graph g = new Graph();
+                g.LoadFromFile(filename);
 
                 Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
             }
@@ -232,7 +258,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
@@ -251,7 +277,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
@@ -262,7 +288,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingGZipByFilenameAuto()
+        public void ParsingGZipByFilenameAuto1()
         {
             foreach (String filename in this._autoTestFiles)
             {
@@ -270,11 +296,37 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
                 reader.Load(g, filename);
+
+                Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipByFilenameAuto2()
+        {
+            foreach (String filename in this._autoTestFiles)
+            {
+                Graph g = new Graph();
+
+                IRdfReader reader = MimeTypesHelper.GetParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+                reader.Load(g, filename);
+
+                Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipByFilenameAuto3()
+        {
+            foreach (String filename in this._autoTestFiles)
+            {
+                Graph g = new Graph();
+                g.LoadFromFile(filename);
 
                 Assert.AreEqual(this._g, g, "Graphs for file " + filename + " were not equal");
             }
@@ -289,7 +341,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
@@ -308,7 +360,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdf && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IRdfReader reader = def.GetRdfParser();
@@ -327,7 +379,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
@@ -346,7 +398,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
@@ -365,7 +417,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
@@ -384,7 +436,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseRdfDatasets && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 IStoreReader reader = def.GetRdfDatasetParser();
@@ -403,7 +455,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
@@ -422,7 +474,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
@@ -441,7 +493,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
@@ -452,7 +504,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingGZipResultsByFilenameAuto()
+        public void ParsingGZipResultsByFilenameAuto1()
         {
             foreach (String filename in this._autoResultsTestFiles)
             {
@@ -460,10 +512,24 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
+                reader.Load(results, filename);
+
+                Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
+            }
+        }
+
+        [TestMethod]
+        public void ParsingGZipResultsByFilenameAuto2()
+        {
+            foreach (String filename in this._autoResultsTestFiles)
+            {
+                SparqlResultSet results = new SparqlResultSet();
+
+                ISparqlResultsReader reader = MimeTypesHelper.GetSparqlParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
                 reader.Load(results, filename);
 
                 Assert.AreEqual(this._results, results, "Result Sets for file " + filename + " were not equal");
@@ -479,7 +545,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();
@@ -498,7 +564,7 @@ namespace VDS.RDF.Test.Parsing
 
                 String ext = MimeTypesHelper.GetTrueFileExtension(filename);
                 ext = ext.Substring(1);
-                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.FileExtensions.Contains(ext)).FirstOrDefault();
+                MimeTypeDefinition def = MimeTypesHelper.Definitions.Where(d => d.CanParseSparqlResults && d.SupportsFileExtension(ext)).FirstOrDefault();
                 if (def == null) Assert.Fail("Failed to find MIME Type Definition for File Extension ." + ext);
 
                 ISparqlResultsReader reader = def.GetSparqlResultsParser();

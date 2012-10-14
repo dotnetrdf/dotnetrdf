@@ -20,6 +20,10 @@ Changed
 
 - Dependencies
 
+- Parsing/Writing
+ - Improved how parsers and writers are selected by file extension
+ - Improved content negotiation logic to properly support quality factors and type ranges
+
 Removed
 - Removed the obsolete TalisPlatformConnector
 - Removed the obsolete IndexedTripleCollection and it's descendants

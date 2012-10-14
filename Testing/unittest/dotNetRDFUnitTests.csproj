@@ -93,6 +93,7 @@
     <Compile Include="Core\BasicTests2.cs" />
     <Compile Include="Common\BinaryTreeTests.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
+    <Compile Include="Core\MimeTypesTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Sparql\OperatorTests.cs" />
     <Compile Include="Sparql\DatasetTests.cs" />
     <Compile Include="Sparql\QueryBuilderTests.cs" />
+    <Compile Include="Sparql\SetTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
@@ -766,6 +768,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

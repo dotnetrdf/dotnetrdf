@@ -817,7 +817,7 @@ namespace dotNetRDFTest
                 {
                     try
                     {
-                        ISparqlResultsReader resultSetParser = MimeTypesHelper.GetSparqlParser(MimeTypesHelper.GetMimeType(MimeTypesHelper.GetTrueFileExtension(resultFile)));
+                        ISparqlResultsReader resultSetParser = MimeTypesHelper.GetSparqlParserByFileExtension(MimeTypesHelper.GetTrueFileExtension(resultFile));
                         resultSetParser.Load(expectedResults, resultFile);
 
                         if (resultSetParser is SparqlCsvParser)

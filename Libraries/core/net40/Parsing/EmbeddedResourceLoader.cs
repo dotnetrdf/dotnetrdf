@@ -161,8 +161,8 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Need to select a Parser or use StringParser
-                        String ext = resource.Substring(resource.LastIndexOf("."));
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdf);
+                        String ext = MimeTypesHelper.GetTrueResourceExtension(resource);
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                         if (def != null)
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
@@ -299,8 +299,8 @@ namespace VDS.RDF.Parsing
                     else
                     {
                         //Need to select a Parser or use StringParser
-                        String ext = resource.Substring(resource.LastIndexOf("."));
-                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdfDatasets);
+                        String ext =  MimeTypesHelper.GetTrueResourceExtension(resource);
+                        MimeTypeDefinition def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdfDatasets);
                         if (def != null)
                         {
                             //Resource has an appropriate file extension and we've found a candidate parser for it
@@ -310,7 +310,7 @@ namespace VDS.RDF.Parsing
                         else
                         {
                             //See if the format was actually an RDF graph instead
-                            def = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).FirstOrDefault(d => d.CanParseRdf);
+                            def = MimeTypesHelper.GetDefinitionsByFileExtension(ext).FirstOrDefault(d => d.CanParseRdf);
                             if (def != null)
                             {
                                 IRdfReader rdfParser = def.GetRdfParser();
