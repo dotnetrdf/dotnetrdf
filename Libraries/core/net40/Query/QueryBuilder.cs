@@ -234,7 +234,9 @@ namespace VDS.RDF.Query
             // returns a copy to prevent changes in either
             // QueryBuilder or the retrieved SparqlQuery(s) from
             // being reflected in one another
-            return _query.Copy();
+            SparqlQuery executableQuery = _query.Copy();
+            executableQuery.Optimise();
+            return executableQuery;
         }
 
         #region Implementation of INodeFactory
