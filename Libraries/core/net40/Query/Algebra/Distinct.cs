@@ -48,6 +48,7 @@ namespace VDS.RDF.Query.Algebra
         : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
+        private bool _ignoreTemporaryVariables = true;
 
         /// <summary>
         /// Creates a new Distinct Modifier
@@ -56,6 +57,17 @@ namespace VDS.RDF.Query.Algebra
         public Distinct(ISparqlAlgebra pattern)
         {
             this._pattern = pattern;
+        }
+
+        /// <summary>
+        /// Creates a new Distinct Modifier
+        /// </summary>
+        /// <param name="algebra">Inner Algebra</param>
+        /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables</param>
+        internal Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
+            : this(algebra)
+        {
+            this._ignoreTemporaryVariables = ignoreTemporaryVariables;
         }
 
         /// <summary>
@@ -74,12 +86,16 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Trim temporary variables
-                context.InputMultiset.Trim();
+                if (this._ignoreTemporaryVariables)
+                {
+                    //Trim temporary variables
+                    context.InputMultiset.Trim();
+                }
 
                 //Apply distinctness
                 context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
+                IEqualityComparer<ISet> comparer = this._ignoreTemporaryVariables ? new SetDistinctnessComparer() : new SetDistinctnessComparer(context.InputMultiset.Variables.Where(v => !v.StartsWith("_:")));
+                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct(comparer);
                 foreach (ISet s in sets)
                 {
                     context.OutputMultiset.Add(s.Copy());
