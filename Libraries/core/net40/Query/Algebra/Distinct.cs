@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Algebra
         : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
-        private bool _ignoreTemporaryVariables = true;
+        private bool _trimTemporaryVariables = true;
 
         /// <summary>
         /// Creates a new Distinct Modifier
@@ -64,10 +64,10 @@ namespace VDS.RDF.Query.Algebra
         /// </summary>
         /// <param name="algebra">Inner Algebra</param>
         /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables</param>
-        internal Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
+        public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
             : this(algebra)
         {
-            this._ignoreTemporaryVariables = ignoreTemporaryVariables;
+            this._trimTemporaryVariables = !ignoreTemporaryVariables;
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                if (this._ignoreTemporaryVariables)
+                if (this._trimTemporaryVariables)
                 {
                     //Trim temporary variables
                     context.InputMultiset.Trim();
@@ -94,8 +94,8 @@ namespace VDS.RDF.Query.Algebra
 
                 //Apply distinctness
                 context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                IEqualityComparer<ISet> comparer = this._ignoreTemporaryVariables ? new SetDistinctnessComparer() : new SetDistinctnessComparer(context.InputMultiset.Variables.Where(v => !v.StartsWith("_:")));
-                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct(comparer);
+                //IEqualityComparer<ISet> comparer = this._trimTemporaryVariables ? new SetDistinctnessComparer() : new SetDistinctnessComparer(context.InputMultiset.Variables.Where(v => !v.StartsWith("_:")));
+                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();//(comparer);
                 foreach (ISet s in sets)
                 {
                     context.OutputMultiset.Add(s.Copy());
