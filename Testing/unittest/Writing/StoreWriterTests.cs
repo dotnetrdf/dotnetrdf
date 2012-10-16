@@ -77,7 +77,7 @@ namespace VDS.RDF.Test.Writing
             foreach (IGraph graph in store.Graphs)
             {
                 Assert.IsTrue(store2.HasGraph(graph.BaseUri), "Parsed Stored should have contained serialized graph");
-                Assert.AreEqual(graph, store2.Graph(graph.BaseUri), "Parsed Graph should be equal to original graph");
+                Assert.AreEqual(graph, store2[graph.BaseUri], "Parsed Graph should be equal to original graph");
             }
         }
 

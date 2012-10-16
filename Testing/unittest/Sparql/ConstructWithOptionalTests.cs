@@ -122,7 +122,7 @@ namespace VDS.RDF.Test.Sparql
             processor.ProcessCommandSet(cmds);
 
             Assert.IsTrue(store.HasGraph(null), "Store should have a default unnamed Graph");
-            IGraph result = store.Graph(null);
+            IGraph result = store[null];
             
             NTriplesFormatter formatter = new NTriplesFormatter();
             Console.WriteLine("Result Data");
