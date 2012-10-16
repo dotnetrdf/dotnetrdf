@@ -131,8 +131,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(new Uri("http://example.org/source"));
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store[new Uri("http://example.org/source")];
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -161,8 +161,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(new Uri("http://example.org/source"));
-            h = store.Graph(null);
+            g = store[new Uri("http://example.org/source")];
+            h = store[null];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -191,8 +191,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(null);
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store[null];
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsTrue(h.HasSubGraph(g), "Destination Graph should have Source Graph as a subgraph");
@@ -221,8 +221,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(new Uri("http://example.org/source"));
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store[new Uri("http://example.org/source")];
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.AreEqual(g, h, "Graphs should now be equal");
@@ -251,8 +251,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(new Uri("http://example.org/source"));
-            h = store.Graph(null);
+            g = store[new Uri("http://example.org/source")];
+            h = store[null];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.AreEqual(g, h, "Graphs should now be equal");
@@ -281,8 +281,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.Graph(null);
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store[null];
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(g.IsEmpty, "Source Graph should not be empty");
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.AreEqual(g, h, "Graphs should now be equal");
@@ -311,8 +311,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(new Uri("http://example.org/source")) ? store.Graph(new Uri("http://example.org/source")) : null;
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
@@ -344,8 +344,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(new Uri("http://example.org/source")) ? store.Graph(new Uri("http://example.org/source")) : null;
-            h = store.Graph(null);
+            g = store.HasGraph(new Uri("http://example.org/source")) ? store[new Uri("http://example.org/source")] : null;
+            h = store[null];
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsTrue(g == null || g.IsEmpty, "Source Graph should be Deleted/Empty");
 
@@ -377,8 +377,8 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(store);
             processor.ProcessCommandSet(commands);
 
-            g = store.HasGraph(null) ? store.Graph(null) : null;
-            h = store.Graph(new Uri("http://example.org/destination"));
+            g = store.HasGraph(null) ? store[null] : null;
+            h = store[new Uri("http://example.org/destination")];
             Assert.IsFalse(h.IsEmpty, "Destination Graph should not be empty");
             Assert.IsFalse(g == null, "Default Graph should still exist");
             Assert.IsTrue(g.IsEmpty, "Source Graph (the Default Graph) should be Empty");
@@ -456,7 +456,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
 
             Assert.AreEqual(origTriples, g.Triples.Count, "Triples in input Graph shouldn't have changed as INSERTs should have gone to the default graph");
 
-            IGraph def = store.Graph(null);
+            IGraph def = store[null];
 
             TestTools.ShowGraph(def);
             Console.WriteLine();
@@ -502,7 +502,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             dataset.SetDefaultGraph((Uri)null);
             processor.ProcessCommandSet(cmds);
 
-            IGraph def = store.Graph(null);
+            IGraph def = store[null];
             TestTools.ShowGraph(def);
             Assert.IsTrue(def.IsEmpty, "Graph should be empty as the commands only used USING NAMED (so shouldn't have changed the dataset) and the Active Graph for the dataset was empty so there should have been nothing matched to generate insertions from");
         }
@@ -531,7 +531,7 @@ _:template        tpl:PropertyRole  'ValueB'^^xsd:String .";
             dataset.SetDefaultGraph((Uri)null);
             processor.ProcessCommandSet(cmds);
 
-            IGraph def = store.Graph(null);
+            IGraph def = store[null];
             TestTools.ShowGraph(def);
 
             //Apply a RDFS reasoner over the original input and output it into another graph

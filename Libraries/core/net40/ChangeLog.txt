@@ -30,6 +30,7 @@ Removed
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
 - Marks the obsolete HashTable classes as obsolete unusable
+- Marks the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
    
 
 
