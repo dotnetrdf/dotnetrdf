@@ -81,7 +81,8 @@ namespace VDS.RDF.Query.Algebra
             try
             {
                 context.TrimTemporaryVariables = false;
-                BaseMultiset result = context.Evaluate(algebra);//algebra.Evaluate(context);
+                BaseMultiset result = context.Evaluate(algebra);
+
                 //Also note that we don't trim temporary variables here even if we've set the setting back
                 //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 

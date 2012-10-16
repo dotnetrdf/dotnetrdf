@@ -94,8 +94,7 @@ namespace VDS.RDF.Query.Algebra
 
                 //Apply distinctness
                 context.OutputMultiset = new Multiset(context.InputMultiset.Variables);
-                //IEqualityComparer<ISet> comparer = this._trimTemporaryVariables ? new SetDistinctnessComparer() : new SetDistinctnessComparer(context.InputMultiset.Variables.Where(v => !v.StartsWith("_:")));
-                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();//(comparer);
+                IEnumerable<ISet> sets = context.InputMultiset.Sets.Distinct();
                 foreach (ISet s in sets)
                 {
                     context.OutputMultiset.Add(s.Copy());
