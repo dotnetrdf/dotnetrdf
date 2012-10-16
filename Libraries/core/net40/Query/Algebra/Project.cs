@@ -369,7 +369,6 @@ namespace VDS.RDF.Query.Algebra
             bool selectAll = false;
             if (context.Query != null)
             {
-                vars = new HashSet<SparqlVariable>(context.Query.Variables);
                 switch (context.Query.QueryType)
                 {
                     case SparqlQueryType.DescribeAll:
@@ -378,6 +377,14 @@ namespace VDS.RDF.Query.Algebra
                     case SparqlQueryType.SelectAllReduced:
                         selectAll = true;
                         break;
+                }
+                if (selectAll)
+                {
+                    vars = new HashSet<SparqlVariable>(context.Query.Variables);
+                }
+                else
+                {
+                    vars = new HashSet<SparqlVariable>(context.Query.Variables.Where(v => v.IsResultVariable));
                 }
             }
             else
@@ -413,15 +420,15 @@ namespace VDS.RDF.Query.Algebra
                         context.InputMultiset.Trim(var);
                     }
                 }
+            }
 
-                ////Ensure all SELECTed variables are present
-                //foreach (SparqlVariable var in vars)
-                //{
-                //    if (!context.InputMultiset.ContainsVariable(var.Name))
-                //    {
-                //        context.InputMultiset.AddVariable(var.Name);
-                //    }
-                //}
+            //Ensure all SELECTed variables are present
+            foreach (SparqlVariable var in vars)
+            {
+                if (!context.InputMultiset.ContainsVariable(var.Name))
+                {
+                    context.InputMultiset.AddVariable(var.Name);
+                }
             }
 
             context.OutputMultiset = context.InputMultiset;

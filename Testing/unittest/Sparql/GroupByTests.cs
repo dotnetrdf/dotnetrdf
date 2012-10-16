@@ -246,6 +246,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
             Assert.AreEqual(6, results.Variables.Count());
         }
 
@@ -259,9 +260,9 @@ SELECT * FROM <http://two-nested-opt.ttl>
 WHERE 
 { 
   :x1 :p ?v . 
-  OPTIONAL { 
-    :x3 :q ?w . 
-    OPTIONAL { :x2 :p ?v . } 
+  OPTIONAL { 
+    :x3 :q ?w . 
+    OPTIONAL { :x2 :p ?v . } 
   }
 }";
 
@@ -275,7 +276,45 @@ WHERE
 
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
             Assert.AreEqual(2, results.Variables.Count());
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor3()
+        {
+            String query = @"BASE <http://www.w3.org/2001/sw/DataAccess/tests/data-r2/algebra/manifest#>
+PREFIX : <http://example/>
+
+SELECT ?x ?y ?z FROM <http://join-combo-graph-2.ttl>
+FROM NAMED <http://join-combo-graph-1.ttl>
+WHERE
+{ 
+  GRAPH ?g { ?x ?p 1  . } 
+  { ?x :p ?y . } UNION { ?p a ?z . } 
+}";
+
+            String data = @"<http://example/x1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x1> <http://example/r> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x2> <http://example/r> ""10""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x2> <http://example/x> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x3> <http://example/q> ""3""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x3> <http://example/q> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x3> <http://example/s> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-2.ttl> .
+<http://example/x3> <http://example/t> <http://example/s> <http://join-combo-graph-2.ttl> .
+<http://example/p> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> <http://join-combo-graph-2.ttl> .
+<http://example/x1> <http://example/z> <http://example/p> <http://join-combo-graph-2.ttl> .
+<http://example/b> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-1.ttl> .
+_:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http://join-combo-graph-1.ttl> .";
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
+            Assert.AreEqual(3, results.Variables.Count());
         }
     }
 }

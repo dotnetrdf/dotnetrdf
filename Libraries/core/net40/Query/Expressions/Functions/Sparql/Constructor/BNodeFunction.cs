@@ -181,6 +181,17 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
         }
 
         /// <summary>
+        /// Gets whether the expression can be parallelised
+        /// </summary>
+        public override bool CanParallelise
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Gets the String representation of the Expression
         /// </summary>
         /// <returns></returns>
