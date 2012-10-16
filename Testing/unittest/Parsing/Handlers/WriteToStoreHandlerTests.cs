@@ -206,12 +206,6 @@ namespace VDS.RDF.Test.Parsing.Handlers
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public void ParsingWriteToStoreHandlerBadInstantiation3()
-        {
-            WriteToStoreHandler handler = new WriteToStoreHandler(new JosekiConnector("http://example.org/", "query"), null);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
         public void ParsingWriteToStoreHandlerBadInstantiation4()
         {
             WriteToStoreHandler handler = new WriteToStoreHandler(new InMemoryManager(), null, 0);

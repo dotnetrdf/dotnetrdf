@@ -17,6 +17,7 @@ Added
 
 Changed
 - Bug Fixes
+ - Fixed an internal API inconsistency
 
 - Dependencies
 
@@ -25,6 +26,7 @@ Changed
  - Improved content negotiation logic to properly support quality factors and type ranges
 
 Removed
+- Marks the obsolete JosekiConnector as obsolete unusable
 - Removed the obsolete TalisPlatformConnector
 - Removed the obsolete IndexedTripleCollection and it's descendants
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
