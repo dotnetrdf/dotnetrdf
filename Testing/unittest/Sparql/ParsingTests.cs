@@ -41,6 +41,8 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Patterns;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -192,6 +194,29 @@ SELECT ?X WHERE
   [ :p|:q|:r ?X ]
 }";
             TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlVarNames()
+        {
+            List<String> names = new List<String>
+            {
+                "?var",
+                "$var",
+                "var"
+            };
+
+            foreach (String name in names)
+            {
+                SparqlVariable var = new SparqlVariable(name);
+                Assert.AreEqual("var", var.Name);
+
+                VariablePattern varPat = new VariablePattern(name);
+                Assert.AreEqual("var", varPat.VariableName);
+
+                VariableTerm varTerm = new VariableTerm(name);
+                Assert.AreEqual("var", varTerm.Variables.First());
+            }
         }
     }
 }

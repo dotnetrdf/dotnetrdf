@@ -34,11 +34,8 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using VDS.RDF.Query.Aggregates;
-using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query
@@ -56,18 +53,25 @@ namespace VDS.RDF.Query
         /// <summary>
         /// Creates a new Sparql Variable
         /// </summary>
-        /// <param name="name">Variable Name (with leading ?/$ removed)</param>
+        /// <param name="name">Variable Name</param>
         /// <param name="isResultVar">Does this Variable appear in the Result Set?</param>
         public SparqlVariable(String name, bool isResultVar) {
             this._name = name;
             this._isResultVar = isResultVar;
+
+            //Strip leading ?/$ if present
+            if (this._name.StartsWith("?") || this._name.StartsWith("$"))
+            {
+                this._name = this._name.Substring(1);
+            }
         }
 
         /// <summary>
         /// Creates a new Sparql Variable
         /// </summary>
         /// <param name="name">Variable Name (with leading ?/$ removed)</param>
-        public SparqlVariable(String name) : this(name, false) { }
+        public SparqlVariable(String name) 
+            : this(name, false) { }
 
         /// <summary>
         /// Creates a new Sparql Variable which is an Aggregate
