@@ -741,6 +741,7 @@ namespace dotNetRDFTest
             Console.WriteLine("# Our Results");
             Console.WriteLine("Total Results = " + actual.Count);
             Console.WriteLine("Boolean Result = " + actual.Result);
+            Console.WriteLine("Variables = {" + String.Join(",", actual.Variables.ToArray()) + "}");
             foreach (SparqlResult r in actual)
             {
                 Console.WriteLine(r.ToString(this._formatter));
@@ -750,6 +751,7 @@ namespace dotNetRDFTest
             Console.WriteLine("# Expected Results");
             Console.WriteLine("Total Results = " + expected.Count);
             Console.WriteLine("Boolean Result = " + expected.Result);
+            Console.WriteLine("Variables = {" + String.Join(",", expected.Variables.ToArray()) + "}");
             foreach (SparqlResult r in expected)
             {
                 Console.WriteLine(r.ToString(this._formatter));

@@ -234,13 +234,6 @@ namespace VDS.RDF.Query
         TResult ProcessOrderBy(OrderBy orderBy, TContext context);
 
         /// <summary>
-        /// Processes a Projection
-        /// </summary>
-        /// <param name="project">Projection</param>
-        /// <param name="context">Evaluation Context</param>
-        TResult ProcessProject(Project project, TContext context);
-
-        /// <summary>
         /// Processes a Property Path
         /// </summary>
         /// <param name="path">Path</param>

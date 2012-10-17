@@ -48,7 +48,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         : BaseUnaryExpression
     {
         /// <summary>
-        /// Creates a new ARQ BNode function
+        /// Creates a new ARQ afn:bnode() function
         /// </summary>
         /// <param name="expr">Expression</param>
         public BNodeFunction(ISparqlExpression expr)
@@ -120,6 +120,33 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
         public override ISparqlExpression Transform(IExpressionTransformer transformer)
         {
             return new BNodeFunction(transformer.Transform(this._expr));
+        }
+
+        /// <summary>
+        /// Gets whether the expression can be parallelized
+        /// </summary>
+        public override bool CanParallelise
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public override IEnumerable<ISparqlExpression> Arguments
+        {
+            get
+            {
+                return Enumerable.Empty<ISparqlExpression>();
+            }
+        }
+
+        public override IEnumerable<string> Variables
+        {
+            get
+            {
+                return Enumerable.Empty<String>();
+            }
         }
     }
 }

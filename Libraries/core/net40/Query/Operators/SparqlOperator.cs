@@ -211,21 +211,24 @@ namespace VDS.RDF.Query.Operators
 
             op = null;
             List<ISparqlOperator> ops;
-            if (_operators.TryGetValue(type, out ops))
+            lock (_operators)
             {
-                foreach (ISparqlOperator possOp in ops)
+                if (_operators.TryGetValue(type, out ops))
                 {
-                    if (possOp.IsApplicable(ns))
+                    foreach (ISparqlOperator possOp in ops)
                     {
-                        op = possOp;
-                        return true;
+                        if (possOp.IsApplicable(ns))
+                        {
+                            op = possOp;
+                            return true;
+                        }
                     }
+                    return false;
                 }
-                return false;
-            }
-            else
-            {
-                return false;
+                else
+                {
+                    return false;
+                }
             }
         }
     }

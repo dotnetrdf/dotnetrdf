@@ -452,10 +452,6 @@ namespace VDS.RDF.Query
             {
                 return this.ProcessOrderBy((OrderBy)algebra, context);
             }
-            else if (algebra is Project)
-            {
-                return this.ProcessProject((Project)algebra, context);
-            }
             else if (algebra is PropertyPath)
             {
                 return this.ProcessPropertyPath((PropertyPath)algebra, context);
@@ -691,17 +687,6 @@ namespace VDS.RDF.Query
         {
             if (context == null) context = this.GetContext();
             return orderBy.Evaluate(context);
-        }
-
-        /// <summary>
-        /// Processes a Projection
-        /// </summary>
-        /// <param name="project">Projection</param>
-        /// <param name="context">SPARQL Evaluation Context</param>
-        public virtual BaseMultiset ProcessProject(Project project, SparqlEvaluationContext context)
-        {
-            if (context == null) context = this.GetContext();
-            return project.Evaluate(context);
         }
 
         /// <summary>
