@@ -18,6 +18,9 @@ Added
 Changed
 - Bug Fixes
  - Fixed an internal API inconsistency
+ - Fixed a bug in the BNODE() function
+ - Fixed a bug in Extend() that could occur when many Extends were nested together
+ - Fixed an intermittent race condition in the implementation of parallel LeftJoin()
 
 - Dependencies
 
@@ -27,6 +30,7 @@ Changed
 
 - Query
  - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
+ - Improved how GROUP BY, aggregates and Project Expressions are implemented internally
 
 Removed
 - Marks the obsolete JosekiConnector as obsolete unusable
