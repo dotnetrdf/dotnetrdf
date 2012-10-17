@@ -158,6 +158,7 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("Cannot assign to the variable ?" + this._var + "since it has previously been used in the Query");
                 }
 
+                context.InputMultiset = results;
                 context.OutputMultiset.AddVariable(this._var);
 #if NET40 && !SILVERLIGHT
                 if (Options.UsePLinqEvaluation && this._expr.CanParallelise)
