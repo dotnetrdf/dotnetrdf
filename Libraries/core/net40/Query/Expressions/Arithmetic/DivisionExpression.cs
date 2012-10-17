@@ -77,36 +77,6 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             {
                 throw new RdfQueryException("Cannot apply division to the given inputs");
             }
-
-            //if (a == null || b == null) throw new RdfQueryException("Cannot apply division when one/both arguments are null");
-
-            //SparqlNumericType type = (SparqlNumericType)Math.Max((int)a.NumericType, (int)b.NumericType);
-
-            //try
-            //{
-            //    switch (type)
-            //    {
-            //        case SparqlNumericType.Integer:
-            //        case SparqlNumericType.Decimal:
-            //            //For Division Integers are treated as decimals
-            //            decimal d = a.AsDecimal() / b.AsDecimal();
-            //            if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
-            //            {
-            //                return new LongNode(null, Convert.ToInt64(d));
-            //            }
-            //            return new DecimalNode(null, d);
-            //        case SparqlNumericType.Float:
-            //            return new FloatNode(null, a.AsFloat() / b.AsFloat());
-            //        case SparqlNumericType.Double:
-            //            return new DoubleNode(null, a.AsDouble() / b.AsDouble());
-            //        default:
-            //            throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
-            //    }
-            //}
-            //catch (DivideByZeroException)
-            //{
-            //    throw new RdfQueryException("Cannot evaluate a Division Expression where the divisor is Zero");
-            //}
         }
 
         /// <summary>

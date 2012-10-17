@@ -38,6 +38,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
@@ -408,6 +409,107 @@ GROUP BY ?s ?w";
             Console.WriteLine("Formatted String");
             Console.WriteLine(queryStrFmt);
             Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor8()
+        {
+            String query = @"PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?o ?x (COALESCE(?o / ?x, -2 ) AS ?div)
+FROM <http://data-coalesce.ttl>
+WHERE
+{
+  ?s :p ?o .
+  OPTIONAL { ?s :q ?x . }
+}";
+
+            String data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n1> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n1> <http://example.org/q> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n2> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n2> <http://example.org/q> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n3> <http://example.org/p> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n3> <http://example.org/q> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .";
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
+            Assert.AreEqual(4, results.Count);
+            Assert.AreEqual(3, results.Variables.Count());
+
+            foreach (SparqlResult r in results)
+            {
+                if (r.HasBoundValue("x"))
+                {
+                    long xVal = r["x"].AsValuedNode().AsInteger();
+                    if (xVal == 0)
+                    {
+                        Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "Divide by zero did not get coalesced to -2 as expected");
+                    }
+                    else
+                    {
+                        Assert.AreEqual(r["o"].AsValuedNode().AsInteger() / xVal, r["div"].AsValuedNode().AsInteger(), "Division yielded incorrect result");
+                    }
+                }
+                else
+                {
+                    Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "Divide by null did not get coalesced to -2 as expected");
+                }
+            }            
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor9()
+        {
+            try
+            {
+                //Options.UsePLinqEvaluation = false;
+
+                String query = @"PREFIX : <http://example.org/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT (COALESCE(?x, -1 ) AS ?cx) (COALESCE(?o / ?x, -2 ) AS ?div)
+(COALESCE(?z, -3 ) AS ?def)
+(COALESCE(?z) AS ?err)
+FROM <http://data-coalesce.ttl>
+WHERE
+{
+  ?s :p ?o .
+  OPTIONAL { ?s :q ?x . }
+}";
+
+                String data = @"<http://example.org/n0> <http://example.org/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n1> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n1> <http://example.org/q> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n2> <http://example.org/p> ""0""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n2> <http://example.org/q> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n3> <http://example.org/p> ""4""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .
+<http://example.org/n3> <http://example.org/q> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://data-coalesce.ttl> .";
+
+                TripleStore store = new TripleStore();
+                StringParser.ParseDataset(store, data, new NQuadsParser());
+
+                SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                TestTools.ShowResults(results);
+                Assert.AreEqual(4, results.Count);
+                Assert.AreEqual(4, results.Variables.Count());
+
+                foreach (SparqlResult r in results)
+                {
+                    long cxVal = r["cx"].AsValuedNode().AsInteger();
+                    if (cxVal == -1) Assert.AreEqual(-2, r["div"].AsValuedNode().AsInteger(), "?div value is incorrect");
+                }
+            }
+            finally
+            {
+                //Options.UsePLinqEvaluation = true;
+            }
         }
     }
 }
