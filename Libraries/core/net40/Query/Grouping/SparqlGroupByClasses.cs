@@ -310,13 +310,13 @@ namespace VDS.RDF.Query.Grouping
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this.AssignVariable != null)
+            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
             {
                 output.Append('(');
             }
             output.Append('?');
             output.Append(this._name);
-            if (this.AssignVariable != null)
+            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
             {
                 output.Append(" AS ?");
                 output.Append(this.AssignVariable);

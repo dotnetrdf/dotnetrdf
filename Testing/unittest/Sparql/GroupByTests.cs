@@ -277,6 +277,7 @@ WHERE
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
             TestTools.ShowResults(results);
+            Assert.AreEqual(1, results.Count);
             Assert.AreEqual(2, results.Variables.Count());
         }
 
@@ -314,7 +315,98 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
             TestTools.ShowResults(results);
+            Assert.AreEqual(1, results.Count);
             Assert.AreEqual(3, results.Variables.Count());
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor4()
+        {
+            String query = @"PREFIX : <http://example/>
+
+SELECT ?s ?w
+FROM <file:///group-data-2.ttl>
+WHERE
+{
+  ?s :p ?v .
+  OPTIONAL { ?s :q ?w . }
+}
+GROUP BY ?s ?w";
+
+            String data = @"<http://example/s1> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
+<http://example/s3> <http://example/p> ""1""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
+<http://example/s1> <http://example/q> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .
+<http://example/s2> <http://example/p> ""2""^^<http://www.w3.org/2001/XMLSchema#integer> <http://group-data-2.ttl> .";
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
+            Assert.AreEqual(3, results.Count);
+            Assert.AreEqual(2, results.Variables.Count());
+            Assert.IsTrue(results.All(r => r.Count > 0 && r.HasBoundValue("s")));
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor5()
+        {
+            String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY ?s";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            String queryStr = q.ToString();
+            Console.WriteLine("Raw ToString()");
+            Console.WriteLine(queryStr);
+            Console.WriteLine();
+            Assert.IsTrue(queryStr.Contains("GROUP BY ?s"));
+
+            String queryStrFmt = new SparqlFormatter().Format(q);
+            Console.WriteLine("Formatted String");
+            Console.WriteLine(queryStrFmt);
+            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor6()
+        {
+            String query = "SELECT ?s ?p WHERE { ?s ?p ?o } GROUP BY ?s ?p";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            String queryStr = q.ToString();
+            Console.WriteLine("Raw ToString()");
+            Console.WriteLine(queryStr);
+            Console.WriteLine();
+            Assert.IsTrue(queryStr.Contains("GROUP BY ?s ?p"));
+
+            String queryStrFmt = new SparqlFormatter().Format(q);
+            Console.WriteLine("Formatted String");
+            Console.WriteLine(queryStrFmt);
+            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s ?p"));
+        }
+
+        [TestMethod]
+        public void SparqlGroupByRefactor7()
+        {
+            String query = "SELECT ?s WHERE { ?s ?p ?o } GROUP BY (?s)";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            String queryStr = q.ToString();
+            Console.WriteLine("Raw ToString()");
+            Console.WriteLine(queryStr);
+            Console.WriteLine();
+            Assert.IsTrue(queryStr.Contains("GROUP BY ?s"));
+
+            String queryStrFmt = new SparqlFormatter().Format(q);
+            Console.WriteLine("Formatted String");
+            Console.WriteLine(queryStrFmt);
+            Assert.IsTrue(queryStrFmt.Contains("GROUP BY ?s"));
         }
     }
 }
