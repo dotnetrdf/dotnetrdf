@@ -79,14 +79,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             }
             else if (this._funcContext.CurrentInput != context.InputMultiset.GetHashCode())
             {
-                this._funcContext = new BNodeFunctionContext(context.InputMultiset.GetHashCode());
+                //Clear the Context
+                this._funcContext.BlankNodes.Clear();
                 context[SparqlSpecsHelper.SparqlKeywordBNode] = this._funcContext;
             }
 
             if (this._expr == null)
             {
                 //If no argument then always a fresh BNode
-                return new BlankNode(this._funcContext.Graph, this._funcContext.Mapper.GetNextID());
+                return this._funcContext.Graph.CreateBlankNode().AsValuedNode();
             }
             else
             {
@@ -108,13 +109,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
 
                                 if (!this._funcContext.BlankNodes[bindingID].ContainsKey(lit.Value))
                                 {
-                                    this._funcContext.BlankNodes[bindingID].Add(lit.Value, new BlankNode(this._funcContext.Graph, this._funcContext.Mapper.GetNextID()));
+                                    this._funcContext.BlankNodes[bindingID].Add(lit.Value, this._funcContext.Graph.CreateBlankNode());
                                 }
                                 return this._funcContext.BlankNodes[bindingID][lit.Value].AsValuedNode();
                             }
                             else
                             {
-                                throw new RdfQueryException("Cannot create a Blank Node whne the argument Expression evaluates to a lanuage specified literal");
+                                throw new RdfQueryException("Cannot create a Blank Node when the argument Expression evaluates to a lanuage specified literal");
                             }
                         }
                         else
@@ -214,7 +215,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
     class BNodeFunctionContext
     {
         private Dictionary<int, Dictionary<string, INode>> _bnodes = new Dictionary<int, Dictionary<string, INode>>();
-        private BlankNodeMapper _mapper = new BlankNodeMapper("bnodeFunc");
         private Graph _g = new Graph();
         private int _currInput;
 
@@ -228,14 +228,6 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
             get
             {
                 return this._currInput;
-            }
-        }
-
-        public BlankNodeMapper Mapper
-        {
-            get
-            {
-                return this._mapper;
             }
         }
 
