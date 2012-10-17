@@ -53,7 +53,7 @@ namespace VDS.RDF.Test.Core
             store.Add(g);
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store.Graph(g.BaseUri), "Graphs should be equal");
+            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
         [TestMethod]
@@ -65,7 +65,7 @@ namespace VDS.RDF.Test.Core
             store.Add(g);
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store.Graph(g.BaseUri), "Graphs should be equal");
+            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
         [TestMethod]
@@ -77,7 +77,7 @@ namespace VDS.RDF.Test.Core
             g.BaseUri = new Uri("file:///" + Path.GetFullPath("InferenceTest.ttl"));
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store.Graph(g.BaseUri), "Graphs should be equal");
+            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
         [TestMethod]
@@ -95,7 +95,7 @@ namespace VDS.RDF.Test.Core
             store.Add(empty);
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreNotEqual(g, store.Graph(g.BaseUri), "Graphs should not be equal");
+            Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace VDS.RDF.Test.Core
             g.BaseUri = u; 
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreEqual(g, store.Graph(g.BaseUri), "Graphs should be equal");
+            Assert.AreEqual(g, store[g.BaseUri], "Graphs should be equal");
         }
 
         [TestMethod]
@@ -127,7 +127,7 @@ namespace VDS.RDF.Test.Core
             store.Add(empty);
 
             Assert.IsTrue(store.HasGraph(g.BaseUri), "Graph Collection should contain the Graph");
-            Assert.AreNotEqual(g, store.Graph(g.BaseUri), "Graphs should not be equal");
+            Assert.AreNotEqual(g, store[g.BaseUri], "Graphs should not be equal");
         }
     }
 }

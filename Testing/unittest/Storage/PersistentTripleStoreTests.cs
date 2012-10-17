@@ -217,7 +217,7 @@ namespace VDS.RDF.Test.Storage
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.Graph(new Uri(TestGraphUri1));
+                IGraph g = store[new Uri(TestGraphUri1)];
 
                 Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
@@ -269,7 +269,7 @@ namespace VDS.RDF.Test.Storage
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.Graph(new Uri(TestGraphUri1));
+                IGraph g = store[new Uri(TestGraphUri1)];
 
                 Triple toAdd = new Triple(g.CreateUriNode(new Uri("http://example.org/subject")), g.CreateUriNode(new Uri("http://example.org/predicate")), g.CreateUriNode(new Uri("http://example.org/object")));
                 g.Assert(toAdd);
@@ -324,7 +324,7 @@ namespace VDS.RDF.Test.Storage
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.Graph(new Uri(TestGraphUri1));
+                IGraph g = store[new Uri(TestGraphUri1)];
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -376,7 +376,7 @@ namespace VDS.RDF.Test.Storage
             PersistentTripleStore store = new PersistentTripleStore(manager);
             try
             {
-                IGraph g = store.Graph(new Uri(TestGraphUri1));
+                IGraph g = store[new Uri(TestGraphUri1)];
 
                 INode rdfType = g.CreateUriNode(new Uri(NamespaceMapper.RDF + "type"));
                 g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
@@ -751,7 +751,7 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Uri toRemove = new Uri(TestGraphUri1);
-                IGraph g = store.Graph(toRemove);
+                IGraph g = store[toRemove];
                 Assert.IsTrue(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);
@@ -802,7 +802,7 @@ namespace VDS.RDF.Test.Storage
             try
             {
                 Uri toRemove = new Uri(TestGraphUri1);
-                IGraph g = store.Graph(toRemove);
+                IGraph g = store[toRemove];
                 Assert.IsTrue(store.HasGraph(toRemove), "In-memory view should contain the Graph we wish to remove");
 
                 store.Remove(toRemove);

@@ -79,8 +79,8 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.AreEqual(2, store.Graphs.Count, "Expected 2 Graphs");
             Assert.AreEqual(8, store.Graphs.Sum(g => g.Triples.Count), "Expected 4 Triples");
 
-            IGraph def = store.Graph(null);
-            IGraph named = store.Graph(new Uri("http://example.org/bnodes#graph"));
+            IGraph def = store[null];
+            IGraph named = store[new Uri("http://example.org/bnodes#graph")];
 
             HashSet<INode> subjects = new HashSet<INode>();
             foreach (Triple t in def.Triples)

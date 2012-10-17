@@ -65,7 +65,7 @@ namespace VDS.RDF.Storage
     /// The Joseki connector permits use in a read-only mode in the event when you only specify a Query Service path to the constructor (or enter null for the Update Service path).  When instantiated in read-only mode any attempt to use the <see cref="JosekiConnector.SaveGraph">SaveGraph</see> or <see cref="JosekiConnector.UpdateGraph">UpdateGraph</see> methods will result in errors and the <see cref="JosekiConnector.UpdateSupported">UpdateSupported</see> property will return false.
     /// </para>
     /// </remarks>
-    [Obsolete("The Jena project strongly recommend using Fuseki instead which is the sucessor to Joseki", false)]
+    [Obsolete("The Apache Jena project strongly recommends using Fuseki instead which is it's sucessor, Joseki is no longer supported by Apache Jena", true)]
     public class JosekiConnector
         : BaseAsyncHttpConnector, IConfigurationSerializable, IAsyncUpdateableStorage
 #if !NO_SYNC_HTTP

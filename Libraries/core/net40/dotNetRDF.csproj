@@ -133,6 +133,7 @@
     <Compile Include="Query\Algebra\FilteredProduct.cs" />
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
+    <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\ExternalDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />

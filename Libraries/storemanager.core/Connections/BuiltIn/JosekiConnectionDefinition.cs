@@ -46,6 +46,7 @@ namespace VDS.RDF.Utilities.StoreManager.Connections.BuiltIn
     /// <summary>
     /// Definition for connections to Joseki
     /// </summary>
+    [Obsolete("The Apache Jena project strongly recommends using Fuseki instead which is it's sucessor, Joseki is no longer supported by Apache Jena", true)]
     public class JosekiConnectionDefinition
         : BaseHttpConnectionDefinition
     {
