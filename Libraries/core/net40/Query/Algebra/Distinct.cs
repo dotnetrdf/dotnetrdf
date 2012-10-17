@@ -48,6 +48,7 @@ namespace VDS.RDF.Query.Algebra
         : IUnaryOperator
     {
         private ISparqlAlgebra _pattern;
+        private bool _trimTemporaryVariables = true;
 
         /// <summary>
         /// Creates a new Distinct Modifier
@@ -56,6 +57,17 @@ namespace VDS.RDF.Query.Algebra
         public Distinct(ISparqlAlgebra pattern)
         {
             this._pattern = pattern;
+        }
+
+        /// <summary>
+        /// Creates a new Distinct Modifier
+        /// </summary>
+        /// <param name="algebra">Inner Algebra</param>
+        /// <param name="ignoreTemporaryVariables">Whether to ignore temporary variables</param>
+        public Distinct(ISparqlAlgebra algebra, bool ignoreTemporaryVariables)
+            : this(algebra)
+        {
+            this._trimTemporaryVariables = !ignoreTemporaryVariables;
         }
 
         /// <summary>
@@ -74,8 +86,11 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                //Trim temporary variables
-                context.InputMultiset.Trim();
+                if (this._trimTemporaryVariables)
+                {
+                    //Trim temporary variables
+                    context.InputMultiset.Trim();
+                }
 
                 //Apply distinctness
                 context.OutputMultiset = new Multiset(context.InputMultiset.Variables);

@@ -17,6 +17,7 @@ Added
 
 Changed
 - Bug Fixes
+ - Fixed an internal API inconsistency
 
 - Dependencies
 
@@ -24,7 +25,11 @@ Changed
  - Improved how parsers and writers are selected by file extension
  - Improved content negotiation logic to properly support quality factors and type ranges
 
+- Query
+ - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
+
 Removed
+- Marks the obsolete JosekiConnector as obsolete unusable
 - Removed the obsolete TalisPlatformConnector
 - Removed the obsolete IndexedTripleCollection and it's descendants
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
