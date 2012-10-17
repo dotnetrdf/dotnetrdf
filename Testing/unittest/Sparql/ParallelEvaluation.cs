@@ -211,5 +211,34 @@ namespace VDS.RDF.Test.Sparql
             }
             context.OutputMultiset.Add(s);
         }
+
+        [TestMethod]
+        public void SparqlParallelEvaluationOptional1()
+        {
+            String data = @"<http://a> <http://p> <http://x> .
+<http://b> <http://p> <http://y> .
+<http://c> <http://p> <http://z> .
+<http://x> <http://value> ""X"" .
+<http://z> <http://value> ""Z"" .";
+
+            String query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+
+            int i;
+            for (i = 1; i <= 100000; i++)
+            {
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                if (results.Count != 3) TestTools.ShowResults(results);
+                Assert.AreEqual(3, results.Count, "Failed after " + i + " iterations");
+            }
+
+            Console.WriteLine("Completed " + i + " Iterations OK");
+        }
     }
 }

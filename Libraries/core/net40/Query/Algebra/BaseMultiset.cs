@@ -384,17 +384,26 @@ namespace VDS.RDF.Query.Algebra
                         if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                         {
                             joinedSet.Remove(z.ID);
-                            standalone.Add(poss);
+                            lock (standalone)
+                            {
+                                standalone.Add(poss);
+                            }
                         }
                         else
                         {
-                            matched.Add(poss);
+                            lock (matched)
+                            {
+                                matched.Add(poss);
+                            }
                         }
                     }
                     catch
                     {
                         joinedSet.Remove(z.ID);
-                        standalone.Add(poss);
+                        lock (standalone)
+                        {
+                            standalone.Add(poss);
+                        }
                     }
                 }
             }
