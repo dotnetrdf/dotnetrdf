@@ -131,7 +131,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            output.Append("COUNT(" + this._expr.ToString() + ")");
+            output.Append("COUNT(DISTINCT " + this._expr.ToString() + ")");
             return output.ToString();
         }
 
