@@ -71,6 +71,7 @@ namespace dotNetRDFTest
 
         private IGraph _earl = new Graph();
         private INode _lvn;
+        private ResultComparer _comparer = new ResultComparer();
 
         public void RunTests()
         {
@@ -867,7 +868,7 @@ namespace dotNetRDFTest
                     }
                     Console.WriteLine();
                     this.ShowTestData(store);
-                    this.ShowResultSets(ourResults, expectedResults);
+                    this.ShowResultSets(ourResults, expectedResults, query.OrderBy == null);
                     testsFailed++;
                     testsEvaluationFailed++;
                     Console.WriteLine("# Test Result - Result Set not as expected (Test Failed)");
@@ -1189,13 +1190,14 @@ namespace dotNetRDFTest
             Console.WriteLine();
         }
 
-        private void ShowResultSets(SparqlResultSet actual, SparqlResultSet expected)
+        private void ShowResultSets(SparqlResultSet actual, SparqlResultSet expected, bool allowReorder)
         {
             Console.WriteLine("# Our Results");
             Console.WriteLine("Total Results = " + actual.Count);
             Console.WriteLine("Boolean Result = " + actual.Result);
             Console.WriteLine("Variables = {" + String.Join(",", actual.Variables.OrderBy(v => v).ToArray()) + "}");
-            foreach (SparqlResult r in actual)
+            IEnumerable<SparqlResult> rs = allowReorder ? actual.Results.OrderBy(r => r, this._comparer).ToList() : actual.Results;
+            foreach (SparqlResult r in rs)
             {
                 Console.WriteLine(r.ToString(this._formatter));
             }
@@ -1205,7 +1207,8 @@ namespace dotNetRDFTest
             Console.WriteLine("Total Results = " + expected.Count);
             Console.WriteLine("Boolean Result = " + expected.Result);
             Console.WriteLine("Variables = {" + String.Join(",", expected.Variables.OrderBy(v => v).ToArray()) + "}");
-            foreach (SparqlResult r in expected)
+            rs = allowReorder ? expected.Results.OrderBy(r => r, this._comparer).ToList() : expected.Results;
+            foreach (SparqlResult r in rs)
             {
                 Console.WriteLine(r.ToString(this._formatter));
             }
@@ -1272,6 +1275,38 @@ namespace dotNetRDFTest
         {
             if (obj == null) return String.Empty;
             return obj.ToString();
+        }
+    }
+
+    class ResultComparer
+        : IComparer<SparqlResult>
+    {
+        private IComparer<INode> _nodeComparer = new FastNodeComparer();
+
+        public int Compare(SparqlResult x, SparqlResult y)
+        {
+            List<String> xVars = x.Variables.ToList();
+            xVars.Sort();
+            List<String> yVars = y.Variables.ToList();
+            yVars.Sort();
+
+            int c = xVars.Count.CompareTo(yVars.Count);
+            if (c == 0)
+            {
+                for (int i = 0; i < xVars.Count; i++)
+                {
+                    //First compare variable names
+                    c = xVars[i].CompareTo(yVars[i]);
+                    if (c != 0) break;
+
+                    //If variable names are same then compare values
+                    INode xValue = x[xVars[i]];
+                    INode yValue = y[xVars[i]];
+                    c = this._nodeComparer.Compare(xValue, yValue);
+                    if (c != 0) break;
+                }
+            }
+            return c;
         }
     }
 }
