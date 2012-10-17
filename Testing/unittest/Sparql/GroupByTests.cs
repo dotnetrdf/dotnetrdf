@@ -325,7 +325,7 @@ _:a <http://example/p> ""9""^^<http://www.w3.org/2001/XMLSchema#integer> <http:/
             String query = @"PREFIX : <http://example/>
 
 SELECT ?s ?w
-FROM <file:///group-data-2.ttl>
+FROM <http://group-data-2.ttl>
 WHERE
 {
   ?s :p ?v .
@@ -346,7 +346,8 @@ GROUP BY ?s ?w";
             TestTools.ShowResults(results);
             Assert.AreEqual(3, results.Count);
             Assert.AreEqual(2, results.Variables.Count());
-            Assert.IsTrue(results.All(r => r.Count > 0 && r.HasBoundValue("s")));
+            Assert.IsTrue(results.All(r => r.Count > 0), "One or more rows were empty");
+            Assert.IsTrue(results.All(r => r.HasBoundValue("s")), "One or more rows were empty or failed to have a value for ?s");
         }
 
         [TestMethod]

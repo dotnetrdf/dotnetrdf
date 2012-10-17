@@ -207,11 +207,11 @@ namespace VDS.RDF.Query.Grouping
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
             List<BindingGroup> outgroups = new List<BindingGroup>();
-            BindingGroup nulls = new BindingGroup();
 
             foreach (BindingGroup group in groups)
             {
                 Dictionary<INode, BindingGroup> subgroups = new Dictionary<INode, BindingGroup>();
+                BindingGroup nulls = new BindingGroup(group);
 
                 foreach (int id in group.BindingIDs)
                 {
@@ -244,7 +244,6 @@ namespace VDS.RDF.Query.Grouping
                 {
                     outgroups.Add(nulls);
                     if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
-                    nulls = new BindingGroup();
                 }
             }
 
