@@ -46,7 +46,7 @@ namespace VDS.RDF.Parsing.Tokens
     public class SparqlTokeniser 
         : BaseTokeniser
     {
-        private BlockingTextReader _in;
+        private ParsingTextReader _in;
         private bool _queryKeywordSeen = false;
         private bool _baseDeclared = false;
         private SparqlQuerySyntax _syntax = Options.QueryDefaultSyntax;
@@ -57,14 +57,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(StreamReader input, SparqlQuerySyntax syntax)
-            : this(BlockingTextReader.Create(input), syntax) { }
+            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
-        public SparqlTokeniser(BlockingTextReader input, SparqlQuerySyntax syntax)
+        public SparqlTokeniser(ParsingTextReader input, SparqlQuerySyntax syntax)
             : base(input)
         {
             this._in = input;
@@ -78,7 +78,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input to generate Tokens from</param>
         /// <param name="syntax">Syntax Mode to use when parsing</param>
         public SparqlTokeniser(TextReader input, SparqlQuerySyntax syntax)
-            : this(BlockingTextReader.Create(input), syntax) { }
+            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

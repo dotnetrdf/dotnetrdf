@@ -45,7 +45,8 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// A Class for Reading an Input Stream and generating Notation 3 Tokens from it
     /// </summary>
-    public class Notation3Tokeniser : BaseTokeniser
+    public class Notation3Tokeniser 
+        : BaseTokeniser
     {
         //OPT: Extract these constants into a Notation3SpecsHelper class
 
@@ -58,7 +59,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         public const String ValidVarNamesPattern = "^\\?[_A-Za-z][\\w\\-]*$";
 
-        private BlockingTextReader _in;
+        private ParsingTextReader _in;
         private List<String> _keywords = new List<string>();
         private bool _keywordsmode = false;
         private Regex _isValidQName = new Regex(ValidQNamesPattern);
@@ -69,13 +70,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public Notation3Tokeniser(StreamReader input)
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Instance of the Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
-        public Notation3Tokeniser(BlockingTextReader input)
+        public Notation3Tokeniser(ParsingTextReader input)
             : base(input)
         {
             this._in = input;
@@ -87,7 +88,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input to generate Tokens from</param>
         public Notation3Tokeniser(TextReader input)
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

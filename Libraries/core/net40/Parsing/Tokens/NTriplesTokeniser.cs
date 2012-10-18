@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing.Tokens
     public class NTriplesTokeniser
         : BaseTokeniser
     {
-        private BlockingTextReader _in;
+        private ParsingTextReader _in;
         private bool _nquadsMode = false;
 
         /// <summary>
@@ -55,13 +55,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Stream to read Tokens from</param>
         public NTriplesTokeniser(StreamReader input) 
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new NTriples Tokeniser which reads Tokens from the given Stream
         /// </summary>
         /// <param name="input">Stream to read Tokens from</param>
-        public NTriplesTokeniser(BlockingTextReader input)
+        public NTriplesTokeniser(ParsingTextReader input)
             : base(input)
         {
             this._in = input;
@@ -73,7 +73,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read Tokens from</param>
         public NTriplesTokeniser(TextReader input)
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Gets/Sets whether the output should be altered slightly to support NQuads parsing

@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Net;
@@ -206,7 +207,7 @@ namespace VDS.RDF.Test.Parsing
                     //Try outputting with each of the available writers
                     for (int i = 0; i < writers.Count; i++)
                     {
-                        String temp = StringWriter.Write(g, writers[i]);
+                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
                         Graph h = new Graph();
                         VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
 
@@ -329,7 +330,7 @@ namespace VDS.RDF.Test.Parsing
                     //Try outputting with each of the available writers
                     for (int i = 0; i < writers.Count; i++)
                     {
-                        String temp = StringWriter.Write(g, writers[i]);
+                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
                         Graph h = new Graph();
                         VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
 
@@ -366,7 +367,7 @@ namespace VDS.RDF.Test.Parsing
 
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 IRdfReader parser = MimeTypesHelper.GetParser(response.ContentType);
-                parser.Load(g, BlockingTextReader.Create(response.GetResponseStream()));
+                parser.Load(g, new StreamReader(response.GetResponseStream()));
 
                 foreach (Triple t in g.Triples)
                 {

@@ -47,7 +47,7 @@ namespace VDS.RDF.Parsing.Tokens
     public class TurtleTokeniser 
         : BaseTokeniser
     {
-        private BlockingTextReader _in;
+        private ParsingTextReader _in;
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
@@ -55,13 +55,13 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         public TurtleTokeniser(StreamReader input)
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
-        public TurtleTokeniser(BlockingTextReader input)
+        public TurtleTokeniser(ParsingTextReader input)
             : this(input, TurtleSyntax.W3C) { }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="input">Input to read from</param>
         public TurtleTokeniser(TextReader input)
-            : this(BlockingTextReader.Create(input)) { }
+            : this(ParsingTextReader.Create(input)) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
@@ -77,14 +77,14 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleTokeniser(StreamReader input, TurtleSyntax syntax)
-            : this(BlockingTextReader.Create(input), syntax) { }
+            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Creates a new Turtle Tokeniser
         /// </summary>
         /// <param name="input">The Input Stream to generate Tokens from</param>
         /// <param name="syntax">Turtle Syntax</param>
-        public TurtleTokeniser(BlockingTextReader input, TurtleSyntax syntax)
+        public TurtleTokeniser(ParsingTextReader input, TurtleSyntax syntax)
             : base(input)
         {
             this._in = input;
@@ -98,7 +98,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// <param name="input">Input to read from</param>
         /// <param name="syntax">Turtle Syntax</param>
         public TurtleTokeniser(TextReader input, TurtleSyntax syntax)
-            : this(BlockingTextReader.Create(input), syntax) { }
+            : this(ParsingTextReader.Create(input), syntax) { }
 
         /// <summary>
         /// Gets the next parseable Token from the Input or raises an Error

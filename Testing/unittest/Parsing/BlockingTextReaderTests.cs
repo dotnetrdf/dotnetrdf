@@ -34,10 +34,12 @@ terms.
 */
 
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 
@@ -52,24 +54,62 @@ namespace VDS.RDF.Test.Parsing
         private const String TestData4 = "abcdefghijklmnopqrstuvwxyz\n\r0123456789";
         private const String TestData5 = "abcdefghijklmnopqrstuvwxyz\r\n0123456789";
 
-        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public void ParsingBlockingTextReaderBadInstantiation()
+        [TestMethod]
+        public void ParsingTextReaderCreation1()
         {
-            BlockingTextReader reader = BlockingTextReader.Create((TextReader)null);
-        }
-
-        [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public void ParsingBlockingTextReaderBadInstantiation2()
-        {
-            BlockingTextReader reader = BlockingTextReader.Create(new StringReader(String.Empty), 0);
+            File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
+            using (StreamReader stream = new StreamReader("ParsingTextReaderCreation1.txt"))
+            {
+                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                Assert.IsInstanceOfType(reader, typeof(NonBlockingTextReader));
+                stream.Close();
+            }
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleRead()
+        public void ParsingTextReaderCreation2()
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                Assert.IsInstanceOfType(reader, typeof(NonBlockingTextReader));
+                stream.Close();
+            }
+        }
+
+        [TestMethod]
+        public void ParsingTextReaderCreation3()
+        {
+            using (WebClient client = new WebClient())
+            {
+                using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
+                {
+                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    Assert.IsInstanceOfType(reader, typeof(BlockingTextReader));
+                    stream.Close();
+                }
+                client.Dispose();
+            }
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentNullException))]
+        public void ParsingTextReaderBlockingBadInstantiation()
+        {
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking((TextReader)null);
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException))]
+        public void ParsingTextReaderBlockingBadInstantiation2()
+        {
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(new StringReader(String.Empty), 0);
+        }
+
+        [TestMethod]
+        public void ParsingTextReaderBlockingSimpleRead()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             StringBuilder output = new StringBuilder();
             while (!reader.EndOfStream)
@@ -87,11 +127,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleRead2()
+        public void ParsingTextReaderBlockingSimpleRead2()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[100];
             int read = reader.Read(cs, 0, cs.Length);
@@ -107,11 +147,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleReadBlock()
+        public void ParsingTextReaderBlockingSimpleReadBlock()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[100];
             int read = reader.ReadBlock(cs, 0, cs.Length);
@@ -127,11 +167,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadToEnd()
+        public void ParsingTextReaderBlockingReadToEnd()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadToEnd();
             Assert.AreEqual(TestData, s);
@@ -142,11 +182,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine()
+        public void ParsingTextReaderBlockingReadLine()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData, s);
@@ -157,11 +197,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine2()
+        public void ParsingTextReaderBlockingReadLine2()
         {
             StringReader strReader = new StringReader(TestData2);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData2.Substring(0, 26), s);
@@ -174,11 +214,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine3()
+        public void ParsingTextReaderBlockingReadLine3()
         {
             StringReader strReader = new StringReader(TestData3);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData3.Substring(0, 26), s);
@@ -191,11 +231,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine4()
+        public void ParsingTextReaderBlockingReadLine4()
         {
             StringReader strReader = new StringReader(TestData4);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData4.Substring(0, 26), s);
@@ -210,11 +250,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine5()
+        public void ParsingTextReaderBlockingReadLine5()
         {
             StringReader strReader = new StringReader(TestData5);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             String s = reader.ReadLine();
             Assert.AreEqual(TestData5.Substring(0, 26), s);
@@ -227,11 +267,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimplePeek()
+        public void ParsingTextReaderBlockingSimplePeek()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             for (int i = 1; i <= 100; i++)
             {
@@ -246,11 +286,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleReadBlock2()
+        public void ParsingTextReaderBlockingSimpleReadBlock2()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader);
 
             char[] cs = new char[10];
             int start = 0;
@@ -270,11 +310,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock()
+        public void ParsingTextReaderBlockingComplexReadBlock()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 5);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
             char[] cs = new char[10];
             int start = 0;
@@ -296,11 +336,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock2()
+        public void ParsingTextReaderBlockingComplexReadBlock2()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 5);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 5);
 
             char[] cs = new char[8];
             int start = 0;
@@ -322,11 +362,11 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock3()
+        public void ParsingTextReaderBlockingComplexReadBlock3()
         {
             StringReader strReader = new StringReader(TestData);
 
-            BlockingTextReader reader = BlockingTextReader.Create(strReader, 2);
+            BlockingTextReader reader = ParsingTextReader.CreateBlocking(strReader, 2);
 
             char[] cs = new char[10];
             int start = 0;
@@ -348,7 +388,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamNotation3()
+        public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
@@ -369,7 +409,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamNTriples()
+        public void ParsingTextReaderBlockingNetworkStreamNTriples()
         {
             try
             {
@@ -387,7 +427,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamTurtle()
+        public void ParsingTextReaderBlockingNetworkStreamTurtle()
         {
             try
             {
@@ -405,7 +445,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamRdfJson()
+        public void ParsingTextReaderBlockingNetworkStreamRdfJson()
         {
             try
             {
@@ -420,6 +460,371 @@ namespace VDS.RDF.Test.Parsing
             {
                 Options.UriLoaderCaching = true;
             }
+        }
+
+        private void EnsureNIOData()
+        {
+            if (!File.Exists("nio.ttl"))
+            {
+                using (StreamWriter writer = new StreamWriter("nio.ttl"))
+                {
+                    using (StreamReader reader = new StreamReader("dataset_50.ttl.gz"))
+                    {
+                        String line = reader.ReadLine();
+                        while (line != null)
+                        {
+                            writer.WriteLine(line);
+                            line = reader.ReadLine();
+                        }
+                        reader.Close();
+                    }
+                    writer.Close();
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking1()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            for (int i = 0; i < 25; i++)
+            {
+                Console.WriteLine("Run #" + (i + 1));
+                timer.Reset();
+
+                //Test Blocking
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("nio.ttl"));
+                timer.Start();
+                int totalBlocking = 0;
+                int read;
+                while (!blocking.EndOfStream)
+                {
+                    read = blocking.Read();
+                    if (read >= 0) totalBlocking++;
+                }
+                timer.Stop();
+                blocking.Close();
+                blockingTime = blockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+
+                //Reset
+                timer.Reset();
+                int totalNonBlocking = 0;
+
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("nio.ttl"));
+                timer.Start();
+                while (!nonBlocking.EndOfStream)
+                {
+                    read = nonBlocking.Read();
+                    if (read >= 0) totalNonBlocking++;
+                }
+                timer.Stop();
+                nonBlocking.Close();
+                nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+
+                Assert.AreEqual(totalBlocking, totalNonBlocking);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Blocking Total Time = " + blockingTime);
+            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking2()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            for (int i = 0; i < 25; i++)
+            {
+                Console.WriteLine("Run #" + (i + 1));
+                timer.Reset();
+
+                //Test Blocking
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("nio.ttl"), 4096);
+                timer.Start();
+                int totalBlocking = 0;
+                int read;
+                while (!blocking.EndOfStream)
+                {
+                    read = blocking.Read();
+                    if (read >= 0) totalBlocking++;
+                }
+                timer.Stop();
+                blocking.Close();
+                blockingTime = blockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+
+                //Reset
+                timer.Reset();
+                int totalNonBlocking = 0;
+
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("nio.ttl"), 4096);
+                timer.Start();
+                while (!nonBlocking.EndOfStream)
+                {
+                    read = nonBlocking.Read();
+                    if (read >= 0) totalNonBlocking++;
+                }
+                timer.Stop();
+                nonBlocking.Close();
+                nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+
+                Assert.AreEqual(totalBlocking, totalNonBlocking);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Blocking Total Time = " + blockingTime);
+            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking3()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            int maxSize = 1024 * 32;
+            for (int size = 1024; size < maxSize; size += 1024)
+            {
+                Console.WriteLine("Buffer Size " + size);
+                for (int i = 0; i < 25; i++)
+                {
+                    timer.Reset();
+
+                    //Test Blocking
+                    BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new StreamReader("nio.ttl"), 4096);
+                    timer.Start();
+                    int totalBlocking = 0;
+                    int read;
+                    while (!blocking.EndOfStream)
+                    {
+                        read = blocking.Read();
+                        if (read >= 0) totalBlocking++;
+                    }
+                    timer.Stop();
+                    blocking.Close();
+                    blockingTime = blockingTime.Add(timer.Elapsed);
+
+                    //Reset
+                    timer.Reset();
+                    int totalNonBlocking = 0;
+
+                    NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new StreamReader("nio.ttl"), 4096);
+                    timer.Start();
+                    while (!nonBlocking.EndOfStream)
+                    {
+                        read = nonBlocking.Read();
+                        if (read >= 0) totalNonBlocking++;
+                    }
+                    timer.Stop();
+                    nonBlocking.Close();
+                    nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                    Assert.AreEqual(totalBlocking, totalNonBlocking);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("Blocking Total Time = " + blockingTime);
+                Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+                Console.WriteLine();
+                blockingTime = new TimeSpan();
+                nonBlockingTime = new TimeSpan();
+            }
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking4()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            for (int i = 0; i < 25; i++)
+            {
+                Console.WriteLine("Run #" + (i + 1));
+                timer.Reset();
+
+                //Test Blocking
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(new StreamReader("nio.ttl")));
+                timer.Start();
+                int totalBlocking = 0;
+                int read;
+                while (!blocking.EndOfStream)
+                {
+                    read = blocking.Read();
+                    if (read >= 0) totalBlocking++;
+                }
+                timer.Stop();
+                blocking.Close();
+                blockingTime = blockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+
+                //Reset
+                timer.Reset();
+                int totalNonBlocking = 0;
+
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(new StreamReader("nio.ttl")));
+                timer.Start();
+                while (!nonBlocking.EndOfStream)
+                {
+                    read = nonBlocking.Read();
+                    if (read >= 0) totalNonBlocking++;
+                }
+                timer.Stop();
+                nonBlocking.Close();
+                nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+
+                Assert.AreEqual(totalBlocking, totalNonBlocking);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Blocking Total Time = " + blockingTime);
+            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+        }
+
+        [TestMethod]
+        public void ParsingBlockingVsNonBlocking5()
+        {
+            this.EnsureNIOData();
+
+            Stopwatch timer = new Stopwatch();
+            TimeSpan blockingTime = new TimeSpan(), nonBlockingTime = new TimeSpan();
+
+            for (int i = 0; i < 25; i++)
+            {
+                Console.WriteLine("Run #" + (i + 1));
+                timer.Reset();
+
+                //Test Blocking
+                BlockingTextReader blocking = ParsingTextReader.CreateBlocking(new JitterReader(new StreamReader("nio.ttl"), 50));
+                timer.Start();
+                int totalBlocking = 0;
+                int read;
+                while (!blocking.EndOfStream)
+                {
+                    read = blocking.Read();
+                    if (read >= 0) totalBlocking++;
+                }
+                timer.Stop();
+                blocking.Close();
+                blockingTime = blockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Blocking IO took " + timer.Elapsed + " and read " + totalBlocking + " characters");
+
+                //Reset
+                timer.Reset();
+                int totalNonBlocking = 0;
+
+                NonBlockingTextReader nonBlocking = ParsingTextReader.CreateNonBlocking(new JitterReader(new StreamReader("nio.ttl"), 50));
+                timer.Start();
+                while (!nonBlocking.EndOfStream)
+                {
+                    read = nonBlocking.Read();
+                    if (read >= 0) totalNonBlocking++;
+                }
+                timer.Stop();
+                nonBlocking.Close();
+                nonBlockingTime = nonBlockingTime.Add(timer.Elapsed);
+
+                Console.WriteLine("Non-Blocking IO took " + timer.Elapsed + " and read " + totalNonBlocking + " characters");
+
+                Assert.AreEqual(totalBlocking, totalNonBlocking);
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Blocking Total Time = " + blockingTime);
+            Console.WriteLine("Non-Blocking Total Time = " + nonBlockingTime);
+        }
+    }
+
+    /// <summary>
+    /// A Text Reader which introduces random jitter into block reads i.e. it may randomly read less than asked for a non-blocking read and may have random delays when doing blocking reads.  By default jitter chance is set at 10%
+    /// </summary>
+    class JitterReader
+        : TextReader
+    {
+        /// <summary>
+        /// Default Jitter Chance
+        /// </summary>
+        public const int DefaultJitter = 10;
+
+        private TextReader _reader;
+        private Random _rnd = new Random();
+        private int _jitter = 10;
+
+        public JitterReader(TextReader reader)
+            : this(reader, DefaultJitter) { }
+
+        public JitterReader(TextReader reader, int chance)
+        {
+            this._reader = reader;
+            this._jitter = chance;
+            if (this._jitter < 0) this._jitter = 0;
+            if (this._jitter > 100) this._jitter = 100;
+        }
+
+        public override void Close()
+        {
+            this._reader.Close();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            this._reader.Dispose();
+        }
+
+        public override int Peek()
+        {
+            return this._reader.Peek();
+        }
+
+        public override int Read()
+        {
+            return this._reader.Read();
+        }
+
+        public override int Read(char[] buffer, int index, int count)
+        {
+            int r = this._rnd.Next(100);
+            if (r < this._jitter)  count = 1 + this._rnd.Next(count);
+            return this._reader.Read(buffer, index, count);
+        }
+
+        public override int ReadBlock(char[] buffer, int index, int count)
+        {
+            int r = this._rnd.Next(100);
+            if (r < this._jitter) Thread.Sleep(1);
+            return this._reader.ReadBlock(buffer, index, count);
+        }
+
+        public override string ReadLine()
+        {
+            return this._reader.ReadLine();
+        }
+
+        public override string ReadToEnd()
+        {
+            return this._reader.ReadToEnd();
         }
     }
 }

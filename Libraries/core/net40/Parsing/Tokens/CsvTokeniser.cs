@@ -45,13 +45,13 @@ namespace VDS.RDF.Parsing.Tokens
     public class CsvTokeniser
         : BaseTokeniser
     {
-        private BlockingTextReader _in;
+        private ParsingTextReader _in;
 
         /// <summary>
         /// Creates a new CSV Tokeniser
         /// </summary>
         /// <param name="reader">Text Reader</param>
-        public CsvTokeniser(BlockingTextReader reader)
+        public CsvTokeniser(ParsingTextReader reader)
             : base(reader)
         {
             this._in = reader;
@@ -62,7 +62,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// </summary>
         /// <param name="reader">Stream Reader</param>
         public CsvTokeniser(StreamReader reader)
-            : this(BlockingTextReader.Create(reader)) { }
+            : this(ParsingTextReader.Create(reader)) { }
         
         /// <summary>
         /// Gets the next available token from the input
