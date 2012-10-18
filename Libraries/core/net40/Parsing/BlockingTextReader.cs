@@ -116,6 +116,12 @@ namespace VDS.RDF.Parsing
             if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
             return new NonBlockingTextReader(input);
         }
+
+        public static NonBlockingTextReader CreateNonBlocking(TextReader input, int bufferSize)
+        {
+            if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
+            return new NonBlockingTextReader(input, bufferSize);
+        }
     }
 
     public abstract class BufferedTextReader
