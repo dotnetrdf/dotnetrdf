@@ -2810,7 +2810,15 @@ namespace VDS.RDF.Parsing
                         //Simple Variable Group By
 
                         String name = next.Value.Substring(1);
-                        current = new GroupByVariable(name);
+                        terminateExpression = (context.Tokens.Peek().TokenType == Token.AS);
+                        if (!terminateExpression)
+                        {
+                            current = new GroupByVariable(name, name);
+                        }
+                        else
+                        {
+                            current = new GroupByVariable(name);
+                        }
                         if (first == null)
                         {
                             first = current;
@@ -2829,7 +2837,14 @@ namespace VDS.RDF.Parsing
                         context.Tokens.Dequeue();
                         expr = this.TryParseExpression(context, false, true);
                         terminateExpression = (context.Tokens.LastTokenType == Token.AS);
-                        current = new GroupByExpression(expr);
+                        if (!terminateExpression && expr is VariableTerm)
+                        {
+                            current = new GroupByVariable(expr.Variables.First());
+                        }
+                        else
+                        {
+                            current = new GroupByExpression(expr);
+                        }
                         if (first == null)
                         {
                             first = current;
@@ -2901,6 +2916,7 @@ namespace VDS.RDF.Parsing
                     case Token.QNAME:
                         //Function Expression Group By
                         expr = this.TryParseFunctionExpression(context);
+                        terminateExpression = (context.Tokens.Peek().TokenType == Token.AS);
                         current = new GroupByExpression(expr);
                         if (first == null)
                         {

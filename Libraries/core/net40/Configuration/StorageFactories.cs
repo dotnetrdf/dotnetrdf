@@ -57,7 +57,6 @@ namespace VDS.RDF.Configuration
                              FourStore = "VDS.RDF.Storage.FourStoreConnector",
                              Fuseki = "VDS.RDF.Storage.FusekiConnector",
                              InMemory = "VDS.RDF.Storage.InMemoryManager",
-                             Joseki = "VDS.RDF.Storage.JosekiConnector",
                              ReadOnly = "VDS.RDF.Storage.ReadOnlyConnector",
                              ReadOnlyQueryable = "VDS.RDF.Storage.QueryableReadOnlyConnector",
                              Sesame = "VDS.RDF.Storage.SesameHttpProtocolConnector",
@@ -67,8 +66,7 @@ namespace VDS.RDF.Configuration
                              Sparql = "VDS.RDF.Storage.SparqlConnector",
                              SparqlHttpProtocol = "VDS.RDF.Storage.SparqlHttpProtocolConnector",
                              Stardog = "VDS.RDF.Storage.StardogConnector",
-                             StardogServer = "VDS.RDF.Storage.Management.StardogServer",
-                             Talis = "VDS.RDF.Storage.TalisPlatformConnector"
+                             StardogServer = "VDS.RDF.Storage.Management.StardogServer"
                              ;
 
         /// <summary>
@@ -223,23 +221,6 @@ namespace VDS.RDF.Configuration
                             //If no dnr:usingStore either then create a new empty store
                             storageProvider = new InMemoryManager();
                         }
-                    }
-                    break;
-
-                case Joseki:
-                    //Get the Query and Update URIs
-                    server = ConfigurationLoader.GetConfigurationString(g, objNode, propServer);
-                    if (server == null) return false;
-                    String queryService = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyQueryPath)));
-                    if (queryService == null) return false;
-                    String updateService = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyUpdatePath)));
-                    if (updateService == null)
-                    {
-                        storageProvider = new JosekiConnector(server, queryService);
-                    }
-                    else
-                    {
-                        storageProvider = new JosekiConnector(server, queryService, updateService);
                     }
                     break;
 
@@ -487,7 +468,6 @@ namespace VDS.RDF.Configuration
                 case FourStore:
                 case Fuseki:
                 case InMemory:
-                case Joseki:
                 case Sesame:
                 case SesameV5:
                 case SesameV6:
@@ -498,7 +478,6 @@ namespace VDS.RDF.Configuration
                 case SparqlHttpProtocol:
                 case Stardog:
                 case StardogServer:
-                case Talis:
                     return true;
                 default:
                     return false;

@@ -99,7 +99,7 @@ namespace VDS.RDF.Web
 
                     try
                     {
-                        List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitions(MimeTypesHelper.GetMimeTypes(ext)).ToList();
+                        List<MimeTypeDefinition> defs = MimeTypesHelper.GetDefinitionsByFileExtension(ext).ToList();
                         if (defs.Count == 0) return;
 
                         context.Request.Headers["Accept"] = String.Join(",", defs.Select(d => d.CanonicalMimeType).ToArray());

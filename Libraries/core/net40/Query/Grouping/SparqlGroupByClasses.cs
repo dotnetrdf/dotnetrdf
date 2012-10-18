@@ -46,7 +46,8 @@ namespace VDS.RDF.Query.Grouping
     /// <summary>
     /// Abstract Base Class for classes representing Sparql GROUP BY clauses
     /// </summary>
-    public abstract class BaseGroupBy : ISparqlGroupBy
+    public abstract class BaseGroupBy
+        : ISparqlGroupBy
     {
         /// <summary>
         /// Child Grouping
@@ -128,7 +129,8 @@ namespace VDS.RDF.Query.Grouping
     /// <summary>
     /// Represents a Grouping on a given Variable
     /// </summary>
-    public class GroupByVariable : BaseGroupBy
+    public class GroupByVariable
+        : BaseGroupBy
     {
         private String _name;
 
@@ -139,6 +141,12 @@ namespace VDS.RDF.Query.Grouping
         public GroupByVariable(String name)
         {
             this._name = name;
+        }
+
+        public GroupByVariable(String name, String assignVariable)
+            : this(name)
+        {
+            this.AssignVariable = assignVariable;
         }
 
         /// <summary>
@@ -199,11 +207,11 @@ namespace VDS.RDF.Query.Grouping
         public override List<BindingGroup> Apply(SparqlEvaluationContext context, List<BindingGroup> groups)
         {
             List<BindingGroup> outgroups = new List<BindingGroup>();
-            BindingGroup nulls = new BindingGroup();
 
             foreach (BindingGroup group in groups)
             {
                 Dictionary<INode, BindingGroup> subgroups = new Dictionary<INode, BindingGroup>();
+                BindingGroup nulls = new BindingGroup(group);
 
                 foreach (int id in group.BindingIDs)
                 {
@@ -236,7 +244,6 @@ namespace VDS.RDF.Query.Grouping
                 {
                     outgroups.Add(nulls);
                     if (this.AssignVariable != null) nulls.AddAssignment(this.AssignVariable, null);
-                    nulls = new BindingGroup();
                 }
             }
 
@@ -302,13 +309,13 @@ namespace VDS.RDF.Query.Grouping
         public override string ToString()
         {
             StringBuilder output = new StringBuilder();
-            if (this.AssignVariable != null)
+            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
             {
                 output.Append('(');
             }
             output.Append('?');
             output.Append(this._name);
-            if (this.AssignVariable != null)
+            if (this.AssignVariable != null && !this.AssignVariable.Equals(this._name))
             {
                 output.Append(" AS ?");
                 output.Append(this.AssignVariable);
@@ -328,7 +335,8 @@ namespace VDS.RDF.Query.Grouping
     /// <summary>
     /// Represents a Grouping on a given Expression
     /// </summary>
-    public class GroupByExpression : BaseGroupBy
+    public class GroupByExpression
+        : BaseGroupBy
     {
         private ISparqlExpression _expr;
 

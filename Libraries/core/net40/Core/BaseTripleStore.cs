@@ -195,7 +195,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", false)]
+        [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", true)]
         public IGraph Graph(Uri graphUri)
         {
             return this._graphs[graphUri];

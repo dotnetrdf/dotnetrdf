@@ -53,35 +53,10 @@ namespace VDS.RDF.Query.Algebra
         /// <summary>
         /// Creates a new Group Multiset
         /// </summary>
-        /// <param name="contents">Multiset which contains the Member Sets of the Groups</param>
-        /// <param name="groups">Groups</param>
-        public GroupMultiset(BaseMultiset contents, List<BindingGroup> groups)
+        /// <param name="contents">Multiset which contains the sets that are being grouped</param>
+        public GroupMultiset(BaseMultiset contents)
         {
             this._contents = contents;
-
-            if (groups.Count > 0)
-            {
-                bool first = true;
-                foreach (BindingGroup group in groups)
-                {
-                    Set s = new Set();
-                    foreach (KeyValuePair<String, INode> assignment in group.Assignments)
-                    {
-                        if (first) this.AddVariable(assignment.Key);
-                        s.Add(assignment.Key, assignment.Value);
-                    }
-                    first = false;
-                    base.Add(s);
-                    this._groups.Add(s.ID, group);
-                }
-            }
-            else
-            {
-                this._contents = new Multiset();
-                Set s = new Set();
-                base.Add(s);
-                this._groups.Add(s.ID, new BindingGroup());
-            }
         }
 
         /// <summary>
@@ -113,6 +88,21 @@ namespace VDS.RDF.Query.Algebra
         public BindingGroup Group(int id)
         {
             return this._groups[id];
+        }
+
+        /// <summary>
+        /// Adds a Group to the Multiset
+        /// </summary>
+        /// <param name="group"></param>
+        public void AddGroup(BindingGroup group)
+        {
+            Set s = new Set();
+            foreach (KeyValuePair<String, INode> assignment in group.Assignments)
+            {
+                s.Add(assignment.Key, assignment.Value);
+            }
+            base.Add(s);
+            this._groups.Add(s.ID, group);
         }
 
         /// <summary>

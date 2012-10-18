@@ -665,6 +665,9 @@ namespace VDS.RDF.Query.Patterns
         }
     }
 
+    /// <summary>
+    /// Comparer for checking whether sets are distinct, check may either be using the entire set or by using only a subset of variables
+    /// </summary>
     class SetDistinctnessComparer
         : IEqualityComparer<ISet>
     {

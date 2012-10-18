@@ -87,13 +87,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -116,13 +116,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -188,13 +188,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -221,13 +221,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -250,13 +250,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -306,13 +306,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }
@@ -335,13 +335,13 @@ namespace VDS.RDF.Test.Parsing.Handlers
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/configuration#")), "Configuration Vocab Graph should have been parsed from Dataset");
             Graph configOrig = new Graph();
             configOrig.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
-            IGraph config = store.Graph(new Uri("http://www.dotnetrdf.org/configuration#"));
+            IGraph config = store[new Uri("http://www.dotnetrdf.org/configuration#")];
             Assert.AreEqual(configOrig, config, "Configuration Vocab Graphs should have been equal");
 
             Assert.IsTrue(store.HasGraph(new Uri("http://www.dotnetrdf.org/leviathan#")), "Leviathan Function Library Graph should have been parsed from Dataset");
             Graph lvnOrig = new Graph();
             lvnOrig.LoadFromEmbeddedResource("VDS.RDF.Query.Expressions.LeviathanFunctionLibrary.ttl");
-            IGraph lvn = store.Graph(new Uri("http://www.dotnetrdf.org/leviathan#"));
+            IGraph lvn = store[new Uri("http://www.dotnetrdf.org/leviathan#")];
             Assert.AreEqual(lvnOrig, lvn, "Leviathan Function Library Graphs should have been equal");
 
         }

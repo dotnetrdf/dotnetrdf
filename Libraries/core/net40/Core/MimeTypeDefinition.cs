@@ -907,6 +907,13 @@ namespace VDS.RDF
             return selectors;
         }
 
+        /// <summary>
+        /// Creates a new MIME Type Selector
+        /// </summary>
+        /// <param name="type">MIME Type to match</param>
+        /// <param name="charset">Charset</param>
+        /// <param name="quality">Quality (in range 0.0-1.0)</param>
+        /// <param name="order">Order of appearance (used as precendence tiebreaker where necessary)</param>
         public MimeTypeSelector(String type, String charset, double quality, int order)
         {
             if (type == null) throw new ArgumentNullException("type", "Type cannot be null");
@@ -973,6 +980,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the Charset for the selector
+        /// </summary>
         public String Charset
         {
             get
@@ -981,6 +991,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the quality for the selector (range of 0.0-1.0)
+        /// </summary>
         public double Quality
         {
             get
@@ -989,6 +1002,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the order of apperance for the selector (used as precedence tiebreaker where necessary)
+        /// </summary>
         public int Order
         {
             get
@@ -997,6 +1013,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the selector if for a */* pattern i.e. accept any
+        /// </summary>
         public bool IsAny
         {
             get
@@ -1005,6 +1024,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the selector is for a type/* pattern i.e. accept any sub-type of the given type
+        /// </summary>
         public bool IsRange
         {
             get
@@ -1013,6 +1035,9 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets whether the selector is invalid
+        /// </summary>
         public bool IsInvalid
         {
             get
@@ -1021,8 +1046,19 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Sorts the selector in precedence order according to the content negotiation rules from the relevant RFCs
+        /// </summary>
+        /// <param name="other">Selector to compare against</param>
+        /// <returns></returns>
         public int CompareTo(MimeTypeSelector other)
         {
+            if (other == null)
+            {
+                //We're always greater than a null
+                return -1;
+            }
+
             if (this._isInvalid)
             {
                 if (other.IsInvalid)
@@ -1106,6 +1142,13 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Gets the string representation of the selector as it would appear in an Accept header
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Unless this is an invalid selector this will always be a valid selector that could be appended to a MIME type header
+        /// </remarks>
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder();

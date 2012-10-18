@@ -139,7 +139,7 @@ namespace VDS.RDF.Query
         private NamespaceMapper _nsmapper;
         private SparqlQueryType _type = SparqlQueryType.Unknown;
         private SparqlSpecialQueryType _specialType = SparqlSpecialQueryType.Unknown;
-        private Dictionary<String, SparqlVariable> _vars;
+        private List<SparqlVariable> _vars;
         private List<IToken> _describeVars = new List<IToken>();
         private GraphPattern _rootGraphPattern = null;
         private ISparqlOrderBy _orderBy = null;
@@ -165,7 +165,7 @@ namespace VDS.RDF.Query
         /// </summary>
         protected internal SparqlQuery()
         {
-            this._vars = new Dictionary<string, SparqlVariable>();
+            this._vars = new List<SparqlVariable>();
             this._nsmapper = new NamespaceMapper(true);
             this._defaultGraphs = new List<Uri>();
             this._namedGraphs = new List<Uri>();
@@ -244,8 +244,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return (from v in this._vars
-                        select v.Value);
+                return this._vars;
             }
         }
 
@@ -308,8 +307,9 @@ namespace VDS.RDF.Query
                                 !this._rootGraphPattern.ChildGraphPatterns[0].IsFiltered &&
                                 this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.TokenType == Token.VARIABLE &&
                                 this._rootGraphPattern.ChildGraphPatterns[0].TriplePatterns[0].IsAcceptAll &&
-                                this._vars[this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1)].IsResultVariable &&
-                                this._vars.Count(pair => pair.Value.IsResultVariable) == 1)
+                                this._vars[0].IsResultVariable && 
+                                this._rootGraphPattern.ChildGraphPatterns[0].GraphSpecifier.Value.Substring(1).Equals(this._vars[0].Name) &&
+                                this._vars.Count(v => v.IsResultVariable) == 1)
                             {
                                 this._specialType = SparqlSpecialQueryType.DistinctGraphs;
                             }
@@ -625,7 +625,7 @@ namespace VDS.RDF.Query
         {
             get
             {
-                return SparqlSpecsHelper.IsSelectQuery(this._type) && this._vars.Values.Any(v => v.IsResultVariable && v.IsAggregate);
+                return SparqlSpecsHelper.IsSelectQuery(this._type) && this._vars.Any(v => v.IsResultVariable && v.IsAggregate);
             }
         }
 
@@ -706,9 +706,9 @@ namespace VDS.RDF.Query
             String var = name.Substring(1);
             if ((int)this._type >= (int)SparqlQueryType.SelectAll) isResultVar = true;
 
-            if (!this._vars.ContainsKey(var))
+            if (!this._vars.Any(v => v.Name.Equals(var)))
             {
-                this._vars.Add(var, new SparqlVariable(var, isResultVar));
+                this._vars.Add(new SparqlVariable(var, isResultVar));
             }
         }
 
@@ -718,9 +718,9 @@ namespace VDS.RDF.Query
         /// <param name="var">Variable</param>
         protected internal void AddVariable(SparqlVariable var)
         {
-            if (!this._vars.ContainsKey(var.Name))
+            if (!this._vars.Any(v => v.Name.Equals(var)))
             {
-                this._vars.Add(var.Name, var);
+                this._vars.Add(var);
             }
             else
             {
@@ -961,11 +961,11 @@ namespace VDS.RDF.Query
 
                 //Build the String for the FROM clause
                 if (this._defaultGraphs.Count > 0 || this._namedGraphs.Count > 0) from.Append(' ');
-                foreach (Uri u in this._defaultGraphs)
+                foreach (Uri u in this._defaultGraphs.Where(u => u != null))
                 {
                     from.AppendLine("FROM <" + u.AbsoluteUri + ">");
                 }
-                foreach (Uri u in this._namedGraphs)
+                foreach (Uri u in this._namedGraphs.Where(u => u != null))
                 {
                     from.AppendLine("FROM NAMED <" + u.AbsoluteUri + ">");
                 }
@@ -1063,7 +1063,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        foreach (SparqlVariable var in this._vars.Values)
+                        foreach (SparqlVariable var in this._vars)
                         {
                             if (var.IsResultVariable)
                             {
@@ -1150,7 +1150,7 @@ namespace VDS.RDF.Query
         public ISparqlAlgebra ToAlgebra()
         {
             //Firstly Transform the Root Graph Pattern to SPARQL Algebra
-            ISparqlAlgebra pattern;
+            ISparqlAlgebra algebra;
             if (this._rootGraphPattern != null)
             {
                 if (Options.AlgebraOptimisation)
@@ -1159,33 +1159,34 @@ namespace VDS.RDF.Query
                     switch (this.SpecialType)
                     {
                         case SparqlSpecialQueryType.DistinctGraphs:
-                            pattern = new SelectDistinctGraphs(this.Variables.First(v => v.IsResultVariable).Name);
+                            algebra = new SelectDistinctGraphs(this.Variables.First(v => v.IsResultVariable).Name);
                             break;
                         case SparqlSpecialQueryType.AskAnyTriples:
-                            pattern = new AskAnyTriples();
+                            algebra = new AskAnyTriples();
                             break;
                         case SparqlSpecialQueryType.NotApplicable:
                         default:
                             //If not just use the standard transform
-                            pattern = this._rootGraphPattern.ToAlgebra();
+                            algebra = this._rootGraphPattern.ToAlgebra();
                             break;
                     }
                 }
                 else
                 {
                     //If not using Algebra Optimisation just use the standard transform
-                    pattern = this._rootGraphPattern.ToAlgebra();
+                    algebra = this._rootGraphPattern.ToAlgebra();
                 }
             }
             else
             {
-                pattern = new Bgp();
+                //No root graph pattern means empty BGP
+                algebra = new Bgp();
             }
 
-            //If we have a BINDINGS clause then we'll add it into the algebra here
+            //If we have a top level VALUES clause then we'll add it into the algebra here
             if (this._bindings != null)
             {
-                pattern = Join.CreateJoin(pattern, new Bindings(this._bindings));
+                algebra = Join.CreateJoin(algebra, new Bindings(this._bindings));
             }
 
             //Then we apply any optimisers followed by relevant solution modifiers
@@ -1195,9 +1196,9 @@ namespace VDS.RDF.Query
                     //Apply Algebra Optimisation is enabled
                     if (Options.AlgebraOptimisation)
                     {
-                        pattern = this.ApplyAlgebraOptimisations(pattern);
+                        algebra = this.ApplyAlgebraOptimisations(algebra);
                     }
-                    return new Ask(pattern);
+                    return new Ask(algebra);
 
                 case SparqlQueryType.Construct:
                 case SparqlQueryType.Describe:
@@ -1211,48 +1212,59 @@ namespace VDS.RDF.Query
                     //Apply Algebra Optimisation if enabled
                     if (Options.AlgebraOptimisation)
                     {
-                        pattern = this.ApplyAlgebraOptimisations(pattern);
+                        algebra = this.ApplyAlgebraOptimisations(algebra);
                     }
                     
                     //GROUP BY is the first thing applied
-                    if (this._groupBy != null) pattern = new GroupBy(pattern, this._groupBy);
+                    //This applies if there is a GROUP BY or if there are aggregates
+                    //With no GROUP BY it produces a single group of all results
+                    if (this._groupBy != null || this._vars.Any(v => v.IsAggregate))
+                    {
+                        algebra = new GroupBy(algebra, this._groupBy, this._vars.Where(v => v.IsAggregate));
+                    }
 
                     //After grouping we do projection
-                    //This will generate the values for any Project Expressions and Aggregates
-                    pattern = new Project(pattern, this.Variables);
+                    //We introduce an Extend for each Project Expression
+                    foreach (SparqlVariable var in this._vars)
+                    {
+                        if (var.IsProjection)
+                        {
+                            algebra = new Extend(algebra, var.Projection, var.Name);
+                        }
+                    }
 
                     //Add HAVING clause after the projection
-                    if (this._having != null) pattern = new Having(pattern, this._having);
+                    if (this._having != null) algebra = new Having(algebra, this._having);
 
                     //We can then Order our results
                     //We do ordering before we do Select but after Project so we can order by any of
                     //the project expressions/aggregates and any variable in the results even if
                     //it won't be output as a result variable
-                    if (this._orderBy != null) pattern = new OrderBy(pattern, this._orderBy);
+                    if (this._orderBy != null) algebra = new OrderBy(algebra, this._orderBy);
 
                     //After Ordering we apply Select
                     //Select effectively trims the results so only result variables are left
                     //This doesn't apply to CONSTRUCT since any variable may be used in the Construct Template
                     //so we don't want to eliminate anything
-                    if (this._type != SparqlQueryType.Construct) pattern = new Select(pattern, this.Variables);
+                    if (this._type != SparqlQueryType.Construct) algebra = new Select(algebra, this.Variables);
 
                     //If we have a Distinct/Reduced then we'll apply those after Selection
                     if (this._type == SparqlQueryType.SelectAllDistinct || this._type == SparqlQueryType.SelectDistinct)
                     {
-                        pattern = new Distinct(pattern);
+                        algebra = new Distinct(algebra);
                     }
                     else if (this._type == SparqlQueryType.SelectAllReduced || this._type == SparqlQueryType.SelectReduced)
                     {
-                        pattern = new Reduced(pattern);
+                        algebra = new Reduced(algebra);
                     }
 
                     //Finally we can apply any limit and/or offset
                     if (this._limit >= 0 || this._offset > 0)
                     {
-                        pattern = new Slice(pattern, this._limit, this._offset);
+                        algebra = new Slice(algebra, this._limit, this._offset);
                     }
 
-                    return pattern;
+                    return algebra;
 
                 default:
                     throw new RdfQueryException("Unable to convert unknown Query Types to SPARQL Algebra");

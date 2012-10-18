@@ -155,9 +155,10 @@ namespace VDS.RDF.Query.Algebra
             {
                 if (results.ContainsVariable(this._var))
                 {
-                    throw new RdfQueryException("Cannot use a BIND assigment to BIND to a variable that has previously been used in the Query");
+                    throw new RdfQueryException("Cannot assign to the variable ?" + this._var + "since it has previously been used in the Query");
                 }
 
+                context.InputMultiset = results;
                 context.OutputMultiset.AddVariable(this._var);
 #if NET40 && !SILVERLIGHT
                 if (Options.UsePLinqEvaluation && this._expr.CanParallelise)

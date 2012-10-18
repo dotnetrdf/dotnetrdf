@@ -214,13 +214,24 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
-        /// Checks whether a value is bound to the given Variable for this result
+        /// Checks whether a given Variable has a value (which may be null) for this result
         /// </summary>
         /// <param name="variable">Variable Name</param>
-        /// <returns></returns>
+        /// <returns>True if the variable is present, false otherwise</returns>
+        /// <remarks>Returns true even if the value is null, use <see cref="SparqlResult.HashBoundValue"/> instead to see whether a non-null value is present for a variable.</remarks>
         public bool HasValue(string variable)
         {
             return this._resultValues.ContainsKey(variable);
+        }
+
+        /// <summary>
+        /// Checks whether a given Variable has a non-null value for this result
+        /// </summary>
+        /// <param name="variable">Variable Name</param>
+        /// <returns>True if the variable is present and has a non-null value, false otherwise</returns>
+        public bool HasBoundValue(String variable)
+        {
+            return this._resultValues.ContainsKey(variable) && this._resultValues[variable] != null;
         }
 
         /// <summary>

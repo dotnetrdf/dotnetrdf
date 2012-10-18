@@ -54,13 +54,12 @@ namespace VDS.RDF.Query.Expressions.Primary
         /// <param name="name">Variable Name</param>
         public VariableTerm(String name)
         {
-            if (name.StartsWith("?") || name.StartsWith("$"))
+            this._name = name;
+
+            //Strip leading ?/$ if present
+            if (this._name.StartsWith("?") || this._name.StartsWith("$"))
             {
-                this._name = name.Substring(1);
-            }
-            else
-            {
-                this._name = name;
+                this._name = this._name.Substring(1);
             }
         }
         

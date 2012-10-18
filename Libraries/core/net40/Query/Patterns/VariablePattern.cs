@@ -52,10 +52,16 @@ namespace VDS.RDF.Query.Patterns
         /// <summary>
         /// Creates a new Variable Pattern
         /// </summary>
-        /// <param name="name">Variable name including the leading ?/$</param>
+        /// <param name="name">Variable name</param>
         public VariablePattern(String name)
         {
-            this._varname = name.Substring(1);
+            this._varname = name;
+
+            //Strip leading ?/$ if present
+            if (this._varname.StartsWith("?") || this._varname.StartsWith("$"))
+            {
+                this._varname = this._varname.Substring(1);
+            }
         }
 
         /// <summary>
