@@ -5,7 +5,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query
 {
-    public interface IQueryBuilder : INodeFactory
+    public interface IQueryBuilder 
     {
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
