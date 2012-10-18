@@ -36,6 +36,8 @@ terms.
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -52,20 +54,58 @@ namespace VDS.RDF.Test.Parsing
         private const String TestData4 = "abcdefghijklmnopqrstuvwxyz\n\r0123456789";
         private const String TestData5 = "abcdefghijklmnopqrstuvwxyz\r\n0123456789";
 
+        [TestMethod]
+        public void ParsingTextReaderCreation1()
+        {
+            File.WriteAllText("ParsingTextReaderCreation1.txt", "ParsingTextReaderCreation1");
+            using (StreamReader stream = new StreamReader("ParsingTextReaderCreation1.txt"))
+            {
+                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                Assert.IsInstanceOfType(reader, typeof(NonBlockingTextReader));
+                stream.Close();
+            }
+        }
+
+        [TestMethod]
+        public void ParsingTextReaderCreation2()
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                ParsingTextReader reader = ParsingTextReader.Create(stream);
+                Assert.IsInstanceOfType(reader, typeof(NonBlockingTextReader));
+                stream.Close();
+            }
+        }
+
+        [TestMethod]
+        public void ParsingTextReaderCreation3()
+        {
+            using (WebClient client = new WebClient())
+            {
+                using (Stream stream = client.OpenRead(new Uri("http://www.dotnetrdf.org")))
+                {
+                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    Assert.IsInstanceOfType(reader, typeof(BlockingTextReader));
+                    stream.Close();
+                }
+                client.Dispose();
+            }
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
-        public void ParsingBlockingTextReaderBadInstantiation()
+        public void ParsingTextReaderBlockingBadInstantiation()
         {
             BlockingTextReader reader = ParsingTextReader.CreateBlocking((TextReader)null);
         }
 
         [TestMethod, ExpectedException(typeof(ArgumentException))]
-        public void ParsingBlockingTextReaderBadInstantiation2()
+        public void ParsingTextReaderBlockingBadInstantiation2()
         {
             BlockingTextReader reader = ParsingTextReader.CreateBlocking(new StringReader(String.Empty), 0);
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleRead()
+        public void ParsingTextReaderBlockingSimpleRead()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -87,7 +127,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleRead2()
+        public void ParsingTextReaderBlockingSimpleRead2()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -107,7 +147,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleReadBlock()
+        public void ParsingTextReaderBlockingSimpleReadBlock()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -127,7 +167,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadToEnd()
+        public void ParsingTextReaderBlockingReadToEnd()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -142,7 +182,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine()
+        public void ParsingTextReaderBlockingReadLine()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -157,7 +197,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine2()
+        public void ParsingTextReaderBlockingReadLine2()
         {
             StringReader strReader = new StringReader(TestData2);
 
@@ -174,7 +214,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine3()
+        public void ParsingTextReaderBlockingReadLine3()
         {
             StringReader strReader = new StringReader(TestData3);
 
@@ -191,7 +231,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine4()
+        public void ParsingTextReaderBlockingReadLine4()
         {
             StringReader strReader = new StringReader(TestData4);
 
@@ -210,7 +250,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderReadLine5()
+        public void ParsingTextReaderBlockingReadLine5()
         {
             StringReader strReader = new StringReader(TestData5);
 
@@ -227,7 +267,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimplePeek()
+        public void ParsingTextReaderBlockingSimplePeek()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -246,7 +286,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderSimpleReadBlock2()
+        public void ParsingTextReaderBlockingSimpleReadBlock2()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -270,7 +310,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock()
+        public void ParsingTextReaderBlockingComplexReadBlock()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -296,7 +336,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock2()
+        public void ParsingTextReaderBlockingComplexReadBlock2()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -322,7 +362,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderComplexReadBlock3()
+        public void ParsingTextReaderBlockingComplexReadBlock3()
         {
             StringReader strReader = new StringReader(TestData);
 
@@ -348,7 +388,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamNotation3()
+        public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
@@ -369,7 +409,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamNTriples()
+        public void ParsingTextReaderBlockingNetworkStreamNTriples()
         {
             try
             {
@@ -387,7 +427,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamTurtle()
+        public void ParsingTextReaderBlockingNetworkStreamTurtle()
         {
             try
             {
@@ -405,7 +445,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingBlockingTextReaderNetworkStreamRdfJson()
+        public void ParsingTextReaderBlockingNetworkStreamRdfJson()
         {
             try
             {

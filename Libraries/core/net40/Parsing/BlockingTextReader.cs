@@ -66,7 +66,22 @@ namespace VDS.RDF.Parsing
         public static ParsingTextReader Create(TextReader input, int bufferSize)
         {
             if (input is ParsingTextReader) return (ParsingTextReader)input;
-            return new BlockingTextReader(input, bufferSize);
+            if (input is StreamReader)
+            {
+                Stream s = ((StreamReader)input).BaseStream;
+                if (s is FileStream || s is MemoryStream)
+                {
+                    return new NonBlockingTextReader(input, bufferSize);
+                }
+                else
+                {
+                    return new BlockingTextReader(input, bufferSize);
+                }
+            }
+            else
+            {
+                return new BlockingTextReader(input, bufferSize);
+            }
         }
 
         /// <summary>
@@ -88,7 +103,14 @@ namespace VDS.RDF.Parsing
         /// <param name="bufferSize">Buffer Size</param>
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
-            return Create(new StreamReader(input), bufferSize);
+            if (input is FileStream || input is MemoryStream)
+            {
+                return CreateNonBlocking(new StreamReader(input), bufferSize);
+            }
+            else
+            {
+                return CreateBlocking(new StreamReader(input), bufferSize);
+            }
         }
 
         /// <summary>
