@@ -118,34 +118,26 @@ namespace VDS.RDF.Parsing
         }
     }
 
-    /// <summary>
-    /// The BlockingTextReader is an implementation of a <see cref="TextReader">TextReader</see> designed to wrap other readers which may or may not have high latency.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  All methods are defined by using an internal buffer which is filled using the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see>
-    /// </para>
-    /// </remarks>
-    public sealed class BlockingTextReader 
+    public abstract class BufferedTextReader
         : ParsingTextReader
     {
-        private char[] _buffer;
-        private int _pos = -1;
-        private int _bufferAmount = -1;
-        private bool _finished = false;
-        private TextReader _reader;
-
         /// <summary>
         /// Default Buffer Size
         /// </summary>
         public const int DefaultBufferSize = 1024;
 
+        protected char[] _buffer;
+        protected int _pos = -1;
+        protected int _bufferAmount = -1;
+        protected bool _finished = false;
+        protected readonly TextReader _reader;
+
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a buffered reader
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        internal BlockingTextReader(TextReader reader, int bufferSize)
+        /// <param name="reader"></param>
+        /// <param name="bufferSize"></param>
+        protected BufferedTextReader(TextReader reader, int bufferSize)
         {
             if (reader == null) throw new ArgumentNullException("reader", "Cannot read from a null TextReader");
             if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", "bufferSize");
@@ -154,46 +146,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Requests that the buffer be filled
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
-        internal BlockingTextReader(TextReader reader)
-            : this(reader, DefaultBufferSize) { }
+        protected abstract void FillBuffer();
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        internal BlockingTextReader(Stream input, int bufferSize)
-            : this(new StreamReader(input), bufferSize) { }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        internal BlockingTextReader(Stream input)
-            : this(new StreamReader(input)) { }
-
-        /// <summary>
-        /// Fills the Buffer
-        /// </summary>
-        private void FillBuffer()
-        {
-            this._pos = -1;
-            if (this._finished)
-            {
-                this._bufferAmount = 0;
-            }
-            else
-            {
-                this._bufferAmount = this._reader.ReadBlock(this._buffer, 0, this._buffer.Length);
-                if (this._bufferAmount == 0 || this._bufferAmount < this._buffer.Length) this._finished = true;
-            }
-        }
-
-        /// <summary>
-        /// Reads a sequence of characters from the underlying Text Reader in a blocking way
+        /// Reads a sequence of characters from the buffer in a blocking way
         /// </summary>
         /// <param name="buffer">Buffer</param>
         /// <param name="index">Index at which to start writing to the Buffer</param>
@@ -269,15 +227,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads a sequence of characters from the underlying Text Reader
+        /// Reads a sequence of characters from the buffer
         /// </summary>
         /// <param name="buffer">Buffer</param>
         /// <param name="index">Index at which to start writing to the Buffer</param>
         /// <param name="count">Number of characters to read</param>
         /// <returns>Number of characters read</returns>
-        /// <remarks>
-        /// Since this reader must always read in a blocking fashion this is equivalent to calling <see cref="BlockingTextReader.ReadBlock">ReadBlock()</see>
-        /// </remarks>
         public override int Read(char[] buffer, int index, int count)
         {
             return this.ReadBlock(buffer, index, count);
@@ -360,77 +315,91 @@ namespace VDS.RDF.Parsing
         }
     }
 
-    public sealed class NonBlockingTextReader
-        : ParsingTextReader
+    /// <summary>
+    /// The BlockingTextReader is an implementation of a <see cref="TextReader">TextReader</see> designed to wrap other readers which may or may not have high latency.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  All methods are defined by using an internal buffer which is filled using the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see>
+    /// </para>
+    /// </remarks>
+    public sealed class BlockingTextReader 
+        : BufferedTextReader
     {
-        private TextReader _input;
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        internal BlockingTextReader(TextReader reader, int bufferSize)
+            : base(reader, bufferSize) { }
 
-        public NonBlockingTextReader(TextReader input)
-        {
-            if (input == null) throw new ArgumentNullException("input", "Inner Text Reader cannot be null");
-            this._input = input;
-        }
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        internal BlockingTextReader(TextReader reader)
+            : this(reader, DefaultBufferSize) { }
 
-        public override void Close()
-        {
-            this._input.Close();
-        }
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        internal BlockingTextReader(Stream input, int bufferSize)
+            : this(new StreamReader(input), bufferSize) { }
 
-        public override int Peek()
-        {
-            return this._input.Peek();
-        }
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        internal BlockingTextReader(Stream input)
+            : this(new StreamReader(input)) { }
 
-        public override int Read()
+        /// <summary>
+        /// Fills the Buffer
+        /// </summary>
+        protected override void FillBuffer()
         {
-            return this._input.Read();
-        }
-
-        public override int Read(char[] buffer, int index, int count)
-        {
-            return this._input.Read(buffer, index, count);
-        }
-
-        public override int ReadBlock(char[] buffer, int index, int count)
-        {
-            return this._input.ReadBlock(buffer, index, count);
-        }
-
-        public override string ReadLine()
-        {
-            return this._input.ReadLine();
-        }
-
-        public override string ReadToEnd()
-        {
-            return this._input.ReadToEnd();
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this._input.Equals(obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return this._input.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return this._input.ToString();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing) this._input.Dispose();
-        }
-
-        public override bool EndOfStream
-        {
-            get
+            this._pos = -1;
+            if (this._finished)
             {
-                return this.Peek() == -1; 
+                this._bufferAmount = 0;
+            }
+            else
+            {
+                this._bufferAmount = this._reader.ReadBlock(this._buffer, 0, this._buffer.Length);
+                if (this._bufferAmount == 0 || this._bufferAmount < this._buffer.Length) this._finished = true;
+            }
+        }
+    }
+
+    public sealed class NonBlockingTextReader
+        : BufferedTextReader
+    {
+        internal NonBlockingTextReader(TextReader input, int bufferSize)
+            : base(input, bufferSize) { }
+
+        internal NonBlockingTextReader(TextReader input)
+            : this(input, DefaultBufferSize) { }
+
+        internal NonBlockingTextReader(Stream input, int bufferSize)
+            : this(new StreamReader(input), bufferSize) { }
+
+        internal NonBlockingTextReader(Stream input)
+            : this(new StreamReader(input)) { }
+
+        protected override void FillBuffer()
+        {
+            this._pos = -1;
+            if (this._finished)
+            {
+                this._bufferAmount = 0;
+            }
+            else
+            {
+                this._bufferAmount = this._reader.Read(this._buffer, 0, this._buffer.Length);
+                if (this._bufferAmount == 0) this._finished = true;
             }
         }
     }
