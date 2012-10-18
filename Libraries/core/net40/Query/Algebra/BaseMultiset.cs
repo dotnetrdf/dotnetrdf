@@ -82,6 +82,7 @@ namespace VDS.RDF.Query.Algebra
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
+                joinedSet.AddVariable(var);
                 values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
                 nulls.Add(new List<int>());
             }
@@ -242,6 +243,7 @@ namespace VDS.RDF.Query.Algebra
                 List<List<int>> nulls = new List<List<int>>();
                 foreach (String var in joinVars)
                 {
+                    joinedSet.AddVariable(var);
                     values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
                     nulls.Add(new List<int>());
                 }
@@ -382,17 +384,26 @@ namespace VDS.RDF.Query.Algebra
                         if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                         {
                             joinedSet.Remove(z.ID);
-                            standalone.Add(poss);
+                            lock (standalone)
+                            {
+                                standalone.Add(poss);
+                            }
                         }
                         else
                         {
-                            matched.Add(poss);
+                            lock (matched)
+                            {
+                                matched.Add(poss);
+                            }
                         }
                     }
                     catch
                     {
                         joinedSet.Remove(z.ID);
-                        standalone.Add(poss);
+                        lock (standalone)
+                        {
+                            standalone.Add(poss);
+                        }
                     }
                 }
             }
@@ -447,6 +458,7 @@ namespace VDS.RDF.Query.Algebra
             List<List<int>> nulls = new List<List<int>>();
             foreach (String var in joinVars)
             {
+                joinedSet.AddVariable(var);
                 values.Add(new MultiDictionary<INode, List<int>>(new FastNodeComparer()));
                 nulls.Add(new List<int>());
             }

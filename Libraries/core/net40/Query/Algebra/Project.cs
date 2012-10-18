@@ -45,6 +45,7 @@ namespace VDS.RDF.Query.Algebra
     /// <summary>
     /// Represents the Projection step of Query Evaluation
     /// </summary>
+    [Obsolete("The Project class is no longer used", true)]
     public class Project 
         : IUnaryOperator
     {
@@ -362,13 +363,12 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);//this._pattern.Evaluate(context);
+            context.InputMultiset = context.Evaluate(this._pattern);
 
             HashSet<SparqlVariable> vars;
             bool selectAll = false;
             if (context.Query != null)
             {
-                vars = new HashSet<SparqlVariable>(context.Query.Variables);
                 switch (context.Query.QueryType)
                 {
                     case SparqlQueryType.DescribeAll:
@@ -378,10 +378,35 @@ namespace VDS.RDF.Query.Algebra
                         selectAll = true;
                         break;
                 }
+                if (selectAll)
+                {
+                    vars = new HashSet<SparqlVariable>(context.Query.Variables);
+                }
+                else
+                {
+                    vars = new HashSet<SparqlVariable>(context.Query.Variables.Where(v => v.IsResultVariable));
+                }
             }
             else
             {
                 vars = new HashSet<SparqlVariable>(this._variables);
+            }
+
+            if (context.InputMultiset is NullMultiset)
+            {
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+            }
+            else if (context.InputMultiset is IdentityMultiset)
+            {
+                context.InputMultiset = new Multiset(vars.Select(v => v.Name));
+                context.InputMultiset.Add(new Set());
+            }
+            else if (context.InputMultiset.IsEmpty)
+            {
+                foreach (SparqlVariable var in vars)
+                {
+                    context.InputMultiset.AddVariable(var.Name);
+                }
             }
 
             if (!selectAll)
@@ -394,6 +419,15 @@ namespace VDS.RDF.Query.Algebra
                         //If not a Result variable then trim from results
                         context.InputMultiset.Trim(var);
                     }
+                }
+            }
+
+            //Ensure all SELECTed variables are present
+            foreach (SparqlVariable var in vars)
+            {
+                if (!context.InputMultiset.ContainsVariable(var.Name))
+                {
+                    context.InputMultiset.AddVariable(var.Name);
                 }
             }
 

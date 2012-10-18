@@ -38,10 +38,15 @@ using System.Text;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 
@@ -55,6 +60,7 @@ namespace VDS.RDF.Test.Sparql
         private SparqlFormatter _formatter = new SparqlFormatter();
         private LeviathanQueryProcessor _processor;
         private const int TripleLimit = 150;
+        private NodeFactory _factory = new NodeFactory();
 
         private void EnsureTestData()
         {
@@ -146,6 +152,93 @@ namespace VDS.RDF.Test.Sparql
             {
                 TestTools.ReportError("Out of Memory", outEx);
             }
+        }
+
+        [TestMethod]
+        public void SparqlParallelEvaluationDivision1()
+        {
+            INode zero = (0).ToLiteral(this._factory);
+            INode one = (0).ToLiteral(this._factory);
+
+            List<INode[]> data = new List<INode[]>()
+            {
+                new INode[] { zero, zero, zero },
+                new INode[] { zero, one, zero },
+                new INode[] { one, zero, null },
+                new INode[] { one, one, one }
+            };
+
+            BaseMultiset multiset = new Multiset();
+            foreach (INode[] row in data)
+            {
+                Set s = new Set();
+                s.Add("x", row[0]);
+                s.Add("y", row[1]);
+                s.Add("expected", row[2]);
+            }
+
+            ISparqlExpression expr = new DivisionExpression(new VariableTerm("x"), new VariableTerm("y"));
+
+            for (int i = 1; i <= 10000; i++)
+            {
+                Console.WriteLine("Iteration #" + i);
+                SparqlEvaluationContext context = new SparqlEvaluationContext(null, null);
+                context.InputMultiset = multiset;
+                context.OutputMultiset = new Multiset();
+
+                context.InputMultiset.SetIDs.AsParallel().ForAll(id => this.EvalExtend(context, context.InputMultiset, expr, "actual", id));
+
+                foreach (ISet s in context.OutputMultiset.Sets)
+                {
+                    Assert.AreEqual(s["expected"], s["actual"]);
+                }
+                Console.WriteLine("Iteration #" + i + " Completed OK");
+            }
+        }
+
+        private void EvalExtend(SparqlEvaluationContext context, BaseMultiset results, ISparqlExpression expr, String var, int id)
+        {
+            ISet s = results[id].Copy();
+            try
+            {
+                //Make a new assignment
+                INode temp = expr.Evaluate(context, id);
+                s.Add(var, temp);
+            }
+            catch
+            {
+                //No assignment if there's an error but the solution is preserved
+            }
+            context.OutputMultiset.Add(s);
+        }
+
+        [TestMethod]
+        public void SparqlParallelEvaluationOptional1()
+        {
+            String data = @"<http://a> <http://p> <http://x> .
+<http://b> <http://p> <http://y> .
+<http://c> <http://p> <http://z> .
+<http://x> <http://value> ""X"" .
+<http://z> <http://value> ""Z"" .";
+
+            String query = "SELECT * WHERE { ?s <http://p> ?o . OPTIONAL { ?o <http://value> ?value } }";
+            SparqlQuery q = this._parser.ParseFromString(query);
+
+            TripleStore store = new TripleStore();
+            StringParser.ParseDataset(store, data, new NQuadsParser());
+            InMemoryDataset dataset = new InMemoryDataset(store);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
+
+            int i;
+            for (i = 1; i <= 100000; i++)
+            {
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                if (results.Count != 3) TestTools.ShowResults(results);
+                Assert.AreEqual(3, results.Count, "Failed after " + i + " iterations");
+            }
+
+            Console.WriteLine("Completed " + i + " Iterations OK");
         }
     }
 }

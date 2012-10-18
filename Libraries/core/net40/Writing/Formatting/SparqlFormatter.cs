@@ -1058,12 +1058,14 @@ namespace VDS.RDF.Writing.Formatting
         {
             StringBuilder output = new StringBuilder();
 
-            if (groupBy.AssignVariable != null)
+            bool isAssignment = groupBy.AssignVariable != null && (groupBy.Expression.Variables.Count() != 1 || !groupBy.AssignVariable.Equals(groupBy.Expression.Variables.FirstOrDefault()));
+
+            if (isAssignment)
             {
                 output.Append('(');
             }
             output.Append(this.FormatExpression(groupBy.Expression));
-            if (groupBy.AssignVariable != null)
+            if (isAssignment)
             {
                 output.Append(" AS ?");
                 output.Append(groupBy.AssignVariable);

@@ -36,6 +36,7 @@ terms.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions;
 
@@ -44,7 +45,8 @@ namespace VDS.RDF.Query
     /// <summary>
     /// Represents an Group of Bindings which is used when executing Queries with GROUP BY clauses
     /// </summary>
-    public class BindingGroup : IEnumerable<int>
+    public class BindingGroup 
+        : IEnumerable<int>
     {
         private List<int> _bindingIDs = new List<int>();
         private Dictionary<String, INode> _assignments = new Dictionary<string, INode>();
@@ -70,9 +72,18 @@ namespace VDS.RDF.Query
         }
 
         /// <summary>
+        /// Creates a new Binding Group from the specified IDs
+        /// </summary>
+        /// <param name="ids">IDs</param>
+        public BindingGroup(IEnumerable<int> ids)
+        {
+            this._bindingIDs.AddRange(ids);
+        }
+
+        /// <summary>
         /// Adds a Binding ID to the Group
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">ID</param>
         public void Add(int id)
         {
             this._bindingIDs.Add(id);
@@ -135,6 +146,27 @@ namespace VDS.RDF.Query
                 return (from kvp in this._assignments
                         select kvp);
             }
+        }
+
+        /// <summary>
+        /// Gets a String summarising the group
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(this._bindingIDs.Count);
+            builder.Append(" Member(s)");
+            if (this._assignments.Count > 0)
+            {
+                builder.Append(" {");
+                foreach (String var in this._assignments.Keys)
+                {
+                    builder.Append("?" + var + " = " + this._assignments[var].ToSafeString());
+                }
+                builder.Append('}');
+            }
+            return builder.ToString();
         }
     }
 }
