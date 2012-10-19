@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -10,7 +11,7 @@ namespace VDS.RDF.Test.Sparql
     public class QueryBuilderTests
     {
         [TestMethod]
-        public void SparqlBuilderSelect1()
+        public void CanCreateSelectStarQuery()
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
@@ -20,7 +21,7 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlBuilderSelect2()
+        public void CanCreateSelectDistinctStarQuery()
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
@@ -30,60 +31,117 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsNull(q.RootGraphPattern);
         }
 
-
         [TestMethod]
-        public void SparqlBuilderSelect3()
+        public void CanAddTriplePatternsWithTriplePatternBuilder()
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
-                .Where("s", "p", "o")
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
+                                 .Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("o")
+                                 .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
+                                 .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
                 .GetExecutableQuery();
-            Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(4, q.RootGraphPattern.TriplePatterns.Count());
+        }
+
+        [TestMethod]
+        public void CanAddTriplePatternsAsObjects()
+        {
+            // given
+            TriplePattern p1 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
+            TriplePattern p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
+
+            // when
+            var q = QueryBuilder.SelectAll().Where(p1, p2).GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count());
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns.Contains(p1));
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns.Contains(p2));
+        }
+
+        [TestMethod]
+        public void AddingTriplePatternsCallDelegateOnlyOnce()
+        {
+            // given
+            int callCount=0;
+
+            // when
+            QueryBuilder.SelectAll()
+                        .Where(tpb =>
+                            {
+                                callCount++;
+                                tpb.Subject("s").Predicate("p").Object("o")
+                                   .Subject("s").Predicate("p").Object("o");
+                            });
+            
+            // then
+            Assert.AreEqual(1, callCount);
+        }
+
+        [TestMethod]
+        public void CanAddOptionalTriplePatterns()
+        {
+            // given
+            IQueryBuilder builder = QueryBuilder.SelectAll();
+            builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                   .Optional(tpb => tpb.Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"));
+
+            // when
+            var q = builder.GetExecutableQuery();
+
+            // then
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
         }
 
         [TestMethod]
-        public void SparqlBuilderSelect4()
+        public void CanAddOptionalTriplePatternsAsObjects()
         {
-            Assert.Inconclusive("Need to refator the API");
+            // given
+            TriplePattern p1 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
+            TriplePattern p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
 
-            //IQueryBuilder builder = QueryBuilder.SelectAll();
-            //builder.Where("s", "p", "o")
-            //     .Optional(builder.CreateVariableNode("s"), builder.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), builder.CreateVariableNode("type"));
+            // when
+            var q = QueryBuilder.SelectAll().Where(p1).Optional(p2).GetExecutableQuery();
 
-            //var q = builder.GetExecutableQuery();
-            //Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
-            //Assert.IsNotNull(q.RootGraphPattern);
-            //Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
-            //Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
-            //Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.TriplePatterns.Contains(p1));
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Contains(p2));
         }
 
         [TestMethod]
-        public void SparqlBuilderSelect5()
+        public void CanAddMultipleChildGraphPatterns()
         {
-            Assert.Inconclusive("Need to refator the API");
+            // given
+            IQueryBuilder builder = QueryBuilder.SelectAll();
+            builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                   .Optional(tpb => tpb.Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"))
+                   .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
-            //IQueryBuilder builder = QueryBuilder.SelectAll();
-            //builder.Where("s", "p", "o")
-            //     .Optional(builder.CreateVariableNode("s"), builder.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType)), builder.CreateVariableNode("type"))
-            //     .Where("x", "y", "z");
+            // when
+            var q = builder.GetExecutableQuery();
 
-            //var q = builder.GetExecutableQuery();
-            //Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
-            //Assert.IsNotNull(q.RootGraphPattern);
-            //Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
-            //Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Count);
-            //Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
-            //Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[1].TriplePatterns.Count());
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
+            Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[1].TriplePatterns.Count());
         }
 
         [TestMethod]
         public void GetExectuableQueryReturnsNewInstance()
         {
             // given
-            IQueryBuilder builder = QueryBuilder.SelectAll().Where("s", "p", "o");
+            IQueryBuilder builder = QueryBuilder.SelectAll().Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
             SparqlQuery query1 = builder.GetExecutableQuery();

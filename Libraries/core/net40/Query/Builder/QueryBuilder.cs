@@ -90,36 +90,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        /// <summary>
-        /// Adds a Triple pattern to the query with the three variable names
-        /// </summary>
-        /// <param name="q"></param>
-        /// <param name="s"></param>
-        /// <param name="p"></param>
-        /// <param name="o"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// To mix variables and RDF terms (URIs and Literals) you should use the overload that takes <see cref="INode"/> arguments instead
-        /// </remarks>
-        public IQueryBuilder Where(String s, String p, String o)
-        {
-            return Where(_query.CreateVariableNode(s), _query.CreateVariableNode(p), _query.CreateVariableNode(o));
-        }
-
-        /// <summary>
-        /// Adds a Triple Pattern to the query
-        /// </summary>
-        /// <param name="q">Query</param>
-        /// <param name="s">Subject to match</param>
-        /// <param name="p">Predicate to match</param>
-        /// <param name="o">Object to match</param>
-        /// <returns></returns>
-        public IQueryBuilder Where(INode s, INode p, INode o)
-        {
-            return Where(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(o)));
-        }
-
-        public IQueryBuilder Where(ITriplePattern tp)
+        private void Where(ITriplePattern tp)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
@@ -139,27 +110,36 @@ namespace VDS.RDF.Query.Builder
                     _query.RootGraphPattern.AddFilter(((IFilterPattern)tp).Filter);
                     break;
             }
-            return this;
+            return;
         }
 
+        [Obsolete("Consider either leaving it here, adding a relevant method to triple pattern builder")]
         public IQueryBuilder Where(IEnumerable<Triple> ts)
         {
             foreach (Triple t in ts)
             {
-                Where(t.Subject, t.Predicate, t.Object);
+                Where(tpb => tpb.Subject(t.Subject).Predicate(t.Predicate).Object(t.Object));
             }
             return this;
         }
 
-        public IQueryBuilder Where(IEnumerable<ITriplePattern> tps)
+        public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
         {
-            foreach (ITriplePattern tp in tps)
+            foreach (ITriplePattern tp in triplePatterns)
             {
                 Where(tp);
             }
             return this;
         }
 
+        public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
+        {
+            var builder = new TriplePatternBuilder();
+            buildTriplePatterns(builder);
+            return Where(builder.Patterns);
+        }
+
+        [Obsolete("Either make private completely or replace with an Action<IGraphPatternBuilder>")]
         public IQueryBuilder Where(GraphPattern gp)
         {
             if (_query == null) throw new ArgumentNullException("Null query");
@@ -174,32 +154,38 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder Optional(INode s, INode p, INode o)
-        {
-            return Optional(new TriplePattern(ToPatternItem(s), ToPatternItem(p), ToPatternItem(p)));
-        }
-
-        public IQueryBuilder Optional(ITriplePattern tp)
+        public IQueryBuilder Optional(params ITriplePattern[] triplePatterns)
         {
             GraphPattern gp = new GraphPattern();
             gp.IsOptional = true;
-            switch (tp.PatternType)
+
+            foreach (var tp in triplePatterns)
             {
-                case TriplePatternType.Match:
-                case TriplePatternType.Path:
-                case TriplePatternType.PropertyFunction:
-                case TriplePatternType.SubQuery:
-                    gp.AddTriplePattern(tp);
-                    break;
-                case TriplePatternType.BindAssignment:
-                case TriplePatternType.LetAssignment:
-                    gp.AddAssignment((IAssignmentPattern)tp);
-                    break;
-                case TriplePatternType.Filter:
-                    gp.AddFilter(((IFilterPattern)tp).Filter);
-                    break;
+                switch (tp.PatternType)
+                {
+                    case TriplePatternType.Match:
+                    case TriplePatternType.Path:
+                    case TriplePatternType.PropertyFunction:
+                    case TriplePatternType.SubQuery:
+                        gp.AddTriplePattern(tp);
+                        break;
+                    case TriplePatternType.BindAssignment:
+                    case TriplePatternType.LetAssignment:
+                        gp.AddAssignment((IAssignmentPattern)tp);
+                        break;
+                    case TriplePatternType.Filter:
+                        gp.AddFilter(((IFilterPattern)tp).Filter);
+                        break;
+                }
             }
             return Where(gp);
+        }
+
+        public IQueryBuilder Optional(Action<ITriplePatternBuilder> buildTriplePatterns)
+        {
+            var builder = new TriplePatternBuilder();
+            buildTriplePatterns(builder);
+            return Optional(builder.Patterns);
         }
 
         public IQueryBuilder Filter(ISparqlExpression expr)
@@ -232,7 +218,7 @@ namespace VDS.RDF.Query.Builder
         public SparqlQuery GetExecutableQuery()
         {
             // returns a copy to prevent changes in either
-            // QueryBuilder or the retrieved SparqlQuery(s) from
+            // QueryBuilder or the retrieved SparqlQuery(variableName) from
             // being reflected in one another
             SparqlQuery executableQuery = _query.Copy();
             executableQuery.Optimise();
