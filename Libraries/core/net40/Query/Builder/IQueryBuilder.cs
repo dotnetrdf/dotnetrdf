@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query.Builder
 {
     public interface IQueryBuilder 
     {

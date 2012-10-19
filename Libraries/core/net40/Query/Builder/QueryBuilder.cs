@@ -6,7 +6,7 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Query
+namespace VDS.RDF.Query.Builder
 {
     /// <summary>
     /// Provides static and extension methods for building queries with a fluent style API

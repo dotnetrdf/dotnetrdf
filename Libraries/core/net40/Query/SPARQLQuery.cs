@@ -41,6 +41,7 @@ using System.Text.RegularExpressions;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Construct;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Describe;

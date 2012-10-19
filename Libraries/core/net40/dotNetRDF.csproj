@@ -140,7 +140,7 @@
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
-    <Compile Include="Query\IQueryBuilder.cs" />
+    <Compile Include="Query\Builder\IQueryBuilder.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseTimeSpanOperator.cs" />
@@ -174,7 +174,7 @@
     <Compile Include="Query\PropertyFunctions\ISparqlPropertyFunction.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
-    <Compile Include="Query\QueryBuilder.cs" />
+    <Compile Include="Query\Builder\QueryBuilder.cs" />
     <Compile Include="Query\SparqlExpressionParser.cs" />
     <Compile Include="Query\SparqlResult.cs" />
     <Compile Include="Query\SparqlResultBinder.cs" />
