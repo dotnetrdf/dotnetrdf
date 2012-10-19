@@ -29,6 +29,7 @@ Changed
 - Parsing/Writing
  - Improved how parsers and writers are selected by file extension
  - Improved content negotiation logic to properly support quality factors and type ranges
+ - Avoid using blocking IO when parsing from file/memory streams
 
 - Query
  - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
