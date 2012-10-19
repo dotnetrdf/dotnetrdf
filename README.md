@@ -1,4 +1,4 @@
-### Welcome
+# Welcome
 
 dotNetRDF is a powerful and flexible API for working with RDF and SPARQL in .Net environments, for 
 details and documentation on the project please see our website at [dotnetrdf.org][1]
@@ -9,7 +9,7 @@ To get started with using dotNetRDF you may want to check out the following reso
  - [Developer Guide][11] - Some advanced documentation
  - [MSDN Style API][12] - MSDN style documentation for the entire API
 
-#### Obtaining dotNetRDF
+### Obtaining dotNetRDF
 
 dotNetRDF produces two main products:
 
@@ -20,11 +20,11 @@ The Programmers API requires .Net 3.5 or higher (builds are provided for a varie
 
 The Toolkit requires .Net 4.0 Full and can be obtained either as a [ZIP Download][25] or as a [Windows Installer Download][26]
 
-##### dotNetRDF on NuGet
+#### dotNetRDF on NuGet
 
 If you are a developer who uses NuGet you can also obtain dotNetRDF via NuGet, simply search for dotNetRDF in the NuGet Package Gallery to see the available packages.
 
-### Developers
+## Developers
 
 dotNetRDF is developed by the following people:
 
@@ -36,7 +36,7 @@ dotNetRDF is developed by the following people:
 
 For more information on our developers see the [Developers][30] page.  dotNetRDF also benefits from many community contributors who contribute in the form of bug reports, patches, suggestions and other feedback, please see the [Acknowledgements][31] file for a full list.
 
-### Source Code
+## Source Code
 
 The dotNetRDF Project has recently migrated to Mercurial as our VCS.
 
@@ -44,12 +44,12 @@ Currently we our maintaining the following repositories as our official reposito
 for our day to day development and periodically push changes to the repositories at SourceForge which
 we use as a central repository of our project releases and source code.
 
-#### BitBucket
+### BitBucket
 
  - [https://bitbucket.org/dotnetrdf/dotnetrdf][100]
  - [https://bitbucket.org/dotnetrdf/documentation][101]
 
-#### SourceForge
+### SourceForge
 
  - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/dotnetrdf][102]
  - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/documentation][103]
@@ -59,7 +59,7 @@ we use as a central repository of our project releases and source code.
 Note that our developers may be maintaining their own additional public/private repositories in order 
 to work on new features.
 
-#### Old Subversion
+### Old Subversion
 
 You can find our old source code in our SVN repository at
 [https://dotnetrdf.svn.sourceforge.net/svnroot/dotnetrdf][108]
@@ -72,6 +72,7 @@ was not consistent with the standard SVN layout prior to that.
 
 [10]: http://www.dotnetrdf.org/content.asp?pageID=User%20Guide
 [11]: http://www.dotnetrdf.org/content.asp?pageID=Developer%20Guide
+[12]: http://www.dotnetrdf.org/api/
 
 [20]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotNetRDF
 [21]: http://www.dotnetrdf.org/content.asp?pageID=Download%20dotnetRDF%20Source
