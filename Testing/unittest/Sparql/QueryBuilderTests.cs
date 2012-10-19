@@ -66,7 +66,7 @@ namespace VDS.RDF.Test.Sparql
         public void AddingTriplePatternsCallDelegateOnlyOnce()
         {
             // given
-            int callCount=0;
+            int callCount = 0;
 
             // when
             QueryBuilder.SelectAll()
@@ -76,7 +76,7 @@ namespace VDS.RDF.Test.Sparql
                                 tpb.Subject("s").Predicate("p").Object("o")
                                    .Subject("s").Predicate("p").Object("o");
                             });
-            
+
             // then
             Assert.AreEqual(1, callCount);
         }
@@ -161,10 +161,10 @@ namespace VDS.RDF.Test.Sparql
             SparqlQuery query = queryBuilder.GetExecutableQuery();
 
             // then
-            Assert.AreEqual(3, query.Variables);
-            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("s")));
-            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("p")));
-            Assert.IsTrue(query.Variables.Contains(new SparqlVariable("o")));
+            Assert.AreEqual(3, query.Variables.Count());
+            Assert.AreEqual(1, query.Variables.Count(v => v.Name == "s"));
+            Assert.AreEqual(1, query.Variables.Count(v => v.Name == "p"));
+            Assert.AreEqual(1, query.Variables.Count(v => v.Name == "o"));
             Assert.IsTrue(query.Variables.All(var => var.IsResultVariable));
         }
 
@@ -175,7 +175,7 @@ namespace VDS.RDF.Test.Sparql
             var s = new SparqlVariable("s", true);
             var p = new SparqlVariable("p", true);
             var o = new SparqlVariable("o", true);
-            IQueryBuilder queryBuilder = QueryBuilder.Select(s, p ,o);
+            IQueryBuilder queryBuilder = QueryBuilder.Select(s, p, o);
 
             // when
             SparqlQuery query = queryBuilder.GetExecutableQuery();

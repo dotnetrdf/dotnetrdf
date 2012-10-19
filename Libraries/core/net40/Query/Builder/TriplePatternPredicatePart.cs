@@ -1,4 +1,5 @@
 using System;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -7,9 +8,18 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public sealed class TriplePatternPredicatePart
     {
+        private readonly PatternItem _subjectPatternItem;
+        private readonly TriplePatternBuilder _triplePatternBuilder;
+
+        internal TriplePatternPredicatePart(TriplePatternBuilder triplePatternBuilder, PatternItem subjectPatternItem)
+        {
+            _subjectPatternItem = subjectPatternItem;
+            _triplePatternBuilder = triplePatternBuilder;
+        }
+
         public TriplePatternObjectPart Predicate(string variableName)
         {
-            throw new System.NotImplementedException();
+            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, new VariablePattern(variableName));
         }
 
         public TriplePatternObjectPart Predicate(Uri predicateUri)

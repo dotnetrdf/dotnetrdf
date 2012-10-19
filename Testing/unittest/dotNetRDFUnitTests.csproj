@@ -110,6 +110,7 @@
     <Compile Include="Sparql\DatasetTests.cs" />
     <Compile Include="Sparql\QueryBuilderTests.cs" />
     <Compile Include="Sparql\SetTests.cs" />
+    <Compile Include="Sparql\TriplePatternBuilderTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
