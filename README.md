@@ -62,7 +62,7 @@ to work on new features.
 ### Old Subversion
 
 You can find our old source code in our SVN repository at
-[https://dotnetrdf.svn.sourceforge.net/svnroot/dotnetrdf][108]
+[https://dotnetrdf.svn.sourceforge.net/svnroot/dotnetrdf][106]
 
 Note that the majority of the commit history should be present in our Mercurial repositories as we did a conversion
 of our SVN repository when we moved to Mercurial.  Some commits pre 2010 are missing because our SVN layout
