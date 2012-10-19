@@ -404,7 +404,7 @@ namespace VDS.RDF.Update.Commands
                                 //so we continue anyway
                             }
                         }
-                        g.Assert(insertedTriples);
+                        g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
                     }
                     catch (RdfQueryException)
                     {
@@ -483,7 +483,7 @@ namespace VDS.RDF.Update.Commands
                                     //triple so we continue anyway
                                 }
                             }
-                            h.Assert(insertedTriples);
+                            h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
                         }
                         catch (RdfQueryException)
                         {
