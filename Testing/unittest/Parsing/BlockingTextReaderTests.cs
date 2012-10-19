@@ -92,6 +92,47 @@ namespace VDS.RDF.Test.Parsing
             }
         }
 
+        [TestMethod]
+        public void ParsingTextReaderCreation4()
+        {
+            try
+            {
+                Options.ForceBlockingIO = true;
+
+                File.WriteAllText("ParsingTextReaderCreation4.txt", "ParsingTextReaderCreation1");
+                using (StreamReader stream = new StreamReader("ParsingTextReaderCreation4.txt"))
+                {
+                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    Assert.IsInstanceOfType(reader, typeof(BlockingTextReader));
+                    stream.Close();
+                }
+            }
+            finally
+            {
+                Options.ForceBlockingIO = false;
+            }
+        }
+
+        [TestMethod]
+        public void ParsingTextReaderCreation5()
+        {
+            try
+            {
+                Options.ForceBlockingIO = true;
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    ParsingTextReader reader = ParsingTextReader.Create(stream);
+                    Assert.IsInstanceOfType(reader, typeof(BlockingTextReader));
+                    stream.Close();
+                }
+            }
+            finally
+            {
+                Options.ForceBlockingIO = false;
+            }
+        }
+
         [TestMethod, ExpectedException(typeof(ArgumentNullException))]
         public void ParsingTextReaderBlockingBadInstantiation()
         {

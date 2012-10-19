@@ -69,7 +69,7 @@ namespace VDS.RDF.Parsing
             if (input is StreamReader)
             {
                 Stream s = ((StreamReader)input).BaseStream;
-                if (s is FileStream || s is MemoryStream)
+                if (!Options.ForceBlockingIO && (s is FileStream || s is MemoryStream))
                 {
                     return new NonBlockingTextReader(input, bufferSize);
                 }
@@ -103,7 +103,7 @@ namespace VDS.RDF.Parsing
         /// <param name="bufferSize">Buffer Size</param>
         public static ParsingTextReader Create(Stream input, int bufferSize)
         {
-            if (input is FileStream || input is MemoryStream)
+            if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
             {
                 return CreateNonBlocking(new StreamReader(input), bufferSize);
             }
@@ -146,6 +146,9 @@ namespace VDS.RDF.Parsing
         }
     }
 
+    /// <summary>
+    /// Abstract class representing a text reader that provides buffering on top of another text reader
+    /// </summary>
     public abstract class BufferedTextReader
         : ParsingTextReader
     {
@@ -344,11 +347,11 @@ namespace VDS.RDF.Parsing
     }
 
     /// <summary>
-    /// The BlockingTextReader is an implementation of a <see cref="TextReader">TextReader</see> designed to wrap other readers which may or may not have high latency.
+    /// The BlockingTextReader is an implementation of a <see cref="BufferedTextReader" /> designed to wrap other readers which may or may not have high latency and thus ensures that premature end of input bug is not experienced.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  All methods are defined by using an internal buffer which is filled using the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see>
+    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  This derives from <see cref="BufferedTextReader"/> and ensures the buffer is filled by calling the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see> thus avoiding the scenario where input appears to end prematurely.
     /// </para>
     /// </remarks>
     public sealed class BlockingTextReader 
@@ -402,6 +405,12 @@ namespace VDS.RDF.Parsing
         }
     }
 
+    /// <summary>
+    /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream
+    /// </summary>
+    /// <remarks>
+    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option
+    /// </remarks>
     public sealed class NonBlockingTextReader
         : BufferedTextReader
     {
