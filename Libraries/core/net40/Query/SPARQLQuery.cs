@@ -204,7 +204,7 @@ namespace VDS.RDF.Query
             q._nsmapper = new NamespaceMapper(this._nsmapper);
             q._type = this._type;
             q._specialType = this._specialType;
-            q._vars = new Dictionary<string, SparqlVariable>(this._vars);
+            q._vars = new List<SparqlVariable>(this._vars);
             q._describeVars = new List<IToken>(this._describeVars);
             if(this._rootGraphPattern != null)
                 q._rootGraphPattern = new GraphPattern(this._rootGraphPattern);
