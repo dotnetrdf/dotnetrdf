@@ -247,6 +247,7 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) queryContext.OutputMultiset = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards

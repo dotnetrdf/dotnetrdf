@@ -47,13 +47,14 @@ namespace VDS.RDF.Parsing.Contexts
     /// <summary>
     /// Parser Context for SPARQL Update Parser
     /// </summary>
-    public class SparqlUpdateParserContext : TokenisingParserContext
+    public class SparqlUpdateParserContext
+        : TokenisingParserContext
     {
         private SparqlUpdateCommandSet _commandSet = new SparqlUpdateCommandSet();
         private SparqlQueryParser _queryParser = new SparqlQueryParser();
         private SparqlExpressionParser _exprParser = new SparqlExpressionParser();
         private SparqlPathParser _pathParser = new SparqlPathParser();
-        //private Uri _baseUri;
+        private HashSet<String> _dataBNodes = new HashSet<string>();
         private IEnumerable<ISparqlCustomExpressionFactory> _factories = Enumerable.Empty<ISparqlCustomExpressionFactory>();
 
         /// <summary>
@@ -160,6 +161,17 @@ namespace VDS.RDF.Parsing.Contexts
                 {
                     this._factories = value;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the set of BNodes used in INSERT DATA commands so far
+        /// </summary>
+        public HashSet<String> DataBNodes
+        {
+            get
+            {
+                return this._dataBNodes;
             }
         }
     }

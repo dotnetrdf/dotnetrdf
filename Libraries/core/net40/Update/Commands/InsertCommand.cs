@@ -49,7 +49,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents a SPARQL Update INSERT command
     /// </summary>
-    public class InsertCommand : BaseModificationCommand
+    public class InsertCommand 
+        : BaseModificationCommand
     {
         private GraphPattern _insertPattern, _wherePattern;
 
@@ -224,6 +225,7 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) queryContext.OutputMultiset = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards
