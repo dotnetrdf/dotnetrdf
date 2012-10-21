@@ -135,6 +135,7 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
+    <Compile Include="Query\Builder\PatternItemFactory.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
     <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />

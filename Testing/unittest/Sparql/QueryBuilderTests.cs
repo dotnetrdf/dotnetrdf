@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
@@ -34,12 +35,13 @@ namespace VDS.RDF.Test.Sparql
         [TestMethod]
         public void CanAddTriplePatternsWithTriplePatternBuilder()
         {
-            SparqlQuery q = QueryBuilder
-                .SelectAll()
-                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
-                                 .Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("o")
-                                 .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
-                                 .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
+            IQueryBuilder builder = QueryBuilder.SelectAll();
+            builder.NamespaceMapper.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            var q = builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
+                                            .Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
+                                            .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
+                                            .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
                 .GetExecutableQuery();
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(4, q.RootGraphPattern.TriplePatterns.Count());
@@ -87,7 +89,7 @@ namespace VDS.RDF.Test.Sparql
             // given
             IQueryBuilder builder = QueryBuilder.SelectAll();
             builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(tpb => tpb.Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"));
+                   .Optional(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"));
 
             // when
             var q = builder.GetExecutableQuery();
@@ -123,7 +125,7 @@ namespace VDS.RDF.Test.Sparql
             // given
             IQueryBuilder builder = QueryBuilder.SelectAll();
             builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(tpb => tpb.Subject("s").Predicate(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"))
+                   .Optional(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"))
                    .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
             // when

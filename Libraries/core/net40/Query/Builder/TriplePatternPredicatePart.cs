@@ -19,22 +19,31 @@ namespace VDS.RDF.Query.Builder
 
         public TriplePatternObjectPart Predicate(string variableName)
         {
-            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, new VariablePattern(variableName));
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+            return CreateTriplePatternObjectPart(predicate);
         }
 
-        public TriplePatternObjectPart Predicate(Uri predicateUri)
+        public TriplePatternObjectPart PredicateUri(Uri predicateUri)
         {
-            throw new NotImplementedException();
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);
+            return CreateTriplePatternObjectPart(predicate);
         }
 
         public TriplePatternObjectPart PredicateUri(string predicateQName)
         {
-            throw new NotImplementedException();
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName);
+            return CreateTriplePatternObjectPart(predicate);
         }
 
         public TriplePatternObjectPart Predicate(INode predicateNode)
         {
-            throw new NotImplementedException();
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateNode);
+            return CreateTriplePatternObjectPart(predicate);
+        }
+
+        private TriplePatternObjectPart CreateTriplePatternObjectPart(PatternItem predicate)
+        {
+            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate);
         }
     }
 }

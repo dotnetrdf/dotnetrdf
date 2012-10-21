@@ -25,5 +25,7 @@ namespace VDS.RDF.Query.Builder
         IQueryBuilder Offset(int offset);
         IQueryBuilder Slice(int limit, int offset);
         SparqlQuery GetExecutableQuery();
+
+        INamespaceMapper NamespaceMapper { get; }
     }
 }

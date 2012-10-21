@@ -27,7 +27,9 @@ namespace VDS.RDF.Query.Builder
 
         public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
         {
-            throw new System.NotImplementedException();
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem<TNode>(@object);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
         }
 
         public ITriplePatternBuilder Object(INode objectNode)

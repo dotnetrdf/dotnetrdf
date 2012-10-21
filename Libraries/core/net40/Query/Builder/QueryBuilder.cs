@@ -23,6 +23,7 @@ namespace VDS.RDF.Query.Builder
         private QueryBuilder(SparqlQuery query)
         {
             this._query = query;
+            this.NamespaceMapper = new NamespaceMapper();
         }
 
         /// <summary>
@@ -134,7 +135,7 @@ namespace VDS.RDF.Query.Builder
 
         public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            var builder = new TriplePatternBuilder();
+            var builder = new TriplePatternBuilder(NamespaceMapper);
             buildTriplePatterns(builder);
             return Where(builder.Patterns);
         }
@@ -183,7 +184,7 @@ namespace VDS.RDF.Query.Builder
 
         public IQueryBuilder Optional(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            var builder = new TriplePatternBuilder();
+            var builder = new TriplePatternBuilder(NamespaceMapper);
             buildTriplePatterns(builder);
             return Optional(builder.Patterns);
         }
@@ -270,5 +271,7 @@ namespace VDS.RDF.Query.Builder
                     throw new NotSupportedException("Unknown Node types are not usable in SPARQL queries");
             }
         }
+
+        public INamespaceMapper NamespaceMapper { get; set; }
     }
 }
