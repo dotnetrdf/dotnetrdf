@@ -36,3 +36,6 @@ Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj
 Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj
 Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj
 Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj
+
+#nuget
+packages/**
