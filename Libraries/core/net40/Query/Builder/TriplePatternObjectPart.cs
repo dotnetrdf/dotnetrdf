@@ -45,5 +45,26 @@ namespace VDS.RDF.Query.Builder
             _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
             return _triplePatternBuilder;
         }
+
+        public ITriplePatternBuilder ObjectLiteral(object literal)
+        {
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
+        }
+
+        public ITriplePatternBuilder ObjectLiteral(object literal, string langSpec)
+        {
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, langSpec);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
+        }
+
+        public ITriplePatternBuilder ObjectLiteral(object literal, Uri datatype)
+        {
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, datatype);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 
@@ -252,6 +253,119 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual("p", pattern.Predicate.VariableName);
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingIntegerLiteralObject()
+        {
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(42);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingTypedLiteralObject()
+        {
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(42, new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
+            Assert.AreEqual(new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), ((dynamic)pattern.Object).Node.DataType);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag()
+        {
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(42, "pl-PL");
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingLiteralObjectWithLanuageTag2()
+        {
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(42, "pl-PL");
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.AreEqual("pl-PL", ((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingDateLiteralObject()
+        {
+            // given
+            var dateTime = new DateTime(2012, 10, 13);
+
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(dateTime);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingDateTimeLiteralObject()
+        {
+            // given
+            var dateTime = new DateTime(2012, 10, 13, 15, 45, 15);
+
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(dateTime);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingDateTimeOffsetLiteralObject()
+        {
+            // given
+            var dateTime = new DateTimeOffset(2012, 10, 13, 20, 35, 10, new TimeSpan(0, 1, 30, 0));
+
+            // when
+            _builder.Subject("s").Predicate("p").ObjectLiteral(dateTime);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual("2012-10-13T20:35:10+01:30", ((dynamic)pattern.Object).Node.Value);
+            Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
+            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
         }
     }
 }
