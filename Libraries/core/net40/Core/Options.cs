@@ -94,6 +94,7 @@ namespace VDS.RDF
         private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
+        private static bool _forceBlockingIO = false;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
@@ -409,6 +410,24 @@ namespace VDS.RDF
             set
             {
                 _utf8Bom = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets whether Blocking IO should be forced
+        /// </summary>
+        /// <remarks>
+        /// Blocking IO refers to how the parsing sub-system reads in inputs, it will use Blocking/Non-Blocking IO depending on the input source.  In most cases the detection of which to use should never cause an issue but theoretically in some rare cases using non-blocking IO may lead to incorrect parsing errors being thrown (premature end of input detected), if you suspect this is the case try enabling this setting.  If you still experience this problem with this setting enabled then there is some other issue with your input.
+        /// </remarks>
+        public static bool ForceBlockingIO
+        {
+            get
+            {
+                return _forceBlockingIO;
+            }
+            set
+            {
+                _forceBlockingIO = value;
             }
         }
 

@@ -744,6 +744,33 @@ namespace VDS.RDF.Parsing
             subContext.CheckBlankNodeScope = false;
             GraphPattern gp = context.QueryParser.TryParseGraphPattern(subContext, context.Tokens.LastTokenType != Token.LEFTCURLYBRACKET);
 
+            //Validate use of Blank Nodes in INSERT DATA, same BNode MAY be used within different graph patterns in a single command
+            //though each represents a fresh blank node
+            //The same BNode MAY NOT be used across separate commands
+            if (context.DataBNodes.Count == 0)
+            {
+                //First INSERT DATA so simply register all the BNodes
+                foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")))
+                {
+                    context.DataBNodes.Add(var);
+                }
+            }
+            else
+            {
+                //Some INSERT DATA commands have already occurred, validate that newly introduced variables are not already present
+                foreach (String var in gp.Variables.Where(v => v.StartsWith("_:")).Distinct())
+                {
+                    if (context.DataBNodes.Contains(var))
+                    {
+                        throw new RdfParseException("An INSERT DATA command used the BNode " + var + " which has been used in previous INSERT DATA commands and is not permitted per Section 19.6 of the specification");
+                    }
+                    else
+                    {
+                        context.DataBNodes.Add(var);
+                    }
+                }
+            }
+
             //Validate that the Graph Pattern is simple
             //Check it doesn't contain anything other than Triple Patterns or if it does it just contains a single GRAPH Pattern
             if (gp.IsFiltered)

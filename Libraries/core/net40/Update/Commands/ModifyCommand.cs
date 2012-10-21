@@ -49,7 +49,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents the SPARQL Update INSERT/DELETE command
     /// </summary>
-    public class ModifyCommand : BaseModificationCommand
+    public class ModifyCommand 
+        : BaseModificationCommand
     {
         private GraphPattern _deletePattern, _insertPattern, _wherePattern;
 
@@ -254,6 +255,7 @@ namespace VDS.RDF.Update.Commands
                     datasetOk = true;
                 }
                 BaseMultiset results = queryContext.Evaluate(where);
+                if (results is IdentityMultiset) queryContext.OutputMultiset = new SingletonMultiset(results.Variables);
                 if (this.UsingUris.Any())
                 {
                     //If there are USING URIs reset the Active Graph afterwards
@@ -402,7 +404,7 @@ namespace VDS.RDF.Update.Commands
                                 //so we continue anyway
                             }
                         }
-                        g.Assert(insertedTriples);
+                        g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
                     }
                     catch (RdfQueryException)
                     {
@@ -481,7 +483,7 @@ namespace VDS.RDF.Update.Commands
                                     //triple so we continue anyway
                                 }
                             }
-                            h.Assert(insertedTriples);
+                            h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
                         }
                         catch (RdfQueryException)
                         {

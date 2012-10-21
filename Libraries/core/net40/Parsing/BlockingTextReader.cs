@@ -42,32 +42,133 @@ using System.Text;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// The BlockingTextReader is an implementation of a <see cref="TextReader">TextReader</see> designed to wrap other readers which may or may not have high latency.
+    /// An extended <see cref="TextReader"/> for use in parsing
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  All methods are defined by using an internal buffer which is filled using the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see>
-    /// </para>
-    /// </remarks>
-    public sealed class BlockingTextReader : TextReader
+    public abstract class ParsingTextReader
+        : TextReader
     {
-        private char[] _buffer;
-        private int _pos = -1;
-        private int _bufferAmount = -1;
-        private bool _finished = false;
-        private TextReader _reader;
+        /// <summary>
+        /// Gets whether the end of the stream has been reached
+        /// </summary>
+        public abstract bool EndOfStream
+        {
+            get;
+        }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Text Reader to wrap</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        /// <remarks>
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// </remarks>
+        public static ParsingTextReader Create(TextReader input, int bufferSize)
+        {
+            if (input is ParsingTextReader) return (ParsingTextReader)input;
+            if (input is StreamReader)
+            {
+                Stream s = ((StreamReader)input).BaseStream;
+                if (!Options.ForceBlockingIO && (s is FileStream || s is MemoryStream))
+                {
+                    return new NonBlockingTextReader(input, bufferSize);
+                }
+                else
+                {
+                    return new BlockingTextReader(input, bufferSize);
+                }
+            }
+            else
+            {
+                return new BlockingTextReader(input, bufferSize);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Text Reader to wrap</param>
+        /// <remarks>
+        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
+        /// </remarks>
+        public static ParsingTextReader Create(TextReader input)
+        {
+            return Create(input, BlockingTextReader.DefaultBufferSize);
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        public static ParsingTextReader Create(Stream input, int bufferSize)
+        {
+            if (!Options.ForceBlockingIO && (input is FileStream || input is MemoryStream))
+            {
+                return CreateNonBlocking(new StreamReader(input), bufferSize);
+            }
+            else
+            {
+                return CreateBlocking(new StreamReader(input), bufferSize);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        public static ParsingTextReader Create(Stream input)
+        {
+            return Create(input, BlockingTextReader.DefaultBufferSize);
+        }
+
+        public static BlockingTextReader CreateBlocking(TextReader input)
+        {
+            return CreateBlocking(input, BlockingTextReader.DefaultBufferSize);
+        }
+
+        public static BlockingTextReader CreateBlocking(TextReader input, int bufferSize)
+        {
+            if (input is BlockingTextReader) return (BlockingTextReader)input;
+            return new BlockingTextReader(input, bufferSize);
+        }
+
+        public static NonBlockingTextReader CreateNonBlocking(TextReader input)
+        {
+            if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
+            return new NonBlockingTextReader(input);
+        }
+
+        public static NonBlockingTextReader CreateNonBlocking(TextReader input, int bufferSize)
+        {
+            if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
+            return new NonBlockingTextReader(input, bufferSize);
+        }
+    }
+
+    /// <summary>
+    /// Abstract class representing a text reader that provides buffering on top of another text reader
+    /// </summary>
+    public abstract class BufferedTextReader
+        : ParsingTextReader
+    {
         /// <summary>
         /// Default Buffer Size
         /// </summary>
         public const int DefaultBufferSize = 1024;
 
+        protected char[] _buffer;
+        protected int _pos = -1;
+        protected int _bufferAmount = -1;
+        protected bool _finished = false;
+        protected readonly TextReader _reader;
+
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Creates a buffered reader
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        private BlockingTextReader(TextReader reader, int bufferSize)
+        /// <param name="reader"></param>
+        /// <param name="bufferSize"></param>
+        protected BufferedTextReader(TextReader reader, int bufferSize)
         {
             if (reader == null) throw new ArgumentNullException("reader", "Cannot read from a null TextReader");
             if (bufferSize < 1) throw new ArgumentException("bufferSize must be >= 1", "bufferSize");
@@ -76,91 +177,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
+        /// Requests that the buffer be filled
         /// </summary>
-        /// <param name="reader">Text Reader to wrap</param>
-        private BlockingTextReader(TextReader reader)
-            : this(reader, DefaultBufferSize) { }
+        protected abstract void FillBuffer();
 
         /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        private BlockingTextReader(Stream input, int bufferSize)
-            : this(new StreamReader(input), bufferSize) { }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        private BlockingTextReader(Stream input)
-            : this(new StreamReader(input)) { }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Text Reader to wrap</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
-        /// </remarks>
-        public static BlockingTextReader Create(TextReader input, int bufferSize)
-        {
-            if (input is BlockingTextReader) return (BlockingTextReader)input;
-            return new BlockingTextReader(input, bufferSize);
-        }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Text Reader to wrap</param>
-        /// <remarks>
-        /// If the given <see cref="TextReader">TextReader</see> is already a Blocking Text Reader this is a no-op
-        /// </remarks>
-        public static BlockingTextReader Create(TextReader input)
-        {
-            return Create(input, DefaultBufferSize);
-        }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer Size</param>
-        public static BlockingTextReader Create(Stream input, int bufferSize)
-        {
-            return Create(new StreamReader(input), bufferSize);
-        }
-
-        /// <summary>
-        /// Creates a new Blocking Text Reader
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        public static BlockingTextReader Create(Stream input)
-        {
-            return Create(input, DefaultBufferSize);
-        }
-
-        /// <summary>
-        /// Fills the Buffer
-        /// </summary>
-        private void FillBuffer()
-        {
-            this._pos = -1;
-            if (this._finished)
-            {
-                this._bufferAmount = 0;
-            }
-            else
-            {
-                this._bufferAmount = this._reader.ReadBlock(this._buffer, 0, this._buffer.Length);
-                if (this._bufferAmount == 0 || this._bufferAmount < this._buffer.Length) this._finished = true;
-            }
-        }
-
-        /// <summary>
-        /// Reads a sequence of characters from the underlying Text Reader in a blocking way
+        /// Reads a sequence of characters from the buffer in a blocking way
         /// </summary>
         /// <param name="buffer">Buffer</param>
         /// <param name="index">Index at which to start writing to the Buffer</param>
@@ -236,15 +258,12 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Reads a sequence of characters from the underlying Text Reader
+        /// Reads a sequence of characters from the buffer
         /// </summary>
         /// <param name="buffer">Buffer</param>
         /// <param name="index">Index at which to start writing to the Buffer</param>
         /// <param name="count">Number of characters to read</param>
         /// <returns>Number of characters read</returns>
-        /// <remarks>
-        /// Since this reader must always read in a blocking fashion this is equivalent to calling <see cref="BlockingTextReader.ReadBlock">ReadBlock()</see>
-        /// </remarks>
         public override int Read(char[] buffer, int index, int count)
         {
             return this.ReadBlock(buffer, index, count);
@@ -298,7 +317,7 @@ namespace VDS.RDF.Parsing
         /// <summary>
         /// Gets whether the end of the input has been reached
         /// </summary>
-        public bool EndOfStream
+        public override bool EndOfStream
         {
             get
             {
@@ -324,6 +343,101 @@ namespace VDS.RDF.Parsing
             this.Close();
             this._reader.Dispose();
             base.Dispose(disposing);
+        }
+    }
+
+    /// <summary>
+    /// The BlockingTextReader is an implementation of a <see cref="BufferedTextReader" /> designed to wrap other readers which may or may not have high latency and thus ensures that premature end of input bug is not experienced.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This is designed to avoid premature detection of end of input when the input has high latency and the consumer tries to read from the input faster than it can return data.  This derives from <see cref="BufferedTextReader"/> and ensures the buffer is filled by calling the <see cref="TextReader.ReadBlock">ReadBlock()</see> method of the underlying <see cref="TextReader">TextReader</see> thus avoiding the scenario where input appears to end prematurely.
+    /// </para>
+    /// </remarks>
+    public sealed class BlockingTextReader 
+        : BufferedTextReader
+    {
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        internal BlockingTextReader(TextReader reader, int bufferSize)
+            : base(reader, bufferSize) { }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="reader">Text Reader to wrap</param>
+        internal BlockingTextReader(TextReader reader)
+            : this(reader, DefaultBufferSize) { }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        internal BlockingTextReader(Stream input, int bufferSize)
+            : this(new StreamReader(input), bufferSize) { }
+
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input Stream</param>
+        internal BlockingTextReader(Stream input)
+            : this(new StreamReader(input)) { }
+
+        /// <summary>
+        /// Fills the Buffer
+        /// </summary>
+        protected override void FillBuffer()
+        {
+            this._pos = -1;
+            if (this._finished)
+            {
+                this._bufferAmount = 0;
+            }
+            else
+            {
+                this._bufferAmount = this._reader.ReadBlock(this._buffer, 0, this._buffer.Length);
+                if (this._bufferAmount == 0 || this._bufferAmount < this._buffer.Length) this._finished = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// The NonBlockingTextReader is an implementation of a <see cref="BufferedTextReader"/> designed to wrap other readers where latency is known not to be a problem and we don't expect to ever have an empty read occur before the actual end of the stream
+    /// </summary>
+    /// <remarks>
+    /// Currently we only use this for file and network streams, you can force this to never be used with the global static <see cref="Options.ForceBlockingIO"/> option
+    /// </remarks>
+    public sealed class NonBlockingTextReader
+        : BufferedTextReader
+    {
+        internal NonBlockingTextReader(TextReader input, int bufferSize)
+            : base(input, bufferSize) { }
+
+        internal NonBlockingTextReader(TextReader input)
+            : this(input, DefaultBufferSize) { }
+
+        internal NonBlockingTextReader(Stream input, int bufferSize)
+            : this(new StreamReader(input), bufferSize) { }
+
+        internal NonBlockingTextReader(Stream input)
+            : this(new StreamReader(input)) { }
+
+        protected override void FillBuffer()
+        {
+            this._pos = -1;
+            if (this._finished)
+            {
+                this._bufferAmount = 0;
+            }
+            else
+            {
+                this._bufferAmount = this._reader.Read(this._buffer, 0, this._buffer.Length);
+                if (this._bufferAmount == 0) this._finished = true;
+            }
         }
     }
 }

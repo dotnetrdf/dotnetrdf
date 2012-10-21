@@ -68,7 +68,7 @@ namespace VDS.RDF.Parsing.Tokens
     /// Abstract Base Class for Tokeniser which handles the Position tracking
     /// </summary>
     public abstract class BaseTokeniser 
-: ITokeniser
+        : ITokeniser
     {
         private TextReader _reader;
         private StringBuilder _output;
