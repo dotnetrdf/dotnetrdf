@@ -119,7 +119,7 @@ namespace VDS.RDF.Query.Builder
         {
             foreach (Triple t in ts)
             {
-                Where(tpb => tpb.Subject(t.Subject).Predicate(t.Predicate).Object(t.Object));
+                Where(tpb => tpb.Subject(t.Subject).PredicateUri((IUriNode) t.Predicate).Object(t.Object));
             }
             return this;
         }

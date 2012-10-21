@@ -39,18 +39,18 @@ namespace VDS.RDF.Query.Builder
             return new BlankNodePattern(blankNodeIdentifier);
         }
 
-        public PatternItem CreatePatternItem<TNode>(string patternString) where TNode : INode
+        public PatternItem CreatePatternItem(Type nodeType, string patternString)
         {
-            if(typeof(TNode) == typeof(IUriNode))
+            if(nodeType == typeof(IUriNode))
             {
                 return CreateNodeMatchPattern(patternString);
             }
-            if(typeof(TNode) == typeof(IBlankNode))
+            if(nodeType == typeof(IBlankNode))
             {
                 return CreateBlankNodeMatchPattern(patternString);
             }
 
-            throw new ArgumentException(string.Format("Invalid node type {0}", typeof(TNode)));
+            throw new ArgumentException(string.Format("Invalid node type {0}", nodeType));
         }
     }
 }

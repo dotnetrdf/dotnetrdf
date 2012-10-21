@@ -123,6 +123,23 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
+        public void CanCreateTriplePatternsUsingUriForObject()
+        {
+            // when
+            _builder.Subject("s").Predicate("p").Object(new Uri("http://xmlns.com/foaf/0.1/Person"));
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Predicate is VariablePattern);
+            Assert.AreEqual("p", pattern.Predicate.VariableName);
+            Assert.IsTrue(pattern.Subject is VariablePattern);
+            Assert.AreEqual("s", pattern.Subject.VariableName);
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreEqual(new Uri("http://xmlns.com/foaf/0.1/Person"), ((dynamic)pattern.Object).Node.Uri);
+        }
+
+        [TestMethod]
         public void CanCreateTriplePatternsUsingQNameForObject()
         {
             // given
@@ -175,6 +192,66 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual("p", pattern.Predicate.VariableName);
             Assert.IsTrue(pattern.Object is VariablePattern);
             Assert.AreEqual("o", pattern.Object.VariableName);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingINodeForSubject()
+        {
+            // given
+            var node = new NodeFactory().CreateBlankNode("bnode");
+
+            // when
+            _builder.Subject(node).Predicate("p").Object("o");
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Subject is NodeMatchPattern);
+            Assert.AreSame(node, ((NodeMatchPattern)pattern.Subject).Node);
+            Assert.IsTrue(pattern.Predicate is VariablePattern);
+            Assert.AreEqual("p", pattern.Predicate.VariableName);
+            Assert.IsTrue(pattern.Object is VariablePattern);
+            Assert.AreEqual("o", pattern.Object.VariableName);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingIUriNodeForPredicate()
+        {
+            // given
+            var node = new NodeFactory().CreateUriNode(new Uri("http://www.example.com/predicate"));
+
+            // when
+            _builder.Subject("s").PredicateUri(node).Object("o");
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Subject is VariablePattern);
+            Assert.AreEqual("s", pattern.Subject.VariableName);
+            Assert.IsTrue(pattern.Predicate is NodeMatchPattern);
+            Assert.AreSame(node, ((NodeMatchPattern)pattern.Predicate).Node);
+            Assert.IsTrue(pattern.Object is VariablePattern);
+            Assert.AreEqual("o", pattern.Object.VariableName);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingINodeForObject()
+        {
+            // given
+            var node = new NodeFactory().CreateUriNode(new Uri("http://www.example.com/object"));
+
+            // when
+            _builder.Subject("s").Predicate("p").Object(node);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            var pattern = _builder.Patterns.Single();
+            Assert.IsTrue(pattern.Object is NodeMatchPattern);
+            Assert.AreSame(node, ((NodeMatchPattern)pattern.Object).Node);
+            Assert.IsTrue(pattern.Predicate is VariablePattern);
+            Assert.AreEqual("p", pattern.Predicate.VariableName);
+            Assert.IsTrue(pattern.Subject is VariablePattern);
+            Assert.AreEqual("s", pattern.Subject.VariableName);
         }
     }
 }

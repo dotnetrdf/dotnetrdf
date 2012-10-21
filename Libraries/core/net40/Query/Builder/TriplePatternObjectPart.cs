@@ -27,14 +27,23 @@ namespace VDS.RDF.Query.Builder
 
         public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
         {
-            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem<TNode>(@object);
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object);
             _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
             return _triplePatternBuilder;
         }
 
         public ITriplePatternBuilder Object(INode objectNode)
         {
-            throw new NotImplementedException();
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
+        }
+
+        public ITriplePatternBuilder Object(Uri objectUri)
+        {
+            PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectUri);
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
         }
     }
 }

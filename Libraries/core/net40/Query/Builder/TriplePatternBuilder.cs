@@ -17,17 +17,17 @@ namespace VDS.RDF.Query.Builder
 
         public TriplePatternPredicatePart Subject(string subjectVariableName)
         {
-            return new TriplePatternPredicatePart(this, new VariablePattern(subjectVariableName));
+            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateVariablePattern(subjectVariableName));
         }
 
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreatePatternItem<TNode>(subject));
+            return new TriplePatternPredicatePart(this, PatternItemFactory.CreatePatternItem(typeof(TNode), subject));
         }
 
         public TriplePatternPredicatePart Subject(INode subjectNode)
         {
-            throw new NotImplementedException();
+            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subjectNode));
         }
 
         public TriplePattern[] Patterns
