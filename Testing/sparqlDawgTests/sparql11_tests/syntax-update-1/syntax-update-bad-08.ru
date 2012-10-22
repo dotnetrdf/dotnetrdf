@@ -1,1 +1,4 @@
-INSERT WHERE { ?s ?p ?o }
+# Too many separators
+CREATE GRAPH <g>
+;;
+LOAD <remote> INTO GRAPH <g>

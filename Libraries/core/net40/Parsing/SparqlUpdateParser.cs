@@ -611,9 +611,9 @@ namespace VDS.RDF.Parsing
             }
             else if (gp.HasChildGraphPatterns)
             {
-                if (!gp.ChildGraphPatterns.All(p => p.IsGraph || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion)))
+                if (!gp.ChildGraphPatterns.All(p => (p.IsGraph && p.GraphSpecifier.TokenType != Token.VARIABLE) || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion && !p.IsGraph)))
                 {
-                    throw new RdfParseException("A DELETE DATA Command may only contain a combination of Triple Patterns and GRAPH clauses");
+                    throw new RdfParseException("A DELETE DATA Command may only contain a combination of Triple Patterns and GRAPH clauses, GRAPH clauses must specify a Graph URI");
                 }
                 else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
                 {
@@ -787,9 +787,9 @@ namespace VDS.RDF.Parsing
             }
             else if (gp.HasChildGraphPatterns)
             {
-                if (!gp.ChildGraphPatterns.All(p => p.IsGraph || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion)))
+                if (!gp.ChildGraphPatterns.All(p => (p.IsGraph && p.GraphSpecifier.TokenType != Token.VARIABLE) || (!p.IsExists && !p.IsMinus && !p.IsNotExists && !p.IsOptional && !p.IsOptional && !p.IsService && !p.IsSubQuery && !p.IsUnion && !p.IsGraph)))
                 {
-                    throw new RdfParseException("An INSERT DATA Command may only contain a combination of Triple Patterns and GRAPH clauses");
+                    throw new RdfParseException("An INSERT DATA Command may only contain a combination of Triple Patterns and GRAPH clauses, GRAPH clauses must specify a Graph URI");
                 }
                 else if (gp.ChildGraphPatterns.Any(p => p.HasChildGraphPatterns))
                 {

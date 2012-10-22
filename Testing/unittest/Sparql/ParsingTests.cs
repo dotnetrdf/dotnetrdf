@@ -43,6 +43,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Update;
 
 namespace VDS.RDF.Test.Sparql
 {
@@ -50,6 +51,7 @@ namespace VDS.RDF.Test.Sparql
     public class ParsingTests
     {
         private SparqlQueryParser _parser = new SparqlQueryParser();
+        private SparqlUpdateParser _updateParser = new SparqlUpdateParser();
 
         private void TestQuery(String query)
         {
@@ -217,6 +219,20 @@ SELECT ?X WHERE
                 VariableTerm varTerm = new VariableTerm(name);
                 Assert.AreEqual("var", varTerm.Variables.First());
             }
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingInsertDataWithGraphVar()
+        {
+            String update = "INSERT DATA { GRAPH ?g { } }";
+            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void SparqlParsingDeleteDataWithGraphVar()
+        {
+            String update = "DELETE DATA { GRAPH ?g { } }";
+            SparqlUpdateCommandSet commands = this._updateParser.ParseFromString(update);
         }
     }
 }

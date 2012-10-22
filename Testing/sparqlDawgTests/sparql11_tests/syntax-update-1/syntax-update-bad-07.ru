@@ -1,6 +1,3 @@
-DELETE DATA { 
-  GRAPH <G> { 
-    <s> <p> <o> .
-    GRAPH <G1> { <s> <p1> 'o1' }
-  }
-}
+# No separator
+CREATE GRAPH <g>
+LOAD <remote> INTO GRAPH <g>

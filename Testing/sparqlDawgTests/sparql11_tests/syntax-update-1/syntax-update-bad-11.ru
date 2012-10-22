@@ -1,4 +1,2 @@
-CREATE GRAPH <g>
-;
-LOAD <remote> INTO GRAPH <g>
-;;
+# BNode in DELETE template
+DELETE { <s> <p> [] } WHERE { ?x <p> <o> }

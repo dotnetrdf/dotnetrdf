@@ -14,7 +14,6 @@ dotNetRDF*.zip
 
 # Files not to version control
 *.suo
-*.vsmdi
 *.temp
 *.user
 temp*.txt
