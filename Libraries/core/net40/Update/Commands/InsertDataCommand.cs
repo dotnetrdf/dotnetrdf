@@ -222,7 +222,7 @@ namespace VDS.RDF.Update.Commands
 
                 //Insert the actual Triples
                 INode subj, pred, obj;
-                ConstructContext constructContext = new ConstructContext(target, null, true);
+                ConstructContext constructContext = new ConstructContext(target, null, false);
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
                     subj = p.Subject.Construct(constructContext);

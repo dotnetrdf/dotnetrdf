@@ -470,7 +470,7 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
 
         [TestMethod]
         [Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
-        public void SparqlWithMultipleBinds()
+        public void SparqlBindMultiple()
         {
             const string sourceGraphTurtle = @"<urn:cell:cell23>
         <urn:coords:X> 2 ;
