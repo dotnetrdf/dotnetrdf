@@ -191,7 +191,7 @@ namespace VDS.RDF
                 return false;
             }
 
-            return a.InternalID.Equals(b.InternalID) && ReferenceEquals(a.Graph, b.Graph);
+            return a.FactoryID.Equals(b.FactoryID) && a.AnonID.Equals(b.AnonID);
         }
 
         /// <summary>

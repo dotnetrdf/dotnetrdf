@@ -21,7 +21,7 @@ Changed
  - Fixed a bug in the BNODE() function
  - Fixed a bug in Extend() that could occur when many Extends were nested together
  - Fixed an intermittent race condition in the implementation of parallel LeftJoin()
- - Fixed a bug in the evaluation of some complex GROUP BY statements
+ - Fixed several bugs in the evaluation of some complex GROUP BY statements
  - Fixed a bug in the string representation of CountDistinctAggregate
 
 - Dependencies

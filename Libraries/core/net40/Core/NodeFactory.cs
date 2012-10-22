@@ -40,7 +40,7 @@ namespace VDS.RDF
     /// <summary>
     /// A default implementation of a Node Factory which generates Nodes unrelated to Graphs (wherever possible we suggest using a Graph based implementation instead)
     /// </summary>
-    public class NodeFactory 
+    public class NodeFactory
         : INodeFactory
     {
         private BlankNodeMapper _bnodeMap = new BlankNodeMapper();

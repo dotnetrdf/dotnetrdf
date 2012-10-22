@@ -54,8 +54,7 @@ namespace VDS.RDF
     public abstract class BaseBlankNode
         : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>, IValuedNode
     {
-        private String _id;
-        private bool _autoassigned = false;
+        private Guid _id, _factoryID;
 
         /// <summary>
         /// Internal Only Constructor for Blank Nodes
@@ -64,8 +63,8 @@ namespace VDS.RDF
         protected internal BaseBlankNode(IGraph g)
             : base(g, NodeType.Blank)
         {
-            this._id = this._graph.GetNextBlankNodeID();
-            this._autoassigned = true;
+            this._id = this._graph.GetNextAnonID();
+            this._factoryID = this._graph.FactoryID;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -76,6 +75,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
         /// <param name="nodeId">Custom Node ID to use</param>
+        [Obsolete("Creating Blank Nodes with user provided ID's is no longer supported", true)]
         protected internal BaseBlankNode(IGraph g, String nodeId)
             : base(g, NodeType.Blank)
         {
@@ -93,8 +93,8 @@ namespace VDS.RDF
         protected internal BaseBlankNode(INodeFactory factory)
             : base(null, NodeType.Blank)
         {
-            this._id = factory.GetNextBlankNodeID();
-            this._autoassigned = true;
+            this._id = factory.GetNextAnonID();
+            this._factoryID = factory.FactoryID;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -117,7 +117,8 @@ namespace VDS.RDF
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
             : base(null, NodeType.Blank)
         {
-            this._id = info.GetString("id");
+            this._id = (Guid)info.GetValue("id", typeof(Guid));
+            this._factoryID = (Guid)info.GetValue("factory", typeof(Guid));
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -131,22 +132,12 @@ namespace VDS.RDF
         /// <remarks>
         /// Usually automatically assigned and of the form autosXXX where XXX is some number.  If an RDF document contains a Blank Node ID of this form that clashes with an existing auto-assigned ID it will be automatically remapped by the Graph using the <see cref="BlankNodeMapper">BlankNodeMapper</see> when it is created.
         /// </remarks>
+        [Obsolete("Obsolete, use the AnonID property instead", true)]
         public String InternalID
         {
             get
             {
                 return this._id;
-            }
-        }
-
-        /// <summary>
-        /// Indicates whether this Blank Node had its ID assigned for it by the Graph
-        /// </summary>
-        public bool HasAutoAssignedID
-        {
-            get
-            {
-                return this._autoassigned;
             }
         }
 
@@ -181,7 +172,7 @@ namespace VDS.RDF
         /// <param name="other">Object to compare with the Blank Node</param>
         /// <returns></returns>
         /// <remarks>
-        /// Blank Nodes are considered equal if their internal IDs match precisely and they originate from the same Graph
+        /// Blank Nodes are considered equal if their Anon IDs match precisely and they originate from the same Factory
         /// </remarks>
         public override bool Equals(INode other)
         {
@@ -422,6 +413,7 @@ namespace VDS.RDF
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("id", this._id);
+            info.AddValue("factory", this._factoryID);
         }
 
         #endregion
@@ -434,7 +426,12 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._id = reader.ReadElementContentAsString();
+            reader.MoveToAttribute("id");
+            this._id = Guid.Parse(reader.ReadElementContentAsString());
+            reader.MoveToAttribute("factory");
+            this._factoryID = Guid.Parse(reader.ReadElementContentAsString());
+            reader.MoveToElement();
+            reader.Read();
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
@@ -445,7 +442,8 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteString(this._id);
+            writer.WriteAttributeString("id", this._id.ToString());
+            writer.WriteAttributeString("factory", this._factoryID.ToString());
         }
 
         #endregion
@@ -572,6 +570,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
         /// <param name="id">Custom Node ID to use</param>
+        [Obsolete("Creating Blank Nodes from user provided IDs is no longer supported", true)]
         protected internal BlankNode(IGraph g, String id)
             : base(g, id) { }
 
