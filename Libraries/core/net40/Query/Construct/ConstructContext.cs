@@ -158,7 +158,7 @@ namespace VDS.RDF.Query.Construct
             }
             else if (this._s != null)
             {
-                temp = new BlankNode(this._g, id.Substring(2) + "-" + this._s.ID);
+                temp = new BlankNode(this._g, id.Substring(2) + this._s.ID);
             }
             else
             {
