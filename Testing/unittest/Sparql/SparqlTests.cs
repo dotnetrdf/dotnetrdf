@@ -199,8 +199,8 @@ where {
                 }
                 Console.WriteLine();
 
-            } 
-            finally 
+            }
+            finally
             {
                 Options.HttpDebugging = false;
             }
@@ -428,19 +428,19 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
         [TestMethod]
         public void SparqlBNodeIDsInResults()
         {
-                SparqlXmlParser xmlparser = new SparqlXmlParser();
-                SparqlResultSet results = new SparqlResultSet();
-                xmlparser.Load(results, "bnodes.srx");
+            SparqlXmlParser xmlparser = new SparqlXmlParser();
+            SparqlResultSet results = new SparqlResultSet();
+            xmlparser.Load(results, "bnodes.srx");
 
-                TestTools.ShowResults(results);
-                Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+            TestTools.ShowResults(results);
+            Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
 
-                SparqlJsonParser jsonparser = new SparqlJsonParser();
-                results = new SparqlResultSet();
-                jsonparser.Load(results, "bnodes.json");
+            SparqlJsonParser jsonparser = new SparqlJsonParser();
+            results = new SparqlResultSet();
+            jsonparser.Load(results, "bnodes.json");
 
-                TestTools.ShowResults(results);
-                Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
+            TestTools.ShowResults(results);
+            Assert.AreEqual(results.Results.Distinct().Count(), 1, "All Results should be the same as they should all generate same BNode");
         }
 
         [TestMethod]
@@ -465,6 +465,60 @@ SELECT * WHERE {?s rdfs:label ?label . ?label bif:contains " + "\"London\" } LIM
             else
             {
                 Assert.Fail("Query should have returned a Result Set");
+            }
+        }
+
+        [TestMethod]
+        [Description("Test that using BIND has the exact same result every time a query is executed, which was not the case with release 0.7.2")]
+        public void SparqlWithMultipleBinds()
+        {
+            const string sourceGraphTurtle = @"<urn:cell:cell23>
+        <urn:coords:X> 2 ;
+        <urn:coords:Y> 3 .
+
+<urn:cell:cell33>
+        <urn:coords:X> 3 ;
+        <urn:coords:Y> 3 .
+
+<urn:cell:cell34>
+        <urn:coords:X> 3 ;
+        <urn:coords:Y> 4 .";
+            const string query = @"PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+CONSTRUCT
+{
+   ?newCell <urn:cell:neighbourOf> ?cell .
+   ?newCell <urn:coords:X> ?newX .
+   ?newCell <urn:coords:Y> ?newY .
+}
+WHERE
+{
+    ?cell <urn:coords:X> ?x .
+    ?cell <urn:coords:Y> ?y .
+    BIND(1 + ?x as ?newX) .
+    BIND(1 + ?y as ?newY) .
+    BIND(IRI(fn:concat(""urn:cell:cell"", str(1 + ?x), str(1 + ?y))) as
+?newCell) .
+}";
+            const string expectedGraphTurtle = @"<urn:cell:cell34>       <urn:cell:neighbourOf>  <urn:cell:cell23> .
+<urn:cell:cell34>       <urn:coords:X>  ""3""^^<http://www.w3.org/2001/XMLSchema#integer> .
+<urn:cell:cell34>       <urn:coords:Y>  ""4""^^<http://www.w3.org/2001/XMLSchema#integer> .
+<urn:cell:cell44>       <urn:cell:neighbourOf>  <urn:cell:cell33> .
+<urn:cell:cell44>       <urn:coords:X>  ""4""^^<http://www.w3.org/2001/XMLSchema#integer> .
+<urn:cell:cell44>       <urn:coords:Y>  ""4""^^<http://www.w3.org/2001/XMLSchema#integer> .
+<urn:cell:cell45>       <urn:cell:neighbourOf>  <urn:cell:cell34> .
+<urn:cell:cell45>       <urn:coords:X>  ""4""^^<http://www.w3.org/2001/XMLSchema#integer> .
+<urn:cell:cell45>       <urn:coords:Y>  ""5""^^<http://www.w3.org/2001/XMLSchema#integer> .";
+
+            IGraph sourceGraph = new Graph();
+            sourceGraph.LoadFromString(sourceGraphTurtle, new TurtleParser());
+
+            IGraph expectedGraph = new Graph();
+            expectedGraph.LoadFromString(expectedGraphTurtle);
+
+            for (int i = 0; i < 10; i++)
+            {
+                IGraph actualGraph = (IGraph)sourceGraph.ExecuteQuery(query);
+                Assert.IsTrue(expectedGraph.Difference(actualGraph).AreEqual);
             }
         }
     }
