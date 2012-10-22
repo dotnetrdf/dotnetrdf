@@ -292,7 +292,7 @@ namespace VDS.RDF.Test.Storage
         {
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri)));
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(TestConfigManager.GetSetting(TestConfigManager.LocalGraphStoreUri));
             request.Method = "POST";
             request.ContentType = "application/rdf+xml";
 
