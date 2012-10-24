@@ -298,7 +298,7 @@
   <target name="license-storemanager-core" description="Applies license headers to the StoreManager.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
-      <arg value="Libraries/storemanager.core/net40/" />
+      <arg value="Libraries/storemanager.core/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.license.exclude.exts}" />
       <arg value="-exclude" />
@@ -566,8 +566,8 @@
                    compile-util-convert,
                    compile-util-editor-wpf,
                    compile-util-opt-stats,
-                   compile-util-query-cmd,license-util-query-gui,
-                   compile-util-server-cmd,license-util-server-gui,
+                   compile-util-query-cmd,compile-util-query-gui,
+                   compile-util-server-cmd,compile-util-server-gui,
                    compile-util-webdeploy,
                    compile-util-storemanager">
 
@@ -783,7 +783,7 @@
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
-      <arg value="Libraries/storemanager.core/net40/StoreManager.Core.csproj" />
+      <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
@@ -902,7 +902,7 @@
     </exec>
   </target>
     
-  <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
+  <!-- Nightly Build Targets -->
 
   <target name="no-build" description="Sets that no Builds should be performed" depends="no-compile">
     <property name="dotnetrdf.nobuild" value="true" />
@@ -920,6 +920,17 @@
                    build-core-windowsphone,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
+
+  <target name="build-utils" description="Builds dotNetRDF Toolkit nightlies" unless="${dotnetrdf.nobuild}"
+          depends="build-util-convert,
+                   build-util-editor-wpf,
+                   build-util-opt-stats,
+                   build-util-query-cmd,build-util-query-gui,
+                   build-util-server-cmd,build-util-server-gui,
+                   build-util-webdeploy,
+                   build-util-storemanager">
+
+  </target>
   
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.dll" />
@@ -1011,6 +1022,75 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/Lucene.Net.dll" />
   </target>
 
+  <target name="build-util-convert" description="Copy the latest rdfConvert build to the nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-util-convert">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfConvert">
+      <fileset basedir="Utilities/rdfConvert/bin/Debug">
+        <include name="rdfConvert.exe" />
+        <include name="rdfConvert.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-editor-wpf">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfEditor.Wpf">
+      <fileset basedir="Utilities/rdfEditor.Wpf/bin/Debug">
+        <include name="rdfEditor.exe" />
+        <include name="rdfEditor.exe.config" />
+        <include name="*.dll" />
+        <include name="Syntax/**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-opt-stats">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfOptStats">
+      <fileset basedir="Utilities/rdfOptStats/bin/Debug">
+        <include name="rdfOptStats.exe" />
+        <include name="rdfOptStats.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-query-cmd">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfQuery">
+      <fileset basedir="Utilities/rdfQuery/bin/Debug">
+        <include name="rdfQuery.exe" />
+        <include name="rdfQuery.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-query-gui">
+    
+  </target>
+
+  <target name="build-util-server-cmd">
+    
+  </target>
+
+  <target name="build-util-server-gui">
+    
+  </target>
+
+  <target name="build-util-webdeploy">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfWebDeploy">
+      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
+        <include name="rdfWebDeploy.exe" />
+        <include name="rdfWebDeploy.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-storemanager">
+    
+  </target>
+
+  <!-- Release Build Targets -->
+
   <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
           depends="build-release-libs,build-release-utils" />
 
@@ -1084,8 +1164,9 @@
     <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/Lucene.Net.dll" />
   </target>
 
-  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}"
-          depends="compile-utils" />
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="build-utils">
+    
+  </target>
   
   <!-- Clean Targets -->
 
