@@ -912,7 +912,8 @@
   </target>
   
   <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" 
-          depends="build-libs">
+          depends="build-libs,
+                   build-utils">
     
   </target>
 
@@ -1087,6 +1088,9 @@
         <include name="rdfServerGUI.exe" />
         <include name="rdfServerGUI.exe.config" />
         <include name="*.dll" />
+        <include name="default.ttl" />
+        <include name="server.config" />
+        <include name="servercontrol.html" />
       </fileset>
     </copy>
   </target>
@@ -1097,9 +1101,6 @@
         <include name="rdfWebDeploy.exe" />
         <include name="rdfWebDeploy.exe.config" />
         <include name="*.dll" />
-        <include name="default.ttl" />
-        <include name="server.config" />
-        <include name="servercontrol.html" />
       </fileset>
     </copy>
   </target>
