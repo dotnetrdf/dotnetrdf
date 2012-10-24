@@ -24,7 +24,7 @@
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
   
   <!-- Signing Properties -->
-  <property name="dotnetrdf.keyfile" value="../../../Build/dotNetRDF.snk" />
+  <property name="dotnetrdf.keyfile" value="Build/dotNetRDF.snk" />
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
@@ -540,10 +540,13 @@
   </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-libs-main,
-                   compile-libs-utils,
+          depends="compile-libs,
                    compile-utils">
+  </target>
 
+  <target name="compile-libs" description="Copiles all libraries for main distribution and toolkit" unless="${dotnetrdf.nocompile}"
+          depends="compile-libs-main,
+                   compile-libs-utils">
   </target>
 
   <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
@@ -581,7 +584,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -593,7 +596,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -643,7 +646,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -655,7 +658,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -667,7 +670,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -679,7 +682,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -691,7 +694,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -703,7 +706,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -715,7 +718,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -727,7 +730,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -739,7 +742,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />-->
+      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
     </exec>
   </target>
 
@@ -751,7 +754,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />-->
+      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
     </exec>
   </target>
 
@@ -763,7 +766,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -775,7 +778,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -787,7 +790,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -799,7 +802,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -926,7 +929,7 @@
                    build-util-editor-wpf,
                    build-util-opt-stats,
                    build-util-query-cmd,build-util-query-gui,
-                   build-util-server-cmd,build-util-server-gui,
+                   build-util-server,
                    build-util-webdeploy,
                    build-util-storemanager">
 
@@ -1032,7 +1035,7 @@
     </copy>
   </target>
 
-  <target name="build-util-editor-wpf">
+  <target name="build-util-editor-wpf" unless="${dotnetrdf.nobuild}" depends="compile-util-editor-wpf">
     <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfEditor.Wpf">
       <fileset basedir="Utilities/rdfEditor.Wpf/bin/Debug">
         <include name="rdfEditor.exe" />
@@ -1043,7 +1046,7 @@
     </copy>
   </target>
 
-  <target name="build-util-opt-stats">
+  <target name="build-util-opt-stats" unless="${dotnetrdf.nobuild}" depends="compile-util-opt-stats">
     <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfOptStats">
       <fileset basedir="Utilities/rdfOptStats/bin/Debug">
         <include name="rdfOptStats.exe" />
@@ -1053,7 +1056,7 @@
     </copy>
   </target>
 
-  <target name="build-util-query-cmd">
+  <target name="build-util-query-cmd" unless="${dotnetrdf.nobuild}" depends="compile-util-query-cmd">
     <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfQuery">
       <fileset basedir="Utilities/rdfQuery/bin/Debug">
         <include name="rdfQuery.exe" />
@@ -1063,30 +1066,55 @@
     </copy>
   </target>
 
-  <target name="build-util-query-gui">
-    
+  <target name="build-util-query-gui" unless="${dotnetrdf.nobuild}" depends="compile-util-query-gui">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/SparqlGUI">
+      <fileset basedir="Utilities/SparqlGUI/bin/Debug">
+        <include name="SparqlGUI.exe" />
+        <include name="SparqlGUI.exe.config" />
+        <include name="*.dll" />
+        <include name="database.ico" />
+        <include name="database_table.ico" />
+        <include name="default.rq" />
+      </fileset>
+    </copy>    
   </target>
 
-  <target name="build-util-server-cmd">
-    
-  </target>
-
-  <target name="build-util-server-gui">
-    
-  </target>
-
-  <target name="build-util-webdeploy">
-    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfWebDeploy">
-      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
-        <include name="rdfWebDeploy.exe" />
-        <include name="rdfWebDeploy.exe.config" />
+  <target name="build-util-server" unless="${dotnetrdf.nobuild}" depends="compile-util-server-cmd,compile-util-server-gui">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfServer">
+      <fileset basedir="Utilities/rdfServer/bin/Debug">
+        <include name="rdfServer.exe" />
+        <include name="rdfServer.exe.config" />
+        <include name="rdfServerGUI.exe" />
+        <include name="rdfServerGUI.exe.config" />
         <include name="*.dll" />
       </fileset>
     </copy>
   </target>
 
-  <target name="build-util-storemanager">
-    
+  <target name="build-util-webdeploy" unless="${dotnetrdf.nobuild}" depends="compile-util-webdeploy">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfWebDeploy">
+      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
+        <include name="rdfWebDeploy.exe" />
+        <include name="rdfWebDeploy.exe.config" />
+        <include name="*.dll" />
+        <include name="default.ttl" />
+        <include name="server.config" />
+        <include name="servercontrol.html" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-storemanager" unless="${dotnetrdf.nobuild}" depends="compile-util-storemanager">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/StoreManager">
+      <fileset basedir="Utilities/StoreManager/bin/Debug">
+        <include name="StoreManager.exe" />
+        <include name="StoreManager.exe.config" />
+        <include name="*.dll" />
+        <include name="file-manager.ico" />
+        <include name="database_gear.ico" />
+        <include name="plugins/**" />
+      </fileset>
+    </copy>
   </target>
 
   <!-- Release Build Targets -->
