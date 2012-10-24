@@ -55,13 +55,13 @@ namespace VDS.RDF.Test.Query.FullText
         private static IFullTextIndexSchema _schema;
         private static Analyzer _analyzer;
 
-        public readonly static Lucene.Net.Util.Version LuceneVersion = Lucene.Net.Util.Version.LUCENE_29;
+        public readonly static Lucene.Net.Util.Version LuceneVersion = Lucene.Net.Util.Version.LUCENE_30;
 
         private static void Init()
         {
             _indexDir = new RAMDirectory();
             _schema = new DefaultIndexSchema();
-            _analyzer = new StandardAnalyzer();
+            _analyzer = new StandardAnalyzer(LuceneVersion);
             _init = true;
         }
 

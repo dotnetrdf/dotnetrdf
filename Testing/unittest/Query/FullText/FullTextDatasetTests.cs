@@ -64,7 +64,7 @@ namespace VDS.RDF.Test.Query.FullText
         {
             //Lucene Index
             Directory dir = new RAMDirectory();
-            LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(), new DefaultIndexSchema());
+            LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
 
             //Test Dataset
             InMemoryDataset memData = new InMemoryDataset();
@@ -110,7 +110,7 @@ namespace VDS.RDF.Test.Query.FullText
         {
             //Lucene Index
             Directory dir = new RAMDirectory();
-            LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(), new DefaultIndexSchema());
+            LuceneSubjectsIndexer indexer = new LuceneSubjectsIndexer(dir, new StandardAnalyzer(LuceneTestHarness.LuceneVersion), new DefaultIndexSchema());
             LuceneSearchProvider searcher = new LuceneSearchProvider(LuceneTestHarness.LuceneVersion, dir);
 
             //Test Dataset

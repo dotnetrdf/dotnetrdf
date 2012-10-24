@@ -69,17 +69,17 @@ namespace VDS.RDF.Query
             NodeType nodeType;
             try 
             {
-                nodeType = (NodeType)Enum.Parse(typeof(NodeType), nodeTypeField.StringValue());
+                nodeType = (NodeType)Enum.Parse(typeof(NodeType), nodeTypeField.StringValue);
             } 
             catch 
             {
-                throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " contained an invalid value '" + nodeTypeField.StringValue() + "'.  Please check you have configured the Index Schema correctly");
+                throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " contained an invalid value '" + nodeTypeField.StringValue + "'.  Please check you have configured the Index Schema correctly");
             }
 
             //Then get the node value
             Field nodeValueField = doc.GetField(schema.NodeValueField);
             if (nodeValueField == null) throw new RdfQueryException("Node Value field " + schema.NodeValueField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
-            String nodeValue = nodeValueField.StringValue();
+            String nodeValue = nodeValueField.StringValue;
 
             //Then depending on the Node Type determine whether we need to obtain the Meta Field as well
             switch (nodeType)
@@ -98,7 +98,7 @@ namespace VDS.RDF.Query
                     }
                     else
                     {
-                        String nodeMeta = nodeMetaField.StringValue();
+                        String nodeMeta = nodeMetaField.StringValue;
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
@@ -210,7 +210,7 @@ namespace VDS.RDF.Query
             else if (directory is FSDirectory)
             {
                 context.Graph.Assert(dirObj, dnrType, context.Graph.CreateLiteralNode(typeof(FSDirectory).FullName + ", Lucene.Net"));
-                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).GetDirectory().FullName));
+                context.Graph.Assert(dirObj, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)), context.Graph.CreateLiteralNode(((FSDirectory)directory).Directory.FullName));
             }
             else
             {

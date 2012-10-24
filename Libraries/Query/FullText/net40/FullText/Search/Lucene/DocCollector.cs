@@ -95,9 +95,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// Returns that documents are accepted out of order
         /// </summary>
         /// <returns></returns>
-        public override bool AcceptsDocsOutOfOrder()
+        public override bool AcceptsDocsOutOfOrder
         {
-            return true;
+            get
+            {
+                return true;
+            }
         }
 
         /// <summary>

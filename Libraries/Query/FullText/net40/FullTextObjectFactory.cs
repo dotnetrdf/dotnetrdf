@@ -305,7 +305,7 @@ namespace VDS.RDF.Configuration
                                 if (ConfigurationLoader.GetConfigurationBoolean(g, objNode, g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "ensureIndex")), false))
                                 {
                                     IndexWriter writer = new IndexWriter((Directory)obj, new StandardAnalyzer(this.GetLuceneVersion(ver)), IndexWriter.MaxFieldLength.UNLIMITED);
-                                    writer.Close();
+                                    writer.Dispose();
                                 }
                             }
                         }

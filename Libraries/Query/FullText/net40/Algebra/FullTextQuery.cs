@@ -59,6 +59,9 @@ namespace VDS.RDF.Query.Algebra
             this.InnerAlgebra = algebra;
         }
 
+        /// <summary>
+        /// Gets the Inner Algebra
+        /// </summary>
         public ISparqlAlgebra InnerAlgebra
         {
             get;
