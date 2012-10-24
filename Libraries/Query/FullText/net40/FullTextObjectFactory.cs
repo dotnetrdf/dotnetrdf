@@ -74,6 +74,8 @@ namespace VDS.RDF.Configuration
         private readonly Type _luceneAnalyzerType = typeof(Analyzer);
         private readonly Type _luceneDirectoryType = typeof(Directory);
 
+        private const int DefaultVersion = 3000;
+
 
         /// <summary>
         /// Tries to load an object based on information from the Configuration Graph
@@ -95,9 +97,9 @@ namespace VDS.RDF.Configuration
             INode version = g.CreateUriNode(UriFactory.Create(FullTextHelper.FullTextConfigurationNamespace + "version"));
 
             Object tempIndex, tempAnalyzer, tempSchema;
-            int ver = 2900;
+            int ver = DefaultVersion;
             //Always check for the version
-            ver = ConfigurationLoader.GetConfigurationInt32(g, objNode, version, 2900);
+            ver = ConfigurationLoader.GetConfigurationInt32(g, objNode, version, DefaultVersion);
 
             switch (targetType.FullName)
             {
@@ -268,6 +270,8 @@ namespace VDS.RDF.Configuration
                     {
                         if (this._luceneAnalyzerType.IsAssignableFrom(targetType))
                         {
+                            //Create an Analyzer
+                            //Try to create passing Lucene Version wherever possible
                             if (targetType.GetConstructor(new Type[] { typeof(LucVersion) }) != null)
                             {
                                 obj = Activator.CreateInstance(targetType, new Object[] { this.GetLuceneVersion(ver) });
@@ -279,6 +283,7 @@ namespace VDS.RDF.Configuration
                         }
                         else if (this._luceneDirectoryType.IsAssignableFrom(targetType))
                         {
+                            //Create a Directory aka a Lucene Index
                             String dir = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
                             if (dir != null)
                             {
