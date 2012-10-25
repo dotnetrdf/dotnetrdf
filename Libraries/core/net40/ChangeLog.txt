@@ -52,7 +52,8 @@ Removed
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
 - Marks the obsolete HashTable classes as obsolete unusable
 - Marks the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
-- Marks the obsolete usable IndexingHelper static class as obsolete unusable
+- Marks the obsolete IndexingHelper static class as obsolete unusable
+- Marks the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
    
 
 
