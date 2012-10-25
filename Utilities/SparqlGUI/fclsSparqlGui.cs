@@ -790,11 +790,11 @@ namespace VDS.RDF.Utilities.Sparql
             {
                 //Create and ensure index ready for use
                 this._ftIndex = new RAMDirectory();
-                IndexWriter writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), IndexWriter.MaxFieldLength.UNLIMITED);
+                IndexWriter writer = new IndexWriter(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), IndexWriter.MaxFieldLength.UNLIMITED);
                 writer.Close();
 
                 //Create Indexer and wrap dataset
-                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29), new DefaultIndexSchema());
+                this._ftIndexer = new LuceneObjectsIndexer(this._ftIndex, new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30), new DefaultIndexSchema());
                 if (this._dataset is WebDemandDataset)
                 {
                     //Web Demand needs to go around Full Text as we want to index on demand loaded content
