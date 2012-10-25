@@ -1463,22 +1463,22 @@
     <!-- Then create the Query.FullText package -->
     <copy todir="Build/nuget/Query.FullText/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
