@@ -18,11 +18,12 @@ namespace VDS.RDF.Query.Builder
     /// </remarks>
     public sealed class QueryBuilder : IQueryBuilder
     {
-        private readonly SparqlQuery _query = new SparqlQuery();
+        private readonly SparqlQuery _query;
 
         private QueryBuilder(SparqlQuery query)
         {
             this._query = query;
+            _query.RootGraphPattern = new GraphPattern();
             this.NamespaceMapper = new NamespaceMapper();
         }
 

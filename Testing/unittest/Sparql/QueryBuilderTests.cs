@@ -188,5 +188,65 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsTrue(query.Variables.Contains(p));
             Assert.IsTrue(query.Variables.Contains(o));
         }
+
+        [TestMethod]
+        public void CanAddOptionalGraphPatternsAfterRegular()
+        {
+            // given
+            var builder = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
+                                 .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
+                                 .Object(new Uri("http://example.com/Class")))
+                .Optional(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
+                                    .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o"));
+
+            // when
+            var query = builder.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(query.RootGraphPattern);
+            Assert.AreEqual(1, query.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(1, query.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(2, query.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void CanAddOptionalGraphPatternsBeforeRegular()
+        {
+            // given
+            var builder = QueryBuilder.SelectAll()
+                .Optional(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
+                                    .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o"))
+                .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
+                                 .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
+                                 .Object(new Uri("http://example.com/Class")));
+
+            // when
+            var query = builder.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(query.RootGraphPattern);
+            Assert.AreEqual(1, query.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(1, query.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(2, query.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void SubsequentWhereCallsShouldAddToRootGraphPattern()
+        {
+            // given
+            var builder = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
+
+            // when
+            var query = builder.GetExecutableQuery();
+            // then
+            Assert.IsNotNull(query.RootGraphPattern);
+            Assert.AreEqual(4, query.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(0, query.RootGraphPattern.ChildGraphPatterns.Count);
+        }
     }
 }

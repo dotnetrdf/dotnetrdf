@@ -30,6 +30,11 @@ namespace VDS.RDF.Query.Builder
             return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subjectNode));
         }
 
+        public TriplePatternPredicatePart Subject(Uri subject)
+        {
+            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subject));
+        }
+
         public TriplePattern[] Patterns
         {
             get { return _patterns.ToArray(); }
@@ -43,11 +48,6 @@ namespace VDS.RDF.Query.Builder
         internal void AddPattern(TriplePattern triplePattern)
         {
             _patterns.Add(triplePattern);
-        }
-
-        public TriplePatternPredicatePart Subject(Uri subject)
-        {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subject));
         }
     }
 }
