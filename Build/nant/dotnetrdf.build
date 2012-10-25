@@ -602,8 +602,9 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
