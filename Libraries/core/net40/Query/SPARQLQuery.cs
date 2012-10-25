@@ -1085,6 +1085,12 @@ namespace VDS.RDF.Query
                     output.Append(" ");
                     output.Append(this._rootGraphPattern.ToString());
                 }
+                else if (this._rootGraphPattern.HasModifier)
+                {
+                    output.AppendLine("{");
+                    output.AppendLine(this._rootGraphPattern.ToString());
+                    output.AppendLine("}");
+                }
                 else
                 {
                     output.AppendLine(this._rootGraphPattern.ToString());

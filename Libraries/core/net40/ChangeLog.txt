@@ -23,7 +23,8 @@ Changed
  - Fixed an intermittent race condition in the implementation of parallel Left Join
  - Fixed a bug in the evaluation of some complex GROUP BY statements
  - Fixed a bug in the string representation of CountDistinctAggregate
- - Fixed a bug related to internal APIs for building queries
+ - Fixed a bug related to losing FILTERS when building queries using the internal APIs
+ - Fixed a bug related to ToString() form of some API built queries
 
 - Dependencies
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
