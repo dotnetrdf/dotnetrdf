@@ -17,7 +17,7 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.license.exclude.exts" 
-            value="dll,pdb,xml,xaml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd,config,properties,settings,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,html,json,xhtml,css,js,sparql,xslt,bak,csv,tsv,ico,png,jpg,tiff,bmp,orig" />
+            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig" />
   <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
@@ -550,12 +550,32 @@
   </target>
 
   <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
-          depends="compile-core,compile-core-net35,
+          depends="compile-libs-core,
+                   compile-libs-data-virtuoso,
+                   compile-libs-query-fulltext">
+  </target>
+
+  <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
+          depends="compile-core,
+                   compile-core-net35,
                    compile-core-silverlight,
                    compile-core-windowsphone,
-                   compile-core-clientprofile,compile-core-clientprofile-net35,
-                   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
-                   compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
+                   compile-core-clientprofile,
+                   compile-core-clientprofile-net35">  
+  </target>
+
+  <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
+          depends="compile-data-virtuoso,
+                   compile-data-virtuoso-net35,
+                   compile-data-virtuoso-clientprofile,
+                   compile-data-virtuoso-clientprofile-net35">
+  </target>
+
+  <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
+          depends="compile-query-fulltext,
+                   compile-query-fulltext-net35,
+                   compile-query-fulltext-clientprofile,
+                   compile-query-fulltext-clientprofile-net35">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
@@ -742,7 +762,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -754,7 +774,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent="/>
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
