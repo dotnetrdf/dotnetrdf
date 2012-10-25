@@ -40,6 +40,12 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Conditional;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
@@ -215,6 +221,33 @@ SELECT * WHERE
             String algebra = q.ToAlgebra().ToString();
             Console.WriteLine(algebra);
             Assert.IsTrue(algebra.Contains("LeftJoin("), "Algebra should have a LeftJoin() operator in it");
+        }
+
+        [TestMethod]
+        public void SparqlOptimiserQueryFilterPlacement5()
+        {
+            // given
+            var query = new SparqlQuery { QueryType = SparqlQueryType.Select };
+            query.AddVariable(new SparqlVariable("s", true));
+            query.RootGraphPattern = new GraphPattern();
+            var subj = new VariablePattern("s");
+            var rdfType = new NodeMatchPattern(new UriNode(null, new Uri(RdfSpecsHelper.RdfType)));
+            var type = new VariablePattern("type");
+            var triplePattern = new TriplePattern(subj, rdfType, type);
+            query.RootGraphPattern.AddTriplePattern(triplePattern);
+            query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(new InFunction(new VariableTerm("type"), new[]
+                {
+                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type1"))), 
+                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type2"))), 
+                    new ConstantTerm(new UriNode(null, new Uri("http://example.com/Type3")))
+                })));
+
+            // when
+            var algebra = query.ToAlgebra();
+
+            // then
+            Assert.IsInstanceOfType(algebra, typeof(Select));
+            Assert.IsInstanceOfType(((Select)algebra).InnerAlgebra, typeof(Filter));
         }
 
         [TestMethod]
