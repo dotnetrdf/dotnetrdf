@@ -100,7 +100,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(Uri uri)
         {
-            IUriNode u = new UriNode(null, uri);
+            IUriNode u = new UriNode(uri);
             return from g in this._graphs
                    from t in g.Triples
                    where t.Involves(u)
@@ -128,7 +128,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(Uri u)
         {
-            return this.GetTriplesWithObject(new UriNode(null, u));
+            return this.GetTriplesWithObject(new UriNode(u));
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
         {
-            return this.GetTriplesWithPredicate(new UriNode(null, u));
+            return this.GetTriplesWithPredicate(new UriNode(u));
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
         {
-            return this.GetTriplesWithSubject(new UriNode(null, u));
+            return this.GetTriplesWithSubject(new UriNode(u));
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriples(List<Uri> graphUris, Uri uri)
         {
-            IUriNode u = new UriNode(null, uri);
+            IUriNode u = new UriNode(uri);
 
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
@@ -274,12 +274,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithObject(List<Uri> graphUris, Uri u)
         {
-            IUriNode uri = new UriNode(null, u);
+            IUriNode uri = new UriNode(u);
 
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasObject(uri)
+                                     where t.Object.Equals(uri)
                                      select t;
 
             return ts;
@@ -296,7 +296,7 @@ namespace VDS.RDF
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasObject(n)
+                                     where t.Object.Equals(n)
                                      select t;
 
             return ts;
@@ -313,7 +313,7 @@ namespace VDS.RDF
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasPredicate(n)
+                                     where t.Predicate.Equals(n)
                                      select t;
 
             return ts;
@@ -327,12 +327,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithPredicate(List<Uri> graphUris, Uri u)
         {
-            IUriNode uri = new UriNode(null, u);
+            IUriNode uri = new UriNode(u);
 
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasPredicate(uri)
+                                     where t.Predicate.Equals(uri)
                                      select t;
 
             return ts;
@@ -349,7 +349,7 @@ namespace VDS.RDF
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasSubject(n)
+                                     where t.Subject.Equals(n)
                                      select t;
 
             return ts;
@@ -363,12 +363,12 @@ namespace VDS.RDF
         /// <returns></returns>
         public IEnumerable<Triple> GetTriplesWithSubject(List<Uri> graphUris, Uri u)
         {
-            IUriNode uri = new UriNode(null, u);
+            IUriNode uri = new UriNode(u);
 
             IEnumerable<Triple> ts = from g in this._graphs
                                      where graphUris.Contains(g.BaseUri)
                                      from t in g.Triples
-                                     where t.HasSubject(uri)
+                                     where t.Subject.Equals(uri)
                                      select t;
 
             return ts;

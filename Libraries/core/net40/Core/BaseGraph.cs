@@ -66,10 +66,6 @@ namespace VDS.RDF
         #region Member Variables
 
         /// <summary>
-        /// Factory ID
-        /// </summary>
-        protected Guid _factoryID = Guid.NewGuid();
-        /// <summary>
         /// Collection of Triples in the Graph
         /// </summary>
         protected BaseTripleCollection _triples;
@@ -252,21 +248,13 @@ namespace VDS.RDF
 
         #region Node Creation
 
-        public Guid FactoryID
-        {
-            get
-            {
-                return this._factoryID;
-            }
-        }
-
         /// <summary>
         /// Creates a New Blank Node with an auto-generated Blank Node ID
         /// </summary>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
         {
-            return new BlankNode(Guid.NewGuid(), this._factoryID);
+            return new BlankNode(Guid.NewGuid());
         }
 
         /// <summary>
@@ -279,13 +267,13 @@ namespace VDS.RDF
             Guid id;
             if (this._bnodes.TryGetValue(nodeId, out id))
             {
-                return new BlankNode(id, this._factoryID);
+                return new BlankNode(id);
             }
             else
             {
                 id = Guid.NewGuid();
                 this._bnodes.Add(nodeId, id);
-                return new BlankNode(id, this._factoryID);
+                return new BlankNode(id);
             }
         }
 
@@ -755,17 +743,10 @@ namespace VDS.RDF
         /// Creates a new unused Blank Node ID and returns it
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Obsolete, no longer used", true)]
         public virtual String GetNextBlankNodeID()
         {
-            //try
-            //{
-            //    Monitor.Enter(this._bnodemapper);
-                return this._bnodemapper.GetNextID();
-            //}
-            //finally
-            //{
-            //    Monitor.Exit(this._bnodemapper);
-            //}
+            throw new NotSupportedException();
         }
 
         #endregion

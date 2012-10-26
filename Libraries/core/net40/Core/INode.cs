@@ -172,14 +172,6 @@ namespace VDS.RDF
         {
             get;
         }
-
-        /// <summary>
-        /// Gets the ID of the Factory that created the Blank Node
-        /// </summary>
-        Guid FactoryID
-        {
-            get;
-        }
     }
 
     /// <summary>

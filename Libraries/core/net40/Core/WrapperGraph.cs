@@ -185,7 +185,7 @@ namespace VDS.RDF
         /// <param name="t">Triple</param>
         public virtual bool Assert(Triple t)
         {
-            return this._g.Assert(t.CopyTriple(this._g));
+            return this._g.Assert(t);
         }
 
         /// <summary>
@@ -194,7 +194,7 @@ namespace VDS.RDF
         /// <param name="ts">Triples</param>
         public virtual bool Assert(IEnumerable<Triple> ts)
         {
-            return this._g.Assert(ts.Select(t => t.CopyTriple(this._g)));
+            return this._g.Assert(ts);
         }
 
         /// <summary>
@@ -223,14 +223,6 @@ namespace VDS.RDF
             this._g.Clear();
         }
 
-        public virtual Guid FactoryID
-        {
-            get
-            {
-                return this._g.FactoryID;
-            }
-        }
-
         /// <summary>
         /// Creates a new Blank Node with the given Node ID
         /// </summary>
@@ -254,9 +246,10 @@ namespace VDS.RDF
         /// Gets the next available Blank Node ID
         /// </summary>
         /// <returns></returns>
-        public virtual string GetNextBlankNodeID()
+        [Obsolete("Obsolete, no longer used", true)]
+        public string GetNextBlankNodeID()
         {
-            return this._g.GetNextBlankNodeID();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -542,24 +535,6 @@ namespace VDS.RDF
         public virtual void Merge(IGraph g)
         {
             this._g.Merge(g);
-        }
-
-        /// <summary>
-        /// Merges another Graph into the current Graph
-        /// </summary>
-        /// <param name="g">Graph to Merge into this Graph</param>
-        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in</param>
-        /// <remarks>
-        /// <para>
-        /// The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.
-        /// </para>
-        /// <para>
-        /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised
-        /// </para>
-        /// </remarks>
-        public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
-        {
-            this._g.Merge(g, keepOriginalGraphUri);
         }
 
         /// <summary>

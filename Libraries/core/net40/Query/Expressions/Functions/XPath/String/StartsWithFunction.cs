@@ -69,23 +69,23 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (arg.Value.Equals(string.Empty))
                 {
                     //The Empty String starts with the Empty String
-                    return new BooleanNode(null, true);
+                    return new BooleanNode(true);
                 }
                 else
                 {
                     //Empty String doesn't start with a non-empty string
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
             else if (arg.Value.Equals(string.Empty))
             {
                 //Any non-empty string starts with the empty string
-                return new BooleanNode(null, true);
+                return new BooleanNode(true);
             }
             else
             {
                 //Otherwise evalute the StartsWith
-                return new BooleanNode(null, stringLit.Value.StartsWith(arg.Value));
+                return new BooleanNode(stringLit.Value.StartsWith(arg.Value));
             }
         }
 

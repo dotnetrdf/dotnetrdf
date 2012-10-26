@@ -51,11 +51,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new byte valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Byte value</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public ByteNode(IGraph g, byte value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte), SparqlNumericType.Integer)
+        public ByteNode(byte value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeUnsignedByte), SparqlNumericType.Integer)
         {
             this._value = value;
         }
@@ -63,10 +62,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new byte valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Byte value</param>
-        public ByteNode(IGraph g, byte value)
-            : this(g, value, value.ToString()) { }
+        public ByteNode(byte value)
+            : this(value, value.ToString()) { }
 
         
         /// <summary>
@@ -145,11 +143,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new signed byte node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Signed Byte value</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public SignedByteNode(IGraph g, sbyte value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte), SparqlNumericType.Integer)
+        public SignedByteNode(sbyte value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeByte), SparqlNumericType.Integer)
         {
             this._value = value;
         }
@@ -157,10 +154,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new signed byte node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Signed Byte value</param>
         public SignedByteNode(IGraph g, sbyte value)
-            : this(g, value, value.ToString()) { }
+            : this(value, value.ToString()) { }
 
         /// <summary>
         /// Gets the integer value of the signed byte

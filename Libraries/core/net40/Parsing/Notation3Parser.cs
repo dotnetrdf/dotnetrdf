@@ -394,15 +394,7 @@ namespace VDS.RDF.Parsing
             //We know the Token we've just got off the Queue was a ForAllQuantifierToken
             //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
-            //Create a new Variable Context if one doesn't currently exist
-            if (context.VariableContext.Type == VariableContextType.None)
-            {
-                context.VariableContext = new VariableContext(VariableContextType.Universal);
-            }
-            else
-            {
-                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Universal);
-            }
+            this.RaiseWarning("@forAll declarations are not interpreted by the parser");
 
             context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
@@ -413,7 +405,7 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.QNAME:
                     case Token.URI:
-                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        //Ignore and continue
                         break;
 
                     default:
@@ -439,15 +431,7 @@ namespace VDS.RDF.Parsing
             //We know the Token we've just got off the Queue was a ForSomeQuantifierToken
             //Therefore the next Token(s) should be QNames/URIs leading to a DotToken
 
-            //Create a new Variable Context if one doesn't currently exist
-            if (context.VariableContext.Type == VariableContextType.None)
-            {
-                context.VariableContext = new VariableContext(VariableContextType.Existential);
-            }
-            else
-            {
-                context.VariableContext.InnerContext = new VariableContext(VariableContextType.Existential);
-            }
+            this.RaiseWarning("@forSome declarations are not interpreted by the parser");
 
             context.Tokens.Dequeue();
             IToken next = context.Tokens.Dequeue();
@@ -458,7 +442,7 @@ namespace VDS.RDF.Parsing
                 {
                     case Token.QNAME:
                     case Token.URI:
-                        context.VariableContext.AddVariable(ParserHelper.TryResolveUri(context, next));
+                        //Ignore and continue
                         break;
 
                     default:
@@ -473,8 +457,6 @@ namespace VDS.RDF.Parsing
                     next = context.Tokens.Dequeue();
                 }
             }
-
-            this.RaiseWarning("Parser does not know how to evaluate forSome Quantifiers");
         }
 
         /// <summary>
@@ -941,12 +923,12 @@ namespace VDS.RDF.Parsing
                 //Assert the Triple
                 if (!reverse)
                 {
-                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, pred, obj))) ParserHelper.Stop();
                 }
                 else
                 {
                     //When reversed this means the predicate was Implied By (<=)
-                    if (!context.Handler.HandleTriple(new Triple(obj, pred, subj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(obj, pred, subj))) ParserHelper.Stop();
                 }
 
                 //Expect a comma/semicolon/dot terminator if we are to continue
@@ -1067,8 +1049,8 @@ namespace VDS.RDF.Parsing
 
                     case Token.RIGHTBRACKET:
                         //We might terminate here if someone put a comment before the end of the Collection
-                        if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
-                        if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj))) ParserHelper.Stop();
+                        if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil))) ParserHelper.Stop();
                         return;
 
                     case Token.QNAME:
@@ -1093,19 +1075,19 @@ namespace VDS.RDF.Parsing
                 }
 
                 //Assert the relevant Triples
-                if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj, context.VariableContext))) ParserHelper.Stop();
+                if (!context.Handler.HandleTriple(new Triple(subj, rdfFirst, obj))) ParserHelper.Stop();
                 if (context.Tokens.Peek().TokenType == Token.RIGHTBRACKET)
                 {
                     //End of the Collection
                     context.Tokens.Dequeue();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, rdfNil))) ParserHelper.Stop();
                     return;
                 }
                 else
                 {
                     //More stuff in the collection
                     nextSubj = context.Handler.CreateBlankNode();
-                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(subj, rdfRest, nextSubj))) ParserHelper.Stop();
                     subj = nextSubj;
                 }
             } while (true);
@@ -1210,11 +1192,11 @@ namespace VDS.RDF.Parsing
 
                 if (forward)
                 {
-                    if (!context.Handler.HandleTriple(new Triple(firstItem, secondItem, path, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(firstItem, secondItem, path))) ParserHelper.Stop();
                 }
                 else
                 {
-                    if (!context.Handler.HandleTriple(new Triple(path, secondItem, firstItem, context.VariableContext))) ParserHelper.Stop();
+                    if (!context.Handler.HandleTriple(new Triple(path, secondItem, firstItem))) ParserHelper.Stop();
                 }
 
                 //Does the Path continue?

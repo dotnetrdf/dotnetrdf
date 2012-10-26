@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         {
             IEnumerable<ISet> cs = from id in bindingIDs
                                    select context.InputMultiset[id];
-            return new LongNode(null, cs.Distinct().Count());
+            return new LongNode(cs.Distinct().Count());
         }
 
         /// <summary>

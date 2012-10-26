@@ -191,7 +191,7 @@ namespace VDS.RDF
                 return false;
             }
 
-            return a.FactoryID.Equals(b.FactoryID) && a.AnonID.Equals(b.AnonID);
+            return a.AnonID.Equals(b.AnonID);
         }
 
         /// <summary>
@@ -805,7 +805,7 @@ namespace VDS.RDF
                 return 1;
             }
 
-            return a.InternalID.CompareTo(b.InternalID);
+            return a.AnonID.CompareTo(b.AnonID);
         }
 
         /// <summary>

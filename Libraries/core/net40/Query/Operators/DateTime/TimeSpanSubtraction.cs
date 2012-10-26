@@ -71,7 +71,7 @@ namespace VDS.RDF.Query.Operators.DateTime
             if (ns == null) throw new RdfQueryException("Cannot apply to null arguments");
             if (ns.Any(n => n == null)) throw new RdfQueryException("Cannot apply operator when one/more arguments are null");
 
-            return new TimeSpanNode(null, this.Subtract(ns.Select(n => n.AsTimeSpan())));
+            return new TimeSpanNode(this.Subtract(ns.Select(n => n.AsTimeSpan())));
         }
 
         private TimeSpan Subtract(IEnumerable<TimeSpan> ts)

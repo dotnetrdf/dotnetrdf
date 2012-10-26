@@ -44,6 +44,7 @@ namespace VDS.RDF
     /// <remarks>
     /// A Triple Context is simply a name-value pair collection of arbitrary data that can be attached to a Triple.  Internal representation of this is left to the implementor.
     /// </remarks>
+    [Obsolete("Obsolete, Triple Contexts are no longer supported", true)]
     public interface ITripleContext
     {
         /// <summary>
@@ -69,6 +70,7 @@ namespace VDS.RDF
     /// <remarks>
     /// The Name Value collection is represented internally as a Dictionary
     /// </remarks>
+    [Obsolete("Obsolete, Triple Contexts are no longer supported", true)]
     public class BasicTripleContext : ITripleContext
     {
         private Dictionary<String, Object> _properties;

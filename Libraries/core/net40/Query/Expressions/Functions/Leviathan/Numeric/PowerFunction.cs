@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (arg.NumericType == SparqlNumericType.NaN || pow.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot raise to a power when one/both arguments are non-numeric");
 
-            return new DoubleNode(null, Math.Pow(arg.AsDouble(), pow.AsDouble()));
+            return new DoubleNode(Math.Pow(arg.AsDouble(), pow.AsDouble()));
         }
 
         /// <summary>

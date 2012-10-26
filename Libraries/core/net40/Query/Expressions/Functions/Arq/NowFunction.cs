@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 {
                     if (this._node == null || !ReferenceEquals(this._currQuery, context.Query))
                     {
-                        this._node = new DateTimeNode(null, DateTime.Now);
+                        this._node = new DateTimeNode(DateTime.Now);
                     }
                 }
             }

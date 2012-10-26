@@ -41,7 +41,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// A Valued Node representing double values
+    /// Valued Node representing double values
     /// </summary>
     public class DoubleNode
         : NumericNode
@@ -51,11 +51,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new double valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Double value</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public DoubleNode(IGraph g, double value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
+        public DoubleNode(double value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble), SparqlNumericType.Double)
         {
             this._value = value;
         }
@@ -63,10 +62,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new double valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Double value</param>
-        public DoubleNode(IGraph g, double value)
-            : this(g, value, value.ToString()) { }
+        public DoubleNode(double value)
+            : this(value, value.ToString()) { }
 
         /// <summary>
         /// Gets the integer value of the double

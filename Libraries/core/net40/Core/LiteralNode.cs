@@ -151,7 +151,7 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         protected internal BaseLiteralNode(String literal, Uri datatype)
-            : this(g, literal, datatype, Options.LiteralValueNormalization) { }
+            : this(literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -743,36 +743,33 @@ namespace VDS.RDF
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, String literal)
-            : base(g, literal, false) { }
+        protected internal NonNormalizedLiteralNode(String literal)
+            : base(literal, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">Lanaguage Specifier for the Literal</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, String literal, String langspec)
-            : base(g, literal, langspec, false) { }
+        protected internal NonNormalizedLiteralNode(String literal, String langspec)
+            : base(literal, langspec, false) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
         /// </summary>
-        /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
-        protected internal NonNormalizedLiteralNode(IGraph g, String literal, Uri datatype)
-            : base(g, literal, datatype, false) { }
+        protected internal NonNormalizedLiteralNode(String literal, Uri datatype)
+            : base(literal, datatype, false) { }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected NonNormalizedLiteralNode()
             : base() { }
 
-#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

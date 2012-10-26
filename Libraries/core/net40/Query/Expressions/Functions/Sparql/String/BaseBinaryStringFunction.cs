@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 if (IsValidArgumentPair(stringLit, argLit))
                 {
-                    return new BooleanNode(null, this.ValueInternal(stringLit, argLit));
+                    return new BooleanNode(this.ValueInternal(stringLit, argLit));
                 }
                 else
                 {

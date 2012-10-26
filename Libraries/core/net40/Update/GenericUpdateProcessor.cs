@@ -481,7 +481,7 @@ namespace VDS.RDF.Update
                             List<Triple> tempDeletedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                ConstructContext context = new ConstructContext(s);
                                 foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -544,7 +544,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    ConstructContext context = new ConstructContext(s);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -687,7 +687,7 @@ namespace VDS.RDF.Update
 
                     //Delete the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, false);
+                    ConstructContext context = new ConstructContext();
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);
@@ -877,7 +877,7 @@ namespace VDS.RDF.Update
                             List<Triple> tempInsertedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                ConstructContext context = new ConstructContext(s);
                                 foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -940,7 +940,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    ConstructContext context = new ConstructContext(s);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -1076,7 +1076,7 @@ namespace VDS.RDF.Update
 
                     //Insert the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, false);
+                    ConstructContext context = new ConstructContext();
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);
@@ -1233,7 +1233,7 @@ namespace VDS.RDF.Update
                             List<Triple> tempDeletedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                ConstructContext context = new ConstructContext(s);
                                 foreach (IConstructTriplePattern p in cmd.DeletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -1296,7 +1296,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!deletedGraphTriples.ContainsKey(graphUri)) deletedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    ConstructContext context = new ConstructContext(s);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try
@@ -1327,7 +1327,7 @@ namespace VDS.RDF.Update
                             List<Triple> tempInsertedTriples = new List<Triple>();
                             try
                             {
-                                ConstructContext context = new ConstructContext(null, s, true);
+                                ConstructContext context = new ConstructContext(s);
                                 foreach (IConstructTriplePattern p in cmd.InsertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                                 {
                                     try
@@ -1390,7 +1390,7 @@ namespace VDS.RDF.Update
                                             continue;
                                     }
                                     if (!insertedGraphTriples.ContainsKey(graphUri)) insertedGraphTriples.Add(graphUri, new List<Triple>());
-                                    ConstructContext context = new ConstructContext(null, s, true);
+                                    ConstructContext context = new ConstructContext(s);
                                     foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                                     {
                                         try

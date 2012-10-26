@@ -149,27 +149,27 @@ namespace VDS.RDF
 
         #endregion
 
+        public override IBlankNode CreateBlankNode(string nodeId)
+        {
+            try
+            {
+                this._lockManager.EnterWriteLock();
+                return base.CreateBlankNode(nodeId);
+            }
+            finally
+            {
+                this._lockManager.ExitWriteLock();
+            }
+        }
+
         /// <summary>
         /// Creates a new Blank Node ID and returns it
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Obsolete, no longer used", true)]
         public override string GetNextBlankNodeID()
         {
-            String id = String.Empty;
-            try 
-            {
-                this._lockManager.EnterWriteLock();
-                id = base.GetNextBlankNodeID();
-            }
-            finally 
-            {
-                this._lockManager.ExitWriteLock();
-                if (id.Equals(String.Empty))
-                {
-                    throw new RdfException("Unable to generate a new Blank Node ID due to a Threading issue");
-                }
-            }
-            return id;
+            throw new NotSupportedException();
         }
 
         /// <summary>

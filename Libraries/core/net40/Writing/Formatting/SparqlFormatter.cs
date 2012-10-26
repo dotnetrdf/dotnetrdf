@@ -577,15 +577,6 @@ namespace VDS.RDF.Writing.Formatting
                 NodeMatchPattern match = (NodeMatchPattern)item;
                 return this.Format(match.Node, segment);
             }
-            else if (item is FixedBlankNodePattern)
-            {
-                if (segment != null)
-                {
-                    if (segment == TripleSegment.Predicate) throw new RdfOutputException("Cannot format a Fixed Blank Node Pattern Item as the Predicate of a Triple Pattern as Blank Nodes are not permitted as Predicates");
-                }
-
-                return item.ToString();
-            }
             else if (item is BlankNodePattern)
             {
                 return item.ToString();

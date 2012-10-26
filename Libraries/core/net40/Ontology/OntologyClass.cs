@@ -112,7 +112,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSubClass(INode resource)
         {
-            return this.AddResourceProperty(PropertyDerivedClass, resource.CopyNode(this._graph), false);
+            return this.AddResourceProperty(PropertyDerivedClass, resource, false);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSubClass(INode resource)
         {
-            return this.RemoveResourceProperty(PropertyDerivedClass, resource.CopyNode(this._graph), false);
+            return this.RemoveResourceProperty(PropertyDerivedClass, resource, false);
         }
 
         /// <summary>
@@ -212,7 +212,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddSuperClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(this._graph), true);
+            return this.AddResourceProperty(OntologyHelper.PropertySubClassOf, resource, true);
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveSuperClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertySubClassOf, resource.CopyNode(this._graph), true);
+            return this.RemoveResourceProperty(OntologyHelper.PropertySubClassOf, resource, true);
         }
 
         /// <summary>
@@ -312,7 +312,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddEquivalentClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(this._graph), true);
+            return this.AddResourceProperty(OntologyHelper.PropertyEquivalentClass, resource, true);
         }
 
         /// <summary>
@@ -369,7 +369,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveEquivalentClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyEquivalentClass, resource.CopyNode(this._graph), true);
+            return this.RemoveResourceProperty(OntologyHelper.PropertyEquivalentClass, resource, true);
         }
 
         /// <summary>
@@ -411,7 +411,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool AddDisjointClass(INode resource)
         {
-            return this.AddResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(this._graph), true);
+            return this.AddResourceProperty(OntologyHelper.PropertyDisjointWith, resource, true);
         }
 
         /// <summary>
@@ -468,7 +468,7 @@ namespace VDS.RDF.Ontology
         /// <returns></returns>
         public bool RemoveDisjointClass(INode resource)
         {
-            return this.RemoveResourceProperty(OntologyHelper.PropertyDisjointWith, resource.CopyNode(this._graph), true);
+            return this.RemoveResourceProperty(OntologyHelper.PropertyDisjointWith, resource, true);
         }
 
         /// <summary>

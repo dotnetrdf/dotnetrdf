@@ -71,13 +71,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             switch (type)
             {
                 case SparqlNumericType.Integer:
-                    return new LongNode(null, Math.Min(a.AsInteger(), b.AsInteger()));
+                    return new LongNode(Math.Min(a.AsInteger(), b.AsInteger()));
                 case SparqlNumericType.Decimal:
-                    return new DecimalNode(null, Math.Min(a.AsDecimal(), b.AsDecimal()));
+                    return new DecimalNode(Math.Min(a.AsDecimal(), b.AsDecimal()));
                 case SparqlNumericType.Float:
-                    return new FloatNode(null, Math.Min(a.AsFloat(), b.AsFloat()));
+                    return new FloatNode(Math.Min(a.AsFloat(), b.AsFloat()));
                 case SparqlNumericType.Double:
-                    return new DoubleNode(null, Math.Min(a.AsDouble(), b.AsDouble()));
+                    return new DoubleNode(Math.Min(a.AsDouble(), b.AsDouble()));
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }

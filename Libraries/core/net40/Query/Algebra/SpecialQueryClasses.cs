@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Algebra
                 }
                 else
                 {
-                    s.Add(var, new UriNode(null, graphUri));
+                    s.Add(var, new UriNode(graphUri));
                 }
                 context.OutputMultiset.Add(s);
             }

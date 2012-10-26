@@ -83,7 +83,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
                 if (dt.Offset.Equals(TimeSpan.Zero))
                 {
                     //If Zero it was specified as Z (which means UTC so zero offset)
-                    return new StringNode(null, "PT0S", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
+                    return new StringNode("PT0S", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.DateTime
                     if (dt.Offset.Minutes != 0) offset = offset + Math.Abs(dt.Offset.Minutes) + "M";
                     if (dt.Offset.Hours == 0 && dt.Offset.Minutes < 0) offset = "-" + offset;
 
-                    return new StringNode(null, offset, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
+                    return new StringNode(offset, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDayTimeDuration));
                 }
             }
             else

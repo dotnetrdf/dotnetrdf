@@ -104,7 +104,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         protected internal override INode Construct(ConstructContext context)
         {
-            return context.GetBlankNode(this._name);
+            return context.CreateBlankNode(this._name);
         }
 
         /// <summary>

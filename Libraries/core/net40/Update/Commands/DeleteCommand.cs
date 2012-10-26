@@ -276,7 +276,7 @@ namespace VDS.RDF.Update.Commands
                     //Triples from raw Triple Patterns
                     try
                     {
-                        ConstructContext constructContext = new ConstructContext(g, s, true);
+                        ConstructContext constructContext = new ConstructContext(s);
                         foreach (IConstructTriplePattern p in this._deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
@@ -344,7 +344,7 @@ namespace VDS.RDF.Update.Commands
 
                             //Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
-                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            ConstructContext constructContext = new ConstructContext(s);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try

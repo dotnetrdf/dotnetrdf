@@ -2064,9 +2064,9 @@ namespace VDS.RDF.Parsing
                 bool first = true;
 
                 IUriNode rdfFirst, rdfRest, rdfNil;
-                rdfFirst = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "first"));
-                rdfRest = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "rest"));
-                rdfNil = new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "nil"));
+                rdfFirst = new UriNode(UriFactory.Create(NamespaceMapper.RDF + "first"));
+                rdfRest = new UriNode(UriFactory.Create(NamespaceMapper.RDF + "rest"));
+                rdfNil = new UriNode(UriFactory.Create(NamespaceMapper.RDF + "nil"));
 
                 do
                 {
@@ -3641,25 +3641,18 @@ namespace VDS.RDF.Parsing
 
                 case Token.URI:
                     //Uri uses a Node Match
-                    if (t.Value.StartsWith("_:"))
-                    {
-                        return new FixedBlankNodePattern(t.Value);
-                    }
-                    else
-                    {
-                        String uri = Tools.ResolveUri(t.Value, context.Query.BaseUri.ToSafeString());
-                        u = UriFactory.Create(uri);
-                        return new NodeMatchPattern(new UriNode(null, u));
-                    }
+                    String uri = Tools.ResolveUri(t.Value, context.Query.BaseUri.ToSafeString());
+                    u = UriFactory.Create(uri);
+                    return new NodeMatchPattern(new UriNode(u));
 
                 case Token.QNAME:
                     //QName uses a Node Match
-                    return new NodeMatchPattern(new UriNode(null, this.ResolveQName(context, t.Value)));
+                    return new NodeMatchPattern(new UriNode(this.ResolveQName(context, t.Value)));
 
                 case Token.LITERAL:
                 case Token.LONGLITERAL:
                     //Literals use Node Matches
-                    return new NodeMatchPattern(new NonNormalizedLiteralNode(null, t.Value));
+                    return new NodeMatchPattern(new NonNormalizedLiteralNode(t.Value));
 
                 case Token.PLAINLITERAL:
                     //Plain Literals either use an inferred Literal Node Match
@@ -3668,22 +3661,22 @@ namespace VDS.RDF.Parsing
                     {
                         //Double - Check first since to be considered a double must contain an exponent so is unique compared to 
                         //the other two numeric types
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
+                        return new NodeMatchPattern(new LiteralNode(t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble)));
                     }
                     else if (TurtleSpecsHelper.IsValidInteger(t.Value))
                     {
                         //Integer - Check before decimal as any valid integer is a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
+                        return new NodeMatchPattern(new LiteralNode(t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger)));
                     }
                     else if (TurtleSpecsHelper.IsValidDecimal(t.Value))
                     {
                         //Decimal - Check last since any valid integer is also a valid decimal
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
+                        return new NodeMatchPattern(new LiteralNode(t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal)));
                     }
                     else
                     {
                         //Boolean
-                        return new NodeMatchPattern(new LiteralNode(null, t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
+                        return new NodeMatchPattern(new LiteralNode(t.Value, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean)));
                     }
 
 
@@ -3694,25 +3687,25 @@ namespace VDS.RDF.Parsing
                     {
                         baseUri = (context.Query.BaseUri == null) ? String.Empty : context.Query.BaseUri.AbsoluteUri;
                         u = UriFactory.Create(Tools.ResolveUri(litdt.DataType.Substring(1, litdt.DataType.Length - 2), baseUri));
-                        return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litdt.Value, u));
+                        return new NodeMatchPattern(new NonNormalizedLiteralNode(litdt.Value, u));
                     }
                     else
                     {
                         //Resolve the QName                       
-                        return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litdt.Value, this.ResolveQName(context, litdt.DataType)));
+                        return new NodeMatchPattern(new NonNormalizedLiteralNode(litdt.Value, this.ResolveQName(context, litdt.DataType)));
                     }
 
                 case Token.LITERALWITHLANG:
                     //Literal with Lang Spec use Node Matches
                     LiteralWithLanguageSpecifierToken litls = (LiteralWithLanguageSpecifierToken)t;
-                    return new NodeMatchPattern(new NonNormalizedLiteralNode(null, litls.Value, litls.Language));
+                    return new NodeMatchPattern(new NonNormalizedLiteralNode(litls.Value, litls.Language));
 
                 case Token.BLANKNODEWITHID:
                     //Blanks accept any Blank
                     return new BlankNodePattern(t.Value.Substring(2));
 
                 case Token.KEYWORDA:
-                    return new NodeMatchPattern(new UriNode(null, UriFactory.Create(NamespaceMapper.RDF + "type")));
+                    return new NodeMatchPattern(new UriNode(UriFactory.Create(NamespaceMapper.RDF + "type")));
 
                 default:
                     throw ParserHelper.Error("Unable to Convert a '" + t.GetType().ToString() + "' to a Pattern Item in a Triple Pattern", t);

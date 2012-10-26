@@ -225,7 +225,7 @@ namespace VDS.RDF.Query.Algebra
         : ILeftJoin
     {
         private ISparqlAlgebra _lhs, _rhs;
-        private ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(null, true)));
+        private ISparqlFilter _filter = new UnaryExpressionFilter(new ConstantTerm(new BooleanNode(true)));
 
         /// <summary>
         /// Creates a new LeftJoin where there is no Filter over the join

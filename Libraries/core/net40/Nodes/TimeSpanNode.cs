@@ -55,29 +55,26 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new Time span node
         /// </summary>
-        /// <param name="g">Graph</param>
         /// <param name="value">Time Span</param>
-        public TimeSpanNode(IGraph g, TimeSpan value)
-            : this(g, value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+        public TimeSpanNode(TimeSpan value)
+            : this(value, XmlConvert.ToString(value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node 
         /// </summary>
-        /// <param name="g">Graph</param>
         /// <param name="value">Time Span</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue)
-            : this(g, value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
+        public TimeSpanNode(TimeSpan value, String lexicalValue)
+            : this(value, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration)) { }
 
         /// <summary>
         /// Creates a new Time span node
         /// </summary>
-        /// <param name="g">Graph</param>
         /// <param name="value">Time Span</param>
         /// <param name="lexicalValue">Lexical value</param>
         /// <param name="dtUri">Data type URI</param>
-        public TimeSpanNode(IGraph g, TimeSpan value, String lexicalValue, Uri dtUri)
-            : base(g, lexicalValue, dtUri)
+        public TimeSpanNode(TimeSpan value, String lexicalValue, Uri dtUri)
+            : base(lexicalValue, dtUri)
         {
             this._value = value;
         }

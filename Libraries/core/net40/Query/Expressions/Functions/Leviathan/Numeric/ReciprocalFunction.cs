@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             double d = temp.AsDouble();
             if (d == 0) throw new RdfQueryException("Cannot evaluate reciprocal of zero");
 
-            return new DoubleNode(null, 1d / d);
+            return new DoubleNode(1d / d);
         }
 
         /// <summary>

@@ -103,30 +103,7 @@ namespace VDS.RDF.Query.Patterns
             INode value = context.Set[this._varname];
 
             if (value == null) throw new RdfQueryException("Unable to construct a Value for this Variable for this solution as it is bound to a null");
-            switch (value.NodeType)
-            {
-                case NodeType.Blank:
-                    if (!context.PreserveBlankNodes && value.GraphUri != null)
-                    {
-                        //Rename Blank Node based on the Graph Uri Hash Code
-                        int hash = value.GraphUri.GetEnhancedHashCode();
-                        if (hash >= 0)
-                        {
-                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + "-" + value.GraphUri.GetEnhancedHashCode());
-                        }
-                        else
-                        {
-                            return new BlankNode(context.Graph, ((IBlankNode)value).InternalID + hash);
-                        }
-                    }
-                    else
-                    {
-                        return new BlankNode(context.Graph, ((IBlankNode)value).InternalID);
-                    }
-
-                default:
-                    return context.GetNode(value);
-            }
+            return value;
         }
 
         /// <summary>

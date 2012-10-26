@@ -62,9 +62,6 @@ namespace VDS.RDF
 #endif
     {
         private INode _subject, _predicate, _object;
-        private ITripleContext _context = null;
-        private Uri _u = null;
-        private IGraph _g = null;
         private int _hashcode;
 
         /// <summary>
@@ -77,91 +74,27 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
         public Triple(INode subj, INode pred, INode obj)
         {
-            //Require that all Nodes belong to the same Graph
-            if (!ReferenceEquals(subj.Graph, pred.Graph) || !ReferenceEquals(pred.Graph, obj.Graph))
-            {
-                throw new RdfException("Subject, Predicate and Object Nodes must all come from the same Graph/Node Factory - use Tools.CopyNode() to transfer nodes between Graphs");
-            }
-            else
-            {
-                //Set the Graph property from the Subject
-                this._g = subj.Graph;
+            if (subj == null) throw new ArgumentNullException("subj");
+            if (pred == null) throw new ArgumentNullException("pred");
+            if (obj == null) throw new ArgumentNullException("obj");
 
-                //Store the Three Nodes of the Triple
-                this._subject = subj;
-                this._predicate = pred;
-                this._object = obj;
+            //Store the Three Nodes of the Triple
+            this._subject = subj;
+            this._predicate = pred;
+            this._object = obj;
 
-                //Compute Hash Code
-                this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
-            }
-        }
+            //Compute Hash Code
+            this._hashcode = (this._subject.GetHashCode().ToString() + this._predicate.GetHashCode().ToString() + this._object.GetHashCode().ToString()).GetHashCode();
+         }
+
+#if !SILVERLIGHT
 
         /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory and associates this Triple with the given Graph (doesn't assert the Triple)
+        /// Deserialization only constructor
         /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <param name="pred">Predicate</param>
-        /// <param name="obj">Object</param>
-        /// <param name="g">Graph</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
-        public Triple(INode subj, INode pred, INode obj, IGraph g)
-            : this(subj, pred, obj)
-        {
-            this._g = g;
-        }
-
-        /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
-        /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="context">Context Information for the Triple</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
-        public Triple(INode subj, INode pred, INode obj, ITripleContext context)
-            : this(subj, pred, obj)
-        {
-            this._context = context;
-        }
-
-        /// <summary>
-        /// Creates a Triple and associates it with the given Graph URI permanently (though not with a specific Graph as such)
-        /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="graphUri">Graph URI</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
-        public Triple(INode subj, INode pred, INode obj, Uri graphUri)
-            : this(subj, pred, obj)
-        {
-            this._u = graphUri;
-        }
-
-        /// <summary>
-        /// Constructs a Triple from Nodes that belong to the same Graph/Node Factory with some Context
-        /// </summary>
-        /// <param name="subj">Subject of the Triple</param>
-        /// <param name="pred">Predicate of the Triple</param>
-        /// <param name="obj">Object of the Triple</param>
-        /// <param name="context">Context Information for the Triple</param>
-        /// <param name="graphUri">Graph URI</param>
-        /// <remarks>Will throw an RdfException if the Nodes don't belong to the same Graph/Node Factory</remarks>
-        /// <exception cref="RdfException">Thrown if the Nodes aren't all from the same Graph/Node Factory</exception>
-        public Triple(INode subj, INode pred, INode obj, ITripleContext context, Uri graphUri)
-            : this(subj, pred, obj, graphUri)
-        {
-            this._context = context;
-        }
-
         private Triple()
         { }
 
-#if !SILVERLIGHT
         private Triple(SerializationInfo info, StreamingContext context)
         {
             this._subject = (INode)info.GetValue("s", typeof(INode));
@@ -210,11 +143,12 @@ namespace VDS.RDF
         /// Gets the Graph this Triple was created for
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
+        [Obsolete("Triples no longer hold a reference to a Graph, use Quad if that is required", true)]
         public IGraph Graph
         {
             get
             {
-                return this._g;
+                throw new NotSupportedException();
             }
         }
 
@@ -222,22 +156,12 @@ namespace VDS.RDF
         /// Gets the Uri of the Graph this Triple was created for
         /// </summary>
         /// <remarks>This is not necessarily the actual Graph Uri of the Graph this Triple is asserted in since this property is set from the Subject of the Triple when it is created and it is possible to create a Triple without asserting it into an actual Graph or to then assert it into a different Graph.</remarks>
+        [Obsolete("Triples no longer hold a reference to a Graph, use Quad if that is required", true)]
         public Uri GraphUri
         {
             get
             {
-                if (this._u != null)
-                {
-                    return this._u;
-                }
-                else if (this._g == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    return this._g.BaseUri;
-                }
+                throw new NotSupportedException();
             }
         }
 
@@ -247,15 +171,16 @@ namespace VDS.RDF
         /// <remarks>
         /// Context may be null where no Context for the Triple has been defined
         /// </remarks>
+        [Obsolete("Triples no longer provide a Context", true)]
         public ITripleContext Context
         {
             get
             {
-                return this._context;
+                throw new NotSupportedException();
             }
             set
             {
-                this._context = value;
+                throw new NotSupportedException();
             }
         }
 
@@ -269,7 +194,7 @@ namespace VDS.RDF
         {
             get
             {
-                return new List<INode> { this._subject, this._predicate, this._object };
+                return new INode[] { this._subject, this._predicate, this._object };
             }
         }
 
@@ -306,7 +231,7 @@ namespace VDS.RDF
         /// <returns>True if the Triple has a UriNode with the given Uri</returns>
         public bool Involves(Uri uri)
         {
-            IUriNode temp = new UriNode(null, uri);
+            IUriNode temp = new UriNode(uri);
 
             //Does the Subject involve this Uri?
             if (this._subject.Equals(temp)) return true;
@@ -316,39 +241,6 @@ namespace VDS.RDF
             if (this._object.Equals(temp)) return true;
             //Not Involved!
             return false;
-        }
-
-        /// <summary>
-        /// Indicates whether the Triple has the given Node as the Subject
-        /// </summary>
-        /// <param name="n">Node to test upon</param>
-        /// <returns></returns>
-        public bool HasSubject(INode n)
-        {
-            //return this._subject.GetHashCode().Equals(n.GetHashCode());
-            return this._subject.Equals(n);
-        }
-
-        /// <summary>
-        /// Indicates whether the Triple has the given Node as the Predicate
-        /// </summary>
-        /// <param name="n">Node to test upon</param>
-        /// <returns></returns>
-        public bool HasPredicate(INode n)
-        {
-            //return this._predicate.GetHashCode().Equals(n.GetHashCode());
-            return this._predicate.Equals(n);
-        }
-
-        /// <summary>
-        /// Indicates whether the Triple has the given Node as the Object
-        /// </summary>
-        /// <param name="n">Node to test upon</param>
-        /// <returns></returns>
-        public bool HasObject(INode n)
-        {
-            //return this._object.GetHashCode().Equals(n.GetHashCode());
-            return this._object.Equals(n);
         }
 
         /// <summary>
@@ -370,11 +262,7 @@ namespace VDS.RDF
                 Triple temp = (Triple)obj;
 
                 //Subject, Predicate and Object must all be equal
-                //Either the Nodes must be directly equal or they must both be Blank Nodes with identical Node IDs
-                //Use lazy evaluation as far as possible
-                return (this._subject.Equals(temp.Subject) || (this._subject.NodeType == NodeType.Blank && temp.Subject.NodeType == NodeType.Blank && this._subject.ToString().Equals(temp.Subject.ToString())))
-                       && (this._predicate.Equals(temp.Predicate) || (this._predicate.NodeType == NodeType.Blank && temp.Predicate.NodeType == NodeType.Blank && this._predicate.ToString().Equals(temp.Predicate.ToString())))
-                       && (this._object.Equals(temp.Object) || (this._object.NodeType == NodeType.Blank && temp.Object.NodeType == NodeType.Blank && this._object.ToString().Equals(temp.Object.ToString())));
+                return this._subject.Equals(temp.Subject) && this._predicate.Equals(temp.Predicate) && this._object.Equals(temp.Object);
 
              }
             else
@@ -393,7 +281,7 @@ namespace VDS.RDF
         /// Returns the Hash Code of the Triple which is calculated as the Hash Code of the String formed by concatenating the Hash Codes of its constituent Nodes.  This Hash Code is precomputed in the Constructor of a Triple since it will be used a lot (in Triple Equality calculation, Triple Collections etc)
         /// </para>
         /// <para>
-        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Triple will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details)
+        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Triple will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details) so you should use an appropriate collection to hold them
         /// </para>
         /// </remarks>
         public override int GetHashCode()
@@ -422,17 +310,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="compress">Controls whether URIs will be compressed to QNames in the String representation</param>
         /// <returns></returns>
+        [Obsolete("Obsolete, no longer supportable since Triple does not hold a reference to a Graph", true)]
         public string ToString(bool compress)
         {
-            if (!compress || this._g == null)
-            {
-                return this.ToString();
-            }
-            else
-            {
-                TurtleFormatter formatter = new TurtleFormatter(this._g.NamespaceMap);
-                return formatter.Format(this);
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>

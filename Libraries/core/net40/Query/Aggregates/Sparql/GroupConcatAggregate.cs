@@ -57,7 +57,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <param name="expr">Expression</param>
         /// <param name="distinct">Should a distinct modifer be applied</param>
         public GroupConcatAggregate(ISparqlExpression expr, bool distinct)
-            : base(expr, new ConstantTerm(new LiteralNode(null, " ")))
+            : base(expr, new ConstantTerm(new LiteralNode(" ")))
         {
             this._distinct = distinct;
         }
@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// </summary>
         /// <param name="expr">Expression</param>
         public GroupConcatAggregate(ISparqlExpression expr)
-            : base(expr, new ConstantTerm(new LiteralNode(null, " "))) { }
+            : base(expr, new ConstantTerm(new LiteralNode(" "))) { }
 
         /// <summary>
         /// Creates a new GROUP_CONCAT aggregate

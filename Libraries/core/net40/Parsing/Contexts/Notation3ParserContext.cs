@@ -52,8 +52,6 @@ namespace VDS.RDF.Parsing.Contexts
         private Stack<IGraph> _subgraphs = new Stack<IGraph>();
         private IGraph _g;
         private Stack<IRdfHandler> _handlers = new Stack<IRdfHandler>();
-        private Stack<VariableContext> _varContexts = new Stack<VariableContext>();
-        private VariableContext _varContext = new VariableContext(VariableContextType.None);
         
         /// <summary>
         /// Creates a new Notation 3 Parser Context with default settings
@@ -162,21 +160,6 @@ namespace VDS.RDF.Parsing.Contexts
         }
 
         /// <summary>
-        /// Gets the Variable Context for Triples
-        /// </summary>
-        public VariableContext VariableContext
-        {
-            get
-            {
-                return this._varContext;
-            }
-            set
-            {
-                this._varContext = value;
-            }
-        }
-
-        /// <summary>
         /// Pushes the current in-scope Graph onto the Graph stack and creates a new empty Graph to be the in-scope Graph
         /// </summary>
         /// <remarks>
@@ -194,10 +177,6 @@ namespace VDS.RDF.Parsing.Contexts
 
             this._subgraphs.Push(this._g);
             this._g = h;
-
-            VariableContext v = new VariableContext(VariableContextType.None);
-            this._varContexts.Push(this._varContext);
-            this._varContext = v;
         }
 
         /// <summary>
@@ -213,7 +192,6 @@ namespace VDS.RDF.Parsing.Contexts
                 this._g = this._subgraphs.Pop();
                 this._handler.EndRdf(true);
                 this._handler = this._handlers.Pop();
-                this._varContext = this._varContexts.Pop();
             }
             else
             {

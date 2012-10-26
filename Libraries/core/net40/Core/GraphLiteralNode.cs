@@ -489,13 +489,6 @@ namespace VDS.RDF
         : BaseGraphLiteralNode, IEquatable<GraphLiteralNode>, IComparable<GraphLiteralNode>
     {
         /// <summary>
-        /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
-        /// </summary>
-        /// <param name="g">Graph this node is in</param>
-        protected internal GraphLiteralNode()
-            : base() { }
-
-        /// <summary>
         /// Creates a new Graph Literal Node whose value is an empty Subgraph
         /// </summary>
         /// <param name="g">Graph this node is in</param>
@@ -504,6 +497,13 @@ namespace VDS.RDF
             : base(subgraph) { }
 
 #if !SILVERLIGHT
+
+        /// <summary>
+        /// Deserialization only constructor
+        /// </summary>
+        protected internal GraphLiteralNode()
+            : base() { }
+
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

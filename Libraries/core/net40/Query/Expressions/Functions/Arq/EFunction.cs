@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
     public class EFunction 
         : ISparqlExpression
     {
-        private IValuedNode _node = new DoubleNode(null, Math.E);
+        private IValuedNode _node = new DoubleNode(Math.E);
 
         /// <summary>
         /// Evaluates the function

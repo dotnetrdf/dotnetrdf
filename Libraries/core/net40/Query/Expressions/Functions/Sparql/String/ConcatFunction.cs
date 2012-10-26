@@ -107,15 +107,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             //Produce the appropriate literal form depending on our inputs
             if (allString)
             {
-                return new StringNode(null, output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(output.ToString(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else if (allSameTag)
             {
-                return new StringNode(null, output.ToString(), langTag);
+                return new StringNode(output.ToString(), langTag);
             }
             else
             {
-                return new StringNode(null, output.ToString());
+                return new StringNode(output.ToString());
             }
         }
 

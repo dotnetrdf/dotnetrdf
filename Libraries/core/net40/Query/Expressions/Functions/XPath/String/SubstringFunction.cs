@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             {
                 IValuedNode length = this.CheckArgument(this._length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 int s = Convert.ToInt32(start.AsInteger());
                 int l = Convert.ToInt32(length.AsInteger());
@@ -95,35 +95,35 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (l < 1)
                 {
                     //If no/negative characters are being selected the empty string is returned
-                    return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else if ((s - 1) > input.Value.Length)
                 {
                     //If the start is after the end of the string the empty string is returned
-                    return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else
                 {
                     if (((s - 1) + l) > input.Value.Length)
                     {
                         //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
-                        return new StringNode(null, input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                     else
                     {
                         //Otherwise do normal substring
-                        return new StringNode(null, input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                        return new StringNode(input.Value.Substring(s - 1, l), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                     }
                 }
             }
             else
             {
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 int s = Convert.ToInt32(start.AsInteger());
                 if (s < 1) s = 1;
 
-                return new StringNode(null, input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(input.Value.Substring(s - 1), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
         }
 

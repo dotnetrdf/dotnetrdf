@@ -371,7 +371,7 @@ namespace VDS.RDF.Query
                     IGraph g = (IGraph)results;
                     foreach (Triple t in g.Triples)
                     {
-                        this._triples.Add(t.CopyTriple(this));
+                        this._triples.Add(t);
                     }
                     this.AttachEventHandlers(this._triples);
                 }
@@ -435,7 +435,7 @@ namespace VDS.RDF.Query
                     IGraph g = (IGraph)results;
                     foreach (Triple t in g.Triples)
                     {
-                        this._triples.Add(t.CopyTriple(this));
+                        this._triples.Add(t);
                     }
                     this.AttachEventHandlers(this._triples);
                 }

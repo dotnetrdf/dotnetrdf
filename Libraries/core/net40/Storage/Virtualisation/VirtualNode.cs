@@ -63,7 +63,6 @@ namespace VDS.RDF.Storage.Virtualisation
     {
         private TNodeID _id;
         private IVirtualRdfProvider<TNodeID, TGraphID> _provider;
-        private NodeType _type;
         /// <summary>
         /// The materialised value of the Virtual Node
         /// </summary>
@@ -78,7 +77,6 @@ namespace VDS.RDF.Storage.Virtualisation
         public BaseVirtualNode(NodeType type, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
             : base(type)
         {
-            this._type = type;
             this._id = id;
             this._provider = provider;
         }
@@ -94,7 +92,7 @@ namespace VDS.RDF.Storage.Virtualisation
             : this(type, id, provider)
         {
             this._value = value;
-            if (this._value.NodeType != this._type) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+            if (this._value.NodeType != this.NodeType) throw new RdfException("Cannot create a pre-materialised Virtual Node where the materialised value is a Node of the wrong type! Expected " + this.NodeType.ToString() + " but got " + this._value.NodeType.ToString());
             this.OnMaterialise();
         }
 
@@ -106,8 +104,8 @@ namespace VDS.RDF.Storage.Virtualisation
             if (this._value == null)
             {
                 //Materialise the value
-                this._value = this._provider.GetValue(this._g, this._id);
-                if (this._value.NodeType != this._type) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this._type.ToString() + " but got " + this._value.NodeType.ToString());
+                this._value = this._provider.GetValue(this._id);
+                if (this._value.NodeType != this.NodeType) throw new RdfException("The Virtual RDF Provider materialised a Node of the wrong type! Expected " + this.NodeType.ToString() + " but got " + this._value.NodeType.ToString());
                 this.OnMaterialise();
             }
         }
@@ -172,48 +170,11 @@ namespace VDS.RDF.Storage.Virtualisation
         #region INode Members
 
         /// <summary>
-        /// Gets the Type of the Node
-        /// </summary>
-        public NodeType NodeType
-        {
-            get
-            {
-                return this._type;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Graph the Node belongs to
-        /// </summary>
-        public IGraph Graph
-        {
-            get 
-            {
-                return this._g; 
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Graph URI of the Node
-        /// </summary>
-        public Uri GraphUri
-        {
-            get
-            {
-                return this._graphUri;
-            }
-            set
-            {
-                this._graphUri = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the String representation of the Node formatted with the given Node formatter
         /// </summary>
         /// <param name="formatter">Formatter</param>
         /// <returns></returns>
-        public string ToString(INodeFormatter formatter)
+        public override string ToString(INodeFormatter formatter)
         {
             return formatter.Format(this);
         }
@@ -224,7 +185,7 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="formatter">Formatter</param>
         /// <param name="segment">Triple Segment</param>
         /// <returns></returns>
-        public string ToString(INodeFormatter formatter, TripleSegment segment)
+        public override string ToString(INodeFormatter formatter, TripleSegment segment)
         {
             return formatter.Format(this, segment);
         }
@@ -350,7 +311,7 @@ namespace VDS.RDF.Storage.Virtualisation
             bool areEqual;
             if (this.TryVirtualEquality(other, out areEqual) && areEqual) return 0;
 
-            switch (this._type)
+            switch (this.NodeType)
             {
                 case NodeType.Blank:
                     if (other.NodeType == NodeType.Variable)
@@ -503,7 +464,7 @@ namespace VDS.RDF.Storage.Virtualisation
             if (other == null) return false;
 
             bool areEqual;
-            if (this._type != other.NodeType)
+            if (this.NodeType != other.NodeType)
             {
                 //Non-equal node types cannot be equal
                 return false;
@@ -532,7 +493,7 @@ namespace VDS.RDF.Storage.Virtualisation
             if (ReferenceEquals(this, other)) return true;
             if (other == null) return false;
 
-            if (this._type == other.NodeType)
+            if (this.NodeType == other.NodeType)
             {
                 return this.Equals(other);
             }
@@ -729,7 +690,6 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             IBlankNode temp = (IBlankNode)this._value;
             this._id = temp.AnonID;
-            this._factory = temp.FactoryID;
         }
 
         /// <summary>
@@ -938,21 +898,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Graph Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-            : base(g, NodeType.GraphLiteral, id, provider) { }
+        public BaseVirtualGraphLiteralNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(NodeType.GraphLiteral, id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Graph Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public BaseVirtualGraphLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraphLiteralNode value)
-            : base(g, NodeType.GraphLiteral, id, provider, value) { }
+        public BaseVirtualGraphLiteralNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IGraphLiteralNode value)
+            : base(NodeType.GraphLiteral, id, provider, value) { }
 
         /// <summary>
         /// Takes post materialisation actions
@@ -1153,21 +1111,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-            : base(g, NodeType.Literal, id, provider) { }
+        public BaseVirtualLiteralNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(NodeType.Literal, id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public BaseVirtualLiteralNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, ILiteralNode value)
-            : base(g, NodeType.Literal, id, provider, value) { }
+        public BaseVirtualLiteralNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, ILiteralNode value)
+            : base(NodeType.Literal, id, provider, value) { }
 
         /// <summary>
         /// Takes post materialisation actions
@@ -1438,21 +1394,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual URI Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-            : base(g, NodeType.Uri, id, provider) { }
+        public BaseVirtualUriNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(NodeType.Uri, id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual URI Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public BaseVirtualUriNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IUriNode value)
-            : base(g, NodeType.Uri, id, provider, value) { }
+        public BaseVirtualUriNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IUriNode value)
+            : base(NodeType.Uri, id, provider, value) { }
 
         /// <summary>
         /// Takes post materialisation actions
@@ -1650,21 +1604,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Variable Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
-            : base(g, NodeType.Variable, id, provider) { }
+        public BaseVirtualVariableNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider)
+            : base(NodeType.Variable, id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Variable Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public BaseVirtualVariableNode(IGraph g, TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IVariableNode value)
-            : base(g, NodeType.Variable, id, provider, value) { }
+        public BaseVirtualVariableNode(TNodeID id, IVirtualRdfProvider<TNodeID, TGraphID> provider, IVariableNode value)
+            : base(NodeType.Variable, id, provider, value) { }
 
         /// <summary>
         /// Takes post materialisation actions

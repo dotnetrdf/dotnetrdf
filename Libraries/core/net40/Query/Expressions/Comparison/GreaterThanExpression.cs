@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
             if (a == null) throw new RdfQueryException("Cannot evaluate a > when one argument is Null");
 
             int compare = this._comparer.Compare(a, b);//a.CompareTo(b);
-            return new BooleanNode(null, compare > 0);
+            return new BooleanNode(compare > 0);
         }
 
         /// <summary>

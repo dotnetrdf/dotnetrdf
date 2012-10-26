@@ -81,13 +81,13 @@ namespace VDS.RDF.Query.Operators.Numeric
                         decimal d = this.Divide(ns.Select(n => n.AsDecimal()));
                         if (Decimal.Floor(d).Equals(d) && d >= Int64.MinValue && d <= Int64.MaxValue)
                         {
-                            return new LongNode(null, Convert.ToInt64(d));
+                            return new LongNode(Convert.ToInt64(d));
                         }
-                        return new DecimalNode(null, d);
+                        return new DecimalNode(d);
                     case SparqlNumericType.Float:
-                        return new FloatNode(null, this.Divide(ns.Select(n => n.AsFloat())));
+                        return new FloatNode(this.Divide(ns.Select(n => n.AsFloat())));
                     case SparqlNumericType.Double:
-                        return new DoubleNode(null, this.Divide(ns.Select(n => n.AsDouble())));
+                        return new DoubleNode(this.Divide(ns.Select(n => n.AsDouble())));
                     default:
                         throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
                 }

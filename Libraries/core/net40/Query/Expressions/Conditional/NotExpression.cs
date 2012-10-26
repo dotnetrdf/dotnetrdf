@@ -58,7 +58,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
         /// <returns></returns>
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new BooleanNode(null, !this._expr.Evaluate(context, bindingID).AsSafeBoolean());
+            return new BooleanNode(!this._expr.Evaluate(context, bindingID).AsSafeBoolean());
         }
 
         /// <summary>

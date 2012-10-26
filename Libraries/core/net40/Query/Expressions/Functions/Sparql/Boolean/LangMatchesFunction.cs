@@ -68,13 +68,13 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
             if (result == null)
             {
-                return new BooleanNode(null, false);
+                return new BooleanNode(false);
             }
             else if (result.NodeType == NodeType.Literal)
             {
                 if (langRange == null)
                 {
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
                 else if (langRange.NodeType == NodeType.Literal)
                 {
@@ -83,21 +83,21 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
 
                     if (range.Equals("*"))
                     {
-                        return new BooleanNode(null, !lang.Equals(string.Empty));
+                        return new BooleanNode(!lang.Equals(string.Empty));
                     }
                     else
                     {
-                        return new BooleanNode(null, lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
+                        return new BooleanNode(lang.Equals(range, StringComparison.OrdinalIgnoreCase) || lang.StartsWith(range + "-", StringComparison.OrdinalIgnoreCase));
                     }
                 }
                 else
                 {
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
             else
             {
-                return new BooleanNode(null, false);
+                return new BooleanNode(false);
             }
         }
 

@@ -55,14 +55,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// Creates a new Leviathan Random Function
         /// </summary>
         public RandomFunction()
-            : base(new ConstantTerm(new DoubleNode(null, 0)), new ConstantTerm(new DoubleNode(null, 1))) { }
+            : base(new ConstantTerm(new DoubleNode(0)), new ConstantTerm(new DoubleNode(1))) { }
 
         /// <summary>
         /// Creates a new Leviathan Random Function
         /// </summary>
         /// <param name="max">Maximum</param>
         public RandomFunction(ISparqlExpression max)
-            : base(new ConstantTerm(new DoubleNode(null, 0)), max)
+            : base(new ConstantTerm(new DoubleNode(0)), max)
         {
             this._args = 1;
         }
@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             double range = y - x;
             double rnd = this._rnd.NextDouble() * range;
             rnd += x;
-            return new DoubleNode(null, rnd);
+            return new DoubleNode(rnd);
         }
 
 

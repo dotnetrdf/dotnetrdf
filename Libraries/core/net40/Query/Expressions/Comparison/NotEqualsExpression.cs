@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
             IValuedNode x = this._leftExpr.Evaluate(context, bindingID);
             IValuedNode y = this._rightExpr.Evaluate(context, bindingID);
 
-            return new BooleanNode(null, SparqlSpecsHelper.Inequality(x, y));
+            return new BooleanNode(SparqlSpecsHelper.Inequality(x, y));
         }
 
         /// <summary>

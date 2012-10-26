@@ -57,8 +57,8 @@ namespace VDS.RDF.Nodes
         /// <param name="g">Graph the node belong to</param>
         /// <param name="value">Boolean Value</param>
         /// <param name="lexicalValue">Lexical Value</param>
-        public BooleanNode(IGraph g, bool value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
+        public BooleanNode(bool value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean))
         {
             this._value = value;
         }
@@ -68,8 +68,8 @@ namespace VDS.RDF.Nodes
         /// </summary>
         /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Boolean Value</param>
-        public BooleanNode(IGraph g, bool value)
-            : this(g, value, value.ToString().ToLower()) { }
+        public BooleanNode(bool value)
+            : this(value, value.ToString().ToLower()) { }
 
         /// <summary>
         /// Gets the string value of the boolean

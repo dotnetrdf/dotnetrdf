@@ -221,19 +221,19 @@ namespace VDS.RDF.Query.Aggregates.Leviathan
 
                 case SparqlNumericType.Integer:
                     //Integer Values
-                    return new LongNode(null, lngmin);
+                    return new LongNode(lngmin);
 
                 case SparqlNumericType.Decimal:
                     //Decimal Values
-                    return new DecimalNode(null, decmin);
+                    return new DecimalNode(decmin);
 
                 case SparqlNumericType.Float:
                     //Float Values
-                    return new FloatNode(null, fltmin);
+                    return new FloatNode(fltmin);
 
                 case SparqlNumericType.Double:
                     //Double Values
-                    return new DoubleNode(null, dblmin);
+                    return new DoubleNode(dblmin);
 
                 default:
                     throw new RdfQueryException("Failed to calculate a valid Minimum");

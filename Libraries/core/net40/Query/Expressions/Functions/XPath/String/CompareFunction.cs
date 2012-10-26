@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override IValuedNode ValueInternal(ILiteralNode stringLit, ILiteralNode arg)
         {
-            return new LongNode(null, string.Compare(stringLit.Value, arg.Value));
+            return new LongNode(string.Compare(stringLit.Value, arg.Value));
         }
 
         /// <summary>

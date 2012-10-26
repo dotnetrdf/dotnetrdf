@@ -924,13 +924,13 @@ namespace VDS.RDF.Query
                 else
                 {
                     //Just an IRIRef
-                    return new ConstantTerm(new UriNode(null, u));
+                    return new ConstantTerm(new UriNode(u));
                 }
             }
             else
             {
                 //Just an IRIRef
-                return new ConstantTerm(new UriNode(null, u));
+                return new ConstantTerm(new UriNode(u));
             }
         }
 
@@ -946,7 +946,7 @@ namespace VDS.RDF.Query
                 if (next.TokenType == Token.LANGSPEC)
                 {
                     tokens.Dequeue();
-                    return new ConstantTerm(new LiteralNode(null, str.Value, next.Value));
+                    return new ConstantTerm(new LiteralNode(str.Value, next.Value));
                 }
                 else if (next.TokenType == Token.HATHAT)
                 {
@@ -978,27 +978,27 @@ namespace VDS.RDF.Query
                         bool b;
                         if (Boolean.TryParse(dtlit.Value, out b))
                         {
-                            return new ConstantTerm(new BooleanNode(null, b));
+                            return new ConstantTerm(new BooleanNode(b));
                         }
                         else
                         {
-                            return new ConstantTerm(new StringNode(null, dtlit.Value, dtlit.DataType));
+                            return new ConstantTerm(new StringNode(dtlit.Value, dtlit.DataType));
                         }
                     }
                     else
                     {
                         //Just a datatyped Literal Node
-                        return new ConstantTerm(new LiteralNode(null, str.Value, u));
+                        return new ConstantTerm(new LiteralNode(str.Value, u));
                     }
                 }
                 else
                 {
-                    return new ConstantTerm(new LiteralNode(null, str.Value));
+                    return new ConstantTerm(new LiteralNode(str.Value));
                 }
             }
             else
             {
-                return new ConstantTerm(new LiteralNode(null, str.Value));
+                return new ConstantTerm(new LiteralNode(str.Value));
             }
 
         }
@@ -1010,11 +1010,11 @@ namespace VDS.RDF.Query
 
             if (lit.Value.Equals("true"))
             {
-                return new ConstantTerm(new BooleanNode(null, true));
+                return new ConstantTerm(new BooleanNode(true));
             }
             else if (lit.Value.Equals("false"))
             {
-                return new ConstantTerm(new BooleanNode(null, false));
+                return new ConstantTerm(new BooleanNode(false));
             }
             else
             {
@@ -1030,15 +1030,15 @@ namespace VDS.RDF.Query
                     //Use Regular Expressions to see what type it is
                     if (SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
+                        return new ConstantTerm(new LongNode(Int64.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(Decimal.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(Double.Parse(literal.Value)));
                     }
                     else
                     {
@@ -1062,19 +1062,19 @@ namespace VDS.RDF.Query
                     //Return a Numeric Expression Term if it's an Integer/Decimal/Double
                     if (XmlSpecsHelper.XmlSchemaDataTypeInteger.Equals(dtUri) && SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
+                        return new ConstantTerm(new LongNode(Int64.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeDecimal.Equals(dtUri) && SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(Decimal.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeFloat.Equals(dtUri) && SparqlSpecsHelper.IsFloat(literal.Value))
                     {
-                        return new ConstantTerm(new FloatNode(null, Single.Parse(literal.Value)));
+                        return new ConstantTerm(new FloatNode(Single.Parse(literal.Value)));
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeDouble.Equals(dtUri) && SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(Double.Parse(literal.Value)));
                     }
                     else
                     {
@@ -1100,15 +1100,15 @@ namespace VDS.RDF.Query
                     //Use Regex to see if it's a Integer/Decimal/Double
                     if (SparqlSpecsHelper.IsInteger(literal.Value))
                     {
-                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
+                        return new ConstantTerm(new LongNode(Int64.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDecimal(literal.Value))
                     {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
+                        return new ConstantTerm(new DecimalNode(Decimal.Parse(literal.Value)));
                     }
                     else if (SparqlSpecsHelper.IsDouble(literal.Value))
                     {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        return new ConstantTerm(new DoubleNode(Double.Parse(literal.Value)));
                     }
                     else
                     {

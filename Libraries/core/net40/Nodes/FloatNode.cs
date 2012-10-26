@@ -51,11 +51,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new Float valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Float value</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public FloatNode(IGraph g, float value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
+        public FloatNode(float value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeFloat), SparqlNumericType.Float)
         {
             this._value = value;
         }
@@ -63,10 +62,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new Float valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Float value</param>
-        public FloatNode(IGraph g, float value)
-            : this(g, value, value.ToString()) { }
+        public FloatNode(float value)
+            : this(value, value.ToString()) { }
 
         /// <summary>
         /// Gets the integer value of the float

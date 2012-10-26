@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         protected override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            return new StringNode(null, Uri.EscapeUriString(stringLit.Value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(Uri.EscapeUriString(stringLit.Value), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>

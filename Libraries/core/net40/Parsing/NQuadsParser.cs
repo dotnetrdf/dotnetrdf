@@ -283,10 +283,10 @@ namespace VDS.RDF.Parsing
                 switch (next.TokenType)
                 {
                     case Token.BLANKNODEWITHID:
-                        context = new BlankNode(null, next.Value.Substring(2));
+                        context = new UriNode(UriFactory.Create("nquads:bnode:" + next.Value.Substring(2).GetHashCode()));
                         break;
                     case Token.URI:
-                        context = new UriNode(null, UriFactory.Create(next.Value));
+                        context = new UriNode(UriFactory.Create(next.Value));
                         break;
                     case Token.LITERAL:
                         //Check for Datatype/Language
@@ -294,16 +294,16 @@ namespace VDS.RDF.Parsing
                         if (temp.TokenType == Token.LANGSPEC)
                         {
                             tokens.Dequeue();
-                            context = new LiteralNode(null, next.Value, temp.Value);
+                            context = new LiteralNode(next.Value, temp.Value);
                         }
                         else if (temp.TokenType == Token.DATATYPE)
                         {
                             tokens.Dequeue();
-                            context = new LiteralNode(null, next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
+                            context = new LiteralNode(next.Value, UriFactory.Create(temp.Value.Substring(1, temp.Value.Length - 2)));
                         }
                         else
                         {
-                            context = new LiteralNode(null, next.Value);
+                            context = new LiteralNode(next.Value);
                         }
                         break;
                     default:
@@ -321,10 +321,6 @@ namespace VDS.RDF.Parsing
                 if (context.NodeType == NodeType.Uri)
                 {
                     return ((IUriNode)context).Uri;
-                }
-                else if (context.NodeType == NodeType.Blank)
-                {
-                    return UriFactory.Create("nquads:bnode:" + context.GetHashCode());
                 }
                 else if (context.NodeType == NodeType.Literal)
                 {

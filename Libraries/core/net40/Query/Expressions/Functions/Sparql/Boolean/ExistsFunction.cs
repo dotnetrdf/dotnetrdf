@@ -82,18 +82,18 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         {
             if (this._result == null || this._lastInput == null || (int)this._lastInput != context.InputMultiset.GetHashCode() || this._lastCount != context.InputMultiset.Count) this.EvaluateInternal(context);
 
-            if (this._result is IdentityMultiset) return new BooleanNode(null, true);
+            if (this._result is IdentityMultiset) return new BooleanNode(true);
             if (this._mustExist)
             {
                 //If an EXISTS then Null/Empty Other results in false
-                if (this._result is NullMultiset) return new BooleanNode(null, false);
-                if (this._result.IsEmpty) return new BooleanNode(null, false);
+                if (this._result is NullMultiset) return new BooleanNode(false);
+                if (this._result.IsEmpty) return new BooleanNode(false);
             }
             else
             {
                 //If a NOT EXISTS then Null/Empty results in true
-                if (this._result is NullMultiset) return new BooleanNode(null, true);
-                if (this._result.IsEmpty) return new BooleanNode(null, true);
+                if (this._result is NullMultiset) return new BooleanNode(true);
+                if (this._result.IsEmpty) return new BooleanNode(true);
             }
 
             if (this._joinVars.Count == 0)
@@ -102,12 +102,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
                 if (this._mustExist)
                 {
                     //If Disjoint and must exist then true since
-                    return new BooleanNode(null, true);
+                    return new BooleanNode(true);
                 }
                 else
                 {
                     //If Disjoint and must not exist then false
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
             }
 
@@ -117,12 +117,12 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             if (this._mustExist)
             {
                 //If an EXISTS then return the value of exists i.e. are there any compatible solutions
-                return new BooleanNode(null, exists);
+                return new BooleanNode(exists);
             }
             else
             {
                 //If a NOT EXISTS then return the negation of exists i.e. if compatible solutions exist then we must return false, if none we return true
-                return new BooleanNode(null, !exists);
+                return new BooleanNode(!exists);
             }
         }
 

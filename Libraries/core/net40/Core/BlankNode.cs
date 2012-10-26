@@ -54,17 +54,16 @@ namespace VDS.RDF
     public abstract class BaseBlankNode
         : BaseNode, IBlankNode, IEquatable<BaseBlankNode>, IComparable<BaseBlankNode>, IValuedNode
     {
-        private Guid _id, _factoryID;
+        private Guid _id;
 
         /// <summary>
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
-        protected internal BaseBlankNode(Guid id, Guid factoryId)
+        protected internal BaseBlankNode(Guid id)
             : base(NodeType.Blank)
         {
             this._id = id;
-            this._factoryID = factoryId;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -84,7 +83,7 @@ namespace VDS.RDF
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
-            : this((Guid)info.GetValue("id", typeof(Guid)), (Guid)info.GetValue("factory", typeof(Guid))) { }
+            : this((Guid)info.GetValue("id", typeof(Guid))) { }
 
 #endif
 
@@ -108,14 +107,6 @@ namespace VDS.RDF
             get
             {
                 return this._id;
-            }
-        }
-
-        public Guid FactoryID
-        {
-            get
-            {
-                return this._factoryID;
             }
         }
 
@@ -391,7 +382,6 @@ namespace VDS.RDF
         public sealed override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue("id", this._id);
-            info.AddValue("factory", this._factoryID);
         }
 
         #endregion
@@ -404,12 +394,7 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            reader.MoveToAttribute("id");
             this._id = Guid.Parse(reader.ReadElementContentAsString());
-            reader.MoveToAttribute("factory");
-            this._factoryID = Guid.Parse(reader.ReadElementContentAsString());
-            reader.MoveToElement();
-            reader.Read();
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
@@ -420,8 +405,7 @@ namespace VDS.RDF
         /// <param name="writer">XML Writer</param>
         public sealed override void WriteXml(XmlWriter writer)
         {
-            writer.WriteAttributeString("id", this._id.ToString());
-            writer.WriteAttributeString("factory", this._factoryID.ToString());
+            writer.WriteString(this._id.ToString());
         }
 
         #endregion
@@ -540,8 +524,8 @@ namespace VDS.RDF
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
-        protected internal BlankNode(Guid id, Guid factoryId)
-            : base(id, factoryId) { }
+        protected internal BlankNode(Guid id)
+            : base(id) { }
 
         /// <summary>
         /// Constructor for deserialization usage only

@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Numeric
         /// <returns></returns>
         public IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
-            return new DoubleNode(null, _rnd.NextDouble());
+            return new DoubleNode(_rnd.NextDouble());
         }
 
         /// <summary>

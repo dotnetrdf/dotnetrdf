@@ -70,11 +70,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     IUriNode u = (IUriNode)temp;
                     if (!u.Uri.Fragment.Equals(String.Empty))
                     {
-                        return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('#') + 1));
+                        return new StringNode(u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('#') + 1));
                     }
                     else
                     {
-                        return new StringNode(null, u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
+                        return new StringNode(u.Uri.AbsoluteUri.Substring(0, u.Uri.AbsoluteUri.LastIndexOf('/') + 1));
                     }
                 }
                 else

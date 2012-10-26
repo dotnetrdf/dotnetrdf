@@ -82,7 +82,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="context">Construct Context</param>
         protected internal override INode Construct(ConstructContext context)
         {
-            return context.GetNode(this._node);
+            return this._node;
         }
 
         /// <summary>

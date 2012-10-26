@@ -85,13 +85,13 @@ namespace VDS.RDF.Query.Expressions.Arithmetic
             //switch (type)
             //{
             //    case SparqlNumericType.Integer:
-            //        return new LongNode(null, a.AsInteger() - b.AsInteger());
+            //        return new LongNode(a.AsInteger() - b.AsInteger());
             //    case SparqlNumericType.Decimal:
-            //        return new DecimalNode(null, a.AsDecimal() - b.AsDecimal());
+            //        return new DecimalNode(a.AsDecimal() - b.AsDecimal());
             //    case SparqlNumericType.Float:
-            //        return new FloatNode(null, a.AsFloat() - b.AsFloat());
+            //        return new FloatNode(a.AsFloat() - b.AsFloat());
             //    case SparqlNumericType.Double:
-            //        return new DoubleNode(null, a.AsDouble() - b.AsDouble());
+            //        return new DoubleNode(a.AsDouble() - b.AsDouble());
             //    default:
             //        throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             //}

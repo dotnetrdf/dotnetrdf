@@ -63,9 +63,9 @@ namespace VDS.RDF
         private MultiDictionary<Triple, List<Triple>> _sp, _so, _po;
 
         //Placeholder Variables for compound lookups
-        private VariableNode _subjVar = new VariableNode(null, "s"),
-                             _predVar = new VariableNode(null, "p"),
-                             _objVar = new VariableNode(null, "o");
+        private VariableNode _subjVar = new VariableNode("s"),
+                             _predVar = new VariableNode("p"),
+                             _objVar = new VariableNode("o");
 
         private bool _fullIndexing = false;
         private int _count = 0;
@@ -350,7 +350,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._po.TryGetValue(new Triple(this._subjVar.CopyNode(pred.Graph), pred, obj.CopyNode(pred.Graph)), out ts))
+                if (this._po.TryGetValue(new Triple(this._subjVar, pred, obj), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -376,7 +376,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._so.TryGetValue(new Triple(subj, this._predVar.CopyNode(subj.Graph), obj.CopyNode(subj.Graph)), out ts))
+                if (this._so.TryGetValue(new Triple(subj, this._predVar, obj), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }
@@ -402,7 +402,7 @@ namespace VDS.RDF
             if (this._fullIndexing)
             {
                 List<Triple> ts;
-                if (this._sp.TryGetValue(new Triple(subj, pred.CopyNode(subj.Graph), this._objVar.CopyNode(subj.Graph)), out ts))
+                if (this._sp.TryGetValue(new Triple(subj, pred, this._objVar), out ts))
                 {
                     return (ts != null ? ts : Enumerable.Empty<Triple>());
                 }

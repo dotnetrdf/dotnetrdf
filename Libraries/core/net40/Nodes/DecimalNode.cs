@@ -41,7 +41,7 @@ using VDS.RDF.Query.Expressions;
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// A Valued Node representing decimal nodes
+    /// Valued Node representing decimal nodes
     /// </summary>
     public class DecimalNode
         : NumericNode
@@ -51,11 +51,10 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new decimal valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Decimal value</param>
         /// <param name="lexicalValue">Lexical value</param>
-        public DecimalNode(IGraph g, decimal value, String lexicalValue)
-            : base(g, lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
+        public DecimalNode(decimal value, String lexicalValue)
+            : base(lexicalValue, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal), SparqlNumericType.Decimal)
         {
             this._value = value;
         }
@@ -63,10 +62,9 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new decimal valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Decimal value</param>
-        public DecimalNode(IGraph g, decimal value)
-            : this(g, value, value.ToString()) { }
+        public DecimalNode(decimal value)
+            : this(value, value.ToString()) { }
 
         /// <summary>
         /// Gets the integer value of the decimal

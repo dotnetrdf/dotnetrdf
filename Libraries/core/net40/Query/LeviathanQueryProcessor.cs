@@ -226,14 +226,13 @@ namespace VDS.RDF.Query
                                     //List<Triple> constructedTriples = new List<Triple>();
                                     try
                                     {
-                                        ConstructContext constructContext = new ConstructContext(rdfHandler, s, false);
+                                        ConstructContext constructContext = new ConstructContext(s);
                                         foreach (IConstructTriplePattern p in query.ConstructTemplate.TriplePatterns.OfType<IConstructTriplePattern>())
                                         {
                                             try
 
                                             {
                                                 if (!rdfHandler.HandleTriple(p.Construct(constructContext))) ParserHelper.Stop();
-                                                //constructedTriples.Add(((IConstructTriplePattern)p).Construct(constructContext));
                                             }
                                             catch (RdfQueryException)
                                             {
@@ -248,7 +247,6 @@ namespace VDS.RDF.Query
                                         //entire solution is discarded
                                         continue;
                                     }
-                                    //h.Assert(constructedTriples);
                                 }
                                 rdfHandler.EndRdf(true);
                             }

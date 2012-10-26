@@ -75,13 +75,13 @@ namespace VDS.RDF.Query.Operators.Numeric
             switch (type)
             {
                 case SparqlNumericType.Integer:
-                    return new LongNode(null, this.Subtract(ns.Select(n => n.AsInteger())));
+                    return new LongNode(this.Subtract(ns.Select(n => n.AsInteger())));
                 case SparqlNumericType.Decimal:
-                    return new DecimalNode(null, this.Subtract(ns.Select(n => n.AsDecimal())));
+                    return new DecimalNode(this.Subtract(ns.Select(n => n.AsDecimal())));
                 case SparqlNumericType.Float:
-                    return new FloatNode(null, this.Subtract(ns.Select(n => n.AsFloat())));
+                    return new FloatNode(this.Subtract(ns.Select(n => n.AsFloat())));
                 case SparqlNumericType.Double:
-                    return new DoubleNode(null, this.Subtract(ns.Select(n => n.AsDouble())));
+                    return new DoubleNode(this.Subtract(ns.Select(n => n.AsDouble())));
                 default:
                     throw new RdfQueryException("Cannot evalute an Arithmetic Expression when the Numeric Type of the expression cannot be determined");
             }

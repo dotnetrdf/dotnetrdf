@@ -301,7 +301,7 @@ namespace VDS.RDF.Query.Patterns
                                           select set).Distinct(new SetDistinctnessComparer(new String[] { predVar, objVar }));
                             return (from set in valuePairs
                                     where set[predVar] != null && set[objVar] != null
-                                    select this.CreateTriple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
+                                    select new Triple(subj, set[predVar], set[objVar])).Where(t => context.Data.ContainsTriple(t));
                         }
                         else
                         {
@@ -340,7 +340,7 @@ namespace VDS.RDF.Query.Patterns
                                   select set[objVar]).Distinct();
                         return (from value in values
                                 where value != null
-                                select this.CreateTriple(subj, pred, value)).Where(t => context.Data.ContainsTriple(t));
+                                select new Triple(subj, pred, value)).Where(t => context.Data.ContainsTriple(t));
                     }
                     else
                     {
@@ -358,7 +358,7 @@ namespace VDS.RDF.Query.Patterns
                                   select set[predVar]).Distinct();
                         return (from value in values
                                 where value != null
-                                select this.CreateTriple(subj, value, obj)).Where(t => context.Data.ContainsTriple(t));
+                                select new Triple(subj, value, obj)).Where(t => context.Data.ContainsTriple(t));
                     }
                     else
                     {
@@ -376,7 +376,7 @@ namespace VDS.RDF.Query.Patterns
                                           select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, objVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[objVar] != null
-                                    select this.CreateTriple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
+                                    select new Triple(set[subjVar], pred, set[objVar])).Where(t => context.Data.ContainsTriple(t));
                         }
                         else
                         {
@@ -415,7 +415,7 @@ namespace VDS.RDF.Query.Patterns
                                   select set[subjVar]).Distinct();
                         return (from value in values
                                 where value != null
-                                select this.CreateTriple(value, pred, obj)).Where(t => context.Data.ContainsTriple(t));
+                                select new Triple(value, pred, obj)).Where(t => context.Data.ContainsTriple(t));
                     }
                     else
                     {
@@ -433,7 +433,7 @@ namespace VDS.RDF.Query.Patterns
                                           select set).Distinct(new SetDistinctnessComparer(new String[] { subjVar, predVar }));
                             return (from set in valuePairs
                                     where set[subjVar] != null && set[predVar] != null
-                                    select this.CreateTriple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
+                                    select new Triple(set[subjVar], set[predVar], obj)).Where(t => context.Data.ContainsTriple(t));
                         }
                         else
                         {
@@ -538,17 +538,6 @@ namespace VDS.RDF.Query.Patterns
             }
         }
 
-        private Triple CreateTriple(INode s, INode p, INode o)
-        {
-            IGraph target = s.Graph;
-            if (target == null)
-            {
-                target = p.Graph;
-                if (target == null) target = o.Graph;
-            }
-            return new Triple(s.CopyNode(target), p.CopyNode(target), o.CopyNode(target));
-        }
-
         /// <summary>
         /// Takes an enumerable and extracts Triples which match this pattern as results
         /// </summary>
@@ -595,7 +584,7 @@ namespace VDS.RDF.Query.Patterns
         /// <returns></returns>
         public Triple Construct(ConstructContext context)
         {
-            return new Triple(Tools.CopyNode(this._subj.Construct(context), context.Graph), Tools.CopyNode(this._pred.Construct(context), context.Graph), Tools.CopyNode(this._obj.Construct(context), context.Graph));
+            return new Triple(this._subj.Construct(context), this._pred.Construct(context), this._obj.Construct(context));
         }
 
         /// <summary>
@@ -616,9 +605,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern || this._subj is FixedBlankNodePattern) &&
-                       (this._pred is NodeMatchPattern || this._pred is BlankNodePattern || this._pred is FixedBlankNodePattern) &&
-                       (this._obj is NodeMatchPattern || this._obj is BlankNodePattern || this._obj is FixedBlankNodePattern);
+                return (this._subj is NodeMatchPattern || this._subj is BlankNodePattern) &&
+                       (this._pred is NodeMatchPattern || this._pred is BlankNodePattern) &&
+                       (this._obj is NodeMatchPattern || this._obj is BlankNodePattern);
             }
         }
 
@@ -629,9 +618,9 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._subj is NodeMatchPattern || this._subj is VariablePattern || this._subj is FixedBlankNodePattern) &&
-                       (this._pred is NodeMatchPattern || this._pred is VariablePattern || this._pred is FixedBlankNodePattern) &&
-                       (this._obj is NodeMatchPattern || this._obj is VariablePattern || this._obj is FixedBlankNodePattern);
+                return (this._subj is NodeMatchPattern || this._subj is VariablePattern) &&
+                       (this._pred is NodeMatchPattern || this._pred is VariablePattern) &&
+                       (this._obj is NodeMatchPattern || this._obj is VariablePattern);
             }
         }
 

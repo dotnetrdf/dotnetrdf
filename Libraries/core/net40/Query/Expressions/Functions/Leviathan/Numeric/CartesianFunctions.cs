@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             double dX = x2.AsDouble() - x1.AsDouble();
             double dY = y2.AsDouble() - y1.AsDouble();
 
-            return new DoubleNode(null, Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2)));
+            return new DoubleNode(Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2)));
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             double dY = y2.AsDouble() - y1.AsDouble();
             double dZ = z2.AsDouble() - z1.AsDouble();
 
-            return new DoubleNode(null, Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2) + Math.Pow(dZ,2)));
+            return new DoubleNode(Math.Sqrt(Math.Pow(dX, 2) + Math.Pow(dY, 2) + Math.Pow(dZ,2)));
         }
 
         /// <summary>

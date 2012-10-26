@@ -59,7 +59,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
         public override IValuedNode Evaluate(SparqlEvaluationContext context, int bindingID)
         {
             IValuedNode result = this._expr.Evaluate(context, bindingID);
-            return new BooleanNode(null, result.NumericType != SparqlNumericType.NaN);
+            return new BooleanNode(result.NumericType != SparqlNumericType.NaN);
         }
 
         /// <summary>

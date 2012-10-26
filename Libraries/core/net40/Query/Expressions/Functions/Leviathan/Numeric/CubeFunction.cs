@@ -69,16 +69,16 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
             {
                 case SparqlNumericType.Integer:
                     long l = temp.AsInteger();
-                    return new LongNode(null, l * l * l);
+                    return new LongNode(l * l * l);
                 case SparqlNumericType.Decimal:
                     decimal d = temp.AsDecimal();
-                    return new DecimalNode(null, d * d * d);
+                    return new DecimalNode(d * d * d);
                 case SparqlNumericType.Float:
                     float f = temp.AsFloat();
-                    return new FloatNode(null, f * f * f);
+                    return new FloatNode(f * f * f);
                 case SparqlNumericType.Double:
                     double dbl = temp.AsDouble();
-                    return new DoubleNode(null, Math.Pow(dbl, 3));
+                    return new DoubleNode(Math.Pow(dbl, 3));
                 case SparqlNumericType.NaN:
                 default:
                     throw new RdfQueryException("Cannot square a non-numeric argument");

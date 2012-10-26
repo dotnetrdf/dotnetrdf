@@ -79,9 +79,9 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Hash
                     case NodeType.GraphLiteral:
                         throw new RdfQueryException("Cannot calculate the Hash of a Graph Literal");
                     case NodeType.Literal:
-                        return new StringNode(null, this.Hash(((ILiteralNode)temp).Value));
+                        return new StringNode(this.Hash(((ILiteralNode)temp).Value));
                     case NodeType.Uri:
-                        return new StringNode(null, this.Hash(temp.AsString()));
+                        return new StringNode(this.Hash(temp.AsString()));
                     default:
                         throw new RdfQueryException("Cannot calculate the Hash of an Unknown Node Type");
                 }

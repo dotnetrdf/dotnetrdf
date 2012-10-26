@@ -53,12 +53,11 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new numeric valued node
         /// </summary>
-        /// <param name="g">Graph the node belongs to</param>
         /// <param name="value">Lexical Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <param name="numType">SPARQL Numeric Type</param>
-        public NumericNode(IGraph g, String value, Uri datatype, SparqlNumericType numType)
-            : base(g, value, datatype) 
+        public NumericNode(String value, Uri datatype, SparqlNumericType numType)
+            : base(value, datatype) 
         {
             this._numType = numType;
         }

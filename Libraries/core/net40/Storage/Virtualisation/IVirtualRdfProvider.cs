@@ -49,20 +49,15 @@ namespace VDS.RDF.Storage.Virtualisation
     /// <para>
     /// It is expected that most implementations will use a cache to ensure that repeated transformations are as fast as possible
     /// </para>
-    /// <h3>Important Note re: Blank Nodes</h3>
-    /// <para>
-    /// In order for code that uses this class to function correctly it must be ensured that IDs issued for Blank Nodes are graph scoped, as such a specific method for converting Blank Nodes into Virtual Node IDs is given
-    /// </para>
     /// </remarks>
     public interface IVirtualRdfProvider<TNodeID, TGraphID>
     {
         /// <summary>
-        /// Given a Node ID returns the materialised value in the given Graph
+        /// Given a Node ID returns the materialised value
         /// </summary>
-        /// <param name="g">Graph to create the Node in</param>
         /// <param name="id">Node ID</param>
         /// <returns></returns>
-        INode GetValue(IGraph g, TNodeID id);
+        INode GetValue(TNodeID id);
 
         /// <summary>
         /// Given a Graph ID returns the value of the Graph URI
@@ -123,24 +118,6 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <param name="createIfNotExists">Determines whether to create a new Node ID if there is not already one for the given value</param>
         /// <returns></returns>
         TNodeID GetID(INode value, bool createIfNotExists);
-
-        /// <summary>
-        /// Given a Blank Node returns a Graph scoped Node ID
-        /// </summary>
-        /// <param name="value">Blank Node</param>
-        /// <param name="createIfNotExists">Determines whether to create a new Node ID if there is not already one for the given value</param>
-        /// <returns></returns>
-        TNodeID GetBlankNodeID(IBlankNode value, bool createIfNotExists);
-
-        /// <summary>
-        /// Given a Blank Node returns a Graph scoped Node ID
-        /// </summary>
-        /// <param name="value">Blank Node</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Should function as equivalent to the two argument version with the <strong>createIfNotExists</strong> parameter set to false
-        /// </remarks>
-        TNodeID GetBlankNodeID(IBlankNode value);
 
         /// <summary>
         /// Gets the Node ID that is used to indicate that a Node does not exist in the underlying storage

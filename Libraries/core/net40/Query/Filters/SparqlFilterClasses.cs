@@ -360,7 +360,7 @@ namespace VDS.RDF.Query.Filters
         {
             get
             {
-                ISparqlExpression expr = new ConstantTerm(new BooleanNode(null, true));
+                ISparqlExpression expr = new ConstantTerm(new BooleanNode(true));
                 if (this._filters.Count == 1)
                 {
                     expr = this._filters[0].Expression;

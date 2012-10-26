@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
             //New method should be much faster
             //if (n is DecimalNode) return n;
-            //return new DecimalNode(null, n.AsDecimal());
+            //return new DecimalNode(n.AsDecimal());
 
             switch (n.NodeType)
             {
@@ -95,7 +95,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (Decimal.TryParse(lit.Value, out d))
                             {
                                 //Parsed OK
-                                return new DecimalNode(lit.Graph, d);
+                                return new DecimalNode(d);
                             }
                             else
                             {
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (Decimal.TryParse(lit.Value, out d))
                             {
                                 //Parsed OK
-                                return new DecimalNode(lit.Graph, d);
+                                return new DecimalNode(d);
                             }
                             else
                             {
@@ -127,7 +127,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (Decimal.TryParse(lit.Value, out d))
                         {
                             //Parsed OK
-                            return new DecimalNode(lit.Graph, d);
+                            return new DecimalNode(d);
                         }
                         else
                         {

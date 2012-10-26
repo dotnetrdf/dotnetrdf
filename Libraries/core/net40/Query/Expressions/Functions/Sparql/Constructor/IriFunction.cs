@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         if (lit.DataType == null)
                         {
                             uri = Tools.ResolveUri(lit.Value, baseUri);
-                            return new UriNode(null, UriFactory.Create(uri));
+                            return new UriNode(UriFactory.Create(uri));
                         }
                         else
                         {
@@ -88,7 +88,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                             if (dt.Equals(XmlSpecsHelper.XmlSchemaDataTypeString, StringComparison.Ordinal))
                             {
                                 uri = Tools.ResolveUri(lit.Value, baseUri);
-                                return new UriNode(null, UriFactory.Create(uri));
+                                return new UriNode(UriFactory.Create(uri));
                             }
                             else
                             {

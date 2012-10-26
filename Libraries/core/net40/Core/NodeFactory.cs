@@ -45,7 +45,6 @@ namespace VDS.RDF
         : INodeFactory
     {
         protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
-        protected readonly Guid _factoryID = Guid.NewGuid();
 
         /// <summary>
         /// Creates a new Node Factory
@@ -53,33 +52,20 @@ namespace VDS.RDF
         public NodeFactory()
         { }
 
-        /// <summary>
-        /// Creates a new Node Factory
-        /// </summary>
-        /// <param name="factoryID">Factory ID</param>
-        public NodeFactory(Guid factoryID)
-        {
-            if (factoryID == null) throw new ArgumentNullException("factoryID");
-            this._factoryID = factoryID;
-        }
 
         #region INodeFactory Members
 
-        public Guid FactoryID
-        {
-            get
-            {
-                return _factoryID;
-            }
-        }
 
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID
         /// </summary>
         /// <returns></returns>
+        /// <remarks>
+        /// A factory should always return a fresh blank node when this method is invoked
+        /// </remarks>
         public virtual IBlankNode CreateBlankNode()
         {
-            return new BlankNode(Guid.NewGuid(), this._factoryID);
+            return new BlankNode(Guid.NewGuid());
         }
 
         /// <summary>
@@ -87,18 +73,21 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID</param>
         /// <returns></returns>
+        /// <remarks>
+        /// A Factory must consistently return the same blank node for the same ID
+        /// </remarks>
         public IBlankNode CreateBlankNode(string nodeId)
         {
             Guid id;
             if (this._bnodes.TryGetValue(nodeId, out id))
             {
-                return new BlankNode(id, this._factoryID);
+                return new BlankNode(id);
             }
             else
             {
                 id = Guid.NewGuid();
                 this._bnodes.Add(nodeId, id);
-                return new BlankNode(id, this._factoryID);
+                return new BlankNode(id);
             }
         }
 
@@ -283,25 +272,11 @@ namespace VDS.RDF
     class MockNodeFactory
         : INodeFactory
     {
-        private readonly Guid _factoryId = Guid.NewGuid();
-        private readonly IBlankNode _bnode;
+        private readonly IBlankNode _bnode = new BlankNode(Guid.NewGuid());
         private readonly IGraphLiteralNode _glit = new GraphLiteralNode();
         private readonly ILiteralNode _lit = new LiteralNode("mock");
         private readonly UriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
         private readonly IVariableNode _var = new VariableNode("mock");
-
-        public MockNodeFactory()
-        {
-            this._bnode = new BlankNode(Guid.NewGuid(), this._factoryId);
-        }
-
-        public Guid FactoryID
-        {
-            get
-            {
-                return this._factoryId;
-            }
-        }
 
         public IBlankNode CreateBlankNode()
         {

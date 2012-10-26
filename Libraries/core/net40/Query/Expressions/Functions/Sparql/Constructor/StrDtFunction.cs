@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         {
                             if (lit.Language.Equals(string.Empty))
                             {
-                                return new StringNode(null, lit.Value, dtUri);
+                                return new StringNode(lit.Value, dtUri);
                             }
                             else
                             {

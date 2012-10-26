@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                 switch (result.NodeType)
                 {
                     case NodeType.Literal:
-                        return new StringNode(null, ((ILiteralNode)result).Language);
+                        return new StringNode(((ILiteralNode)result).Language);
 
                     case NodeType.Uri:
                     case NodeType.Blank:

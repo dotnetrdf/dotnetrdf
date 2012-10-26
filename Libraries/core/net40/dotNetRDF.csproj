@@ -676,7 +676,6 @@
     <Compile Include="Query\Paths\NegatedSet.cs" />
     <Compile Include="Query\Patterns\BindPattern.cs" />
     <Compile Include="Query\Patterns\BlankNodePattern.cs" />
-    <Compile Include="Query\Patterns\FixedBlankNodePattern.cs" />
     <Compile Include="Query\Patterns\NodeMatchPattern.cs" />
     <Compile Include="Query\Patterns\VariablePattern.cs" />
     <Compile Include="Query\PelletQueryProcessor.cs" />

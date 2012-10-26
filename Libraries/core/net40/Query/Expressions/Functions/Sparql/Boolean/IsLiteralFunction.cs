@@ -65,11 +65,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Boolean
             INode result = this._expr.Evaluate(context, bindingID);
             if (result == null)
             {
-                return new BooleanNode(null, false);
+                return new BooleanNode(false);
             }
             else
             {
-                return new BooleanNode(null, result.NodeType == NodeType.Literal);
+                return new BooleanNode(result.NodeType == NodeType.Literal);
             }
         }
 

@@ -43,6 +43,7 @@ namespace VDS.RDF
     /// <summary>
     /// Possible Variable Context Types
     /// </summary>
+    [Obsolete("Obsolete, Triple Contexts are no longer supported", true)]
     public enum VariableContextType
     {
         /// <summary>
@@ -62,7 +63,9 @@ namespace VDS.RDF
     /// <summary>
     /// Represents the Variable Context for Triples
     /// </summary>
-    public class VariableContext : BasicTripleContext
+    [Obsolete("Obsolete, Triple Contexts are no longer supported", true)]
+    public class VariableContext 
+        : BasicTripleContext
     {
         private VariableContextType _type;
         private HashSet<INode> _vars = new HashSet<INode>();

@@ -245,10 +245,6 @@ namespace VDS.RDF.Query.Algebra
             {
                 return ((NodeMatchPattern)this.PathStart).Node.Equals(((NodeMatchPattern)this.PathEnd).Node);
             }
-            else if (this.PathStart is FixedBlankNodePattern && this.PathEnd is FixedBlankNodePattern)
-            {
-                return ((FixedBlankNodePattern)this.PathStart).InternalID.Equals(((FixedBlankNodePattern)this.PathEnd).InternalID);
-            }
             else
             {
                 return false;

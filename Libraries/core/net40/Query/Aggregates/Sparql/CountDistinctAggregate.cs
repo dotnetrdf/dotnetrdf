@@ -121,7 +121,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 }
                 c = values.Count;
             }
-            return new LongNode(null, c);
+            return new LongNode(c);
         }
 
         /// <summary>

@@ -116,11 +116,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                     INode node;
                     if (type.ToLower().Equals("uri"))
                     {
-                        node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
+                        node = new UriNode(UriFactory.Create((String)hit.SelectToken("value")));
                     }
                     else
                     {
-                        node = new BlankNode(null, (String)hit.SelectToken("value"));
+                        node = this._nodeFactory.CreateBlankNode((String)hit.SelectToken("value"));
                     }
                     double score = (double)result.SelectToken("score");
 
@@ -196,11 +196,11 @@ namespace VDS.RDF.Query.Inference.Pellet.Services
                             INode node;
                             if (type.ToLower().Equals("uri"))
                             {
-                                node = new UriNode(null, UriFactory.Create((String)hit.SelectToken("value")));
+                                node = new UriNode(UriFactory.Create((String)hit.SelectToken("value")));
                             }
                             else
                             {
-                                node = new BlankNode(null, (String)hit.SelectToken("value"));
+                                node = this._nodeFactory.CreateBlankNode((String)hit.SelectToken("value"));
                             }
                             double score = (double)res.SelectToken("score");
 

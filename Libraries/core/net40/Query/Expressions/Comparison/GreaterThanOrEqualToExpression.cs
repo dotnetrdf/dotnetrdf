@@ -69,7 +69,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
             {
                 if (b == null)
                 {
-                    return new BooleanNode(null, true);
+                    return new BooleanNode(true);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Expressions.Comparison
             }
 
             int compare = this._comparer.Compare(a, b);// a.CompareTo(b);
-            return new BooleanNode(null, compare >= 0);
+            return new BooleanNode(compare >= 0);
         }
 
         /// <summary>

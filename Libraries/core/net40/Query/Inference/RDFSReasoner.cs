@@ -111,12 +111,12 @@ namespace VDS.RDF.Query.Inference
                 else if (t.Predicate.Equals(this._rdfsSubClass))
                 {
                     //Assert that this thing is a Class
-                    inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), this._rdfsClass.CopyNode(output)));
+                    inferences.Add(new Triple(t.Subject, this._rdfType, this._rdfsClass));
                 }
                 else if (t.Predicate.Equals(this._rdfsSubProperty))
                 {
                     //Assert that this thing is a Property
-                    inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), this._rdfProperty.CopyNode(output)));
+                    inferences.Add(new Triple(t.Subject, this._rdfType, this._rdfProperty));
                 }
                 else if (this._propertyMappings.ContainsKey(t.Predicate))
                 {
@@ -128,7 +128,7 @@ namespace VDS.RDF.Query.Inference
                         if (this._propertyMappings[property] != null)
                         {
                             //Assert additional properties
-                            inferences.Add(new Triple(t.Subject.CopyNode(output), this._propertyMappings[property].CopyNode(output), t.Object.CopyNode(output)));
+                            inferences.Add(new Triple(t.Subject, this._propertyMappings[property], t.Object));
                             property = this._propertyMappings[property];
                         }
                         else
@@ -144,7 +144,7 @@ namespace VDS.RDF.Query.Inference
                     //Assert additional type information
                     foreach (INode n in this._rangeMappings[t.Predicate])
                     {
-                        inferences.Add(new Triple(t.Object.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
+                        inferences.Add(new Triple(t.Object, this._rdfType, n));
                     }
 
                     //Call InferClasses to get extra type information
@@ -155,7 +155,7 @@ namespace VDS.RDF.Query.Inference
                     //Assert additional type information
                     foreach (INode n in this._domainMappings[t.Predicate])
                     {
-                        inferences.Add(new Triple(t.Subject.CopyNode(output), this._rdfType.CopyNode(output), n.CopyNode(output)));
+                        inferences.Add(new Triple(t.Subject, this._rdfType, n));
                     }
                     
                     //Call InferClasses to get extra type information
@@ -285,7 +285,7 @@ namespace VDS.RDF.Query.Inference
                 if (this._classMappings[type] != null)
                 {
                     //Assert additional type information
-                    inferences.Add(new Triple(t.Subject.CopyNode(output), t.Predicate.CopyNode(output), this._classMappings[type].CopyNode(output)));
+                    inferences.Add(new Triple(t.Subject, t.Predicate, this._classMappings[type]));
                     type = this._classMappings[type];
                 }
                 else

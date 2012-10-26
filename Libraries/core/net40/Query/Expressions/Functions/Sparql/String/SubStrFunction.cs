@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             {
                 IValuedNode length = this.CheckArgument(this._length, context, bindingID, XPathFunctionFactory.AcceptNumericArguments);
 
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
@@ -99,11 +99,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         //If no/negative characters are being selected the empty string is returned
                         if (input.DataType != null)
                         {
-                            return new StringNode(null, string.Empty, input.DataType);
+                            return new StringNode(string.Empty, input.DataType);
                         }
                         else
                         {
-                            return new StringNode(null, string.Empty, input.Language);
+                            return new StringNode(string.Empty, input.Language);
                         }
                     }
                     else if ((s - 1) > input.Value.Length)
@@ -111,11 +111,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                         //If the start is after the end of the string the empty string is returned
                         if (input.DataType != null)
                         {
-                            return new StringNode(null, string.Empty, input.DataType);
+                            return new StringNode(string.Empty, input.DataType);
                         }
                         else
                         {
-                            return new StringNode(null, string.Empty, input.Language);
+                            return new StringNode(string.Empty, input.Language);
                         }
                     }
                     else
@@ -125,11 +125,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             //If the start plus the length is greater than the length of the string the string from the starts onwards is returned
                             if (input.DataType != null)
                             {
-                                return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
+                                return new StringNode(input.Value.Substring(s - 1), input.DataType);
                             }
                             else
                             {
-                                return new StringNode(null, input.Value.Substring(s - 1), input.Language);
+                                return new StringNode(input.Value.Substring(s - 1), input.Language);
                             }
                         }
                         else
@@ -137,11 +137,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
                             //Otherwise do normal substring
                             if (input.DataType != null)
                             {
-                                return new StringNode(null, input.Value.Substring(s - 1, l), input.DataType);
+                                return new StringNode(input.Value.Substring(s - 1, l), input.DataType);
                             }
                             else
                             {
-                                return new StringNode(null, input.Value.Substring(s - 1, l), input.Language);
+                                return new StringNode(input.Value.Substring(s - 1, l), input.Language);
                             }
                         }
                     }
@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
             }
             else
             {
-                if (input.Value.Equals(string.Empty)) return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                if (input.Value.Equals(string.Empty)) return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
 
                 try
                 {
@@ -162,11 +162,11 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                     if (input.DataType != null)
                     {
-                        return new StringNode(null, input.Value.Substring(s - 1), input.DataType);
+                        return new StringNode(input.Value.Substring(s - 1), input.DataType);
                     }
                     else
                     {
-                        return new StringNode(null, input.Value.Substring(s - 1), input.Language);
+                        return new StringNode(input.Value.Substring(s - 1), input.Language);
                     }
                 }
                 catch

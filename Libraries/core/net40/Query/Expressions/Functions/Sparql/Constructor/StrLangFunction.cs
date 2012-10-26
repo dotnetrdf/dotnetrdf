@@ -102,7 +102,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.Constructor
                         {
                             if (lit.Language.Equals(string.Empty))
                             {
-                                return new StringNode(null, lit.Value, langSpec);
+                                return new StringNode(lit.Value, langSpec);
                             }
                             else
                             {

@@ -67,17 +67,17 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             if (stringLit.Value.Equals(string.Empty))
             {
                 //Empty string cannot contain anything
-                return new BooleanNode(null, false);
+                return new BooleanNode(false);
             }
             else if (arg.Value.Equals(string.Empty))
             {
                 //Any non-empty string contains the empty string
-                return new BooleanNode(null, true);
+                return new BooleanNode(true);
             }
             else
             {
                 //Evalute the Contains
-                return new BooleanNode(null, stringLit.Value.Contains(arg.Value));
+                return new BooleanNode(stringLit.Value.Contains(arg.Value));
             }
         }
 

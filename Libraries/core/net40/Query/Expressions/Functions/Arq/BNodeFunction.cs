@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                 if (temp.NodeType == NodeType.Blank)
                 {
                     IBlankNode b = (IBlankNode)temp;
-                    return new StringNode(null, b.InternalID);
+                    return new StringNode(b.AnonID.ToString());
                 }
                 else
                 {

@@ -68,7 +68,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
                 case SparqlNumericType.Decimal:
                 case SparqlNumericType.Float:
                 case SparqlNumericType.Double:
-                    return new DoubleNode(null, Math.Log(temp.AsDouble(), Math.E));
+                    return new DoubleNode(Math.Log(temp.AsDouble(), Math.E));
                 case SparqlNumericType.NaN:
                 default:
                     throw new RdfQueryException("Cannot square a non-numeric argument");

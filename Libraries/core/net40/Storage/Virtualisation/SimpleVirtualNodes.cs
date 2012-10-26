@@ -46,21 +46,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Blank Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        public SimpleVirtualBlankNode(int id, IVirtualRdfProvider<int, int> provider)
+            : base(id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Blank Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public SimpleVirtualBlankNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IBlankNode value)
-            : base(g, id, provider, value) { }
+        public SimpleVirtualBlankNode(int id, IVirtualRdfProvider<int, int> provider, IBlankNode value)
+            : base(id, provider, value) { }
 
         /// <summary>
         /// Determines whether this Node is equal to another virtual Blank node
@@ -92,21 +90,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Graph Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        public SimpleVirtualGraphLiteralNode(int id, IVirtualRdfProvider<int, int> provider)
+            : base(id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Graph Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Values</param>
-        public SimpleVirtualGraphLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IGraphLiteralNode value)
-            : base(g, id, provider, value) { }
+        public SimpleVirtualGraphLiteralNode(int id, IVirtualRdfProvider<int, int> provider, IGraphLiteralNode value)
+            : base(id, provider, value) { }
 
         /// <summary>
         /// Determines whether this Node is equal to another virtual Graph Literal node
@@ -138,21 +134,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        public SimpleVirtualLiteralNode(int id, IVirtualRdfProvider<int, int> provider)
+            : base(id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Literal Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public SimpleVirtualLiteralNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, ILiteralNode value)
-            : base(g, id, provider, value) { }
+        public SimpleVirtualLiteralNode(int id, IVirtualRdfProvider<int, int> provider, ILiteralNode value)
+            : base(id, provider, value) { }
 
         /// <summary>
         /// Determines whether this Node is equal to another virtual Literal node
@@ -184,21 +178,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual URI Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        public SimpleVirtualUriNode(int id, IVirtualRdfProvider<int, int> provider)
+            : base(id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual URI Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public SimpleVirtualUriNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IUriNode value)
-            : base(g, id, provider, value) { }
+        public SimpleVirtualUriNode(int id, IVirtualRdfProvider<int, int> provider, IUriNode value)
+            : base(id, provider, value) { }
 
         /// <summary>
         /// Determines whether this Node is equal to another virtual URI node
@@ -230,21 +222,19 @@ namespace VDS.RDF.Storage.Virtualisation
         /// <summary>
         /// Creates a new Virtual Variable Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
-        public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider)
-            : base(g, id, provider) { }
+        public SimpleVirtualVariableNode(int id, IVirtualRdfProvider<int, int> provider)
+            : base(id, provider) { }
 
         /// <summary>
         /// Creates a new Virtual Variable Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="id">Virtual ID</param>
         /// <param name="provider">Virtual RDF Provider</param>
         /// <param name="value">Materialised Value</param>
-        public SimpleVirtualVariableNode(IGraph g, int id, IVirtualRdfProvider<int, int> provider, IVariableNode value)
-            : base(g, id, provider, value) { }
+        public SimpleVirtualVariableNode(int id, IVirtualRdfProvider<int, int> provider, IVariableNode value)
+            : base(id, provider, value) { }
 
         /// <summary>
         /// Determines whether this Node is equal to another virtual variable node

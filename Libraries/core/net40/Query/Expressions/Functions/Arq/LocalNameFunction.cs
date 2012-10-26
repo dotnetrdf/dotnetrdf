@@ -70,14 +70,14 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
                     IUriNode u = (IUriNode)temp;
                     if (!u.Uri.Fragment.Equals(String.Empty))
                     {
-                        return new StringNode(null, u.Uri.Fragment.Substring(1));
+                        return new StringNode(u.Uri.Fragment.Substring(1));
                     }
                     else
                     {
 #if SILVERLIGHT
-                        return new StringNode(null, u.Uri.Segments().Last());
+                        return new StringNode(u.Uri.Segments().Last());
 #else
-                        return new StringNode(null, u.Uri.Segments.Last());
+                        return new StringNode(u.Uri.Segments.Last());
 #endif
                     }
                 }

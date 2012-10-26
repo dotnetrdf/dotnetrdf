@@ -78,7 +78,7 @@ namespace VDS.RDF.Query.Operators.DateTime
             TimeSpan addition = ns[1].AsTimeSpan();
 
             DateTimeOffset result = dateTime.Add(addition);
-            return new DateTimeNode(null, result);
+            return new DateTimeNode(result);
         }
     }
 }

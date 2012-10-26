@@ -293,7 +293,7 @@ namespace VDS.RDF.Update.Commands
                         //If the Default Graph is non-existent then Deletions have no effect on it
                         if (g != null)
                         {
-                            ConstructContext constructContext = new ConstructContext(g, s, true);
+                            ConstructContext constructContext = new ConstructContext(s);
                             foreach (IConstructTriplePattern p in this._deletePattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -362,7 +362,7 @@ namespace VDS.RDF.Update.Commands
 
                             //Do the actual Deletions
                             IGraph h = context.Data.GetModifiableGraph(UriFactory.Create(graphUri));
-                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            ConstructContext constructContext = new ConstructContext(s);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -391,7 +391,7 @@ namespace VDS.RDF.Update.Commands
                     List<Triple> insertedTriples = new List<Triple>();
                     try
                     {
-                        ConstructContext constructContext = new ConstructContext(g, s, true);
+                        ConstructContext constructContext = new ConstructContext(s);
                         foreach (IConstructTriplePattern p in this._insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                         {
                             try
@@ -404,7 +404,7 @@ namespace VDS.RDF.Update.Commands
                                 //so we continue anyway
                             }
                         }
-                        g.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(g)));
+                        g.Assert(insertedTriples);
                     }
                     catch (RdfQueryException)
                     {
@@ -470,7 +470,7 @@ namespace VDS.RDF.Update.Commands
                             }
 
                             //Do the actual Insertions
-                            ConstructContext constructContext = new ConstructContext(h, s, true);
+                            ConstructContext constructContext = new ConstructContext(s);
                             foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
@@ -483,7 +483,7 @@ namespace VDS.RDF.Update.Commands
                                     //triple so we continue anyway
                                 }
                             }
-                            h.Assert(insertedTriples.Select(t => t.IsGroundTriple ? t : t.CopyTriple(h)));
+                            h.Assert(insertedTriples);
                         }
                         catch (RdfQueryException)
                         {

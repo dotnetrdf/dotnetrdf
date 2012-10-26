@@ -51,28 +51,25 @@ namespace VDS.RDF.Nodes
         /// <summary>
         /// Creates a new String Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="value">String value</param>
         /// <param name="datatype">Datatype URI</param>
-        public StringNode(IGraph g, String value, Uri datatype)
-            : base(g, value, datatype) { }
+        public StringNode(String value, Uri datatype)
+            : base(value, datatype) { }
 
         /// <summary>
         /// Creates a new String Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="value">String value</param>
         /// <param name="lang">Language Specifier</param>
-        public StringNode(IGraph g, String value, String lang)
-            : base(g, value, lang) { }
+        public StringNode(String value, String lang)
+            : base(value, lang) { }
 
         /// <summary>
         /// Creates a new String Node
         /// </summary>
-        /// <param name="g">Graph the Node belongs to</param>
         /// <param name="value">String value</param>
-        public StringNode(IGraph g, String value)
-            : base(g, value) { }
+        public StringNode(String value)
+            : base(value) { }
 
         #region IValuedNode Members
 

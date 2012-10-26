@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
             ////New method should be much faster
             //if (n is LongNode) return n;
-            //return new LongNode(null, n.AsInteger());
+            //return new LongNode(n.AsInteger());
 
             switch (n.NodeType)
             {
@@ -94,7 +94,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             long i;
                             if (Int64.TryParse(lit.Value, out i))
                             {
-                                return new LongNode(lit.Graph, i);
+                                return new LongNode(i);
                             }
                             else
                             {
@@ -112,7 +112,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (Int64.TryParse(lit.Value, out i))
                             {
                                 //Parsed OK
-                                return new LongNode(lit.Graph, i);
+                                return new LongNode(i);
                             }
                             else
                             {
@@ -126,7 +126,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (Int64.TryParse(lit.Value, out i))
                         {
                             //Parsed OK
-                            return new LongNode(lit.Graph, i);
+                            return new LongNode(i);
                         }
                         else
                         {

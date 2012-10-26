@@ -62,7 +62,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
         /// <returns></returns>
         protected override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            return new StringNode(null, Uri.EscapeUriString(stringLit.Value));
+            return new StringNode(Uri.EscapeUriString(stringLit.Value));
         }
 
         /// <summary>

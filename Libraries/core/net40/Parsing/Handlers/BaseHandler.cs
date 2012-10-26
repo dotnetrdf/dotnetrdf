@@ -83,14 +83,6 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region INodeFactory Members
 
-        public virtual Guid FactoryID
-        {
-            get
-            {
-                return this._factory.FactoryID;
-            }
-        }
-
         /// <summary>
         /// Creates a Blank Node
         /// </summary>
@@ -185,9 +177,10 @@ namespace VDS.RDF.Parsing.Handlers
         /// Gets the next available Blank Node ID
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Obsolete, no longer used", true)]
         public virtual string GetNextBlankNodeID()
         {
-            return this._factory.GetNextBlankNodeID();
+            throw new NotSupportedException();
         }
 
         #endregion

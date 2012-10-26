@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
             if (arg.Value.Equals(string.Empty))
             {
                 //The substring before the empty string is the empty string
-                return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
             else
             {
@@ -75,12 +75,12 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 if (stringLit.Value.Contains(arg.Value))
                 {
                     string result = stringLit.Value.Substring(0, stringLit.Value.IndexOf(arg.Value));
-                    return new StringNode(null, result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(result, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
                 else
                 {
                     //If it doesn't contain the search string the empty string is returned
-                    return new StringNode(null, string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                    return new StringNode(string.Empty, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
                 }
             }
         }

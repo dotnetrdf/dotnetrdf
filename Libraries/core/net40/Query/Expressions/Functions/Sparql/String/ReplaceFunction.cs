@@ -273,15 +273,15 @@ namespace VDS.RDF.Query.Expressions.Functions.Sparql.String
 
                 if (lit.DataType != null)
                 {
-                    return new StringNode(null, output, lit.DataType);
+                    return new StringNode(output, lit.DataType);
                 }
                 else if (!lit.Language.Equals(string.Empty))
                 {
-                    return new StringNode(null, output, lit.Language);
+                    return new StringNode(output, lit.Language);
                 }
                 else
                 {
-                    return new StringNode(null, output);
+                    return new StringNode(output);
                 }
             }
             else

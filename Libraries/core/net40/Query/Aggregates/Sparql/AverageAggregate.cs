@@ -176,7 +176,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             //Calculate the Average
             if (count == 0)
             {
-                return new LongNode(null, 0);
+                return new LongNode(0);
             }
             else
             {
@@ -188,24 +188,20 @@ namespace VDS.RDF.Query.Aggregates.Sparql
                 switch (maxtype)
                 {
                     case SparqlNumericType.Integer:
-                    ////Integer Values
-                    //lngavg = lngtotal / (long)count;
-                    //return new LiteralNode(null, lngavg.ToString(), new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger));
-
                     case SparqlNumericType.Decimal:
-                        //Decimal Values
+                        //Integer/Decimal Values
                         decavg = dectotal / (decimal)count;
-                        return new DecimalNode(null, decavg);
+                        return new DecimalNode(decavg);
 
                     case SparqlNumericType.Float:
                         //Float values
                         fltavg = flttotal / (float)count;
-                        return new FloatNode(null, fltavg);
+                        return new FloatNode(fltavg);
 
                     case SparqlNumericType.Double:
                         //Double Values
                         dblavg = dbltotal / (double)count;
-                        return new DoubleNode(null, dblavg);
+                        return new DoubleNode(dblavg);
 
                     default:
                         throw new RdfQueryException("Failed to calculate a valid Average");

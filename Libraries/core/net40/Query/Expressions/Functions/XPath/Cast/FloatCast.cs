@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
             //New method should be much faster
             //if (n is FloatNode) return n;
-            //return new FloatNode(null, n.AsFloat());
+            //return new FloatNode(n.AsFloat());
 
             switch (n.NodeType)
             {
@@ -93,7 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (Single.TryParse(lit.Value, out f))
                             {
                                 //Parsed OK
-                                return new FloatNode(lit.Graph, f);
+                                return new FloatNode(f);
                             }
                             else
                             {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (Single.TryParse(lit.Value, out f))
                             {
                                 //Parsed OK
-                                return new FloatNode(lit.Graph, f);
+                                return new FloatNode(f);
                             }
                             else
                             {
@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (Single.TryParse(lit.Value, out f))
                         {
                             //Parsed OK
-                            return new FloatNode(lit.Graph, f);
+                            return new FloatNode(f);
                         }
                         else
                         {

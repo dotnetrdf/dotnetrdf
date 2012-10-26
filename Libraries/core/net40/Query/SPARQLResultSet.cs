@@ -471,7 +471,7 @@ namespace VDS.RDF.Query
                     if (r[subjVar] == null || r[predVar] == null || r[objVar] == null) continue;
 
                     //If this is all OK we can generate a Triple
-                    tripleCollection.Add(new Triple(r[subjVar].CopyNode(g), r[predVar].CopyNode(g), r[objVar].CopyNode(g)));
+                    tripleCollection.Add(new Triple(r[subjVar], r[predVar], r[objVar]));
                 }
             }
 

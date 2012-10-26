@@ -72,8 +72,8 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
             //New method should be much faster
             //if (n is DateTimeNode) return n;
-            //if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
-            //return new DateTimeNode(null, n.AsDateTime());
+            //if (n is DateNode) return new DateTimeNode(n.AsDateTime());
+            //return new DateTimeNode(n.AsDateTime());
 
             switch (n.NodeType)
             {
@@ -84,7 +84,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
 
                 case NodeType.Literal:
                     if (n is DateTimeNode) return n;
-                    if (n is DateNode) return new DateTimeNode(n.Graph, n.AsDateTime());
+                    if (n is DateNode) return new DateTimeNode(n.AsDateTime());
                     //See if the value can be cast
                     ILiteralNode lit = (ILiteralNode)n;
                     if (lit.DataType != null)
@@ -97,7 +97,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (DateTimeOffset.TryParse(lit.Value, out d))
                             {
                                 //Parsed OK
-                                return new DateTimeNode(lit.Graph, d);
+                                return new DateTimeNode(d);
                             }
                             else
                             {
@@ -111,7 +111,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                             if (DateTimeOffset.TryParse(lit.Value, out d))
                             {
                                 //Parsed OK
-                                return new DateTimeNode(lit.Graph, d);
+                                return new DateTimeNode(d);
                             }
                             else
                             {
@@ -129,7 +129,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.Cast
                         if (DateTimeOffset.TryParse(lit.Value, out d))
                         {
                             //Parsed OK
-                            return new DateTimeNode(lit.Graph, d);
+                            return new DateTimeNode(d);
                         }
                         else
                         {

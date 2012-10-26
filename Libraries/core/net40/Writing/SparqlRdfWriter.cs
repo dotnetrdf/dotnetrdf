@@ -153,7 +153,7 @@ namespace VDS.RDF.Writing
                                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL Results RDF Serialization"));
                                 case NodeType.Literal:
                                 case NodeType.Uri:
-                                    g.Assert(new Triple(bnd, value, r[v].CopyNode(g)));
+                                    g.Assert(new Triple(bnd, value, r[v]));
                                     break;
                                 default:
                                     throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("SPARQL Results RDF Serialization"));

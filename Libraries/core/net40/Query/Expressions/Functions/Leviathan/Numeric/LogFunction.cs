@@ -52,7 +52,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
         /// </summary>
         /// <param name="arg">Expression</param>
         public LogFunction(ISparqlExpression arg)
-            : base(arg, new ConstantTerm(new DoubleNode(null, 10)))
+            : base(arg, new ConstantTerm(new DoubleNode(10)))
         {
             this._log10 = true;
         }
@@ -80,7 +80,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (arg.NumericType == SparqlNumericType.NaN || logBase.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot log when one/both arguments are non-numeric");
 
-            return new DoubleNode(null, Math.Log(arg.AsDouble(), logBase.AsDouble()));
+            return new DoubleNode(Math.Log(arg.AsDouble(), logBase.AsDouble()));
         }
 
         /// <summary>

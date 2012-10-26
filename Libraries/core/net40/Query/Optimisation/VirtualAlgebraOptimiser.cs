@@ -315,15 +315,15 @@ namespace VDS.RDF.Query.Optimisation
             switch (value.NodeType)
             {
                 case NodeType.Blank:
-                    return new SimpleVirtualBlankNode(null, id, this._provider, (IBlankNode)value);
+                    return new SimpleVirtualBlankNode(id, this._provider, (IBlankNode)value);
                 case NodeType.GraphLiteral:
-                    return new SimpleVirtualGraphLiteralNode(null, id, this._provider, (IGraphLiteralNode)value);
+                    return new SimpleVirtualGraphLiteralNode(id, this._provider, (IGraphLiteralNode)value);
                 case NodeType.Literal:
-                    return new SimpleVirtualLiteralNode(null, id, this._provider, (ILiteralNode)value);
+                    return new SimpleVirtualLiteralNode(id, this._provider, (ILiteralNode)value);
                 case NodeType.Uri:
-                    return new SimpleVirtualUriNode(null, id, this._provider, (IUriNode)value);
+                    return new SimpleVirtualUriNode(id, this._provider, (IUriNode)value);
                 case NodeType.Variable:
-                    return new SimpleVirtualVariableNode(null, id, this._provider, (IVariableNode)value);
+                    return new SimpleVirtualVariableNode(id, this._provider, (IVariableNode)value);
                 default:
                     throw new RdfException("Cannot create Virtual Nodes from unknown Node Types");
             }

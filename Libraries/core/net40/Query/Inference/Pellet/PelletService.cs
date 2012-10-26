@@ -49,6 +49,7 @@ namespace VDS.RDF.Query.Inference.Pellet
         private String _name;
         private ServiceEndpoint _endpoint;
         private List<String> _mimeTypes = new List<string>();
+        protected NodeFactory _nodeFactory = new NodeFactory();
 
         /// <summary>
         /// Creates a new Pellet Service instance

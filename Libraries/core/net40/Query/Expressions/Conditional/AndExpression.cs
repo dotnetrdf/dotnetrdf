@@ -70,12 +70,12 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 if (!leftResult)
                 {
                     //If the LHS is false then no subsequent results matter
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
                 else
                 {
                     //If the LHS is true then we have to continue by evaluating the RHS
-                    return new BooleanNode(null, this._rightExpr.Evaluate(context, bindingID).AsBoolean());
+                    return new BooleanNode(this._rightExpr.Evaluate(context, bindingID).AsBoolean());
                 }
             }
             catch (Exception ex)
@@ -85,7 +85,7 @@ namespace VDS.RDF.Query.Expressions.Conditional
                 bool rightResult = this._rightExpr.Evaluate(context, bindingID).AsSafeBoolean();
                 if (!rightResult)
                 {
-                    return new BooleanNode(null, false);
+                    return new BooleanNode(false);
                 }
                 else
                 {

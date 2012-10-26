@@ -72,7 +72,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
         /// <returns></returns>
         public override IValuedNode ValueInternal(ILiteralNode stringLit)
         {
-            return new StringNode(null, stringLit.Value.Normalize(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+            return new StringNode(stringLit.Value.Normalize(), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                         throw new RdfQueryException("'" + arg.Value + "' is not a valid Normalization Form as defined by the XPath specification");
                 }
 
-                return new StringNode(null, normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
+                return new StringNode(normalized, UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeString));
             }
         }
 

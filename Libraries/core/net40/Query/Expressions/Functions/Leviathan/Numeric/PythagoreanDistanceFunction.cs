@@ -70,7 +70,7 @@ namespace VDS.RDF.Query.Expressions.Functions.Leviathan.Numeric
 
             if (x.NumericType == SparqlNumericType.NaN || y.NumericType == SparqlNumericType.NaN) throw new RdfQueryException("Cannot calculate distance when one/both arguments are non-numeric");
 
-            return new DoubleNode(null, Math.Sqrt(Math.Pow(x.AsDouble(), 2) + Math.Pow(y.AsDouble(), 2)));
+            return new DoubleNode(Math.Sqrt(Math.Pow(x.AsDouble(), 2) + Math.Pow(y.AsDouble(), 2)));
         }
 
         /// <summary>
