@@ -156,6 +156,7 @@ namespace VDS.RDF.Query.Patterns
         /// <param name="filter">Filter</param>
         internal void AddFilter(ISparqlFilter filter)
         {
+            this._isFiltered = true;
             this._unplacedFilters.Add(filter);
         }
 

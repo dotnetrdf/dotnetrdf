@@ -251,6 +251,10 @@ namespace VDS.RDF.Writing.Formatting
                             output.AppendLine("{");
                         }
                         output.AppendLine(this.Format(query.RootGraphPattern));
+                        if (query.RootGraphPattern.HasModifier)
+                        {
+                            output.AppendLine("}");
+                        }
                     }
                 }
 

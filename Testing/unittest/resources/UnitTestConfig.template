@@ -17,10 +17,10 @@ Sparql.Remote.Query=http://dbpedia.org/sparql
 
 # Local IIS and ASP.Net tests
 Web.IIS=true
-Web.Query=http://localhost/demos/leviathan/
-Web.SparqlServer=http://localhost/demos/server/
-Web.SparqlServer.Query=http://localhost/demos/server/query
-Web.SparqlServer.Update=http://localhost/demos/server/update
+Web.Query=http://localhost:64132/demos/leviathan/
+Web.SparqlServer=http://localhost:64132/demos/server/
+Web.SparqlServer.Query=http://localhost:64132/demos/server/query
+Web.SparqlServer.Update=http://localhost:64132/demos/server/update
 
 # An AllegroGraph install to use for testing
 Storage.AllegroGraph=false

@@ -207,6 +207,8 @@ namespace VDS.RDF.Query.Algebra
                 else
                 {
 #endif
+                    //Do a serial Left Join Product
+
                     //Calculate a Product filtering as we go
                     foreach (ISet x in this.Sets)
                     {
@@ -248,58 +250,50 @@ namespace VDS.RDF.Query.Algebra
                     nulls.Add(new List<int>());
                 }
 
-                //First do a pass over the LHS Result to find all possible values for joined variables
-                HashSet<int> matched = new HashSet<int>();
-                HashSet<int> standalone = new HashSet<int>();
-                foreach (ISet x in this.Sets)
+                //First do a pass over the RHS Result to find all possible values for joined variables
+                foreach (ISet y in other.Sets)
                 {
                     int i = 0;
                     foreach (String var in joinVars)
                     {
-                        INode value = x[var];
+                        INode value = y[var];
                         if (value != null)
                         {
                             List<int> ids;
                             if (values[i].TryGetValue(value, out ids))
                             {
-                                ids.Add(x.ID);
+                                ids.Add(y.ID);
                             }
                             else
                             {
-                                values[i].Add(value, new List<int> { x.ID });
+                                values[i].Add(value, new List<int> { y.ID });
                             }
                         }
                         else
                         {
-                            nulls[i].Add(x.ID);
+                            nulls[i].Add(y.ID);
                         }
                         i++;
                     }
                 }
 
-                //Then do a pass over the RHS and work out the intersections
+                //Then do a pass over the LHS and work out the intersections
 #if NET40 && !SILVERLIGHT
                 if (Options.UsePLinqEvaluation && expr.CanParallelise)
                 {
-                    other.Sets.AsParallel().ForAll(y => EvalLeftJoin(y, joinVars, values, nulls, joinedSet, subcontext, expr, standalone, matched));
+                    this.Sets.AsParallel().ForAll(x => EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr));
                 }
                 else
                 {
 #endif
                     //Use a Serial Left Join
-                    foreach (ISet y in other.Sets)
+                    foreach (ISet x in this.Sets)
                     {
-                        this.EvalLeftJoin(y, joinVars, values, nulls, joinedSet, subcontext, expr, standalone, matched);
+                        this.EvalLeftJoin(x, other, joinVars, values, nulls, joinedSet, subcontext, expr);
                     }
 #if NET40 && !SILVERLIGHT
                 }
 #endif
-
-                //Finally add in unmatched sets from LHS
-                foreach (int id in this.SetIDs)
-                {
-                    if (!matched.Contains(id) || standalone.Contains(id)) joinedSet.Add(this[id].Copy());
-                }
             }
             return joinedSet;
         }
@@ -344,13 +338,13 @@ namespace VDS.RDF.Query.Algebra
 
 #endif
 
-        private void EvalLeftJoin(ISet y, List<String> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr, HashSet<int> standalone, HashSet<int> matched)
+        private void EvalLeftJoin(ISet x, BaseMultiset other, List<String> joinVars, List<MultiDictionary<INode, List<int>>> values, List<List<int>> nulls, BaseMultiset joinedSet, SparqlEvaluationContext subcontext, ISparqlExpression expr)
         {
             IEnumerable<int> possMatches = null;
             int i = 0;
             foreach (String var in joinVars)
             {
-                INode value = y[var];
+                INode value = x[var];
                 if (value != null)
                 {
                     if (values[i].ContainsKey(value))
@@ -370,43 +364,43 @@ namespace VDS.RDF.Query.Algebra
                 }
                 i++;
             }
-            if (possMatches == null) return;
+
+            //If no possible matches just copy LHS across
+            if (possMatches == null)
+            {
+                joinedSet.Add(x.Copy());
+                return;
+            }
 
             //Now do the actual joins for the current set
+            bool standalone = false;
+            bool matched = false;
             foreach (int poss in possMatches)
             {
-                if (this[poss].IsCompatibleWith(y, joinVars))
+                if (other[poss].IsCompatibleWith(x, joinVars))
                 {
-                    ISet z = this[poss].Join(y);
+                    ISet z = x.Join(other[poss]);
                     joinedSet.Add(z);
                     try
                     {
                         if (!expr.Evaluate(subcontext, z.ID).AsSafeBoolean())
                         {
                             joinedSet.Remove(z.ID);
-                            lock (standalone)
-                            {
-                                standalone.Add(poss);
-                            }
                         }
                         else
                         {
-                            lock (matched)
-                            {
-                                matched.Add(poss);
-                            }
+                            matched = true;
                         }
                     }
                     catch
                     {
                         joinedSet.Remove(z.ID);
-                        lock (standalone)
-                        {
-                            standalone.Add(poss);
-                        }
+                        standalone = true;
                     }
                 }
             }
+
+            if (standalone || !matched) joinedSet.Add(x.Copy());
         }
 
         /// <summary>
