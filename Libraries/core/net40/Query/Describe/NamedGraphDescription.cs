@@ -63,7 +63,7 @@ namespace VDS.RDF.Query.Describe
                     IGraph g = context.Data[((IUriNode)n).Uri];
                     foreach (Triple t in g.Triples)
                     {
-                        if (!handler.HandleTriple(this.RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
+                        if (!handler.HandleTriple(t)) ParserHelper.Stop();
                     }
                 }
             }

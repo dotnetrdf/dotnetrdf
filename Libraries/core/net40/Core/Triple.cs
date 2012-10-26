@@ -244,6 +244,16 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Converts the Triple into a Quad
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        public Quad AsQuad(Uri graphUri)
+        {
+            return new Quad(this, graphUri);
+        }
+
+        /// <summary>
         /// Implementation of Equality for Triples
         /// </summary>
         /// <param name="obj">Object to compare with</param>

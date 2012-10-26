@@ -74,7 +74,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
-                    if (!handler.HandleTriple((this.RewriteDescribeBNodes(t, bnodeMapping, handler)))) ParserHelper.Stop();
+                    if (!handler.HandleTriple(t)) ParserHelper.Stop();
                 }
 
                 //Compute the Blank Node Closure for this Subject
@@ -86,7 +86,7 @@ namespace VDS.RDF.Query.Describe
 
                     foreach (Triple t2 in context.Data.GetTriplesWithSubjectPredicate(bsubj, rdfsLabel))
                     {
-                        if (!handler.HandleTriple((this.RewriteDescribeBNodes(t2, bnodeMapping, handler)))) ParserHelper.Stop();
+                        if (!handler.HandleTriple(t2)) ParserHelper.Stop();
                     }
                 }
             }

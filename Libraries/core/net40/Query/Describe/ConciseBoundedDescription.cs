@@ -73,7 +73,7 @@ namespace VDS.RDF.Query.Describe
                     {
                         if (!expandedBNodes.Contains(t.Object)) bnodes.Enqueue(t.Object);
                     }
-                    if (!handler.HandleTriple(this.RewriteDescribeBNodes(t, bnodeMapping, handler))) ParserHelper.Stop();
+                    if (!handler.HandleTriple(t)) ParserHelper.Stop();
                 }
 
                 //Compute the Blank Node Closure for this Subject
@@ -89,7 +89,7 @@ namespace VDS.RDF.Query.Describe
                         {
                             if (!expandedBNodes.Contains(t2.Object)) bnodes.Enqueue(t2.Object);
                         }
-                        if (!handler.HandleTriple(this.RewriteDescribeBNodes(t2, bnodeMapping, handler))) ParserHelper.Stop();
+                        if (!handler.HandleTriple(t2)) ParserHelper.Stop();
                     }
                 }
             }
