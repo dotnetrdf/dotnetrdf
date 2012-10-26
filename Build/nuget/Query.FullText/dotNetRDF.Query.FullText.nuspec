@@ -3,7 +3,7 @@
   <metadata>
     <id>dotNetRDF.Query.FullText</id>
     <version>0.5.0-snapshot</version>
-    <authors>RobVesse</authors>
+    <authors>RobVesse,tpluscode,kal_ahmed</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>http://www.dotnetrdf.org</projectUrl>
