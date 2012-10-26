@@ -132,7 +132,7 @@ namespace VDS.RDF.Test.Query.FullText
             finally
             {
                 provider.Dispose();
-                LuceneTestHarness.Index.Close();
+                LuceneTestHarness.Index.Dispose();
             }
         }
 

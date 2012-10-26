@@ -346,5 +346,21 @@ _:blank rr:objectMap _:autos2.";
             TestTools.ShowResults(results);
             Assert.IsFalse(results.IsEmpty, "Should be some results");
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertBNodesComplex()
+        {
+            String update = @"PREFIX : <http://test/>
+INSERT { GRAPH :a { :s :p _:b } } WHERE { };
+INSERT { GRAPH :b { :s :p _:b } } WHERE { };
+INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
+
+            TripleStore store = new TripleStore();
+            store.ExecuteUpdate(update);
+
+            Assert.AreEqual(3, store.Graphs.Count, "Expected 3 Graphs");
+            Assert.AreEqual(2, store[new Uri("http://test/a")].Triples.Count, "Expected 2 Triples");
+
+        }
     }
 }

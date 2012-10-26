@@ -457,7 +457,7 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories which has the same functionality", false)]
+        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories() which has the same functionality", true)]
         public static void AutoDetectObjectFactories(IGraph g)
         {
             ConfigurationLoader.AutoConfigureObjectFactories(g);
@@ -490,7 +490,7 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
         /// </summary>
         /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureReadersAndWriters which has the same functionality", false)]
+        [Obsolete("This method is deprecated, use the new method name AutoConfigureReadersAndWriters() which has the same functionality", true)]
         public static void AutoDetectReadersAndWriters(IGraph g)
         {
             ConfigurationLoader.AutoConfigureReadersAndWriters(g);

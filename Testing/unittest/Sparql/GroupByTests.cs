@@ -41,6 +41,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Nodes;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Sparql
@@ -510,6 +511,40 @@ WHERE
             {
                 //Options.UsePLinqEvaluation = true;
             }
+        }
+
+        [TestMethod]
+        public void SparqlGroupByComplex1()
+        {
+            String data = @"PREFIX : <http://test/> INSERT DATA { :x :p 1 , 2 . :y :p 5 }";
+            String query = @"SELECT ?s (CONCAT('$', STR(SUM(?o))) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
+
+            TripleStore store = new TripleStore();
+            store.ExecuteUpdate(data);
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(3, store.Triples.Count());
+
+            //Aggregates may occur in project expressions and should evaluate correctly
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsTrue(results.All(r => r.HasBoundValue("Total")));
+
+            SparqlResult x = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/x"))).FirstOrDefault();
+            Assert.IsNotNull(x);
+            Assert.AreEqual("$3", x["Total"].AsValuedNode().AsString());
+
+            SparqlResult y = results.Where(r => ((IUriNode)r["s"]).Uri.Equals(new Uri("http://test/y"))).FirstOrDefault();
+            Assert.IsNotNull(y);
+            Assert.AreEqual("$5", y["Total"].AsValuedNode().AsString());
+        }
+
+        [TestMethod,ExpectedException(typeof(RdfParseException))]
+        public void SparqlGroupByComplex2()
+        {
+            //Nested aggregates are a parser error
+            String query = @"SELECT ?s (SUM(MIN(?o)) AS ?Total) WHERE { ?s ?p ?o } GROUP BY ?s";
+            SparqlQueryParser parser = new SparqlQueryParser();
+            parser.ParseFromString(query);
         }
     }
 }

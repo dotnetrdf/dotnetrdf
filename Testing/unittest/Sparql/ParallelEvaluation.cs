@@ -229,6 +229,8 @@ namespace VDS.RDF.Test.Sparql
             InMemoryDataset dataset = new InMemoryDataset(store);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(dataset);
 
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
             int i;
             for (i = 1; i <= 100000; i++)
             {
@@ -237,8 +239,11 @@ namespace VDS.RDF.Test.Sparql
                 if (results.Count != 3) TestTools.ShowResults(results);
                 Assert.AreEqual(3, results.Count, "Failed after " + i + " iterations");
             }
+            timer.Stop();
 
             Console.WriteLine("Completed " + i + " Iterations OK");
+            Console.WriteLine("Took " + timer.Elapsed);
+
         }
     }
 }

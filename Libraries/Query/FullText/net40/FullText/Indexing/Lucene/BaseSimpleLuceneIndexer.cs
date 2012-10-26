@@ -107,7 +107,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             if (this._writer != null)
             {
                 this._writer.Commit();
-                this._writer.Close();
+                this._writer.Dispose();
                 this._writer = null;
             }
         }
@@ -120,7 +120,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             }
             else if (!this._reader.IsCurrent())
             {
-                this._reader.Close();
+                this._reader.Dispose();
                 this._reader = IndexReader.Open(this._indexDir, false);
             }
         }
@@ -130,7 +130,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             if (this._reader != null)
             {
                 this._reader.Commit();
-                this._reader.Close();
+                this._reader.Dispose();
                 this._reader = null;
             }
         }
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.FullText.Indexing.Lucene
             if (this._writer != null)
             {
                 this._writer.Commit();
-                if (this._indexDir.isOpen_ForNUnit) this._writer.Close();
+                if (this._indexDir.isOpen_ForNUnit) this._writer.Dispose();
             }
         }
 

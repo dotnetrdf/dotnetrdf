@@ -687,7 +687,7 @@ namespace VDS.RDF.Update
 
                     //Delete the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, true);
+                    ConstructContext context = new ConstructContext(g, null, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);
@@ -1076,7 +1076,7 @@ namespace VDS.RDF.Update
 
                     //Insert the actual Triples
                     INode subj, pred, obj;
-                    ConstructContext context = new ConstructContext(g, null, true);
+                    ConstructContext context = new ConstructContext(g, null, false);
                     foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                     {
                         subj = p.Subject.Construct(context);

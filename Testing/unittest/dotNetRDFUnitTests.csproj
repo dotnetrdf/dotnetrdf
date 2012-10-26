@@ -109,6 +109,7 @@
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\Turtle11.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Sparql\FormattingTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="Core\NamespaceMapperTest.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Sparql\QueryBuilderTests.cs" />
     <Compile Include="Sparql\SetTests.cs" />
     <Compile Include="Sparql\TriplePatternBuilderTests.cs" />
+    <Compile Include="Sparql\SparqlQueryTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />

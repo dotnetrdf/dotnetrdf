@@ -645,7 +645,7 @@ namespace VDS.RDF.Test.Storage
                 Assert.AreEqual(1, g.GetTriplesWithPredicateObject(rdfType, objFactory).Count(), "Should only be 1 Object Factory registered even after a 2nd serializer pass");
 
                 //Now try to load the object
-                ConfigurationLoader.AutoDetectObjectFactories(g);
+                ConfigurationLoader.AutoConfigureObjectFactories(g);
                 Object loadedObj = ConfigurationLoader.LoadObject(g, objNode);
                 if (loadedObj is VirtuosoManager)
                 {

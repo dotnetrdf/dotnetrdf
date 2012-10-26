@@ -114,7 +114,7 @@ namespace VDS.RDF
     /// <summary>
     /// Helper Class for indexing related operations
     /// </summary>
-    [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", false)]
+    [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", true)]
     public static class IndexHelper
     {
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF
         /// <param name="comparer">Comparer to use for binary search</param>
         /// <param name="search">Item to search for</param>
         /// <returns></returns>
-        [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", false)]
+        [Obsolete("This helper pertains to obsoleted code and will be removed in future releases", true)]
         public static IEnumerable<T> SearchIndex<T>(this List<T> index, IComparer<T> comparer, T search)
         {
             //If Index is empty then there are no results

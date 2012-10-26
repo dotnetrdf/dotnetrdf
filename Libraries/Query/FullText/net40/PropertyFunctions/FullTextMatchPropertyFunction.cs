@@ -139,6 +139,9 @@ namespace VDS.RDF.Query.PropertyFunctions
             }
         }
 
+        /// <summary>
+        /// Gets the Variables used in the property function
+        /// </summary>
         public IEnumerable<String> Variables
         {
             get

@@ -17,14 +17,14 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.license.exclude.exts" 
-            value="dll,pdb,xml,xaml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd,config,properties,settings,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,html,json,xhtml,css,js,sparql,xslt,bak,csv,tsv,ico,png,jpg,tiff,bmp,orig" />
+            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig" />
   <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
   
   <!-- Signing Properties -->
-  <property name="dotnetrdf.keyfile" value="../../../Build/dotNetRDF.snk" />
+  <property name="dotnetrdf.keyfile" value="Build/dotNetRDF.snk" />
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
@@ -298,7 +298,7 @@
   <target name="license-storemanager-core" description="Applies license headers to the StoreManager.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
-      <arg value="Libraries/storemanager.core/net40/" />
+      <arg value="Libraries/storemanager.core/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.license.exclude.exts}" />
       <arg value="-exclude" />
@@ -540,19 +540,42 @@
   </target>
 
   <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
-          depends="compile-libs-main,
-                   compile-libs-utils,
+          depends="compile-libs,
                    compile-utils">
+  </target>
 
+  <target name="compile-libs" description="Copiles all libraries for main distribution and toolkit" unless="${dotnetrdf.nocompile}"
+          depends="compile-libs-main,
+                   compile-libs-utils">
   </target>
 
   <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
-          depends="compile-core,compile-core-net35,
+          depends="compile-libs-core,
+                   compile-libs-data-virtuoso,
+                   compile-libs-query-fulltext">
+  </target>
+
+  <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
+          depends="compile-core,
+                   compile-core-net35,
                    compile-core-silverlight,
                    compile-core-windowsphone,
-                   compile-core-clientprofile,compile-core-clientprofile-net35,
-                   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
-                   compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
+                   compile-core-clientprofile,
+                   compile-core-clientprofile-net35">  
+  </target>
+
+  <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
+          depends="compile-data-virtuoso,
+                   compile-data-virtuoso-net35,
+                   compile-data-virtuoso-clientprofile,
+                   compile-data-virtuoso-clientprofile-net35">
+  </target>
+
+  <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
+          depends="compile-query-fulltext,
+                   compile-query-fulltext-net35,
+                   compile-query-fulltext-clientprofile,
+                   compile-query-fulltext-clientprofile-net35">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
@@ -566,8 +589,8 @@
                    compile-util-convert,
                    compile-util-editor-wpf,
                    compile-util-opt-stats,
-                   compile-util-query-cmd,license-util-query-gui,
-                   compile-util-server-cmd,license-util-server-gui,
+                   compile-util-query-cmd,compile-util-query-gui,
+                   compile-util-server-cmd,compile-util-server-gui,
                    compile-util-webdeploy,
                    compile-util-storemanager">
 
@@ -579,9 +602,10 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -591,9 +615,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -603,8 +627,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -615,8 +639,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -626,12 +650,12 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/LicenseChecker/LicenseChecker.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -641,9 +665,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -653,9 +677,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -665,9 +689,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -677,9 +701,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -689,9 +713,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -701,9 +725,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -713,9 +737,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -725,9 +749,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -737,9 +761,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -749,9 +773,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -761,9 +785,9 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor/rdfEditor.Core.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -773,9 +797,9 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor.wpf/rdfEditor.Core.Wpf.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -783,11 +807,11 @@
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
-      <arg value="Libraries/storemanager.core/net40/StoreManager.Core.csproj" />
+      <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -797,9 +821,9 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/httpserver/VDS.Web.Server.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -809,8 +833,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfConvert/rdfConvert.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -820,8 +844,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfEditor.Wpf/rdfEditor.Wpf.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -831,8 +855,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfOptStats/rdfOptStats.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -842,8 +866,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfQuery/rdfQuery.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -853,8 +877,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/SparqlGui/SparqlGui.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -864,8 +888,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServer/rdfServer.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -875,8 +899,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServerGUI/rdfServerGUI.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -886,8 +910,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfWebDeploy/rdfWebDeploy.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -897,19 +921,20 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/StoreManager/StoreManager.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
     
-  <!-- Build Targets which Compile the Code and copy the output to the root bin/ directory of the repository -->
+  <!-- Nightly Build Targets -->
 
   <target name="no-build" description="Sets that no Builds should be performed" depends="no-compile">
     <property name="dotnetrdf.nobuild" value="true" />
   </target>
   
   <target name="build" description="Build dotNetRDF nightlies" unless="${dotnetrdf.nobuild}" 
-          depends="build-libs">
+          depends="build-libs,
+                   build-utils">
     
   </target>
 
@@ -920,6 +945,17 @@
                    build-core-windowsphone,
                    build-data-virtuoso,build-data-virtuoso-net35,build-data-virtuoso-clientprofile,build-data-virtuoso-clientprofile-net35,
                    build-query-fulltext,build-query-fulltext-net35,build-query-fulltext-clientprofile,build-query-fulltext-clientprofile-net35" />
+
+  <target name="build-utils" description="Builds dotNetRDF Toolkit nightlies" unless="${dotnetrdf.nobuild}"
+          depends="build-util-convert,
+                   build-util-editor-wpf,
+                   build-util-opt-stats,
+                   build-util-query-cmd,build-util-query-gui,
+                   build-util-server,
+                   build-util-webdeploy,
+                   build-util-storemanager">
+
+  </target>
   
   <target name="build-core" description="Copy the latest build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core">
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.dll" />
@@ -1011,81 +1047,119 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/Lucene.Net.dll" />
   </target>
 
-  <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
-          depends="build-release-libs,build-release-utils" />
-
-  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
-    <!-- Documentation -->
-    <copy overwrite="true" todir="bin/stable/Libraries/" file="Acknowledgments.txt" />
-    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/net40/ChangeLog.txt" />
-    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/net40/ReleaseNotes.txt" />
-    <copy overwrite="true" todir="bin/stable/Libraries/" file="Libraries/core/net40/Readme.txt" />
-    <!-- Core 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Core 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Core 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Core 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Core Silverlight 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Core Silverlight 4.0 Build for Windows Phone 7 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
-    <!-- Data.Virtuoso 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40/" file="Libraries/Data/Virtuoso/net40/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-    <!-- Data.Virtuoso 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net40-client/" file="Libraries/Data/Virtuoso/net40-client/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-    <!-- Data.Virtuoso 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35/" file="Libraries/Data/Virtuoso/net35/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-    <!-- Data.Virtuoso 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/dotNetRDF.Data.Virtuoso.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/dotNetRDF.Data.Virtuoso.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Data/Virtuoso/net35-client/" file="Libraries/Data/Virtuoso/net35-client/bin/Debug/OpenLink.Data.Virtuoso.dll" />
-    <!-- Query.FullText 4.0 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40/" file="Libraries/Query/FullText/net40/bin/Debug/Lucene.Net.dll" />
-    <!-- Query.FullText 4.0 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net40-client/" file="Libraries/Query/FullText/net40-client/bin/Debug/Lucene.Net.dll" />
-    <!-- Query.FullText 3.5 Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35/" file="Libraries/Query/FullText/net35/bin/Debug/Lucene.Net.dll" />
-    <!-- Query.FullText 3.5 Client Profile Build -->
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/dotNetRDF.Query.FullText.dll" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/dotNetRDF.Query.FullText.xml" />
-    <copy overwrite="true" todir="bin/stable/Libraries/Query/FullText/net35-client/" file="Libraries/Query/FullText/net35-client/bin/Debug/Lucene.Net.dll" />
+  <target name="build-util-convert" description="Copy the latest rdfConvert build to the nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-util-convert">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfConvert">
+      <fileset basedir="Utilities/rdfConvert/bin/Debug">
+        <include name="rdfConvert.exe" />
+        <include name="rdfConvert.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
   </target>
 
-  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}"
-          depends="compile-utils" />
+  <target name="build-util-editor-wpf" unless="${dotnetrdf.nobuild}" depends="compile-util-editor-wpf">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfEditor.Wpf">
+      <fileset basedir="Utilities/rdfEditor.Wpf/bin/Debug">
+        <include name="rdfEditor.exe" />
+        <include name="rdfEditor.exe.config" />
+        <include name="*.dll" />
+        <include name="Syntax/**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-opt-stats" unless="${dotnetrdf.nobuild}" depends="compile-util-opt-stats">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfOptStats">
+      <fileset basedir="Utilities/rdfOptStats/bin/Debug">
+        <include name="rdfOptStats.exe" />
+        <include name="rdfOptStats.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-query-cmd" unless="${dotnetrdf.nobuild}" depends="compile-util-query-cmd">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfQuery">
+      <fileset basedir="Utilities/rdfQuery/bin/Debug">
+        <include name="rdfQuery.exe" />
+        <include name="rdfQuery.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-query-gui" unless="${dotnetrdf.nobuild}" depends="compile-util-query-gui">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/SparqlGUI">
+      <fileset basedir="Utilities/SparqlGUI/bin/Debug">
+        <include name="SparqlGUI.exe" />
+        <include name="SparqlGUI.exe.config" />
+        <include name="*.dll" />
+        <include name="database.ico" />
+        <include name="database_table.ico" />
+        <include name="default.rq" />
+      </fileset>
+    </copy>    
+  </target>
+
+  <target name="build-util-server" unless="${dotnetrdf.nobuild}" depends="compile-util-server-cmd,compile-util-server-gui">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfServer">
+      <fileset basedir="Utilities/rdfServer/bin/Debug">
+        <include name="rdfServer.exe" />
+        <include name="rdfServer.exe.config" />
+        <include name="rdfServerGUI.exe" />
+        <include name="rdfServerGUI.exe.config" />
+        <include name="*.dll" />
+        <include name="default.ttl" />
+        <include name="server.config" />
+        <include name="servercontrol.html" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-webdeploy" unless="${dotnetrdf.nobuild}" depends="compile-util-webdeploy">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/rdfWebDeploy">
+      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
+        <include name="rdfWebDeploy.exe" />
+        <include name="rdfWebDeploy.exe.config" />
+        <include name="*.dll" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-util-storemanager" unless="${dotnetrdf.nobuild}" depends="compile-util-storemanager">
+    <copy overwrite="true" todir="bin/nightlies/Toolkit/StoreManager">
+      <fileset basedir="Utilities/StoreManager/bin/Debug">
+        <include name="StoreManager.exe" />
+        <include name="StoreManager.exe.config" />
+        <include name="*.dll" />
+        <include name="file-manager.ico" />
+        <include name="database_gear.ico" />
+        <include name="plugins/**" />
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Release Build Targets -->
+
+  <target name="build-release" description="Copies the builds to the stable build directory ready for a release" unless="${dotnetrdf.nobuild}"
+          depends="build-release-libs,
+                   build-release-utils" />
+
+  <target name="build-release-libs" description="Copy the library builds to the Stable Build directory ready for a release" unless="${dotnetrdf.nobuild}" depends="build-libs">
+    <copy todir="bin/stable/Libraries/" overwrite="true">
+      <fileset basedir="bin/nightlies/Libraries">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="build-release-utils" description="Copy the toolkit builds to the Stable build directory for a release" unless="${dotnetrdf.nobuild}" depends="build-utils">
+    <copy todir="bin/stable/Toolkit/" overwrite="true">
+      <fileset basedir="bin/nightlies/Toolkit">
+        <include name="**/*" />
+      </fileset>
+    </copy>
+  </target>
   
   <!-- Clean Targets -->
 
@@ -1160,11 +1234,16 @@
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
-  <target name="dist" description="Creates the Distribution ZIP Files" depends="dist-libs,dist-nightly,dist-toolkit,dist-nuget">
+  <target name="dist" description="Creates the Distribution ZIP Files"
+          depends="dist-libs-stable,
+                   dist-libs-nightly,
+                   dist-utils-stable,
+                   dist-utils-nightly,
+                   dist-libs-nuget">
     
   </target>
 
-  <target name="dist-libs" description="Creates the ZIP files for the Core Library Release" depends="build-release-libs">
+  <target name="dist-libs-stable" description="Creates the ZIP files for the stable API Release" depends="build-release-libs">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
       <fileset basedir="bin/stable/Libraries/" failonempty="true">
         <include name="**/*" />
@@ -1190,7 +1269,7 @@
     </zip>
   </target>
 
-  <target name="dist-nightly" description="Creates the Nightly ZIP files" depends="build">
+  <target name="dist-libs-nightly" description="Creates the ZIP files for the nightly API release" depends="build-libs">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
       <fileset basedir="bin/nightlies/Libraries/" failonempty="true">
         <include name="/**/*" />
@@ -1198,65 +1277,33 @@
     </zip>
   </target>
 
-  <target name="dist-toolkit" description="Creates the Toolkit ZIP files" depends="build">
+  <target name="dist-utils-stable" description="Creates the ZIP files for the stable Toolkit release" depends="build-release-utils">
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
         <include name="../Acknowlegments.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
-      <fileset basedir="Utilities/rdfConvert/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/rdfEditor.Wpf/bin/Debug">
+      <fileset basedir="bin/stable/Toolkit/" failonempty="true">
         <include name="**/*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/rdfQuery/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/rdfServer/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/rdfWebDeploy/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/SparqlGUI/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/storemanager/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
-      </fileset>
-      <fileset basedir="Utilities/soh/bin/Debug">
-        <include name="*" />
-        <exclude name="*.pdb" />
-        <exclude name="*.vshost.*" />
-        <exclude name="temp.*" />
       </fileset>
     </zip>
   </target>
 
-  <target name="dist-toolkit-installer" description="Creates the Toolkit Installer ZIP" depends="build">
+  <target name="dist-utils-nightly" description="Creates the ZIP files for the nightly Toolkit release" depends="build-release-utils">
+    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
+      <fileset basedir="Utilities">
+        <include name="ReadMe.txt" />
+        <include name="../Acknowlegments.txt" />
+        <include name="ChangeLog.txt" />
+      </fileset>
+      <fileset basedir="bin/nightlies/Toolkit/" failonempty="true">
+        <include name="**/*" />
+      </fileset>
+    </zip>
+  </target>
+
+  <target name="dist-utils-installer" description="Creates the Toolkit Installer ZIP" depends="build">
     <zip zipfile="${dotnetrdf.toolkitinstaller}" ziplevel="9">
       <fileset basedir="Build/ToolkitInstaller/Debug/" failonempty="true">
         <include name="*" />
@@ -1264,10 +1311,13 @@
     </zip>
   </target>
 
-  <target name="dist-nuget" description="Creates the NuGet packages" depends="dist-nuget-core,dist-nuget-data-virtuoso,dist-nuget-query-fulltext">
+  <target name="dist-libs-nuget" description="Creates the NuGet packages" 
+          depends="dist-libs-nuget-core,
+                   dist-libs-nuget-data-virtuoso,
+                   dist-libs-nuget-query-fulltext">
   </target>
 
-  <target name="dist-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1338,7 +1388,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1389,7 +1439,7 @@
     </exec>
   </target>
 
-  <target name="dist-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">
@@ -1414,22 +1464,22 @@
     <!-- Then create the Query.FullText package -->
     <copy todir="Build/nuget/Query.FullText/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->
@@ -1440,13 +1490,22 @@
     </exec>
   </target>
   
-  <!-- Upload Targets for Uploading the Builds to a website -->
+  <!-- Upload Targets for Uploading the Builds to a website and Publishing NuGet Packages -->
 
-  <target name="upload" description="Uploads the Distribution ZIP Files to a website" depends="upload-nightly,upload-release">
-    
+  <target name="upload" description="Uploads ZIPs to a Website and publish NuGet packages"
+          depends="upload-zips,
+                   upload-libs-nuget">
   </target>
 
-  <target name="upload-nightly" description="Uploads the Nightly ZIPs to a website" depends="dist-nightly" if="${string::get-length(dotnetrdf.webserver) > 0 and string::get-length(dotnetrdf.webserver.username) > 0 and string::get-length(dotnetrdf.webserver.password) > 0}">
+  <target name="upload-zips" description="Uploads the Distribution ZIP Files to a website"
+          depends="upload-libs-nightly,
+                   upload-libs-stable,
+                   upload-utils-stable">
+  </target>
+
+  <target name="upload-libs-nightly" description="Uploads the Nightly ZIPs to a website" 
+          depends="dist-libs-nightly" 
+          if="${string::get-length(dotnetrdf.webserver) > 0 and string::get-length(dotnetrdf.webserver.username) > 0 and string::get-length(dotnetrdf.webserver.password) > 0}">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
         <include name="/${dotnetrdf.nightlyzip}" />
@@ -1454,7 +1513,9 @@
     </ftp>
   </target>
 
-  <target name="upload-release" description="Uploads the Release ZIPs to a website" depends="dist-libs">
+  <target name="upload-libs-stable" description="Uploads the Release ZIPs to a website" 
+          depends="dist-libs-stable"
+          if="${string::get-length(dotnetrdf.webserver) > 0 and string::get-length(dotnetrdf.webserver.username) > 0 and string::get-length(dotnetrdf.webserver.password) > 0}">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
         <include name="/${dotnetrdf.libzip}" />
@@ -1463,7 +1524,7 @@
     </ftp>
   </target>
 
-  <target name="upload-toolkit" description="Uploads the Toolkit ZIPs to a website" depends="dist-toolkit">
+  <target name="upload-utils-stable" description="Uploads the Toolkit ZIPs to a website" depends="dist-utils-stable">
     <ftp connection="dotNetRDFWebsite" remotedir="/downloads/" connectmode="PASSIVE" createdirs="false" verbose="true">
       <put type="bin" update="false">
         <include name="/${dotnetrdf.toolkitzip}" />
@@ -1471,61 +1532,30 @@
     </ftp>
   </target>
 
-  <target name="upload-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" depends="dist-nuget,upload-nuget-core,upload-nuget-data-virtuoso,upload-nuget-query-fulltext">
-
+  <target name="upload-libs-nuget" description="Uploads the NuGet Packages to the NuGet Gallery" 
+          depends="upload-libs-nuget-core,
+                   upload-libs-nuget-data-virtuoso,
+                   upload-libs-nuget-query-fulltext">
   </target>
 
-  <target name="upload-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-nuget-core">
+  <target name="upload-libs-nuget-core" description="Uploads the Core Library Package to the NuGet Gallery" depends="dist-libs-nuget-core">
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
-  <target name="upload-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-nuget-data-virtuoso">
+  <target name="upload-libs-nuget-data-virtuoso" description="Uploads the Data.Virtuoso Library package to the NuGet Gallery" depends="dist-libs-nuget-data-virtuoso">
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 
-  <target name="upload-nuget-query-fulltext" description="Uploads the Query.FullText Library package to the NuGet Gallery" depends="dist-nuget-query-fulltext">
+  <target name="upload-libs-nuget-query-fulltext" description="Uploads the Query.FullText Library package to the NuGet Gallery" depends="dist-libs-nuget-query-fulltext">
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="push" />
       <arg value="dotNetRDF.Query.FullText.${dotnetrdf.nuspecversion}.nupkg" />
-    </exec>
-  </target>
-
-  <target name="upload-nuget-overwrite" description="Uploads the NuGet Packages overwriting an existing package with the same version to the NuGet Gallery" depends="dist-nuget">
-    <exec program="nuget.exe">
-      <arg value="delete" />
-      <arg value="dotNetRDF" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-      <arg value="-NoPrompt" />
-    </exec>
-    <exec workingdir="Build/nuget/Core/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.${dotnetrdf.nuspecversion}.nupkg" />
-    </exec>
-    <exec program="nuget.exe">
-      <arg value="delete" />
-      <arg value="dotNetRDF.Data.Sql" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-      <arg value="-NoPrompt" />
-    </exec>
-    <exec workingdir="Build/nuget/Data.Sql/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.Data.Sql.${dotnetrdf.nuspecversion}.nupkg" />
-    </exec>
-    <exec program="nuget.exe">
-      <arg value="delete" />
-      <arg value="dotNetRDF.Data.Virtuoso" />
-      <arg value="${dotnetrdf.nuspecversion}" />
-      <arg value="-NoPrompt" />
-    </exec>
-    <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
-      <arg value="push" />
-      <arg value="dotNetRDF.Data.Virtuoso.${dotnetrdf.nuspecversion}.nupkg" />
     </exec>
   </target>
 </project>
