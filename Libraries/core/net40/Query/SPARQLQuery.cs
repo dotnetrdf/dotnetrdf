@@ -1085,6 +1085,12 @@ namespace VDS.RDF.Query
                     output.Append(" ");
                     output.Append(this._rootGraphPattern.ToString());
                 }
+                else if (this._rootGraphPattern.HasModifier)
+                {
+                    output.AppendLine("{");
+                    output.AppendLine(this._rootGraphPattern.ToString());
+                    output.AppendLine("}");
+                }
                 else
                 {
                     output.AppendLine(this._rootGraphPattern.ToString());
@@ -1149,6 +1155,13 @@ namespace VDS.RDF.Query
         /// <returns></returns>
         public ISparqlAlgebra ToAlgebra()
         {
+            //Depending on how the query gets built we may not have had graph pattern optimization applied
+            //which we should do here if query optimization is enabled
+            if (!this.IsOptimised && Options.QueryOptimisation)
+            {
+                this.Optimise();
+            }
+
             //Firstly Transform the Root Graph Pattern to SPARQL Algebra
             ISparqlAlgebra algebra;
             if (this._rootGraphPattern != null)

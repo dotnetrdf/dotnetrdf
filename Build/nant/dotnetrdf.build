@@ -17,7 +17,7 @@
   
   <!-- Licensing Properties -->
   <property name="dotnetrdf.license.exclude.exts" 
-            value="dll,pdb,xml,xaml,ttl,txt,csproj,user,xsd,exe,cache,dtd,template,pfx,sql,resources,resx,xshd,config,properties,settings,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,html,json,xhtml,css,js,sparql,xslt,bak,csv,tsv,ico,png,jpg,tiff,bmp,orig" />
+            value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig" />
   <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
   <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
   <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
@@ -550,12 +550,32 @@
   </target>
 
   <target name="compile-libs-main" description="Compiles all the libraries that make up the main distribution" unless="${dotnetrdf.nocompile}"
-          depends="compile-core,compile-core-net35,
+          depends="compile-libs-core,
+                   compile-libs-data-virtuoso,
+                   compile-libs-query-fulltext">
+  </target>
+
+  <target name="compile-libs-core" description="Compiles all builds of the Core library" unless="${dotnetrdf.nocompile}"
+          depends="compile-core,
+                   compile-core-net35,
                    compile-core-silverlight,
                    compile-core-windowsphone,
-                   compile-core-clientprofile,compile-core-clientprofile-net35,
-                   compile-data-virtuoso,compile-data-virtuoso-net35,compile-data-virtuoso-clientprofile,compile-data-virtuoso-clientprofile-net35,
-                   compile-query-fulltext,compile-query-fulltext-net35,compile-query-fulltext-clientprofile,compile-query-fulltext-clientprofile-net35">
+                   compile-core-clientprofile,
+                   compile-core-clientprofile-net35">  
+  </target>
+
+  <target name="compile-libs-data-virtuoso" description="Compiles all builds of the Data.Virtuoso library" unless="${dotnetrdf.nocompile}"
+          depends="compile-data-virtuoso,
+                   compile-data-virtuoso-net35,
+                   compile-data-virtuoso-clientprofile,
+                   compile-data-virtuoso-clientprofile-net35">
+  </target>
+
+  <target name="compile-libs-query-fulltext" description="Compiles all builds of the Query.FullText library" unless="${dotnetrdf.nocompile}"
+          depends="compile-query-fulltext,
+                   compile-query-fulltext-net35,
+                   compile-query-fulltext-clientprofile,
+                   compile-query-fulltext-clientprofile-net35">
   </target>
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
@@ -582,8 +602,9 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -594,8 +615,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -606,8 +627,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -618,8 +639,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -629,12 +650,12 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Build/LicenseChecker/LicenseChecker.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -644,8 +665,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -656,8 +677,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -668,8 +689,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -680,8 +701,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -692,8 +713,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -704,8 +725,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -716,8 +737,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -728,8 +749,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -740,9 +761,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -752,9 +773,9 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
-      <!--<arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />-->
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
 
@@ -764,8 +785,8 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor/rdfEditor.Core.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -776,8 +797,8 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/editor.wpf/rdfEditor.Core.Wpf.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -788,8 +809,8 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -800,8 +821,8 @@
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/httpserver/VDS.Web.Server.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
     </exec>
   </target>
@@ -812,8 +833,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfConvert/rdfConvert.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -823,8 +844,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfEditor.Wpf/rdfEditor.Wpf.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -834,8 +855,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfOptStats/rdfOptStats.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -845,8 +866,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfQuery/rdfQuery.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -856,8 +877,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/SparqlGui/SparqlGui.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -867,8 +888,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServer/rdfServer.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -878,8 +899,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfServerGUI/rdfServerGUI.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -889,8 +910,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/rdfWebDeploy/rdfWebDeploy.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -900,8 +921,8 @@
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Utilities/StoreManager/StoreManager.csproj" />
       <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent="/>
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;"/>
+      <arg line="/p:PostBuildEvent=" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
     
@@ -1443,22 +1464,22 @@
     <!-- Then create the Query.FullText package -->
     <copy todir="Build/nuget/Query.FullText/lib/net40/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net40-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net40-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <copy todir="Build/nuget/Query.FullText/lib/net35-client/">
       <fileset basedir="bin/stable/Libraries/Query/FullText/net35-client/">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </copy>
     <!-- Invoke nuget on the package -->

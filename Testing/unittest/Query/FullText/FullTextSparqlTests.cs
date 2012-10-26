@@ -130,7 +130,7 @@ namespace VDS.RDF.Test.Query.FullText
             {
                 PropertyFunctionFactory.RemoveFactory(factory);
                 provider.Dispose();
-                LuceneTestHarness.Index.Close();
+                LuceneTestHarness.Index.Dispose();
             }
         }
 

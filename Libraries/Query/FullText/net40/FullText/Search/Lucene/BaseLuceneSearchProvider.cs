@@ -116,13 +116,10 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
-#if NET40
+
             return (from doc in docs.ScoreDocs
-#else
-            return (from doc in docs.scoreDocs
-#endif
-                    where doc.score > scoreThreshold
-                    select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
+                    where doc.Score > scoreThreshold
+                    select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema));
         }
 
         /// <summary>
@@ -152,12 +149,9 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
             LucSearch.TopDocs docs = this._searcher.Search(q, limit);
-#if NET40
+
             return (from doc in docs.ScoreDocs
-#else
-            return (from doc in docs.scoreDocs
-#endif
-                    select this._searcher.Doc(doc.doc).ToResult(doc.score, this._schema));
+                    select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema));
         }
 
         /// <summary>
@@ -193,11 +187,11 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             if (this._autoSync)
             {
-                if (!this._searcher.GetIndexReader().IsCurrent())
+                if (!this._searcher.IndexReader.IsCurrent())
                 {
-                    IndexReader oldReader = this._searcher.GetIndexReader();
+                    IndexReader oldReader = this._searcher.IndexReader;
                     this._searcher = new LucSearch.IndexSearcher(oldReader.Reopen());
-                    oldReader.Close();
+                    oldReader.Dispose();
                 }
             }
         }
@@ -220,7 +214,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
 
             this.DisposeInternal();
 
-            if (this._searcher != null) this._searcher.Close();
+            if (this._searcher != null) this._searcher.Dispose();
         }
 
         /// <summary>

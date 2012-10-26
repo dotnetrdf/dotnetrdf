@@ -23,13 +23,21 @@ Changed
  - Fixed an intermittent race condition in the implementation of parallel Left Join
  - Fixed a bug in the evaluation of some complex GROUP BY statements
  - Fixed a bug in the string representation of CountDistinctAggregate
+ - Fixed a bug related to losing FILTERS when building queries using the internal APIs
+ - Fixed a bug related to ToString() form of some API built queries
 
 - Dependencies
+ - Updated Query.FullText Library to use Lucene.Net 3.0.3
+
+- Build
+ - Query.FullText Library is now always strong named
+ - Query.FullText NuGet package now references Lucene.Net as a dependency instead of including it in the package
 
 - Parsing/Writing
  - Improved how parsers and writers are selected by file extension
  - Improved content negotiation logic to properly support quality factors and type ranges
  - Avoid using blocking IO when parsing from file/memory streams
+
 
 - Query
  - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
@@ -44,6 +52,8 @@ Removed
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
 - Marks the obsolete HashTable classes as obsolete unusable
 - Marks the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
+- Marks the obsolete IndexingHelper static class as obsolete unusable
+- Marks the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
    
 
 

@@ -382,7 +382,7 @@ namespace VDS.RDF.Utilities.Server
             //If got a Graph OK then prep the dotNetRDF Configuration API
             if (g != null)
             {
-                ConfigurationLoader.AutoDetectObjectFactories(g);
+                ConfigurationLoader.AutoConfigure(g);
             }
             return g;
         }
