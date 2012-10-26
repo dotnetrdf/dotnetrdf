@@ -81,16 +81,6 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IBlankNode)other);
         }
-
-        /// <summary>
-        /// Copies the Node to another Graph
-        /// </summary>
-        /// <param name="target">Target Graph</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            return new SimpleVirtualBlankNode(target, this.VirtualID, this.Provider);
-        }
     }
 
     /// <summary>
@@ -136,23 +126,6 @@ namespace VDS.RDF.Storage.Virtualisation
         public int CompareTo(SimpleVirtualGraphLiteralNode other)
         {
             return this.CompareTo((IGraphLiteralNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present
-        /// </summary>
-        /// <param name="target">Target Graph</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (this._value != null)
-            {
-                return new SimpleVirtualGraphLiteralNode(target, this.VirtualID, this.Provider, (IGraphLiteralNode)this._value);
-            }
-            else
-            {
-                return new SimpleVirtualGraphLiteralNode(target, this.VirtualID, this.Provider);
-            }
         }
     }
 
@@ -200,23 +173,6 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((ILiteralNode)other);
         }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present
-        /// </summary>
-        /// <param name="target">Target Graph</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (this._value != null)
-            {
-                return new SimpleVirtualLiteralNode(target, this.VirtualID, this.Provider, (ILiteralNode)this._value);
-            }
-            else
-            {
-                return new SimpleVirtualLiteralNode(target, this.VirtualID, this.Provider);
-            }
-        }
     }
 
     /// <summary>
@@ -263,23 +219,6 @@ namespace VDS.RDF.Storage.Virtualisation
         {
             return this.CompareTo((IUriNode)other);
         }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present
-        /// </summary>
-        /// <param name="target">Target Graph</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (this._value != null)
-            {
-                return new SimpleVirtualUriNode(target, this.VirtualID, this.Provider, (IUriNode)this._value);
-            }
-            else
-            {
-                return new SimpleVirtualUriNode(target, this.VirtualID, this.Provider);
-            }
-        }
     }
 
     /// <summary>
@@ -325,23 +264,6 @@ namespace VDS.RDF.Storage.Virtualisation
         public int CompareTo(SimpleVirtualVariableNode other)
         {
             return this.CompareTo((IVariableNode)other);
-        }
-
-        /// <summary>
-        /// Copies the Node to another Graph including the materialised value if present
-        /// </summary>
-        /// <param name="target">Target Graph</param>
-        /// <returns></returns>
-        public override INode CopyNode(IGraph target)
-        {
-            if (this._value != null)
-            {
-                return new SimpleVirtualVariableNode(target, this.VirtualID, this.Provider, (IVariableNode)this._value);
-            }
-            else
-            {
-                return new SimpleVirtualVariableNode(target, this.VirtualID, this.Provider);
-            }
         }
     }
 }

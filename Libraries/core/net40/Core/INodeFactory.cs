@@ -109,6 +109,15 @@ namespace VDS.RDF
         /// Creates a new unused Blank Node ID and returns it
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Obsolete, use the GetNextAnonId() method instead", true)]
         String GetNextBlankNodeID();
+
+        /// <summary>
+        /// Gets the ID of the Factory
+        /// </summary>
+        Guid FactoryID
+        {
+            get;
+        }
     }
 }

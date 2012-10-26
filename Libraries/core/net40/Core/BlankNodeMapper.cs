@@ -43,6 +43,7 @@ namespace VDS.RDF
     /// <summary>
     /// Mapper class which creates Blank Node IDs and ensures that auto-assigned and user specified IDs don't collide
     /// </summary>
+    [Obsolete("BlankNodeMapper is no longer required due to changes in how Blank Nodes are identified",true)]
     public class BlankNodeMapper
     {
         private Dictionary<String, BlankNodeIDAssigment> _idmap = new Dictionary<string, BlankNodeIDAssigment>();

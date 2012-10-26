@@ -45,16 +45,9 @@ namespace VDS.RDF
     /// <summary>
     /// Abstract Class for Nodes, implements the two basic properties of the INode Interface
     /// </summary>
-    public abstract class BaseNode : INode
+    public abstract class BaseNode 
+        : INode
     {
-        /// <summary>
-        /// Reference to the Graph that the Node belongs to
-        /// </summary>
-        protected IGraph _graph;
-        /// <summary>
-        /// Uri of the Graph that the Node belongs to
-        /// </summary>
-        protected Uri _graphUri;
         /// <summary>
         /// Node Type for the Node
         /// </summary>
@@ -69,10 +62,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="type">Node Type</param>
-        public BaseNode(IGraph g, NodeType type)
+        public BaseNode(NodeType type)
         {
-            this._graph = g;
-            if (this._graph != null) this._graphUri = this._graph.BaseUri;
             this._nodetype = type;
         }
 
@@ -90,26 +81,28 @@ namespace VDS.RDF
         /// <summary>
         /// Nodes belong to a Graph
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         public IGraph Graph
         {
             get
             {
-                return _graph;
+                throw new NotSupportedException();
             }
         }
 
         /// <summary>
         /// Gets/Sets the Graph Uri of the Node
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         public Uri GraphUri
         {
             get
             {
-                return this._graphUri;
+                throw new NotSupportedException();
             }
             set
             {
-                this._graphUri = value;
+                throw new NotSupportedException();
             }
         }
 

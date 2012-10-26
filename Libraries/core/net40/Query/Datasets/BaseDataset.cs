@@ -202,7 +202,7 @@ namespace VDS.RDF.Query.Datasets
                 {
                     if (this.HasGraph(u))
                     {
-                        g.Merge(this[u], true);
+                        g.Merge(this[u]);
                     }
                 }
                 this.SetDefaultGraphInternal(g);
@@ -275,7 +275,7 @@ namespace VDS.RDF.Query.Datasets
                 {
                     if (this.HasGraph(u))
                     {
-                        g.Merge(this[u], true);
+                        g.Merge(this[u]);
                     }
                 }
                 this.SetActiveGraphInternal(g);

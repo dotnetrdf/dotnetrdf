@@ -88,7 +88,7 @@ namespace VDS.RDF
         /// <summary>
         /// Nodes have a Type
         /// </summary>
-        /// <remarks>Primarily provided so can do quick integer comparison to see what type of Node you have without having to do actual full blown Type comparison</remarks>
+        /// <remarks>Primarily provided so can do quick comparison to see what type of Node you have without having to do actual full blown Type comparison</remarks>
         NodeType NodeType
         {
             get;
@@ -97,6 +97,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Graph the Node belongs to
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         IGraph Graph
         {
             get;
@@ -105,6 +106,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the Graph URI associated with a Node
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         Uri GraphUri
         {
             get;
@@ -157,7 +159,24 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Internal ID of the Blank Node
         /// </summary>
+        [Obsolete("Obsolete, use AnonID property instead",true)]
         String InternalID
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the ID of the Blank Node
+        /// </summary>
+        Guid AnonID
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the ID of the Factory that created the Blank Node
+        /// </summary>
+        Guid FactoryID
         {
             get;
         }

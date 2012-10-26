@@ -489,9 +489,9 @@ namespace VDS.RDF
                                   _sp = new SubjectPredicateComparer(), 
                                   _po = new PredicateObjectComparer(), 
                                   _os = new ObjectSubjectComparer();
-        private VariableNode _varSubj = new VariableNode(null, "s"),
-                             _varPred = new VariableNode(null, "pred"),
-                             _varObj = new VariableNode(null, "obj");
+        private VariableNode _varSubj = new VariableNode("s"),
+                             _varPred = new VariableNode("p"),
+                             _varObj = new VariableNode("o");
 
         /// <summary>
         /// Creates a new List Indexed Triple Collection

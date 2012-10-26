@@ -43,6 +43,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.Common;
 using VDS.RDF.Parsing;
 #if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
@@ -62,8 +63,12 @@ namespace VDS.RDF
         ,ISerializable
 #endif
     {
-        #region Variables
+        #region Member Variables
 
+        /// <summary>
+        /// Factory ID
+        /// </summary>
+        protected Guid _factoryID = Guid.NewGuid();
         /// <summary>
         /// Collection of Triples in the Graph
         /// </summary>
@@ -71,15 +76,13 @@ namespace VDS.RDF
         /// <summary>
         /// Namespace Mapper
         /// </summary>
-        protected NamespaceMapper _nsmapper;
+        protected readonly NamespaceMapper _nsmapper;
         /// <summary>
         /// Base Uri of the Graph
         /// </summary>
         protected Uri _baseuri = null;
-        /// <summary>
-        /// Blank Node ID Mapper
-        /// </summary>
-        protected BlankNodeMapper _bnodemapper;
+
+        protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
 
         private TripleEventHandler TripleAddedHandler, TripleRemovedHandler;
 #if !SILVERLIGHT
@@ -97,7 +100,6 @@ namespace VDS.RDF
         protected BaseGraph(BaseTripleCollection tripleCollection)
         {
             this._triples = tripleCollection;
-            this._bnodemapper = new BlankNodeMapper();
             this._nsmapper = new NamespaceMapper();
 
             //Create Event Handlers and attach to the Triple Collection
@@ -250,13 +252,21 @@ namespace VDS.RDF
 
         #region Node Creation
 
+        public Guid FactoryID
+        {
+            get
+            {
+                return this._factoryID;
+            }
+        }
+
         /// <summary>
         /// Creates a New Blank Node with an auto-generated Blank Node ID
         /// </summary>
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode()
         {
-            return new BlankNode(this);
+            return new BlankNode(Guid.NewGuid(), this._factoryID);
         }
 
         /// <summary>
@@ -266,16 +276,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IBlankNode CreateBlankNode(String nodeId)
         {
-            //try
-            //{
-            //    Monitor.Enter(this._bnodemapper);
-                this._bnodemapper.CheckID(ref nodeId);
-                return new BlankNode(this, nodeId);
-            //}
-            //finally
-            //{
-            //    Monitor.Exit(this._bnodemapper);
-            //}
+            Guid id;
+            if (this._bnodes.TryGetValue(nodeId, out id))
+            {
+                return new BlankNode(id, this._factoryID);
+            }
+            else
+            {
+                id = Guid.NewGuid();
+                this._bnodes.Add(nodeId, id);
+                return new BlankNode(id, this._factoryID);
+            }
         }
 
         /// <summary>
@@ -285,7 +296,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal)
         {
-            return new LiteralNode(this, literal);
+            return new LiteralNode(literal);
         }
 
         /// <summary>
@@ -296,7 +307,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal, String langspec)
         {
-            return new LiteralNode(this, literal, langspec);
+            return new LiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -307,7 +318,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual ILiteralNode CreateLiteralNode(String literal, Uri datatype)
         {
-            return new LiteralNode(this, literal, datatype);
+            return new LiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -316,7 +327,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IUriNode CreateUriNode()
         {
-            return new UriNode(this, UriFactory.Create(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
+            return new UriNode(UriFactory.Create(Tools.ResolveUri(String.Empty, this._baseuri.ToSafeString())));
         }
 
         /// <summary>
@@ -330,7 +341,7 @@ namespace VDS.RDF
         public virtual IUriNode CreateUriNode(Uri uri)
         {
             if (!uri.IsAbsoluteUri && this._baseuri != null) uri = Tools.ResolveUri(uri, this._baseuri);
-            return new UriNode(this, uri);
+            return new UriNode(uri);
         }
 
         /// <summary>
@@ -341,7 +352,7 @@ namespace VDS.RDF
         /// <remarks>Internally the Graph will resolve the QName to a full URI, throws an RDF Exception when this is not possible</remarks>
         public virtual IUriNode CreateUriNode(String qname)
         {
-            return new UriNode(this, qname);
+            return new UriNode(UriFactory.Create(Tools.ResolveQName(qname, this._nsmapper, null)));
         }
 
         /// <summary>
@@ -351,7 +362,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IVariableNode CreateVariableNode(String varname)
         {
-            return new VariableNode(this, varname);
+            return new VariableNode(varname);
         }
 
         /// <summary>
@@ -360,7 +371,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return new GraphLiteralNode(this);
+            return new GraphLiteralNode();
         }
 
         /// <summary>
@@ -370,7 +381,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return new GraphLiteralNode(this, subgraph);
+            return new GraphLiteralNode(subgraph);
         }
 
         #endregion
@@ -524,17 +535,6 @@ namespace VDS.RDF
         /// Merges another Graph into the current Graph
         /// </summary>
         /// <param name="g">Graph to Merge into this Graph</param>
-        /// <remarks>The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.</remarks>
-        public virtual void Merge(IGraph g)
-        {
-            this.Merge(g, false);
-        }
-
-        /// <summary>
-        /// Merges another Graph into the current Graph
-        /// </summary>
-        /// <param name="g">Graph to Merge into this Graph</param>
-        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes so they refer to the Graph they originated in</param>
         /// <remarks>
         /// <para>
         /// The Graph on which you invoke this method will preserve its Blank Node IDs while the Blank Nodes from the Graph being merged in will be given new IDs as required in the scope of this Graph.
@@ -543,7 +543,7 @@ namespace VDS.RDF
         /// The Graph will raise the <see cref="MergeRequested">MergeRequested</see> event before the Merge operation which gives any event handlers the oppurtunity to cancel this event.  When the Merge operation is completed the <see cref="Merged">Merged</see> event is raised
         /// </para>
         /// </remarks>
-        public virtual void Merge(IGraph g, bool keepOriginalGraphUri)
+        public virtual void Merge(IGraph g)
         {
             if (ReferenceEquals(this, g)) throw new RdfException("You cannot Merge an RDF Graph with itself");
 
@@ -553,70 +553,8 @@ namespace VDS.RDF
             //First copy and Prefixes across which aren't defined in this Graph
             this._nsmapper.Import(g.NamespaceMap);
 
-            if (this.IsEmpty)
-            {
-                //Empty Graph so do a quick copy
-                foreach (Triple t in g.Triples)
-                {
-                    this.Assert(new Triple(Tools.CopyNode(t.Subject, this, keepOriginalGraphUri), Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri), Tools.CopyNode(t.Object, this, keepOriginalGraphUri), t.Context));
-                }
-            }
-            else
-            {   
-                //Prepare a mapping of Blank Nodes to Blank Nodes
-                Dictionary<INode, IBlankNode> mapping = new Dictionary<INode, IBlankNode>();
-
-                foreach (Triple t in g.Triples)
-                {
-                    INode s, p, o;
-                    if (t.Subject.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Subject))
-                        {
-                            IBlankNode temp = this.CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Subject.GraphUri;
-                            mapping.Add(t.Subject, temp);
-                        }
-                        s = mapping[t.Subject];
-                    }
-                    else
-                    {
-                        s = Tools.CopyNode(t.Subject, this, keepOriginalGraphUri);
-                    }
-
-                    if (t.Predicate.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Predicate))
-                        {
-                            IBlankNode temp = this.CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Predicate.GraphUri;
-                            mapping.Add(t.Predicate, temp);
-                        }
-                        p = mapping[t.Predicate];
-                    }
-                    else
-                    {
-                        p = Tools.CopyNode(t.Predicate, this, keepOriginalGraphUri);
-                    }
-
-                    if (t.Object.NodeType == NodeType.Blank)
-                    {
-                        if (!mapping.ContainsKey(t.Object))
-                        {
-                            IBlankNode temp = this.CreateBlankNode();
-                            if (keepOriginalGraphUri) temp.GraphUri = t.Object.GraphUri;
-                            mapping.Add(t.Object, temp);
-                        }
-                        o = mapping[t.Object];
-                    }
-                    else
-                    {
-                        o = Tools.CopyNode(t.Object, this, keepOriginalGraphUri);
-                    }
-
-                    this.Assert(new Triple(s, p, o, t.Context));
-                }
-            }
+            //Since Blank Nodes are now truly scoped to their factory we can always just copy triples across directly
+            this.Assert(g.Triples);
 
             this.RaiseMerged();
         }

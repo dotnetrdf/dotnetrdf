@@ -288,6 +288,14 @@ namespace VDS.RDF
             this._g.Clear();
         }
 
+        public Guid FactoryID
+        {
+            get
+            {
+                return this._g.FactoryID;
+            }
+        }
+
         /// <summary>
         /// Creates a new Blank Node with the given Node ID
         /// </summary>

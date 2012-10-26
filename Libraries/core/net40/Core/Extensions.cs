@@ -552,9 +552,10 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
         /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        [Obsolete("Copying Nodes is no longer required", true)]
         public static INode CopyNode(this INode n, IGraph target)
         {
-            return Tools.CopyNode(n, target);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -565,9 +566,10 @@ namespace VDS.RDF
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
         /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        [Obsolete("Copying Nodes is no longer required", true)]
         public static INode CopyNode(this INode n, IGraph target, bool keepOriginalGraphUri)
         {
-            return Tools.CopyNode(n, target, keepOriginalGraphUri);
+            throw new NotSupportedException();
         }
 
 
@@ -578,9 +580,10 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
         /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        [Obsolete("Copying Triples is no longer required", true)]
         public static Triple CopyTriple(this Triple t, IGraph target)
         {
-            return Tools.CopyTriple(t, target);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -591,6 +594,7 @@ namespace VDS.RDF
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
         /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        [Obsolete("Copying Triples is no longer required", true)]
         public static Triple CopyTriple(this Triple t, IGraph target, bool keepOriginalGraphUri)
         {
             return Tools.CopyTriple(t, target, keepOriginalGraphUri);
@@ -608,27 +612,27 @@ namespace VDS.RDF
             INode s, p, o;
             if (mapping.ContainsKey(t.Subject))
             {
-                s = mapping[t.Subject].CopyNode(target);
+                s = mapping[t.Subject];
             }
             else
             {
-                s = t.Subject.CopyNode(target);
+                s = t.Subject;
             }
             if (mapping.ContainsKey(t.Predicate))
             {
-                p = mapping[t.Predicate].CopyNode(target);
+                p = mapping[t.Predicate];
             }
             else
             {
-                p = t.Predicate.CopyNode(target);
+                p = t.Predicate;
             }
             if (mapping.ContainsKey(t.Object))
             {
-                o = mapping[t.Object].CopyNode(target);
+                o = mapping[t.Object];
             }
             else
             {
-                o = t.Object.CopyNode(target);
+                o = t.Object;
             }
             return new Triple(s, p, o);
         }
