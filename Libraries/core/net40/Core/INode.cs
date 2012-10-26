@@ -97,6 +97,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Graph the Node belongs to
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         IGraph Graph
         {
             get;
@@ -105,6 +106,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets/Sets the Graph URI associated with a Node
         /// </summary>
+        [Obsolete("Nodes no longer hold a reference to a Graph", true)]
         Uri GraphUri
         {
             get;
@@ -157,7 +159,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Internal ID of the Blank Node
         /// </summary>
-        [Obsolete("Obsoleted in 0.8.0, use AnonID property instead",true)]
+        [Obsolete("Obsolete, use AnonID property instead",true)]
         String InternalID
         {
             get;

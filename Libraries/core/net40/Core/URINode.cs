@@ -61,8 +61,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">URI</param>
-        protected internal BaseUriNode(IGraph g, Uri uri)
-            : base(g, NodeType.Uri)
+        protected internal BaseUriNode(Uri uri)
+            : base(NodeType.Uri)
         {
             this._uri = uri;
 
@@ -70,51 +70,13 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes
-        /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="qname">QName for the Node</param>
-        /// <remarks>
-        /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
-        /// </remarks>
-        protected internal BaseUriNode(IGraph g, String qname)
-            : base(g, NodeType.Uri)
-        {
-            if (qname.Contains(':'))
-            {
-                if (this._graph != null)
-                {
-                    this._uri = UriFactory.Create(Tools.ResolveQName(qname, this._graph.NamespaceMap, this._graph.BaseUri));
-                }
-                else
-                {
-                    throw new RdfException("Cannot create a URI Node using a QName in a Null Graph");
-                }
-            }
-            else
-            {
-                throw new RdfException("Cannot create a URI Node since the QName '" + qname + "' appears to be invalid");
-            }
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
-
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes
-        /// </summary>
-        /// <param name="uri">URI</param>
-        protected internal BaseUriNode(Uri uri)
-            : this(null, uri) { }
+#if !SILVERLIGHT
 
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected BaseUriNode()
-            : base(null, NodeType.Uri) { }
-
-#if !SILVERLIGHT
+            : base(NodeType.Uri) { }
 
         /// <summary>
         /// Deserialization Constructor
@@ -122,7 +84,7 @@ namespace VDS.RDF
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseUriNode(SerializationInfo info, StreamingContext context)
-            : base(null, NodeType.Uri)
+            : base(NodeType.Uri)
         {
             this._uri = UriFactory.Create(info.GetString("uri"));
 
@@ -559,19 +521,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">URI for the Node</param>
-        protected internal UriNode(IGraph g, Uri uri)
-            : base(g, uri) { }
-
-        /// <summary>
-        /// Internal Only Constructor for URI Nodes
-        /// </summary>
-        /// <param name="g">Graph this Node is in</param>
-        /// <param name="qname">QName for the Node</param>
-        /// <remarks>
-        /// This Constructor tries to resolve the QName using the NamespaceMapper and Base Uri of the Graph it is in.  Exceptions may occur if we cannot resolve the QName correctly.
-        /// </remarks>
-        protected internal UriNode(IGraph g, String qname)
-            : base(g, qname) { }
+        protected internal UriNode(Uri uri)
+            : base(uri) { }
 
         /// <summary>
         /// Deserilization Only Constructor

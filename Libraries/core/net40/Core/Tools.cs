@@ -322,18 +322,10 @@ namespace VDS.RDF
         /// <param name="target">Graph to Copy into</param>
         /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Node being copied</param>
         /// <returns></returns>
+        [Obsolete("Copying Nodes is no longer required", true)]
         public static INode CopyNode(INode original, IGraph target, bool keepOriginalGraphUri)
         {
-            if (!keepOriginalGraphUri)
-            {
-                return CopyNode(original, target);
-            }
-            else
-            {
-                INode temp = CopyNode(original, target);
-                temp.GraphUri = original.GraphUri;
-                return temp;
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -347,57 +339,10 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Graphs is done
         /// </para>
         /// </remarks>
+        [Obsolete("Copying Nodes is no longer required", true)]
         public static INode CopyNode(INode original, IGraph target)
         {
-            //No need to copy if it's already in the relevant Graph
-            if (ReferenceEquals(original.Graph, target)) return original;
-
-            if (original.NodeType == NodeType.Uri)
-            {
-                IUriNode u = (IUriNode)original;
-                IUriNode u2 = new UriNode(target, u.Uri);
-
-                return u2;
-            }
-            else if (original.NodeType == NodeType.Literal)
-            {
-                ILiteralNode l = (ILiteralNode)original;
-                ILiteralNode l2;
-                if (l.Language.Equals(String.Empty))
-                {
-                    if (!(l.DataType == null))
-                    {
-                        l2 = new LiteralNode(target, l.Value, l.DataType);
-                    }
-                    else
-                    {
-                        l2 = new LiteralNode(target, l.Value);
-                    }
-                }
-                else
-                {
-                    l2 = new LiteralNode(target, l.Value, l.Language);
-                }
-
-                return l2;
-            }
-            else if (original.NodeType == NodeType.Blank)
-            {
-                IBlankNode b = (IBlankNode)original;
-                IBlankNode b2;
-
-                b2 = new BlankNode(target, b.InternalID);
-                return b2;
-            }
-            else if (original.NodeType == NodeType.Variable)
-            {
-                IVariableNode v = (IVariableNode)original;
-                return new VariableNode(target, v.VariableName);
-            }
-            else
-            {
-                throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Graphs");
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -411,37 +356,10 @@ namespace VDS.RDF
         /// <strong>Warning:</strong> Copying Blank Nodes may lead to unforseen circumstances since no remapping of IDs between Factories is done
         /// </para>
         /// </remarks>
+        [Obsolete("Copying Nodes is no longer required", true)]
         public static INode CopyNode(INode original, INodeFactory target)
         {
-            if (ReferenceEquals(original.Graph, target)) return original;
-
-            switch (original.NodeType)
-            {
-                case NodeType.Blank:
-                    return target.CreateBlankNode(((IBlankNode)original).InternalID);
-                case NodeType.GraphLiteral:
-                    return target.CreateGraphLiteralNode(((IGraphLiteralNode)original).SubGraph);
-                case NodeType.Literal:
-                    ILiteralNode lit = (ILiteralNode)original;
-                    if (lit.DataType != null)
-                    {
-                        return target.CreateLiteralNode(lit.Value, lit.DataType);
-                    }
-                    else if (!lit.Language.Equals(String.Empty))
-                    {
-                        return target.CreateLiteralNode(lit.Value, lit.Language);
-                    }
-                    else
-                    {
-                        return target.CreateLiteralNode(lit.Value);
-                    }
-                case NodeType.Uri:
-                    return target.CreateUriNode(((IUriNode)original).Uri);
-                case NodeType.Variable:
-                    return target.CreateVariableNode(((IVariableNode)original).VariableName);
-                default:
-                    throw new RdfException("Unable to Copy '" + original.GetType().ToString() + "' Nodes between Node Factories");
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -450,9 +368,10 @@ namespace VDS.RDF
         /// <param name="t">Triple to copy</param>
         /// <param name="target">Graph to copy to</param>
         /// <returns></returns>
+        [Obsolete("Copying Triples is no longer required", true)]
         public static Triple CopyTriple(Triple t, IGraph target)
         {
-            return CopyTriple(t, target, false);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -462,19 +381,10 @@ namespace VDS.RDF
         /// <param name="target">Graph to copy to</param>
         /// <param name="keepOriginalGraphUri">Indicates whether the Copy should preserve the Graph Uri of the Nodes being copied</param>
         /// <returns></returns>
+        [Obsolete("Copying Triples is no longer required", true)]
         public static Triple CopyTriple(Triple t, IGraph target, bool keepOriginalGraphUri)
         {
-            //No need to copy if Triple already comes from the Target Graph
-            if (ReferenceEquals(t.Graph, target)) return t;
-
-            //Copy the Nodes
-            INode subj, pred, obj;
-            subj = CopyNode(t.Subject, target, keepOriginalGraphUri);
-            pred = CopyNode(t.Predicate, target, keepOriginalGraphUri);
-            obj = CopyNode(t.Object, target, keepOriginalGraphUri);
-
-            //Return a new Triple
-            return new Triple(subj, pred, obj, t.Context);
+            throw new NotSupportedException();
         }
 
         /// <summary>

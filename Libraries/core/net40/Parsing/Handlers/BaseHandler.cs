@@ -83,6 +83,14 @@ namespace VDS.RDF.Parsing.Handlers
 
         #region INodeFactory Members
 
+        public virtual Guid FactoryID
+        {
+            get
+            {
+                return this._factory.FactoryID;
+            }
+        }
+
         /// <summary>
         /// Creates a Blank Node
         /// </summary>

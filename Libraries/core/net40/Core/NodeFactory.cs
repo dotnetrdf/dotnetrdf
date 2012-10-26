@@ -34,16 +34,18 @@ terms.
 */
 
 using System;
+using VDS.Common;
 
 namespace VDS.RDF
 {
     /// <summary>
-    /// A default implementation of a Node Factory which generates Nodes unrelated to Graphs (wherever possible we suggest using a Graph based implementation instead)
+    /// A default implementation of a Node Factory
     /// </summary>
     public class NodeFactory
         : INodeFactory
     {
-        private BlankNodeMapper _bnodeMap = new BlankNodeMapper();
+        protected readonly MultiDictionary<String, Guid> _bnodes = new MultiDictionary<string, Guid>();
+        protected readonly Guid _factoryID = Guid.NewGuid();
 
         /// <summary>
         /// Creates a new Node Factory
@@ -51,15 +53,33 @@ namespace VDS.RDF
         public NodeFactory()
         { }
 
+        /// <summary>
+        /// Creates a new Node Factory
+        /// </summary>
+        /// <param name="factoryID">Factory ID</param>
+        public NodeFactory(Guid factoryID)
+        {
+            if (factoryID == null) throw new ArgumentNullException("factoryID");
+            this._factoryID = factoryID;
+        }
+
         #region INodeFactory Members
+
+        public Guid FactoryID
+        {
+            get
+            {
+                return _factoryID;
+            }
+        }
 
         /// <summary>
         /// Creates a Blank Node with a new automatically generated ID
         /// </summary>
         /// <returns></returns>
-        public IBlankNode CreateBlankNode()
+        public virtual IBlankNode CreateBlankNode()
         {
-            return new BlankNode(this);
+            return new BlankNode(Guid.NewGuid(), this._factoryID);
         }
 
         /// <summary>
@@ -69,8 +89,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public IBlankNode CreateBlankNode(string nodeId)
         {
-            this._bnodeMap.CheckID(ref nodeId);
-            return new BlankNode(null, nodeId);
+            Guid id;
+            if (this._bnodes.TryGetValue(nodeId, out id))
+            {
+                return new BlankNode(id, this._factoryID);
+            }
+            else
+            {
+                id = Guid.NewGuid();
+                this._bnodes.Add(nodeId, id);
+                return new BlankNode(id, this._factoryID);
+            }
         }
 
         /// <summary>
@@ -89,7 +118,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IGraphLiteralNode CreateGraphLiteralNode(IGraph subgraph)
         {
-            return new GraphLiteralNode(null, subgraph);
+            return new GraphLiteralNode(subgraph);
         }
 
         /// <summary>
@@ -100,7 +129,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, Uri datatype)
         {
-            return new LiteralNode(null, literal, datatype);
+            return new LiteralNode(literal, datatype);
         }
 
         /// <summary>
@@ -110,7 +139,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal)
         {
-            return new LiteralNode(null, literal);
+            return new LiteralNode(literal);
         }
 
         /// <summary>
@@ -121,7 +150,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public ILiteralNode CreateLiteralNode(string literal, string langspec)
         {
-            return new LiteralNode(null, literal, langspec);
+            return new LiteralNode(literal, langspec);
         }
 
         /// <summary>
@@ -131,7 +160,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public IUriNode CreateUriNode(Uri uri)
         {
-            return new UriNode(null, uri);
+            return new UriNode(uri);
         }
 
         /// <summary>
@@ -141,16 +170,17 @@ namespace VDS.RDF
         /// <returns></returns>
         public IVariableNode CreateVariableNode(string varname)
         {
-            return new VariableNode(null, varname);
+            return new VariableNode(varname);
         }
 
         /// <summary>
         /// Creates a new unused Blank Node ID and returns it
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Obsolete, use GetNextAnonID() instead", true)]
         public string GetNextBlankNodeID()
         {
-            return this._bnodeMap.GetNextID();
+            throw new NotSupportedException();
         }
 
         #endregion
@@ -253,13 +283,25 @@ namespace VDS.RDF
     class MockNodeFactory
         : INodeFactory
     {
-        private IBlankNode _bnode = new BlankNode(null, "mock");
-        private IGraphLiteralNode _glit = new GraphLiteralNode(null);
-        private ILiteralNode _lit = new LiteralNode(null, "mock");
-        private IUriNode _uri = new UriNode(null, UriFactory.Create("dotnetrdf:mock"));
-        private IVariableNode _var = new VariableNode(null, "mock");
+        private readonly Guid _factoryId = Guid.NewGuid();
+        private readonly IBlankNode _bnode;
+        private readonly IGraphLiteralNode _glit = new GraphLiteralNode();
+        private readonly ILiteralNode _lit = new LiteralNode("mock");
+        private readonly UriNode _uri = new UriNode(UriFactory.Create("dotnetrdf:mock"));
+        private readonly IVariableNode _var = new VariableNode("mock");
 
-        #region INodeFactory Members
+        public MockNodeFactory()
+        {
+            this._bnode = new BlankNode(Guid.NewGuid(), this._factoryId);
+        }
+
+        public Guid FactoryID
+        {
+            get
+            {
+                return this._factoryId;
+            }
+        }
 
         public IBlankNode CreateBlankNode()
         {
@@ -310,7 +352,5 @@ namespace VDS.RDF
         {
             throw new NotImplementedException("Not needed by the MockNodeFactory");
         }
-
-        #endregion
     }
 }

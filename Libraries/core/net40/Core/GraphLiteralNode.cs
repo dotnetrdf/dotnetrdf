@@ -63,8 +63,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this node is in</param>
         /// <param name="subgraph">Sub Graph this node represents</param>
-        protected internal BaseGraphLiteralNode(IGraph g, IGraph subgraph)
-            : base(g, NodeType.GraphLiteral)
+        protected internal BaseGraphLiteralNode(IGraph subgraph)
+            : base(NodeType.GraphLiteral)
         {
             this._subgraph = subgraph;
 
@@ -76,35 +76,24 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node whose value is an empty Subgraph
         /// </summary>
         /// <param name="g">Graph this node is in</param>
-        protected internal BaseGraphLiteralNode(IGraph g)
-            : base(g, NodeType.GraphLiteral)
-        {
-            this._subgraph = new Graph();
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
+        protected internal BaseGraphLiteralNode()
+            : this(new Graph()) { }
 
 #if !SILVERLIGHT
+
         /// <summary>
         /// Deserializer Constructor
         /// </summary>
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseGraphLiteralNode(SerializationInfo info, StreamingContext context)
-            : base(null, NodeType.GraphLiteral)
+            : base(NodeType.GraphLiteral)
         {
             this._subgraph = (IGraph)info.GetValue("subgraph", typeof(Graph));
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 #endif
-
-        /// <summary>
-        /// Deserialization Only constructor
-        /// </summary>
-        protected BaseGraphLiteralNode()
-            : base(null, NodeType.GraphLiteral) { }
 
         /// <summary>
         /// Gets the Subgraph that this Node represents
@@ -503,16 +492,16 @@ namespace VDS.RDF
         /// Creates a new Graph Literal Node in the given Graph which represents the given Subgraph
         /// </summary>
         /// <param name="g">Graph this node is in</param>
-        protected internal GraphLiteralNode(IGraph g)
-            : base(g) { }
+        protected internal GraphLiteralNode()
+            : base() { }
 
         /// <summary>
         /// Creates a new Graph Literal Node whose value is an empty Subgraph
         /// </summary>
         /// <param name="g">Graph this node is in</param>
         /// <param name="subgraph">Sub-graph this node represents</param>
-        protected internal GraphLiteralNode(IGraph g, IGraph subgraph)
-            : base(g, subgraph) { }
+        protected internal GraphLiteralNode(IGraph subgraph)
+            : base(subgraph) { }
 
 #if !SILVERLIGHT
         /// <summary>
@@ -523,11 +512,6 @@ namespace VDS.RDF
         protected GraphLiteralNode(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 #endif
-        /// <summary>
-        /// Deserialization Only Constructor
-        /// </summary>
-        protected GraphLiteralNode()
-            : base() { }
 
         /// <summary>
         /// Implementation of Compare To for Graph Literal Nodes

@@ -60,54 +60,23 @@ namespace VDS.RDF
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
-        protected internal BaseBlankNode(IGraph g)
-            : base(g, NodeType.Blank)
+        protected internal BaseBlankNode(Guid id, Guid factoryId)
+            : base(NodeType.Blank)
         {
-            this._id = this._graph.GetNextAnonID();
-            this._factoryID = this._graph.FactoryID;
+            this._id = id;
+            this._factoryID = factoryId;
 
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
-
-        /// <summary>
-        /// Internal Only constructor for Blank Nodes
-        /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
-        /// <param name="nodeId">Custom Node ID to use</param>
-        [Obsolete("Creating Blank Nodes with user provided ID's is no longer supported", true)]
-        protected internal BaseBlankNode(IGraph g, String nodeId)
-            : base(g, NodeType.Blank)
-        {
-            if (nodeId.Equals(String.Empty)) throw new RdfException("Cannot create a Blank Node with an empty ID");
-            this._id = nodeId;
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
-
-        /// <summary>
-        /// Internal Only constructor for Blank Nodes
-        /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
-        protected internal BaseBlankNode(INodeFactory factory)
-            : base(null, NodeType.Blank)
-        {
-            this._id = factory.GetNextAnonID();
-            this._factoryID = factory.FactoryID;
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
-
-        /// <summary>
-        /// Unparameterized Constructor for deserialization usage only
-        /// </summary>
-        protected BaseBlankNode()
-            : base(null, NodeType.Blank)
-        { }
 
 #if !SILVERLIGHT
+
+        /// <summary>
+        /// Constructor for deserialization usage only
+        /// </summary>
+        protected BaseBlankNode()
+            : base(NodeType.Blank) { }
 
         /// <summary>
         /// Deserialization Constructor
@@ -115,14 +84,7 @@ namespace VDS.RDF
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseBlankNode(SerializationInfo info, StreamingContext context)
-            : base(null, NodeType.Blank)
-        {
-            this._id = (Guid)info.GetValue("id", typeof(Guid));
-            this._factoryID = (Guid)info.GetValue("factory", typeof(Guid));
-
-            //Compute Hash Code
-            this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
-        }
+            : this((Guid)info.GetValue("id", typeof(Guid)), (Guid)info.GetValue("factory", typeof(Guid))) { }
 
 #endif
 
@@ -137,7 +99,23 @@ namespace VDS.RDF
         {
             get
             {
+                throw new NotSupportedException();
+            }
+        }
+
+        public Guid AnonID
+        {
+            get
+            {
                 return this._id;
+            }
+        }
+
+        public Guid FactoryID
+        {
+            get
+            {
+                return this._factoryID;
             }
         }
 
@@ -562,24 +540,8 @@ namespace VDS.RDF
         /// Internal Only Constructor for Blank Nodes
         /// </summary>
         /// <param name="g">Graph this Node belongs to</param>
-        protected internal BlankNode(IGraph g)
-            : base(g) { }
-
-        /// <summary>
-        /// Internal Only constructor for Blank Nodes
-        /// </summary>
-        /// <param name="g">Graph this Node belongs to</param>
-        /// <param name="id">Custom Node ID to use</param>
-        [Obsolete("Creating Blank Nodes from user provided IDs is no longer supported", true)]
-        protected internal BlankNode(IGraph g, String id)
-            : base(g, id) { }
-
-        /// <summary>
-        /// Internal Only constructor for Blank Nodes
-        /// </summary>
-        /// <param name="factory">Node Factory from which to obtain a Node ID</param>
-        protected internal BlankNode(INodeFactory factory)
-            : base(factory) { }
+        protected internal BlankNode(Guid id, Guid factoryId)
+            : base(id, factoryId) { }
 
         /// <summary>
         /// Constructor for deserialization usage only

@@ -185,7 +185,7 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                s = Tools.CopyNode(t.Subject, factory);
+                s = t.Subject;
             }
 
             if (t.Predicate.NodeType == NodeType.Blank)
@@ -203,7 +203,7 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                p = Tools.CopyNode(t.Predicate, factory);
+                p = t.Predicate;
             }
 
             if (t.Object.NodeType == NodeType.Blank)
@@ -221,7 +221,7 @@ namespace VDS.RDF.Query.Describe
             }
             else
             {
-                o = Tools.CopyNode(t.Object, factory);
+                o = t.Object;
             }
 
             return new Triple(s, p, o);

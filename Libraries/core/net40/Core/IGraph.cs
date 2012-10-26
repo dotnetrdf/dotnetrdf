@@ -304,18 +304,6 @@ namespace VDS.RDF
         void Merge(IGraph g);
 
         /// <summary>
-        /// Merges the given Graph into this Graph
-        /// </summary>
-        /// <param name="g">Graph to merge</param>
-        /// <param name="keepOriginalGraphUri">Indicates that the Merge should preserve the Graph URIs of Nodes</param>
-        /// <remarks>
-        /// <para>
-        /// The Graph should raise the <see cref="MergeRequested">MergeRequested</see> event at the start of the Merge operation and abort the operation if the operation is cancelled by an event handler.  On completing the Merge the <see cref="Merged">Merged</see> event should be raised.
-        /// </para>
-        /// </remarks>
-        void Merge(IGraph g, bool keepOriginalGraphUri);
-
-        /// <summary>
         /// Checks whether a Graph is equal to another Graph and if so returns the mapping of Blank Nodes
         /// </summary>
         /// <param name="g">Graph to compare with</param>

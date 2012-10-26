@@ -59,8 +59,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="varname">Variable Name</param>
-        protected internal BaseVariableNode(IGraph g, String varname)
-            : base(g, NodeType.Variable)
+        protected internal BaseVariableNode(String varname)
+            : base(NodeType.Variable)
         {
             if (varname.StartsWith("?") || varname.StartsWith("$"))
             {
@@ -73,13 +73,13 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }
 
+#if !SILVERLIGHT
+
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected BaseVariableNode()
-            : base(null, NodeType.Variable) { }
-
-#if !SILVERLIGHT
+            : base(NodeType.Variable) { }
 
         /// <summary>
         /// Deserialization Constructor
@@ -87,7 +87,7 @@ namespace VDS.RDF
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseVariableNode(SerializationInfo info, StreamingContext context)
-            : base(null, NodeType.Variable)
+            : base(NodeType.Variable)
         {
             this._var = info.GetString("name");
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
@@ -513,16 +513,16 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph</param>
         /// <param name="varname">Variable Name</param>
-        protected internal VariableNode(IGraph g, String varname)
-            : base(g, varname) { }
+        protected internal VariableNode(String varname)
+            : base(varname) { }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected VariableNode()
             : base() { }
 
-#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

@@ -68,8 +68,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
-        protected internal BaseLiteralNode(IGraph g, String literal)
-            : this(g, literal, Options.LiteralValueNormalization) { }
+        protected internal BaseLiteralNode(String literal)
+            : this(literal, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -77,8 +77,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal BaseLiteralNode(IGraph g, String literal, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(String literal, bool normalize)
+            : base(NodeType.Literal)
         {
             if (normalize)
             {
@@ -104,8 +104,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
-        protected internal BaseLiteralNode(IGraph g, String literal, String langspec)
-            : this(g, literal, langspec, Options.LiteralValueNormalization) { }
+        protected internal BaseLiteralNode(String literal, String langspec)
+            : this(literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -114,8 +114,8 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal BaseLiteralNode(IGraph g, String literal, String langspec, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(String literal, String langspec, bool normalize)
+            : base(NodeType.Literal)
         {
             if (normalize)
             {
@@ -150,7 +150,7 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
-        protected internal BaseLiteralNode(IGraph g, String literal, Uri datatype)
+        protected internal BaseLiteralNode(String literal, Uri datatype)
             : this(g, literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
@@ -160,8 +160,8 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal BaseLiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
-            : base(g, NodeType.Literal)
+        protected internal BaseLiteralNode(String literal, Uri datatype, bool normalize)
+            : base(NodeType.Literal)
         {
             if (normalize)
             {
@@ -181,20 +181,20 @@ namespace VDS.RDF
             this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
         }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected BaseLiteralNode()
-            : base(null, NodeType.Literal) { }
+            : base(NodeType.Literal) { }
 
-#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Constructor
         /// </summary>
         /// <param name="info">Serialization Information</param>
         /// <param name="context">Streaming Context</param>
         protected BaseLiteralNode(SerializationInfo info, StreamingContext context)
-            : base(null, NodeType.Literal)
+            : base(NodeType.Literal)
         {
             this._value = info.GetString("value");
             byte mode = info.GetByte("mode");
@@ -641,8 +641,8 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
-        protected internal LiteralNode(IGraph g, String literal)
-            : this(g, literal, Options.LiteralValueNormalization) { }
+        protected internal LiteralNode(String literal)
+            : this(literal, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -650,8 +650,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(IGraph g, String literal, bool normalize)
-            : base(g, literal, normalize) { }
+        protected internal LiteralNode(String literal, bool normalize)
+            : base(literal, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -659,8 +659,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
-        protected internal LiteralNode(IGraph g, String literal, String langspec)
-            : this(g, literal, langspec, Options.LiteralValueNormalization) { }
+        protected internal LiteralNode(String literal, String langspec)
+            : this(literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -669,8 +669,8 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(IGraph g, String literal, String langspec, bool normalize)
-            : base(g, literal, langspec, normalize) { }
+        protected internal LiteralNode(String literal, String langspec, bool normalize)
+            : base(literal, langspec, normalize) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -678,8 +678,8 @@ namespace VDS.RDF
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
-        protected internal LiteralNode(IGraph g, String literal, Uri datatype)
-            : this(g, literal, datatype, Options.LiteralValueNormalization) { }
+        protected internal LiteralNode(String literal, Uri datatype)
+            : this(literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
         /// Internal Only Constructor for Literal Nodes
@@ -688,16 +688,16 @@ namespace VDS.RDF
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(IGraph g, String literal, Uri datatype, bool normalize)
-            : base(g, literal, datatype, normalize) { }
+        protected internal LiteralNode(String literal, Uri datatype, bool normalize)
+            : base(literal, datatype, normalize) { }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Only Constructor
         /// </summary>
         protected LiteralNode()
             : base() { }
 
-#if !SILVERLIGHT
         /// <summary>
         /// Deserialization Constructor
         /// </summary>

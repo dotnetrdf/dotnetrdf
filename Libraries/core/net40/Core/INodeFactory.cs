@@ -113,12 +113,6 @@ namespace VDS.RDF
         String GetNextBlankNodeID();
 
         /// <summary>
-        /// Creates a new Blank Node ID and returns it
-        /// </summary>
-        /// <returns></returns>
-        Guid GetNextAnonID();
-
-        /// <summary>
         /// Gets the ID of the Factory
         /// </summary>
         Guid FactoryID
