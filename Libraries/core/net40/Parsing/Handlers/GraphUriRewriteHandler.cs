@@ -119,8 +119,12 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            t = new Triple(t.Subject, t.Predicate, t.Object, this._graphUri);
-            return this._handler.HandleTriple(t);
+            return this._handler.HandleQuad(t.AsQuad(this._graphUri));
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            return this._handler.HandleQuad(q.CopyTo(this._graphUri));
         }
 
         /// <summary>

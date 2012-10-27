@@ -44,7 +44,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance
     /// </summary>
-    public class StoreHandler : BaseRdfHandler
+    public class StoreHandler 
+        : BaseRdfHandler
     {
         private ITripleStore _store;
 
@@ -79,14 +80,27 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
-            if (!this._store.HasGraph(t.GraphUri))
+            if (!this._store.HasGraph(null))
             {
                 Graph g = new Graph();
-                g.BaseUri = t.GraphUri;
+                g.BaseUri = null;
                 this._store.Add(g);
             }
-            IGraph target = this._store[t.GraphUri];
+            IGraph target = this._store[null];
             target.Assert(t);
+            return true;
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            if (!this._store.HasGraph(q.Graph))
+            {
+                Graph g = new Graph();
+                g.BaseUri = q.Graph;
+                this._store.Add(g);
+            }
+            IGraph target = this._store[q.Graph];
+            target.Assert(q.AsTriple());
             return true;
         }
 

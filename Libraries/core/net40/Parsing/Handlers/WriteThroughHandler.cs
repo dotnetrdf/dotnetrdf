@@ -236,6 +236,18 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            this._written++;
+            this._writer.WriteLine(this._formatter.Format(q));
+            if (this._written >= FlushInterval)
+            {
+                this._written = 0;
+                this._writer.Flush();
+            }
+            return true;
+        }
+
         /// <summary>
         /// Gets that the Handler accepts all Triples
         /// </summary>

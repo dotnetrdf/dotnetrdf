@@ -43,9 +43,10 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which simply counts the Triples and Graphs
     /// </summary>
-    public class StoreCountHandler : BaseRdfHandler
+    public class StoreCountHandler 
+        : BaseRdfHandler
     {
-        private int _counter = 0;
+        private long _counter = 0;
         private HashSet<String> _graphs;
 
         /// <summary>
@@ -71,14 +72,21 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             this._counter++;
-            this._graphs.Add(t.GraphUri.ToSafeString());
+            this._graphs.Add(String.Empty);
+            return true;
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            this._counter++;
+            this._graphs.Add(q.Graph.ToSafeString());
             return true;
         }
 
         /// <summary>
         /// Gets the count of Triples
         /// </summary>
-        public int TripleCount
+        public long TripleCount
         {
             get
             {
@@ -89,7 +97,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <summary>
         /// Gets the count of distinct Graph URIs
         /// </summary>
-        public int GraphCount
+        public long GraphCount
         {
             get 
             {

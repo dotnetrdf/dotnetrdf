@@ -48,7 +48,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// This differs from the <see cref="MultiHandler">MultiHandler</see> in that as soon as any Handler indicates that handling should stop by returning false handling is <strong>immediately</strong> terminated.  All Handlers will always have their StartRdf and EndRdf methods called
     /// </para>
     /// </remarks>
-    public class ChainedHandler : BaseRdfHandler, IWrappingRdfHandler
+    public class ChainedHandler 
+        : BaseRdfHandler, IWrappingRdfHandler
     {
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
@@ -139,6 +140,11 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             return this._handlers.All(h => h.HandleTriple(t));
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            return this._handlers.All(h => h.HandleQuad(q));
         }
 
         /// <summary>

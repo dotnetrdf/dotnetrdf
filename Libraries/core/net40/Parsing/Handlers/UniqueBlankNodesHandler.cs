@@ -135,6 +135,11 @@ namespace VDS.RDF.Parsing.Handlers
             return this._handler.HandleTriple(t);
         }
 
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            return this._handler.HandleQuad(q);
+        }
+
         /// <summary>
         /// Gets whether the inner handler accepts all
         /// </summary>

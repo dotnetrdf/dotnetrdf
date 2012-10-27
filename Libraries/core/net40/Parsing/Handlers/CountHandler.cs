@@ -41,7 +41,7 @@ namespace VDS.RDF.Parsing.Handlers
     public class CountHandler 
         : BaseRdfHandler
     {
-        private int _counter = 0;
+        private long _counter = 0;
 
         /// <summary>
         /// Creates a Handler which counts Triples
@@ -69,13 +69,19 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            this._counter++;
+            return true;
+        }
+
         /// <summary>
         /// Gets the Count of Triples handled in the most recent parsing operation
         /// </summary>
         /// <remarks>
         /// Note that each time you reuse the handler the count is reset to 0
         /// </remarks>
-        public int Count
+        public long Count
         {
             get
             {

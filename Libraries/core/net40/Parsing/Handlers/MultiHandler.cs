@@ -47,7 +47,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// This differs from <see cref="ChainedHandler">ChainedHandler</see> in that even if one Handler indicates that handling should stop by returning false all the Handlers still have a chance to handle the Base URI/Namespace/Triple before handling is terminated.  All Handlers will always have their StartRdf and EndRdf methods called
     /// </para>
     /// </remarks>
-    public class MultiHandler : BaseRdfHandler, IWrappingRdfHandler
+    public class MultiHandler 
+        : BaseRdfHandler, IWrappingRdfHandler
     {
         private List<IRdfHandler> _handlers = new List<IRdfHandler>();
 
@@ -140,6 +141,12 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             List<bool> results = this._handlers.Select(h => h.HandleTriple(t)).ToList();
+            return results.All(x => x);
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            List<bool> results = this._handlers.Select(h => h.HandleQuad(q)).ToList();
             return results.All(x => x);
         }
 

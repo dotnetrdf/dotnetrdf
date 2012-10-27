@@ -38,7 +38,7 @@ using System;
 namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
-    /// A RDF Handler which just determines whether any Triples are present terminating parsing as soon as the first triple is received
+    /// A RDF Handler which just determines whether any Triples/Quads are present terminating parsing as soon as the first triple/quad is received
     /// </summary>
     public class AnyHandler 
         : BaseRdfHandler
@@ -97,6 +97,17 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="t">Triple</param>
         /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
+        {
+            this._any = true;
+            return false;
+        }
+
+        /// <summary>
+        /// Handles Triples by setting the <see cref="AnyHandler.Any"/> flag and terminating parsing
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
+        protected override bool HandleQuadInternal(Quad q)
         {
             this._any = true;
             return false;

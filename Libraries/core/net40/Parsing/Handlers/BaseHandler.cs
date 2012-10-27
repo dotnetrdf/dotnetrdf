@@ -296,9 +296,16 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         public bool HandleTriple(Triple t)
         {
-            if (!this._inUse) throw new RdfParseException("Cannot Handle Triple as this RDF Handler is not currently in-use");
+            if (!this._inUse) throw new RdfParseException("Cannot Handle Triple as this RDF Handler is not currently in-use, please ensure you call the StartRdf() method prior to calling this method");
 
             return this.HandleTripleInternal(t);
+        }
+
+        public bool HandleQuad(Quad q)
+        {
+            if (!this._inUse) throw new RdfParseException("Cannot Handle Quad as this RDF Handler is not currently in-use, please ensure you call the StartRdf() method prior to calling this method");
+
+            return this.HandleQuadInternal(q);
         }
 
         /// <summary>
@@ -309,7 +316,14 @@ namespace VDS.RDF.Parsing.Handlers
         protected abstract bool HandleTripleInternal(Triple t);
 
         /// <summary>
-        /// Gets whether the Handler will accept all Triples i.e. it will never abort handling early
+        /// Must be overridden by derived handlers to take appropriate Quad handling action
+        /// </summary>
+        /// <param name="q"></param>
+        /// <returns></returns>
+        protected abstract bool HandleQuadInternal(Quad q);
+
+        /// <summary>
+        /// Gets whether the Handler will accept all Triples/Quads i.e. it will never abort handling early
         /// </summary>
         public abstract bool AcceptsAll
         {

@@ -195,6 +195,11 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ProcessBatch()
         {
             if (this._actions.Count > 0)

@@ -45,8 +45,8 @@ namespace VDS.RDF.Parsing.Handlers
         : BaseRdfHandler, IWrappingRdfHandler
     {
         private IRdfHandler _handler;
-        private int _limit = 0, _offset = 0;
-        private int _counter = 0;
+        private long _limit = 0, _offset = 0;
+        private long _counter = 0;
 
         /// <summary>
         /// Creates a new Paging Handler
@@ -57,7 +57,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// <remarks>
         /// If you just want to use an offset and not apply a limit then set limit to be less than zero
         /// </remarks>
-        public PagingHandler(IRdfHandler handler, int limit, int offset)
+        public PagingHandler(IRdfHandler handler, long limit, long offset)
             : base(handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
@@ -71,7 +71,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="handler">Inner Handler to use</param>
         /// <param name="limit">Limit</param>
-        public PagingHandler(IRdfHandler handler, int limit)
+        public PagingHandler(IRdfHandler handler, long limit)
             : this(handler, limit, 0) { }
 
         /// <summary>
@@ -141,6 +141,43 @@ namespace VDS.RDF.Parsing.Handlers
                 if (this._counter > this._offset)
                 {
                     return this._handler.HandleTriple(t);
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            //If the Limit is zero stop parsing immediately
+            if (this._limit == 0) return false;
+
+            this._counter++;
+            if (this._limit > 0)
+            {
+                //Limit greater than zero means get a maximum of limit triples after the offset
+                if (this._counter > this._offset && this._counter <= this._limit + this._offset)
+                {
+                    return this._handler.HandleQuad(q);
+                }
+                else if (this._counter > this._limit + this._offset)
+                {
+                    //Stop parsing when we've reached the limit
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                //Limit less than zero means get all triples after the offset
+                if (this._counter > this._offset)
+                {
+                    return this._handler.HandleQuad(q);
                 }
                 else
                 {

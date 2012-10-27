@@ -60,6 +60,11 @@ namespace VDS.RDF.Parsing.Handlers
             return true;
         }
 
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Indicates that the Handler accepts all Triples
         /// </summary>

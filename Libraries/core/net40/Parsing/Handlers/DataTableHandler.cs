@@ -51,13 +51,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         public const String DefaultSubjectColumn = "Subject",
                             DefaultPredicateColumn = "Predicate",
-                            DefaultObjectColumn = "Object";
+                            DefaultObjectColumn = "Object",
+                            DefaultGraphColumn = "Graph";
 
         /// <summary>
         /// Data Table into which Triples will be converted to rows
         /// </summary>
         protected DataTable _table;
-        private String _subjCol, _predCol, _objCol;
+        private String _subjCol, _predCol, _objCol, _graphCol;
 
         /// <summary>
         /// Creates a new Handler for a given Data Table with custom column names
@@ -66,12 +67,14 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="subjColName">Subject Column Name</param>
         /// <param name="predColName">Predicate Column Name</param>
         /// <param name="objColName">Object Column Name</param>
-        public DataTableHandler(DataTable table, String subjColName, String predColName, String objColName)
+        /// <param name="graphColName">Graph Column Name</param>
+        public DataTableHandler(DataTable table, String subjColName, String predColName, String objColName, String graphColName)
         {
             this._table = table;
             this._subjCol = subjColName;
             this._predCol = predColName;
-            this._objCol = objColName;            
+            this._objCol = objColName;
+            this._graphCol = graphColName;
         }
 
         /// <summary>
@@ -79,7 +82,7 @@ namespace VDS.RDF.Parsing.Handlers
         /// </summary>
         /// <param name="table">Data Table</param>
         public DataTableHandler(DataTable table)
-            : this(table, DefaultSubjectColumn, DefaultPredicateColumn, DefaultObjectColumn) { }
+            : this(table, DefaultSubjectColumn, DefaultPredicateColumn, DefaultObjectColumn, DefaultGraphColumn) { }
 
         /// <summary>
         /// Handles a Triple by turning it into a row in the Data Table
@@ -95,6 +98,18 @@ namespace VDS.RDF.Parsing.Handlers
             row[this._subjCol] = t.Subject;
             row[this._predCol] = t.Predicate;
             row[this._objCol] = t.Object;
+            row[this._graphCol] = null;
+            this._table.Rows.Add(row);
+            return true;
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            DataRow row = this._table.NewRow();
+            row[this._subjCol] = q.Subject;
+            row[this._predCol] = q.Predicate;
+            row[this._objCol] = q.Object;
+            row[this._graphCol] = q.Graph;
             this._table.Rows.Add(row);
             return true;
         }

@@ -40,7 +40,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which asserts Triples into a Graph
     /// </summary>
-    public class GraphHandler : BaseRdfHandler
+    public class GraphHandler 
+        : BaseRdfHandler
     {
         private IGraph _target;
         private IGraph _g;
@@ -174,6 +175,12 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             this._target.Assert(t);
+            return true;
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            this._target.Assert(q.AsTriple());
             return true;
         }
 

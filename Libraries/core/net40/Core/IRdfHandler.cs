@@ -41,7 +41,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Handlers which handle the RDF produced by parsers
     /// </summary>
-    public interface IRdfHandler : INodeFactory
+    public interface IRdfHandler 
+        : INodeFactory
     {
         /// <summary>
         /// Start the Handling of RDF
@@ -60,22 +61,29 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="prefix">Namespace Prefix</param>
         /// <param name="namespaceUri">Namespace URI</param>
-        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted</returns>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be terminated</returns>
         bool HandleNamespace(String prefix, Uri namespaceUri);
 
         /// <summary>
         /// Handles a Base URI Definition
         /// </summary>
         /// <param name="baseUri">Base URI</param>
-        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted</returns>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be terminated</returns>
         bool HandleBaseUri(Uri baseUri);
 
         /// <summary>
         /// Handles a Triple
         /// </summary>
         /// <param name="t">Triple</param>
-        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be aborted</returns>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be terminated</returns>
         bool HandleTriple(Triple t);
+
+        /// <summary>
+        /// Handles a Quad
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns>Should return <strong>true</strong> if parsing should continue or <strong>false</strong> if it should be terminated</returns>
+        bool HandleQuad(Quad q);
 
         /// <summary>
         /// Gets whether the Handler will always handle all data (i.e. won't terminate parsing early)
@@ -89,7 +97,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Handlers which wrap other Handlers
     /// </summary>
-    public interface IWrappingRdfHandler : IRdfHandler
+    public interface IWrappingRdfHandler 
+        : IRdfHandler
     {
         /// <summary>
         /// Gets the Inner Handlers used by this Handler

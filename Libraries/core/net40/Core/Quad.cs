@@ -63,11 +63,26 @@ namespace VDS.RDF
             }
         }
 
+        /// <summary>
+        /// Converts a Quad into a Triple
+        /// </summary>
+        /// <returns>Triple form of the Quad</returns>
+        /// <remarks>
+        /// <strong>Warning:</strong> This is a lossy information, a Triple does not store any reference to a Graph
+        /// </remarks>
         public Triple AsTriple()
         {
             return this._t;
         }
 
+        /// <summary>
+        /// Makes a copy of the Quad which is the Quad with a different Graph field
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Returns this quad if the Graph URI matches that already set for this Quad, otherwise a new Quad is returned
+        /// </remarks>
         public Quad CopyTo(Uri graphUri)
         {
             if (EqualityHelper.AreUrisEqual(this._graphUri, graphUri)) return this;

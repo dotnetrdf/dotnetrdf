@@ -43,7 +43,8 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler which wraps another Handler allowing handling to be cancelled
     /// </summary>
-    public class CancellableHandler : BaseRdfHandler, IWrappingRdfHandler
+    public class CancellableHandler 
+        : BaseRdfHandler, IWrappingRdfHandler
     {
         private IRdfHandler _handler;
         private bool _cancelled = false;
@@ -122,6 +123,12 @@ namespace VDS.RDF.Parsing.Handlers
         {
             if (this._cancelled) return false;
             return this._handler.HandleTriple(t);
+        }
+
+        protected override bool HandleQuadInternal(Quad q)
+        {
+            if (this._cancelled) return false;
+            return this._handler.HandleQuad(q);
         }
 
         /// <summary>
