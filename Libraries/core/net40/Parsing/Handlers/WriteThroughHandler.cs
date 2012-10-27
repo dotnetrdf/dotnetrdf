@@ -50,7 +50,10 @@ namespace VDS.RDF.Parsing.Handlers
         : BaseRdfHandler
     {
         private Type _formatterType;
-        private ITripleFormatter _formatter;
+        private ITripleFormatter _tripleFormatter;
+        private IQuadFormatter _quadFormatter;
+        private INamespaceFormatter _nsFormatter;
+        private IBaseUriFormatter _uriFormatter;
         private TextWriter _writer;
         private bool _closeOnEnd = true;
         private INamespaceMapper _formattingMapper = new QNameOutputMapper();
@@ -69,12 +72,13 @@ namespace VDS.RDF.Parsing.Handlers
             if (writer == null) throw new ArgumentNullException("writer", "Cannot use a null TextWriter with the Write Through Handler");
             if (formatter != null)
             {
-                this._formatter = formatter;
+                this._tripleFormatter = formatter;
             }
             else
             {
-                this._formatter = new NTriplesFormatter();
+                this._tripleFormatter = new NTriplesFormatter();
             }
+            this.InitFormatters();
             this._writer = writer;
             this._closeOnEnd = closeOnEnd;
         }
@@ -110,6 +114,13 @@ namespace VDS.RDF.Parsing.Handlers
         public WriteThroughHandler(Type formatterType, TextWriter writer)
             : this(formatterType, writer, true) { }
 
+        private void InitFormatters()
+        {
+            this._quadFormatter = this._tripleFormatter as IQuadFormatter;
+            this._nsFormatter = this._tripleFormatter as INamespaceFormatter;
+            this._uriFormatter = this._tripleFormatter as IBaseUriFormatter;
+        }
+
         /// <summary>
         /// Starts RDF Handling instantiating a Triple Formatter if necessary
         /// </summary>
@@ -119,7 +130,7 @@ namespace VDS.RDF.Parsing.Handlers
 
             if (this._formatterType != null)
             {
-                this._formatter = null;
+                this._tripleFormatter = null;
                 this._formattingMapper = new QNameOutputMapper();
 
                 //Instantiate a new Formatter
@@ -135,19 +146,19 @@ namespace VDS.RDF.Parsing.Handlers
                         {
                             if (ps[0].ParameterType.Equals(qnameMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
+                                this._tripleFormatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
                             }
                             else if (ps[0].ParameterType.Equals(nsMapperType))
                             {
-                                this._formatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
+                                this._tripleFormatter = Activator.CreateInstance(this._formatterType, new Object[] { this._formattingMapper }) as ITripleFormatter;
                             }
                         }
                         else if (ps.Length == 0)
                         {
-                            this._formatter = Activator.CreateInstance(this._formatterType) as ITripleFormatter;
+                            this._tripleFormatter = Activator.CreateInstance(this._formatterType) as ITripleFormatter;
                         }
 
-                        if (this._formatter != null) break;
+                        if (this._tripleFormatter != null) break;
                     }
                     catch
                     {
@@ -156,12 +167,13 @@ namespace VDS.RDF.Parsing.Handlers
                 }
 
                 //If we get out here and the formatter is null then we throw an error
-                if (this._formatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + this._formatterType.FullName);
+                if (this._tripleFormatter == null) throw new RdfParseException("Unable to instantiate a ITripleFormatter from the given Formatter Type " + this._formatterType.FullName);
+                this.InitFormatters();
             }
 
-            if (this._formatter is IGraphFormatter)
+            if (this._tripleFormatter is IGraphFormatter)
             {
-                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphHeader(this._formattingMapper));
+                this._writer.WriteLine(((IGraphFormatter)this._tripleFormatter).FormatGraphHeader(this._formattingMapper));
             }
             this._written = 0;
         }
@@ -172,9 +184,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <param name="ok">Indicates whether parsing completed without error</param>
         protected override void EndRdfInternal(bool ok)
         {
-            if (this._formatter is IGraphFormatter)
+            if (this._tripleFormatter is IGraphFormatter)
             {
-                this._writer.WriteLine(((IGraphFormatter)this._formatter).FormatGraphFooter());
+                this._writer.WriteLine(((IGraphFormatter)this._tripleFormatter).FormatGraphFooter());
             }
             if (this._closeOnEnd)
             {
@@ -196,9 +208,9 @@ namespace VDS.RDF.Parsing.Handlers
                 this._formattingMapper.AddNamespace(prefix, namespaceUri);
             }
 
-            if (this._formatter is INamespaceFormatter)
+            if (this._nsFormatter != null)
             {
-                this._writer.WriteLine(((INamespaceFormatter)this._formatter).FormatNamespace(prefix, namespaceUri));
+                this._writer.WriteLine(this._nsFormatter.FormatNamespace(prefix, namespaceUri));
             }
 
             return true;
@@ -211,9 +223,9 @@ namespace VDS.RDF.Parsing.Handlers
         /// <returns></returns>
         protected override bool HandleBaseUriInternal(Uri baseUri)
         {
-            if (this._formatter is IBaseUriFormatter)
+            if (this._uriFormatter != null)
             {
-                this._writer.WriteLine(((IBaseUriFormatter)this._formatter).FormatBaseUri(baseUri));
+                this._writer.WriteLine(this._uriFormatter.FormatBaseUri(baseUri));
             }
 
             return true;
@@ -227,7 +239,7 @@ namespace VDS.RDF.Parsing.Handlers
         protected override bool HandleTripleInternal(Triple t)
         {
             this._written++;
-            this._writer.WriteLine(this._formatter.Format(t));
+            this._writer.WriteLine(this._tripleFormatter.Format(t));
             if (this._written >= FlushInterval)
             {
                 this._written = 0;
@@ -238,14 +250,21 @@ namespace VDS.RDF.Parsing.Handlers
 
         protected override bool HandleQuadInternal(Quad q)
         {
-            this._written++;
-            this._writer.WriteLine(this._formatter.Format(q));
-            if (this._written >= FlushInterval)
+            if (this._quadFormatter != null)
             {
-                this._written = 0;
-                this._writer.Flush();
+                this._written++;
+                this._writer.WriteLine(this._quadFormatter.Format(q));
+                if (this._written >= FlushInterval)
+                {
+                    this._written = 0;
+                    this._writer.Flush();
+                }
+                return true;
             }
-            return true;
+            else
+            {
+                throw new RdfParseException("Formatter " + this._tripleFormatter.GetType().Name + " does not support formatting Quads");
+            }
         }
 
         /// <summary>

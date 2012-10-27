@@ -215,6 +215,7 @@
     <Compile Include="Writing\CompressingTurtleWriter.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
     <Compile Include="Writing\BaseGZipResultsWriter.cs" />
+    <Compile Include="Writing\Formatting\IQuadFormatter.cs" />
     <Compile Include="Writing\GraphVizGenerator.cs" />
     <Compile Include="Writing\GraphVizWriter.cs" />
     <Compile Include="Core\IGraph.cs" />

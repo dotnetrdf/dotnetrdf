@@ -53,7 +53,7 @@ namespace VDS.RDF.Parsing.Handlers
         public const int DefaultBatchSize = 1000;
 
         private IStorageProvider _manager;
-        private List<Triple> _actions, _bnodeActions;
+        private List<Quad> _actions, _bnodeActions;
         private HashSet<String> _bnodeUris;
         private Uri _defaultGraphUri, _currGraphUri;
         private int _batchSize;
@@ -76,8 +76,8 @@ namespace VDS.RDF.Parsing.Handlers
             this._batchSize = batchSize;
 
             //Make the Actions Queue one larger than the Batch Size
-            this._actions = new List<Triple>(this._batchSize + 1);
-            this._bnodeActions = new List<Triple>(this._batchSize + 1);
+            this._actions = new List<Quad>(this._batchSize + 1);
+            this._bnodeActions = new List<Quad>(this._batchSize + 1);
             this._bnodeUris = new HashSet<string>();
         }
 
@@ -131,10 +131,10 @@ namespace VDS.RDF.Parsing.Handlers
                               select (u.Equals(String.Empty) ? null : UriFactory.Create(u))).ToList();
             foreach (Uri u in uris)
             {
-                List<Triple> batch = new List<Triple>();
+                List<Quad> batch = new List<Quad>();
                 for (int i = 0; i < this._bnodeActions.Count; i++)
                 {
-                    if (EqualityHelper.AreUrisEqual(u, this._bnodeActions[i].GraphUri))
+                    if (EqualityHelper.AreUrisEqual(u, this._bnodeActions[i].Graph))
                     {
                         batch.Add(this._bnodeActions[i]);
                         this._bnodeActions.RemoveAt(i);
@@ -143,11 +143,11 @@ namespace VDS.RDF.Parsing.Handlers
                 }
                 if (u == null)
                 {
-                    this._manager.UpdateGraph(this._defaultGraphUri, batch, null);
+                    this._manager.UpdateGraph(this._defaultGraphUri, batch.Select(q => q.AsTriple()), null);
                 }
                 else
                 {
-                    this._manager.UpdateGraph(u, batch, null);
+                    this._manager.UpdateGraph(u, batch.Select(q => q.AsTriple()), null);
                 }
             }
         }
@@ -162,22 +162,15 @@ namespace VDS.RDF.Parsing.Handlers
             if (t.IsGroundTriple)
             {
                 //Ground Triples are processed in Batches as we handle the Triples
-                if (t.GraphUri != null && !EqualityHelper.AreUrisEqual(t.GraphUri, this._currGraphUri))
+                if (!EqualityHelper.AreUrisEqual(this._currGraphUri, this._defaultGraphUri))
                 {
-                    //The Triple has a Graph URI and it is not the same as the Current Graph URI
-                    //so we process the existing Batch and then set the Current Graph URI to the new Graph URI
-                    this.ProcessBatch();
-                    this._currGraphUri = t.GraphUri;
-                }
-                else if (t.GraphUri == null && !EqualityHelper.AreUrisEqual(this._currGraphUri, this._defaultGraphUri))
-                {
-                    //The Triple has no Graph URI and the Current Graph URI is not the Default Graph URI so
+                    //The Current Graph URI is not the Default Graph URI so
                     //we process the existing Batch and reset the Current Graph URI to the Default Graph URI
                     this.ProcessBatch();
                     this._currGraphUri = this._defaultGraphUri;
                 }
 
-                this._actions.Add(t);
+                this._actions.Add(t.AsQuad(this._defaultGraphUri));
 
                 //Whenever we hit the Batch Size process it
                 if (this._actions.Count >= this._batchSize)
@@ -189,22 +182,44 @@ namespace VDS.RDF.Parsing.Handlers
             {
                 //Non-Ground Triples (i.e. those with Blank Nodes) are saved up until the end to ensure that Blank
                 //Node are persisted properly
-                this._bnodeActions.Add(t);
-                this._bnodeUris.Add(t.GraphUri.ToSafeString());
+                this._bnodeActions.Add(t.AsQuad(this._defaultGraphUri));
+                this._bnodeUris.Add(this._defaultGraphUri.ToSafeString());
             }
             return true;
         }
 
         protected override bool HandleQuadInternal(Quad q)
         {
-            throw new NotImplementedException();
+            //If the Quad Graph URI is null we use whatever Default Graph URI is in use
+            q = (q.Graph != null ? q : q.CopyTo(this._defaultGraphUri));
+
+            if (q.IsGroundQuad)
+            {
+                if (!EqualityHelper.AreUrisEqual(this._currGraphUri, q.Graph))
+                {
+                    //The Current Graph URI does not match the Quad's Graph URI so we process the
+                    //existing batch and reset the Current Graph URI to the Quad Graph URI
+                    this.ProcessBatch();
+                    this._currGraphUri = q.Graph;
+                }
+
+                this._actions.Add(q);
+            }
+            else
+            {
+                //Non-Ground Quads (i.e. those with Blank Nodes) are saved up until the end to ensure that
+                //Blank Nodes are persisted properly
+                this._bnodeActions.Add(q);
+                this._bnodeUris.Add(q.Graph.ToSafeString());
+            }
+            return true;
         }
 
         private void ProcessBatch()
         {
             if (this._actions.Count > 0)
             {
-                this._manager.UpdateGraph(this._currGraphUri, this._actions, null);
+                this._manager.UpdateGraph(this._currGraphUri, this._actions.Select(q => q.AsTriple()), null);
                 this._actions.Clear();
             }
         }
