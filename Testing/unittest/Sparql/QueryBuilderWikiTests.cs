@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 
 namespace VDS.RDF.Test.Sparql
@@ -28,6 +29,42 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual(2, q.Variables.Count());
             Assert.IsTrue(q.Variables.All(v => v.IsResultVariable));
             Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void SimpleSelectWithOneGraphPatternAndReturnVariablesAlternative()
+        {
+            // given
+            var b = QueryBuilder.Select("name", "mbox")
+                                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:name").Object("name"))
+                                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:mbox").Object("mbox"));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(2, q.Variables.Count());
+            Assert.IsTrue(q.Variables.All(v => v.IsResultVariable));
+            Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void DescribeWithoutGraphPattern()
+        {
+            // given
+            const string uriString = "http://example.org/"; 
+            var b = QueryBuilder.Describe(new Uri(uriString));
+            
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNull(q.RootGraphPattern);
+            Assert.IsTrue(q.QueryType == SparqlQueryType.Describe);
+            Assert.AreEqual(1, q.DescribeVariables.Count());
+            Assert.AreEqual(uriString, q.DescribeVariables.Single().Value);
         }
     }
 }

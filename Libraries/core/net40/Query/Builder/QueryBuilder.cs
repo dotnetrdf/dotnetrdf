@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Filters;
@@ -68,6 +69,14 @@ namespace VDS.RDF.Query.Builder
             return Select(sparqlVariables);
         }
 
+        public static IQueryBuilder Describe(Uri uri)
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.QueryType = SparqlQueryType.Describe;
+            q.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri),0,0,0));
+            return new QueryBuilder(q);
+        }
+
         #region Implementation of IQueryBuilder
 
         /// <summary>
@@ -122,6 +131,7 @@ namespace VDS.RDF.Query.Builder
             // QueryBuilder or the retrieved SparqlQuery(variableName) from
             // being reflected in one another
             SparqlQuery executableQuery = _query.Copy();
+            executableQuery.NamespaceMap.Import(Prefixes);
             executableQuery.RootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
             return executableQuery;
         } 

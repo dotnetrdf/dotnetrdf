@@ -27,6 +27,10 @@ namespace VDS.RDF.Query.Builder
 
         public GraphPattern BuildGraphPattern()
         {
+            if(!_triplePatterns.Any())
+            {
+                return null;
+            }
             var graphPattern = CreateGraphPattern();
 
             foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns()))
