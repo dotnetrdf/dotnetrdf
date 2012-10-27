@@ -66,5 +66,11 @@ namespace VDS.RDF.Query.Builder
             _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
             return _triplePatternBuilder;
         }
+
+        public ITriplePatternBuilder Object(PatternItem objectPattern)
+        {
+            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
+            return _triplePatternBuilder;
+        }
     }
 }

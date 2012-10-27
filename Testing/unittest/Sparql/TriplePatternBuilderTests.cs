@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 
@@ -366,6 +367,25 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual("2012-10-13T20:35:10+01:30", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
             Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+        }
+
+        [TestMethod]
+        public void CanCreateTriplePatternsUsingActualPatternItems()
+        {
+            // given
+            PatternItem s = new VariablePattern("s");
+            PatternItem p = new VariablePattern("p");
+            PatternItem o = new VariablePattern("o");
+
+            // when
+            _builder.Subject(s).Predicate(p).Object(o);
+
+            // then
+            Assert.AreEqual(1, _builder.Patterns.Length);
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
+            Assert.AreSame(s, pattern.Subject);
+            Assert.AreSame(p, pattern.Predicate);
+            Assert.AreSame(o, pattern.Object);
         }
     }
 }

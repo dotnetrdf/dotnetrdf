@@ -23,6 +23,11 @@ namespace VDS.RDF.Query.Builder
             return CreateTriplePatternObjectPart(predicate);
         }
 
+        public TriplePatternObjectPart Predicate(PatternItem predicate)
+        {
+            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate);
+        }
+
         public TriplePatternObjectPart PredicateUri(Uri predicateUri)
         {
             var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateUri);

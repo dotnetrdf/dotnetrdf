@@ -35,6 +35,11 @@ namespace VDS.RDF.Query.Builder
             return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subject));
         }
 
+        public TriplePatternPredicatePart Subject(PatternItem subject)
+        {
+            return new TriplePatternPredicatePart(this, subject);
+        }
+
         public ITriplePattern[] Patterns
         {
             get { return _patterns.ToArray(); }
