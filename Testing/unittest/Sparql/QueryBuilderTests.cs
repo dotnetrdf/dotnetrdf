@@ -77,7 +77,8 @@ namespace VDS.RDF.Test.Sparql
                                 callCount++;
                                 tpb.Subject("s").Predicate("p").Object("o")
                                    .Subject("s").Predicate("p").Object("o");
-                            });
+                            })
+                        .GetExecutableQuery();
 
             // then
             Assert.AreEqual(1, callCount);
@@ -133,10 +134,10 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
-            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
-            Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(2, q.RootGraphPattern.TriplePatterns.Count());
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns[0].IsOptional);
-            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[1].TriplePatterns.Count());
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns[0].TriplePatterns.Count());
         }
 
         [TestMethod]
