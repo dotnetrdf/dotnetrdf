@@ -17,7 +17,7 @@ namespace VDS.RDF.Query.Builder
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public sealed class QueryBuilder : IQueryBuilder
+    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder
     {
         private readonly SparqlQuery _query;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder;
@@ -69,12 +69,18 @@ namespace VDS.RDF.Query.Builder
             return Select(sparqlVariables);
         }
 
-        public static IQueryBuilder Describe(Uri uri)
+        public static IDescribeQueryBuilder Describe(params Uri[] urisToDescribe)
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.Describe;
-            q.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri),0,0,0));
-            return new QueryBuilder(q);
+            return new QueryBuilder(q).And(urisToDescribe);
+        }
+
+        public static IDescribeQueryBuilder Describe(params string[] describeVariableNames)
+        {
+            SparqlQuery q = new SparqlQuery();
+            q.QueryType = SparqlQueryType.Describe;
+            return new QueryBuilder(q).And(describeVariableNames);
         }
 
         #region Implementation of IQueryBuilder
@@ -163,6 +169,28 @@ namespace VDS.RDF.Query.Builder
         public IQueryBuilder Filter(ISparqlExpression expr)
         {
             _rootGraphPatternBuilder.Filter(expr);
+            return this;
+        }
+
+        #endregion
+
+        #region Implementation of IDescribeQueryBuilder
+
+        public IDescribeQueryBuilder And(params string[] describeVariableNames)
+        {
+            foreach (var variableName in describeVariableNames)
+            {
+                _query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
+            }
+            return this;
+        }
+
+        public IDescribeQueryBuilder And(params Uri[] urisToDescribe)
+        {
+            foreach (var uri in urisToDescribe)
+            {
+                _query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
+            }
             return this;
         }
 

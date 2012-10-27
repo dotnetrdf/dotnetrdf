@@ -54,9 +54,9 @@ namespace VDS.RDF.Test.Sparql
         public void DescribeWithoutGraphPattern()
         {
             // given
-            const string uriString = "http://example.org/"; 
+            const string uriString = "http://example.org/";
             var b = QueryBuilder.Describe(new Uri(uriString));
-            
+
             // when
             var q = b.GetExecutableQuery();
 
@@ -65,6 +65,42 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsTrue(q.QueryType == SparqlQueryType.Describe);
             Assert.AreEqual(1, q.DescribeVariables.Count());
             Assert.AreEqual(uriString, q.DescribeVariables.Single().Value);
+        }
+
+        [TestMethod]
+        public void DescribeWithGraphPattern()
+        {
+            // given
+            var b = QueryBuilder.Describe("x")
+                                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:mbox").Object(new Uri("mailto:alice@org")));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual("x", q.DescribeVariables.Single().Value);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void DescribeWithMixedVariablesAndUrIs()
+        {
+            // given
+            var b = QueryBuilder.Describe("x").And("y").And(new Uri("http://example.org/"))
+                                              .Where(tpb => tpb.Subject("x").PredicateUri("foaf:knows").Object("y"));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual("x", q.DescribeVariables.ElementAt(0).Value);
+            Assert.AreEqual("y", q.DescribeVariables.ElementAt(1).Value);
+            Assert.AreEqual("http://example.org/", q.DescribeVariables.ElementAt(2).Value);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
     }
 }

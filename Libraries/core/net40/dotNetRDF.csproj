@@ -136,6 +136,7 @@
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\GraphPatternType.cs" />
+    <Compile Include="Query\Builder\IDescribeQueryBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
