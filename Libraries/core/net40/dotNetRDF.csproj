@@ -138,6 +138,7 @@
     <Compile Include="Query\Builder\GraphPatternType.cs" />
     <Compile Include="Query\Builder\IDescribeQueryBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
+    <Compile Include="Query\Builder\ISelectQueryBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />

@@ -157,7 +157,8 @@ namespace VDS.RDF.Test.Sparql
         public void CanStartQueryWithGivenVariablesStrings()
         {
             // given
-            IQueryBuilder queryBuilder = QueryBuilder.Select("s", "p", "o");
+            IQueryBuilder queryBuilder = QueryBuilder.Select("s", "p", "o")
+                                                     .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
             SparqlQuery query = queryBuilder.GetExecutableQuery();
@@ -177,7 +178,8 @@ namespace VDS.RDF.Test.Sparql
             var s = new SparqlVariable("s", true);
             var p = new SparqlVariable("p", true);
             var o = new SparqlVariable("o", true);
-            IQueryBuilder queryBuilder = QueryBuilder.Select(s, p, o);
+            IQueryBuilder queryBuilder = QueryBuilder.Select(s, p, o)
+                                                     .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
             SparqlQuery query = queryBuilder.GetExecutableQuery();
@@ -247,6 +249,22 @@ namespace VDS.RDF.Test.Sparql
             Assert.IsNotNull(query.RootGraphPattern);
             Assert.AreEqual(4, query.RootGraphPattern.TriplePatterns.Count);
             Assert.AreEqual(0, query.RootGraphPattern.ChildGraphPatterns.Count);
+        }
+
+        [TestMethod]
+        public void CanAddMultipleSelectVariablesOneByOne()
+        {
+            // given
+            var b = QueryBuilder.Select("s").And("p").And("o")
+                                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
         }
     }
 }

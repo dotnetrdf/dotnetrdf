@@ -17,7 +17,7 @@ namespace VDS.RDF.Query.Builder
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder
+    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder, ISelectQueryBuilder
     {
         private readonly SparqlQuery _query;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder;
@@ -47,15 +47,11 @@ namespace VDS.RDF.Query.Builder
         /// <paramref name="variables"/>
         /// </summary>
         /// <param name="variables">query result variables</param>
-        public static IQueryBuilder Select(params SparqlVariable[] variables)
+        public static ISelectQueryBuilder Select(params SparqlVariable[] variables)
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.Select;
-            foreach (var sparqlVariable in variables)
-            {
-                q.AddVariable(sparqlVariable);
-            }
-            return new QueryBuilder(q);
+            return new QueryBuilder(q).And(variables);
         }
 
         /// <summary>
@@ -63,7 +59,7 @@ namespace VDS.RDF.Query.Builder
         /// <paramref name="variables"/>
         /// </summary>
         /// <param name="variables">query result variables</param>
-        public static IQueryBuilder Select(params string[] variables)
+        public static ISelectQueryBuilder Select(params string[] variables)
         {
             SparqlVariable[] sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
             return Select(sparqlVariables);
@@ -192,6 +188,24 @@ namespace VDS.RDF.Query.Builder
                 _query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
             }
             return this;
+        }
+
+        #endregion
+
+        #region Implementation of ISelectQueryBuilder
+
+        public ISelectQueryBuilder And(params SparqlVariable[] variables)
+        {
+            foreach (var sparqlVariable in variables)
+            {
+                _query.AddVariable(sparqlVariable);
+            }
+            return this;
+        }
+
+        ISelectQueryBuilder ISelectQueryBuilder.And(params string[] variables)
+        {
+            return And(variables.Select(var => new SparqlVariable(var, true)).ToArray());
         }
 
         #endregion
