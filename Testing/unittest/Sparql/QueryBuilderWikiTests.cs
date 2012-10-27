@@ -102,5 +102,24 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual("http://example.org/", q.DescribeVariables.ElementAt(2).Value);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
+
+        [TestMethod]
+        public void SimpleOptional()
+        {
+            // given
+            var b = QueryBuilder.Select("name", "mbox")
+                                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:name").Object("name"))
+                                .Optional(opt => opt.Where(tbp => tbp.Subject("x").PredicateUri("foaf:mbox").Object("mbox")));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+        } 
     }
 }
