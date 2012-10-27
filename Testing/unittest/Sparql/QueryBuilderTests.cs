@@ -36,7 +36,7 @@ namespace VDS.RDF.Test.Sparql
         public void CanAddTriplePatternsWithTriplePatternBuilder()
         {
             IQueryBuilder builder = QueryBuilder.SelectAll();
-            builder.NamespaceMapper.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            builder.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             var q = builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
                                             .Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
@@ -89,7 +89,7 @@ namespace VDS.RDF.Test.Sparql
             // given
             IQueryBuilder builder = QueryBuilder.SelectAll();
             builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"));
+                   .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type")));
 
             // when
             var q = builder.GetExecutableQuery();
@@ -125,7 +125,7 @@ namespace VDS.RDF.Test.Sparql
             // given
             IQueryBuilder builder = QueryBuilder.SelectAll();
             builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type"))
+                   .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type")))
                    .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
             // when
@@ -197,8 +197,8 @@ namespace VDS.RDF.Test.Sparql
                 .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
                                  .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
                                  .Object(new Uri("http://example.com/Class")))
-                .Optional(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
-                                    .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o"));
+                .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
+                                                     .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o")));
 
             // when
             var query = builder.GetExecutableQuery();
@@ -215,8 +215,8 @@ namespace VDS.RDF.Test.Sparql
         {
             // given
             var builder = QueryBuilder.SelectAll()
-                .Optional(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
-                                    .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o"))
+                .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").Predicate("p").Object(new Uri("http://example.com/Resource"))
+                                                     .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o")))
                 .Where(tpb => tpb.Subject(new Uri("http://example.com/Resource"))
                                  .PredicateUri(new Uri(RdfSpecsHelper.RdfType))
                                  .Object(new Uri("http://example.com/Class")));

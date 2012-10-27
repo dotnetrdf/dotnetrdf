@@ -5,7 +5,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    public interface IQueryBuilder 
+    public interface IQueryBuilder
     {
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
@@ -14,18 +14,17 @@ namespace VDS.RDF.Query.Builder
         /// <returns></returns>
         IQueryBuilder Distinct();
 
-        IQueryBuilder Where(params ITriplePattern[] triplePatterns);
-        IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns);
-
-        IQueryBuilder Optional(Action<ITriplePatternBuilder> buildTriplePatterns);
-        IQueryBuilder Optional(params ITriplePattern[] triplePatterns);
-
-        IQueryBuilder Filter(ISparqlExpression expr);
         IQueryBuilder Limit(int limit);
         IQueryBuilder Offset(int offset);
         IQueryBuilder Slice(int limit, int offset);
+        IQueryBuilder Where(params ITriplePattern[] triplePatterns);
+        IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns);
+        IQueryBuilder Optional(params ITriplePattern[] triplePatterns);
+        IQueryBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern);
+        [Obsolete("Introduce IExpressionBuilder (overload)")]
+        IQueryBuilder Filter(ISparqlExpression expr);
         SparqlQuery GetExecutableQuery();
 
-        INamespaceMapper NamespaceMapper { get; }
+        INamespaceMapper Prefixes { get; }
     }
 }

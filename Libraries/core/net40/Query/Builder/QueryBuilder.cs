@@ -19,12 +19,15 @@ namespace VDS.RDF.Query.Builder
     public sealed class QueryBuilder : IQueryBuilder
     {
         private readonly SparqlQuery _query;
+        private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
+
+        public INamespaceMapper Prefixes { get; set; }
 
         private QueryBuilder(SparqlQuery query)
         {
             this._query = query;
             _query.RootGraphPattern = new GraphPattern();
-            this.NamespaceMapper = new NamespaceMapper();
+            this.Prefixes = new NamespaceMapper();
         }
 
         /// <summary>
@@ -65,6 +68,8 @@ namespace VDS.RDF.Query.Builder
             return Select(sparqlVariables);
         }
 
+        #region Implementation of IQueryBuilder
+
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>
@@ -89,112 +94,6 @@ namespace VDS.RDF.Query.Builder
                     _query.QueryType = SparqlQueryType.SelectAllDistinct;
                     break;
             }
-            return this;
-        }
-
-        private void Where(ITriplePattern tp)
-        {
-            if (_query == null) throw new ArgumentNullException("Null query");
-            if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
-            switch (tp.PatternType)
-            {
-                case TriplePatternType.Match:
-                case TriplePatternType.Path:
-                case TriplePatternType.PropertyFunction:
-                case TriplePatternType.SubQuery:
-                    _query.RootGraphPattern.AddTriplePattern(tp);
-                    break;
-                case TriplePatternType.LetAssignment:
-                case TriplePatternType.BindAssignment:
-                    _query.RootGraphPattern.AddAssignment((IAssignmentPattern)tp);
-                    break;
-                case TriplePatternType.Filter:
-                    _query.RootGraphPattern.AddFilter(((IFilterPattern)tp).Filter);
-                    break;
-            }
-            return;
-        }
-
-        [Obsolete("Consider either leaving it here, adding a relevant method to triple pattern builder")]
-        public IQueryBuilder Where(IEnumerable<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                Where(tpb => tpb.Subject(t.Subject).PredicateUri((IUriNode) t.Predicate).Object(t.Object));
-            }
-            return this;
-        }
-
-        public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
-        {
-            foreach (ITriplePattern tp in triplePatterns)
-            {
-                Where(tp);
-            }
-            return this;
-        }
-
-        public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
-        {
-            var builder = new TriplePatternBuilder(NamespaceMapper);
-            buildTriplePatterns(builder);
-            return Where(builder.Patterns);
-        }
-
-        [Obsolete("Either make private completely or replace with an Action<IGraphPatternBuilder>")]
-        public IQueryBuilder Where(GraphPattern gp)
-        {
-            if (_query == null) throw new ArgumentNullException("Null query");
-            if (_query.RootGraphPattern == null)
-            {
-                _query.RootGraphPattern = gp;
-            }
-            else
-            {
-                _query.RootGraphPattern.AddGraphPattern(gp);
-            }
-            return this;
-        }
-
-        public IQueryBuilder Optional(params ITriplePattern[] triplePatterns)
-        {
-            GraphPattern gp = new GraphPattern();
-            gp.IsOptional = true;
-
-            foreach (var tp in triplePatterns)
-            {
-                switch (tp.PatternType)
-                {
-                    case TriplePatternType.Match:
-                    case TriplePatternType.Path:
-                    case TriplePatternType.PropertyFunction:
-                    case TriplePatternType.SubQuery:
-                        gp.AddTriplePattern(tp);
-                        break;
-                    case TriplePatternType.BindAssignment:
-                    case TriplePatternType.LetAssignment:
-                        gp.AddAssignment((IAssignmentPattern)tp);
-                        break;
-                    case TriplePatternType.Filter:
-                        gp.AddFilter(((IFilterPattern)tp).Filter);
-                        break;
-                }
-            }
-            return Where(gp);
-        }
-
-        public IQueryBuilder Optional(Action<ITriplePatternBuilder> buildTriplePatterns)
-        {
-            var builder = new TriplePatternBuilder(NamespaceMapper);
-            buildTriplePatterns(builder);
-            return Optional(builder.Patterns);
-        }
-
-        public IQueryBuilder Filter(ISparqlExpression expr)
-        {
-            if (_query == null) throw new ArgumentNullException("Null query");
-            if (_query.RootGraphPattern == null) _query.RootGraphPattern = new GraphPattern();
-            _query.RootGraphPattern.AddFilter(new UnaryExpressionFilter(expr));
             return this;
         }
 
@@ -223,56 +122,40 @@ namespace VDS.RDF.Query.Builder
             // QueryBuilder or the retrieved SparqlQuery(variableName) from
             // being reflected in one another
             SparqlQuery executableQuery = _query.Copy();
-            executableQuery.Optimise();
+            executableQuery.RootGraphPattern = _rootGraphPatternBuilder.GraphPattern;
             return executableQuery;
-        }
+        } 
 
-        /// <summary>
-        /// Turns a Node into a Pattern item for use in a Triple Pattern
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        private static PatternItem ToPatternItem(INode n)
+        public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
         {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    return new BlankNodePattern(((IBlankNode)n).InternalID);
-                case NodeType.GraphLiteral:
-                    throw new NotSupportedException("Graph Literals are not usable in SPARQL queries");
-                case NodeType.Literal:
-                case NodeType.Uri:
-                    return new NodeMatchPattern(n);
-                case NodeType.Variable:
-                    return new VariablePattern(((IVariableNode)n).VariableName);
-                default:
-                    throw new NotSupportedException("Unknown Node types are not usable in SPARQL queries");
-            }
+            _rootGraphPatternBuilder.Where(triplePatterns);
+            return this;
         }
 
-        /// <summary>
-        /// Turns a Node into a SPARQL Expression Term
-        /// </summary>
-        /// <param name="n">Node</param>
-        /// <returns></returns>
-        private static ISparqlExpression ToSparqlExpression(INode n)
+        public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            switch (n.NodeType)
-            {
-                case NodeType.Blank:
-                    throw new NotSupportedException("Temporary variables are not permitted in SPARQL Expression");
-                case NodeType.GraphLiteral:
-                    throw new NotSupportedException("Graph Literals are not usable in SPARQL queries");
-                case NodeType.Literal:
-                case NodeType.Uri:
-                    return new ConstantTerm(n);
-                case NodeType.Variable:
-                    return new VariableTerm(((IVariableNode)n).VariableName);
-                default:
-                    throw new NotSupportedException("Unknown Node types are not usable in SPARQL queries");
-            }
+            _rootGraphPatternBuilder.Where(buildTriplePatterns);
+            return this;
         }
 
-        public INamespaceMapper NamespaceMapper { get; set; }
+        public IQueryBuilder Optional(params ITriplePattern[] triplePatterns)
+        {
+            _rootGraphPatternBuilder.Optional(triplePatterns);
+            return this;
+        }
+
+        public IQueryBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            _rootGraphPatternBuilder.Optional(buildGraphPattern);
+            return this;
+        }
+
+        public IQueryBuilder Filter(ISparqlExpression expr)
+        {
+            _rootGraphPatternBuilder.Filter(expr);
+            return this;
+        }
+
+        #endregion
     }
 }
