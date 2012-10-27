@@ -35,7 +35,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern) _builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -55,7 +55,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is NodeMatchPattern);
@@ -76,7 +76,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is NodeMatchPattern);
             Assert.AreEqual(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -97,7 +97,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is NodeMatchPattern);
@@ -114,7 +114,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is NodeMatchPattern);
             Assert.AreEqual(new Uri("http://xmlns.com/foaf/0.1/name"), ((dynamic)pattern.Subject).Node.Uri);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -131,7 +131,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Predicate is VariablePattern);
             Assert.AreEqual("p", pattern.Predicate.VariableName);
             Assert.IsTrue(pattern.Subject is VariablePattern);
@@ -152,7 +152,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -169,7 +169,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -186,7 +186,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is BlankNodePattern);
             Assert.AreEqual("_:s", ((BlankNodePattern)pattern.Subject).ID);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -206,7 +206,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is NodeMatchPattern);
             Assert.AreSame(node, ((NodeMatchPattern)pattern.Subject).Node);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -226,7 +226,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Subject is VariablePattern);
             Assert.AreEqual("s", pattern.Subject.VariableName);
             Assert.IsTrue(pattern.Predicate is NodeMatchPattern);
@@ -246,7 +246,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreSame(node, ((NodeMatchPattern)pattern.Object).Node);
             Assert.IsTrue(pattern.Predicate is VariablePattern);
@@ -263,7 +263,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
@@ -278,7 +278,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.AreEqual(new Uri(XmlSpecsHelper.XmlSchemaDataTypeInteger), ((dynamic)pattern.Object).Node.DataType);
@@ -292,7 +292,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
@@ -307,7 +307,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
@@ -325,7 +325,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
@@ -343,7 +343,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
@@ -361,7 +361,7 @@ namespace VDS.RDF.Test.Sparql
 
             // then
             Assert.AreEqual(1, _builder.Patterns.Length);
-            var pattern = _builder.Patterns.Single();
+            IMatchTriplePattern pattern = (IMatchTriplePattern)_builder.Patterns.Single();
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("2012-10-13T20:35:10+01:30", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);

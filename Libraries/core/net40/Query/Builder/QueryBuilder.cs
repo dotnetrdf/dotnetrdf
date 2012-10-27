@@ -19,15 +19,15 @@ namespace VDS.RDF.Query.Builder
     public sealed class QueryBuilder : IQueryBuilder
     {
         private readonly SparqlQuery _query;
-        private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
+        private readonly GraphPatternBuilder _rootGraphPatternBuilder;
 
         public INamespaceMapper Prefixes { get; set; }
 
         private QueryBuilder(SparqlQuery query)
         {
             this._query = query;
-            _query.RootGraphPattern = new GraphPattern();
             this.Prefixes = new NamespaceMapper();
+            _rootGraphPatternBuilder = new GraphPatternBuilder(Prefixes);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace VDS.RDF.Query.Builder
             // QueryBuilder or the retrieved SparqlQuery(variableName) from
             // being reflected in one another
             SparqlQuery executableQuery = _query.Copy();
-            executableQuery.RootGraphPattern = _rootGraphPatternBuilder.GraphPattern;
+            executableQuery.RootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
             return executableQuery;
         } 
 

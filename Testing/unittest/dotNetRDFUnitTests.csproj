@@ -116,6 +116,7 @@
     <Compile Include="Sparql\OperatorTests.cs" />
     <Compile Include="Sparql\DatasetTests.cs" />
     <Compile Include="Sparql\QueryBuilderTests.cs" />
+    <Compile Include="Sparql\QueryBuilderWikiTests.cs" />
     <Compile Include="Sparql\SetTests.cs" />
     <Compile Include="Sparql\TriplePatternBuilderTests.cs" />
     <Compile Include="Sparql\SparqlQueryTests.cs" />
