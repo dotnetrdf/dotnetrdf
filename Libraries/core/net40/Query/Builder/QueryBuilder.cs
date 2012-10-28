@@ -34,7 +34,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT * query
         /// </summary>
-        /// <returns></returns>
         public static IQueryBuilder SelectAll()
         {
             SparqlQuery q = new SparqlQuery();
@@ -198,9 +197,24 @@ namespace VDS.RDF.Query.Builder
         {
             foreach (var sparqlVariable in variables)
             {
-                _query.AddVariable(sparqlVariable);
+                _query.AddVariable(sparqlVariable.IsResultVariable ? sparqlVariable : CopyVariable(sparqlVariable));
             }
             return this;
+        }
+
+        private SparqlVariable CopyVariable(SparqlVariable sparqlVariable)
+        {
+            if (sparqlVariable.IsAggregate)
+            {
+                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Aggregate);
+            }
+
+            if(sparqlVariable.IsProjection)
+            {
+                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Projection);
+            }
+
+            return new SparqlVariable(sparqlVariable.Name, true);
         }
 
         ISelectQueryBuilder ISelectQueryBuilder.And(params string[] variables)

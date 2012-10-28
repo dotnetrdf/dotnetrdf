@@ -267,5 +267,17 @@ namespace VDS.RDF.Test.Sparql
             Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
         }
+
+        [TestMethod]
+        public void ShouldEnsureSparqlVariablesAreReturnVariables()
+        {
+            // when
+            var q = QueryBuilder.Select(new SparqlVariable("s"), new SparqlVariable("p"), new SparqlVariable("o"))
+                                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                .GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));
+        }
     }
 }

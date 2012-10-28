@@ -115,10 +115,10 @@
     <Compile Include="Core\NamespaceMapperTest.cs" />
     <Compile Include="Sparql\OperatorTests.cs" />
     <Compile Include="Sparql\DatasetTests.cs" />
-    <Compile Include="Sparql\QueryBuilderTests.cs" />
-    <Compile Include="Sparql\QueryBuilderWikiTests.cs" />
+    <Compile Include="Builder\QueryBuilderTests.cs" />
+    <Compile Include="Builder\QueryBuilderWikiTests.cs" />
     <Compile Include="Sparql\SetTests.cs" />
-    <Compile Include="Sparql\TriplePatternBuilderTests.cs" />
+    <Compile Include="Builder\TriplePatternBuilderTests.cs" />
     <Compile Include="Sparql\SparqlQueryTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
