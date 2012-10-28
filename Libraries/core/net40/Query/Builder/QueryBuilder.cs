@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Primary;
-using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -64,18 +61,24 @@ namespace VDS.RDF.Query.Builder
             return Select(sparqlVariables);
         }
 
-        public static IDescribeQueryBuilder Describe(params Uri[] urisToDescribe)
+        /// <summary>
+        /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>
+        /// </summary>
+        public static IDescribeQueryBuilder Describe(params Uri[] uris)
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.Describe;
-            return new QueryBuilder(q).And(urisToDescribe);
+            return new QueryBuilder(q).And(uris);
         }
 
-        public static IDescribeQueryBuilder Describe(params string[] describeVariableNames)
+        /// <summary>
+        /// Creates a new query, which will DESCRIBE the given <paramref name="variables"/>
+        /// </summary>
+        public static IDescribeQueryBuilder Describe(params string[] variables)
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.Describe;
-            return new QueryBuilder(q).And(describeVariableNames);
+            return new QueryBuilder(q).And(variables);
         }
 
         #region Implementation of IQueryBuilder
@@ -83,8 +86,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>
-        /// <param name="q">Query</param>
-        /// <returns></returns>
         public IQueryBuilder Distinct()
         {
             if (_query == null) throw new ArgumentNullException("Null query");
@@ -171,18 +172,24 @@ namespace VDS.RDF.Query.Builder
 
         #region Implementation of IDescribeQueryBuilder
 
-        public IDescribeQueryBuilder And(params string[] describeVariableNames)
+        /// <summary>
+        /// Adds additional <paramref name="variables"/> to DESCRIBE
+        /// </summary>
+        public IDescribeQueryBuilder And(params string[] variables)
         {
-            foreach (var variableName in describeVariableNames)
+            foreach (var variableName in variables)
             {
                 _query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
             }
             return this;
         }
 
-        public IDescribeQueryBuilder And(params Uri[] urisToDescribe)
+        /// <summary>
+        /// Adds additional <paramref name="uris"/> to DESCRIBE
+        /// </summary>
+        public IDescribeQueryBuilder And(params Uri[] uris)
         {
-            foreach (var uri in urisToDescribe)
+            foreach (var uri in uris)
             {
                 _query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
             }
@@ -193,6 +200,9 @@ namespace VDS.RDF.Query.Builder
 
         #region Implementation of ISelectQueryBuilder
 
+        /// <summary>
+        /// Adds additional SELECT <paramref name="variables"/>
+        /// </summary>
         public ISelectQueryBuilder And(params SparqlVariable[] variables)
         {
             foreach (var sparqlVariable in variables)
@@ -217,6 +227,9 @@ namespace VDS.RDF.Query.Builder
             return new SparqlVariable(sparqlVariable.Name, true);
         }
 
+        /// <summary>
+        /// Adds additional SELECT <paramref name="variables"/>
+        /// </summary>
         ISelectQueryBuilder ISelectQueryBuilder.And(params string[] variables)
         {
             return And(variables.Select(var => new SparqlVariable(var, true)).ToArray());
