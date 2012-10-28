@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Test.Builder
 {
     /// <summary>
     /// Test class for queries used on the <a href="https://bitbucket.org/romanticweb/dotnetrdf/wiki">wiki</a>, so that it stays updated

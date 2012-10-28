@@ -3,11 +3,10 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using VDS.RDF.Parsing;
-using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Test.Builder
 {
     [TestClass]
     public class TriplePatternBuilderTests
