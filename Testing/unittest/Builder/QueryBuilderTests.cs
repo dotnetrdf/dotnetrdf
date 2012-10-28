@@ -16,9 +16,10 @@ namespace VDS.RDF.Test.Builder
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
+                .Where(tpb=>tpb.Subject("s").Predicate("p").Object("o"))
                 .GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
-            Assert.IsNull(q.RootGraphPattern);
+            Assert.IsNotNull(q.RootGraphPattern);
         }
 
         [TestMethod]
@@ -26,16 +27,18 @@ namespace VDS.RDF.Test.Builder
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
-                .Distinct().GetExecutableQuery();
+                .Distinct()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .GetExecutableQuery();
             Assert.AreEqual(SparqlQueryType.SelectAllDistinct, q.QueryType);
             Assert.IsTrue(q.HasDistinctModifier);
-            Assert.IsNull(q.RootGraphPattern);
+            Assert.IsNotNull(q.RootGraphPattern);
         }
 
         [TestMethod]
         public void CanAddTriplePatternsWithTriplePatternBuilder()
         {
-            IQueryBuilder builder = QueryBuilder.SelectAll();
+            var builder = QueryBuilder.SelectAll();
             builder.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             var q = builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o")
@@ -88,9 +91,11 @@ namespace VDS.RDF.Test.Builder
         public void CanAddOptionalTriplePatterns()
         {
             // given
-            IQueryBuilder builder = QueryBuilder.SelectAll();
-            builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type")));
+            var builder = QueryBuilder.SelectAll()
+                                      .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                      .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
+                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .Object("type")));
 
             // when
             var q = builder.GetExecutableQuery();
@@ -106,10 +111,12 @@ namespace VDS.RDF.Test.Builder
         public void CanAddMultipleChildGraphPatterns()
         {
             // given
-            IQueryBuilder builder = QueryBuilder.SelectAll();
-            builder.Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                   .Optional(gpb => gpb.Where(tpb => tpb.Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object("type")))
-                   .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
+            var builder = QueryBuilder.SelectAll()
+                                      .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                      .Optional(gpb => gpb.Where(tpb => tpb.Subject("s")
+                                                                           .PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType))
+                                                                           .Object("type")))
+                                      .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
             // when
             var q = builder.GetExecutableQuery();

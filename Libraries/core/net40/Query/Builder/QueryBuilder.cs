@@ -31,7 +31,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT * query
         /// </summary>
-        public static IQueryBuilder SelectAll()
+        public static ISelectQueryBuilder SelectAll()
         {
             SparqlQuery q = new SparqlQuery();
             q.QueryType = SparqlQueryType.SelectAll;
@@ -190,6 +190,12 @@ namespace VDS.RDF.Query.Builder
         #endregion
 
         #region Implementation of ISelectQueryBuilder
+
+        ISelectQueryBuilder ISelectQueryBuilder.Distinct()
+        {
+            Distinct();
+            return this;
+        }
 
         /// <summary>
         /// Adds additional SELECT <paramref name="variables"/>
