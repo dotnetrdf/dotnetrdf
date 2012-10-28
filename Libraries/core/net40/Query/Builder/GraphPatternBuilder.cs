@@ -100,7 +100,7 @@ namespace VDS.RDF.Query.Builder
         {
             _triplePatterns.Add(() =>
                 {
-                    var builder = new TriplePatternBuilder(_prefixes);
+                    var builder = new TriplePatternBuilder(Prefixes);
                     buildTriplePatterns(builder);
                     return builder.Patterns;
                 });
@@ -109,7 +109,7 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            var optionalGraphPattern = new GraphPatternBuilder(_prefixes, GraphPatternType.Optional);
+            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Optional);
             buildGraphPattern(optionalGraphPattern);
             _childGraphPatternBuilders.Add(optionalGraphPattern);
             return this;
@@ -117,7 +117,7 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Optional(params ITriplePattern[] triplePatterns)
         {
-            var optionalGraphPattern = new GraphPatternBuilder(_prefixes, GraphPatternType.Optional);
+            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Optional);
             optionalGraphPattern.Where(triplePatterns);
             _childGraphPatternBuilders.Add(optionalGraphPattern);
             return this;
@@ -127,6 +127,11 @@ namespace VDS.RDF.Query.Builder
         {
             BuildGraphPattern().AddFilter(new UnaryExpressionFilter(expr));
             return this;
+        }
+
+        public INamespaceMapper Prefixes
+        {
+            get { return _prefixes; }
         }
 
         #endregion

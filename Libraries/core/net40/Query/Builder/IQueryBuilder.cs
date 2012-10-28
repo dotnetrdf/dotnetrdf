@@ -3,7 +3,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Interface for building SPARQL queries 
     /// </summary>
-    public interface IQueryBuilder : ICommonQueryBuilder
+    public interface IQueryBuilder : ICommonQueryBuilder<IQueryBuilder>
     {
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
