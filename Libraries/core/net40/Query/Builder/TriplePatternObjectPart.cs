@@ -21,50 +21,44 @@ namespace VDS.RDF.Query.Builder
 
         public ITriplePatternBuilder Object(string variableName)
         {
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, new VariablePattern(variableName)));
-            return _triplePatternBuilder;
+            var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateVariablePattern(variableName);
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder Object<TNode>(string @object) where TNode : INode
         {
             var objectPattern = _triplePatternBuilder.PatternItemFactory.CreatePatternItem(typeof(TNode), @object);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder Object(INode objectNode)
         {
             var objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectNode);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder Object(Uri objectUri)
         {
             PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(objectUri);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder ObjectLiteral(object literal)
         {
             PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder ObjectLiteral(object literal, string langSpec)
         {
             PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, langSpec);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder ObjectLiteral(object literal, Uri datatype)
         {
             PatternItem objectPattern = _triplePatternBuilder.PatternItemFactory.CreateLiteralNodeMatchPattern(literal, datatype);
-            _triplePatternBuilder.AddPattern(new TriplePattern(_subjectPatternItem, _predicatePatternItem, objectPattern));
-            return _triplePatternBuilder;
+            return Object(objectPattern);
         }
 
         public ITriplePatternBuilder Object(PatternItem objectPattern)

@@ -17,22 +17,22 @@ namespace VDS.RDF.Query.Builder
 
         public TriplePatternPredicatePart Subject(string subjectVariableName)
         {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateVariablePattern(subjectVariableName));
+            return Subject(PatternItemFactory.CreateVariablePattern(subjectVariableName));
         }
 
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreatePatternItem(typeof(TNode), subject));
+            return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject));
         }
 
         public TriplePatternPredicatePart Subject(INode subjectNode)
         {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subjectNode));
+            return Subject(PatternItemFactory.CreateNodeMatchPattern(subjectNode));
         }
 
         public TriplePatternPredicatePart Subject(Uri subject)
         {
-            return new TriplePatternPredicatePart(this, PatternItemFactory.CreateNodeMatchPattern(subject));
+            return Subject(PatternItemFactory.CreateNodeMatchPattern(subject));
         }
 
         public TriplePatternPredicatePart Subject(PatternItem subject)
