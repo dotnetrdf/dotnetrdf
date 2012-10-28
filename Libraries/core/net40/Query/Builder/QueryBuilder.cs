@@ -88,7 +88,6 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public IQueryBuilder Distinct()
         {
-            if (_query == null) throw new ArgumentNullException("Null query");
             if (_query.HasDistinctModifier) return this;
             switch (_query.QueryType)
             {
@@ -110,14 +109,12 @@ namespace VDS.RDF.Query.Builder
 
         public IQueryBuilder Limit(int limit)
         {
-            if (_query == null) throw new ArgumentNullException("Null query");
             _query.Limit = limit;
             return this;
         }
 
         public IQueryBuilder Offset(int offset)
         {
-            if (_query == null) throw new ArgumentNullException("Null query");
             _query.Offset = offset;
             return this;
         }
@@ -147,12 +144,6 @@ namespace VDS.RDF.Query.Builder
         public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
             _rootGraphPatternBuilder.Where(buildTriplePatterns);
-            return this;
-        }
-
-        public IQueryBuilder Optional(params ITriplePattern[] triplePatterns)
-        {
-            _rootGraphPatternBuilder.Optional(triplePatterns);
             return this;
         }
 

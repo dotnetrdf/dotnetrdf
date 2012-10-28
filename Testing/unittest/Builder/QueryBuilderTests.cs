@@ -103,24 +103,6 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void CanAddOptionalTriplePatternsAsObjects()
-        {
-            // given
-            TriplePattern p1 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
-            TriplePattern p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
-
-            // when
-            var q = QueryBuilder.SelectAll().Where(p1).Optional(p2).GetExecutableQuery();
-
-            // then
-            Assert.IsNotNull(q.RootGraphPattern);
-            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count());
-            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
-            Assert.IsTrue(q.RootGraphPattern.TriplePatterns.Contains(p1));
-            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Contains(p2));
-        }
-
-        [TestMethod]
         public void CanAddMultipleChildGraphPatterns()
         {
             // given
