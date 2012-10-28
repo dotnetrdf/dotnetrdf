@@ -267,7 +267,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("42", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+            Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
         [TestMethod]
@@ -329,7 +329,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+            Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
         [TestMethod]
@@ -347,7 +347,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual(dateTime.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+            Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
         [TestMethod]
@@ -365,7 +365,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(pattern.Object is NodeMatchPattern);
             Assert.AreEqual("2012-10-13T20:35:10+01:30", ((dynamic)pattern.Object).Node.Value);
             Assert.IsNull(((dynamic)pattern.Object).Node.DataType);
-            Assert.IsNull(((dynamic)pattern.Object).Node.Language);
+            Assert.IsTrue(string.IsNullOrWhiteSpace(((dynamic)pattern.Object).Node.Language));
         }
 
         [TestMethod]
