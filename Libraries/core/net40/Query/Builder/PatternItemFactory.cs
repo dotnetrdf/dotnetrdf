@@ -4,6 +4,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Class responsible for creating <see cref="PatternItem"/>s
+    /// </summary>
     internal class PatternItemFactory
     {
         private readonly NodeFactory _nodeFactory = new NodeFactory();
@@ -52,7 +55,11 @@ namespace VDS.RDF.Query.Builder
             }
             if (nodeType == typeof(ILiteralNode))
             {
-                throw new ArgumentException("For literal nodes use PatternItemFactory#CreadeLiteralNodeMatchPattern() method");
+                return CreateLiteralNodeMatchPattern(patternString);
+            }
+            if(nodeType == typeof(IVariableNode))
+            {
+                return CreateVariablePattern(patternString);
             }
 
             throw new ArgumentException(string.Format("Invalid node type {0}", nodeType));
