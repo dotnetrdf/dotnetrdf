@@ -120,6 +120,45 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
-        } 
+        }
+
+        [TestMethod]
+        public void MultipleOptionals()
+        {
+            // given
+            var b = QueryBuilder.Select("name", "mbox", "hpage")
+                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:name").Object("name"))
+                .Optional(opt => opt.Where(tbp => tbp.Subject("x").PredicateUri("foaf:mbox").Object("mbox")))
+                .Optional(opt => opt.Where(tbp => tbp.Subject("x").PredicateUri("foaf:homepage").Object("hpage")));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.ElementAt(0).TriplePatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.ElementAt(1).TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void MultipleWheresInOptional()
+        {
+            // given
+            var b = QueryBuilder.Select("name", "mbox", "hpage")
+                .Where(tpb => tpb.Subject("x").PredicateUri("foaf:name").Object("name"))
+                .Optional(opt => opt.Where(tbp => tbp.Subject("x").PredicateUri("foaf:mbox").Object("mbox"))
+                                    .Where(tbp => tbp.Subject("x").PredicateUri("foaf:homepage").Object("hpage")));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
+        }
     }
 }
