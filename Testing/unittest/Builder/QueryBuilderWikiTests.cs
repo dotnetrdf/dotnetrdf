@@ -168,6 +168,7 @@ namespace VDS.RDF.Test.Builder
             var b = QueryBuilder.Select("name", "mbox")
                                 .Where(tpb => tpb.Subject("x").PredicateUri("dc:title").Object("title"))
                                 .Filter(fb => fb.Regex("title", "^SPARQL"));
+            b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
 
             // when
             var q = b.GetExecutableQuery();
