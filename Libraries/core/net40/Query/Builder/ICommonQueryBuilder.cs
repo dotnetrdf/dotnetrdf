@@ -21,9 +21,10 @@ namespace VDS.RDF.Query.Builder
         /// Adds an OPTIONAL graph pattern to the SPARQL query
         /// </summary>
         TReturnBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern);
-
-        [Obsolete("Introduce IExpressionBuilder (overload)")]
-        TReturnBuilder Filter(ISparqlExpression expr);
+        /// <summary>
+        /// Adds a FILTER to the SPARQL query
+        /// </summary>
+        TReturnBuilder Filter(Action<IExpressionBuilder> expr);
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query
         /// </summary>

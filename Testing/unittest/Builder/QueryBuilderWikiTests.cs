@@ -160,5 +160,20 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
             Assert.AreEqual(2, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
+
+        [TestMethod]
+        public void FilterInRootGraphPattern()
+        {
+            // given
+            var b = QueryBuilder.Select("name", "mbox")
+                                .Where(tpb => tpb.Subject("x").PredicateUri("dc:title").Object("title"))
+                                .Filter(fb => fb.Regex("title", "^SPARQL"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern.Filter);
+        }
     }
 }

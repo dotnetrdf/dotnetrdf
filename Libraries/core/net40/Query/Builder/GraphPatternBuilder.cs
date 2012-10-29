@@ -10,6 +10,7 @@ namespace VDS.RDF.Query.Builder
     class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
+        private readonly IList<Func<ISparqlExpression>> _filterBuilders = new List<Func<ISparqlExpression>>();
         private readonly IList<Func<ITriplePattern[]>> _triplePatterns = new List<Func<ITriplePattern[]>>();
         private readonly INamespaceMapper _prefixes;
         private readonly GraphPatternType _graphPatternType;
@@ -27,7 +28,7 @@ namespace VDS.RDF.Query.Builder
 
         public GraphPattern BuildGraphPattern()
         {
-            if(!_triplePatterns.Any())
+            if (!_triplePatterns.Any())
             {
                 return null;
             }
@@ -35,7 +36,7 @@ namespace VDS.RDF.Query.Builder
 
             foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns()))
             {
-                graphPattern.AddTriplePattern(triplePattern);
+                AddTriplePattern(graphPattern, triplePattern);
             }
             foreach (var graphPatternBuilder in _childGraphPatternBuilders)
             {
@@ -43,6 +44,26 @@ namespace VDS.RDF.Query.Builder
             }
 
             return graphPattern;
+        }
+
+        private static void AddTriplePattern(GraphPattern graphPattern, ITriplePattern tp)
+        {
+            switch (tp.PatternType)
+            {
+                case TriplePatternType.Match:
+                case TriplePatternType.Path:
+                case TriplePatternType.PropertyFunction:
+                case TriplePatternType.SubQuery:
+                    graphPattern.AddTriplePattern(tp);
+                    break;
+                case TriplePatternType.LetAssignment:
+                case TriplePatternType.BindAssignment:
+                    graphPattern.AddAssignment((IAssignmentPattern)tp);
+                    break;
+                case TriplePatternType.Filter:
+                    graphPattern.AddFilter(((IFilterPattern)tp).Filter);
+                    break;
+            }
         }
 
         private GraphPattern CreateGraphPattern()
@@ -58,27 +79,6 @@ namespace VDS.RDF.Query.Builder
         }
 
         #region Implementation of IGraphPatternBuilder
-
-        private void Where(ITriplePattern tp)
-        {
-            switch (tp.PatternType)
-            {
-                case TriplePatternType.Match:
-                case TriplePatternType.Path:
-                case TriplePatternType.PropertyFunction:
-                case TriplePatternType.SubQuery:
-                    BuildGraphPattern().AddTriplePattern(tp);
-                    break;
-                case TriplePatternType.LetAssignment:
-                case TriplePatternType.BindAssignment:
-                    BuildGraphPattern().AddAssignment((IAssignmentPattern)tp);
-                    break;
-                case TriplePatternType.Filter:
-                    BuildGraphPattern().AddFilter(((IFilterPattern)tp).Filter);
-                    break;
-            }
-            return;
-        }
 
         [Obsolete("Consider either leaving it here, adding a relevant method to triple pattern builder")]
         public IGraphPatternBuilder Where(IEnumerable<Triple> ts)
@@ -115,18 +115,22 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Optional(params ITriplePattern[] triplePatterns)
+        public IGraphPatternBuilder Filter(Action<IExpressionBuilder> expr)
         {
-            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Optional);
-            optionalGraphPattern.Where(triplePatterns);
-            _childGraphPatternBuilders.Add(optionalGraphPattern);
+            _filterBuilders.Add(() =>
+                {
+                    var builder = new ExpressionBuilder();
+                    expr(builder);
+                    return builder.Expression;
+                });
             return this;
         }
 
         public IGraphPatternBuilder Filter(ISparqlExpression expr)
         {
-            BuildGraphPattern().AddFilter(new UnaryExpressionFilter(expr));
-            return this;
+            //BuildGraphPattern().AddFilter(new UnaryExpressionFilter(expr));
+            //return this;
+            throw new NotImplementedException();
         }
 
         public INamespaceMapper Prefixes
