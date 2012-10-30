@@ -38,7 +38,7 @@ namespace VDS.RDF.Test.Builder
             // then
             Assert.IsTrue(regex is RegexFunction);
             Assert.IsTrue(regex.Arguments.ElementAt(0) is VariableTerm);
-            Assert.AreEqual("@gmail.com$", regex.Arguments.ElementAt(1).ToString().Trim('"'));
+            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
         }
 
         [TestMethod]
@@ -165,7 +165,7 @@ namespace VDS.RDF.Test.Builder
         public void CanCreateLessThanOperatorBetweenVariables()
         {
             // when
-            var areEqual = _builder.Variable("mail1").Gt(_builder.Variable("mail2")).Expression;
+            var areEqual = _builder.Variable("mail1").Lt(_builder.Variable("mail2")).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanExpression);
@@ -177,7 +177,7 @@ namespace VDS.RDF.Test.Builder
         public void CanCreateLessThanOrEqualOperatorBetweenVariables()
         {
             // when
-            var areEqual = _builder.Variable("mail1").Ge(_builder.Variable("mail2")).Expression;
+            var areEqual = _builder.Variable("mail1").Le(_builder.Variable("mail2")).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanOrEqualToExpression);
