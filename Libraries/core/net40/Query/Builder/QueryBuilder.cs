@@ -153,7 +153,7 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder Filter(Func<IExpressionBuilder, ISparqlExpression> buildExpression)
+        public IQueryBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
         {
             _rootGraphPatternBuilder.Filter(buildExpression);
             return this;

@@ -120,12 +120,12 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Func<IExpressionBuilder, ISparqlExpression> buildExpression)
+        public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
         {
             _filterBuilders.Add(() =>
                 {
                     var builder = new ExpressionBuilder();
-                    return buildExpression(builder);
+                    return buildExpression(builder).Expression;
                 });
             return this;
         }

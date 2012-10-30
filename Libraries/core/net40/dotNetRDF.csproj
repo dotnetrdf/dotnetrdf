@@ -134,12 +134,14 @@
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\BooleanExpression.cs" />
     <Compile Include="Query\Builder\ExpressionBuilder.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
+    <Compile Include="Query\Builder\ExpressionBuilderRegexStringExtensions.cs" />
     <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\GraphPatternType.cs" />
     <Compile Include="Query\Builder\ICommonQueryBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeQueryBuilder.cs" />
-    <Compile Include="Query\Builder\IExpressionBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ISelectQueryBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />

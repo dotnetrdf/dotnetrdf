@@ -1,40 +1,33 @@
 using VDS.RDF.Nodes;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
-    public sealed class ExpressionBuilder : IExpressionBuilder
+    public sealed class ExpressionBuilder
     {
-        private ISparqlExpression _expression;
+        private BooleanExpression _expression;
 
-        public ISparqlExpression Expression
+        public BooleanExpression Expression
         {
             get { return _expression; }
+            internal set { _expression = value; }
         }
-
-        #region Implementation of IExpressionBuilder
 
         public VariableTerm Variable(string variable)
         {
             return new VariableTerm(variable);
         }
 
-        #endregion
-
-        static internal ConstantTerm StringConstant(string str)
+        internal ConstantTerm StringConstant(string str)
         {
             return new ConstantTerm(new StringNode(null, str));
         }
-    }
 
-    public static class ExpressionBuilderRegexStringExtensions
-    {
-        public static ISparqlExpression Regex(this IExpressionBuilder eb, ISparqlExpression text, string pattern)
+        public BooleanExpression Not(BooleanExpression innerExpression)
         {
-            return new RegexFunction(text, ExpressionBuilder.StringConstant(pattern));
+            return new BooleanExpression(new NotExpression(innerExpression.Expression));
         }
     }
 }
