@@ -65,6 +65,7 @@
     <Content Include="App_Data\namespaces.ttl" />
     <Content Include="App_Data\PelletIntro.txt" />
     <Content Include="App_Data\ServerIntro.txt" />
+    <Content Include="index.htm" />
     <Content Include="sparql.css" />
     <Content Include="Web.config" />
   </ItemGroup>

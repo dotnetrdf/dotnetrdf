@@ -92,7 +92,7 @@ _:books a dnr:SparqlQueryProcessor ;
 						  
 <http://sparql.org/books> a dnr:SparqlEndpoint ;
 						  dnr:type "VDS.RDF.Query.SparqlRemoteEndpoint" ;
-						  dnr:endpointUri <http://sparql.org/books> .
+						  dnr:endpointUri <http://sparql.org/books/sparql> .
 						  
 _:fedProc a dnr:SparqlQueryProcessor ;
 		  dnr:type "VDS.RDF.Query.RemoteQueryProcessor" ;
