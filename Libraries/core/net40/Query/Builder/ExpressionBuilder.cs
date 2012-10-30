@@ -15,9 +15,9 @@ namespace VDS.RDF.Query.Builder
             internal set { _expression = value; }
         }
 
-        public VariableTerm Variable(string variable)
+        public SparqlExpression<VariableTerm> Variable(string variable)
         {
-            return new VariableTerm(variable);
+            return new VariableExpression(variable);
         }
 
         internal ConstantTerm StringConstant(string str)

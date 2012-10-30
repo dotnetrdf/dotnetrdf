@@ -146,9 +146,11 @@
     <Compile Include="Query\Builder\ISelectQueryBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
+    <Compile Include="Query\Builder\SparqlExpression.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
     <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
+    <Compile Include="Query\Builder\VariableExpression.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\ExternalDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />

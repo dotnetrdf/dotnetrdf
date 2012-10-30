@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
@@ -21,7 +22,7 @@ namespace VDS.RDF.Test.Builder
         public void CanCreateVariableTerm()
         {
             // when
-            var variable = _builder.Variable("varName");
+            var variable = _builder.Variable("varName").Expression;
 
             // then
             Assert.AreEqual("varName", variable.Variables.ElementAt(0));
@@ -54,7 +55,7 @@ namespace VDS.RDF.Test.Builder
         public void CanCreateBoundFunctionUsingVariableName()
         {
             // given
-            var variableTerm = new VariableTerm("person");
+            var variableTerm = new VariableExpression("person");
 
             // when
             var bound = _builder.Bound(variableTerm).Expression;
@@ -97,6 +98,18 @@ namespace VDS.RDF.Test.Builder
             // then
             Assert.IsTrue(negatedBound is NotExpression);
             Assert.IsTrue(negatedBound.Arguments.ElementAt(0) is BoundFunction);
+        }
+
+        [TestMethod]
+        public void CanCreateEqualityComparisonBetweenVariables()
+        {
+            // when
+            var areEqual = _builder.Variable("mail1").Eq(_builder.Variable("mail2")).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
         }
     }
 }

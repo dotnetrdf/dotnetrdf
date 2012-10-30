@@ -3,13 +3,11 @@ using VDS.RDF.Query.Expressions.Conditional;
 
 namespace VDS.RDF.Query.Builder
 {
-    public class BooleanExpression
+    public sealed class BooleanExpression : SparqlExpression<ISparqlExpression>
     {
-        public ISparqlExpression Expression { get; private set; }
-
         public BooleanExpression(ISparqlExpression expression)
+            : base(expression)
         {
-            Expression = expression;
         }
 
         public BooleanExpression And(BooleanExpression rightExpression)
