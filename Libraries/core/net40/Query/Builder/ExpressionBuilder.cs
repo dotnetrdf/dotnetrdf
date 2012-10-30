@@ -1,4 +1,5 @@
 using VDS.RDF.Nodes;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
@@ -8,6 +9,7 @@ namespace VDS.RDF.Query.Builder
     public sealed class ExpressionBuilder
     {
         private BooleanExpression _expression;
+        private readonly INodeFactory _nodeFactory = new NodeFactory();
 
         public BooleanExpression Expression
         {
@@ -15,14 +17,14 @@ namespace VDS.RDF.Query.Builder
             internal set { _expression = value; }
         }
 
-        public SparqlExpression<VariableTerm> Variable(string variable)
+        public TypedSparqlExpression<VariableTerm> Variable(string variable)
         {
             return new VariableExpression(variable);
         }
 
-        internal ConstantTerm StringConstant(string str)
+        public TypedSparqlExpression<ConstantTerm> Constant(string str)
         {
-            return new ConstantTerm(new StringNode(null, str));
+            return new ConstantExpression(str.ToLiteral(_nodeFactory));
         }
 
         public BooleanExpression Not(BooleanExpression innerExpression)

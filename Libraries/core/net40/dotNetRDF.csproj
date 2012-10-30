@@ -134,7 +134,8 @@
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
-    <Compile Include="Query\Builder\BooleanExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\ConstantExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
     <Compile Include="Query\Builder\ExpressionBuilder.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderRegexStringExtensions.cs" />
@@ -146,11 +147,12 @@
     <Compile Include="Query\Builder\ISelectQueryBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
-    <Compile Include="Query\Builder\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\TypedSparqlExpression.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
     <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
-    <Compile Include="Query\Builder\VariableExpression.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpression.cs" />
     <Compile Include="Query\Datasets\BaseDemandDataset.cs" />
     <Compile Include="Query\Datasets\ExternalDataset.cs" />
     <Compile Include="Query\Datasets\WebDemandDataset.cs" />

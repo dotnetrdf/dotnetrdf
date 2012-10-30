@@ -1,9 +1,9 @@
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 
-namespace VDS.RDF.Query.Builder
+namespace VDS.RDF.Query.Builder.Expressions
 {
-    public sealed class BooleanExpression : SparqlExpression<ISparqlExpression>
+    public sealed class BooleanExpression : SparqlExpression
     {
         public BooleanExpression(ISparqlExpression expression)
             : base(expression)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
