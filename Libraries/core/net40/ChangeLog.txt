@@ -32,6 +32,7 @@ Changed
 - Build
  - Query.FullText Library is now always strong named
  - Query.FullText NuGet package now references Lucene.Net as a dependency instead of including it in the package
+ - Data.Virtuoso NuGet package now references OpenLink.Data.Virtuoso as a dependency instead of including it in the package
 
 - Parsing/Writing
  - Improved how parsers and writers are selected by file extension
@@ -54,6 +55,7 @@ Removed
 - Marks the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
 - Marks the obsolete IndexingHelper static class as obsolete unusable
 - Marks the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
+- Marks the obsolete Tools.CopyStream() method as obsolete unusable
    
 
 
