@@ -57,42 +57,39 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\bsbm.ttl" />
-    <Content Include="App_Data\stats_10.ttl" />
-    <Content Include="App_Data\stats_100.ttl" />
-    <Content Include="App_Data\stats_1000.ttl" />
-    <Content Include="App_Data\stats_1500.ttl" />
-    <Content Include="App_Data\stats_2000.ttl" />
-    <Content Include="App_Data\stats_250.ttl" />
-    <Content Include="App_Data\stats_2500.ttl" />
-    <Content Include="App_Data\stats_2785.ttl" />
-    <Content Include="App_Data\stats_50.ttl" />
-    <Content Include="App_Data\stats_500.ttl" />
+    <Content Include="index.htm" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\dataset_10.ttl" />
-    <None Include="App_Data\dataset_100.ttl" />
-    <None Include="App_Data\dataset_1000.ttl" />
-    <None Include="App_Data\dataset_1500.ttl" />
-    <None Include="App_Data\dataset_2000.ttl" />
-    <None Include="App_Data\dataset_250.ttl" />
-    <None Include="App_Data\dataset_2500.ttl" />
-    <None Include="App_Data\dataset_2785.ttl" />
-    <None Include="App_Data\dataset_50.ttl" />
-    <None Include="App_Data\dataset_500.ttl" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\data.sql\dotNetRDF.Data.Sql.csproj">
-      <Project>{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}</Project>
-      <Name>dotNetRDF.Data.Sql</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App_Data\dataset_10.ttl.gz" />
+    <None Include="App_Data\dataset_100.ttl.gz" />
+    <None Include="App_Data\dataset_1000.ttl.gz" />
+    <None Include="App_Data\dataset_1500.ttl.gz" />
+    <None Include="App_Data\dataset_2000.ttl.gz" />
+    <None Include="App_Data\dataset_250.ttl.gz" />
+    <None Include="App_Data\dataset_2500.ttl.gz" />
+    <None Include="App_Data\dataset_2785.ttl.gz" />
+    <None Include="App_Data\dataset_50.ttl.gz" />
+    <None Include="App_Data\dataset_500.ttl.gz" />
+    <None Include="App_Data\stats_10.ttl.gz" />
+    <None Include="App_Data\stats_100.ttl.gz" />
+    <None Include="App_Data\stats_1000.ttl.gz" />
+    <None Include="App_Data\stats_1500.ttl.gz" />
+    <None Include="App_Data\stats_2000.ttl.gz" />
+    <None Include="App_Data\stats_250.ttl.gz" />
+    <None Include="App_Data\stats_2500.ttl.gz" />
+    <None Include="App_Data\stats_2785.ttl.gz" />
+    <None Include="App_Data\stats_50.ttl.gz" />
+    <None Include="App_Data\stats_500.ttl.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
@@ -111,7 +108,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>61667</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:61667/</IISUrl>
+          <IISUrl>http://localhost:64132/bsbm/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

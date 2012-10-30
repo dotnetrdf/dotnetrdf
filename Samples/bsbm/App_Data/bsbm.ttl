@@ -2,18 +2,11 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
 @prefix dnr: <http://www.dotnetrdf.org/configuration#>.
 
-_:adoUser a dnr:User ;
-			dnr:user "example" ;
-			dnr:password "password" .
-			
-_:adoFactory a dnr:ObjectFactory ;
-	dnr:type "VDS.RDF.Configuration.AdoObjectFactory, dotNetRDF.Data.Sql" .
-
-<dotnetrdf:/dotNetRDFBSBM/bsbm10> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/10> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm10 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm10stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/10stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm10 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -29,11 +22,11 @@ _:bsbm10 a dnr:SparqlQueryProcessor ;
  											 dnr:fromFile "~/App_Data/dataset_10.ttl.gz" ] ] .
  											 
 																		    											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm50> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/50> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm50 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm50stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/50stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm50 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -49,11 +42,11 @@ _:bsbm50 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_50.ttl.gz" ] ] .
  											  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm100> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/100> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm100 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm100stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/100stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm100 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -70,11 +63,11 @@ _:bsbm100 a dnr:SparqlQueryProcessor ;
  											 dnr:fromFile "~/App_Data/dataset_100.ttl.gz" ] ] .											 
  											 
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm250> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/250> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm250 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm250stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/250stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm250 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -90,11 +83,11 @@ _:bsbm250 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_250.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm500> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm500 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm500stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/500stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm500 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -110,11 +103,11 @@ _:bsbm500 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_500.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1000> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/1000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm1000 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1000stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/1000stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm1000 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -130,11 +123,11 @@ _:bsbm1000 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_1000.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1500> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/1500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm1500 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm1500stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/1500stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm1500 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -150,11 +143,11 @@ _:bsbm1500 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_1500.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2000> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2000> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2000 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2000stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2000stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2000 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -170,11 +163,11 @@ _:bsbm2000 a dnr:SparqlQueryProcessor ;
  											 dnr:type "VDS.RDF.Graph" ; 
  											 dnr:fromFile "~/App_Data/dataset_2000.ttl.gz" ] ] .
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2500> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2500> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2500 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2500stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2500stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2500 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
@@ -191,11 +184,11 @@ _:bsbm2500 a dnr:SparqlQueryProcessor ;
  											 dnr:fromFile "~/App_Data/dataset_2500.ttl.gz" ] ] .
  											 
  											 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2785> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2785> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2785 .
 									 
-<dotnetrdf:/dotNetRDFBSBM/bsbm2785stats> a dnr:HttpHandler ;
+<dotnetrdf:/bsbm/2785stats> a dnr:HttpHandler ;
 									 dnr:type "VDS.RDF.Web.QueryHandler" ;
 									 dnr:queryProcessor _:bsbm2785 ;
 									 dnr:queryOptimiser [ a dnr:QueryOptimiser ;
