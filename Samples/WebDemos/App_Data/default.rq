@@ -4,11 +4,12 @@ PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX sparql: <http://www.w3.org/ns/sparql#>
 PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
 PREFIX afn: <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>
 PREFIX lfn: <http://www.dotnetrdf.org/leviathan#>
 PREFIX ex: <http://example.org/vehicles/>
 
 SELECT *
 WHERE
 {
-  ?s ?p ?o
+  GRAPH ?g { ?s pf:textMatch "http" }
 }
