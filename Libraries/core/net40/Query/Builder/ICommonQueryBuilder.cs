@@ -24,7 +24,7 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Adds a FILTER to the SPARQL query
         /// </summary>
-        TReturnBuilder Filter(Action<IExpressionBuilder> expr);
+        TReturnBuilder Filter(Func<IExpressionBuilder, ISparqlExpression> expr);
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query
         /// </summary>

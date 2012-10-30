@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -152,9 +153,9 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder Filter(Action<IExpressionBuilder> expr)
+        public IQueryBuilder Filter(Func<IExpressionBuilder, ISparqlExpression> buildExpression)
         {
-            _rootGraphPatternBuilder.Filter(expr);
+            _rootGraphPatternBuilder.Filter(buildExpression);
             return this;
         }
 

@@ -1,8 +1,12 @@
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
-    internal class ExpressionBuilder : IExpressionBuilder
+    public sealed class ExpressionBuilder : IExpressionBuilder
     {
         private ISparqlExpression _expression;
 
@@ -11,8 +15,26 @@ namespace VDS.RDF.Query.Builder
             get { return _expression; }
         }
 
-        public void Regex(string regularExpression, string regexPattern)
+        #region Implementation of IExpressionBuilder
+
+        public VariableTerm Variable(string variable)
         {
+            return new VariableTerm(variable);
+        }
+
+        #endregion
+
+        static internal ConstantTerm StringConstant(string str)
+        {
+            return new ConstantTerm(new StringNode(null, str));
+        }
+    }
+
+    public static class ExpressionBuilderRegexStringExtensions
+    {
+        public static ISparqlExpression Regex(this IExpressionBuilder eb, ISparqlExpression text, string pattern)
+        {
+            return new RegexFunction(text, ExpressionBuilder.StringConstant(pattern));
         }
     }
 }

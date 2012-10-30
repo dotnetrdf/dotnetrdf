@@ -1,7 +1,10 @@
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Primary;
+
 namespace VDS.RDF.Query.Builder
 {
     public interface IExpressionBuilder
     {
-        void Regex(string regularExpression, string regexPattern);
+        VariableTerm Variable(string variable);
     }
 }

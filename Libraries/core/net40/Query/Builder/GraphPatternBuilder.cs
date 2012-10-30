@@ -42,6 +42,10 @@ namespace VDS.RDF.Query.Builder
             {
                 graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern());
             }
+            foreach (var buildFilter in _filterBuilders)
+            {
+                graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter()));
+            }
 
             return graphPattern;
         }
@@ -85,7 +89,8 @@ namespace VDS.RDF.Query.Builder
         {
             foreach (Triple t in ts)
             {
-                Where(tpb => tpb.Subject(t.Subject).PredicateUri((IUriNode)t.Predicate).Object(t.Object));
+                Triple copy = t;
+                Where(tpb => tpb.Subject(copy.Subject).PredicateUri((IUriNode)copy.Predicate).Object(copy.Object));
             }
             return this;
         }
@@ -115,22 +120,20 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IGraphPatternBuilder Filter(Action<IExpressionBuilder> expr)
+        public IGraphPatternBuilder Filter(Func<IExpressionBuilder, ISparqlExpression> buildExpression)
         {
             _filterBuilders.Add(() =>
                 {
                     var builder = new ExpressionBuilder();
-                    expr(builder);
-                    return builder.Expression;
+                    return buildExpression(builder);
                 });
             return this;
         }
 
         public IGraphPatternBuilder Filter(ISparqlExpression expr)
         {
-            //BuildGraphPattern().AddFilter(new UnaryExpressionFilter(expr));
-            //return this;
-            throw new NotImplementedException();
+            _filterBuilders.Add(() => expr);
+            return this;
         }
 
         public INamespaceMapper Prefixes

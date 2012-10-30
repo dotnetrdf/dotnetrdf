@@ -18,7 +18,7 @@ namespace VDS.RDF.Test.Builder
         public void CanCreateRegexExpression()
         {
             // when
-            _builder.Regex("");
+           // _builder.Regex("");
         }
     }
 }

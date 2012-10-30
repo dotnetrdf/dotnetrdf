@@ -3,6 +3,9 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder
 {
@@ -167,7 +170,7 @@ namespace VDS.RDF.Test.Builder
             // given
             var b = QueryBuilder.Select("name", "mbox")
                                 .Where(tpb => tpb.Subject("x").PredicateUri("dc:title").Object("title"))
-                                .Filter(fb => fb.Regex("title", "^SPARQL"));
+                                .Filter(fb => fb.Regex(fb.Variable("title"), "^SPARQL"));
             b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
 
             // when
@@ -175,6 +178,10 @@ namespace VDS.RDF.Test.Builder
 
             // then
             Assert.IsNotNull(q.RootGraphPattern.Filter);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression is RegexFunction);
+            var regex = (RegexFunction)q.RootGraphPattern.Filter.Expression;
+            Assert.IsTrue(regex.Arguments.ElementAt(0) is VariableTerm);
+            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
         }
     }
 }
