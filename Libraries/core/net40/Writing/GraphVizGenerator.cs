@@ -68,7 +68,8 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <param name="format">Format for the Output</param>
         /// <param name="gvdir">Directory in which GraphViz is installed</param>
-        public GraphVizGenerator(String format, String gvdir) : this(format)
+        public GraphVizGenerator(String format, String gvdir)
+            : this(format)
         {
             if (gvdir.LastIndexOf('\\') != gvdir.Length)
             {
@@ -117,21 +118,31 @@ namespace VDS.RDF.Writing
 
             //Prepare the GraphVizWriter and Streams
             GraphVizWriter gvzwriter = new GraphVizWriter();
-            BinaryWriter output = new BinaryWriter(new FileStream(filename, FileMode.Create));
+            using (BinaryWriter writer = new BinaryWriter(new FileStream(filename, FileMode.Create)))
+            {
+                //Start the Process
+                Process gvz = new Process();
+                gvz.StartInfo = start;
+                gvz.Start();
 
-            //Start the Process
-            Process gvz = new Process();
-            gvz.StartInfo = start;
-            gvz.Start();
+                //Write to the Standard Input
+                gvzwriter.Save(g, gvz.StandardInput);
 
-            //Write to the Standard Input
-            gvzwriter.Save(g, gvz.StandardInput);
-
-            //Read the Standard Output
-            Tools.StreamCopy(gvz.StandardOutput.BaseStream, output.BaseStream);
-            output.Close();
-
-            gvz.Close();
+                //Read the Standard Output
+                byte[] buffer = new byte[4096];
+                using (BinaryReader reader = new BinaryReader(gvz.StandardOutput.BaseStream))
+                {
+                    while (true)
+                    {
+                        int read = reader.Read(buffer, 0, buffer.Length);
+                        if (read == 0) break;
+                        writer.Write(buffer, 0, read);
+                    }
+                    reader.Close();
+                }
+                writer.Close();
+                gvz.Close();
+            }
 
             //Open if requested
             if (open)

@@ -130,6 +130,7 @@
     <Compile Include="TestTools.cs" />
     <Compile Include="Update\UpdateTests.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
+    <Compile Include="Writing\GraphVizTests.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
