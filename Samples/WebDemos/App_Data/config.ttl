@@ -84,7 +84,7 @@ _:qProc a dnr:SparqlQueryProcessor ;
 		
 _:qProc2 a dnr:SparqlQueryProcessor ;
 		 dnr:type "VDS.RDF.Query.LeviathanQueryProcessor" ;
-		 dnr:usingStore _:store2 .
+		 dnr:usingDataset _:webDemandDataset .
 		 		 		 
 _:books a dnr:SparqlQueryProcessor ;
 		dnr:type "VDS.RDF.Query.RemoteQueryProcessor" ;
@@ -110,12 +110,26 @@ _:dbpedia a dnr:SparqlEndpoint ;
 _:uProc a dnr:SparqlUpdateProcessor ;
 		dnr:type "VDS.RDF.Update.LeviathanUpdateProcessor" ;
 		dnr:usingStore _:store .
+
+_:webDemandDataset a dnr:SparqlDataset ;
+				   dnr:type "VDS.RDF.Query.Datasets.WebDemandDataset" ;
+				   dnr:usingDataset _:ftDataset .
+
+_:ftDataset a dnr:SparqlDataset ;
+		dnr:type "VDS.RDF.Query.Datasets.FullTextIndexedDataset, dotNetRDF.Query.FullText" ;
+		dnr:usingDataset _:dataset ;
+		dnr-ft:indexer _:luceneObjectsIndexer ;
+		dnr-ft:indexNow true .
+
+_:dataset a dnr:SparqlDataset ;
+		  dnr:type "VDS.RDF.Query.Datasets.InMemoryDataset" ;
+		  dnr:usingStore _:store2 .
 		
 _:store a dnr:TripleStore ;
 		dnr:type "VDS.RDF.TripleStore" .
 		
 _:store2 a dnr:TripleStore ;
-		dnr:type "VDS.RDF.WebDemandTripleStore" ;
+		dnr:type "VDS.RDF.TripleStore" ;
 		dnr:usingGraph _:graph ;
 		dnr:usingGraph _:graph2 .
 		
@@ -143,9 +157,7 @@ _:fullTextOpt a dnr:AlgebraOptimiser ;
 			  
 _:luceneSearcher a dnr-ft:Searcher ;
 				 dnr:type "VDS.RDF.Query.FullText.Search.Lucene.LuceneSearchProvider, dotNetRDF.Query.FullText" ;
-				 dnr-ft:index _:luceneRAMIndex ;
-				 dnr-ft:buildIndexFor _:graph , _:graph2 ;				 
-				 dnr-ft:buildIndexWith _:luceneObjectsIndexer .
+				 dnr-ft:index _:luceneRAMIndex .
 				 
 _:luceneRAMIndex a dnr-ft:Index ;
 				 dnr:type "Lucene.Net.Store.RAMDirectory, Lucene.Net" ;
