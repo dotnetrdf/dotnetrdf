@@ -153,12 +153,13 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Evaluates the property function
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">Evaluation Context</param>
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             //The very first thing we must do is check the incoming input
             if (context.InputMultiset is NullMultiset) return context.InputMultiset; //Can abort evaluation if input is null
+            if (context.InputMultiset.IsEmpty) return context.InputMultiset; //Can abort evaluation if input is null
 
             //Then we need to retrieve the full text search provider
             IFullTextSearchProvider provider = context[FullTextHelper.ContextKey] as IFullTextSearchProvider;
@@ -202,9 +203,12 @@ namespace VDS.RDF.Query.PropertyFunctions
             if (searchNode.NodeType != NodeType.Literal) throw new FullTextQueryException("Queries using full text search must use a literal value for the search term");
             String search = ((ILiteralNode)searchNode).Value;
 
+            //Determine which graphs we are operating over
+            IEnumerable<Uri> graphUris = context.Data.ActiveGraphUris;
+
             //Now we can use the full text search provider to start getting results
             context.OutputMultiset = new Multiset();
-            IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? this.GetResults(provider, search, this._limit.Value) : this.GetResults(provider, search);
+            IEnumerable<IFullTextSearchResult> results = applyLimitDirect ? this.GetResults(graphUris, provider, search, this._limit.Value) : this.GetResults(graphUris, provider, search);
             int r = 0;
             String matchVar = this._matchVar.VariableName;
             String scoreVar = this._scoreVar != null ? this._scoreVar.VariableName : null;
@@ -245,39 +249,41 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Gets the Full Text Results for a specific search query
         /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         /// <param name="provider">Search Provider</param>
         /// <param name="search">Search Query</param>
         /// <returns></returns>
-        protected IEnumerable<IFullTextSearchResult> GetResults(IFullTextSearchProvider provider, string search)
+        protected IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search)
         {
             if (this._threshold.HasValue)
             {
                 //Use a Score Threshold
-                return provider.Match(search, this._threshold.Value);
+                return provider.Match(graphUris, search, this._threshold.Value);
             }
             else
             {
-                return provider.Match(search);
+                return provider.Match(graphUris, search);
             }
         }
 
         /// <summary>
         /// Gets the Full Text Results for a specific search query
         /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
         /// <param name="provider">Search Provider</param>
         /// <param name="search">Search Query</param>
         /// <param name="limit">Result Limit</param>
         /// <returns></returns>
-        protected virtual IEnumerable<IFullTextSearchResult> GetResults(IFullTextSearchProvider provider, string search, int limit)
+        protected virtual IEnumerable<IFullTextSearchResult> GetResults(IEnumerable<Uri> graphUris, IFullTextSearchProvider provider, string search, int limit)
         {
             if (this._threshold.HasValue)
             {
                 //Use a Score Threshold
-                return provider.Match(search, this._threshold.Value, limit);
+                return provider.Match(graphUris, search, this._threshold.Value, limit);
             }
             else
             {
-                return provider.Match(search, limit);
+                return provider.Match(graphUris, search, limit);
             }
         }
     }
