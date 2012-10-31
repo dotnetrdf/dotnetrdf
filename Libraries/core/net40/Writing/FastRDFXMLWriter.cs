@@ -303,6 +303,7 @@ namespace VDS.RDF.Writing
             {
                 Triple t = ts[i];
                 if (context.TriplesDone.Contains(t)) continue; //Skip if already done
+                context.TriplesDone.Add(t);
 
                 if (lastSubj == null || !t.Subject.Equals(lastSubj))
                 {
@@ -435,8 +436,6 @@ namespace VDS.RDF.Writing
                     default:
                         throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
                 }
-
-                context.TriplesDone.Add(t);
             }
 
             //Check we haven't failed to output any collections
@@ -512,7 +511,8 @@ namespace VDS.RDF.Writing
                 while (c.Triples.Count > 0)
                 {
                     //Get the Next Item and generate rdf:first and rdf:rest Nodes
-                    INode next = c.Triples.First().Object;
+                    Triple t = c.Triples.First();
+                    INode next = t.Object;
                     c.Triples.RemoveAt(0);
                     first = doc.CreateElement("rdf:first", NamespaceMapper.RDF);
                     rest = doc.CreateElement("rdf:rest", NamespaceMapper.RDF);
@@ -556,6 +556,8 @@ namespace VDS.RDF.Writing
                         res.InnerXml = "&rdf;nil";
                         rest.Attributes.Append(res);
                     }
+
+                    context.TriplesDone.Add(t);
                 }
             }
             else
@@ -580,8 +582,9 @@ namespace VDS.RDF.Writing
                     //Output the Predicate Object list
                     while (c.Triples.Count > 0)
                     {
-                        INode nextPred = c.Triples.First().Predicate;
-                        INode nextObj = c.Triples.First().Object;
+                        Triple t = c.Triples.First();
+                        INode nextPred = t.Predicate;
+                        INode nextObj = t.Object;
                         c.Triples.RemoveAt(0);
 
                         XmlElement p;
@@ -616,6 +619,8 @@ namespace VDS.RDF.Writing
                             default:
                                 throw new RdfOutputException(WriterErrorMessages.UnknownNodeTypeUnserializable("RDF/XML"));
                         }
+
+                        context.TriplesDone.Add(t);
                     }
                 }
             }
@@ -853,9 +858,9 @@ namespace VDS.RDF.Writing
                         if (rtype == UriRefType.QName)
                         {
                             //Got a QName Type Reference in the Temporary Namespace OK
-                            typerefs.Add(t.Subject, typeref);
                             if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                             {
+                                typerefs.Add(t.Subject, typeref);
                                 context.TriplesDone.Add(t);
                             }
                         }
@@ -865,9 +870,9 @@ namespace VDS.RDF.Writing
                         //Got a QName Type Reference OK
                         //If no prefix drop the leading :
                         if (typeref.StartsWith(":")) typeref = typeref.Substring(1);
-                        typerefs.Add(t.Subject, typeref);
                         if (context.Graph.Triples.WithSubject(t.Subject).Count() > 1)
                         {
+                            typerefs.Add(t.Subject, typeref);
                             context.TriplesDone.Add(t);
                         }
                     }

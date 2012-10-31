@@ -238,7 +238,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void WritingRdfXmlBNodes()
+        public void WritingRdfXmlBNodes1()
         {
             Graph g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
@@ -251,6 +251,16 @@ namespace VDS.RDF.Test.Writing
             o = g.CreateLiteralNode("string");
 
             g.Assert(s, p, o);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlBNodes2()
+        {
+            String data = "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a [] .";
+            Graph g = new Graph();
+            g.LoadFromString(data, new TurtleParser());
 
             this.CheckRoundTrip(g);
         }
