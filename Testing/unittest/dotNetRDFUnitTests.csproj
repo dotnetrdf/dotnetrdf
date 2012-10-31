@@ -103,6 +103,7 @@
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\Turtle11.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
     <Compile Include="Sparql\FormattingTests.cs" />
     <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
