@@ -182,12 +182,13 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
-            LucSearch.TopDocs docs = this._searcher.Search(q, limit);
+            DocCollector collector = new DocCollector();
+            this._searcher.Search(q, collector);
 
-            IEnumerable<IFullTextSearchResult> results = from doc in docs.ScoreDocs
-                                                         where doc.Score > scoreThreshold
-                                                         select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema);
-            return this.FilterByGraph(graphUris, results);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         where doc.Value > scoreThreshold
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results).Take(limit);
         }
 
         /// <summary>
@@ -219,11 +220,12 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         {
             this.EnsureCurrent();
             LucSearch.Query q = this._parser.Parse(text);
-            LucSearch.TopDocs docs = this._searcher.Search(q, limit);
+            DocCollector collector = new DocCollector();
+            this._searcher.Search(q, collector);
 
-            IEnumerable<IFullTextSearchResult> results = from doc in docs.ScoreDocs
-                                                         select this._searcher.Doc(doc.Doc).ToResult(doc.Score, this._schema);
-            return this.FilterByGraph(graphUris, results);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results).Take(limit);
         }
 
         /// <summary>

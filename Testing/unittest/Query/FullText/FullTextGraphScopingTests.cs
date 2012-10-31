@@ -167,5 +167,23 @@ namespace VDS.RDF.Test.Query.FullText
                 Assert.AreEqual(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
             }
         }
+
+        [TestMethod]
+        public void FullTextGraphSparqlScoping6()
+        {
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(this._store);
+
+            //Interaction of graph scope with limit
+            using (LuceneSearchProvider searcher = new LuceneSearchProvider(LucUtil.Version.LUCENE_30, this._index, new StandardAnalyzer(LucUtil.Version.LUCENE_30)))
+            {
+                SparqlQuery q = this._parser.ParseFromString(FullTextPrefix + " SELECT * WHERE { GRAPH <http://g2> { ?s pf:textMatch ( 'sample' 5 ) } }");
+                q.AlgebraOptimisers = new IAlgebraOptimiser[] { new FullTextOptimiser(searcher) };
+
+                SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+                Assert.IsNotNull(results);
+                Assert.AreEqual(2, results.Count);
+                Assert.AreEqual(new Uri("http://y"), ((IUriNode)results.First()["s"]).Uri);
+            }
+        }
     }
 }
