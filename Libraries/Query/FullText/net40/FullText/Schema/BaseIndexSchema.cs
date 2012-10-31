@@ -53,6 +53,15 @@ namespace VDS.RDF.Query.FullText.Schema
         }
 
         /// <summary>
+        /// Gets the field in which the Graph URI is indexed
+        /// </summary>
+        public String GraphField
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// Gets the field in which the hash is stored
         /// </summary>
         public String HashField

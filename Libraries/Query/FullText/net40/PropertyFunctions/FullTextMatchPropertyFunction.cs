@@ -245,6 +245,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Gets the Full Text Results for a specific search query
         /// </summary>
+        /// <param name="provider">Search Provider</param>
         /// <param name="search">Search Query</param>
         /// <returns></returns>
         protected IEnumerable<IFullTextSearchResult> GetResults(IFullTextSearchProvider provider, string search)
@@ -263,6 +264,7 @@ namespace VDS.RDF.Query.PropertyFunctions
         /// <summary>
         /// Gets the Full Text Results for a specific search query
         /// </summary>
+        /// <param name="provider">Search Provider</param>
         /// <param name="search">Search Query</param>
         /// <param name="limit">Result Limit</param>
         /// <returns></returns>

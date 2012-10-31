@@ -53,6 +53,11 @@ namespace VDS.RDF.Query.Algebra
     {
         private IFullTextSearchProvider _provider;
 
+        /// <summary>
+        /// Creates a new Full Text Query algebra
+        /// </summary>
+        /// <param name="searchProvider">Search Provider</param>
+        /// <param name="algebra">Inner Algebra</param>
         public FullTextQuery(IFullTextSearchProvider searchProvider, ISparqlAlgebra algebra)
         {
             this._provider = searchProvider;
@@ -68,17 +73,30 @@ namespace VDS.RDF.Query.Algebra
             private set;
         }
 
+        /// <summary>
+        /// Transforms the algebra
+        /// </summary>
+        /// <param name="optimiser">Optimiser</param>
+        /// <returns></returns>
         public ISparqlAlgebra Transform(Optimisation.IAlgebraOptimiser optimiser)
         {
             return new FullTextQuery(this._provider, optimiser.Optimise(this.InnerAlgebra));
         }
 
+        /// <summary>
+        /// Evaluates the algebra
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context[FullTextHelper.ContextKey] = this._provider;
             return context.Evaluate(this.InnerAlgebra);
         }
 
+        /// <summary>
+        /// Gets the variables used in the algebra
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get 
@@ -87,16 +105,28 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Converts the algebra into a query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             return this.InnerAlgebra.ToQuery();
         }
 
+        /// <summary>
+        /// Converts the algebra into a Graph Pattern
+        /// </summary>
+        /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
         {
             return this.InnerAlgebra.ToGraphPattern();
         }
 
+        /// <summary>
+        /// Gets the string representaiton of the algebra
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "FullTextQuery(" + this.InnerAlgebra.ToString() + ")";

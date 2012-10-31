@@ -46,8 +46,9 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <summary>
         /// Indexes a Triple
         /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        public override void Index(Triple t)
+        protected override void Index(String graphUri, Triple t)
         {
             if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Index(Triple t) method");
 
@@ -56,13 +57,13 @@ namespace VDS.RDF.Query.FullText.Indexing
                 switch (this.IndexingMode)
                 {
                     case IndexingMode.Predicates:
-                        this.Index(t.Predicate, ((ILiteralNode)t.Object).Value);
+                        this.Index(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Objects:
-                        this.Index(t.Object, ((ILiteralNode)t.Object).Value);
+                        this.Index(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Subjects:
-                        this.Index(t.Subject, ((ILiteralNode)t.Object).Value);
+                        this.Index(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
                         break;
 
                     default:
@@ -74,15 +75,17 @@ namespace VDS.RDF.Query.FullText.Indexing
         /// <summary>
         /// Abstract method that derived classes must implement to do the actual indexing of full text and node pairs
         /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         /// <param name="n">Node</param>
         /// <param name="text">Full Text</param>
-        protected abstract void Index(INode n, String text);
+        protected abstract void Index(String graphUri, INode n, String text);
 
         /// <summary>
         /// Unindexes a Triple
         /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
-        public override void Unindex(Triple t)
+        protected override void Unindex(String graphUri, Triple t)
         {
             if (this.IndexingMode == IndexingMode.Custom) throw new FullTextIndexException("Indexers deriving from BaseSimpleFullTextIndexer which use Custom IndexingMode must override the Unindex(Triple t) method");
 
@@ -91,13 +94,13 @@ namespace VDS.RDF.Query.FullText.Indexing
                 switch (this.IndexingMode)
                 {
                     case IndexingMode.Predicates:
-                        this.Unindex(t.Predicate, ((ILiteralNode)t.Object).Value);
+                        this.Unindex(graphUri, t.Predicate, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Objects:
-                        this.Unindex(t.Object, ((ILiteralNode)t.Object).Value);
+                        this.Unindex(graphUri, t.Object, ((ILiteralNode)t.Object).Value);
                         break;
                     case IndexingMode.Subjects:
-                        this.Unindex(t.Subject, ((ILiteralNode)t.Object).Value);
+                        this.Unindex(graphUri, t.Subject, ((ILiteralNode)t.Object).Value);
                         break;
 
                     default:
@@ -107,10 +110,11 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
-        /// Abstract method that derived classes must implement to do the actual unindexing of full text and node pairs
+        /// Abstract method that derived classes must implement to do the actual unindexing of full text and nodes
         /// </summary>
-        /// <param name="n"></param>
-        /// <param name="text"></param>
-        protected abstract void Unindex(INode n, String text);
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="n">Node to index</param>
+        /// <param name="text">Full Text to associate with the Node</param>
+        protected abstract void Unindex(String graphUri, INode n, String text);
     }
 }
