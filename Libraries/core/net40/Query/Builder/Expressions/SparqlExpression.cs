@@ -30,7 +30,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new BooleanExpression(equalsExpression);
         }
 
-        public BooleanExpression Ge<T>(TypedSparqlExpression<T> rightExpression) where T : ISparqlExpression
+        public BooleanExpression Ge(SparqlExpression rightExpression)
         {
             var equalsExpression = new GreaterThanOrEqualToExpression(Expression, rightExpression.Expression);
             return new BooleanExpression(equalsExpression);

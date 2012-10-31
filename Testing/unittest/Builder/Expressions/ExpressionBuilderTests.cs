@@ -1,0 +1,33 @@
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Expressions.Conditional;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+
+namespace VDS.RDF.Test.Builder.Expressions
+{
+    [TestClass]
+    public class ExpressionBuilderTests : ExpressionBuilderTestsBase
+    {
+        [TestMethod]
+        public void CanCreateVariableTerm()
+        {
+            // when
+            var variable = Builder.Variable("varName").Expression;
+
+            // then
+            Assert.AreEqual("varName", variable.Variables.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanApplyNegationToBooleanExpression()
+        {
+            // when
+            var negatedBound = Builder.Not(Builder.Bound("mail")).Expression;
+
+            // then
+            Assert.IsTrue(negatedBound is NotExpression);
+            Assert.IsTrue(negatedBound.Arguments.ElementAt(0) is BoundFunction);
+        }
+    }
+}
