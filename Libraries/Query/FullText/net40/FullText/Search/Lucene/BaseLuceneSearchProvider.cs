@@ -251,7 +251,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         /// <returns></returns>
         private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<Uri> graphUris, IEnumerable<IFullTextSearchResult> results)
         {
-            if (graphUris != null)
+            if (graphUris == null)
             {
                 return results;
             }
