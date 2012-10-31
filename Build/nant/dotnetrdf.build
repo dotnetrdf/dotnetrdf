@@ -1207,6 +1207,14 @@
     </delete>
   </target>
 
+  <target name="clean-hg" description="Cleans the hg .orig files that may be left behind by reverted changes">
+    <delete failonerror="false">
+      <fileset>
+        <include name="**/*.orig" />
+      </fileset>
+    </delete>
+  </target>
+
   <target name="clean-intermediaries" description="Cleans the intermediary bin/ and obj/ directories of all projects">
     <delete failonerror="false">
       <fileset>
