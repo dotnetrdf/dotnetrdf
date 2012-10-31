@@ -98,6 +98,8 @@ namespace VDS.RDF.Test
                             VirtuosoPassword = "Storage.Virtuoso.Password",
                             VirtuosoEndpoint = "Storage.Virtuoso.Endpoint";
 
+        public const String UseGraphViz = "Writing.GraphViz";
+
         private static bool _init = false, _failed = false;
         private static Dictionary<String, String> _settings = new Dictionary<string,string>();
 

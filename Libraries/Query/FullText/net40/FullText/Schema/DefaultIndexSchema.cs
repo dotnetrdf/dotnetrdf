@@ -49,6 +49,7 @@ namespace VDS.RDF.Query.FullText.Schema
         /// Constants for the Field Names used by the Default Index Schema
         /// </summary>
         public const String DefaultIndexField = "nodeIndex",
+                            DefaultGraphField = "nodeGraph",
                             DefaultHashField = "nodeIndexHash",
                             DefaultNodeTypeField = "nodeType",
                             DefaultNodeValueField = "nodeValue",
@@ -60,6 +61,7 @@ namespace VDS.RDF.Query.FullText.Schema
         public DefaultIndexSchema()
         {
             this.IndexField = DefaultIndexField;
+            this.GraphField = DefaultGraphField;
             this.HashField = DefaultHashField;
             this.NodeMetaField = DefaultNodeMetaField;
             this.NodeTypeField = DefaultNodeTypeField;

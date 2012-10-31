@@ -33,6 +33,8 @@ terms.
 
 */
 
+using System;
+
 namespace VDS.RDF.Query.FullText.Search
 {
     /// <summary>
@@ -55,6 +57,14 @@ namespace VDS.RDF.Query.FullText.Search
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the Graph URI for this result
+        /// </summary>
+        Uri GraphUri
+        {
+            get;
+        }
     }
 
     /// <summary>
@@ -66,20 +76,31 @@ namespace VDS.RDF.Query.FullText.Search
         /// <summary>
         /// Creates a new Full Text Search Result
         /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         /// <param name="n">Node</param>
         /// <param name="score">Score</param>
-        public FullTextSearchResult(INode n, double score)
+        public FullTextSearchResult(Uri graphUri, INode n, double score)
         {
+            this.GraphUri = graphUri;
             this.Node = n;
             this.Score = score;
         }
+
+        /// <summary>
+        /// Creates a new Full Text Search Result
+        /// </summary>
+        /// <param name="n">Node</param>
+        /// <param name="score">Score</param>
+        public FullTextSearchResult(INode n, double score)
+            : this(null, n, score) { }
 
         /// <summary>
         /// Gets the Node
         /// </summary>
         public INode Node
         {
-            get; private set;
+            get; 
+            private set;
         }
 
         /// <summary>
@@ -87,7 +108,14 @@ namespace VDS.RDF.Query.FullText.Search
         /// </summary>
         public double Score
         {
-            get; private set;
+            get; 
+            private set;
+        }
+
+        public Uri GraphUri
+        {
+            get;
+            private set;
         }
     }
 }

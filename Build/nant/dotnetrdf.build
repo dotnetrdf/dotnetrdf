@@ -1207,6 +1207,14 @@
     </delete>
   </target>
 
+  <target name="clean-hg" description="Cleans the hg .orig files that may be left behind by reverted changes">
+    <delete failonerror="false">
+      <fileset>
+        <include name="**/*.orig" />
+      </fileset>
+    </delete>
+  </target>
+
   <target name="clean-intermediaries" description="Cleans the intermediary bin/ and obj/ directories of all projects">
     <delete failonerror="false">
       <fileset>
@@ -1392,22 +1400,22 @@
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40-client">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net35-client">
-        <include name="*" />
+        <include name="dotNetRDF.*" />
       </fileset>
     </delete>
     <!-- Then create the Data.Virtuoso package -->

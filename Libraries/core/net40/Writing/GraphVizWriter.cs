@@ -46,7 +46,8 @@ namespace VDS.RDF.Writing
     /// <summary>
     /// A Writer which generates GraphViz DOT Format files from an RDF Graph
     /// </summary>
-    public class GraphVizWriter : IRdfWriter
+    public class GraphVizWriter 
+        : IRdfWriter
     {
         /// <summary>
         /// Saves a Graph into GraphViz DOT Format

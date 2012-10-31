@@ -56,21 +56,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
-        [Obsolete("Deprecated for public use, will be made removed in future releases", false)]
+        [Obsolete("Deprecated for public use, will be made removed in future releases", true)]
         public static void StreamCopy(Stream input, Stream output)
         {
-            int i;
-            byte b;
-
-            i = input.ReadByte();
-
-            while (i != -1)
-            {
-                b = (byte)i;
-                output.WriteByte(b);
-
-                i = input.ReadByte();
-            }
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -78,15 +67,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <returns>Memory Stream with a local copy of the Input Stream seeked to the origin and ready to read from</returns>
-        [Obsolete("Deprecated for public use, will be removed in future release", false)]
+        [Obsolete("Deprecated for public use, will be removed in future release", true)]
         public static MemoryStream StreamCopyLocal(Stream input)
         {
-            MemoryStream temp = new MemoryStream();
-            Tools.StreamCopy(input, temp);
-            input.Close();
-            temp.Seek(0, SeekOrigin.Begin);
-
-            return temp;
+            throw new NotSupportedException();
         }
 
         /// <summary>

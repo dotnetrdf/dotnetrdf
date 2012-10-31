@@ -854,10 +854,10 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Comparer that compares URIs
+    /// Equality comparer that compares URIs
     /// </summary>
-    class UriComparer
-        : IComparer<Uri>
+    public class UriComparer
+        : IComparer<Uri>, IEqualityComparer<Uri>
     {
         /// <summary>
         /// Compares two URIs
@@ -868,6 +868,28 @@ namespace VDS.RDF
         public int Compare(Uri x, Uri y)
         {
             return ComparisonHelper.CompareUris(x, y);
+        }
+
+        /// <summary>
+        /// Determines whether two URIs are equal
+        /// </summary>
+        /// <param name="x">URI</param>
+        /// <param name="y">URI</param>
+        /// <returns></returns>
+        public bool Equals(Uri x, Uri y)
+        {
+            return EqualityHelper.AreUrisEqual(x, y);
+        }
+
+        /// <summary>
+        /// Gets the Hash Code for a URI
+        /// </summary>
+        /// <param name="obj">URI</param>
+        /// <returns></returns>
+        public int GetHashCode(Uri obj)
+        {
+            if (obj == null) return 0;
+            return obj.GetEnhancedHashCode();
         }
     }
         

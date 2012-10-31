@@ -6,6 +6,7 @@ The Leviathan engine supports all of SPARQL 1.0 and SPARQL 1.1 plus a wide varie
 <li><a href="../../content.asp?pageID=XPath%20Function%20Library">XPath Function Library</a> - many string and numeric XPath functions are supported as well as some basic date time functions</li>
 <li>ARQ Function Library - all of the ARQ functions (The Jena framework's SPARQL engine) are supported</li>
 <li><a href="../../content.asp?pageID=Leviathan%20Function%20Library">Leviathan Function Library</a> - an extensive library of mostly numeric functions and some useful extension aggregates</li>
+<li>An optional <a href="http://www.dotnetrdf.org/content.asp?pageID=Full%20Text%20Querying%20with%20SPARQL">Full Text Query</a> extension which uses <a href="http://lucenenet.apache.org">Lucene.Net</a> and provides <a href="http://jena.apache.org/documentation/larq/index.html">LARQ</a> style syntax for full text querying.</li>
 </ul>
 </p>
 <p>

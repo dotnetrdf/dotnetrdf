@@ -66,3 +66,6 @@ Storage.Virtuoso.DB=DB
 Storage.Virtuoso.User=dba
 Storage.Virtuoso.Password=dba
 Storage.Virtuoso.Endpoint=http://localhost:8890/sparql
+
+# Is Graph Viz installed on the machine?
+Writing.GraphViz=false

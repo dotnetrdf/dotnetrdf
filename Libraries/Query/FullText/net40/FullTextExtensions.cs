@@ -76,6 +76,11 @@ namespace VDS.RDF.Query
                 throw new RdfQueryException("Node Type field " + schema.NodeTypeField + " contained an invalid value '" + nodeTypeField.StringValue + "'.  Please check you have configured the Index Schema correctly");
             }
 
+            //Get the Graph
+            Uri graphUri;
+            Field graphField = doc.GetField(schema.GraphField);
+            graphUri = (graphField == null ? null : UriFactory.Create(graphField.StringValue));
+
             //Then get the node value
             Field nodeValueField = doc.GetField(schema.NodeValueField);
             if (nodeValueField == null) throw new RdfQueryException("Node Value field " + schema.NodeValueField + " not present on a retrieved document.  Please check you have configured the Index Schema correctly");
@@ -86,7 +91,7 @@ namespace VDS.RDF.Query
             {
                 case NodeType.Blank:
                     //Can just create a Blank Node
-                    return new FullTextSearchResult(_factory.CreateBlankNode(nodeValue), score);
+                    return new FullTextSearchResult(graphUri, _factory.CreateBlankNode(nodeValue), score);
 
                 case NodeType.Literal:
                     //Need to get Meta field to determine whether we have a language or datatype present
@@ -94,7 +99,7 @@ namespace VDS.RDF.Query
                     if (nodeMetaField == null)
                     {
                         //Assume a Plain Literal
-                        return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue), score);
+                        return new FullTextSearchResult(graphUri, _factory.CreateLiteralNode(nodeValue), score);
                     }
                     else
                     {
@@ -102,18 +107,18 @@ namespace VDS.RDF.Query
                         if (nodeMeta.StartsWith("@"))
                         {
                             //Language Specified literal
-                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, nodeMeta.Substring(1)), score);
+                            return new FullTextSearchResult(graphUri, _factory.CreateLiteralNode(nodeValue, nodeMeta.Substring(1)), score);
                         }
                         else
                         {
                             //Assume a Datatyped literal
-                            return new FullTextSearchResult(_factory.CreateLiteralNode(nodeValue, UriFactory.Create(nodeMeta)), score);
+                            return new FullTextSearchResult(graphUri, _factory.CreateLiteralNode(nodeValue, UriFactory.Create(nodeMeta)), score);
                         }
                     }
 
                 case NodeType.Uri:
                     //Can just create a URI Node
-                    return new FullTextSearchResult(_factory.CreateUriNode(UriFactory.Create(nodeValue)), score);
+                    return new FullTextSearchResult(graphUri, _factory.CreateUriNode(UriFactory.Create(nodeValue)), score);
 
                 default:
                     throw new RdfQueryException("Only Blank, Literal and URI Nodes may be retrieved from a Lucene Document");
