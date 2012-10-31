@@ -27,6 +27,7 @@ Changed
  - Fixed a bug related to ToString() form of some API built queries
  - Fixed a bug related to graph scoping of full text search
 - Dependencies
+ - Updated Json.Net dependency to 4.5r10
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
 - Build
  - Query.FullText Library is now always strong named
