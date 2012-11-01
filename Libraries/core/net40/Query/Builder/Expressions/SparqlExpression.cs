@@ -32,12 +32,6 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new BooleanExpression(equalsExpression);
         }
 
-        public BooleanExpression Gt(RdfTermExpression rightExpression)
-        {
-            ISparqlExpression equalsExpression = new GreaterThanExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
-        }
-
         public BooleanExpression Lt(SparqlExpression rightExpression)
         {
             ISparqlExpression equalsExpression = new LessThanExpression(Expression, rightExpression.Expression);
