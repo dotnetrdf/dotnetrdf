@@ -79,6 +79,9 @@ namespace VDS.RDF.Query.Builder
                 case GraphPatternType.Optional:
                     graphPattern.IsOptional = true;
                     break;
+                case GraphPatternType.Minus:
+                    graphPattern.IsMinus = true;
+                    break;
             }
             return graphPattern;
         }
@@ -116,6 +119,14 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Optional);
+            buildGraphPattern(optionalGraphPattern);
+            _childGraphPatternBuilders.Add(optionalGraphPattern);
+            return this;
+        }
+
+        public IGraphPatternBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Minus);
             buildGraphPattern(optionalGraphPattern);
             _childGraphPatternBuilders.Add(optionalGraphPattern);
             return this;

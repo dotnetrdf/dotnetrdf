@@ -1,6 +1,5 @@
 using System;
 using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -30,5 +29,9 @@ namespace VDS.RDF.Query.Builder
         /// Gets the prefix manager, which allows adding prefixes to the query
         /// </summary>
         INamespaceMapper Prefixes { get; }
+        /// <summary>
+        /// Adds a MINUS graph pattern to the SPARQL query
+        /// </summary>
+        TReturnBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern);
     }
 }

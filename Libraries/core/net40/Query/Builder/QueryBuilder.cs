@@ -154,6 +154,12 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        public IQueryBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            _rootGraphPatternBuilder.Minus(buildGraphPattern);
+            return this;
+        }
+
         public IQueryBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
         {
             _rootGraphPatternBuilder.Filter(buildExpression);

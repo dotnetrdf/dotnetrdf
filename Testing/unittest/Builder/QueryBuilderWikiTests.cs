@@ -124,6 +124,7 @@ namespace VDS.RDF.Test.Builder
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().IsOptional);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
 
@@ -227,6 +228,26 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.IsFiltered);
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression is NotExpression);
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.First() is ExistsFunction);
+        }
+
+        [TestMethod]
+        public void MinusGraphPattern()
+        {
+            // given
+            var b = QueryBuilder.Select("s").Distinct()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Minus(min => min.Where(tpb => tpb.Subject("s").PredicateUri("foaf:givenName").Object<ILiteralNode>("Bob")));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsNotNull(q.RootGraphPattern);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().IsMinus);
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
     }
 }
