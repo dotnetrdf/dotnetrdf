@@ -51,7 +51,7 @@ Plugin Library Usage
 
 This package also contains several plugin libraries which provide additional optional features.
 
-There are two data providers found under the Data directory that can be used to access specific storage backends in conjunction
+There are data providers found under the Data directory that can be used to access specific storage backends in conjunction
 with the dotNetRDF API.  These are as follows:
 
 - OpenLink Virtuoso -> dotNetRDF.Data.Virtuoso.dll
@@ -70,7 +70,7 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
 following third party libraries:
-- JSON.Net 4.5r9 which can be obtained from http://json.codeplex.com
+- JSON.Net 4.5r10 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack
 
 The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.dll) are included with
@@ -99,8 +99,8 @@ NuGet
 
 Parsing
 - RDFa 1.1 support does not currently meet the latest version of the specification
-- Turtle W3C support is almost 100% to the latest specification, there are some things that may change and the
-  test suite is a little limited so we do not guarantee 100% compliance
+- Turtle W3C support is 100% to the latest specification as far as we are aware, there are some things that 
+  may change and the test suite is a little limited so we do not guarantee 100% compliance
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
@@ -162,7 +162,7 @@ Release History
 
 26/9/2012 - Release of Version 0.7.2 Beta (Build 0.7.2.1527)
 
-?/?/2012 - Release of Version 0.8.0 RC 1 (Build 0.8.0.?)
+?/11/2012 - Release of Version 0.8.0 RC 1 (Build 0.8.0.?)
 
 Acknowledgements
 ----------------

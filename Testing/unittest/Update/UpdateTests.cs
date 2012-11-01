@@ -348,7 +348,29 @@ _:blank rr:objectMap _:autos2.";
         }
 
         [TestMethod]
-        public void SparqlUpdateInsertBNodesComplex()
+        public void SparqlUpdateInsertBNodesComplex1()
+        {
+            String update = @"PREFIX : <http://test/>
+INSERT { :s :p _:b } WHERE { };
+INSERT { ?o ?p ?s } WHERE { ?s ?p ?o }";
+
+            TripleStore store = new TripleStore();
+            store.ExecuteUpdate(update);
+
+            Assert.AreEqual(1, store.Graphs.Count);
+            Assert.AreEqual(2, store.Triples.Count());
+
+            IGraph def = store[null];
+            Triple a = def.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).FirstOrDefault();
+            Assert.IsNotNull(a);
+            Triple b = def.Triples.Where(t => t.Object.NodeType == NodeType.Blank).FirstOrDefault();
+            Assert.IsNotNull(b);
+
+            Assert.AreEqual(a.Subject, b.Object);
+        }
+
+        [TestMethod]
+        public void SparqlUpdateInsertBNodesComplex2()
         {
             String update = @"PREFIX : <http://test/>
 INSERT { GRAPH :a { :s :p _:b } } WHERE { };

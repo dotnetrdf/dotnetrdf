@@ -1473,8 +1473,8 @@
             Ignore members where the member value is the same as the member's default value when serializing objects
             so that is is not written to JSON.
             This option will ignore all default values (e.g. <c>null</c> for objects and nullable typesl; <c>0</c> for integers,
-            decimals and floating point numbers; and <c>false</c> for booleans). The default value ignored can be override by
-            the <see cref="T:System.ComponentModel.DefaultValueAttribute"/>.
+            decimals and floating point numbers; and <c>false</c> for booleans). The default value ignored can be changed by
+            placing the <see cref="T:System.ComponentModel.DefaultValueAttribute"/> on the property.
             </summary>
         </member>
         <member name="F:Newtonsoft.Json.DefaultValueHandling.Populate">
@@ -4412,6 +4412,31 @@
             </summary>
             <param name="writer">A <see cref="T:Newtonsoft.Json.JsonWriter"/> into which this method will write.</param>
             <param name="converters">A collection of <see cref="T:Newtonsoft.Json.JsonConverter"/> which will be used when writing the token.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JObject.GetValue(System.String)">
+            <summary>
+            Gets the <see cref="T:Newtonsoft.Json.Linq.JToken"/> with the specified property name.
+            </summary>
+            <value>The <see cref="T:Newtonsoft.Json.Linq.JToken"/> with the specified property name.</value>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JObject.GetValue(System.String,System.StringComparison)">
+            <summary>
+            Gets the <see cref="T:Newtonsoft.Json.Linq.JToken"/> with the specified property name.
+            The exact property name will be searched for first and if no matching property is found then
+            the <see cref="T:System.StringComparison"/> will be used to match a property.
+            </summary>
+            <value>The <see cref="T:Newtonsoft.Json.Linq.JToken"/> with the specified property name.</value>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JObject.TryGetValue(System.String,System.StringComparison,Newtonsoft.Json.Linq.JToken@)">
+            <summary>
+            Tries to get the <see cref="T:Newtonsoft.Json.Linq.JToken"/> with the specified property name.
+            The exact property name will be searched for first and if no matching property is found then
+            the <see cref="T:System.StringComparison"/> will be used to match a property.
+            </summary>
+            <param name="propertyName">Name of the property.</param>
+            <param name="value">The value.</param>
+            <param name="comparison">One of the enumeration values that specifies how the strings will be compared.</param>
+            <returns>true if a value was successfully retrieved; otherwise, false.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.Add(System.String,Newtonsoft.Json.Linq.JToken)">
             <summary>

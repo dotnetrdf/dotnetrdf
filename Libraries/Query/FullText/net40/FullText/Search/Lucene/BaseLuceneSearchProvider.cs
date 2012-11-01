@@ -64,6 +64,7 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
         private Analyzer _analyzer;
         private IFullTextIndexSchema _schema;
         private bool _autoSync = true;
+        private UriComparer _uriComparer = new UriComparer();
 
         /// <summary>
         /// Creates a new Base Lucene Search Provider
@@ -167,6 +168,101 @@ namespace VDS.RDF.Query.FullText.Search.Lucene
             this._searcher.Search(q, collector);
             return (from doc in collector.Documents
                     select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema));
+        }
+
+        /// <summary>
+        /// Gets results that match the given query with the score threshold and limit applied
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="text">Search Query</param>
+        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <param name="limit">Result Limit</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold, int limit)
+        {
+            this.EnsureCurrent();
+            LucSearch.Query q = this._parser.Parse(text);
+            DocCollector collector = new DocCollector();
+            this._searcher.Search(q, collector);
+
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         where doc.Value > scoreThreshold
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results).Take(limit);
+        }
+
+        /// <summary>
+        /// Gets results that match the given query with the score threshold applied
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="text">Search Query</param>
+        /// <param name="scoreThreshold">Score Threshold</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, double scoreThreshold)
+        {
+            this.EnsureCurrent();
+            LucSearch.Query q = this._parser.Parse(text);
+            DocCollector collector = new DocCollector(scoreThreshold);
+            this._searcher.Search(q, collector);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results);
+        }
+
+        /// <summary>
+        /// Gets results that match the given query with a limit applied
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="text">Search Query</param>
+        /// <param name="limit">Result Limit</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text, int limit)
+        {
+            this.EnsureCurrent();
+            LucSearch.Query q = this._parser.Parse(text);
+            DocCollector collector = new DocCollector();
+            this._searcher.Search(q, collector);
+
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results).Take(limit);
+        }
+
+        /// <summary>
+        /// Gets results that match the given query
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="text">Search Query</param>
+        /// <returns></returns>
+        public virtual IEnumerable<IFullTextSearchResult> Match(IEnumerable<Uri> graphUris, string text)
+        {
+            this.EnsureCurrent();
+            LucSearch.Query q = this._parser.Parse(text);
+            DocCollector collector = new DocCollector();
+            this._searcher.Search(q, collector);
+            IEnumerable<IFullTextSearchResult> results = from doc in collector.Documents
+                                                         select this._searcher.Doc(doc.Key).ToResult(doc.Value, this._schema);
+            return this.FilterByGraph(graphUris, results);
+        }
+
+        /// <summary>
+        /// Filters a set of results to ensure they occur in the given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="results">Results</param>
+        /// <returns></returns>
+        private IEnumerable<IFullTextSearchResult> FilterByGraph(IEnumerable<Uri> graphUris, IEnumerable<IFullTextSearchResult> results)
+        {
+            if (graphUris == null)
+            {
+                return results;
+            }
+            else
+            {
+                HashSet<Uri> uris = new HashSet<Uri>(graphUris, new UriComparer());
+                if (uris.Count == 0) return results;
+                return results.Where(r => uris.Contains(r.GraphUri));
+            }
         }
 
         /// <summary>

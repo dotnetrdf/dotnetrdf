@@ -18,7 +18,6 @@ are provided for the following .Net profiles:
 - .Net 3.5
 - .Net 3.5 Client Profile
 
-
 And it contains a Query plugin for Full Text indexing support, builds are provided
 for the following .Net profiles:
 - .Net 4.0

@@ -61,10 +61,20 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
+        /// Indexes a Triple associating it with the given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="t">Triple</param>
+        protected abstract void Index(String graphUri, Triple t);
+
+        /// <summary>
         /// Indexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
-        public abstract void Index(Triple t);
+        public void Index(Triple t)
+        {
+            this.Index(t.GraphUri.ToSafeString(), t);
+        }
 
         /// <summary>
         /// Indexes a Graph
@@ -93,10 +103,20 @@ namespace VDS.RDF.Query.FullText.Indexing
         }
 
         /// <summary>
+        /// Unindexes a Triple associating it with the given Graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="t">Triple</param>
+        protected abstract void Unindex(String graphUri, Triple t);
+
+        /// <summary>
         /// Unindexes a Triple
         /// </summary>
         /// <param name="t">Triple</param>
-        public abstract void Unindex(Triple t);
+        public void Unindex(Triple t)
+        {
+            this.Unindex(t.GraphUri.ToSafeString(), t);
+        }
 
         /// <summary>
         /// Unindexes a Graph
