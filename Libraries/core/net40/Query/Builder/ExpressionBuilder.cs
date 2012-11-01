@@ -3,6 +3,7 @@ using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -101,6 +102,21 @@ namespace VDS.RDF.Query.Builder
         public IriExpression Datatype(LiteralExpression literal)
         {
             return new IriExpression(literal.Expression);
+        }
+
+        public BlankNodeExpression BNode()
+        {
+            return new BlankNodeExpression(new BNodeFunction());
+        }
+
+        public BlankNodeExpression BNode(SimpleLiteralExpression simpleLiteral)
+        {
+            return new BlankNodeExpression(new BNodeFunction(simpleLiteral.Expression));
+        }
+
+        public BlankNodeExpression BNode(StringExpression stringLiteral)
+        {
+            return new BlankNodeExpression(new BNodeFunction(stringLiteral.Expression));
         }
     }
 }

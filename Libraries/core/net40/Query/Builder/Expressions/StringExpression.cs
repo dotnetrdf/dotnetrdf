@@ -1,8 +1,8 @@
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    class StringExpression : TypedLiteralExpression<string>
+    public class StringExpression : TypedLiteralExpression<string>
     {
-        public StringExpression(string str) : base(str.ToLiteral(NodeFactory))
+        internal StringExpression(string str) : base(str.ToLiteral(NodeFactory))
         {
         }
     }

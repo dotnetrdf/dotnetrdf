@@ -3,8 +3,10 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -221,6 +223,45 @@ namespace VDS.RDF.Test.Builder.Expressions
             // then
             Assert.IsTrue(lang.Expression is LangFunction);
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateBNodeFunctionWithoutParameter()
+        {
+            // when
+            BlankNodeExpression bnode = Builder.BNode();
+
+            // then
+            Assert.IsTrue(bnode.Expression is BNodeFunction);
+            Assert.IsFalse(bnode.Expression.Arguments.Any());
+        }
+
+        [TestMethod]
+        public void CanCreateBNodeFunctionWithSimpleLiteralExpressionParameter()
+        {
+            // given
+            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+
+            // when
+            BlankNodeExpression bnode = Builder.BNode(expression);
+
+            // then
+            Assert.IsTrue(bnode.Expression is BNodeFunction);
+            Assert.AreSame(expression.Expression, bnode.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateBNodeFunctionWithStringLiteralExpressionParameter()
+        {
+            // given
+            var expression = new StringExpression("str");
+
+            // when
+            BlankNodeExpression bnode = Builder.BNode(expression);
+
+            // then
+            Assert.IsTrue(bnode.Expression is BNodeFunction);
+            Assert.AreSame(expression.Expression, bnode.Expression.Arguments.ElementAt(0));
         }
     }
 }
