@@ -31,7 +31,7 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(negatedBound is NotExpression);
-            Assert.IsTrue(negatedBound.Arguments.ElementAt(0) is BoundFunction);
+            Assert.AreSame(mail.Expression, negatedBound.Arguments.ElementAt(0));
         }
     }
 }
