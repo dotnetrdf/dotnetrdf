@@ -48,8 +48,8 @@ namespace VDS.RDF.Test
     [TestClass]
     public class HardGraphMatching
     {
-        private const int Quantity = 20;
-        private const int Dimension = 6;
+        private const int Runs = 5;
+        private const int Dimension = 3;
 
         private const int CycleNodes = 100;
         private const int CycleDropNodes = 25;
@@ -64,7 +64,7 @@ namespace VDS.RDF.Test
             int size = 1 << Dimension;
             Random rnd = new Random();
 
-            for (int i = 0; i < Quantity; i++)
+            for (int i = 0; i < Runs; i++)
             {
                 int a = rnd.Next(size);
 
@@ -97,7 +97,7 @@ namespace VDS.RDF.Test
             int size = 1 << Dimension;
             Random rnd = new Random();
 
-            for (int i = 0; i < Quantity; i++)
+            for (int i = 0; i < Runs; i++)
             {
                 int a = rnd.Next(size);
 
@@ -122,125 +122,11 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void GraphHardMatch3()
-        {
-            IGraph g = new Graph();
-            IGraph h = new Graph();
-
-            int size = 1 << Dimension;
-            Random rnd = new Random();
-
-            for (int i = 0; i < Quantity; i++)
-            {
-                int a = rnd.Next(size);
-                int b = rnd.Next(size);
-                while (a == b)
-                {
-                    b = rnd.Next(size);
-                }
-
-                Hypercube hc1 = new Hypercube(Dimension, g);
-                hc1 = hc1.Duplicate(a).Duplicate(a).Duplicate(a);
-                Hypercube hc2 = new Hypercube(Dimension, h);
-                hc2 = hc2.Duplicate(b).Duplicate(b).Duplicate(b);
-
-                if (i == 0)
-                {
-                    TestTools.ShowGraph(g);
-                    Console.WriteLine();
-                    TestTools.ShowGraph(h);
-                }
-
-                Assert.IsFalse(g.Equals(h), "Graphs should be equal");
-                Console.WriteLine("Run #" + (i + 1) + " passed OK");
-
-                g = new Graph();
-                h = new Graph();
-            }
-        }
-
-        [TestMethod]
-        public void GraphHardMatch4()
-        {
-            IGraph g = new Graph();
-            IGraph h = new Graph();
-
-            int size = 1 << Dimension;
-            Random rnd = new Random();
-
-            for (int i = 0; i < Quantity; i++)
-            {
-                int a = rnd.Next(size);
-                int b = rnd.Next(size);
-                while (a == b)
-                {
-                    b = rnd.Next(size);
-                }
-
-                Hypercube hc1 = new Hypercube(Dimension, g);
-                hc1 = hc1.Toggle(a, b);
-                Hypercube hc2 = new Hypercube(Dimension, h);
-                hc2 = hc2.Toggle(b, a);
-
-                if (i == 0)
-                {
-                    TestTools.ShowGraph(g);
-                    Console.WriteLine();
-                    TestTools.ShowGraph(h);
-                }
-
-                Assert.IsFalse(g.Equals(h), "Graphs should be equal");
-                Console.WriteLine("Run #" + (i + 1) + " passed OK");
-
-                g = new Graph();
-                h = new Graph();
-            }
-        }
-
-        [TestMethod]
-        public void GraphHardMatch5()
-        {
-            IGraph g = new Graph();
-            IGraph h = new Graph();
-
-            int size = 1 << Dimension;
-            Random rnd = new Random();
-
-            for (int i = 0; i < Quantity; i++)
-            {
-                int a = rnd.Next(size);
-                int b = rnd.Next(size);
-                while (a == b)
-                {
-                    b = rnd.Next(size);
-                }
-
-                Hypercube hc1 = new Hypercube(Dimension, g);
-                hc1 = hc1.Toggle(a, b);
-                Hypercube hc2 = new Hypercube(Dimension, h);
-                hc2 = hc2.Toggle(b, a);
-
-                if (i == 0)
-                {
-                    TestTools.ShowGraph(g);
-                    Console.WriteLine();
-                    TestTools.ShowGraph(h);
-                }
-
-                Assert.IsFalse(g.Equals(h), "Graphs should be equal");
-                Console.WriteLine("Run #" + (i + 1) + " passed OK");
-
-                g = new Graph();
-                h = new Graph();
-            }
-        }
-
-        [TestMethod]
         public void GraphHardMatchCyclic()
         {
             Random rnd = new Random();
 
-            for (int i = 0; i < Quantity; i++)
+            for (int i = 0; i < Runs; i++)
             {
                 IGraph g = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
                 IGraph h = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes));
@@ -261,7 +147,7 @@ namespace VDS.RDF.Test
         {
             Random rnd = new Random();
 
-            for (int i = 0; i < Quantity; i++)
+            for (int i = 0; i < Runs; i++)
             {
                 IGraph g = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
                 IGraph h = this.GenerateCyclicGraph(CycleNodes, rnd.Next(CycleNodes), CycleDropNodes);
@@ -290,7 +176,7 @@ namespace VDS.RDF.Test
         [TestMethod]
         public void GraphHardMatchStar()
         {
-            for (int i = 0; i < Quantity; i++)
+            for (int i = 0; i < Runs; i++)
             {
                 IGraph g = this.GenerateStarGraph(StarNodes);
                 IGraph h = this.GenerateStarGraph(StarNodes);

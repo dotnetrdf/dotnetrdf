@@ -233,6 +233,16 @@ namespace VDS.RDF.Test
             }
         }
 
+        public static void ShowMapping(GraphDiffReport report)
+        {
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Console.WriteLine("Blank Node Mapping between Graphs:");
+            foreach (KeyValuePair<INode, INode> kvp in report.Mapping)
+            {
+                Console.WriteLine(kvp.Key.ToString(formatter) + " => " + kvp.Value.ToString(formatter));
+            }
+        }
+
         public static void WarningPrinter(String message)
         {
             Console.WriteLine(message);
