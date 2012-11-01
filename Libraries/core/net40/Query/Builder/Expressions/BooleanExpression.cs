@@ -3,7 +3,7 @@ using VDS.RDF.Query.Expressions.Conditional;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    public sealed class BooleanExpression : SparqlExpression
+    public sealed class BooleanExpression : TypedLiteralExpression<bool>
     {
         public BooleanExpression(ISparqlExpression expression)
             : base(expression)

@@ -13,7 +13,7 @@ namespace VDS.RDF.Query.Builder
 
         public static BooleanExpression Bound(this ExpressionBuilder eb, string var)
         {
-            return new BooleanExpression(new BoundFunction(eb.Variable(var).Expression));
+            return Bound(eb, eb.Variable(var));
         }
     }
 }

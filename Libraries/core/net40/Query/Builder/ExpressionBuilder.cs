@@ -17,14 +17,14 @@ namespace VDS.RDF.Query.Builder
             internal set { _expression = value; }
         }
 
-        public TypedSparqlExpression<VariableTerm> Variable(string variable)
+        public VariableExpression Variable(string variable)
         {
             return new VariableExpression(variable);
         }
 
-        public TypedSparqlExpression<ConstantTerm> Constant(string str)
+        public TypedLiteralExpression<string> Constant(string str)
         {
-            return new ConstantExpression(str.ToLiteral(_nodeFactory));
+            return new StringExpression(str);
         }
 
         public BooleanExpression Not(BooleanExpression innerExpression)

@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
@@ -9,13 +10,17 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Test.Builder.Expressions
 {
     [TestClass]
-    public class BinaryOperatorTests : ExpressionBuilderTestsBase
+    public class LogicalAndComparisonOperatorTests
     {
         [TestMethod]
-        public void CanJoinTwoExpressionWithAndOperator()
+        public void CanJoinTwoBooleanExpressionWithAndOperator()
         {
+            // given 
+            BooleanExpression b1 = new BooleanExpression(new VariableTerm("a"));
+            BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
+
             // when
-            var conjunction = Builder.Bound("s").And(Builder.Regex(Builder.Variable("s"), "^x")).Expression;
+            var conjunction = b1.And(b2).Expression;
 
             // then
             Assert.IsTrue(conjunction is AndExpression);
@@ -26,8 +31,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanJoinTwoExpressionWithOrOperator()
         {
+            // given 
+            BooleanExpression b1 = new BooleanExpression(new VariableTerm("a"));
+            BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
+
             // when
-            var conjunction = Builder.Bound("s").Or(Builder.Regex(Builder.Variable("s"), "^x")).Expression;
+            var conjunction = b1.Or(b2).Expression;
 
             // then
             Assert.IsTrue(conjunction is OrExpression);
@@ -38,8 +47,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateEqualityComparisonBetweenVariables()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            VariableExpression v2 = new VariableExpression("v2");
+
             // when
-            var areEqual = Builder.Variable("mail1").Eq(Builder.Variable("mail2")).Expression;
+            var areEqual = v1.Eq(v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -48,10 +61,14 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
-        public void CanCreateEqualityComparisonBetweenVariableAndConstant()
+        public void CanCreateEqualityComparisonBetweenVariableAndLiteral()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            LiteralExpression lit = new StringExpression("text");
+
             // when
-            var areEqual = Builder.Variable("mail1").Eq(Builder.Constant("mail2")).Expression;
+            var areEqual = v1.Eq(lit).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -62,8 +79,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateEqualityComparisonBetweenConstantAndVariable()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            LiteralExpression lit = new StringExpression("text");
+
             // when
-            var areEqual = Builder.Constant("mail1").Eq(Builder.Variable("mail2")).Expression;
+            var areEqual = lit.Eq(v1).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -74,8 +95,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateGreaterThanOperatorBetweenVariables()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            VariableExpression v2 = new VariableExpression("v2");
+
             // when
-            var areEqual = Builder.Variable("mail1").Gt(Builder.Variable("mail2")).Expression;
+            var areEqual = v1.Gt(v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is GreaterThanExpression);
@@ -86,8 +111,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateGreaterThanOrEqualOperatorBetweenVariables()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            VariableExpression v2 = new VariableExpression("v2");
+
             // when
-            var areEqual = Builder.Variable("mail1").Ge(Builder.Variable("mail2")).Expression;
+            var areEqual = v1.Ge(v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is GreaterThanOrEqualToExpression);
@@ -98,8 +127,12 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateLessThanOperatorBetweenVariables()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            VariableExpression v2 = new VariableExpression("v2");
+
             // when
-            var areEqual = Builder.Variable("mail1").Lt(Builder.Variable("mail2")).Expression;
+            var areEqual = v1.Lt(v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanExpression);
@@ -110,13 +143,33 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanCreateLessThanOrEqualOperatorBetweenVariables()
         {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            VariableExpression v2 = new VariableExpression("v2");
+
             // when
-            var areEqual = Builder.Variable("mail1").Le(Builder.Variable("mail2")).Expression;
+            var areEqual = v1.Le(v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanOrEqualToExpression);
             Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
             Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+        }
+
+        [TestMethod]
+        public void CanCreateEqualityComparisonBetweenRdfTerms()
+        {
+            // given
+            IriExpression left = new IriExpression("urn:unit:test1");
+            IriExpression right = new IriExpression("urn:unit:test1");
+
+            // when
+            var areEqual = left.Eq(right).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm); 
         }
     }
 }

@@ -7,7 +7,7 @@ namespace VDS.RDF.Query.Builder
 {
     public static class ExpressionBuilderRegexStringExtensions
     {
-        public static BooleanExpression Regex(this ExpressionBuilder eb, TypedSparqlExpression<VariableTerm> text, string pattern)
+        public static BooleanExpression Regex(this ExpressionBuilder eb, VariableExpression text, string pattern)
         {
             return new BooleanExpression(new RegexFunction(text.Expression, eb.Constant(pattern).Expression));
         }

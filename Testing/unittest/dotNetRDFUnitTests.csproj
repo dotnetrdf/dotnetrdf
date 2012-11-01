@@ -91,7 +91,7 @@
     <Compile Include="Builder\Expressions\ExpressionBuilderTests.cs" />
     <Compile Include="Builder\Expressions\ExpressionBuilderTestsBase.cs" />
     <Compile Include="Builder\Expressions\FunctionalFormsBuildingTests.cs" />
-    <Compile Include="Builder\Expressions\BinaryOperatorTests.cs" />
+    <Compile Include="Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
     <Compile Include="Builder\Expressions\RegexBuildingTests.cs" />
     <Compile Include="Common\BinaryTreeDeleteTests.cs" />
     <Compile Include="Common\BinaryTreeTools.cs" />
