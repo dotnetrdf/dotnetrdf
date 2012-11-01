@@ -249,5 +249,26 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().IsMinus);
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Single().TriplePatterns.Count);
         }
+
+        [TestMethod]
+        public void FilterInsideNotExists()
+        {
+            // given
+            var b = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("x").PredicateUri(":p").Object("n"))
+                .Filter(fb => fb.Not(fb.Exists(ex => ex.Where(tpb => tpb.Subject("x").PredicateUri(":q").Object("m"))
+                                                       .Filter(
+                                                           inner =>
+                                                           inner.Not(inner.Variable("n").Eq(inner.Variable("m")))))));
+            b.Prefixes.AddNamespace("", new Uri("http://example.com/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            ExistsFunction exists = (ExistsFunction) q.RootGraphPattern.Filter.Expression.Arguments.First();
+            Assert.IsTrue(exists.Arguments.Single() is GraphPatternTerm);
+            Assert.IsTrue(((GraphPatternTerm)exists.Arguments.Single()).Pattern.IsFiltered);
+        }
     }
 }
