@@ -19,6 +19,10 @@ dotNetRDF*.zip
 temp*.txt
 _ReSharper*/
 
+# NuGet Package Management Stuff
+.nuget/NuGet.exe
+packages/
+
 # Developer/Environment specific config files
 Testing\unittest\resources\UnitTestConfig.properties
 
