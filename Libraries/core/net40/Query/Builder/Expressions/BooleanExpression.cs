@@ -12,14 +12,12 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public BooleanExpression And(BooleanExpression rightExpression)
         {
-            Expression = new AndExpression(Expression, rightExpression.Expression);
-            return this;
+            return new BooleanExpression(new AndExpression(Expression, rightExpression.Expression));
         }
 
         public BooleanExpression Or(BooleanExpression rightExpression)
         {
-            Expression = new OrExpression(Expression, rightExpression.Expression);
-            return this;
+            return new BooleanExpression(new OrExpression(Expression, rightExpression.Expression));
         }
     }
 }

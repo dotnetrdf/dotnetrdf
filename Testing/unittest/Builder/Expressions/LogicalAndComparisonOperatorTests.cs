@@ -24,8 +24,8 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(conjunction is AndExpression);
-            Assert.IsTrue(conjunction.Arguments.ElementAt(0) is BoundFunction);
-            Assert.IsTrue(conjunction.Arguments.ElementAt(1) is RegexFunction);
+            Assert.AreSame(b1.Expression, conjunction.Arguments.ElementAt(0));
+            Assert.AreSame(b2.Expression, conjunction.Arguments.ElementAt(1));
         }
 
         [TestMethod]
@@ -36,12 +36,12 @@ namespace VDS.RDF.Test.Builder.Expressions
             BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
 
             // when
-            var conjunction = b1.Or(b2).Expression;
+            var disjunction = b1.Or(b2).Expression;
 
             // then
-            Assert.IsTrue(conjunction is OrExpression);
-            Assert.IsTrue(conjunction.Arguments.ElementAt(0) is BoundFunction);
-            Assert.IsTrue(conjunction.Arguments.ElementAt(1) is RegexFunction);
+            Assert.IsTrue(disjunction is OrExpression);
+            Assert.AreSame(b1.Expression, disjunction.Arguments.ElementAt(0));
+            Assert.AreSame(b2.Expression, disjunction.Arguments.ElementAt(1));
         }
 
         [TestMethod]
@@ -168,8 +168,8 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm); 
+            Assert.AreSame(left.Expression, areEqual.Arguments.ElementAt(0));
+            Assert.AreSame(right.Expression, areEqual.Arguments.ElementAt(1));
         }
     }
 }
