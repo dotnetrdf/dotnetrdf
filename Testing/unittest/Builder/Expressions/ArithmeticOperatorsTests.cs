@@ -75,6 +75,36 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanMultiplyTypedNumericBySimpleValue()
+        {
+            // given
+            var left = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = left.Multiply(10m).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is MultiplicationExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanMultiplySimpleValueByTypedNumeric()
+        {
+            // given
+            var right = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = 10m.Multiply(right).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is MultiplicationExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
         public void CanChainMultiplicationOfNumerics()
         {
             // given
@@ -148,6 +178,36 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // when
             var multiplication = left.Divide(right).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is DivisionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanDivideTypedNumericBySimpleValue()
+        {
+            // given
+            var left = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = left.Divide(10m).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is DivisionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanDivideSimpleValueByTypedNumeric()
+        {
+            // given
+            var right = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = 10m.Divide(right).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -237,6 +297,36 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanAddSimpleValueToTypedNumeric()
+        {
+            // given
+            var left = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = left.Add(10m).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is AdditionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanAddTypedNumericToSimpleValue()
+        {
+            // given
+            var right = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = 10m.Add(right).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is AdditionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
         public void CanChainAdditionsOfNumerics()
         {
             // given
@@ -310,6 +400,36 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // when
             var multiplication = left.Subtract(right).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is SubtractionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanSubtractSimpleValueFromTypedNumeric()
+        {
+            // given
+            var left = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = left.Subtract(10m).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is SubtractionExpression);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanSubtractTypedNumericFromSimpleValue()
+        {
+            // given
+            var right = new NumericExpression<decimal>(10);
+
+            // when
+            var multiplication = 10m.Subtract(right).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);

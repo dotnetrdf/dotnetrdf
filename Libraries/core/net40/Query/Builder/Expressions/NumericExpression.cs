@@ -58,6 +58,26 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return new NumericExpression(expression.Expression);
         }
+
+        public NumericExpression<T> Multiply(T right)
+        {
+            return this.Multiply(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Divide(T right)
+        {
+            return this.Divide(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Add(T right)
+        {
+            return this.Add(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Subtract(T right)
+        {
+            return this.Subtract(new NumericExpression<T>(right));
+        }
     }
 
     public class NumericExpression : LiteralExpression
