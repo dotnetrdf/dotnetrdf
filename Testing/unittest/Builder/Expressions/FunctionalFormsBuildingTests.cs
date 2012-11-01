@@ -40,7 +40,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateIfFunctionCall()
         {
             // given
-            SparqlExpression ifExpr = new BooleanExpression(new VariableTerm("if"));
+            var ifExpr = new BooleanExpression(new VariableTerm("if"));
             SparqlExpression thenExpr = new StringExpression("then this");
             SparqlExpression elseExpr = new StringExpression("else that");
 
@@ -58,7 +58,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateIfFunctionCallUsingVariables()
         {
             // given
-            SparqlExpression ifExpr = new VariableExpression("if");
+            var ifExpr = new VariableExpression("if");
             SparqlExpression thenExpr = new VariableExpression("then this");
             SparqlExpression elseExpr = new VariableExpression("else that");
 

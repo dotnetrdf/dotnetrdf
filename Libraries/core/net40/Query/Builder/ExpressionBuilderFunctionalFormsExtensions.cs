@@ -18,7 +18,12 @@ namespace VDS.RDF.Query.Builder
             return Bound(eb, eb.Variable(var));
         }
 
-        public static IfThenPart If(this ExpressionBuilder eb, SparqlExpression ifExpression)
+        public static IfThenPart If(this ExpressionBuilder eb, BooleanExpression ifExpression)
+        {
+            return new IfThenPart(ifExpression.Expression);
+        }
+
+        public static IfThenPart If(this ExpressionBuilder eb, VariableExpression ifExpression)
         {
             return new IfThenPart(ifExpression.Expression);
         }
