@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace VDS.RDF
 {
@@ -47,8 +48,8 @@ namespace VDS.RDF
     {
         private Dictionary<String, BlankNodeIDAssigment> _idmap = new Dictionary<string, BlankNodeIDAssigment>();
         private Dictionary<String, String> _remappings = new Dictionary<string, string>();
-        private int _nextid = 1;
-        private int _nextremap = 1;
+        private static long _nextid = 0;
+        private static long _nextremap = 0;
         private String _prefix = "autos";
 
         /// <summary>
@@ -73,15 +74,13 @@ namespace VDS.RDF
         /// <returns></returns>
         public String GetNextID()
         {
-            String id = this._prefix + this._nextid;
+            String id = this._prefix + Interlocked.Increment(ref _nextid);
 
             //Check it's not in use
             while (this._idmap.ContainsKey(id))
             {
-                this._nextid++;
-                id = this._prefix + this._nextid;
+                id = this._prefix + Interlocked.Increment(ref _nextid);
             }
-            this._nextid++;
 
             //Add to ID Map
             this._idmap.Add(id, new BlankNodeIDAssigment(id, true));
@@ -109,13 +108,11 @@ namespace VDS.RDF
                 if (idinfo.AutoAssigned)
                 {
                     //This ID has been auto-assigned so remap to something else
-                    String newid = "remapped" + this._nextremap;
+                    String newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     while (this._idmap.ContainsKey(newid))
                     {
-                        this._nextremap++;
-                        newid = "remapped" + this._nextremap;
+                        newid = "remapped" + Interlocked.Increment(ref _nextremap);
                     }
-                    this._nextremap++;
 
                     //Add to ID Map
                     this._idmap.Add(newid, new BlankNodeIDAssigment(newid, false));

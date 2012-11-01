@@ -163,7 +163,7 @@ namespace VDS.RDF.Test.Parsing
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
                 new RdfXmlWriter(),
-                new FastRdfXmlWriter(),
+                new PrettyRdfXmlWriter(),
                 new RdfJsonWriter()
             };
 
@@ -288,7 +288,7 @@ namespace VDS.RDF.Test.Parsing
                 new CompressingTurtleWriter(),
                 new Notation3Writer(),
                 new RdfXmlWriter(),
-                new FastRdfXmlWriter(),
+                new PrettyRdfXmlWriter(),
                 new RdfJsonWriter()
             };
 

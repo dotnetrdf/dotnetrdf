@@ -54,8 +54,6 @@ namespace VDS.RDF.Test.Writing
         {
             new RdfXmlWriter(WriterCompressionLevel.High),
             new RdfXmlWriter(WriterCompressionLevel.High, false),
-            new FastRdfXmlWriter(WriterCompressionLevel.High),
-            new FastRdfXmlWriter(WriterCompressionLevel.High, false),
             new PrettyRdfXmlWriter(WriterCompressionLevel.High),
             new PrettyRdfXmlWriter(WriterCompressionLevel.High, false),
             new PrettyRdfXmlWriter(WriterCompressionLevel.High, true, false)
@@ -66,19 +64,11 @@ namespace VDS.RDF.Test.Writing
 
         private void CheckRoundTrip(IGraph g, IEnumerable<Type> exceptions)
         {
-            //Console.WriteLine("Original Triples:");
-            //foreach (Triple t in g.Triples)
-            //{
-            //    Console.WriteLine(t.ToString(this._formatter));
-            //}
-            //Console.WriteLine();
-
             foreach (IRdfWriter writer in this._writers)
             {
                 Console.WriteLine("Checking round trip with " + writer.GetType().Name);
                 System.IO.StringWriter strWriter = new System.IO.StringWriter();
                 writer.Save(g, strWriter);
-                //Console.WriteLine(strWriter.ToString());
                 Console.WriteLine();
 
                 Graph h = new Graph();
@@ -186,7 +176,7 @@ namespace VDS.RDF.Test.Writing
             INode o = g.CreateLiteralNode("&lt;tag>");
             g.Assert(s, p, o);
 
-            this.CheckRoundTrip(g, new Type[] { typeof(FastRdfXmlWriter) });
+            this.CheckRoundTrip(g, new Type[] { typeof(PrettyRdfXmlWriter) });
         }
 
         [TestMethod]
@@ -238,7 +228,7 @@ namespace VDS.RDF.Test.Writing
         }
 
         [TestMethod]
-        public void WritingRdfXmlBNodes()
+        public void WritingRdfXmlBNodes1()
         {
             Graph g = new Graph();
             INode s = g.CreateUriNode(new Uri("http://example.org/subject"));
@@ -251,6 +241,16 @@ namespace VDS.RDF.Test.Writing
             o = g.CreateLiteralNode("string");
 
             g.Assert(s, p, o);
+
+            this.CheckRoundTrip(g);
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlBNodes2()
+        {
+            String data = "@prefix : <http://example.org/>. [a :bNode ; :connectsTo [a :bNode ; :connectsTo []]] a [] .";
+            Graph g = new Graph();
+            g.LoadFromString(data, new TurtleParser());
 
             this.CheckRoundTrip(g);
         }

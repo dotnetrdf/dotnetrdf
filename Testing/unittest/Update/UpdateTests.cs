@@ -384,5 +384,20 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.AreEqual(2, store[new Uri("http://test/a")].Triples.Count, "Expected 2 Triples");
 
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertBNodesComplex3()
+        {
+            String update = @"PREFIX : <http://test/>
+INSERT DATA { GRAPH :a { :s :p _:b } GRAPH :b { :s :p _:b } };
+INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
+
+            TripleStore store = new TripleStore();
+            store.ExecuteUpdate(update);
+
+            Assert.AreEqual(3, store.Graphs.Count, "Expected 3 Graphs");
+            Assert.AreEqual(1, store[new Uri("http://test/a")].Triples.Count, "Expected 1 Triple");
+
+        }
     }
 }

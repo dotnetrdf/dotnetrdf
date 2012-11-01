@@ -46,7 +46,8 @@ namespace VDS.RDF.Update.Commands
     /// <summary>
     /// Represents the SPARQL Update INSERT DATA command
     /// </summary>
-    public class InsertDataCommand : SparqlUpdateCommand
+    public class InsertDataCommand
+        : SparqlUpdateCommand
     {
         private GraphPattern _pattern;
 
@@ -184,6 +185,7 @@ namespace VDS.RDF.Update.Commands
                 return;
             }
 
+            ConstructContext constructContext = new ConstructContext(null, null, false);
             foreach (GraphPattern pattern in patterns)
             {
                 if (!this.IsValidDataPattern(pattern, false)) throw new SparqlUpdateException("Cannot evaluate a INSERT DATA command where any of the Triple Patterns are not concrete triples (variables are not permitted) or any of the GRAPH clauses have nested Graph Patterns");
@@ -222,7 +224,6 @@ namespace VDS.RDF.Update.Commands
 
                 //Insert the actual Triples
                 INode subj, pred, obj;
-                ConstructContext constructContext = new ConstructContext(target, null, false);
                 foreach (IConstructTriplePattern p in pattern.TriplePatterns.OfType<IConstructTriplePattern>())
                 {
                     subj = p.Subject.Construct(constructContext);
