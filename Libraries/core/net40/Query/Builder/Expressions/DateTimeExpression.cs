@@ -1,12 +1,11 @@
 using System;
-using VDS.RDF.Query.Expressions;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    public class DateTimeExpression : NumericExpression<DateTime>
+    public class DateTimeExpression : TypedLiteralExpression<DateTime>
     {
-        public DateTimeExpression(ISparqlExpression expression)
-            : base(expression)
+        internal DateTimeExpression(DateTime literalValue)
+            : base(literalValue.ToLiteral(NodeFactory))
         {
         }
     }

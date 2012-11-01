@@ -21,14 +21,54 @@ namespace VDS.RDF.Query.Builder
             return new VariableExpression(variable);
         }
 
-        public StringExpression Constant(string str)
+        public StringExpression Constant(string value)
         {
-            return new StringExpression(str);
+            return new StringExpression(value);
         }
 
-        public NumericExpression<int> Constant(int str)
+        public NumericExpression<int> Constant(int value)
         {
-            return new NumericExpression<int>(str);
+            return new NumericExpression<int>(value);
+        }
+
+        public NumericExpression<decimal> Constant(decimal value)
+        {
+            return new NumericExpression<decimal>(value);
+        }
+
+        public NumericExpression<float> Constant(float value)
+        {
+            return new NumericExpression<float>(value);
+        }
+
+        public NumericExpression<double> Constant(double value)
+        {
+            return new NumericExpression<double>(value);
+        }
+
+        public NumericExpression<bool> Constant(bool value)
+        {
+            return new NumericExpression<bool>(value);
+        }
+
+        public NumericExpression<byte> Constant(byte value)
+        {
+            return new NumericExpression<byte>(value);
+        }
+
+        public NumericExpression<sbyte> Constant(sbyte value)
+        {
+            return new NumericExpression<sbyte>(value);
+        }
+
+        public NumericExpression<short> Constant(short value)
+        {
+            return new NumericExpression<short>(value);
+        }
+
+        public TypedLiteralExpression<DateTime> Constant(DateTime value)
+        {
+            return new DateTimeExpression(value);
         }
 
         public BooleanExpression Not(BooleanExpression innerExpression)

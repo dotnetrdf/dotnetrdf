@@ -26,6 +26,16 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateConstantTerms()
+        {
+            Assert.AreEqual("10 ", Builder.Constant(10).Expression.ToString());
+            Assert.AreEqual("10 ", Builder.Constant(10m).Expression.ToString());
+            Assert.AreEqual("\"10\"^^<http://www.w3.org/2001/XMLSchema#float>", Builder.Constant(10f).Expression.ToString());
+            Assert.AreEqual("\"10\"^^<http://www.w3.org/2001/XMLSchema#double>", Builder.Constant(10d).Expression.ToString());
+            Assert.AreEqual("\"2010-10-16T00:00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>", Builder.Constant(new DateTime(2010, 10, 16)).Expression.ToString());
+        }
+
+        [TestMethod]
         public void CanApplyNegationToBooleanExpression()
         {
             // given
