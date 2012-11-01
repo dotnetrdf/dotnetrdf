@@ -374,7 +374,7 @@ namespace VDS.RDF.Utilities.Query
             {
                 case "xml":
                     this._resultsWriter = new SparqlXmlWriter();
-                    this._graphWriter = new FastRdfXmlWriter();
+                    this._graphWriter = new RdfXmlWriter();
                     break;
                 case "json":
                     this._resultsWriter = new SparqlJsonWriter();
@@ -384,7 +384,7 @@ namespace VDS.RDF.Utilities.Query
                     this._graphWriter = new NTriplesWriter();
                     break;
                 case "rdfxml":
-                    this._graphWriter = new FastRdfXmlWriter();
+                    this._graphWriter = new RdfXmlWriter();
                     break;
                 case "turtle":
                     this._graphWriter = new CompressingTurtleWriter(WriterCompressionLevel.High);

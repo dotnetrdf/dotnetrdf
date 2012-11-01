@@ -49,8 +49,8 @@ namespace VDS.RDF
         private List<INode> _unbound;
         private List<INode> _bound;
         private Dictionary<INode, INode> _mapping;
-        private List<Triple> _sourceTriples;
-        private List<Triple> _targetTriples;
+        private HashSet<Triple> _sourceTriples;
+        private HashSet<Triple> _targetTriples;
 
         /// <summary>
         /// Compares two Graphs for equality
@@ -73,7 +73,7 @@ namespace VDS.RDF
             int gtCount = 0;
             Dictionary<INode, int> gNodes = new Dictionary<INode, int>();
             Dictionary<INode, int> hNodes = new Dictionary<INode, int>();
-            this._targetTriples = h.Triples.ToList();
+            this._targetTriples = new HashSet<Triple>(h.Triples);
             foreach (Triple t in g.Triples)
             {
                 if (t.IsGroundTriple)
@@ -230,12 +230,11 @@ namespace VDS.RDF
             this._unbound = new List<INode>();
             this._bound = new List<INode>();
             this._mapping = new Dictionary<INode, INode>();
-            this._sourceTriples = new List<Triple>();
 
             //Initialise the Source Triples list
-            this._sourceTriples.AddRange(from t in g.Triples
-                                         where !t.IsGroundTriple
-                                         select t);
+            this._sourceTriples = new HashSet<Triple>(from t in g.Triples
+                                                      where !t.IsGroundTriple
+                                                      select t);
 
             //First thing consider the trivial mapping
             Dictionary<INode, INode> trivialMapping = new Dictionary<INode, INode>();
@@ -243,7 +242,7 @@ namespace VDS.RDF
             {
                 trivialMapping.Add(n, n);
             }
-            List<Triple> targets = new List<Triple>(this._targetTriples);
+            HashSet<Triple> targets = new HashSet<Triple>(this._targetTriples);
             if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, trivialMapping))))
             {
                 this._mapping = trivialMapping;
@@ -380,7 +379,7 @@ namespace VDS.RDF
                     this._mapping.Add(x, y);
 
                     //Test the mapping
-                    List<Triple> ys = this._targetTriples.Where(t => t.Involves(y)).ToList();
+                    HashSet<Triple> ys = new HashSet<Triple>(this._targetTriples.Where(t => t.Involves(y)));
                     if (xs.All(t => ys.Remove(t.MapTriple(h, this._mapping))))
                     {
                         //This is a valid mapping
@@ -510,11 +509,12 @@ namespace VDS.RDF
                             //to try
                             if (!baseMapping.ContainsKey(dependency.X)) baseMapping.Add(dependency.X, target.X);
                             if (!baseMapping.ContainsKey(dependency.Y)) baseMapping.Add(dependency.Y, target.Y);
+
+                            this._bound.Add(target.X);
+                            this._bound.Add(target.Y);
+                            this._unbound.Remove(target.X);
+                            this._unbound.Remove(target.Y);
                         }
-                        this._bound.Add(target.X);
-                        this._bound.Add(target.Y);
-                        this._unbound.Remove(target.X);
-                        this._unbound.Remove(target.Y);
                         break;
                     }
                     else
@@ -587,9 +587,10 @@ namespace VDS.RDF
 
             foreach (Dictionary<INode, INode> mapping in possibles)
             {
-                List<Triple> targets = new List<Triple>(this._targetTriples);
+                HashSet<Triple> targets = new HashSet<Triple>(this._targetTriples);
                 if (this._sourceTriples.All(t => targets.Remove(t.MapTriple(h, mapping))))
                 {
+                    this._mapping = mapping;
                     return true;
                 }
             }

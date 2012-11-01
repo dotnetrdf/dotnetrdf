@@ -109,22 +109,6 @@ namespace VDS.RDF.Test.Parsing
 
             Console.WriteLine("Base URI after round-trip using RdfXmlWriter: " + ShowBaseUri(h.BaseUri));
             Assert.IsNotNull(h.BaseUri, "Base URI should not be null");
-
-            strWriter = new System.IO.StringWriter();
-            FastRdfXmlWriter fastWriter = new FastRdfXmlWriter();
-            fastWriter.Save(g, strWriter);
-
-            Console.WriteLine("Output using FastRdfXmlWriter:");
-            Console.WriteLine(strWriter.ToString());
-            Console.WriteLine();
-
-            Graph i = new Graph();
-            parser.Load(i, new System.IO.StringReader(strWriter.ToString()));
-
-            Console.WriteLine("Base URI after round-trip to FastRdfXmlWriter: " + ShowBaseUri(h.BaseUri));
-            Assert.IsNotNull(i.BaseUri, "Base URI should not be null");
         }
-
-
     }
 }

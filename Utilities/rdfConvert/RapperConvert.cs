@@ -418,7 +418,7 @@ namespace VDS.RDF.Utilities.Convert
             switch (format)
             {
                 case "rdfxml":
-                    this._writer = new FastRdfXmlWriter();
+                    this._writer = new PrettyRdfXmlWriter();
                     break;
                 case "ntriples":
                     this._writer = new NTriplesWriter();
