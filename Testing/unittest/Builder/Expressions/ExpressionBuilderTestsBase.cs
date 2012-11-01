@@ -10,7 +10,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestInitialize]
         public void Setup()
         {
-            Builder = new ExpressionBuilder();
+            Builder = new ExpressionBuilder(new NamespaceMapper(true));
         }
     }
 }

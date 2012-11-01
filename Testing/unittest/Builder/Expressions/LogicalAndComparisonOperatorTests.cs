@@ -1,10 +1,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
-using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder.Expressions

@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Builder
         {
             _filterBuilders.Add(() =>
                 {
-                    var builder = new ExpressionBuilder();
+                    var builder = new ExpressionBuilder(Prefixes);
                     return buildExpression(builder).Expression;
                 });
             return this;
