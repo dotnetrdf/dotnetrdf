@@ -6,8 +6,12 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public class IriExpression : RdfTermExpression
     {
-        public IriExpression(string iriLiteral) 
+        internal IriExpression(string iriLiteral) 
             : base(new ConstantTerm(new UriNode(null, new Uri(iriLiteral))))
+        {
+        }
+
+        internal IriExpression(ISparqlExpression expression) : base(expression)
         {
         }
     }

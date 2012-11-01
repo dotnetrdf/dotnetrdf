@@ -92,5 +92,15 @@ namespace VDS.RDF.Query.Builder
         {
             return new SimpleLiteralExpression(literal.Expression);
         }
+
+        public IriExpression Datatype(VariableExpression variable)
+        {
+            return new IriExpression(variable.Expression);
+        }
+
+        public IriExpression Datatype(LiteralExpression literal)
+        {
+            return new IriExpression(literal.Expression);
+        }
     }
 }

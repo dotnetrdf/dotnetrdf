@@ -140,7 +140,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
-        public void CanCreateStrFunctionWithVariableLiteral()
+        public void CanCreateStrFunctionWithLiteralParameter()
         {
             // given
             LiteralExpression literal = new StringExpression("1000");
@@ -182,13 +182,41 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
-        public void CanCreateLangFunctionWithVariableLiteral()
+        public void CanCreateLangFunctionWithLiteralParameter()
         {
             // given
             LiteralExpression literal = new StringExpression("1000");
 
             // when
             SimpleLiteralExpression lang = Builder.Lang(literal);
+
+            // then
+            Assert.IsTrue(lang.Expression is LangFunction);
+            Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateDatatypeFunctionWithVariableParameter()
+        {
+            // given
+            VariableExpression literal = new VariableExpression("s");
+
+            // when
+            IriExpression lang = Builder.Datatype(literal);
+
+            // then
+            Assert.IsTrue(lang.Expression is LangFunction);
+            Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateDatatypeFunctionWithLiteralParameter()
+        {
+            // given
+            LiteralExpression literal = new StringExpression("1000");
+
+            // when
+            IriExpression lang = Builder.Datatype(literal);
 
             // then
             Assert.IsTrue(lang.Expression is LangFunction);
