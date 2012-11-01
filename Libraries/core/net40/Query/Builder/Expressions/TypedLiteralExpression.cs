@@ -15,5 +15,25 @@ namespace VDS.RDF.Query.Builder.Expressions
             : base(expression)
         {
         }
+
+        public BooleanExpression Gt(TypedLiteralExpression<T> rightExpression)
+        {
+            return Gt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Lt(TypedLiteralExpression<T> rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Ge(TypedLiteralExpression<T> rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Le(TypedLiteralExpression<T> rightExpression)
+        {
+            return Le(Expression, rightExpression);
+        }
     }
 }

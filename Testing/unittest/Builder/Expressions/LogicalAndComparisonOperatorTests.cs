@@ -107,6 +107,22 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateGreaterThanOperatorBetweenVariableAndLiteral()
+        {
+            // given
+            VariableExpression v1 = new VariableExpression("v1");
+            LiteralExpression literal = new NumericExpression<int>(10);
+
+            // when
+            var areEqual = v1.Gt(literal).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is GreaterThanExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+        }
+
+        [TestMethod]
         public void CanCreateGreaterThanOrEqualOperatorBetweenVariables()
         {
             // given

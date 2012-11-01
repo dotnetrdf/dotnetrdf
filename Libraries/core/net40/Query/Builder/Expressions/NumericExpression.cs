@@ -1,6 +1,7 @@
 using System;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -124,6 +125,26 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return new NumericExpression(Expression).Subtract(right);
         }
+
+        public BooleanExpression Gt(NumericExpression rightExpression)
+        {
+            return Gt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Lt(NumericExpression rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Ge(NumericExpression rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Le(NumericExpression rightExpression)
+        {
+            return Le(Expression, rightExpression);
+        }
     }
 
     public class NumericExpression : LiteralExpression
@@ -171,6 +192,26 @@ namespace VDS.RDF.Query.Builder.Expressions
         public NumericExpression Subtract(int right)
         {
             return Subtract(new NumericExpression<int>(right));
+        }
+
+        public BooleanExpression Gt(NumericExpression rightExpression)
+        {
+            return Gt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Lt(NumericExpression rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Ge(NumericExpression rightExpression)
+        {
+            return Lt(Expression, rightExpression);
+        }
+
+        public BooleanExpression Le(NumericExpression rightExpression)
+        {
+            return Le(Expression, rightExpression);
         }
     }
 }

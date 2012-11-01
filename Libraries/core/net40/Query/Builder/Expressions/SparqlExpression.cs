@@ -26,28 +26,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new BooleanExpression(equalsExpression);
         }
 
-        public BooleanExpression Gt(SparqlExpression rightExpression)
+        protected BooleanExpression Gt(ISparqlExpression left, SparqlExpression right)
         {
-            ISparqlExpression equalsExpression = new GreaterThanExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return new BooleanExpression(new GreaterThanExpression(left, right.Expression));
         }
 
-        public BooleanExpression Lt(SparqlExpression rightExpression)
+        protected BooleanExpression Lt(ISparqlExpression left, SparqlExpression right)
         {
-            ISparqlExpression equalsExpression = new LessThanExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return new BooleanExpression(new LessThanExpression(left, right.Expression));
         }
 
-        public BooleanExpression Ge(SparqlExpression rightExpression)
+        protected BooleanExpression Ge(ISparqlExpression left, SparqlExpression right)
         {
-            ISparqlExpression equalsExpression = new GreaterThanOrEqualToExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return new BooleanExpression(new GreaterThanOrEqualToExpression(left, right.Expression));
         }
 
-        public BooleanExpression Le(SparqlExpression rightExpression)
+        protected BooleanExpression Le(ISparqlExpression left, SparqlExpression right)
         {
-            ISparqlExpression equalsExpression = new LessThanOrEqualToExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return new BooleanExpression(new LessThanOrEqualToExpression(left, right.Expression));
         }
     }
 }
