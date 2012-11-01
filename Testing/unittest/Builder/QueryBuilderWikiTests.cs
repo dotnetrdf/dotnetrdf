@@ -5,6 +5,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -205,6 +206,27 @@ namespace VDS.RDF.Test.Builder
             // then
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
             Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().Filter.Expression is LessThanExpression);
+        }
+
+        [TestMethod]
+        public void NotExistsFilter()
+        {
+            // given
+            var b = QueryBuilder.Select("person")
+                .Where(tpb => tpb.Subject("person").PredicateUri("rdf:type").Object<IUriNode>("foaf:Person"))
+                .Filter(
+                    fb =>
+                    fb.Not(
+                        fb.Exists(ex => ex.Where(tpb => tpb.Subject("person").PredicateUri("foaf:name").Object("name")))));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.IsTrue(q.RootGraphPattern.IsFiltered);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression is NotExpression);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.First() is ExistsFunction);
         }
     }
 }
