@@ -105,6 +105,36 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanMultiplyNumericBySimpleValue()
+        {
+            // given
+            var left = new NumericExpression(new VariableTerm("x"));
+
+            // when
+            var multiplication = left.Multiply(10).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is MultiplicationExpression);
+            Assert.AreSame(left.Expression, multiplication.Arguments.ElementAt(0));
+            Assert.IsTrue(multiplication.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanMultiplySimpleValueByNumeric()
+        {
+            // given
+            var right = new NumericExpression(new VariableTerm("x"));
+
+            // when
+            var multiplication = 10.Multiply(right).Expression;
+
+            // then
+            Assert.IsTrue(multiplication is MultiplicationExpression);
+            Assert.AreSame(right.Expression, multiplication.Arguments.ElementAt(1));
+            Assert.IsTrue(multiplication.Arguments.ElementAt(0) is ConstantTerm);
+        }
+
+        [TestMethod]
         public void CanChainMultiplicationOfNumerics()
         {
             // given

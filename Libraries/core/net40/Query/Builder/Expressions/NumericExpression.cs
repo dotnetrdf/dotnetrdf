@@ -1,6 +1,7 @@
 using System;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
+using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
@@ -12,7 +13,8 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        internal NumericExpression(ISparqlExpression expression) : base(expression)
+        internal NumericExpression(ISparqlExpression expression)
+            : base(expression)
         {
         }
 
@@ -61,22 +63,66 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public NumericExpression<T> Multiply(T right)
         {
-            return this.Multiply(new NumericExpression<T>(right));
+            return Multiply(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Multiply(NumericExpression<T> right)
+        {
+            var multiplication = new MultiplicationExpression(Expression, right.Expression);
+            return new NumericExpression<T>(multiplication);
+        }
+
+        public NumericExpression Multiply(NumericExpression right)
+        {
+            return new NumericExpression(Expression).Multiply(right);
         }
 
         public NumericExpression<T> Divide(T right)
         {
-            return this.Divide(new NumericExpression<T>(right));
+            return Divide(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Divide(NumericExpression<T> right)
+        {
+            var division = new DivisionExpression(Expression, right.Expression);
+            return new NumericExpression<T>(division);
+        }
+
+        public NumericExpression Divide(NumericExpression right)
+        {
+            return new NumericExpression(Expression).Divide(right);
         }
 
         public NumericExpression<T> Add(T right)
         {
-            return this.Add(new NumericExpression<T>(right));
+            return Add(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Add(NumericExpression<T> right)
+        {
+            var addition = new AdditionExpression(Expression, right.Expression);
+            return new NumericExpression<T>(addition);
+        }
+
+        public NumericExpression Add(NumericExpression right)
+        {
+            return new NumericExpression(Expression).Add(right);
         }
 
         public NumericExpression<T> Subtract(T right)
         {
             return this.Subtract(new NumericExpression<T>(right));
+        }
+
+        public NumericExpression<T> Subtract(NumericExpression<T> right)
+        {
+            var subtraction = new SubtractionExpression(Expression, right.Expression);
+            return new NumericExpression<T>(subtraction);
+        }
+
+        public NumericExpression Subtract(NumericExpression right)
+        {
+            return new NumericExpression(Expression).Subtract(right);
         }
     }
 
@@ -85,6 +131,46 @@ namespace VDS.RDF.Query.Builder.Expressions
         internal NumericExpression(ISparqlExpression expression)
             : base(expression)
         {
+        }
+
+        public NumericExpression Multiply(NumericExpression right)
+        {
+            return new NumericExpression(new MultiplicationExpression(Expression, right.Expression));
+        }
+
+        public NumericExpression Multiply(int right)
+        {
+            return Multiply(new NumericExpression<int>(right));
+        }
+
+        public NumericExpression Divide(NumericExpression right)
+        {
+            return new NumericExpression(new DivisionExpression(Expression, right.Expression));
+        }
+
+        public NumericExpression Divide(int right)
+        {
+            return Divide(new NumericExpression<int>(right));
+        }
+
+        public NumericExpression Add(NumericExpression right)
+        {
+            return new NumericExpression(new AdditionExpression(Expression, right.Expression));
+        }
+
+        public NumericExpression Add(int right)
+        {
+            return Add(new NumericExpression<int>(right));
+        }
+
+        public NumericExpression Subtract(NumericExpression right)
+        {
+            return new NumericExpression(new SubtractionExpression(Expression, right.Expression));
+        }
+
+        public NumericExpression Subtract(int right)
+        {
+            return Subtract(new NumericExpression<int>(right));
         }
     }
 }
