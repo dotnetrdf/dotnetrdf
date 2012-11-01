@@ -1,5 +1,6 @@
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 
@@ -35,6 +36,61 @@ namespace VDS.RDF.Query.Builder
             buildExistsPattern(builder);
             var existsFunction = new ExistsFunction(builder.BuildGraphPattern(), true);
             return new BooleanExpression(existsFunction);
+        }
+
+        public BooleanExpression SameTerm(SparqlExpression left, SparqlExpression right)
+        {
+            var sameTerm = new SameTermFunction(left.Expression, right.Expression);
+            return new BooleanExpression(sameTerm);
+        }
+
+        public BooleanExpression IsIRI(SparqlExpression term)
+        {
+            var isIri = new IsIriFunction(term.Expression);
+            return new BooleanExpression(isIri);
+        }
+
+        public BooleanExpression IsBlank(SparqlExpression term)
+        {
+            var isBlank = new IsBlankFunction(term.Expression);
+            return new BooleanExpression(isBlank);
+        }
+
+        public BooleanExpression IsLiteral(SparqlExpression term)
+        {
+            var isLiteral = new IsLiteralFunction(term.Expression);
+            return new BooleanExpression(isLiteral);
+        }
+
+        public BooleanExpression IsNumeric(SparqlExpression term)
+        {
+            var isNumeric = new IsNumericFunction(term.Expression);
+            return new BooleanExpression(isNumeric);
+        }
+
+        public SimpleLiteralExpression Str(VariableExpression variable)
+        {
+            return new SimpleLiteralExpression(variable.Expression);
+        }
+
+        public SimpleLiteralExpression Str(LiteralExpression literal)
+        {
+            return new SimpleLiteralExpression(literal.Expression);
+        }
+
+        public SimpleLiteralExpression Str(IriExpression iriTerm)
+        {
+            return new SimpleLiteralExpression(iriTerm.Expression);
+        }
+
+        public SimpleLiteralExpression Lang(VariableExpression variable)
+        {
+            return new SimpleLiteralExpression(variable.Expression);
+        }
+
+        public SimpleLiteralExpression Lang(LiteralExpression literal)
+        {
+            return new SimpleLiteralExpression(literal.Expression);
         }
     }
 }
