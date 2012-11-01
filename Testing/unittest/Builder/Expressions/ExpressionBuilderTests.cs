@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder.Expressions
 {
@@ -22,8 +23,11 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void CanApplyNegationToBooleanExpression()
         {
+            // given
+            BooleanExpression mail = new BooleanExpression(new VariableTerm("mail"));
+
             // when
-            var negatedBound = Builder.Not(Builder.Bound("mail")).Expression;
+            var negatedBound = Builder.Not(mail).Expression;
 
             // then
             Assert.IsTrue(negatedBound is NotExpression);
