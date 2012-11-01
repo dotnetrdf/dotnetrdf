@@ -119,7 +119,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             // then
             Assert.IsTrue(areEqual is GreaterThanExpression);
             Assert.IsTrue(areEqual.Arguments.ElementAt(0) is VariableTerm);
-            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is VariableTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
         }
 
         [TestMethod]

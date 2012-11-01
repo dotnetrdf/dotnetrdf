@@ -217,7 +217,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             IriExpression lang = Builder.Datatype(literal);
 
             // then
-            Assert.IsTrue(lang.Expression is LangFunction);
+            Assert.IsTrue(lang.Expression is DataType11Function);
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 
@@ -231,7 +231,37 @@ namespace VDS.RDF.Test.Builder.Expressions
             IriExpression lang = Builder.Datatype(literal);
 
             // then
-            Assert.IsTrue(lang.Expression is LangFunction);
+            Assert.IsTrue(lang.Expression is DataType11Function);
+            Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateOldDatatypeFunctionWithVariableParameter()
+        {
+            // given
+            VariableExpression literal = new VariableExpression("s");
+            Builder.UseSparql10 = true;
+
+            // when
+            IriExpression lang = Builder.Datatype(literal);
+
+            // then
+            Assert.IsTrue(lang.Expression is DataTypeFunction);
+            Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateOldDatatypeFunctionWithLiteralParameter()
+        {
+            // given
+            LiteralExpression literal = new StringExpression("1000");
+            Builder.UseSparql10 = true;
+
+            // when
+            IriExpression lang = Builder.Datatype(literal);
+
+            // then
+            Assert.IsTrue(lang.Expression is DataTypeFunction);
             Assert.AreSame(literal.Expression, lang.Expression.Arguments.ElementAt(0));
         }
 

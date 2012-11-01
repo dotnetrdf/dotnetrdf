@@ -4,16 +4,24 @@ using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 
 namespace VDS.RDF.Query.Builder
 {
     public sealed class ExpressionBuilder
     {
         private readonly INamespaceMapper _prefixes;
+        private bool _useSparql10;
 
         internal ExpressionBuilder(INamespaceMapper prefixes)
         {
             _prefixes = prefixes;
+        }
+
+        public bool UseSparql10
+        {
+            get { return _useSparql10; }
+            set { _useSparql10 = value; }
         }
 
         public VariableExpression Variable(string variable)
@@ -116,37 +124,50 @@ namespace VDS.RDF.Query.Builder
 
         public SimpleLiteralExpression Str(VariableExpression variable)
         {
-            return new SimpleLiteralExpression(variable.Expression);
+            return Str(variable.Expression);
         }
 
         public SimpleLiteralExpression Str(LiteralExpression literal)
         {
-            return new SimpleLiteralExpression(literal.Expression);
+            return Str(literal.Expression);
         }
 
         public SimpleLiteralExpression Str(IriExpression iriTerm)
         {
-            return new SimpleLiteralExpression(iriTerm.Expression);
+            return Str(iriTerm.Expression);
+        }
+
+        private SimpleLiteralExpression Str(ISparqlExpression expression)
+        {
+            return new SimpleLiteralExpression(new StrFunction(expression));
         }
 
         public SimpleLiteralExpression Lang(VariableExpression variable)
         {
-            return new SimpleLiteralExpression(variable.Expression);
+            return new SimpleLiteralExpression(new LangFunction(variable.Expression));
         }
 
         public SimpleLiteralExpression Lang(LiteralExpression literal)
         {
-            return new SimpleLiteralExpression(literal.Expression);
+            return new SimpleLiteralExpression(new LangFunction(literal.Expression));
         }
 
         public IriExpression Datatype(VariableExpression variable)
         {
-            return new IriExpression(variable.Expression);
+            return Datatype(variable.Expression);
         }
 
         public IriExpression Datatype(LiteralExpression literal)
         {
-            return new IriExpression(literal.Expression);
+            return Datatype(literal.Expression);
+        }
+
+        private IriExpression Datatype(ISparqlExpression expression)
+        {
+            var dataTypeFunction = _useSparql10
+                                       ? new DataTypeFunction(expression)
+                                       : new DataType11Function(expression);
+            return new IriExpression(dataTypeFunction);
         }
 
         public BlankNodeExpression BNode()
