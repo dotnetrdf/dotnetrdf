@@ -59,7 +59,7 @@ namespace VDS.RDF.Writing
     /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="FastRdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5
     /// </para>
     /// </remarks>
-    [Obsolete("This writer is obsoleted in favour of the RdfXmlWriter and the PrettyRdfXmlWriter as both are now faster than this writer", false)]
+    [Obsolete("This writer is obsoleted in favour of the RdfXmlWriter and the PrettyRdfXmlWriter as both are now faster than this writer", true)]
     public class FastRdfXmlWriter 
         : IRdfWriter, IPrettyPrintingWriter, ICompressingWriter, IDtdWriter, INamespaceWriter, IFormatterBasedWriter
     {

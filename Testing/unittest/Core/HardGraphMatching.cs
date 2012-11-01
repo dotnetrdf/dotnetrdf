@@ -309,7 +309,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void GraphMatchTrivial()
+        public void GraphMatchTrivial1()
         {
             Graph g = new Graph();
             g.LoadFromFile("turtle11/test-13.ttl");
@@ -318,7 +318,41 @@ namespace VDS.RDF.Test
 
             GraphDiffReport report = g.Difference(h);
             if (!report.AreEqual) TestTools.ShowDifferences(report);
-            Assert.AreEqual(g, h);
+            Assert.IsTrue(report.AreEqual);
+        }
+
+        [TestMethod]
+        public void GraphMatchTrivial2()
+        {
+            Graph g = new Graph();
+            IBlankNode a = g.CreateBlankNode("b1");
+            IBlankNode b = g.CreateBlankNode("b2");
+            IBlankNode c = g.CreateBlankNode("b3");
+            INode pred = g.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            g.Assert(a, pred, g.CreateLiteralNode("A"));
+            g.Assert(a, pred, b);
+            g.Assert(b, pred, g.CreateLiteralNode("B"));
+            g.Assert(b, pred, c);
+            g.Assert(c, pred, g.CreateLiteralNode("C"));
+            g.Assert(c, pred, a);
+
+            Graph h = new Graph();
+            IBlankNode a2 = h.CreateBlankNode("b4");
+            IBlankNode b2 = h.CreateBlankNode("b5");
+            IBlankNode c2 = h.CreateBlankNode("b3");
+            INode pred2 = h.CreateUriNode(UriFactory.Create("http://predicate"));
+
+            h.Assert(a2, pred2, h.CreateLiteralNode("A"));
+            h.Assert(a2, pred2, b2);
+            h.Assert(b2, pred2, h.CreateLiteralNode("B"));
+            h.Assert(b2, pred2, c2);
+            h.Assert(c2, pred2, h.CreateLiteralNode("C"));
+            h.Assert(c2, pred2, a2);
+
+            GraphDiffReport report = g.Difference(h);
+            if (!report.AreEqual) TestTools.ShowDifferences(report);
+            Assert.IsTrue(report.AreEqual);
         }
 
         private IGraph GenerateCyclicGraph(int nodes, int seed)

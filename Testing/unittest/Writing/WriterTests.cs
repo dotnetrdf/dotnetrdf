@@ -374,7 +374,7 @@ namespace VDS.RDF.Test.Writing
             List<IRdfWriter> writers = new List<IRdfWriter>()
             {
                 new CompressingTurtleWriter(),
-                new FastRdfXmlWriter(),
+                new PrettyRdfXmlWriter(),
                 new HtmlWriter(),
                 new Notation3Writer(),
                 new NTriplesWriter(),

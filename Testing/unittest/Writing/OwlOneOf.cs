@@ -78,9 +78,9 @@ namespace VDS.RDF.Test.Writing
             Console.WriteLine("Saved OK using RdfXmlWriter");
             Console.WriteLine();
 
-            writer = new FastRdfXmlWriter();
-            writer.Save(g, "owl-one-of-fast.rdf");
-            Console.WriteLine("Saved OK using FastRdfXmlWriter");
+            writer = new PrettyRdfXmlWriter();
+            writer.Save(g, "owl-one-of-pretty.rdf");
+            Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
             Console.WriteLine();
 
             //Now check that the Graphs are all equivalent
@@ -91,9 +91,9 @@ namespace VDS.RDF.Test.Writing
             Console.WriteLine();
 
             Graph j = new Graph();
-            FileLoader.Load(j, "owl-one-of-fast.rdf");
-            Assert.AreEqual(g, j, "Graphs should be equal (FastRdfXmlWriter)");
-            Console.WriteLine("FastRdfXmlWriter serialization was OK");
+            FileLoader.Load(j, "owl-one-of-pretty.rdf");
+            Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
+            Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
         }
 
         [TestMethod]
@@ -126,10 +126,10 @@ namespace VDS.RDF.Test.Writing
                 Console.WriteLine("Saved OK using RdfXmlWriter");
                 Console.WriteLine();
 
-                writer = new FastRdfXmlWriter();
+                writer = new PrettyRdfXmlWriter();
                 ((ICompressingWriter)writer).CompressionLevel = WriterCompressionLevel.Medium;
-                writer.Save(g, "owl-one-of-fast.rdf");
-                Console.WriteLine("Saved OK using FastRdfXmlWriter");
+                writer.Save(g, "owl-one-of-pretty.rdf");
+                Console.WriteLine("Saved OK using PrettyRdfXmlWriter");
                 Console.WriteLine();
 
                 //Now check that the Graphs are all equivalent
@@ -140,9 +140,9 @@ namespace VDS.RDF.Test.Writing
                 Console.WriteLine();
 
                 Graph j = new Graph();
-                FileLoader.Load(j, "owl-one-of-fast.rdf");
-                Assert.AreEqual(g, j, "Graphs should be equal (FastRdfXmlWriter)");
-                Console.WriteLine("FastRdfXmlWriter serialization was OK");
+                FileLoader.Load(j, "owl-one-of-pretty.rdf");
+                Assert.AreEqual(g, j, "Graphs should be equal (PrettyRdfXmlWriter)");
+                Console.WriteLine("PrettyRdfXmlWriter serialization was OK");
         }
 
         public static void thingOneOf(IGraph graph, IUriNode[] listInds)

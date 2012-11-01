@@ -49,9 +49,7 @@ namespace VDS.RDF.Test.Writing
         {
             new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(), new TurtleParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new CompressingTurtleWriter(TurtleSyntax.W3C), new TurtleParser(TurtleSyntax.W3C)),
-            new KeyValuePair<IRdfWriter, IRdfReader>(new FastRdfXmlWriter(), new RdfXmlParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new Notation3Writer(), new Notation3Parser()),
-            //new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlTreeWriter(), new RdfXmlParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new RdfXmlWriter(), new RdfXmlParser()),
             new KeyValuePair<IRdfWriter, IRdfReader>(new PrettyRdfXmlWriter(), new RdfXmlParser())
         };
@@ -80,6 +78,8 @@ namespace VDS.RDF.Test.Writing
                 Graph h = new Graph();
                 StringParser.Parse(h, strWriter.ToString(), kvp.Value);
 
+                GraphDiffReport report = g.Difference(h);
+                if (!report.AreEqual) TestTools.ShowDifferences(report);
                 Assert.AreEqual(g, h, "Graphs should be equal after round trip to and from serialization using " + kvp.Key.GetType().Name);
             }
         }
