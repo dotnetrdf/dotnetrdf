@@ -1,5 +1,7 @@
+using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
@@ -11,5 +13,11 @@ namespace VDS.RDF.Query.Builder.Expressions
         }
 
         public ISparqlExpression Expression { get; protected set; }
+
+        public BooleanExpression In(params SparqlExpression[] expressions)
+        {
+            var inFunction = new InFunction(Expression, expressions.Select(v => v.Expression));
+            return new BooleanExpression(inFunction);
+        }
     }
 }
