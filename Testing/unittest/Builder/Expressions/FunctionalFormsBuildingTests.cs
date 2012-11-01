@@ -67,9 +67,29 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(expression.Expression is IfElseFunction);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(0), ifExpr.Expression);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(1), thenExpr.Expression);
-            Assert.AreSame(expression.Expression.Arguments.ElementAt(2), elseExpr.Expression);
+            Assert.AreSame(ifExpr.Expression, expression.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(thenExpr.Expression, expression.Expression.Arguments.ElementAt(1));
+            Assert.AreSame(elseExpr.Expression, expression.Expression.Arguments.ElementAt(2));
+        }
+
+        [TestMethod]
+        public void CanCreateTheCoalesceFunctionCall()
+        {
+            // given
+            SparqlExpression expr1 = new VariableExpression("x");
+            SparqlExpression expr2 = new StringExpression("str");
+            SparqlExpression expr3 = new NumericExpression<int>(10);
+            SparqlExpression expr4 = new NumericExpression<float>(10.5f).Divide(new NumericExpression<float>(0));
+
+            // when
+            RdfTermExpression coalesce = Builder.Coalesce(expr1, expr2, expr3, expr4);
+
+            // then
+            Assert.IsTrue(coalesce.Expression is CoalesceFunction);
+            Assert.AreSame(expr1.Expression, coalesce.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(expr2.Expression, coalesce.Expression.Arguments.ElementAt(1));
+            Assert.AreSame(expr3.Expression, coalesce.Expression.Arguments.ElementAt(2));
+            Assert.AreSame(expr4.Expression, coalesce.Expression.Arguments.ElementAt(3));
         }
     }
 }

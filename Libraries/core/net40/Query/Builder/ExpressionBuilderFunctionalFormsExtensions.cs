@@ -1,3 +1,4 @@
+using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql;
@@ -20,6 +21,12 @@ namespace VDS.RDF.Query.Builder
         public static IfThenPart If(this ExpressionBuilder eb, SparqlExpression ifExpression)
         {
             return new IfThenPart(ifExpression.Expression);
+        }
+
+        public static RdfTermExpression Coalesce(this ExpressionBuilder eb, params SparqlExpression[] expressions)
+        {
+            var coalesce = new CoalesceFunction(expressions.Select(e => e.Expression));
+            return new RdfTermExpression(coalesce);
         }
     }
 
