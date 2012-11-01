@@ -17,7 +17,7 @@ namespace VDS.RDF.Test.Builder
             SparqlQuery q = QueryBuilder
                 .SelectAll()
                 .Where(tpb=>tpb.Subject("s").Predicate("p").Object("o"))
-                .GetExecutableQuery();
+                .BuildQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNotNull(q.RootGraphPattern);
         }
@@ -29,7 +29,7 @@ namespace VDS.RDF.Test.Builder
                 .SelectAll()
                 .Distinct()
                 .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                .GetExecutableQuery();
+                .BuildQuery();
             Assert.AreEqual(SparqlQueryType.SelectAllDistinct, q.QueryType);
             Assert.IsTrue(q.HasDistinctModifier);
             Assert.IsNotNull(q.RootGraphPattern);
@@ -45,7 +45,7 @@ namespace VDS.RDF.Test.Builder
                                             .Subject("s").PredicateUri(UriFactory.Create(RdfSpecsHelper.RdfType)).Object<IUriNode>("foaf:Person")
                                             .Subject("s").PredicateUri("foaf:Name").Object("Tomasz Pluskiewicz")
                                             .Subject<IBlankNode>("bnode_id").Predicate("p").Object("o"))
-                .GetExecutableQuery();
+                .BuildQuery();
             Assert.IsNotNull(q.RootGraphPattern);
             Assert.AreEqual(4, q.RootGraphPattern.TriplePatterns.Count());
         }
@@ -58,7 +58,7 @@ namespace VDS.RDF.Test.Builder
             TriplePattern p2 = new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o"));
 
             // when
-            var q = QueryBuilder.SelectAll().Where(p1, p2).GetExecutableQuery();
+            var q = QueryBuilder.SelectAll().Where(p1, p2).BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -81,7 +81,7 @@ namespace VDS.RDF.Test.Builder
                                 tpb.Subject("s").Predicate("p").Object("o")
                                    .Subject("s").Predicate("p").Object("o");
                             })
-                        .GetExecutableQuery();
+                        .BuildQuery();
 
             // then
             Assert.AreEqual(1, callCount);
@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Builder
                                                                            .Object("type")));
 
             // when
-            var q = builder.GetExecutableQuery();
+            var q = builder.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -119,7 +119,7 @@ namespace VDS.RDF.Test.Builder
                                       .Where(tpb => tpb.Subject("x").Predicate("y").Object("z"));
 
             // when
-            var q = builder.GetExecutableQuery();
+            var q = builder.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -136,8 +136,8 @@ namespace VDS.RDF.Test.Builder
             IQueryBuilder builder = QueryBuilder.SelectAll().Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
-            SparqlQuery query1 = builder.GetExecutableQuery();
-            SparqlQuery query2 = builder.GetExecutableQuery();
+            SparqlQuery query1 = builder.BuildQuery();
+            SparqlQuery query2 = builder.BuildQuery();
 
             // then
             Assert.AreNotSame(query1, query2);
@@ -151,7 +151,7 @@ namespace VDS.RDF.Test.Builder
                                                      .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
-            SparqlQuery query = queryBuilder.GetExecutableQuery();
+            SparqlQuery query = queryBuilder.BuildQuery();
 
             // then
             Assert.AreEqual(3, query.Variables.Count());
@@ -172,7 +172,7 @@ namespace VDS.RDF.Test.Builder
                                                      .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
-            SparqlQuery query = queryBuilder.GetExecutableQuery();
+            SparqlQuery query = queryBuilder.BuildQuery();
 
             // then
             Assert.AreEqual(3, query.Variables.Count());
@@ -193,7 +193,7 @@ namespace VDS.RDF.Test.Builder
                                                      .Subject(new Uri("http://example.com/Resource")).Predicate("p").Object("o")));
 
             // when
-            var query = builder.GetExecutableQuery();
+            var query = builder.BuildQuery();
 
             // then
             Assert.IsNotNull(query.RootGraphPattern);
@@ -214,7 +214,7 @@ namespace VDS.RDF.Test.Builder
                                  .Object(new Uri("http://example.com/Class")));
 
             // when
-            var query = builder.GetExecutableQuery();
+            var query = builder.BuildQuery();
 
             // then
             Assert.IsNotNull(query.RootGraphPattern);
@@ -234,7 +234,7 @@ namespace VDS.RDF.Test.Builder
                 .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
-            var query = builder.GetExecutableQuery();
+            var query = builder.BuildQuery();
             // then
             Assert.IsNotNull(query.RootGraphPattern);
             Assert.AreEqual(4, query.RootGraphPattern.TriplePatterns.Count);
@@ -249,7 +249,7 @@ namespace VDS.RDF.Test.Builder
                                 .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -263,7 +263,7 @@ namespace VDS.RDF.Test.Builder
             // when
             var q = QueryBuilder.Select(new SparqlVariable("s"), new SparqlVariable("p"), new SparqlVariable("o"))
                                 .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
-                                .GetExecutableQuery();
+                                .BuildQuery();
 
             // then
             Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));

@@ -125,7 +125,7 @@ namespace VDS.RDF.Query.Builder
             return Limit(limit).Offset(offset);
         }
 
-        public SparqlQuery GetExecutableQuery()
+        public SparqlQuery BuildQuery()
         {
             // returns a copy to prevent changes in either
             // QueryBuilder or the retrieved SparqlQuery(variableName) from

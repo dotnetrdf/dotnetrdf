@@ -24,6 +24,6 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
-        SparqlQuery GetExecutableQuery();
+        SparqlQuery BuildQuery();
     }
 }

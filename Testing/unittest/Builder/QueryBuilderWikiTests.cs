@@ -27,7 +27,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -46,7 +46,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -63,7 +63,7 @@ namespace VDS.RDF.Test.Builder
             var b = QueryBuilder.Describe(new Uri(uriString));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNull(q.RootGraphPattern);
@@ -81,7 +81,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -118,7 +118,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -139,7 +139,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
@@ -159,7 +159,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
@@ -177,7 +177,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern.Filter);
@@ -202,7 +202,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("ns", new Uri("http://example.org/ns#"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
@@ -222,7 +222,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsTrue(q.RootGraphPattern.IsFiltered);
@@ -240,7 +240,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             Assert.IsNotNull(q.RootGraphPattern);
@@ -263,7 +263,7 @@ namespace VDS.RDF.Test.Builder
             b.Prefixes.AddNamespace("", new Uri("http://example.com/"));
 
             // when
-            var q = b.GetExecutableQuery();
+            var q = b.BuildQuery();
 
             // then
             ExistsFunction exists = (ExistsFunction) q.RootGraphPattern.Filter.Expression.Arguments.First();
