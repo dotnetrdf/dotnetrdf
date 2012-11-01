@@ -209,7 +209,6 @@ namespace dotNetRDFTest
                     List<IRdfWriter> writers = new List<IRdfWriter>()
                     {
                         new RdfXmlWriter(),
-                        new FastRdfXmlWriter(),
                         new PrettyRdfXmlWriter(),
                         new NTriplesWriter(),
                         new TurtleWriter(),

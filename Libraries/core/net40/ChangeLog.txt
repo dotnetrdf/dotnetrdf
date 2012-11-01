@@ -53,6 +53,7 @@ Removed
 - Marks the obsolete IndexingHelper static class as obsolete unusable
 - Marks the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
 - Marks the obsolete Tools.CopyStream() method as obsolete unusable
+- Marks the obsolete FastRdfXmlWriter as obsolete unusable
    
 
 

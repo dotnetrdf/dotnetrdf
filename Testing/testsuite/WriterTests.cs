@@ -90,7 +90,7 @@ namespace dotNetRDFTest
                     new TurtleWriter(),
                     new CompressingTurtleWriter(),
                     new RdfXmlWriter(),
-                    new FastRdfXmlWriter(),
+                    new PrettyRdfXmlWriter(),
                     new Notation3Writer(),
                     new RdfJsonWriter(),
                     new HtmlWriter()
