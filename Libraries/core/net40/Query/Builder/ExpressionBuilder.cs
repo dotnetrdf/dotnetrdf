@@ -21,9 +21,14 @@ namespace VDS.RDF.Query.Builder
             return new VariableExpression(variable);
         }
 
-        public TypedLiteralExpression<string> Constant(string str)
+        public StringExpression Constant(string str)
         {
             return new StringExpression(str);
+        }
+
+        public NumericExpression<int> Constant(int str)
+        {
+            return new NumericExpression<int>(str);
         }
 
         public BooleanExpression Not(BooleanExpression innerExpression)

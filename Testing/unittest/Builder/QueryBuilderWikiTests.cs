@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -182,6 +183,28 @@ namespace VDS.RDF.Test.Builder
             var regex = (RegexFunction)q.RootGraphPattern.Filter.Expression;
             Assert.IsTrue(regex.Arguments.ElementAt(0) is VariableTerm);
             Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void FilterInOptionalPattern()
+        {
+            // given
+            var b = QueryBuilder.Select("title", "price")
+                .Where(tpb => tpb.Subject("x").PredicateUri("dc:title").Object("title"))
+                .Optional(opt =>
+                    {
+                        opt.Where(tpb => tpb.Subject("x").PredicateUri("ns:price").Object("price"));
+                        opt.Filter(eb => eb.Variable("price").Lt(eb.Constant(30)));
+                    });
+            b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
+            b.Prefixes.AddNamespace("ns", new Uri("http://example.org/ns#"));
+
+            // when
+            var q = b.GetExecutableQuery();
+
+            // then
+            Assert.AreEqual(1, q.RootGraphPattern.ChildGraphPatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.ChildGraphPatterns.Single().Filter.Expression is LessThanExpression);
         }
     }
 }
