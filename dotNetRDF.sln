@@ -178,7 +178,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{E7CCB195-F53E-474A-8DC5-E6C38963D0B9}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs
-		Libraries\Data\Virtuoso\net40-client\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template = Libraries\Data\Virtuoso\net40-client\dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{5926AC3F-AA16-45A0-AD18-590C28BB91F8}"

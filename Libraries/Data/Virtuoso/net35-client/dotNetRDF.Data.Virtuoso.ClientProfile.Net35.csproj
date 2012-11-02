@@ -123,4 +123,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe sync $(SolutionDir)\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj $(ProjectPath)</PreBuildEvent>
+  </PropertyGroup>
 </Project>

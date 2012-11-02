@@ -2443,4 +2443,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe sync $(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj $(ProjectPath)</PreBuildEvent>
+  </PropertyGroup>
 </Project>
