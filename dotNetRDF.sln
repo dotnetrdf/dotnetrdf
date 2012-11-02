@@ -100,7 +100,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{954B6783-7ECC-4FC0-9022-76A618D6F5B8}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs
-		Libraries\Query\FullText\net35\dotNetRDF.Query.FullText.Net35.csproj.template = Libraries\Query\FullText\net35\dotNetRDF.Query.FullText.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D}"
@@ -187,13 +186,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{DED37B23-101C-42B4-B7FE-919E4CE41AFE}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs
-		Libraries\Query\FullText\net40-client\dotNetRDF.Query.FullText.ClientProfile.csproj.template = Libraries\Query\FullText\net40-client\dotNetRDF.Query.FullText.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{BCDF787B-D49E-4511-A036-1F49CCCEC279}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs
-		Libraries\Query\FullText\net35-client\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template = Libraries\Query\FullText\net35-client\dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicenseChecker", "Build\LicenseChecker\LicenseChecker.csproj", "{B5C5E154-B17E-4A4A-B670-108553391A29}"
