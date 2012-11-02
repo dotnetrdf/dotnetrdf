@@ -20,8 +20,8 @@ upgrade to these latest versions.
 
 rdfConvert
 
-
 rdfEditor (Not available under Mono)
+- Bumped AvalonEdit dependency to latest version
  
 rdfOptStats
    
@@ -32,10 +32,13 @@ rdfServer
 rdfServerGUI
  
 rdfWebDeploy
+- Bumped dependencies to latest versions
 
 soh 
 
 SparqlGUI
+- Bumped Lucene.Net dependency to latest version
 
 StoreManager
+- Bumped dependencies to latest version
 
