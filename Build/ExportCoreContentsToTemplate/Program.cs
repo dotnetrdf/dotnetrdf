@@ -26,7 +26,7 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                         CopyToTemplate.Main(args);
                         break;
                     case "sync":
-                        CopyToTemplate.Main(args);
+                        SyncProjects.Main(args);
                         break;
                     case "help":
                         ShowHelp(args);
