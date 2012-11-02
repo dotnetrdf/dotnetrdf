@@ -1,0 +1,2443 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1809BF65-1837-4D4C-A65C-0B7C1D111548}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <TargetFrameworkProfile>WindowsPhone</TargetFrameworkProfile>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG,TRACE,SILVERLIGHT,WINDOWS_PHONE,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <DocumentationFile>bin\Debug\dotNetRDF.XML</DocumentationFile>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>DEBUG,TRACE,SILVERLIGHT,WINDOWS_PHONE,NET40,NO_ASP,NO_WEB,NO_DATA,NO_COMPRESSION,NO_SYNC_HTTP,NO_XMLDOM,NO_XSL,NO_PROXY,NO_RWLOCK,NO_STOPWATCH,NO_NORM,NO_URICACHE,NO_PROCESS</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.XPath">
+      <HintPath>C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack.WindowsPhone, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\sl4-wp\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.10.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Dependencies\sl4-wp\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="..\net40\Common\MultiDictionary.cs">
+      <Link>Common\MultiDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\BinaryTree.cs">
+      <Link>Common\Trees\BinaryTree.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\BinaryTreeNode.cs">
+      <Link>Common\Trees\BinaryTreeNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\AVLTree.cs">
+      <Link>Common\Trees\AVLTree.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\ITree.cs">
+      <Link>Common\Trees\ITree.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\ScapegoatTree.cs">
+      <Link>Common\Trees\ScapegoatTree.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\TreeExtensions.cs">
+      <Link>Common\Trees\TreeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trees\UnbalancedBinaryTree.cs">
+      <Link>Common\Trees\UnbalancedBinaryTree.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HashSet.cs">
+      <Link>Compatability\HashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HtmlTextWriter.cs">
+      <Link>Compatability\HtmlTextWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HtmlTextWriterAttribute.cs">
+      <Link>Compatability\HtmlTextWriterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HtmlTextWriterStyle.cs">
+      <Link>Compatability\HtmlTextWriterStyle.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HtmlTextWriterTag.cs">
+      <Link>Compatability\HtmlTextWriterTag.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\HttpUtility.cs">
+      <Link>Compatability\HttpUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Compatability\SilverlightCompatability.cs">
+      <Link>Compatability\SilverlightCompatability.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\CollectionFactory.cs">
+      <Link>Configuration\CollectionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\PropertyFunctionFactoryFactory.cs">
+      <Link>Configuration\PropertyFunctionFactoryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\OperatorFactory.cs">
+      <Link>Configuration\OperatorFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseDemandGraphCollection.cs">
+      <Link>Core\BaseDemandGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseGraph.cs">
+      <Link>Core\BaseGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseGraphCollection.cs">
+      <Link>Core\BaseGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseTripleStore.cs">
+      <Link>Core\BaseTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\SubTreeIndexedTripleCollection.cs">
+      <Link>Core\SubTreeIndexedTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\WrapperGraph.cs">
+      <Link>Core\WrapperGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\Extensions.cs">
+      <Link>Core\Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ISparqlResultsReader.cs">
+      <Link>Core\ISparqlResultsReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ISparqlResultsWriter.cs">
+      <Link>Core\ISparqlResultsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseTripleCollection.cs">
+      <Link>Core\BaseTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\Options.cs">
+      <Link>Core\Options.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ThreadSafeGraph.cs">
+      <Link>Core\ThreadSafeGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\TreeIndexedTripleCollection.cs">
+      <Link>Core\TreeIndexedTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\WrapperGraphCollection.cs">
+      <Link>Core\WrapperGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\WrapperTripleCollection.cs">
+      <Link>Core\WrapperTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\WrapperTripleStore.cs">
+      <Link>Core\WrapperTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Exceptions.cs">
+      <Link>Exceptions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\TimeSpanNode.cs">
+      <Link>Nodes\TimeSpanNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BaseGZipParser.cs">
+      <Link>Parsing\BaseGZipParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\CommentIgnoringJsonTextReader.cs">
+      <Link>Parsing\CommentIgnoringJsonTextReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BaseGZipDatasetParser.cs">
+      <Link>Parsing\BaseGZipDatasetParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BaseGZipResultsParser.cs">
+      <Link>Parsing\BaseGZipResultsParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\TurtleParserContext.cs">
+      <Link>Parsing\Contexts\TurtleParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\DataTableHandler.cs">
+      <Link>Parsing\Handlers\DataTableHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\ListUrisHandler.cs">
+      <Link>Parsing\Handlers\ListUrisHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\UniqueBlankNodesHandler.cs">
+      <Link>Parsing\Handlers\UniqueBlankNodesHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\NTriplesTokeniser.cs">
+      <Link>Parsing\Tokens\NTriplesTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfJsonParser.cs">
+      <Link>Parsing\RdfJsonParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfSpecsHelper.cs">
+      <Link>Parsing\RdfSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlJsonParser.cs">
+      <Link>Parsing\SparqlJsonParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlXmlParser.cs">
+      <Link>Parsing\SparqlXmlParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\StringParser.cs">
+      <Link>Parsing\StringParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BaseTokeniser.cs">
+      <Link>Parsing\Tokens\BaseTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TriGParser.cs">
+      <Link>Parsing\TriGParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TriGTokeniser.cs">
+      <Link>Parsing\Tokens\TriGTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TurtleSpecsHelper.cs">
+      <Link>Parsing\TurtleSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\FilteredProduct.cs">
+      <Link>Query\Algebra\FilteredProduct.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\PartitionedMultiset.cs">
+      <Link>Query\Algebra\PartitionedMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\PropertyFunction.cs">
+      <Link>Query\Algebra\PropertyFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Table.cs">
+      <Link>Query\Algebra\Table.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\BaseDemandDataset.cs">
+      <Link>Query\Datasets\BaseDemandDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\ExternalDataset.cs">
+      <Link>Query\Datasets\ExternalDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\WebDemandDataset.cs">
+      <Link>Query\Datasets\WebDemandDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\CallFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\CallFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\UUIDFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\UUIDFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\BaseOperator.cs">
+      <Link>Query\Operators\BaseOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\BaseDateTimeOperator.cs">
+      <Link>Query\Operators\DateTime\BaseDateTimeOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\BaseTimeSpanOperator.cs">
+      <Link>Query\Operators\DateTime\BaseTimeSpanOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\TimeSpanSubtraction.cs">
+      <Link>Query\Operators\DateTime\TimeSpanSubtraction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\DateTimeSubtraction.cs">
+      <Link>Query\Operators\DateTime\DateTimeSubtraction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\DateTimeAddition.cs">
+      <Link>Query\Operators\DateTime\DateTimeAddition.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\DateTime\TimeSpanAddition.cs">
+      <Link>Query\Operators\DateTime\TimeSpanAddition.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\ISparqlOperator.cs">
+      <Link>Query\Operators\ISparqlOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\Numeric\AdditionOperator.cs">
+      <Link>Query\Operators\Numeric\AdditionOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\Numeric\BaseNumericOperator.cs">
+      <Link>Query\Operators\Numeric\BaseNumericOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\Numeric\MultiplicationOperator.cs">
+      <Link>Query\Operators\Numeric\MultiplicationOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\Numeric\DivisionOperator.cs">
+      <Link>Query\Operators\Numeric\DivisionOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\Numeric\SubtractionOperator.cs">
+      <Link>Query\Operators\Numeric\SubtractionOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\SparqlOperator.cs">
+      <Link>Query\Operators\SparqlOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Operators\SparqlOperatorType.cs">
+      <Link>Query\Operators\SparqlOperatorType.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\FilteredProductOptimiser.cs">
+      <Link>Query\Optimisation\FilteredProductOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\ImplicitJoinOptimiser.cs">
+      <Link>Query\Optimisation\ImplicitJoinOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\PropertyFunctionOptimiser.cs">
+      <Link>Query\Optimisation\PropertyFunctionOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\VariableSubstitutionTransformer.cs">
+      <Link>Query\Optimisation\VariableSubstitutionTransformer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\GraphPattern.cs">
+      <Link>Query\Patterns\GraphPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\ISparqlCustomExpressionFactory.cs">
+      <Link>Query\Expressions\ISparqlCustomExpressionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\SparqlExpressionFactory.cs">
+      <Link>Query\Expressions\SparqlExpressionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Filters\SparqlFilterClasses.cs">
+      <Link>Query\Filters\SparqlFilterClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Ordering\SparqlOrderByClasses.cs">
+      <Link>Query\Ordering\SparqlOrderByClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\PropertyFunctionPattern.cs">
+      <Link>Query\Patterns\PropertyFunctionPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\SparqlPatternClasses.cs">
+      <Link>Query\Patterns\SparqlPatternClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\TriplePattern.cs">
+      <Link>Query\Patterns\TriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\TriplePatternType.cs">
+      <Link>Query\Patterns\TriplePatternType.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PropertyFunctions\IPropertyFunctionFactory.cs">
+      <Link>Query\PropertyFunctions\IPropertyFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PropertyFunctions\PropertyFunctionHelper.cs">
+      <Link>Query\PropertyFunctions\PropertyFunctionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PropertyFunctions\ISparqlPropertyFunction.cs">
+      <Link>Query\PropertyFunctions\ISparqlPropertyFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PropertyFunctions\PropertyFunctionFactory.cs">
+      <Link>Query\PropertyFunctions\PropertyFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PropertyFunctions\PropertyFunctionInfo.cs">
+      <Link>Query\PropertyFunctions\PropertyFunctionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlExpressionParser.cs">
+      <Link>Query\SparqlExpressionParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlResult.cs">
+      <Link>Query\SparqlResult.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlResultBinder.cs">
+      <Link>Query\SparqlResultBinder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlVariable.cs">
+      <Link>Query\SparqlVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\BaseEvent.cs">
+      <Link>Parsing\Events\BaseEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BaseToken.cs">
+      <Link>Parsing\Tokens\BaseToken.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BlankNode.cs">
+      <Link>Core\BlankNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\BufferedTokenQueue.cs">
+      <Link>Parsing\Tokens\BufferedTokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlQuery.cs">
+      <Link>Query\SparqlQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlQueryParser.cs">
+      <Link>Parsing\SparqlQueryParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\SparqlTokeniser.cs">
+      <Link>Parsing\Tokens\SparqlTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\Graph.cs">
+      <Link>Core\Graph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\GraphCollection.cs">
+      <Link>Core\GraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\GraphLiteralNode.cs">
+      <Link>Core\GraphLiteralNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\AsyncStorageExtensions.cs">
+      <Link>Storage\AsyncStorageExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\BaseAsyncSafeConnector.cs">
+      <Link>Storage\BaseAsyncSafeConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\IStorageProvider.cs">
+      <Link>Storage\IStorageProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\AllegroGraphServer.cs">
+      <Link>Storage\Management\AllegroGraphServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\IStorageServer.cs">
+      <Link>Storage\Management\IStorageServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\IStoreTemplate.cs">
+      <Link>Storage\Management\Provisioning\IStoreTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\Owlim\OwlimLiteTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\Owlim\OwlimLiteTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\Owlim\OwlimSETemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\Owlim\OwlimSETemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs">
+      <Link>Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Stardog\BaseStardogTemplate.cs">
+      <Link>Storage\Management\Provisioning\Stardog\BaseStardogTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs">
+      <Link>Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs">
+      <Link>Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\Provisioning\StoreTemplate.cs">
+      <Link>Storage\Management\Provisioning\StoreTemplate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\SesameServer.cs">
+      <Link>Storage\Management\SesameServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Management\StardogServer.cs">
+      <Link>Storage\Management\StardogServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\StorageCallbacks.cs">
+      <Link>Storage\StorageCallbacks.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\StorageHelper.cs">
+      <Link>Storage\StorageHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\WebContext.cs">
+      <Link>Web\WebContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\IHttpContext.cs">
+      <Link>Web\IHttpContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGZipWriter.cs">
+      <Link>Writing\BaseGZipWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\CompressingTurtleWriter.cs">
+      <Link>Writing\CompressingTurtleWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGZipDatasetWriter.cs">
+      <Link>Writing\BaseGZipDatasetWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseGZipResultsWriter.cs">
+      <Link>Writing\BaseGZipResultsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\GraphVizGenerator.cs">
+      <Link>Writing\GraphVizGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\GraphVizWriter.cs">
+      <Link>Writing\GraphVizWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IGraph.cs">
+      <Link>Core\IGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\INode.cs">
+      <Link>Core\INode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IRdfReader.cs">
+      <Link>Core\IRdfReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IRdfWriter.cs">
+      <Link>Core\IRdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IRdfXmlEvent.cs">
+      <Link>Parsing\Events\IRdfXmlEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IStoreReader.cs">
+      <Link>Core\IStoreReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IStoreWriter.cs">
+      <Link>Core\IStoreWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\IToken.cs">
+      <Link>Parsing\Tokens\IToken.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\ITokeniser.cs">
+      <Link>Parsing\Tokens\ITokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\ITokenQueue.cs">
+      <Link>Parsing\Tokens\ITokenQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ITripleContext.cs">
+      <Link>Core\ITripleContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ITripleStore.cs">
+      <Link>Core\ITripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\LiteralNode.cs">
+      <Link>Core\LiteralNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\MimeTypesHelper.cs">
+      <Link>Core\MimeTypesHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\NamespaceDocs.cs">
+      <Link>NamespaceDocs.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\NamespaceMapper.cs">
+      <Link>Core\NamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\NTriplesParser.cs">
+      <Link>Parsing\NTriplesParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
+      <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
+      <Link>Writing\InternalXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
+      <Link>Query\SparqlRemoteEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlResultSet.cs">
+      <Link>Query\SparqlResultSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlSpecsHelper.cs">
+      <Link>Query\SparqlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlHtmlWriter.cs">
+      <Link>Writing\SparqlHtmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlJsonWriter.cs">
+      <Link>Writing\SparqlJsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlXmlWriter.cs">
+      <Link>Writing\SparqlXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\TripleStore.cs">
+      <Link>Core\TripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\StringWriter.cs">
+      <Link>Writing\StringWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TriGWriter.cs">
+      <Link>Writing\TriGWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\NTriplesWriter.cs">
+      <Link>Writing\NTriplesWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\Tools.cs">
+      <Link>Core\Tools.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TurtleTokeniser.cs">
+      <Link>Parsing\Tokens\TurtleTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Tokens.cs">
+      <Link>Parsing\Tokens\Tokens.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UnicodeSpecsHelper.cs">
+      <Link>Parsing\UnicodeSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UriLoader.cs">
+      <Link>Parsing\UriLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\UriNode.cs">
+      <Link>Core\UriNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\Triple.cs">
+      <Link>Core\Triple.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\TripleCollection.cs">
+      <Link>Core\TripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\XmlEvents.cs">
+      <Link>Parsing\Events\RdfXml\XmlEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfXmlParser.cs">
+      <Link>Parsing\RdfXmlParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\XmlSpecsHelper.cs">
+      <Link>Parsing\XmlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\WriterUtilities.cs">
+      <Link>Writing\WriterUtilities.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Callbacks.cs">
+      <Link>Callbacks.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\HashSlot.cs">
+      <Link>Common\HashSlot.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\IHashSlot.cs">
+      <Link>Common\IHashSlot.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\StringTrie.cs">
+      <Link>Common\StringTrie.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\CachedObjectKey.cs">
+      <Link>Configuration\CachedObjectKey.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationSerializationContext.cs">
+      <Link>Configuration\ConfigurationSerializationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\CredentialsFactory.cs">
+      <Link>Configuration\CredentialsFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\DataFactories.cs">
+      <Link>Configuration\DataFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\DatasetFactory.cs">
+      <Link>Configuration\DatasetFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\EndpointFactories.cs">
+      <Link>Configuration\EndpointFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ExpressionFactoryFactory.cs">
+      <Link>Configuration\ExpressionFactoryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\OptimiserFactory.cs">
+      <Link>Configuration\OptimiserFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ParserFactory.cs">
+      <Link>Configuration\ParserFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\PermissionFactories.cs">
+      <Link>Configuration\PermissionFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\Permissions\Permission.cs">
+      <Link>Configuration\Permissions\Permission.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\Permissions\UserGroup.cs">
+      <Link>Configuration\Permissions\UserGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ProcessorFactories.cs">
+      <Link>Configuration\ProcessorFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ObjectFactoryFactory.cs">
+      <Link>Configuration\ObjectFactoryFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ProxyFactory.cs">
+      <Link>Configuration\ProxyFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ReasonerFactory.cs">
+      <Link>Configuration\ReasonerFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\AdvancedTripleCollections.cs">
+      <Link>Core\AdvancedTripleCollections.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseEndpoint.cs">
+      <Link>Core\BaseEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BaseNode.cs">
+      <Link>Core\BaseNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\BlankNodeMapper.cs">
+      <Link>Core\BlankNodeMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\DiskDemandTripleStore.cs">
+      <Link>Core\DiskDemandTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\EqualityHelper.cs">
+      <Link>Core\EqualityHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\GraphDiff.cs">
+      <Link>Core\GraphDiff.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\INamespaceMapper.cs">
+      <Link>Core\INamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\INodeFactory.cs">
+      <Link>Core\INodeFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IRdfHandler.cs">
+      <Link>Core\IRdfHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\ISparqlResultsHandler.cs">
+      <Link>Core\ISparqlResultsHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\MimeTypeDefinition.cs">
+      <Link>Core\MimeTypeDefinition.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\GraphPersistenceWrapper.cs">
+      <Link>Core\GraphPersistenceWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\NestedNamespaceMapper.cs">
+      <Link>Core\NestedNamespaceMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\NodeFactory.cs">
+      <Link>Core\NodeFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\PersistenceAction.cs">
+      <Link>Core\PersistenceAction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\PersistentTripleStore.cs">
+      <Link>Core\PersistentTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\SubGraphMatcher.cs">
+      <Link>Core\SubGraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\GraphMatcher.cs">
+      <Link>Core\GraphMatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\QueryableGraph.cs">
+      <Link>Core\QueryableGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\TripleComparers.cs">
+      <Link>Core\TripleComparers.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\UnionCollections.cs">
+      <Link>Core\UnionCollections.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\UnionGraph.cs">
+      <Link>Core\UnionGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\UriFactory.cs">
+      <Link>Core\UriFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\VariableNode.cs">
+      <Link>Core\VariableNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\VariableContext.cs">
+      <Link>Core\VariableContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\WebDemandTripleStore.cs">
+      <Link>Core\WebDemandTripleStore.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Events.cs">
+      <Link>Events.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\HashTable.cs">
+      <Link>Common\HashTable.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Indexing.cs">
+      <Link>Indexing.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\NestedReference.cs">
+      <Link>Common\NestedReference.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\Individual.cs">
+      <Link>Ontology\Individual.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\Ontology.cs">
+      <Link>Ontology\Ontology.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\OntologyClass.cs">
+      <Link>Ontology\OntologyClass.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\OntologyGraph.cs">
+      <Link>Ontology\OntologyGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\OntologyHelper.cs">
+      <Link>Ontology\OntologyHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\OntologyProperty.cs">
+      <Link>Ontology\OntologyProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\OntologyResource.cs">
+      <Link>Ontology\OntologyResource.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Ontology\ReasonerGraph.cs">
+      <Link>Ontology\ReasonerGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlCsvParser.cs">
+      <Link>Parsing\SparqlCsvParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\AnyHandler.cs">
+      <Link>Parsing\Handlers\AnyHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\GraphUriRewriteHandler.cs">
+      <Link>Parsing\Handlers\GraphUriRewriteHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Core\IObjectParser.cs">
+      <Link>Core\IObjectParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlTsvParser.cs">
+      <Link>Parsing\SparqlTsvParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\CsvTokeniser.cs">
+      <Link>Parsing\Tokens\CsvTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\TsvTokeniser.cs">
+      <Link>Parsing\Tokens\TsvTokeniser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UriLoaderAsync.cs">
+      <Link>Parsing\UriLoaderAsync.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\BlockingTextReader.cs">
+      <Link>Parsing\BlockingTextReader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\BaseParserContext.cs">
+      <Link>Parsing\Contexts\BaseParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\BaseResultsParserContext.cs">
+      <Link>Parsing\Contexts\BaseResultsParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\BaseStoreParserContext.cs">
+      <Link>Parsing\Contexts\BaseStoreParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IEventParserContext.cs">
+      <Link>Parsing\Contexts\IEventParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IParserContext.cs">
+      <Link>Parsing\Contexts\IParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IResultsParserContext.cs">
+      <Link>Parsing\Contexts\IResultsParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\IStoreParserContext.cs">
+      <Link>Parsing\Contexts\IStoreParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\JsonParserContext.cs">
+      <Link>Parsing\Contexts\JsonParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\Notation3ParserContext.cs">
+      <Link>Parsing\Contexts\Notation3ParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\RdfACoreParserContext.cs">
+      <Link>Parsing\Contexts\RdfACoreParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\RdfAParserContext.cs">
+      <Link>Parsing\Contexts\RdfAParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\RdfXmlParserContext.cs">
+      <Link>Parsing\Contexts\RdfXmlParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\SparqlJsonParserContext.cs">
+      <Link>Parsing\Contexts\SparqlJsonParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\SparqlQueryParserContext.cs">
+      <Link>Parsing\Contexts\SparqlQueryParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\SparqlRdfParserContext.cs">
+      <Link>Parsing\Contexts\SparqlRdfParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\SparqlUpdateParserContext.cs">
+      <Link>Parsing\Contexts\SparqlUpdateParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\SparqlXmlParserContext.cs">
+      <Link>Parsing\Contexts\SparqlXmlParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Contexts\TriGParserContext.cs">
+      <Link>Parsing\Contexts\TriGParserContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\DataUriLoader.cs">
+      <Link>Parsing\DataUriLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\EmbeddedResourceLoader.cs">
+      <Link>Parsing\EmbeddedResourceLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\DualEventQueue.cs">
+      <Link>Parsing\Events\DualEventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfA\HtmlEventGenerator.cs">
+      <Link>Parsing\Events\RdfA\HtmlEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfA\IRdfAHostLanguage.cs">
+      <Link>Parsing\Events\RdfA\IRdfAHostLanguage.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfA\XHtmlHost.cs">
+      <Link>Parsing\Events\RdfA\XHtmlHost.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfA\XmlHost.cs">
+      <Link>Parsing\Events\RdfA\XmlHost.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\DomBasedEventGenerator.cs">
+      <Link>Parsing\Events\RdfXml\DomBasedEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\EventQueue.cs">
+      <Link>Parsing\Events\EventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEvent.cs">
+      <Link>Parsing\Events\IEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEventGenerator.cs">
+      <Link>Parsing\Events\IEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IEventQueue.cs">
+      <Link>Parsing\Events\IEventQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\IRdfAEvent.cs">
+      <Link>Parsing\Events\IRdfAEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfA\RdfAEvents.cs">
+      <Link>Parsing\Events\RdfA\RdfAEvents.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\BaseHandler.cs">
+      <Link>Parsing\Handlers\BaseHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\CancellableHandler.cs">
+      <Link>Parsing\Handlers\CancellableHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\HandlerExtensions.cs">
+      <Link>Parsing\Handlers\HandlerExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\MultisetHandler.cs">
+      <Link>Parsing\Handlers\MultisetHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\ResultCountHandler.cs">
+      <Link>Parsing\Handlers\ResultCountHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\ResultSetHandler.cs">
+      <Link>Parsing\Handlers\ResultSetHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\StoreCountHandler.cs">
+      <Link>Parsing\Handlers\StoreCountHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\MultiHandler.cs">
+      <Link>Parsing\Handlers\MultiHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\ChainedHandler.cs">
+      <Link>Parsing\Handlers\ChainedHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\NullHandler.cs">
+      <Link>Parsing\Handlers\NullHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\CountHandler.cs">
+      <Link>Parsing\Handlers\CountHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\GraphHandler.cs">
+      <Link>Parsing\Handlers\GraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\PagingHandler.cs">
+      <Link>Parsing\Handlers\PagingHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\StoreHandler.cs">
+      <Link>Parsing\Handlers\StoreHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\WriteThroughHandler.cs">
+      <Link>Parsing\Handlers\WriteThroughHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Handlers\WriteToStoreHandler.cs">
+      <Link>Parsing\Handlers\WriteToStoreHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\HtmlPlusRdfAParser.cs">
+      <Link>Parsing\HtmlPlusRdfAParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\IRdfAVocabulary.cs">
+      <Link>Parsing\IRdfAVocabulary.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\IriSpecsHelper.cs">
+      <Link>Parsing\IriSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\IUriLoaderCache.cs">
+      <Link>Parsing\IUriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Notation3Parser.cs">
+      <Link>Parsing\Notation3Parser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\FileLoader.cs">
+      <Link>Parsing\FileLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\ParserHelper.cs">
+      <Link>Parsing\ParserHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\PositionInfo.cs">
+      <Link>Parsing\PositionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfACoreParser.cs">
+      <Link>Parsing\RdfACoreParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfAParser.cs">
+      <Link>Parsing\RdfAParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\RdfXmlSpecsHelper.cs">
+      <Link>Parsing\RdfXmlSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Events\RdfXml\StreamingEventGenerator.cs">
+      <Link>Parsing\Events\RdfXml\StreamingEventGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlRdfParser.cs">
+      <Link>Parsing\SparqlRdfParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlUpdateParser.cs">
+      <Link>Parsing\SparqlUpdateParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\PathToken.cs">
+      <Link>Parsing\Tokens\PathToken.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\SparqlTokens.cs">
+      <Link>Parsing\Tokens\SparqlTokens.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\SparqlUpdateTokens.cs">
+      <Link>Parsing\Tokens\SparqlUpdateTokens.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Tokens\Token.cs">
+      <Link>Parsing\Tokens\Token.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TurtleParser.cs">
+      <Link>Parsing\TurtleParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\NQuadsParser.cs">
+      <Link>Parsing\NQuadsParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\SparqlBooleanParser.cs">
+      <Link>Parsing\SparqlBooleanParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\TriXParser.cs">
+      <Link>Parsing\TriXParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\UriLoaderCache.cs">
+      <Link>Parsing\UriLoaderCache.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\ISyntaxValidator.cs">
+      <Link>Parsing\Validation\ISyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\RdfDatasetSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfDatasetSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\RdfSyntaxValidator.cs">
+      <Link>Parsing\Validation\RdfSyntaxValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\SparqlQueryValidator.cs">
+      <Link>Parsing\Validation\SparqlQueryValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\SparqlResultsValidator.cs">
+      <Link>Parsing\Validation\SparqlResultsValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\SparqlUpdateValidator.cs">
+      <Link>Parsing\Validation\SparqlUpdateValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\Validation\SyntaxValidationResults.cs">
+      <Link>Parsing\Validation\SyntaxValidationResults.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Parsing\XmlPlusRdfAParser.cs">
+      <Link>Parsing\XmlPlusRdfAParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\BaseAggregate.cs">
+      <Link>Query\Aggregates\BaseAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\LeviathanNumericAggregates.cs">
+      <Link>Query\Aggregates\LeviathanNumericAggregates.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\AllAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\AllAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\AnyAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\AnyAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\MedianAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\MedianAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\ModeAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\ModeAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\NoneAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\NoneAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\NumericMaxAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\NumericMaxAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Leviathan\NumericMinAggregate.cs">
+      <Link>Query\Aggregates\Leviathan\NumericMinAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\AverageAggregate.cs">
+      <Link>Query\Aggregates\Sparql\AverageAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\CountAggregate.cs">
+      <Link>Query\Aggregates\Sparql\CountAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\CountAllAggregate.cs">
+      <Link>Query\Aggregates\Sparql\CountAllAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\CountAllDistinctAggregate.cs">
+      <Link>Query\Aggregates\Sparql\CountAllDistinctAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\CountDistinctAggregate.cs">
+      <Link>Query\Aggregates\Sparql\CountDistinctAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\GroupConcatAggregate.cs">
+      <Link>Query\Aggregates\Sparql\GroupConcatAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\MaxAggregate.cs">
+      <Link>Query\Aggregates\Sparql\MaxAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\MinAggregate.cs">
+      <Link>Query\Aggregates\Sparql\MinAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\SampleAggregate.cs">
+      <Link>Query\Aggregates\Sparql\SampleAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\Sparql\SumAggregate.cs">
+      <Link>Query\Aggregates\Sparql\SumAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\XPath\StringJoin.cs">
+      <Link>Query\Aggregates\XPath\StringJoin.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\AlgebraExtensions.cs">
+      <Link>Query\Algebra\AlgebraExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\AskBgp.cs">
+      <Link>Query\Algebra\AskBgp.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\BaseMultiset.cs">
+      <Link>Query\Algebra\BaseMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Bgp.cs">
+      <Link>Query\Algebra\Bgp.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Bindings.cs">
+      <Link>Query\Algebra\Bindings.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Extend.cs">
+      <Link>Query\Algebra\Extend.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\ISet.cs">
+      <Link>Query\Algebra\ISet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\LazyBgp.cs">
+      <Link>Query\Algebra\LazyBgp.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Distinct.cs">
+      <Link>Query\Algebra\Distinct.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Filter.cs">
+      <Link>Query\Algebra\Filter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Graph.cs">
+      <Link>Query\Algebra\Graph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\GroupBy.cs">
+      <Link>Query\Algebra\GroupBy.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\GroupMultiset.cs">
+      <Link>Query\Algebra\GroupMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Having.cs">
+      <Link>Query\Algebra\Having.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\IdentityMultiset.cs">
+      <Link>Query\Algebra\IdentityMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\ISparqlAlgebra.cs">
+      <Link>Query\Algebra\ISparqlAlgebra.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\AlgebraJoinClasses.cs">
+      <Link>Query\Algebra\AlgebraJoinClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\NegatedPropertySet.cs">
+      <Link>Query\Algebra\NegatedPropertySet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\NullOperator.cs">
+      <Link>Query\Algebra\NullOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\OneOrMorePath.cs">
+      <Link>Query\Algebra\OneOrMorePath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\ParallelisedJoinClasses.cs">
+      <Link>Query\Algebra\ParallelisedJoinClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\PropertyPath.cs">
+      <Link>Query\Algebra\PropertyPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\PropertyPathOperators.cs">
+      <Link>Query\Algebra\PropertyPathOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\RestrictionFilters.cs">
+      <Link>Query\Algebra\RestrictionFilters.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\SubQuery.cs">
+      <Link>Query\Algebra\SubQuery.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\ZeroLengthPath.cs">
+      <Link>Query\Algebra\ZeroLengthPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\ZeroOrMorePath.cs">
+      <Link>Query\Algebra\ZeroOrMorePath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\BaseQuadDataset.cs">
+      <Link>Query\Datasets\BaseQuadDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\InMemoryQuadDataset.cs">
+      <Link>Query\Datasets\InMemoryQuadDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\QuadDatasetTripleCollection.cs">
+      <Link>Query\Datasets\QuadDatasetTripleCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\WrapperDataset.cs">
+      <Link>Query\Datasets\WrapperDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\ExplainQueryProcessor.cs">
+      <Link>Query\ExplainQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Arithmetic\AdditionExpression.cs">
+      <Link>Query\Expressions\Arithmetic\AdditionExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Arithmetic\DivisionExpression.cs">
+      <Link>Query\Expressions\Arithmetic\DivisionExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Arithmetic\MinusExpression.cs">
+      <Link>Query\Expressions\Arithmetic\MinusExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Arithmetic\MultiplicationExpression.cs">
+      <Link>Query\Expressions\Arithmetic\MultiplicationExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Arithmetic\SubtractionExpression.cs">
+      <Link>Query\Expressions\Arithmetic\SubtractionExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\EqualsExpression.cs">
+      <Link>Query\Expressions\Comparison\EqualsExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\GreaterThanExpression.cs">
+      <Link>Query\Expressions\Comparison\GreaterThanExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\GreaterThanOrEqualToExpression.cs">
+      <Link>Query\Expressions\Comparison\GreaterThanOrEqualToExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\LessThanExpression.cs">
+      <Link>Query\Expressions\Comparison\LessThanExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\LessThanOrEqualToExpression.cs">
+      <Link>Query\Expressions\Comparison\LessThanOrEqualToExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Comparison\NotEqualsExpression.cs">
+      <Link>Query\Expressions\Comparison\NotEqualsExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Conditional\AndExpression.cs">
+      <Link>Query\Expressions\Conditional\AndExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Conditional\NotExpression.cs">
+      <Link>Query\Expressions\Conditional\NotExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Conditional\OrExpression.cs">
+      <Link>Query\Expressions\Conditional\OrExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\BNodeFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\BNodeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\EFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\EFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\LocalNameFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\LocalNameFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\MaxFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\MaxFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\MinFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\MinFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\NamespaceFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\NamespaceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\NowFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\NowFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\PiFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\PiFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\Sha1Function.cs">
+      <Link>Query\Expressions\Functions\Arq\Sha1Function.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\StringJoinFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\StringJoinFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Arq\SubstringFunction.cs">
+      <Link>Query\Expressions\Functions\Arq\SubstringFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Hash\MD5HashFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Hash\MD5HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Hash\Sha256HashFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Hash\Sha256HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\CubeFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\CubeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\EFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\EFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\FactorialFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\FactorialFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\LogFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\LogFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\NaturalLogFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\NaturalLogFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\PowerFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\PowerFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\PythagoreanDistanceFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\PythagoreanDistanceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\RandomFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\RandomFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\ReciprocalFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\ReciprocalFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\RootFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\RootFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\SquareFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\SquareFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\SquareRootFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\SquareRootFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\TenFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\TenFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\BaseTrigonometricFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\BaseTrigonometricFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosecantFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosecantFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosineFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CosineFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CotangentFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\CotangentFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\DegreesToRadiansFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\DegreesToRadiansFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\RadiansToDegressFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\RadiansToDegressFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SecantFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SecantFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SineFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\SineFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\TangentFunction.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\Trigonometry\TangentFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Numeric\AbsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Numeric\AbsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\BaseBinaryStringFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\BaseBinaryStringFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Numeric\CeilFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Numeric\CeilFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\ConcatFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\ConcatFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\ContainsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\ContainsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\EncodeForUriFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\EncodeForUriFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Numeric\FloorFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Numeric\FloorFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\IsNumericFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\IsNumericFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\LCaseFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\LCaseFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Numeric\RandFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Numeric\RandFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\ReplaceFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\ReplaceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Numeric\RoundFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Numeric\RoundFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\Sha384HashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\Sha384HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Set\BaseSetFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Set\BaseSetFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Constructor\BNodeFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Constructor\BNodeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\BoundFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\BoundFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\DataTypeFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\DataTypeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\DayFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\DayFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\HoursFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\HoursFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Set\InFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Set\InFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Constructor\IriFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Constructor\IriFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\IsBlankFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\IsBlankFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\IsIriFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\IsIriFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\IsLiteralFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\IsLiteralFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\LangFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\LangFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\LangMatchesFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\LangMatchesFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\MD5HashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\MD5HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\MinutesFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\MinutesFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\MonthFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\MonthFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Set\NotInFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Set\NotInFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\NowFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\NowFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\RegexFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\RegexFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\SameTermFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\SameTermFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\SecondsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\SecondsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\Sha1HashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\Sha1HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\Sha256HashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\Sha256HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\Sha512HashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\Sha512HashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrAfterFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrAfterFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrBeforeFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrBeforeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Constructor\StrDtFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Constructor\StrDtFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrEndsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrEndsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Constructor\StrLangFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Constructor\StrLangFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrLenFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrLenFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\StrStartsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\StrStartsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\SubStrFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\SubStrFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\TimezoneFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\TimezoneFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\TZFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\TZFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\String\UCaseFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\String\UCaseFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\DateTime\YearFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\DateTime\YearFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\CompareFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\CompareFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\BaseBinaryStringFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\BaseBinaryStringFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\BaseUnaryDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\BaseUnaryDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\BaseCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\BaseCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\BaseUnaryStringFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\BaseUnaryStringFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\DayFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\DayFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\ConcatFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\ConcatFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\EncodeForUriFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\EncodeForUriFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\EndsWithFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\EndsWithFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\EscapeHtmlUriFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\EscapeHtmlUriFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\HoursFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\HoursFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\LowerCaseFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\LowerCaseFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\MinutesFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\MinutesFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\MonthFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\MonthFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\NormalizeSpaceFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\NormalizeSpaceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\NormalizeUnicodeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\NormalizeUnicodeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Numeric\RoundHalfToEvenFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\Numeric\RoundHalfToEvenFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Numeric\AbsFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\Numeric\AbsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\BooleanCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\BooleanCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Numeric\CeilingFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\Numeric\CeilingFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\DateTimeCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\DateTimeCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\DecimalCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\DecimalCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\DoubleCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\DoubleCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\FloatCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\FloatCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Numeric\FloorFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\Numeric\FloorFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\IntegerCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\IntegerCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Numeric\RoundFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\Numeric\RoundFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\SecondsFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\SecondsFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\Cast\StringCast.cs">
+      <Link>Query\Expressions\Functions\XPath\Cast\StringCast.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\ReplaceFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\ReplaceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\StartsWithFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\StartsWithFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\StringLengthFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\StringLengthFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\ContainsFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\ContainsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\TimezoneFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\TimezoneFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\SubstringAfterFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\SubstringAfterFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\SubstringBeforeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\SubstringBeforeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\SubstringFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\SubstringFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\String\UpperCaseFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\String\UpperCaseFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\DateTime\YearFromDateTimeFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\DateTime\YearFromDateTimeFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\IExpressionTransformer.cs">
+      <Link>Query\Expressions\IExpressionTransformer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\BooleanNode.cs">
+      <Link>Nodes\BooleanNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\ByteNodes.cs">
+      <Link>Nodes\ByteNodes.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\DateTimeNode.cs">
+      <Link>Nodes\DateTimeNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\DecimalNode.cs">
+      <Link>Nodes\DecimalNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\DoubleNode.cs">
+      <Link>Nodes\DoubleNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\ValuedNodeExtensions.cs">
+      <Link>Nodes\ValuedNodeExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\FloatNode.cs">
+      <Link>Nodes\FloatNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\IValuedNode.cs">
+      <Link>Nodes\IValuedNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\LongNode.cs">
+      <Link>Nodes\LongNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\NumericNode.cs">
+      <Link>Nodes\NumericNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Nodes\StringNode.cs">
+      <Link>Nodes\StringNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\AggregateTerm.cs">
+      <Link>Query\Expressions\Primary\AggregateTerm.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\AllModifier.cs">
+      <Link>Query\Expressions\Primary\AllModifier.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\ConstantTerm.cs">
+      <Link>Query\Expressions\Primary\ConstantTerm.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\DistinctModifier.cs">
+      <Link>Query\Expressions\Primary\DistinctModifier.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\GraphPatternTerm.cs">
+      <Link>Query\Expressions\Primary\GraphPatternTerm.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Primary\VariableTerm.cs">
+      <Link>Query\Expressions\Primary\VariableTerm.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\FederatedSparqlRemoteEndpoint.cs">
+      <Link>Query\FederatedSparqlRemoteEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\BaseAlgebraOptimiser.cs">
+      <Link>Query\Optimisation\BaseAlgebraOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\BaseQueryOptimiser.cs">
+      <Link>Query\Optimisation\BaseQueryOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\BgpOptimisers.cs">
+      <Link>Query\Optimisation\BgpOptimisers.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Minus.cs">
+      <Link>Query\Algebra\Minus.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Multiset.cs">
+      <Link>Query\Algebra\Multiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\NullMultiset.cs">
+      <Link>Query\Algebra\NullMultiset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\OrderBy.cs">
+      <Link>Query\Algebra\OrderBy.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Project.cs">
+      <Link>Query\Algebra\Project.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Service.cs">
+      <Link>Query\Algebra\Service.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Set.cs">
+      <Link>Query\Algebra\Set.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\Slice.cs">
+      <Link>Query\Algebra\Slice.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Algebra\SpecialQueryClasses.cs">
+      <Link>Query\Algebra\SpecialQueryClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Construct\ConstructContext.cs">
+      <Link>Query\Construct\ConstructContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\BaseDataset.cs">
+      <Link>Query\Datasets\BaseDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\DatasetGraphCollection.cs">
+      <Link>Query\Datasets\DatasetGraphCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\InMemoryDataset.cs">
+      <Link>Query\Datasets\InMemoryDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Datasets\ISparqlDataset.cs">
+      <Link>Query\Datasets\ISparqlDataset.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\BaseDescribeAlgorithm.cs">
+      <Link>Query\Describe\BaseDescribeAlgorithm.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\ConciseBoundedDescription.cs">
+      <Link>Query\Describe\ConciseBoundedDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\LabelledDescription.cs">
+      <Link>Query\Describe\LabelledDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\MinimalSpanningGraph.cs">
+      <Link>Query\Describe\MinimalSpanningGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\SymmetricConciseBoundedDescription.cs">
+      <Link>Query\Describe\SymmetricConciseBoundedDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\SimpleSubjectObjectDescription.cs">
+      <Link>Query\Describe\SimpleSubjectObjectDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\NamedGraphDescription.cs">
+      <Link>Query\Describe\NamedGraphDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\SimpleSubjectDescription.cs">
+      <Link>Query\Describe\SimpleSubjectDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\ArqFunctionFactory.cs">
+      <Link>Query\Expressions\ArqFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\BaseExpressionClasses.cs">
+      <Link>Query\Expressions\BaseExpressionClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Hash\BaseHashFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Hash\BaseHashFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Leviathan\Numeric\CartesianFunctions.cs">
+      <Link>Query\Expressions\Functions\Leviathan\Numeric\CartesianFunctions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\CoalesceFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\CoalesceFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\Boolean\ExistsFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\Boolean\ExistsFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\Sparql\IfFunction.cs">
+      <Link>Query\Expressions\Functions\Sparql\IfFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\UnknownFunction.cs">
+      <Link>Query\Expressions\Functions\UnknownFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\LeviathanFunctionFactory.cs">
+      <Link>Query\Expressions\LeviathanFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\Functions\XPath\BooleanFunction.cs">
+      <Link>Query\Expressions\Functions\XPath\BooleanFunction.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\SparqlBuiltInFunctionFactory.cs">
+      <Link>Query\Expressions\SparqlBuiltInFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Describe\ISparqlDescribe.cs">
+      <Link>Query\Describe\ISparqlDescribe.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\InferenceHelper.cs">
+      <Link>Query\Inference\InferenceHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\IOwlReasoner.cs">
+      <Link>Query\Inference\IOwlReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\ClusterService.cs">
+      <Link>Query\Inference\Pellet\Services\ClusterService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\SimilarityService.cs">
+      <Link>Query\Inference\Pellet\Services\SimilarityService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs">
+      <Link>Query\Inference\Pellet\Services\IntegrityConstraintValidationService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\PredictService.cs">
+      <Link>Query\Inference\Pellet\Services\PredictService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\SimpleN3RulesReasoner.cs">
+      <Link>Query\Inference\SimpleN3RulesReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\OwlReasonerWrapper.cs">
+      <Link>Query\Inference\OwlReasonerWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\PelletReasoner.cs">
+      <Link>Query\Inference\PelletReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\NamespaceService.cs">
+      <Link>Query\Inference\Pellet\Services\NamespaceService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\IAlgebraOptimiser.cs">
+      <Link>Query\Optimisation\IAlgebraOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\IdentityFilterOptimiser.cs">
+      <Link>Query\Optimisation\IdentityFilterOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\IQueryOptimiser.cs">
+      <Link>Query\Optimisation\IQueryOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\ParallelEvaluationOptimiser.cs">
+      <Link>Query\Optimisation\ParallelEvaluationOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\QueryOptimisers.cs">
+      <Link>Query\Optimisation\QueryOptimisers.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\SparqlOptimiser.cs">
+      <Link>Query\Optimisation\SparqlOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\StrictAlgebraOptimiser.cs">
+      <Link>Query\Optimisation\StrictAlgebraOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\VirtualAlgebraOptimiser.cs">
+      <Link>Query\Optimisation\VirtualAlgebraOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Optimisation\WeightedOptimiser.cs">
+      <Link>Query\Optimisation\WeightedOptimiser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Ordering\TripleComparer.cs">
+      <Link>Query\Ordering\TripleComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\NegatedSet.cs">
+      <Link>Query\Paths\NegatedSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\BindPattern.cs">
+      <Link>Query\Patterns\BindPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\BlankNodePattern.cs">
+      <Link>Query\Patterns\BlankNodePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\FixedBlankNodePattern.cs">
+      <Link>Query\Patterns\FixedBlankNodePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\NodeMatchPattern.cs">
+      <Link>Query\Patterns\NodeMatchPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\VariablePattern.cs">
+      <Link>Query\Patterns\VariablePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\PelletQueryProcessor.cs">
+      <Link>Query\PelletQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\ServiceEndpoint.cs">
+      <Link>Query\Inference\Pellet\ServiceEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\KnowledgeBase.cs">
+      <Link>Query\Inference\Pellet\KnowledgeBase.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\PelletHelper.cs">
+      <Link>Query\Inference\Pellet\PelletHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\PelletServer.cs">
+      <Link>Query\Inference\Pellet\PelletServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\PelletService.cs">
+      <Link>Query\Inference\Pellet\PelletService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\ClassifyService.cs">
+      <Link>Query\Inference\Pellet\Services\ClassifyService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\ConsistencyService.cs">
+      <Link>Query\Inference\Pellet\Services\ConsistencyService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\ExplainServices.cs">
+      <Link>Query\Inference\Pellet\Services\ExplainServices.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\QueryService.cs">
+      <Link>Query\Inference\Pellet\Services\QueryService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\RealizeService.cs">
+      <Link>Query\Inference\Pellet\Services\RealizeService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\SearchService.cs">
+      <Link>Query\Inference\Pellet\Services\SearchService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\Pellet\Services\UnsupportedService.cs">
+      <Link>Query\Inference\Pellet\Services\UnsupportedService.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\ISparqlQueryProcessor.cs">
+      <Link>Query\ISparqlQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\LeviathanQueryProcessor.cs">
+      <Link>Query\LeviathanQueryProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Ordering\ISparqlOrderBy.cs">
+      <Link>Query\Ordering\ISparqlOrderBy.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\AlternativePath.cs">
+      <Link>Query\Paths\AlternativePath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\BaseBinaryPath.cs">
+      <Link>Query\Paths\BaseBinaryPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\BaseUnaryPath.cs">
+      <Link>Query\Paths\BaseUnaryPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\CardinalityPathClasses.cs">
+      <Link>Query\Paths\CardinalityPathClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\InversePath.cs">
+      <Link>Query\Paths\InversePath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\ISparqlPath.cs">
+      <Link>Query\Paths\ISparqlPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\PartialPath.cs">
+      <Link>Query\Paths\PartialPath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\PathEvaluationContext.cs">
+      <Link>Query\Paths\PathEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\PathTransformContext.cs">
+      <Link>Query\Paths\PathTransformContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\Property.cs">
+      <Link>Query\Paths\Property.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Paths\SequencePath.cs">
+      <Link>Query\Paths\SequencePath.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\BaseTriplePattern.cs">
+      <Link>Query\Patterns\BaseTriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\BindingsPattern.cs">
+      <Link>Query\Patterns\BindingsPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\FilterPattern.cs">
+      <Link>Query\Patterns\FilterPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Filters\ISparqlFilter.cs">
+      <Link>Query\Filters\ISparqlFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\ITriplePattern.cs">
+      <Link>Query\Patterns\ITriplePattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\LetPattern.cs">
+      <Link>Query\Patterns\LetPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\PropertyPathPattern.cs">
+      <Link>Query\Patterns\PropertyPathPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Patterns\SubQueryPattern.cs">
+      <Link>Query\Patterns\SubQueryPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\XPathFunctionFactory.cs">
+      <Link>Query\Expressions\XPathFunctionFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\QueryExtensions.cs">
+      <Link>Query\QueryExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\QueryProcessors.cs">
+      <Link>Query\QueryProcessors.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlEvaluationContext.cs">
+      <Link>Query\SparqlEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlNodeComparer.cs">
+      <Link>Query\SparqlNodeComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlParameterizedString.cs">
+      <Link>Query\SparqlParameterizedString.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlPathParser.cs">
+      <Link>Query\SparqlPathParser.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\SparqlView.cs">
+      <Link>Query\SparqlView.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\BaseHttpConnector.cs">
+      <Link>Storage\BaseHttpConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\DydraConnector.cs">
+      <Link>Storage\DydraConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\IOBehaviour.cs">
+      <Link>Storage\IOBehaviour.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\StardogConnector.cs">
+      <Link>Storage\StardogConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\DatasetFileManager.cs">
+      <Link>Storage\DatasetFileManager.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\FusekiConnector.cs">
+      <Link>Storage\FusekiConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\InMemoryManager.cs">
+      <Link>Storage\InMemoryManager.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\ReadOnlyConnector.cs">
+      <Link>Storage\ReadOnlyConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\SparqlConnector.cs">
+      <Link>Storage\SparqlConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\SparqlHttpProtocolConnector.cs">
+      <Link>Storage\SparqlHttpProtocolConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Virtualisation\IVirtualNode.cs">
+      <Link>Storage\Virtualisation\IVirtualNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Virtualisation\IVirtualRdfProvider.cs">
+      <Link>Storage\Virtualisation\IVirtualRdfProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Virtualisation\SimpleVirtualNodes.cs">
+      <Link>Storage\Virtualisation\SimpleVirtualNodes.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Virtualisation\VirtualNode.cs">
+      <Link>Storage\Virtualisation\VirtualNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\Virtualisation\VirtualNodeCache.cs">
+      <Link>Storage\Virtualisation\VirtualNodeCache.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\ThreadIsolatedReference.cs">
+      <Link>Common\ThreadIsolatedReference.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\Trie.cs">
+      <Link>Common\Trie.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Common\TrieNode.cs">
+      <Link>Common\TrieNode.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\AddCommand.cs">
+      <Link>Update\Commands\AddCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\BaseModifyCommand.cs">
+      <Link>Update\Commands\BaseModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\BaseTransferCommand.cs">
+      <Link>Update\Commands\BaseTransferCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\ClearCommand.cs">
+      <Link>Update\Commands\ClearCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\CopyCommand.cs">
+      <Link>Update\Commands\CopyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\CreateCommand.cs">
+      <Link>Update\Commands\CreateCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\DeleteCommand.cs">
+      <Link>Update\Commands\DeleteCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\DeleteDataCommand.cs">
+      <Link>Update\Commands\DeleteDataCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\DropCommand.cs">
+      <Link>Update\Commands\DropCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\InsertCommand.cs">
+      <Link>Update\Commands\InsertCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\InsertDataCommand.cs">
+      <Link>Update\Commands\InsertDataCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\LoadCommand.cs">
+      <Link>Update\Commands\LoadCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\ModifyCommand.cs">
+      <Link>Update\Commands\ModifyCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Commands\MoveCommand.cs">
+      <Link>Update\Commands\MoveCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\ExplainUpdateProcessor.cs">
+      <Link>Update\ExplainUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\GenericUpdateProcessor.cs">
+      <Link>Update\GenericUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\ISparqlUpdateProcessor.cs">
+      <Link>Update\ISparqlUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\LeviathanUpdateProcessor.cs">
+      <Link>Update\LeviathanUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\RemoteUpdateProcessor.cs">
+      <Link>Update\RemoteUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SimpleUpdateProcessor.cs">
+      <Link>Update\SimpleUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Protocol\BaseProtocolProcessor.cs">
+      <Link>Update\Protocol\BaseProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Protocol\GenericProtocolProcessor.cs">
+      <Link>Update\Protocol\GenericProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Protocol\LeviathanProtocolProcessor.cs">
+      <Link>Update\Protocol\LeviathanProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Protocol\ProtocolToUpdateProcessor.cs">
+      <Link>Update\Protocol\ProtocolToUpdateProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SparqlRemoteUpdateEndpoint.cs">
+      <Link>Update\SparqlRemoteUpdateEndpoint.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SparqlUpdateCommand.cs">
+      <Link>Update\SparqlUpdateCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SparqlUpdateCommandSet.cs">
+      <Link>Update\SparqlUpdateCommandSet.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SparqlUpdateEvaluationContext.cs">
+      <Link>Update\SparqlUpdateEvaluationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\SparqlUpdateSpecsHelper.cs">
+      <Link>Update\SparqlUpdateSpecsHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseDatasetHandler.cs">
+      <Link>Web\BaseDatasetHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseGraphHandler.cs">
+      <Link>Web\BaseGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseSparqlHttpProtocolHandler.cs">
+      <Link>Web\BaseSparqlHttpProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseSparqlQueryHandler.cs">
+      <Link>Web\BaseSparqlQueryHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseSparqlUpdateHandler.cs">
+      <Link>Web\BaseSparqlUpdateHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationLoader.cs">
+      <Link>Configuration\ConfigurationLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\ConfigurationInterfaces.cs">
+      <Link>Configuration\ConfigurationInterfaces.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\BaseHandlerConfiguration.cs">
+      <Link>Web\Configuration\BaseHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\BaseSparqlServer.cs">
+      <Link>Web\BaseSparqlServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs">
+      <Link>Web\Configuration\Protocol\BaseProtocolHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Query\BaseQueryHandlerConfiguration.cs">
+      <Link>Web\Configuration\Query\BaseQueryHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Update\Protocol\ISparqlHttpProtocolProcessor.cs">
+      <Link>Update\Protocol\ISparqlHttpProtocolProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Resource\BaseDatasetHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\BaseDatasetHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs">
+      <Link>Web\Configuration\Resource\BaseGraphHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Configuration\StorageFactories.cs">
+      <Link>Configuration\StorageFactories.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Server\BaseSparqlServerConfiguration.cs">
+      <Link>Web\Configuration\Server\BaseSparqlServerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs">
+      <Link>Web\Configuration\Update\BaseUpdateHandlerConfiguration.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\Configuration\WebConfigurationLoader.cs">
+      <Link>Web\Configuration\WebConfigurationLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\DatasetHandler.cs">
+      <Link>Web\DatasetHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\NegotiateByFileExtension.cs">
+      <Link>Web\NegotiateByFileExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\SchemaGraphHandler.cs">
+      <Link>Web\SchemaGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\SparqlServiceDescriber.cs">
+      <Link>Web\SparqlServiceDescriber.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\WildcardProtocolHandler.cs">
+      <Link>Web\WildcardProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\GraphHandler.cs">
+      <Link>Web\GraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\HandlerHelper.cs">
+      <Link>Web\HandlerHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\ProtocolHandler.cs">
+      <Link>Web\ProtocolHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\QueryHandler.cs">
+      <Link>Web\QueryHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\SparqlServer.cs">
+      <Link>Web\SparqlServer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\UpdateHandler.cs">
+      <Link>Web\UpdateHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Web\WildcardGraphHandler.cs">
+      <Link>Web\WildcardGraphHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\BaseHtmlWriter.cs">
+      <Link>Writing\BaseHtmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\BaseStoreWriterContexts.cs">
+      <Link>Writing\Contexts\BaseStoreWriterContexts.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\BaseWriterContexts.cs">
+      <Link>Writing\Contexts\BaseWriterContexts.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\BindingClasses.cs">
+      <Link>Query\BindingClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\IInferenceEngine.cs">
+      <Link>Query\Inference\IInferenceEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\RdfsReasoner.cs">
+      <Link>Query\Inference\RdfsReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Inference\SkosReasoner.cs">
+      <Link>Query\Inference\SkosReasoner.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Aggregates\ISparqlAggregate.cs">
+      <Link>Query\Aggregates\ISparqlAggregate.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Expressions\ISparqlExpression.cs">
+      <Link>Query\Expressions\ISparqlExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Grouping\ISparqlGroupBy.cs">
+      <Link>Query\Grouping\ISparqlGroupBy.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Grouping\SparqlGroupByClasses.cs">
+      <Link>Query\Grouping\SparqlGroupByClasses.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\AllegroGraphConnector.cs">
+      <Link>Storage\AllegroGraphConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\FourStoreConnector.cs">
+      <Link>Storage\FourStoreConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\BatchTriple.cs">
+      <Link>Storage\BatchTriple.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\JosekiConnector.cs">
+      <Link>Storage\JosekiConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Storage\SesameHttpProtocolConnector.cs">
+      <Link>Storage\SesameHttpProtocolConnector.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\HtmlWriterContext.cs">
+      <Link>Writing\Contexts\HtmlWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\NTriplesWriterContext.cs">
+      <Link>Writing\Contexts\NTriplesWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\RdfXmlWriterContext.cs">
+      <Link>Writing\Contexts\RdfXmlWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\ThreadedStoreWriterContext.cs">
+      <Link>Writing\Contexts\ThreadedStoreWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\TriGWriterContext.cs">
+      <Link>Writing\Contexts\TriGWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Contexts\TurtleWriterContext.cs">
+      <Link>Writing\Contexts\TurtleWriterContext.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IGraphFormatter.cs">
+      <Link>Writing\Formatting\IGraphFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IResultSetFormatter.cs">
+      <Link>Writing\Formatting\IResultSetFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\RdfXmlFormatter.cs">
+      <Link>Writing\Formatting\RdfXmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\SparqlXmlFormatter.cs">
+      <Link>Writing\Formatting\SparqlXmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\PrettyRdfXmlWriter.cs">
+      <Link>Writing\PrettyRdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\BaseFormatter.cs">
+      <Link>Writing\Formatting\BaseFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\CsvFormatter.cs">
+      <Link>Writing\Formatting\CsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\DeliminatedLineFormatter.cs">
+      <Link>Writing\Formatting\DeliminatedLineFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\HtmlFormatter.cs">
+      <Link>Writing\Formatting\HtmlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\ICharFormatter.cs">
+      <Link>Writing\Formatting\ICharFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\INamespaceFormatter.cs">
+      <Link>Writing\Formatting\INamespaceFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IQueryFormatter.cs">
+      <Link>Writing\Formatting\IQueryFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IResultFormatter.cs">
+      <Link>Writing\Formatting\IResultFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\ITripleFormatter.cs">
+      <Link>Writing\Formatting\ITripleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IUriFormatter.cs">
+      <Link>Writing\Formatting\IUriFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\Notation3Formatter.cs">
+      <Link>Writing\Formatting\Notation3Formatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\NQuadsFormatter.cs">
+      <Link>Writing\Formatting\NQuadsFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\NTriplesFormatter.cs">
+      <Link>Writing\Formatting\NTriplesFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\QNameFormatter.cs">
+      <Link>Writing\Formatting\QNameFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\SparqlFormatter.cs">
+      <Link>Writing\Formatting\SparqlFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\TsvFormatter.cs">
+      <Link>Writing\Formatting\TsvFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\TurtleFormatter.cs">
+      <Link>Writing\Formatting\TurtleFormatter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\HtmlSchemaWriter.cs">
+      <Link>Writing\HtmlSchemaWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\RdfXmlWriter.cs">
+      <Link>Writing\RdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\HtmlWriter.cs">
+      <Link>Writing\HtmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\CsvWriter.cs">
+      <Link>Writing\CsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\FastRdfXmlWriter.cs">
+      <Link>Writing\FastRdfXmlWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Notation3Writer.cs">
+      <Link>Writing\Notation3Writer.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\NQuadsWriter.cs">
+      <Link>Writing\NQuadsWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\RdfJsonWriter.cs">
+      <Link>Writing\RdfJsonWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Serialization\GraphDeserializationInfo.cs">
+      <Link>Writing\Serialization\GraphDeserializationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Serialization\ResultSetDeserializationInfo.cs">
+      <Link>Writing\Serialization\ResultSetDeserializationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Serialization\SerializationHelper.cs">
+      <Link>Writing\Serialization\SerializationHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlCsvWriter.cs">
+      <Link>Writing\SparqlCsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlRdfWriter.cs">
+      <Link>Writing\SparqlRdfWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlTsvWriter.cs">
+      <Link>Writing\SparqlTsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\SparqlXsltWriter.cs">
+      <Link>Writing\SparqlXsltWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TriXWriter.cs">
+      <Link>Writing\TriXWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TsvWriter.cs">
+      <Link>Writing\TsvWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\TurtleWriter.cs">
+      <Link>Writing\TurtleWriter.cs</Link>
+    </Compile>
+    <EmbeddedResource Include="..\net40\Writing\Serialization\SerializationSchema.xsd">
+      <Link>Writing\Serialization\SerializationSchema.xsd</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\net40\Query\Expressions\LeviathanFunctionLibrary.ttl">
+      <Link>Query\Expressions\LeviathanFunctionLibrary.ttl</Link>
+    </EmbeddedResource>
+    <Compile Include="..\net40\Writing\Formatting\INodeFormatter.cs">
+      <Link>Writing\Formatting\INodeFormatter.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\net40\Configuration\configuration.ttl">
+      <Link>Configuration\configuration.ttl</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\net40\Query\Optimisation\OptimiserStats.ttl">
+      <Link>Query\Optimisation\OptimiserStats.ttl</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
