@@ -164,7 +164,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{1702A1F1-6A2C-447B-AB9A-756E71C3BF37}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs
-		Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template = Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToolkitInstaller", "Build\ToolkitInstaller\ToolkitInstaller.vdproj", "{A233EBC5-7463-457C-9A11-4C4BA6B5D431}"
@@ -183,7 +182,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{5926AC3F-AA16-45A0-AD18-590C28BB91F8}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs
-		Libraries\Data\Virtuoso\net35-client\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template = Libraries\Data\Virtuoso\net35-client\dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{DED37B23-101C-42B4-B7FE-919E4CE41AFE}"
@@ -232,6 +230,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso.Net35", "Libraries\Data\Virtuoso\net35\dotNetRDF.Data.Virtuoso.Net35.csproj", "{83B41E38-CD55-463D-A6C4-7D8B42CEA204}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Data.Virtuoso.ClientProfile", "Libraries\Data\Virtuoso\net40-client\dotNetRDF.Data.Virtuoso.ClientProfile.csproj", "{4141EB2C-EEA8-4998-89BC-92747D302A85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Query.FullText.Net35", "Libraries\Query\FullText\net35\dotNetRDF.Query.FullText.Net35.csproj", "{158615D0-3BE8-4B7D-A903-89A35D83A82F}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -710,6 +710,18 @@ Global
 		{4141EB2C-EEA8-4998-89BC-92747D302A85}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4141EB2C-EEA8-4998-89BC-92747D302A85}.Release|x64.ActiveCfg = Release|Any CPU
 		{4141EB2C-EEA8-4998-89BC-92747D302A85}.Release|x86.ActiveCfg = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|x64.ActiveCfg = Release|Any CPU
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -770,6 +782,7 @@ Global
 		{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
 		{1A8E3A21-D934-4BA4-8147-5FDAB29D175E} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
 		{09097771-84FD-4DC8-A259-1CB0591714EA} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
+		{158615D0-3BE8-4B7D-A903-89A35D83A82F} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 		{954B6783-7ECC-4FC0-9022-76A618D6F5B8} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
 		{DED37B23-101C-42B4-B7FE-919E4CE41AFE} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
 		{BCDF787B-D49E-4511-A036-1F49CCCEC279} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
