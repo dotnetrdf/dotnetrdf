@@ -76,7 +76,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4", "Client Profile 4", "{1A8E3A21-D934-4BA4-8147-5FDAB29D175E}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\core\net40-client\Properties\AssemblyInfo.cs = Libraries\core\net40-client\Properties\AssemblyInfo.cs
-		Libraries\core\net40-client\dotNetRDF.ClientProfile.csproj.template = Libraries\core\net40-client\dotNetRDF.ClientProfile.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight 4", "Silverlight 4", "{158759E3-877B-41FD-BEE9-87D182A8FCD4}"
@@ -136,7 +135,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfQuery", "Utilities\rdfQu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfWebDeploy", "Utilities\rdfWebDeploy\rdfWebDeploy.csproj", "{20AB4681-8D42-459E-84C4-729A9E72BF94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExportCoreContentsToTemplate", "Build\ExportCoreContentsToTemplate\ExportCoreContentsToTemplate.csproj", "{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncProjects", "Build\ExportCoreContentsToTemplate\SyncProjects.csproj", "{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
 EndProject

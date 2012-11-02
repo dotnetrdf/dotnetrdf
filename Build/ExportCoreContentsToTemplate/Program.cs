@@ -5,93 +5,79 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace ExportCoreContentsToTemplate
+namespace VDS.RDF.Utilities.Build.SyncProjects
 {
+    /// <summary>
+    /// Implementation of copying the contents of one project file and combining it with a template file to produce a new project file
+    /// </summary>
     class Program
     {
-        public const String MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
-        public const String DefaultRelativePath = @"..\net40\";
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 1)
             {
-                Console.WriteLine("dotNetRDF Build Tools - Export Core Library Contents to Template");
-                Console.WriteLine();
-                Console.WriteLine("This tool is used to export the compilable contents of the some Core/Base Project to a Template Project file to create an up to date Project file for building the templated project targetted at a specific platform");
-                Console.WriteLine("Usage is ExportCoreContentsToTemplate CoreProject.csproj Target.csproj.template Output.csproj [relPath]");
-                Console.WriteLine("Relative Path is " + DefaultRelativePath + " by default");
-                return;
+                ShowUsage();
             }
-
-            try
+            else
             {
-                Console.WriteLine("dotNetRDF Build Tools: Attempting to generate Project " + args[2] + " using Template " + args[1] + " from Project " + args[0]);
-
-                //Load Core Project
-                XmlDocument coreProject = new XmlDocument();
-                coreProject.Load(args[0]);
-
-                //Set Relative Path
-                String relativePath = (args.Length >= 4) ? args[3] : DefaultRelativePath;
-
-                //Open Target Project Template
-                XmlDocument template = new XmlDocument();
-                template.Load(args[1]);
-
-                //Copy Compile Item Groups from Core to Template
-                foreach (XmlNode itemGroup in coreProject.DocumentElement.GetElementsByTagName("ItemGroup"))
+                switch (args[0].Trim().ToLower())
                 {
-                    XmlElement newItemGroup = template.CreateElement("ItemGroup", MSBuildNamespace);
-
-                    foreach (XmlNode compile in itemGroup.ChildNodes)
-                    {
-                        if ((compile.Name.Equals("Compile") || compile.Name.Equals("EmbeddedResource")) && compile.Attributes.GetNamedItem("Include") != null)
-                        {
-                            //Never include Compiled files which are themselves linked from another project
-                            if (compile.HasChildNodes)
-                            {
-                                bool ok = true;
-                                foreach (XmlNode n in compile.ChildNodes)
-                                {
-                                    if (n.Name.Equals("Link")) ok = false;
-                                }
-                                if (!ok) continue;
-                            }
-
-                            XmlElement newCompile = template.CreateElement(compile.Name, MSBuildNamespace);
-                            XmlAttribute include = template.CreateAttribute("Include");//, MSBuildNamespace);
-                            String includeFile = compile.Attributes["Include"].Value;
-
-                            //Never include AssemblyInfo from source Project
-                            if (includeFile.EndsWith("AssemblyInfo.cs")) continue;
-
-                            include.Value = relativePath + includeFile;
-                            newCompile.Attributes.Append(include);
-
-                            XmlElement link = template.CreateElement("Link", MSBuildNamespace);
-                            link.InnerText = compile.Attributes["Include"].Value;
-                            newCompile.AppendChild(link);
-
-                            newItemGroup.AppendChild(newCompile);
-                        }
-                    }
-
-                    if (newItemGroup.HasChildNodes)
-                    {
-                        template.DocumentElement.AppendChild(newItemGroup);
-                    }
+                    case "copy":
+                        CopyToTemplate.Main(args);
+                        break;
+                    case "sync":
+                        CopyToTemplate.Main(args);
+                        break;
+                    case "help":
+                        ShowHelp(args);
+                        break;
+                    default:
+                        Console.Error.WriteLine("SyncProjects: Error: Unknown command " + args[0]);
+                        ShowUsage();
+                        break;
                 }
-
-                template.Save(args[2]);
-
-                Console.WriteLine("dotNetRDF Build Tools: Successfully generated Project " + args[2]);
             }
-            catch (Exception ex)
+
+        }
+
+        private static void ShowUsage()
+        {
+            Console.WriteLine("dotNetRDF Build Tools - Sync Projects");
+            Console.WriteLine();
+            Console.WriteLine("This tool is used to sync the compilable contents of the a Source Project to a Target Project or to generate a Project File from a Template");
+            Console.WriteLine("Usage is SyncProjects command");
+
+            Console.WriteLine("Available commands are:");
+            Console.WriteLine("  copy     Copy a Source Projects contents into a Template to generate a new Project");
+            Console.WriteLine("  help     Prints this usage summary or the usage summary for a given command");
+            Console.WriteLine("  sync     Syncs the contents of a Source Project with a Target Project");
+            return;
+        }
+
+        private static void ShowHelp(String[] args)
+        {
+            if (args.Length <= 1)
             {
-                Console.WriteLine("dotNetRDF Build Tools: An error occurred attempting to export Core Project " + args[0] + " to Project " + args[2] + " using Template " + args[1]);
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
+                ShowUsage();
+            }
+            else
+            {
+                switch (args[1].Trim().ToLower())
+                {
+                    case "copy":
+                        CopyToTemplate.ShowUsage();
+                        break;
+                    case "sync":
+                        SyncProjects.ShowUsage();
+                        break;
+                    case "help":
+                        ShowUsage();
+                        break;
+                    default:
+                        Console.Error.WriteLine("SyncProjects: Error: Unknown command " + args[0]);
+                        ShowUsage();
+                        break;
+                }
             }
         }
     }
