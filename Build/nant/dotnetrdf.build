@@ -50,12 +50,11 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectgen-core-net35" description="Generates the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj.template" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
     </exec>
   </target>
@@ -80,22 +79,20 @@
     </exec>
   </target>
 
-  <target name="projectgen-core-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile" description="Syncs the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj.template" />
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-core-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-core-net35,projectgen-core-clientprofile" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
     </exec>
   </target>
@@ -617,10 +614,11 @@
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-net35">
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -629,6 +627,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -640,6 +639,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -652,6 +652,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -670,7 +671,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-clientprofile">
+  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -679,10 +680,11 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-clientprofile-net35">
+  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-3.5" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -691,6 +693,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -703,6 +706,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -715,6 +719,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -727,6 +732,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -739,6 +745,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -751,6 +758,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -763,6 +771,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -775,6 +784,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -787,6 +797,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -799,6 +810,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -811,6 +823,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -823,6 +836,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -835,6 +849,7 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -846,6 +861,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -857,6 +873,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -868,6 +885,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -879,6 +897,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -890,6 +909,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -901,6 +921,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -912,6 +933,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -923,6 +945,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -934,6 +957,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
     
@@ -1176,7 +1200,7 @@
 
   <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary"
           depends="clean-nightlies,clean-stable,
-                   clean-intermediaries,clean-projectgen,
+                   clean-intermediaries,
                    clean-dist,
                    clean-ndoc">
   </target>
@@ -1193,27 +1217,6 @@
     <delete failonerror="true">
       <fileset>
         <include name="bin/stable/**/*" />
-      </fileset>
-    </delete>
-  </target>
-
-  <target name="clean-projectgen" description="Cleans the generated project files">
-    <delete failonerror="true">
-      <fileset>
-        <!-- Core Library Projects -->
-        <include name="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
-        <include name="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
-        <include name="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-        <include name="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-        <include name="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
-        <!-- Data.Virtuoso Projects -->
-        <include name="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
-        <include name="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
-        <include name="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
-        <!-- Query.FullText Projects -->
-        <include name="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
-        <include name="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
-        <include name="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
       </fileset>
     </delete>
   </target>

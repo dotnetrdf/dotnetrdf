@@ -95,7 +95,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{A871941C-629E-4DCC-8C88-5AD31ED09995}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\core\net35\Properties\AssemblyInfo.cs = Libraries\core\net35\Properties\AssemblyInfo.cs
-		Libraries\core\net35\dotNetRDF.Net35.csproj.template = Libraries\core\net35\dotNetRDF.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{954B6783-7ECC-4FC0-9022-76A618D6F5B8}"
@@ -107,7 +106,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D}"
 	ProjectSection(SolutionItems) = preProject
 		Libraries\core\net35-client\Properties\AssemblyInfo.cs = Libraries\core\net35-client\Properties\AssemblyInfo.cs
-		Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj.template = Libraries\core\net35-client\dotNetRDF.ClientProfile.Net35.csproj.template
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\net40\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
