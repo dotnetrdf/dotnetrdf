@@ -35,6 +35,8 @@ terms.
 
 using System;
 using System.Security.Cryptography;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
@@ -241,6 +243,51 @@ namespace VDS.RDF.Query
             else
             {
                 throw new DotNetRdfConfigurationException("dotNetRDF.Query.FullText only supports automatically serializing configuration for Lucene analyzers that have an unparameterised constructor or a constructor that takes a Version parameter");
+            }
+        }
+
+        /// <summary>
+        /// Gets either the String form of the Object of the Empty String
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>Result of calling <strong>ToString()</strong> on non-null objects and the empty string for null objects</returns>
+        internal static String ToSafeString(this Object obj)
+        {
+            return (obj != null ? obj.ToString() : String.Empty);
+        }
+
+        /// <summary>
+        /// Gets either the String form of the URI of the Empty String
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns>Result of calling <strong>AbsoluteUri</strong> on non-null URIs and the empty string for null URIs</returns>
+        internal static String ToSafeString(this Uri u)
+        {
+            return (u != null ? u.AbsoluteUri : String.Empty);
+        }
+
+        /// <summary>
+        /// Ensures that a specific Object Factory type is registered in a Configuration Graph
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="factoryType">Factory Type</param>
+        internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
+        {
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            String assm = Assembly.GetAssembly(factoryType).FullName;
+            if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
+
+            //Firstly need to ensure our object factory has been referenced
+            SparqlParameterizedString factoryCheck = new SparqlParameterizedString();
+            factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
+            SparqlResultSet rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
+            if (!rset.Result)
+            {
+                INode factory = context.Graph.CreateBlankNode();
+                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
+                context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
             }
         }
     }

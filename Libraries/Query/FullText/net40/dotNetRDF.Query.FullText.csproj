@@ -70,9 +70,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Data\Virtuoso\net40\DataExtensions.cs">
-      <Link>DataExtensions.cs</Link>
-    </Compile>
     <Compile Include="Algebra\FullTextQuery.cs" />
     <Compile Include="PropertyFunctions\FullTextMatchPropertyFunction.cs" />
     <Compile Include="PropertyFunctions\FullTextPropertyFunctionFactory.cs" />

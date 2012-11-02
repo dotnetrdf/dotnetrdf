@@ -95,32 +95,29 @@
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile" description="Generates the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile" description="Syncs the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj.template" />
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj.template" />
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
     <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
-      <arg value="copy" />
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
     </exec>
   </target>
@@ -757,7 +754,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectgen-query-fulltext-clientprofile">
+  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectsync-query-fulltext-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -770,7 +767,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectgen-query-fulltext-net35">
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectsync-query-fulltext-net35">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -783,7 +780,7 @@
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectgen-query-fulltext-clientprofile-net35">
+  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectsync-query-fulltext-clientprofile-net35">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">

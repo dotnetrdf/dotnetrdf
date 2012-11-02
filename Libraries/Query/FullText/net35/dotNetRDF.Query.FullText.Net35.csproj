@@ -68,9 +68,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Data\Virtuoso\net40\DataExtensions.cs">
-      <Link>DataExtensions.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -184,4 +181,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe sync $(SolutionDir)\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj $(ProjectPath)</PreBuildEvent>
+  </PropertyGroup>
 </Project>
