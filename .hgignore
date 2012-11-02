@@ -11,6 +11,8 @@ Build/ndoc3/docs
 Build/nuget/*/*.nupkg
 Build/nuget/*/lib/*
 dotNetRDF*.zip
+_UpgradeReport*
+UpgradeLog*
 
 # Files not to version control
 *.suo
