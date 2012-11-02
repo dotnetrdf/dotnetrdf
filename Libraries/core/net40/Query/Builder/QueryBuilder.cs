@@ -198,12 +198,6 @@ namespace VDS.RDF.Query.Builder
 
         #region Implementation of ISelectQueryBuilder
 
-        ISelectQueryBuilder ISelectQueryBuilder.Distinct()
-        {
-            Distinct();
-            return this;
-        }
-
         /// <summary>
         /// Adds additional SELECT <paramref name="variables"/>
         /// </summary>
