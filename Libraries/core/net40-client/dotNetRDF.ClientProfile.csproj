@@ -2427,4 +2427,7 @@
       <Link>Query\Optimisation\OptimiserStats.ttl</Link>
     </EmbeddedResource>
   </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe sync $(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj $(ProjectPath)</PreBuildEvent>
+  </PropertyGroup>
 </Project>
