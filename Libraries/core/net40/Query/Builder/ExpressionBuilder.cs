@@ -5,6 +5,7 @@ using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -77,6 +78,11 @@ namespace VDS.RDF.Query.Builder
         public TypedLiteralExpression<DateTime> Constant(DateTime value)
         {
             return new DateTimeExpression(value);
+        }
+
+        public RdfTermExpression Constant(Uri value)
+        {
+            return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
         }
 
         public BooleanExpression Not(BooleanExpression innerExpression)
