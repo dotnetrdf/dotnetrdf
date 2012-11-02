@@ -121,7 +121,7 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                             //The includeFile holds the relative path to this file
 
                             //The actualPath is the path we want to ensure is set as the value of the Include attribute
-                            String actualPath = relativePath + includeFile;
+                            String actualPath = relativePath + linkValue;
 
                             switch (item.Name)
                             {
@@ -134,15 +134,17 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                                         {
                                             includeAttr.Value = actualPath;
                                             updates++;
+                                            Console.WriteLine("Correcting link path for file " + linkValue);
                                         }
 
                                         //This linked item is correct
-                                        linkedSources.Add(includeFile);
+                                        linkedSources.Add(linkValue);
                                     }
                                     else
                                     {
                                         //This linked item refers to a file no longer in the source
                                         //and so should be removed
+                                        Console.WriteLine("Removing defunct file " + linkValue);
                                         toRemove.Add(item);
                                     }
                                     break;
@@ -155,15 +157,17 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                                         {
                                             includeAttr.Value = actualPath;
                                             updates++;
+                                            Console.WriteLine("Correcting link path for file " + linkValue);
                                         }
 
                                         //This linked item is correct
-                                        linkedResources.Add(includeFile);
+                                        linkedResources.Add(linkValue);
                                     }
                                     else
                                     {
                                         //This linked item refers to a file no longer in the source and so
                                         //should be removed
+                                        Console.WriteLine("Removing defunct file " + linkValue);
                                         toRemove.Add(item);
                                     }
                                     break;
@@ -190,6 +194,7 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                     {
                         if (!linkedSources.Contains(file))
                         {
+                            Console.WriteLine("Adding missing file " + file);
                             XmlElement newItem = target.CreateElement("Compile", MSBuildNamespace);
                             XmlAttribute include = target.CreateAttribute("Include");
                             include.Value = relativePath + file;
@@ -212,6 +217,7 @@ namespace VDS.RDF.Utilities.Build.SyncProjects
                     {
                         if (!linkedResources.Contains(file))
                         {
+                            Console.WriteLine("Adding missing file " + file);
                             XmlElement newItem = target.CreateElement("EmbeddedResource", MSBuildNamespace);
                             XmlAttribute include = target.CreateAttribute("Include");
                             include.Value = relativePath + file;
