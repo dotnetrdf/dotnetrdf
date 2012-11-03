@@ -18,7 +18,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
 
             // when
-            var conjunction = b1.And(b2).Expression;
+            var conjunction = (b1 && b2).Expression;
 
             // then
             Assert.IsTrue(conjunction is AndExpression);
@@ -34,7 +34,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             BooleanExpression b2 = new BooleanExpression(new VariableTerm("b"));
 
             // when
-            var disjunction = b1.Or(b2).Expression;
+            var disjunction = (b1 || b2).Expression;
 
             // then
             Assert.IsTrue(disjunction is OrExpression);

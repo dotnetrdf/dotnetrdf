@@ -62,68 +62,88 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression(expression.Expression);
         }
 
-        public NumericExpression<T> Multiply(T right)
+        public static NumericExpression<T> operator *(NumericExpression<T> left, T right)
         {
-            return Multiply(new NumericExpression<T>(right));
+            return left * new NumericExpression<T>(right);
         }
 
-        public NumericExpression<T> Multiply(NumericExpression<T> right)
+        public static NumericExpression<T> operator *(NumericExpression<T> left, NumericExpression<T> right)
         {
-            var multiplication = new MultiplicationExpression(Expression, right.Expression);
+            var multiplication = new MultiplicationExpression(left.Expression, right.Expression);
             return new NumericExpression<T>(multiplication);
         }
 
-        public NumericExpression Multiply(NumericExpression right)
+        public static NumericExpression operator *(NumericExpression<T> left, NumericExpression right)
         {
-            return new NumericExpression(Expression).Multiply(right);
+            return (NumericExpression)left * right;
         }
 
-        public NumericExpression<T> Divide(T right)
+        public static NumericExpression<T> operator *(T left, NumericExpression<T> right)
         {
-            return Divide(new NumericExpression<T>(right));
+            return new NumericExpression<T>(left) * right;
         }
 
-        public NumericExpression<T> Divide(NumericExpression<T> right)
+        public static NumericExpression<T> operator /(NumericExpression<T> left, T right)
         {
-            var division = new DivisionExpression(Expression, right.Expression);
-            return new NumericExpression<T>(division);
+            return left / new NumericExpression<T>(right);
         }
 
-        public NumericExpression Divide(NumericExpression right)
+        public static NumericExpression<T> operator /(NumericExpression<T> left, NumericExpression<T> right)
         {
-            return new NumericExpression(Expression).Divide(right);
+            var multiplication = new DivisionExpression(left.Expression, right.Expression);
+            return new NumericExpression<T>(multiplication);
         }
 
-        public NumericExpression<T> Add(T right)
+        public static NumericExpression operator /(NumericExpression<T> left, NumericExpression right)
         {
-            return Add(new NumericExpression<T>(right));
+            return (NumericExpression)left / right;
         }
 
-        public NumericExpression<T> Add(NumericExpression<T> right)
+        public static NumericExpression<T> operator /(T left, NumericExpression<T> right)
         {
-            var addition = new AdditionExpression(Expression, right.Expression);
-            return new NumericExpression<T>(addition);
+            return new NumericExpression<T>(left) / right;
         }
 
-        public NumericExpression Add(NumericExpression right)
+        public static NumericExpression<T> operator +(NumericExpression<T> left, T right)
         {
-            return new NumericExpression(Expression).Add(right);
+            return left + new NumericExpression<T>(right);
         }
 
-        public NumericExpression<T> Subtract(T right)
+        public static NumericExpression<T> operator +(NumericExpression<T> left, NumericExpression<T> right)
         {
-            return this.Subtract(new NumericExpression<T>(right));
+            var multiplication = new AdditionExpression(left.Expression, right.Expression);
+            return new NumericExpression<T>(multiplication);
         }
 
-        public NumericExpression<T> Subtract(NumericExpression<T> right)
+        public static NumericExpression operator +(NumericExpression<T> left, NumericExpression right)
         {
-            var subtraction = new SubtractionExpression(Expression, right.Expression);
-            return new NumericExpression<T>(subtraction);
+            return (NumericExpression)left + right;
         }
 
-        public NumericExpression Subtract(NumericExpression right)
+        public static NumericExpression<T> operator +(T left, NumericExpression<T> right)
         {
-            return new NumericExpression(Expression).Subtract(right);
+            return new NumericExpression<T>(left) + right;
+        }
+
+        public static NumericExpression<T> operator -(NumericExpression<T> left, T right)
+        {
+            return left - new NumericExpression<T>(right);
+        }
+
+        public static NumericExpression<T> operator -(NumericExpression<T> left, NumericExpression<T> right)
+        {
+            var multiplication = new SubtractionExpression(left.Expression, right.Expression);
+            return new NumericExpression<T>(multiplication);
+        }
+
+        public static NumericExpression operator -(NumericExpression<T> left, NumericExpression right)
+        {
+            return (NumericExpression)left - right;
+        }
+
+        public static NumericExpression<T> operator -(T left, NumericExpression<T> right)
+        {
+            return new NumericExpression<T>(left) - right;
         }
 
         public BooleanExpression Gt(NumericExpression rightExpression)
@@ -154,44 +174,324 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        public NumericExpression Multiply(NumericExpression right)
+        public static NumericExpression operator *(NumericExpression left, NumericExpression right)
         {
-            return new NumericExpression(new MultiplicationExpression(Expression, right.Expression));
+            return new NumericExpression(new MultiplicationExpression(left.Expression, right.Expression));
         }
 
-        public NumericExpression Multiply(int right)
+        public static NumericExpression operator *(NumericExpression left, int right)
         {
-            return Multiply(new NumericExpression<int>(right));
+            return left * new NumericExpression<int>(right);
         }
 
-        public NumericExpression Divide(NumericExpression right)
+        public static NumericExpression operator *(NumericExpression left, decimal right)
         {
-            return new NumericExpression(new DivisionExpression(Expression, right.Expression));
+            return left * new NumericExpression<decimal>(right);
         }
 
-        public NumericExpression Divide(int right)
+        public static NumericExpression operator *(NumericExpression left, byte right)
         {
-            return Divide(new NumericExpression<int>(right));
+            return left * new NumericExpression<byte>(right);
         }
 
-        public NumericExpression Add(NumericExpression right)
+        public static NumericExpression operator *(NumericExpression left, sbyte right)
         {
-            return new NumericExpression(new AdditionExpression(Expression, right.Expression));
+            return left * new NumericExpression<sbyte>(right);
         }
 
-        public NumericExpression Add(int right)
+        public static NumericExpression operator *(NumericExpression left, short right)
         {
-            return Add(new NumericExpression<int>(right));
+            return left * new NumericExpression<short>(right);
         }
 
-        public NumericExpression Subtract(NumericExpression right)
+        public static NumericExpression operator *(NumericExpression left, float right)
         {
-            return new NumericExpression(new SubtractionExpression(Expression, right.Expression));
+            return left * new NumericExpression<float>(right);
         }
 
-        public NumericExpression Subtract(int right)
+        public static NumericExpression operator *(NumericExpression left, double right)
         {
-            return Subtract(new NumericExpression<int>(right));
+            return left * new NumericExpression<double>(right);
+        }
+
+        public static NumericExpression operator *(int left, NumericExpression right)
+        {
+            return new NumericExpression<int>(left) * right;
+        }
+
+        public static NumericExpression operator *(decimal left, NumericExpression right)
+        {
+            return new NumericExpression<decimal>(left) * right;
+        }
+
+        public static NumericExpression operator *(long left, NumericExpression right)
+        {
+            return new NumericExpression<long>(left) * right;
+        }
+
+        public static NumericExpression operator *(byte left, NumericExpression right)
+        {
+            return new NumericExpression<byte>(left) * right;
+        }
+
+        public static NumericExpression operator *(sbyte left, NumericExpression right)
+        {
+            return new NumericExpression<sbyte>(left) * right;
+        }
+
+        public static NumericExpression operator *(short left, NumericExpression right)
+        {
+            return new NumericExpression<short>(left) * right;
+        }
+
+        public static NumericExpression operator *(float left, NumericExpression right)
+        {
+            return new NumericExpression<float>(left) * right;
+        }
+
+        public static NumericExpression operator *(double left, NumericExpression right)
+        {
+            return new NumericExpression<double>(left) * right;
+        }
+
+        public static NumericExpression operator /(NumericExpression left, NumericExpression right)
+        {
+            return new NumericExpression(new DivisionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator /(NumericExpression left, int right)
+        {
+            return left / new NumericExpression<int>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, decimal right)
+        {
+            return left / new NumericExpression<decimal>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, byte right)
+        {
+            return left / new NumericExpression<byte>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, sbyte right)
+        {
+            return left / new NumericExpression<sbyte>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, short right)
+        {
+            return left / new NumericExpression<short>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, float right)
+        {
+            return left / new NumericExpression<float>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, double right)
+        {
+            return left / new NumericExpression<double>(right);
+        }
+
+        public static NumericExpression operator /(int left, NumericExpression right)
+        {
+            return new NumericExpression<int>(left) / right;
+        }
+
+        public static NumericExpression operator /(decimal left, NumericExpression right)
+        {
+            return new NumericExpression<decimal>(left) / right;
+        }
+
+        public static NumericExpression operator /(long left, NumericExpression right)
+        {
+            return new NumericExpression<long>(left) / right;
+        }
+
+        public static NumericExpression operator /(byte left, NumericExpression right)
+        {
+            return new NumericExpression<byte>(left) / right;
+        }
+
+        public static NumericExpression operator /(sbyte left, NumericExpression right)
+        {
+            return new NumericExpression<sbyte>(left) / right;
+        }
+
+        public static NumericExpression operator /(short left, NumericExpression right)
+        {
+            return new NumericExpression<short>(left) / right;
+        }
+
+        public static NumericExpression operator /(float left, NumericExpression right)
+        {
+            return new NumericExpression<float>(left) / right;
+        }
+
+        public static NumericExpression operator /(double left, NumericExpression right)
+        {
+            return new NumericExpression<double>(left) / right;
+        }
+
+        public static NumericExpression operator +(NumericExpression left, NumericExpression right)
+        {
+            return new NumericExpression(new AdditionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator +(NumericExpression left, int right)
+        {
+            return left + new NumericExpression<int>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, decimal right)
+        {
+            return left + new NumericExpression<decimal>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, byte right)
+        {
+            return left + new NumericExpression<byte>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, sbyte right)
+        {
+            return left + new NumericExpression<sbyte>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, short right)
+        {
+            return left + new NumericExpression<short>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, float right)
+        {
+            return left + new NumericExpression<float>(right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, double right)
+        {
+            return left + new NumericExpression<double>(right);
+        }
+
+        public static NumericExpression operator +(int left, NumericExpression right)
+        {
+            return new NumericExpression<int>(left) + right;
+        }
+
+        public static NumericExpression operator +(decimal left, NumericExpression right)
+        {
+            return new NumericExpression<decimal>(left) + right;
+        }
+
+        public static NumericExpression operator +(long left, NumericExpression right)
+        {
+            return new NumericExpression<long>(left) + right;
+        }
+
+        public static NumericExpression operator +(byte left, NumericExpression right)
+        {
+            return new NumericExpression<byte>(left) + right;
+        }
+
+        public static NumericExpression operator +(sbyte left, NumericExpression right)
+        {
+            return new NumericExpression<sbyte>(left) + right;
+        }
+
+        public static NumericExpression operator +(short left, NumericExpression right)
+        {
+            return new NumericExpression<short>(left) + right;
+        }
+
+        public static NumericExpression operator +(float left, NumericExpression right)
+        {
+            return new NumericExpression<float>(left) + right;
+        }
+
+        public static NumericExpression operator +(double left, NumericExpression right)
+        {
+            return new NumericExpression<double>(left) + right;
+        }
+
+        public static NumericExpression operator -(NumericExpression left, NumericExpression right)
+        {
+            return new NumericExpression(new SubtractionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator -(NumericExpression left, int right)
+        {
+            return left - new NumericExpression<int>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, decimal right)
+        {
+            return left - new NumericExpression<decimal>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, byte right)
+        {
+            return left - new NumericExpression<byte>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, sbyte right)
+        {
+            return left - new NumericExpression<sbyte>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, short right)
+        {
+            return left - new NumericExpression<short>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, float right)
+        {
+            return left - new NumericExpression<float>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, double right)
+        {
+            return left - new NumericExpression<double>(right);
+        }
+
+        public static NumericExpression operator -(int left, NumericExpression right)
+        {
+            return new NumericExpression<int>(left) - right;
+        }
+
+        public static NumericExpression operator -(decimal left, NumericExpression right)
+        {
+            return new NumericExpression<decimal>(left) - right;
+        }
+
+        public static NumericExpression operator -(long left, NumericExpression right)
+        {
+            return new NumericExpression<long>(left) - right;
+        }
+
+        public static NumericExpression operator -(byte left, NumericExpression right)
+        {
+            return new NumericExpression<byte>(left) - right;
+        }
+
+        public static NumericExpression operator -(sbyte left, NumericExpression right)
+        {
+            return new NumericExpression<sbyte>(left) - right;
+        }
+
+        public static NumericExpression operator -(short left, NumericExpression right)
+        {
+            return new NumericExpression<short>(left) - right;
+        }
+
+        public static NumericExpression operator -(float left, NumericExpression right)
+        {
+            return new NumericExpression<float>(left) - right;
+        }
+
+        public static NumericExpression operator -(double left, NumericExpression right)
+        {
+            return new NumericExpression<double>(left) - right;
         }
 
         public BooleanExpression Gt(NumericExpression rightExpression)

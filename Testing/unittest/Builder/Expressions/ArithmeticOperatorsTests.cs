@@ -1,6 +1,5 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
 using VDS.RDF.Query.Expressions.Primary;
@@ -18,7 +17,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> left = new NumericExpression<int>(10);
 
             // when
-            var multiplication = left.Multiply(right).Expression;
+            var multiplication = (left * right).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -34,7 +33,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<decimal> left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Multiply(right).Expression;
+            var multiplication = (left * right).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -50,7 +49,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = right.Multiply(left).Expression;
+            var multiplication = (right * left).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -66,7 +65,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Multiply(right).Expression;
+            var multiplication = (left * right).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -81,7 +80,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Multiply(10m).Expression;
+            var multiplication = (left * 10m).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -96,7 +95,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var right = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = 10m.Multiply(right).Expression;
+            var multiplication = (10m * right).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -111,7 +110,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var left = new NumericExpression(new VariableTerm("x"));
 
             // when
-            var multiplication = left.Multiply(10).Expression;
+            var multiplication = (left * 10).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -126,7 +125,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var right = new NumericExpression(new VariableTerm("x"));
 
             // when
-            var multiplication = 10.Multiply(right).Expression;
+            var multiplication = (10 * right).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -143,7 +142,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> op3 = new NumericExpression<int>(5);
 
             // when
-            var multiplication = op1.Multiply(op2).Multiply(op3).Expression;
+            var multiplication = (op1 * op2 * op3).Expression;
 
             // then
             Assert.IsTrue(multiplication is MultiplicationExpression);
@@ -159,7 +158,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> left = new NumericExpression<int>(10);
 
             // when
-            var multiplication = left.Divide(right).Expression;
+            var multiplication = (left / right).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -175,7 +174,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<decimal> left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Divide(right).Expression;
+            var multiplication = (left / right).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -191,7 +190,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = right.Divide(left).Expression;
+            var multiplication = (right / left).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -207,7 +206,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Divide(right).Expression;
+            var multiplication = (left / right).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -222,7 +221,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Divide(10m).Expression;
+            var multiplication = (left / 10m).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -237,7 +236,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var right = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = 10m.Divide(right).Expression;
+            var multiplication = (10m / right).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -254,7 +253,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> op3 = new NumericExpression<int>(5);
 
             // when
-            var multiplication = op1.Divide(op2).Divide(op3).Expression;
+            var multiplication = (op1 / op2 / op3).Expression;
 
             // then
             Assert.IsTrue(multiplication is DivisionExpression);
@@ -270,7 +269,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> left = new NumericExpression<int>(10);
 
             // when
-            var multiplication = left.Add(right).Expression;
+            var multiplication = (left + right).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -286,7 +285,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<decimal> left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Add(right).Expression;
+            var multiplication = (left + right).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -302,7 +301,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = right.Add(left).Expression;
+            var multiplication = (right + left).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -318,7 +317,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Add(right).Expression;
+            var multiplication = (left + right).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -333,7 +332,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Add(10m).Expression;
+            var multiplication = (left + 10m).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -348,7 +347,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var right = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = 10m.Add(right).Expression;
+            var multiplication = (10m + right).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -365,7 +364,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> op3 = new NumericExpression<int>(5);
 
             // when
-            var multiplication = op1.Add(op2).Add(op3).Expression;
+            var multiplication = (op1 + op2 + op3).Expression;
 
             // then
             Assert.IsTrue(multiplication is AdditionExpression);
@@ -381,7 +380,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> left = new NumericExpression<int>(10);
 
             // when
-            var multiplication = left.Subtract(right).Expression;
+            var multiplication = (left - right).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -397,7 +396,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<decimal> left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Subtract(right).Expression;
+            var multiplication = (left - right).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -413,7 +412,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = right.Subtract(left).Expression;
+            var multiplication = (right - left).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -429,7 +428,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Subtract(right).Expression;
+            var multiplication = (left - right).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -444,7 +443,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var left = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = left.Subtract(10m).Expression;
+            var multiplication = (left - 10m).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -459,7 +458,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var right = new NumericExpression<decimal>(10);
 
             // when
-            var multiplication = 10m.Subtract(right).Expression;
+            var multiplication = (10m - right).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);
@@ -476,7 +475,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             NumericExpression<int> op3 = new NumericExpression<int>(5);
 
             // when
-            var multiplication = op1.Subtract(op2).Subtract(op3).Expression;
+            var multiplication = (op1 - op2 - op3).Expression;
 
             // then
             Assert.IsTrue(multiplication is SubtractionExpression);

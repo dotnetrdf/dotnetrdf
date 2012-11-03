@@ -217,8 +217,7 @@ namespace VDS.RDF.Test.Builder
                 .Where(tpb => tpb.Subject("person").PredicateUri("rdf:type").Object<IUriNode>("foaf:Person"))
                 .Filter(
                     fb =>
-                    fb.Not(
-                        fb.Exists(ex => ex.Where(tpb => tpb.Subject("person").PredicateUri("foaf:name").Object("name")))));
+                        !fb.Exists(ex => ex.Where(tpb => tpb.Subject("person").PredicateUri("foaf:name").Object("name"))));
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when
@@ -256,10 +255,8 @@ namespace VDS.RDF.Test.Builder
             // given
             var b = QueryBuilder.SelectAll()
                 .Where(tpb => tpb.Subject("x").PredicateUri(":p").Object("n"))
-                .Filter(fb => fb.Not(fb.Exists(ex => ex.Where(tpb => tpb.Subject("x").PredicateUri(":q").Object("m"))
-                                                       .Filter(
-                                                           inner =>
-                                                           inner.Not(inner.Variable("n").Eq(inner.Variable("m")))))));
+                .Filter(fb => !fb.Exists(ex => ex.Where(tpb => tpb.Subject("x").PredicateUri(":q").Object("m"))
+                                                 .Filter(inner => !inner.Variable("n").Eq(inner.Variable("m")))));
             b.Prefixes.AddNamespace("", new Uri("http://example.com/"));
 
             // when

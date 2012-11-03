@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
@@ -42,7 +41,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             BooleanExpression mail = new BooleanExpression(new VariableTerm("mail"));
 
             // when
-            var negatedBound = Builder.Not(mail).Expression;
+            var negatedBound = (!mail).Expression;
 
             // then
             Assert.IsTrue(negatedBound is NotExpression);

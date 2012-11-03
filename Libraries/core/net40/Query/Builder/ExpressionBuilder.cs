@@ -85,11 +85,6 @@ namespace VDS.RDF.Query.Builder
             return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
         }
 
-        public BooleanExpression Not(BooleanExpression innerExpression)
-        {
-            return new BooleanExpression(new NotExpression(innerExpression.Expression));
-        }
-
         public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
         {
             GraphPatternBuilder builder  = new GraphPatternBuilder(_prefixes);

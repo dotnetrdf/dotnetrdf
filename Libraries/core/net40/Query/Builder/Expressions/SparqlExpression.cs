@@ -1,6 +1,7 @@
 using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 
 namespace VDS.RDF.Query.Builder.Expressions

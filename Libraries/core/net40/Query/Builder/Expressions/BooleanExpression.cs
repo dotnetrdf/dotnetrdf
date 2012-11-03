@@ -10,14 +10,29 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        public BooleanExpression And(BooleanExpression rightExpression)
+        public static BooleanExpression operator &(BooleanExpression left, BooleanExpression right)
         {
-            return new BooleanExpression(new AndExpression(Expression, rightExpression.Expression));
+            return new BooleanExpression(new AndExpression(left.Expression, right.Expression));
         }
 
-        public BooleanExpression Or(BooleanExpression rightExpression)
+        public static BooleanExpression operator |(BooleanExpression left, BooleanExpression right)
         {
-            return new BooleanExpression(new OrExpression(Expression, rightExpression.Expression));
+            return new BooleanExpression(new OrExpression(left.Expression, right.Expression));
+        }
+
+        public static bool operator false(BooleanExpression left)
+        {
+            return false;
+        }
+
+        public static bool operator true(BooleanExpression left)
+        {
+            return true;
+        }
+
+        public static BooleanExpression operator !(BooleanExpression expression)
+        {
+            return new BooleanExpression(new NotExpression(expression.Expression));
         }
     }
 }

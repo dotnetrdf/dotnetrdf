@@ -79,7 +79,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             SparqlExpression expr1 = new VariableExpression("x");
             SparqlExpression expr2 = new StringExpression("str");
             SparqlExpression expr3 = new NumericExpression<int>(10);
-            SparqlExpression expr4 = new NumericExpression<float>(10.5f).Divide(new NumericExpression<float>(0));
+            SparqlExpression expr4 = new NumericExpression<float>(10.5f) / new NumericExpression<float>(0);
 
             // when
             RdfTermExpression coalesce = Builder.Coalesce(expr1, expr2, expr3, expr4);
