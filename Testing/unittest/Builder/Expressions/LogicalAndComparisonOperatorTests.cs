@@ -27,6 +27,22 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void ShouldReturnTheExpressionIfAppliedLogicalOperatoWithNull()
+        {
+            // todo: TP: not sure this is expected behaviour
+            // given
+            BooleanExpression notNull = new BooleanExpression(new VariableTerm("var"));
+
+            // then
+            Assert.AreSame(notNull, notNull || null);
+            Assert.AreSame(notNull, null || notNull);
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+            Assert.AreSame(notNull, notNull && null);
+            Assert.AreSame(notNull, null && notNull);
+// ReSharper restore ConditionIsAlwaysTrueOrFalse
+        }
+
+        [TestMethod]
         public void CanJoinTwoExpressionWithOrOperator()
         {
             // given 
