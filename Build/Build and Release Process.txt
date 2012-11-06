@@ -6,19 +6,17 @@ This document covers the steps required to build dotNetRDF and build a release (
 Prerequisites
 -------------
 
-There are several ways to build dotNetRDF depending on what you want to build.
+To build dotNetRDF you will need one of the following:
 
-To build only the standard builds of libraries and tools you need the following:
- - Visual Studio 2010 OR NAnt and .Net 4.0 SDK
- - Silverlight 4 for VS2010
- - Windows Phone 7 Developer Tools for VS2010
+ - Visual Studio 2010 
+ OR
+ - NAnt (http://nant.sourceforge.net) and .Net 4.0 SDK
 
-To build all versions of the libraries you need the following:
-- NAnt
-- .Net 4.0 SDK
-- .Net 3.5 SDK
-- Silverlight 4 SDK
-- Windows Phone 7 Developer Tools
+You will also need the following installed on your machine:
+
+ - NuGet (http://nuget.codeplex.com
+ - Silverlight 4 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=18149)
+ - Windows Phone 7 Developer Tools for VS2010 (http://www.microsoft.com/en-us/download/details.aspx?id=27570 and http://www.microsoft.com/en-us/download/details.aspx?id=29233
 
 Standard (Visual Studio) Build
 ------------------------------
@@ -27,7 +25,7 @@ The standard build is very simple, load dotNetRDF.sln into Visual Studio and sim
 
 Alternatively to build via nant run the following command:
 
-nant compile-solution
+nant build
 
 Advanced Build
 --------------
@@ -38,8 +36,7 @@ To build everything simply run the following:
 
 nant build
 
-This will build all the libraries and copy them to the bin/nightlies directory, the entire solution will be
-compiled so you can also find the tools built in their individual bin/Debug directories
+This will build all the libraries and toolkkit utilities and copy them to the bin/nightlies directory.
 
 Release Process
 ===============
@@ -83,7 +80,7 @@ the versions and release types are correct.
 
 You can then run the following nant command:
 
-nant no-build dist-release dist-toolkit dist-toolkit-installer
+nant no-build dist-libs-stable dist-utils-stable
 
 This will generate you four ZIP files comprising the libraries, source code, toolkit and toolkit installer
 
