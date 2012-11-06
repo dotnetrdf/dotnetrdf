@@ -1279,6 +1279,7 @@
 	      <exclude name="Utilities/bsbm/" />
 	      <exclude name="Build/ndoc3/docs/" />
 	      <exclude name="Build/NuGet/*/lib/**/*" />
+        <exclude name="packages/" />
       </fileset>
     </zip>
   </target>
