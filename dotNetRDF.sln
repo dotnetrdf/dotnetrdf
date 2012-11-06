@@ -132,7 +132,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfQuery", "Utilities\rdfQu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfWebDeploy", "Utilities\rdfWebDeploy\rdfWebDeploy.csproj", "{20AB4681-8D42-459E-84C4-729A9E72BF94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncProjects", "Build\ExportCoreContentsToTemplate\SyncProjects.csproj", "{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyncProjects", "Build\SyncProjects\SyncProjects.csproj", "{DD6CFF05-A475-4E32-8743-58A3C3FFC1FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "soh", "Utilities\soh\soh.csproj", "{158872DD-31B7-4DF7-8950-A9547CC220C2}"
 EndProject

@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VDS.RDF.Utilities.Build.SyncProjects</RootNamespace>
-    <AssemblyName>ExportCoreContentsToTemplate</AssemblyName>
+    <AssemblyName>SyncProjects</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>

@@ -52,7 +52,7 @@
 
   <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
@@ -61,7 +61,7 @@
 
   <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
@@ -70,7 +70,7 @@
 
   <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file" depends="compile-buildtools" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
@@ -79,7 +79,7 @@
 
   <target name="projectsync-core-clientprofile" description="Syncs the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
@@ -88,7 +88,7 @@
 
   <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
@@ -97,7 +97,7 @@
 
   <target name="projectsync-query-fulltext-clientprofile" description="Syncs the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
@@ -106,7 +106,7 @@
 
   <target name="projectsync-query-fulltext-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
@@ -115,7 +115,7 @@
 
   <target name="projectsync-query-fulltext-clientprofile-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
@@ -124,7 +124,7 @@
 
   <target name="projectsync-data-virtuoso-clientprofile" description="Syncs the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
@@ -133,7 +133,7 @@
 
   <target name="projectsync-data-virtuoso-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
@@ -142,7 +142,7 @@
 
   <target name="projectsync-data-virtuoso-clientprofile-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
@@ -652,7 +652,7 @@
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/ExportCoreContentsToTemplate/SyncProjects.csproj" />
+      <arg value="Build/SyncProjects/SyncProjects.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
