@@ -19,8 +19,8 @@
   <property name="dotnetrdf.license.exclude.exts" 
             value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig" />
   <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
-  <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
-  <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
+  <property name="dotnetrdf.license.search" value="Copyright (c) 2009-2012 dotNetRDF Project" />
+  <property name="dotnetrdf.license.replace" value="LICENSE.txt" />
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
   
   <!-- Signing Properties -->
