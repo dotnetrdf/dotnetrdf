@@ -182,6 +182,6 @@
   </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)Build\ExportCoreContentsToTemplate\bin\Debug\ExportCoreContentsToTemplate.exe sync $(SolutionDir)\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj $(ProjectPath)</PreBuildEvent>
+    <PreBuildEvent>$(SolutionDir)Build\SyncProjects\bin\Debug\SyncProjects.exe sync $(SolutionDir)\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj $(ProjectPath)</PreBuildEvent>
   </PropertyGroup>
 </Project>

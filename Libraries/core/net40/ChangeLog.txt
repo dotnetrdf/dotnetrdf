@@ -29,7 +29,7 @@ Changed
 - Dependencies
  - Updated Json.Net dependency to 4.5r10
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
- - All dependencies and now maintained using NuGet
+ - All dependencies are now maintained using NuGet
 - Build
  - Query.FullText Library is now always strong named
  - Query.FullText NuGet package now references Lucene.Net as a dependency instead of including it in the package
