@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.Common;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
@@ -245,112 +246,41 @@ namespace VDS.RDF.Update.Commands
 
                 //TODO: Need to detect when we create a Graph for Insertion but then fail to insert anything since in this case the Inserted Graph should be removed
 
-                //Get the Graph to which we are inserting
-                //HashSet<Uri> insertedGraphs = new HashSet<Uri>();
-                IGraph g;
-                if (context.Data.HasGraph(this._graphUri))
+                //Get the Graph to which we are inserting Triples with no explicit Graph clause
+                IGraph g = null;
+                if (this._insertPattern.TriplePatterns.Count > 0)
                 {
-                    g = context.Data.GetModifiableGraph(this._graphUri);
+                    if (context.Data.HasGraph(this._graphUri))
+                    {
+                        g = context.Data.GetModifiableGraph(this._graphUri);
+                    }
+                    else
+                    {
+                        //insertedGraphs.Add(this._graphUri);
+                        g = new Graph();
+                        g.BaseUri = this._graphUri;
+                        context.Data.AddGraph(g);
+                        g = context.Data.GetModifiableGraph(this._graphUri);
+                    }
                 }
-                else
-                {
-                    //insertedGraphs.Add(this._graphUri);
-                    g = new Graph();
-                    g.BaseUri = this._graphUri;
-                    context.Data.AddGraph(g);
-                    g = context.Data.GetModifiableGraph(this._graphUri);
-                }
+
+                //Keep a record of graphs to which we insert
+                MultiDictionary<Uri, IGraph> graphs = new MultiDictionary<Uri, IGraph>(u => u.GetEnhancedHashCode(), new UriComparer(), MultiDictionaryMode.AVL);
 
                 //Insert the Triples for each Solution
                 foreach (ISet s in queryContext.OutputMultiset.Sets)
                 {
                     List<Triple> insertedTriples = new List<Triple>();
 
-                    //Triples from raw Triple Patterns
                     try
                     {
-                        ConstructContext constructContext = new ConstructContext(s);
-                        foreach (IConstructTriplePattern p in this._insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
+                        //Create a new Construct Context for each Solution
+                        ConstructContext constructContext = new ConstructContext(null, s, true);
+
+                        //Triples from raw Triple Patterns
+                        if (this._insertPattern.TriplePatterns.Count > 0)
                         {
-                            try
-                            {
-                                insertedTriples.Add(p.Construct(constructContext));
-                            }
-                            catch (RdfQueryException)
-                            {
-                                //If we throw an error this means we couldn't construct a specific Triple
-                                //so we continue anyway
-                            }
-                        }
-                        g.Assert(insertedTriples);
-                    }
-                    catch (RdfQueryException)
-                    {
-                        //If we throw an error this means we couldn't construct for this solution so the
-                        //solution is ignored for this graph
-                    }
-
-                    //Triples from GRAPH clauses
-                    foreach (GraphPattern gp in this._insertPattern.ChildGraphPatterns)
-                    {
-                        insertedTriples.Clear();
-                        try
-                        {
-                            String graphUri;
-                            switch (gp.GraphSpecifier.TokenType)
-                            {
-                                case Token.URI:
-                                    graphUri = gp.GraphSpecifier.Value;
-                                    break;
-                                case Token.VARIABLE:
-                                    if (s.ContainsVariable(gp.GraphSpecifier.Value))
-                                    {
-                                        INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
-                                        if (temp == null)
-                                        {
-                                            //If the Variable is not bound then skip
-                                            continue;
-                                        }
-                                        else if (temp.NodeType == NodeType.Uri)
-                                        {
-                                            graphUri = temp.ToSafeString();
-                                        }
-                                        else
-                                        {
-                                            //If the Variable is not bound to a URI then skip
-                                            continue;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //If the Variable is not bound for this solution then skip
-                                        continue;
-                                    }
-                                    break;
-                                default:
-                                    //Any other Graph Specifier we have to ignore this solution
-                                    continue;
-                            }
-
-                            //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
-                            IGraph h;
-                            Uri destUri = UriFactory.Create(graphUri);
-                            if (context.Data.HasGraph(destUri))
-                            {
-                                h = context.Data.GetModifiableGraph(destUri);
-                            }
-                            else
-                            {
-                                //insertedGraphs.Add(destUri);
-                                h = new Graph();
-                                h.BaseUri = destUri;
-                                context.Data.AddGraph(h);
-                                h = context.Data.GetModifiableGraph(destUri);
-                            }
-
-                            //Do the actual Insertions
-                            ConstructContext constructContext = new ConstructContext(s);
-                            foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                            foreach (IConstructTriplePattern p in this._insertPattern.TriplePatterns.OfType<IConstructTriplePattern>())
                             {
                                 try
                                 {
@@ -362,13 +292,101 @@ namespace VDS.RDF.Update.Commands
                                     //so we continue anyway
                                 }
                             }
-                            h.Assert(insertedTriples);
+                            g.Assert(insertedTriples);
                         }
-                        catch (RdfQueryException)
+
+                        //Triples from GRAPH clauses
+                        foreach (GraphPattern gp in this._insertPattern.ChildGraphPatterns)
                         {
-                            //If we throw an error this means we couldn't construct for this solution so the
-                            //solution is ignored for this Graph
+                            insertedTriples.Clear();
+                            try
+                            {
+                                String graphUri;
+                                switch (gp.GraphSpecifier.TokenType)
+                                {
+                                    case Token.URI:
+                                        graphUri = gp.GraphSpecifier.Value;
+                                        break;
+                                    case Token.VARIABLE:
+                                        if (s.ContainsVariable(gp.GraphSpecifier.Value))
+                                        {
+                                            INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                            if (temp == null)
+                                            {
+                                                //If the Variable is not bound then skip
+                                                continue;
+                                            }
+                                            else if (temp.NodeType == NodeType.Uri)
+                                            {
+                                                graphUri = temp.ToSafeString();
+                                            }
+                                            else
+                                            {
+                                                //If the Variable is not bound to a URI then skip
+                                                continue;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            //If the Variable is not bound for this solution then skip
+                                            continue;
+                                        }
+                                        break;
+                                    default:
+                                        //Any other Graph Specifier we have to ignore this solution
+                                        continue;
+                                }
+
+                                //Ensure the Graph we're inserting to exists in the dataset creating it if necessary
+                                IGraph h;
+                                Uri destUri = UriFactory.Create(graphUri);
+                                if (graphs.ContainsKey(destUri))
+                                {
+                                    h = graphs[destUri];
+                                }
+                                else
+                                {
+                                    if (context.Data.HasGraph(destUri))
+                                    {
+                                        h = context.Data.GetModifiableGraph(destUri);
+                                    }
+                                    else
+                                    {
+                                        //insertedGraphs.Add(destUri);
+                                        h = new Graph();
+                                        h.BaseUri = destUri;
+                                        context.Data.AddGraph(h);
+                                        h = context.Data.GetModifiableGraph(destUri);
+                                    }
+                                    graphs.Add(destUri, h);
+                                }
+
+                                //Do the actual Insertions
+                                foreach (IConstructTriplePattern p in gp.TriplePatterns.OfType<IConstructTriplePattern>())
+                                {
+                                    try
+                                    {
+                                        insertedTriples.Add(p.Construct(constructContext));
+                                    }
+                                    catch (RdfQueryException)
+                                    {
+                                        //If we throw an error this means we couldn't construct a specific Triple
+                                        //so we continue anyway
+                                    }
+                                }
+                                h.Assert(insertedTriples);
+                            }
+                            catch (RdfQueryException)
+                            {
+                                //If we throw an error this means we couldn't construct for this solution so the
+                                //solution is ignored for this Graph
+                            }
                         }
+                    }
+                    catch (RdfQueryException)
+                    {
+                        //If we throw an error this means we couldn't construct for this solution so the
+                        //solution is ignored for this graph
                     }
                 }
             }

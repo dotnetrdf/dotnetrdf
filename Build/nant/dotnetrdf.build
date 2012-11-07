@@ -24,7 +24,7 @@
   <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
   
   <!-- Signing Properties -->
-  <property name="dotnetrdf.keyfile" value="Build/dotNetRDF.snk" />
+  <property name="dotnetrdf.keyfile" value="${project::get-base-directory()}Build/dotNetRDF.snk" />
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
@@ -50,101 +50,101 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectgen-core-net35" description="Generates the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj.template" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-core-silverlight" description="Generates the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj.template" />
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
     </exec>    
   </target>
 
-  <target name="projectgen-core-windowsphone" description="Generates the dotNetRDF Windows Phone build project file" depends="compile-buildtools" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file" depends="compile-buildtools" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj.template" />
       <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-core-clientprofile" description="Generates the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile" description="Syncs the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj.template" />
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-core-clientprofile-net35" description="Generates the dotNetRDF Client Profile .Net 3.5 build project file" depends="projectgen-core-net35,projectgen-core-clientprofile" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
-      <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile" description="Generates the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile" description="Syncs the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj.template" />
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj.template" />
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-query-fulltext-clientprofile-net35" description="Generates the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
-      <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-clientprofile" description="Generates the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-clientprofile" description="Syncs the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj.template" />
       <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj.template" />
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectgen-data-virtuoso-clientprofile-net35" description="Generates the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-clientprofile-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/ExportCoreContentsToTemplate/bin/Debug/ExportCoreContentsToTemplate.exe">
+    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+      <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
-      <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj.template" />
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
     </exec>
   </target>
@@ -605,23 +605,25 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/p:DefineConstants=&quot;DEBUG,NET40,NANT&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-core-net35" description="Compile the dotNetRDF Core .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-silverlight">
+  <target name="compile-core-silverlight" description="Compile the dotNetRDF Silverlight Build"  unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-silverlight">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -629,10 +631,11 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="license-core,projectgen-core-windowsphone">
+  <target name="compile-core-windowsphone" description="Compile the dotNetRDF Windows Phone Build"  unless="${dotnetrdf.nocompile == 'true' or dotnetrdf.nowindowsphone == 'true'}" depends="license-core,projectsync-core-windowsphone">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <property name="msBuild.exe" value="${string::replace(msBuild.exe,'Framework64','Framework')}" if="${string::contains(msBuild.exe, 'Framework64')}" />
@@ -641,6 +644,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -648,7 +652,7 @@
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/ExportCoreContentsToTemplate/ExportCoreContentsToTemplate.csproj" />
+      <arg value="Build/SyncProjects/SyncProjects.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
@@ -659,7 +663,7 @@
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-clientprofile">
+  <target name="compile-core-clientprofile" description="Compiles the dotNetRDF Client Profile Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -667,19 +671,21 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectgen-core-clientprofile-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-core-clientprofile-net35" description="Compiles the dotNetRDF Client Profile .Net 3.5 Build" unless="${dotnetrdf.nocompile}" depends="license-core,projectsync-core-clientprofile-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -691,11 +697,12 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectgen-data-virtuoso-clientprofile">
+  <target name="compile-data-virtuoso-clientprofile" description="Compiles the dotNetRDF Data.Virtuoso Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile,projectsync-data-virtuoso-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -703,31 +710,34 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-net35,projectgen-data-virtuoso-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-data-virtuoso-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-net35,projectsync-data-virtuoso-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectgen-data-virtuoso-clientprofile-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-data-virtuoso-clientprofile-net35" description="Compiles the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-data-virtuoso,compile-core-clientprofile-net35,projectsync-data-virtuoso-clientprofile-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -739,11 +749,12 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectgen-query-fulltext-clientprofile">
+  <target name="compile-query-fulltext-clientprofile" description="Complies the dotNetRDF Query.FullText .Net 4.0 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile,projectsync-query-fulltext-clientprofile">
     <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
@@ -751,31 +762,34 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectgen-query-fulltext-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-query-fulltext-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-net35,projectsync-query-fulltext-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
-  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectgen-query-fulltext-clientprofile-net35">
-    <property name="nant.settings.currentframework" value="net-3.5" />
+  <target name="compile-query-fulltext-clientprofile-net35" description="Complies the dotNetRDF Query.FullText .Net 3.5 Client Profile Library" unless="${dotnetrdf.nocompile}" depends="license-query-fulltext,compile-core-clientprofile-net35,projectsync-query-fulltext-clientprofile-net35">
+    <property name="nant.settings.currentframework" value="net-4.0" />
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true">
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -787,7 +801,8 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -799,7 +814,8 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -811,7 +827,8 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -823,7 +840,8 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;../../${dotnetrdf.keyfile}&quot;" />
+      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -835,6 +853,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -846,6 +865,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -857,6 +877,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -868,6 +889,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -879,6 +901,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -890,6 +913,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -901,6 +925,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -912,6 +937,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
 
@@ -923,6 +949,7 @@
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
     
@@ -1165,7 +1192,7 @@
 
   <target name="clean" description="Cleans the bin/ and obj/ directories of all projects causing a rebuild to be necessary"
           depends="clean-nightlies,clean-stable,
-                   clean-intermediaries,clean-projectgen,
+                   clean-intermediaries,
                    clean-dist,
                    clean-ndoc">
   </target>
@@ -1182,27 +1209,6 @@
     <delete failonerror="true">
       <fileset>
         <include name="bin/stable/**/*" />
-      </fileset>
-    </delete>
-  </target>
-
-  <target name="clean-projectgen" description="Cleans the generated project files">
-    <delete failonerror="true">
-      <fileset>
-        <!-- Core Library Projects -->
-        <include name="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
-        <include name="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
-        <include name="Libraries/core/net35/dotNetRDF.Net35.csproj" />
-        <include name="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
-        <include name="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
-        <!-- Data.Virtuoso Projects -->
-        <include name="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
-        <include name="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
-        <include name="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
-        <!-- Query.FullText Projects -->
-        <include name="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
-        <include name="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
-        <include name="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
       </fileset>
     </delete>
   </target>
@@ -1273,6 +1279,7 @@
 	      <exclude name="Utilities/bsbm/" />
 	      <exclude name="Build/ndoc3/docs/" />
 	      <exclude name="Build/NuGet/*/lib/**/*" />
+        <exclude name="packages/" />
       </fileset>
     </zip>
   </target>
