@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
@@ -196,7 +195,7 @@ namespace VDS.RDF.Test.Builder
                 .Optional(opt =>
                     {
                         opt.Where(tpb => tpb.Subject("x").PredicateUri("ns:price").Object("price"));
-                        opt.Filter(eb => eb.Variable("price").Lt(eb.Constant(30)));
+                        opt.Filter(eb => eb.Variable("price") < eb.Constant(30));
                     });
             b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
             b.Prefixes.AddNamespace("ns", new Uri("http://example.org/ns#"));
@@ -256,7 +255,7 @@ namespace VDS.RDF.Test.Builder
             var b = QueryBuilder.SelectAll()
                 .Where(tpb => tpb.Subject("x").PredicateUri(":p").Object("n"))
                 .Filter(fb => !fb.Exists(ex => ex.Where(tpb => tpb.Subject("x").PredicateUri(":q").Object("m"))
-                                                 .Filter(inner => !inner.Variable("n").Eq(inner.Variable("m")))));
+                                                 .Filter(inner => inner.Variable("n") != inner.Variable("m"))));
             b.Prefixes.AddNamespace("", new Uri("http://example.com/"));
 
             // when

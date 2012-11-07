@@ -1,7 +1,6 @@
 using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
-using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
 
 namespace VDS.RDF.Query.Builder.Expressions
@@ -21,28 +20,32 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new BooleanExpression(inFunction);
         }
 
-        public BooleanExpression Eq(SparqlExpression rightExpression)
+        public static BooleanExpression operator ==(SparqlExpression left, SparqlExpression right)
         {
-            ISparqlExpression equalsExpression = new EqualsExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return new BooleanExpression(new EqualsExpression(left.Expression, right.Expression));
         }
 
-        protected BooleanExpression Gt(ISparqlExpression left, SparqlExpression right)
+        public static BooleanExpression operator !=(SparqlExpression left, SparqlExpression right)
+        {
+            return !(left == right);
+        }
+
+        protected static BooleanExpression Gt(ISparqlExpression left, SparqlExpression right)
         {
             return new BooleanExpression(new GreaterThanExpression(left, right.Expression));
         }
 
-        protected BooleanExpression Lt(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Lt(ISparqlExpression left, SparqlExpression right)
         {
             return new BooleanExpression(new LessThanExpression(left, right.Expression));
         }
 
-        protected BooleanExpression Ge(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Ge(ISparqlExpression left, SparqlExpression right)
         {
             return new BooleanExpression(new GreaterThanOrEqualToExpression(left, right.Expression));
         }
 
-        protected BooleanExpression Le(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Le(ISparqlExpression left, SparqlExpression right)
         {
             return new BooleanExpression(new LessThanOrEqualToExpression(left, right.Expression));
         }

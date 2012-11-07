@@ -66,7 +66,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             VariableExpression v2 = new VariableExpression("v2");
 
             // when
-            var areEqual = v1.Eq(v2).Expression;
+            var areEqual = (v1 == v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -82,7 +82,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             LiteralExpression lit = new StringExpression("text");
 
             // when
-            var areEqual = v1.Eq(lit).Expression;
+            var areEqual = (v1 == lit).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -98,7 +98,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             LiteralExpression lit = new StringExpression("text");
 
             // when
-            var areEqual = lit.Eq(v1).Expression;
+            var areEqual = (lit == v1).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);
@@ -114,7 +114,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             VariableExpression v2 = new VariableExpression("v2");
 
             // when
-            var areEqual = v1.Gt(v2).Expression;
+            var areEqual = (v1 > v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is GreaterThanExpression);
@@ -130,7 +130,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             LiteralExpression literal = new NumericExpression<int>(10);
 
             // when
-            var areEqual = v1.Gt(literal).Expression;
+            var areEqual = (v1 > literal).Expression;
 
             // then
             Assert.IsTrue(areEqual is GreaterThanExpression);
@@ -146,7 +146,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             VariableExpression v2 = new VariableExpression("v2");
 
             // when
-            var areEqual = v1.Ge(v2).Expression;
+            var areEqual = (v1 >= v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is GreaterThanOrEqualToExpression);
@@ -162,7 +162,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             VariableExpression v2 = new VariableExpression("v2");
 
             // when
-            var areEqual = v1.Lt(v2).Expression;
+            var areEqual = (v1 < v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanExpression);
@@ -178,7 +178,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             VariableExpression v2 = new VariableExpression("v2");
 
             // when
-            var areEqual = v1.Le(v2).Expression;
+            var areEqual = (v1 <= v2).Expression;
 
             // then
             Assert.IsTrue(areEqual is LessThanOrEqualToExpression);
@@ -194,7 +194,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             IriExpression right = new IriExpression("urn:unit:test1");
 
             // when
-            var areEqual = left.Eq(right).Expression;
+            var areEqual = (left == right).Expression;
 
             // then
             Assert.IsTrue(areEqual is EqualsExpression);

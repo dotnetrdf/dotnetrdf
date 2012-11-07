@@ -19,48 +19,64 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
         }
 
-        public BooleanExpression Gt(VariableExpression rightExpression)
+        public static BooleanExpression operator >(VariableExpression leftExpression, VariableExpression rightExpression)
         {
-            ISparqlExpression equalsExpression = new GreaterThanExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return Gt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Lt(VariableExpression rightExpression)
+        public static BooleanExpression operator <(VariableExpression leftExpression, VariableExpression rightExpression)
         {
-            ISparqlExpression equalsExpression = new LessThanExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return Lt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Ge(VariableExpression rightExpression)
+        public static BooleanExpression operator >=(VariableExpression leftExpression, VariableExpression rightExpression)
         {
-            ISparqlExpression equalsExpression = new GreaterThanOrEqualToExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return Ge(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Le(VariableExpression rightExpression)
+        public static BooleanExpression operator <=(VariableExpression leftExpression, VariableExpression rightExpression)
         {
-            ISparqlExpression equalsExpression = new LessThanOrEqualToExpression(Expression, rightExpression.Expression);
-            return new BooleanExpression(equalsExpression);
+            return Le(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Gt(LiteralExpression right)
+        public static BooleanExpression operator >(VariableExpression leftExpression, LiteralExpression rightExpression)
         {
-            return Gt(Expression, right);
+            return Gt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Lt(LiteralExpression right)
+        public static BooleanExpression operator <(VariableExpression leftExpression, LiteralExpression rightExpression)
         {
-            return Lt(Expression, right);
+            return Lt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Ge(LiteralExpression right)
+        public static BooleanExpression operator >(LiteralExpression leftExpression, VariableExpression rightExpression)
         {
-            return Ge(Expression, right);
+            return Gt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Le(LiteralExpression right)
+        public static BooleanExpression operator <(LiteralExpression leftExpression, VariableExpression rightExpression)
         {
-            return Le(Expression, right);
+            return Lt(leftExpression.Expression, rightExpression);
+        }
+
+        public static BooleanExpression operator >=(VariableExpression leftExpression, LiteralExpression rightExpression)
+        {
+            return Ge(leftExpression.Expression, rightExpression);
+        }
+
+        public static BooleanExpression operator <=(VariableExpression leftExpression, LiteralExpression rightExpression)
+        {
+            return Le(leftExpression.Expression, rightExpression);
+        }
+
+        public static BooleanExpression operator >=(LiteralExpression leftExpression, VariableExpression rightExpression)
+        {
+            return Ge(leftExpression.Expression, rightExpression);
+        }
+
+        public static BooleanExpression operator <=(LiteralExpression leftExpression, VariableExpression rightExpression)
+        {
+            return Le(leftExpression.Expression, rightExpression);
         }
     }
 }

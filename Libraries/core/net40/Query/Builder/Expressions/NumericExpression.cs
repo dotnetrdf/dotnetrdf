@@ -1,8 +1,6 @@
 using System;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
-using VDS.RDF.Query.Expressions.Comparison;
-using VDS.RDF.Query.Expressions.Functions.XPath.Cast;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
@@ -146,14 +144,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression<T>(left) - right;
         }
 
-        public BooleanExpression Gt(NumericExpression rightExpression)
+        public static BooleanExpression operator >(NumericExpression<T> leftExpression, NumericExpression rightExpression)
         {
-            return Gt(Expression, rightExpression);
+            return (NumericExpression)leftExpression > rightExpression;
         }
 
-        public BooleanExpression Lt(NumericExpression rightExpression)
+        public static BooleanExpression operator <(NumericExpression<T> leftExpression, NumericExpression rightExpression)
         {
-            return Lt(Expression, rightExpression);
+            return (NumericExpression)leftExpression < rightExpression;
+        }
+
+        public static BooleanExpression operator >(NumericExpression leftExpression, NumericExpression<T> rightExpression)
+        {
+            return leftExpression > (NumericExpression)rightExpression;
+        }
+
+        public static BooleanExpression operator <(NumericExpression leftExpression, NumericExpression<T> rightExpression)
+        {
+            return leftExpression < (NumericExpression)rightExpression;
         }
 
         public BooleanExpression Ge(NumericExpression rightExpression)
@@ -494,24 +502,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression<double>(left) - right;
         }
 
-        public BooleanExpression Gt(NumericExpression rightExpression)
+        public static BooleanExpression operator >(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Gt(Expression, rightExpression);
+            return Gt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Lt(NumericExpression rightExpression)
+        public static BooleanExpression operator <(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Lt(Expression, rightExpression);
+            return Lt(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Ge(NumericExpression rightExpression)
+        public static BooleanExpression operator >=(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Lt(Expression, rightExpression);
+            return Ge(leftExpression.Expression, rightExpression);
         }
 
-        public BooleanExpression Le(NumericExpression rightExpression)
+        public static BooleanExpression operator <=(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Le(Expression, rightExpression);
+            return Le(leftExpression.Expression, rightExpression);
         }
     }
 }

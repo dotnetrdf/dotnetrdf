@@ -23,15 +23,15 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         private static BooleanExpression EitherArgumentNull(BooleanExpression left, BooleanExpression right)
         {
-            if(left == null && right == null)
+            if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
             {
                 throw new ArgumentNullException("left", "Either operator argument must be not-null");
             }
-            if(left == null)
+            if (ReferenceEquals(left, null))
             {
                 return right;
             }
-            if(right == null)
+            if (ReferenceEquals(right, null))
             {
                 return left;
             }

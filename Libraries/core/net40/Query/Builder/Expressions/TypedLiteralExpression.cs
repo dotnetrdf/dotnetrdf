@@ -16,24 +16,24 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        public BooleanExpression Gt(TypedLiteralExpression<T> rightExpression)
+        public static BooleanExpression operator >(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Gt(Expression, rightExpression);
+            return Gt(left.Expression, right);
         }
 
-        public BooleanExpression Lt(TypedLiteralExpression<T> rightExpression)
+        public static BooleanExpression operator <(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Lt(Expression, rightExpression);
+            return Lt(left.Expression, right);
         }
 
-        public BooleanExpression Ge(TypedLiteralExpression<T> rightExpression)
+        public static BooleanExpression operator >=(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Lt(Expression, rightExpression);
+            return Ge(left.Expression, right);
         }
 
-        public BooleanExpression Le(TypedLiteralExpression<T> rightExpression)
+        public static BooleanExpression operator <=(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Le(Expression, rightExpression);
+            return Le(left.Expression, right);
         }
     }
 }
