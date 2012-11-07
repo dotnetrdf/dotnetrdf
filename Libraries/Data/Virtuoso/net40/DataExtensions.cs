@@ -45,7 +45,7 @@ namespace VDS.RDF
     /// <summary>
     /// Represents common extensions that are useful across all Plugin libraries
     /// </summary>
-    static class PluginExtensions
+    static class DataExtensions
     {
         /// <summary>
         /// Gets either the String form of the Object of the Empty String

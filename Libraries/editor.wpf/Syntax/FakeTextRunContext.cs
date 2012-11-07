@@ -41,10 +41,12 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Rendering;
+using ICSharpCode.AvalonEdit.Utils;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
-    public class FakeTextRunContext : ITextRunConstructionContext
+    public class FakeTextRunContext
+        : ITextRunConstructionContext
     {
         public ICSharpCode.AvalonEdit.Document.TextDocument Document
         {
@@ -76,6 +78,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             { 
                 return null;
             }
+        }
+
+        public StringSegment GetText(int offset, int length)
+        {
+            return new StringSegment();
         }
     }
 }
