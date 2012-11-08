@@ -16,12 +16,12 @@
   <property name="dotnetrdf.nowarn" value="1591;0067" />
   
   <!-- Licensing Properties -->
-  <property name="dotnetrdf.license.exclude.exts" 
+  <property name="dotnetrdf.License.exclude.exts" 
             value="dll,pdb,exe,xml,xaml,xsd,dtd,xshd,config,xslt,ttl,rdf,out,rq,trig,trix,ru,nt,n3,nq,srx,owl,srj,json,txt,csv,tsv,csproj,user,template,cache,pfx,sql,resources,resx,properties,settings,html,xhtml,css,js,sparql,bak,ico,png,jpg,tiff,bmp,orig" />
-  <property name="dotnetrdf.license.exclude.regex" value="hg|svn|obj|bin" />
-  <property name="dotnetrdf.license.search" value="Copyright dotNetRDF Project" />
-  <property name="dotnetrdf.license.replace" value="license-boilerplate.txt" />
-  <property name="dotnetrdf.license.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing licenses -->
+  <property name="dotnetrdf.License.exclude.regex" value="hg|svn|obj|bin" />
+  <property name="dotnetrdf.License.search" value="Copyright (c) 2009-2012 dotNetRDF Project" />
+  <property name="dotnetrdf.License.replace" value="License.txt" />
+  <property name="dotnetrdf.License.overwrite" value="-overwrite" /> <!-- Alternative is -preserve which does not change existing Licenses -->
   
   <!-- Signing Properties -->
   <property name="dotnetrdf.keyfile" value="${project::get-base-directory()}Build/dotNetRDF.snk" />
@@ -149,12 +149,12 @@
     </exec>
   </target>
   
-  <!-- License Targets which enforce license headers on the code -->
+  <!-- License Targets which enforce License headers on the code -->
 
-  <target name="license" description="Applies license headers to all targets"
+  <target name="License" description="Applies License headers to all targets"
           depends="license-libs,license-tests,license-utils" unless="${dotnetrdf.nocompile}" />
 
-  <target name="license-libs" description="Applies license headers to all library targets"
+  <target name="license-libs" description="Applies License headers to all library targets"
           depends="license-core,license-core-silverlight,
                    license-data-virtuoso,
                    license-query-fulltext,
@@ -162,11 +162,11 @@
                    license-storemanager-core,
                    license-httpserver" unless="${dotnetrdf.nocompile}" />
 
-  <target name="license-tests" description="Applies license headers to all test targets"
+  <target name="license-tests" description="Applies License headers to all test targets"
           depends="license-libs,
                    license-tests-informal,license-unit-tests,license-dawg-tests" unless="${dotnetrdf.nocompile}" />
 
-  <target name="license-utils" description="Applies license headers to all utility targets"
+  <target name="license-utils" description="Applies License headers to all utility targets"
           depends="license-libs,
                    license-util-convert,
                    license-util-editor-wpf,
@@ -176,360 +176,360 @@
                    license-util-webdeploy,
                    license-util-storemanager" unless="${dotnetrdf.nocompile}" />
 
-  <target name="license-core" description="Applies license headers to the Core Library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="license-core" description="Applies License headers to the Core Library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core/net40/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-core-silverlight" description="Applies license headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core/sl4/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-data-virtuoso" description="Applies license headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-data-virtuoso" description="Applies License headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/Data/Virtuoso/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-query-fulltext" description="Applies license headers to the Query.FullText library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-query-fulltext" description="Applies License headers to the Query.FullText library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/Query/FullText/net40/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-gui-winforms" description="Applies license headers to the dotNetRDF.WinForms library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-gui-winforms" description="Applies License headers to the dotNetRDF.WinForms library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/gui.winforms/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-editor-core" description="Applies license headers to the rdfEditor.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-editor-core" description="Applies License headers to the rdfEditor.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/editor/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-editor-wpf" description="Applies license headers to the rdfEditor.Core.Wpf library" depends="license-editor-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-editor-wpf" description="Applies License headers to the rdfEditor.Core.Wpf library" depends="license-editor-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/editor.wpf/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-storemanager-core" description="Applies license headers to the StoreManager.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-storemanager-core" description="Applies License headers to the StoreManager.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/storemanager.core/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-httpserver" description="Applies license headers to the VDS.Web.Server library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="license-httpserver" description="Applies License headers to the VDS.Web.Server library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/httpserver/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-tests-informal" description="Applies license headers to the Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-tests-informal" description="Applies License headers to the Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/testsuite/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-unit-tests" description="Applies license headers to the Unit Tests library" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-unit-tests" description="Applies License headers to the Unit Tests library" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/unittest/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-dawg-tests" description="Applies license headers to the DAWG Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-dawg-tests" description="Applies License headers to the DAWG Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/sparqlDawgTests/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-convert" description="Applies license headers to the rdfConvert utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-convert" description="Applies License headers to the rdfConvert utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfConvert/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-editor-wpf" description="Applies license headers to the rdfEditor.Wpf utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-editor-wpf" description="Applies License headers to the rdfEditor.Wpf utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfEditor.Wpf/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-opt-stats" description="Applies license headers to the rdfOptStats utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-opt-stats" description="Applies License headers to the rdfOptStats utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfOptStats/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-query-cmd" description="Applies license headers to the rdfQuery utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-query-cmd" description="Applies License headers to the rdfQuery utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfQuery/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-query-gui" description="Applies license headers to the SparqlGUI utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-query-gui" description="Applies License headers to the SparqlGUI utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/SparqlGUI/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-server-cmd" description="Applies license headers to the rdfServer utility" depends="license-core,license-httpserver" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-server-cmd" description="Applies License headers to the rdfServer utility" depends="license-core,license-httpserver" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfServer/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-server-gui" description="Applies license headers to the rdfServer utility" depends="license-util-server-cmd" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-server-gui" description="Applies License headers to the rdfServer utility" depends="license-util-server-cmd" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfServerGUI/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-webdeploy" description="Applies license headers to the rdfWebDeploy utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-webdeploy" description="Applies License headers to the rdfWebDeploy utility" depends="license-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfWebDeploy/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
-  <target name="license-util-storemanager" description="Applies license headers to the StoreManager utility" depends="license-core,license-storemanager-core" unless="${dotnetrdf.nocompile}">
+  <target name="license-util-storemanager" description="Applies License headers to the StoreManager utility" depends="license-core,license-storemanager-core" unless="${dotnetrdf.nocompile}">
     <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/StoreManager/" />
       <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.license.exclude.exts}" />
+      <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
-      <arg value="${dotnetrdf.license.exclude.regex}" />
+      <arg value="${dotnetrdf.License.exclude.regex}" />
       <arg value="-license-search" />
-      <arg value="${dotnetrdf.license.search}" />
+      <arg value="${dotnetrdf.License.search}" />
       <arg value="-license-file" />
-      <arg value="${dotnetrdf.license.replace}" />
+      <arg value="${dotnetrdf.License.replace}" />
       <arg value="-fix" />
-      <arg value="${dotnetrdf.license.overwrite}" />
+      <arg value="${dotnetrdf.License.overwrite}" />
     </exec>
   </target>
 
@@ -539,9 +539,10 @@
     <property name="dotnetrdf.nocompile" value="true" />
   </target>
 
-  <target name="compile" description="Compile the dotNetRDF Solution and all platform specific builds" unless="${dotnetrdf.nocompile}" 
+  <target name="compile" description="Compile the dotNetRDF released builds" unless="${dotnetrdf.nocompile}" 
           depends="compile-libs,
-                   compile-utils">
+                   compile-utils,
+                   compile-utils-installer">
   </target>
 
   <target name="compile-libs" description="Copiles all libraries for main distribution and toolkit" unless="${dotnetrdf.nocompile}"
@@ -952,6 +953,16 @@
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
     </exec>
   </target>
+
+  <target name="compile-utils-installer" description="Compile the Toolkit Installer" depends="compile-utils" unless="${dotnetrdf.nocompile}">
+    <property name="nant.settings.currentframework" value="net-4.0" />
+    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
+    <exec program="${msBuild.exe}" failonerror="true">
+      <arg value="Build/ToolkitInstaller/ToolkitInstaller.vdproj" />
+      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
+      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
+    </exec>
+  </target>
     
   <!-- Nightly Build Targets -->
 
@@ -1259,6 +1270,15 @@
 
   <target name="dist-libs-stable" description="Creates the ZIP files for the stable API Release" depends="build-release-libs">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
+      <fileset>
+        <include name="Acknowledgments.txt" />
+        <include name="License.txt" />
+      </fileset>
+      <fileset basedir="Libraries">
+        <include name="ReadMe.txt" />
+        <include name="ReleaseNotes.txt" />
+        <include name="ChangeLog.txt" />
+      </fileset>
       <fileset basedir="bin/stable/Libraries/" failonempty="true">
         <include name="**/*" />
       </fileset>
@@ -1269,16 +1289,16 @@
         <exclude name=".hg/*" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
-	      <exclude name="**/*.dll" />
+	<exclude name="**/*.dll" />
         <exclude name="**/*.exe" />
         <exclude name="**/*.pdb" />
         <exclude name="Testing/" />
         <exclude name="TestResults/" />
         <exclude name="Samples/" />
-	      <exclude name="*.zip" />
-	      <exclude name="Utilities/bsbm/" />
-	      <exclude name="Build/ndoc3/docs/" />
-	      <exclude name="Build/NuGet/*/lib/**/*" />
+	<exclude name="*.zip" />
+	<exclude name="Utilities/bsbm/" />
+	<exclude name="Build/ndoc3/docs/" />
+	<exclude name="Build/NuGet/*/lib/**/*" />
         <exclude name="packages/" />
       </fileset>
     </zip>
@@ -1286,6 +1306,15 @@
 
   <target name="dist-libs-nightly" description="Creates the ZIP files for the nightly API release" depends="build-libs">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
+      <fileset>
+        <include name="Acknowledgments.txt" />
+        <include name="License.txt" />
+      </fileset>
+      <fileset basedir="Libraries">
+        <include name="ReadMe.txt" />
+        <include name="ReleaseNotes.txt" />
+        <include name="ChangeLog.txt" />
+      </fileset>
       <fileset basedir="bin/nightlies/Libraries/" failonempty="true">
         <include name="/**/*" />
       </fileset>
@@ -1293,10 +1322,13 @@
   </target>
 
   <target name="dist-utils-stable" description="Creates the ZIP files for the stable Toolkit release" depends="build-release-utils">
-    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
+    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
+      <fileset>
+        <include name="Acknowledgments.txt" />
+        <include name="License.txt" />
+      </fileset>
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
-        <include name="../Acknowlegments.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
       <fileset basedir="bin/stable/Toolkit/" failonempty="true">
@@ -1306,10 +1338,13 @@
   </target>
 
   <target name="dist-utils-nightly" description="Creates the ZIP files for the nightly Toolkit release" depends="build-release-utils">
-    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9" duplicate="Preserve">
+    <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
+      <fileset>
+        <include name="Acknowledgments.txt" />
+        <include name="License.txt" />
+      </fileset>
       <fileset basedir="Utilities">
         <include name="ReadMe.txt" />
-        <include name="../Acknowlegments.txt" />
         <include name="ChangeLog.txt" />
       </fileset>
       <fileset basedir="bin/nightlies/Toolkit/" failonempty="true">
@@ -1318,8 +1353,16 @@
     </zip>
   </target>
 
-  <target name="dist-utils-installer" description="Creates the Toolkit Installer ZIP" depends="build">
+  <target name="dist-utils-installer" description="Creates the Toolkit Installer ZIP" depends="compile-utils-installer">
     <zip zipfile="${dotnetrdf.toolkitinstaller}" ziplevel="9">
+      <fileset>
+        <include name="Acknowledgments.txt" />
+        <include name="License.txt" />
+      </fileset>
+      <fileset basedir="Utilities">
+        <include name="ReadMe.txt" />
+        <include name="ChangeLog.txt" />
+      </fileset>
       <fileset basedir="Build/ToolkitInstaller/Debug/" failonempty="true">
         <include name="*" />
       </fileset>

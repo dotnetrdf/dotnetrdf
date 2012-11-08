@@ -9,6 +9,10 @@ To get started with using dotNetRDF you may want to check out the following reso
  - [Developer Guide][11] - Some advanced documentation
  - [MSDN Style API][12] - MSDN style documentation for the entire API
 
+### License
+
+dotNetRDF is licensed under the MIT License, see the LICENSE.txt file in this repository
+
 ### Obtaining dotNetRDF
 
 dotNetRDF produces two main products:
