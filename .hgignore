@@ -22,7 +22,7 @@ temp*.txt
 _ReSharper*/
 
 # NuGet Package Management Stuff
-.nuget/NuGet.exe
+.nuget/*.exe
 packages/
 
 # Developer/Environment specific config files

@@ -30,12 +30,7 @@ This Toolkit provides the following GUI tools:
 License
 -------
 
-dotNetRDF is licensed under the GNU GPL Version 3
-
-Alternatively you may use it under the GNU Lesser GPL Version 3 or under the MIT license
-
-If none of these licenses are suitable for your intended use please contact us to discuss
-alternative terms
+dotNetRDF is licensed under the MIT License, see LICENSE.txt for details
 
 Acknowledgements
 ----------------
