@@ -314,11 +314,11 @@ namespace VDS.RDF.Configuration
     public class StoreFactory 
         : IObjectFactory
     {
-        private const String TripleStore = "VDS.RDF.TripleStore",
+        private const String TripleStore = "VDS.RDF.TripleStore";
 #if !SILVERLIGHT
-                             WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore",
+        private const String WebDemandTripleStore = "VDS.RDF.WebDemandTripleStore";
 #endif
-                             PersistentTripleStore = "VDS.RDF.PersistentTripleStore";
+
 
 
         /// <summary>
@@ -365,21 +365,6 @@ namespace VDS.RDF.Configuration
                     store = new WebDemandTripleStore();
                     break;
 #endif
-
-                case PersistentTripleStore:
-                    subObj = ConfigurationLoader.GetConfigurationNode(g, objNode, propStorageProvider);
-                    if (subObj == null) return false;
-
-                    temp = ConfigurationLoader.LoadObject(g, subObj);
-                    if (temp is IStorageProvider)
-                    {
-                        store = new PersistentTripleStore((IStorageProvider)temp);
-                    }
-                    else
-                    {
-                        throw new DotNetRdfConfigurationException("Unable to load a Persistent Triple Store identified by the Node '" + objNode.ToString() + "' as the value given the for dnr:genericManager property points to an Object which could not be loaded as an object which implements the IStorageProvider interface");
-                    }
-                    break;
             }
             
             //Read in additional data to be added to the Store
@@ -471,7 +456,6 @@ namespace VDS.RDF.Configuration
 #if !SILVERLIGHT
                 case WebDemandTripleStore:
 #endif
-                case PersistentTripleStore:
                      return true;
                 default:
                     return false;

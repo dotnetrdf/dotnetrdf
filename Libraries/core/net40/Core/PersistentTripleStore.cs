@@ -68,6 +68,7 @@ namespace VDS.RDF
     /// It is possible for the in-memory view of the triple store to get out of sync with the underlying store if that store is being modified by other processes or other code not utilising the <see cref="PersistentTripleStore">PersistentTripleStore</see> instance that you have created.  Currently there is no means to resync the in-memory view with the underlying view so you should be careful of using this class in scenarios where your underlying store may be modified.
     /// </para>
     /// </remarks>
+    [Obsolete("This class is obsolete, use the new PersistentGraphStore instead", true)]
     public sealed class PersistentTripleStore
         : BaseTripleStore, INativelyQueryableStore, IUpdateableTripleStore, ITransactionalStore
     {
@@ -249,6 +250,7 @@ namespace VDS.RDF
     /// <summary>
     /// Internal implementation of a Graph Collection for use by the <see cref="PersistentTripleStore">PersistentTripleStore</see>
     /// </summary>
+    [Obsolete("Obsolete since PersistentTripleStore is obsolete", true)]
     class PersistentGraphCollection
         : GraphCollection
     {
