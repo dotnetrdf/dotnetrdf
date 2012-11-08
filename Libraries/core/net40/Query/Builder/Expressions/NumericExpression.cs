@@ -164,14 +164,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return leftExpression < (NumericExpression)rightExpression;
         }
 
-        public BooleanExpression Ge(NumericExpression rightExpression)
+        public static BooleanExpression operator >=(NumericExpression<T> leftExpression, NumericExpression rightExpression)
         {
-            return Lt(Expression, rightExpression);
+            return (NumericExpression)leftExpression >= rightExpression;
         }
 
-        public BooleanExpression Le(NumericExpression rightExpression)
+        public static BooleanExpression operator <=(NumericExpression<T> leftExpression, NumericExpression rightExpression)
         {
-            return Le(Expression, rightExpression);
+            return (NumericExpression)leftExpression <= rightExpression;
+        }
+
+        public static BooleanExpression operator >=(NumericExpression leftExpression, NumericExpression<T> rightExpression)
+        {
+            return leftExpression >= (NumericExpression)rightExpression;
+        }
+
+        public static BooleanExpression operator <=(NumericExpression leftExpression, NumericExpression<T> rightExpression)
+        {
+            return leftExpression <= (NumericExpression)rightExpression;
         }
     }
 
