@@ -1,9 +1,67 @@
+using System;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    public static class LiteralExtensions
+    {
+        public static ILiteralNode ToLiteral<T>(this T numericValue)
+        {
+            if (typeof(T) == typeof(int))
+            {
+                return ((int)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(decimal))
+            {
+                return ((decimal)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(short))
+            {
+                return ((short)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(long))
+            {
+                return ((long)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(float))
+            {
+                return ((float)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(double))
+            {
+                return ((double)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(byte))
+            {
+                return ((byte)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(sbyte))
+            {
+                return ((sbyte)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(string))
+            {
+                return ((string)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(DateTime))
+            {
+                return ((DateTime)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(TimeSpan))
+            {
+                return ((TimeSpan)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+            if (typeof(T) == typeof(bool))
+            {
+                return ((bool)(object)numericValue).ToLiteral(LiteralExpression.NodeFactory);
+            }
+
+            throw new ArgumentException(string.Format("Unsupported type for literal node: {0}", typeof(T)));
+        }
+    }
+
     public abstract class TypedLiteralExpression<T> : LiteralExpression
     {
         protected TypedLiteralExpression(ILiteralNode expression)
@@ -34,6 +92,26 @@ namespace VDS.RDF.Query.Builder.Expressions
         public static BooleanExpression operator <=(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
             return Le(left.Expression, right);
+        }
+
+        public static BooleanExpression operator ==(TypedLiteralExpression<T> left, T right)
+        {
+            return new BooleanExpression(new EqualsExpression(left.Expression, new ConstantTerm(right.ToLiteral())));
+        }
+
+        public static BooleanExpression operator !=(TypedLiteralExpression<T> left, T right)
+        {
+            return !(left == right);
+        }
+
+        public static BooleanExpression operator ==(T left, TypedLiteralExpression<T> right)
+        {
+            return new BooleanExpression(new EqualsExpression(new ConstantTerm(left.ToLiteral()), right.Expression));
+        }
+
+        public static BooleanExpression operator !=(T left, TypedLiteralExpression<T> right)
+        {
+            return !(left == right);
         }
     }
 }

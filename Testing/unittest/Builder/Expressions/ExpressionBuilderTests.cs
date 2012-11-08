@@ -109,6 +109,20 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateIsBlankFunctionUsingVariableName()
+        {
+            // given
+            SparqlExpression variable = new VariableExpression("x");
+
+            // when
+            BooleanExpression isBlank = Builder.IsBlank("x");
+
+            // then
+            Assert.IsTrue(isBlank.Expression is IsBlankFunction);
+            Assert.AreEqual(variable.Expression.ToString(), isBlank.Expression.Arguments.ElementAt(0).ToString());
+        }
+
+        [TestMethod]
         public void CanCreateIsLiteralFunction()
         {
             // given

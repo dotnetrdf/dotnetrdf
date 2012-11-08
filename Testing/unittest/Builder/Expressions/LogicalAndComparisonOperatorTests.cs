@@ -91,6 +91,66 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValue()
+        {
+            // given
+            StringExpression lit = new StringExpression("text");
+
+            // when
+            var areEqual = (lit == "some value").Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanCreateEqualityComparisonBetweenTypedLiteralAndConcreteValueReversed()
+        {
+            // given
+            StringExpression lit = new StringExpression("text");
+
+            // when
+            var areEqual = ("some value" == lit).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValue()
+        {
+            // given
+            LiteralExpression lit = new StringExpression("text");
+
+            // when
+            var areEqual = ("some value" == lit).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void CanCreateEqualityComparisonBetweenUntypedLiteralAndConcreteValueReversed()
+        {
+            // given
+            LiteralExpression lit = new StringExpression("text");
+
+            // when
+            var areEqual = ("some value" == lit).Expression;
+
+            // then
+            Assert.IsTrue(areEqual is EqualsExpression);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(0) is ConstantTerm);
+            Assert.IsTrue(areEqual.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
         public void CanCreateEqualityComparisonBetweenConstantAndVariable()
         {
             // given

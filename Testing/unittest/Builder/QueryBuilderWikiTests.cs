@@ -266,5 +266,23 @@ namespace VDS.RDF.Test.Builder
             Assert.IsTrue(exists.Arguments.Single() is GraphPatternTerm);
             Assert.IsTrue(((GraphPatternTerm)exists.Arguments.Single()).Pattern.IsFiltered);
         }
+
+        [TestMethod]
+        public void SomewhatComplexFilterSample()
+        {
+            // given
+            var b = QueryBuilder.SelectAll()
+                .Filter(eb =>
+                    {
+                        var title = eb.Variable("title");
+                        return !eb.IsBlank("book") &&
+                               eb.Regex(eb.Str(title), "Twilight", "i") &&
+                               eb.Lang(title) == "cn";
+                    });
+
+            // when
+
+            // then
+        }
     }
 }

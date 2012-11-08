@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             Expression = expression;
         }
 
-        public ISparqlExpression Expression { get; protected set; }
+        public ISparqlExpression Expression { get; set; }
 
         public BooleanExpression In(params SparqlExpression[] expressions)
         {

@@ -111,6 +111,11 @@ namespace VDS.RDF.Query.Builder
             return new BooleanExpression(isBlank);
         }
 
+        public BooleanExpression IsBlank(string variableName)
+        {
+            return IsBlank(Variable(variableName));
+        }
+
         public BooleanExpression IsLiteral(SparqlExpression term)
         {
             var isLiteral = new IsLiteralFunction(term.Expression);
