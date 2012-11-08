@@ -84,6 +84,7 @@ namespace VDS.RDF.Writing
         {
             JsonTextWriter writer = new JsonTextWriter(output);
             writer.Formatting = Newtonsoft.Json.Formatting.Indented;
+            BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper();
 
             //Start a Json Object for the Result Set
             writer.WriteStartObject();
@@ -136,7 +137,7 @@ namespace VDS.RDF.Writing
                                 //Blank Node
                                 writer.WriteValue("bnode");
                                 writer.WritePropertyName("value");
-                                String id = ((IBlankNode)value).InternalID;
+                                String id = bnodeMapper.GetOutputID(((IBlankNode)value).AnonID);
                                 id = id.Substring(id.IndexOf(':') + 1);
                                 writer.WriteValue(id);
                                 break;

@@ -21,11 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Library", "Core Library", "{D0EBD311-D634-4254-B787-3573CE8E808C}"
 	ProjectSection(SolutionItems) = preProject
-		Libraries\core\net40\ChangeLog.txt = Libraries\core\net40\ChangeLog.txt
+		Libraries\ChangeLog.txt = Libraries\ChangeLog.txt
 		Libraries\core\net40\Compiler Symbols.txt = Libraries\core\net40\Compiler Symbols.txt
 		Libraries\core\net40\Compiling.txt = Libraries\core\net40\Compiling.txt
-		Libraries\core\net40\ReadMe.txt = Libraries\core\net40\ReadMe.txt
-		Libraries\core\net40\ReleaseNotes.txt = Libraries\core\net40\ReleaseNotes.txt
+		Libraries\ReadMe.txt = Libraries\ReadMe.txt
+		Libraries\ReleaseNotes.txt = Libraries\ReleaseNotes.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NDoc", "NDoc", "{BF556CC4-9192-4D6B-9BA4-CDFF06FD0E53}"
@@ -71,41 +71,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NAnt", "NAnt", "{D763DA6C-5
 		Build\nant\dotnetrdf.build = Build\nant\dotnetrdf.build
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Templates", "Templates", "{1456B530-FB7E-41E2-9831-80691A61B85A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4", "Client Profile 4", "{1A8E3A21-D934-4BA4-8147-5FDAB29D175E}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core\net40-client\Properties\AssemblyInfo.cs = Libraries\core\net40-client\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight 4", "Silverlight 4", "{158759E3-877B-41FD-BEE9-87D182A8FCD4}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core.silverlight\Properties\AssemblyInfo.cs = Libraries\core.silverlight\Properties\AssemblyInfo.cs
-		Libraries\core.silverlight\dotNetRDF.Silverlight.2010.csproj.template = Libraries\core.silverlight\dotNetRDF.Silverlight.2010.csproj.template
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows Phone 7", "Windows Phone 7", "{CCF5858F-3452-4EFB-849B-5928008EDFF9}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core.windowsphone\Properties\AssemblyInfo.cs = Libraries\core.windowsphone\Properties\AssemblyInfo.cs
-		Libraries\core.windowsphone\dotNetRDF.WindowsPhone.2010.csproj.template = Libraries\core.windowsphone\dotNetRDF.WindowsPhone.2010.csproj.template
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query Libraries", "Query Libraries", "{A0F95852-74DF-46F9-9848-F934F62C0D70}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{A871941C-629E-4DCC-8C88-5AD31ED09995}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core\net35\Properties\AssemblyInfo.cs = Libraries\core\net35\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{954B6783-7ECC-4FC0-9022-76A618D6F5B8}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\core\net35-client\Properties\AssemblyInfo.cs = Libraries\core\net35-client\Properties\AssemblyInfo.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core\net40\dotNetRDF.csproj", "{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -160,38 +126,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServer", "Utilities\rdfS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rdfServerGUI", "Utilities\rdfServerGUI\rdfServerGUI.csproj", "{BB0C0B98-00F9-4244-87DF-B4B808FF69F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Full 3.5", "Full 3.5", "{1702A1F1-6A2C-447B-AB9A-756E71C3BF37}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "ToolkitInstaller", "Build\ToolkitInstaller\ToolkitInstaller.vdproj", "{A233EBC5-7463-457C-9A11-4C4BA6B5D431}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{B4901633-122A-44ED-AC2C-F033328C4A8D}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data.Virtuoso", "Data.Virtuoso", "{0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Query.FullText", "Query.FullText", "{43561F44-F82E-4C58-9BF2-D36858EBE857}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{E7CCB195-F53E-474A-8DC5-E6C38963D0B9}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net40-client\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{5926AC3F-AA16-45A0-AD18-590C28BB91F8}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs = Libraries\Data\Virtuoso\net35-client\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 4.0", "Client Profile 4.0", "{DED37B23-101C-42B4-B7FE-919E4CE41AFE}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net40-client\Properties\AssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client Profile 3.5", "Client Profile 3.5", "{BCDF787B-D49E-4511-A036-1F49CCCEC279}"
-	ProjectSection(SolutionItems) = preProject
-		Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs = Libraries\Query\FullText\net35-client\Properties\AssemblyInfo.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicenseChecker", "Build\LicenseChecker\LicenseChecker.csproj", "{B5C5E154-B17E-4A4A-B670-108553391A29}"
 EndProject
@@ -756,7 +691,6 @@ Global
 		{05FF69EA-EC65-4CD6-AC82-12D110E6D626} = {8AF0B3BE-7B01-45FF-8EA5-CCF0C596F7E7}
 		{99E6AA95-7905-4997-A593-F21E11BDD2DB} = {3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}
 		{D763DA6C-5FA1-4A50-B8F8-2117C11CF2C4} = {3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}
-		{1456B530-FB7E-41E2-9831-80691A61B85A} = {3CDA014A-AA30-48E7-84C6-44BA1AA0C7DD}
 		{D0EBD311-D634-4254-B787-3573CE8E808C} = {05FF69EA-EC65-4CD6-AC82-12D110E6D626}
 		{C5B85D93-6717-4270-9C36-79EFC18441C5} = {05FF69EA-EC65-4CD6-AC82-12D110E6D626}
 		{BF556CC4-9192-4D6B-9BA4-CDFF06FD0E53} = {D0EBD311-D634-4254-B787-3573CE8E808C}
@@ -798,29 +732,15 @@ Global
 		{D381CE62-3B23-4BFE-847B-912F7992075B} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
 		{C06AF971-A922-4070-A335-1C5D6A16A6CE} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
 		{396210A4-AEDA-4352-8458-1788083E336F} = {B89D7860-CC8A-4E2B-97AD-42E03FD97766}
-		{B4901633-122A-44ED-AC2C-F033328C4A8D} = {1456B530-FB7E-41E2-9831-80691A61B85A}
-		{43561F44-F82E-4C58-9BF2-D36858EBE857} = {1456B530-FB7E-41E2-9831-80691A61B85A}
-		{0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5} = {1456B530-FB7E-41E2-9831-80691A61B85A}
-		{158759E3-877B-41FD-BEE9-87D182A8FCD4} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
-		{CCF5858F-3452-4EFB-849B-5928008EDFF9} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
-		{A871941C-629E-4DCC-8C88-5AD31ED09995} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
-		{DFDEC2E1-E5DB-4587-A152-A2A0A8D84A5D} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
-		{1A8E3A21-D934-4BA4-8147-5FDAB29D175E} = {B4901633-122A-44ED-AC2C-F033328C4A8D}
 		{09097771-84FD-4DC8-A259-1CB0591714EA} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 		{158615D0-3BE8-4B7D-A903-89A35D83A82F} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 		{FF53C8F1-884D-4174-8168-5302DF628600} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
 		{B86E07CA-12B0-4E40-AA07-0CDDCA659FE4} = {A0F95852-74DF-46F9-9848-F934F62C0D70}
-		{954B6783-7ECC-4FC0-9022-76A618D6F5B8} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
-		{DED37B23-101C-42B4-B7FE-919E4CE41AFE} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
-		{BCDF787B-D49E-4511-A036-1F49CCCEC279} = {43561F44-F82E-4C58-9BF2-D36858EBE857}
 		{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
 		{C834D5A0-18DA-4206-BE86-C1CA59837DA8} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
 		{5B3596B5-DB36-45B6-AC58-1B505E78FB86} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
 		{2BF58AFC-4DCE-4ED4-BBE2-B751C1E4BC21} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
 		{854A789B-BA35-4A1B-9449-CAD40953F0E5} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
 		{1809BF65-1837-4D4C-A65C-0B7C1D111548} = {B91DD4CE-98C7-4078-B7B5-FAB890EEAD08}
-		{1702A1F1-6A2C-447B-AB9A-756E71C3BF37} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}
-		{E7CCB195-F53E-474A-8DC5-E6C38963D0B9} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}
-		{5926AC3F-AA16-45A0-AD18-590C28BB91F8} = {0A5EE09C-FCFD-4040-990A-CB0ED6EF00D5}
 	EndGlobalSection
 EndGlobal

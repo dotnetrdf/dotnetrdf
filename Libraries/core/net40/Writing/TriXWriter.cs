@@ -83,10 +83,12 @@ namespace VDS.RDF.Writing
                 writer.WriteRaw(TriXParser.TriXNamespaceURI);
                 writer.WriteEndAttribute();
 
+                BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper();
+
                 //Output Graphs as XML <graph> elements
                 foreach (IGraph g in store.Graphs)
                 {
-                    this.GraphToTriX(g, writer);
+                    this.GraphToTriX(g, writer, bnodeMapper);
                 }
 
                 //Save the XML to disk
@@ -108,7 +110,7 @@ namespace VDS.RDF.Writing
             }
         }
 
-        private void GraphToTriX(IGraph g, XmlWriter writer)
+        private void GraphToTriX(IGraph g, XmlWriter writer, BlankNodeOutputMapper bnodeMapper)
         {
             //Create the <graph> element
             writer.WriteStartElement("graph");
@@ -135,9 +137,9 @@ namespace VDS.RDF.Writing
             {
                 writer.WriteStartElement("triple");
 
-                this.NodeToTriX(t.Subject, writer);
-                this.NodeToTriX(t.Predicate, writer);
-                this.NodeToTriX(t.Object, writer);
+                this.NodeToTriX(t.Subject, writer, bnodeMapper);
+                this.NodeToTriX(t.Predicate, writer, bnodeMapper);
+                this.NodeToTriX(t.Object, writer, bnodeMapper);
 
                 //</triple>
                 writer.WriteEndElement();
@@ -147,13 +149,13 @@ namespace VDS.RDF.Writing
             writer.WriteEndElement();
         }
 
-        private void NodeToTriX(INode n, XmlWriter writer)
+        private void NodeToTriX(INode n, XmlWriter writer, BlankNodeOutputMapper bnodeMapper)
         {
             switch (n.NodeType)
             {
                 case NodeType.Blank:
                     writer.WriteStartElement("id");
-                    writer.WriteRaw(WriterHelper.EncodeForXml(((IBlankNode)n).InternalID));
+                    writer.WriteRaw(WriterHelper.EncodeForXml(bnodeMapper.GetOutputID(((IBlankNode)n).AnonID)));
                     writer.WriteEndElement();
                     break;
                 case NodeType.GraphLiteral:

@@ -40,7 +40,8 @@ namespace VDS.RDF
     /// Most implementations will probably want to inherit from the abstract class <see cref="BaseGraph">BaseGraph</see> since it contains reference implementations of various algorithms (Graph Equality/Graph Difference/Sub-Graph testing etc) which will save considerable work in implementation and ensure consistent behaviour of some methods across implementations.
     /// </para>
     /// </remarks>
-    public interface IGraph : INodeFactory, IDisposable
+    public interface IGraph 
+        : INodeFactory, IDisposable
 #if !SILVERLIGHT
         , IXmlSerializable
 #endif
@@ -152,6 +153,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         IBlankNode GetBlankNode(string nodeId);
 
         /// <summary>
@@ -160,6 +162,7 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="langspec">Language Specifier of the Literal</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         ILiteralNode GetLiteralNode(string literal, string langspec);
 
         /// <summary>
@@ -167,6 +170,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">Value of the Literal</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         ILiteralNode GetLiteralNode(string literal);
 
         /// <summary>
@@ -175,6 +179,7 @@ namespace VDS.RDF
         /// <param name="literal">Value of the Literal</param>
         /// <param name="datatype">Data Type of the Literal</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         ILiteralNode GetLiteralNode(string literal, Uri datatype);
 
         /// <summary>
@@ -262,6 +267,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">QName</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         IUriNode GetUriNode(string qname);
 
         /// <summary>
@@ -269,6 +275,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">Uri</param>
         /// <returns>The Node if it exists in the Graph or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         IUriNode GetUriNode(Uri uri);
 
         /// <summary>

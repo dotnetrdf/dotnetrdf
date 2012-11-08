@@ -357,7 +357,7 @@ namespace VDS.RDF.Writing
                 {
                     //Generate a rdf:Description node and then write the collection
                     context.Writer.WriteStartElement("rdf", "Description", NamespaceMapper.RDF);
-                    if (kvp.Value.Triples.Count > 0 || !kvp.Value.IsExplicit) context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)kvp.Key).InternalID));
+                    if (kvp.Value.Triples.Count > 0 || !kvp.Value.IsExplicit) context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)kvp.Key).AnonID));
                     this.GenerateCollectionOutput(context, kvp.Key);
                     context.Writer.WriteEndElement();
                 }
@@ -475,7 +475,7 @@ namespace VDS.RDF.Writing
                 //Can omit the rdf:nodeID if nesting level is > 2 i.e. not a top level subject node
                 if (context.NamespaceMap.NestingLevel <= 2)
                 {
-                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)subj).InternalID));
+                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)subj).AnonID));
                 }
             }
 
@@ -622,7 +622,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Isolated Blank Node so use nodeID
-                        context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Object).InternalID));
+                        context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)t.Object).AnonID));
                     }
                     break;
 
@@ -681,7 +681,7 @@ namespace VDS.RDF.Writing
                 if (c.Triples.Count == 0)
                 {
                     //If No Triples then an isolated blank node so add rdf:nodeID and return
-                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)key).InternalID));
+                    context.Writer.WriteAttributeString("rdf", "nodeID", NamespaceMapper.RDF, context.BlankNodeMapper.GetOutputID(((IBlankNode)key).AnonID));
                     return;
                 }
 

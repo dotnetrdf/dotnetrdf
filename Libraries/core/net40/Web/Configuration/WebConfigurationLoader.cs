@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_WEB && !NO_ASP
 
 using System;
+using System.Linq;
 using System.IO;
 using System.Web;
 using VDS.RDF.Configuration;
@@ -99,8 +100,8 @@ namespace VDS.RDF.Web.Configuration
             {
                 String path = String.Join(String.Empty, requestUri.Segments, 0, s) + "*";
                 String objUri = "dotnetrdf:" + path;
-                INode temp = g.GetUriNode(UriFactory.Create(objUri));
-                if (temp != null)
+                INode temp = g.CreateUriNode(UriFactory.Create(objUri));
+                if (g.GetTriplesWithSubject(temp).Any())
                 {
                     matchedPath = path;
                     return temp;

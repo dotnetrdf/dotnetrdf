@@ -183,7 +183,7 @@ namespace VDS.RDF.Writing
             //Generate a _: QName
             StringBuilder output = new StringBuilder();
             output.Append("\"_:");
-            output.Append(b.InternalID);
+            output.Append(b.AnonID);
             output.Append("\"");
 
             return output.ToString();

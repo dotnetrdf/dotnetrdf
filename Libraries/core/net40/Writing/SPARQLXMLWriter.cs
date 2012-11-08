@@ -278,6 +278,7 @@ namespace VDS.RDF.Writing
                 //<results> Element
                 writer.WriteStartElement("results");
 
+                BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper();
                 foreach (SparqlResult r in resultSet.Results)
                 {
                     //<result> Element
@@ -299,7 +300,7 @@ namespace VDS.RDF.Writing
                                 case NodeType.Blank:
                                     //<bnode> element
                                     writer.WriteStartElement("bnode");
-                                    writer.WriteRaw(((IBlankNode)n).InternalID);
+                                    writer.WriteRaw(bnodeMapper.GetOutputID(((IBlankNode)n).AnonID));
                                     writer.WriteEndElement();
                                     break;
 

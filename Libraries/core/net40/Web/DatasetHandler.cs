@@ -88,8 +88,8 @@ namespace VDS.RDF.Web
 
             //Then check there is configuration associated with the expected URI
             String objUri = "dotnetrdf:" + context.Request.Path;
-            INode objNode = g.GetUriNode(UriFactory.Create(objUri));
-            if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
+            INode objNode = g.CreateUriNode(UriFactory.Create(objUri));
+            if (!g.GetTriplesWithSubject(objNode).Any()) throw new DotNetRdfConfigurationException("Unable to load Dataset Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
             DatasetHandlerConfiguration config = new DatasetHandlerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it

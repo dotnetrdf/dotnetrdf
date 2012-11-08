@@ -39,6 +39,7 @@ namespace VDS.RDF.Writing.Formatting
         : IGraphFormatter
     {
         private QNameOutputMapper _mapper;
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
 
         private String GetGraphHeaderBase()
         {
@@ -164,7 +165,7 @@ namespace VDS.RDF.Writing.Formatting
                     output.Append("rdf:about=\"" + WriterHelper.EncodeForXml(t.Subject.ToString()) + "\"");
                     break;
                 case NodeType.Blank:
-                    output.Append("rdf:nodeID=\"" + ((IBlankNode)t.Subject).InternalID + "\"");
+                    output.Append("rdf:nodeID=\"" + this._bnodeMapper.GetOutputID(((IBlankNode)t.Subject).AnonID) + "\"");
                     break;
                 case NodeType.Literal:
                     throw new RdfOutputException(WriterErrorMessages.LiteralSubjectsUnserializable("RDF/XML"));
@@ -210,7 +211,7 @@ namespace VDS.RDF.Writing.Formatting
             switch (t.Object.NodeType)
             {
                 case NodeType.Blank:
-                    output.AppendLine(" rdf:nodeID=\"" + ((IBlankNode)t.Object).InternalID + "\" />");
+                    output.AppendLine(" rdf:nodeID=\"" + this._bnodeMapper.GetOutputID(((IBlankNode)t.Object).AnonID) + "\" />");
                     break;
                 case NodeType.GraphLiteral:
                     throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("RDF/XML"));

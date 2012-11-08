@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_WEB && !NO_ASP
 
 using System;
+using System.Linq;
 using System.Web;
 using System.Configuration;
 using VDS.RDF.Configuration;
@@ -43,7 +44,7 @@ namespace VDS.RDF.Web
     /// Used to create a Query endpoint at a specific fixed URL
     /// </para>
     /// <para>
-    /// This Handler is configured using the new Configuration API introduced in the 0.3.0 release.  This requires just one setting to be defined in the &lt;appSettings&gt; section of your Web.config file which points to a Configuration Graph like so:
+    /// This Handler is configured using the new Configuration API, this requires just one setting to be defined in the &lt;appSettings&gt; section of your Web.config file which points to a Configuration Graph like so:
     /// <code>&lt;add key="dotNetRDFConfig" value="~/App_Data/config.ttl" /&gt;</code>
     /// The Configuration Graph must then contain Triples like the following to specify a Query Endpoint:
     /// <code>
@@ -60,7 +61,8 @@ namespace VDS.RDF.Web
     /// </code>
     /// </para>
     /// </remarks>
-    public class QueryHandler : BaseSparqlQueryHandler
+    public class QueryHandler 
+        : BaseSparqlQueryHandler
     {
         /// <summary>
         /// Loads the Handler Configuration
@@ -90,8 +92,8 @@ namespace VDS.RDF.Web
 
             //Then check there is configuration associated with the expected URI
             String objUri = "dotnetrdf:" + context.Request.Path;
-            INode objNode = g.GetUriNode(UriFactory.Create(objUri));
-            if (objNode == null) throw new DotNetRdfConfigurationException("Unable to load Query Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
+            INode objNode = g.CreateUriNode(UriFactory.Create(objUri));
+            if (!g.GetTriplesWithSubject(objNode).Any()) throw new DotNetRdfConfigurationException("Unable to load Query Handler Configuration as the RDF configuration file does not have any configuration associated with the URI <dotnetrdf:" + context.Request.Path + "> as required");
             QueryHandlerConfiguration config = new QueryHandlerConfiguration(new WebContext(context), g, objNode);
 
             //Finally cache the Configuration before returning it

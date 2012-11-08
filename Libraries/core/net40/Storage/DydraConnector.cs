@@ -378,7 +378,7 @@ namespace VDS.RDF.Storage
                         else if (value.NodeType == NodeType.Blank)
                         {
                             //Dydra allows BNode Graph URIs
-                            graphUris.Add(UriFactory.Create("dydra:bnode:" + ((IBlankNode)value).InternalID));
+                            graphUris.Add(UriFactory.Create("dydra:bnode:" + ((IBlankNode)value).AnonID));
                         }
                     }
                 }

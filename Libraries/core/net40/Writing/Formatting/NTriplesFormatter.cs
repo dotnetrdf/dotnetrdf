@@ -36,7 +36,7 @@ namespace VDS.RDF.Writing.Formatting
     public class NTriplesFormatter
         : BaseFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidStrictBlankNodeID);
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
 
         /// <summary>
         /// Set of characters that may follow a backslash and are legal escapes
@@ -163,7 +163,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+            return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
         }
 
         /// <summary>

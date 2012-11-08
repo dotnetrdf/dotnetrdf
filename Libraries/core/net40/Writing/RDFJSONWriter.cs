@@ -110,7 +110,7 @@ namespace VDS.RDF.Writing
         private void GenerateOutput(IGraph g, TextWriter output)
         {
             //Get a Blank Node Output Mapper
-            BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+            BlankNodeOutputMapper bnodeMapper = new BlankNodeOutputMapper();
 
             //Get the Writer and Configure Options
             JsonTextWriter writer = new JsonTextWriter(output);
@@ -171,7 +171,7 @@ namespace VDS.RDF.Writing
                     else
                     {
                         //Remap Blank Node IDs as appropriate
-                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((IBlankNode)t.Subject).InternalID));
+                        writer.WritePropertyName("_:" + bnodeMapper.GetOutputID(((IBlankNode)t.Subject).AnonID));
                     }
 
                     //Start an Object for the Subject
@@ -244,7 +244,7 @@ namespace VDS.RDF.Writing
                 {
                     case NodeType.Blank:
                         //Remap Blank Node IDs as appropriate
-                        writer.WriteValue("_:" + bnodeMapper.GetOutputID(((IBlankNode)obj).InternalID));
+                        writer.WriteValue("_:" + bnodeMapper.GetOutputID(((IBlankNode)obj).AnonID));
                         writer.WritePropertyName("type");
                         writer.WriteValue("bnode");
                         break;

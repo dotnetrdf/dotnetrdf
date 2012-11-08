@@ -161,13 +161,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri of the Node to select</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override IUriNode GetUriNode(Uri uri)
         {
-            IUriNode test = this.CreateUriNode(uri);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
-                                          where u.Equals(test)
-                                          select u;
-            return us.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -175,13 +172,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
         /// <returns></returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override IUriNode GetUriNode(String qname)
         {
-            IUriNode test = this.CreateUriNode(qname);
-            IEnumerable<IUriNode> us = from u in this.Nodes.UriNodes()
-                                      where u.Equals(test)
-                                      select u;
-            return us.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -190,13 +184,10 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value exists</returns>
         /// <remarks>The LiteralNode in the Graph must have no Language or DataType set</remarks>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override ILiteralNode GetLiteralNode(String literal)
         {
-            ILiteralNode test = this.CreateLiteralNode(literal);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -205,13 +196,10 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="langspec">The Language Specifier for the Node to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Language Specifier exists</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override ILiteralNode GetLiteralNode(String literal, String langspec)
         {
-            ILiteralNode test = this.CreateLiteralNode(literal, langspec);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -220,13 +208,10 @@ namespace VDS.RDF
         /// <param name="literal">The literal value of the Node to select</param>
         /// <param name="datatype">The Uri for the Data Type of the Literal to select</param>
         /// <returns>Either the LiteralNode Or null if no Node with the given Value and Data Type exists</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override ILiteralNode GetLiteralNode(String literal, Uri datatype)
         {
-            ILiteralNode test = this.CreateLiteralNode(literal, datatype);
-            IEnumerable<ILiteralNode> ls = from l in this.Nodes.LiteralNodes()
-                                          where l.Equals(test)
-                                          select l;
-            return ls.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -234,13 +219,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">The Identifier of the Blank Node to select</param>
         /// <returns>Either the Blank Node or null if no Node with the given Identifier exists</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public override IBlankNode GetBlankNode(String nodeId)
         {
-            IEnumerable<IBlankNode> bs = from b in this.Nodes.BlankNodes()
-                                        where b.InternalID.Equals(nodeId)
-                                        select b;
-
-            return bs.FirstOrDefault();
+            throw new NotSupportedException();
         }
 
         #endregion

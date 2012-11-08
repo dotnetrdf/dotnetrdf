@@ -167,7 +167,7 @@ namespace VDS.RDF.Writing
                         NTriplesWriterContext graphContext = new NTriplesWriterContext(g, context.Output);
                         foreach (Triple t in g.Triples)
                         {
-                            context.Output.WriteLine(this.TripleToNQuads(graphContext, t));
+                            context.Output.WriteLine(this.TripleToNQuads(graphContext, t, g.BaseUri));
                         }
                     }
                     context.Output.Close();
@@ -196,7 +196,7 @@ namespace VDS.RDF.Writing
             }
             foreach (Triple t in context.Graph.Triples)
             {
-                context.Output.WriteLine(this.TripleToNQuads(context, t));
+                context.Output.WriteLine(this.TripleToNQuads(context, t, context.Graph.BaseUri));
             }
             context.Output.WriteLine();
 
@@ -209,7 +209,7 @@ namespace VDS.RDF.Writing
         /// <param name="context">Writer Context</param>
         /// <param name="t">Triple to convert</param>
         /// <returns></returns>
-        private String TripleToNQuads(NTriplesWriterContext context, Triple t)
+        private String TripleToNQuads(NTriplesWriterContext context, Triple t, Uri graphUri)
         {
             StringBuilder output = new StringBuilder();
             output.Append(this.NodeToNTriples(context, t.Subject, TripleSegment.Subject));
@@ -217,10 +217,10 @@ namespace VDS.RDF.Writing
             output.Append(this.NodeToNTriples(context, t.Predicate, TripleSegment.Predicate));
             output.Append(" ");
             output.Append(this.NodeToNTriples(context, t.Object, TripleSegment.Object));
-            if (t.GraphUri != null)
+            if (graphUri != null)
             {
                 output.Append(" <");
-                output.Append(context.UriFormatter.FormatUri(t.GraphUri));
+                output.Append(context.UriFormatter.FormatUri(graphUri));
                 output.Append(">");
             }
             output.Append(" .");

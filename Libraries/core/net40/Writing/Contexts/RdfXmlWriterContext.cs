@@ -64,7 +64,7 @@ namespace VDS.RDF.Writing.Contexts
         private bool _useAttributes = true;
         private int _compressionLevel = WriterCompressionLevel.Default;
         private int _nextNamespaceID = 0;
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(XmlSpecsHelper.IsName);
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
         private TripleCollection _triplesDone = new TripleCollection();
 

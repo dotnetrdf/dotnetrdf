@@ -265,7 +265,7 @@ namespace VDS.RDF.Update.Commands
                     try
                     {
                         //Create a new Construct Context for each Solution
-                        ConstructContext constructContext = new ConstructContext(null, s, true);
+                        ConstructContext constructContext = new ConstructContext(s);
 
                         //Triples from raw Triple Patterns
                         if (this._insertPattern.TriplePatterns.Count > 0)

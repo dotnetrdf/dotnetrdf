@@ -74,7 +74,7 @@ namespace VDS.RDF.Writing.Formatting
     public class TurtleFormatter 
         : QNameFormatter, IBaseUriFormatter
     {
-        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper(WriterHelper.IsValidBlankNodeID);
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
         /// <summary>
         /// Set of characters which are valid as escapes when preceded by a backslash
         /// </summary>
@@ -255,7 +255,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         protected override string FormatBlankNode(IBlankNode b, TripleSegment? segment)
         {
-            return "_:" + this._bnodeMapper.GetOutputID(b.InternalID);
+            return "_:" + this._bnodeMapper.GetOutputID(b.AnonID);
         }
 
         /// <summary>

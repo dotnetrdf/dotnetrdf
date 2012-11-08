@@ -401,9 +401,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="nodeId">Node ID</param>
         /// <returns>The Node if it exists or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public IBlankNode GetBlankNode(string nodeId)
         {
-            return this._g.GetBlankNode(nodeId);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -412,9 +413,10 @@ namespace VDS.RDF
         /// <param name="literal">Value</param>
         /// <param name="langspec">Language</param>
         /// <returns>The Node if it exists or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public ILiteralNode GetLiteralNode(string literal, string langspec)
         {
-            return this._g.GetLiteralNode(literal, langspec);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -422,9 +424,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="literal">Value</param>
         /// <returns>The Node if it exists or null</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public ILiteralNode GetLiteralNode(string literal)
         {
-            return this._g.GetLiteralNode(literal);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -433,9 +436,10 @@ namespace VDS.RDF
         /// <param name="literal">Value</param>
         /// <param name="datatype">Datatype URI</param>
         /// <returns>The Node if it exists or null otherwise</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public ILiteralNode GetLiteralNode(string literal, Uri datatype)
         {
-            return this._g.GetLiteralNode(literal, datatype);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -556,9 +560,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="qname">The QName of the Node to select</param>
         /// <returns></returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public IUriNode GetUriNode(string qname)
         {
-            return this._g.GetUriNode(qname);
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -566,9 +571,10 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="uri">The Uri of the Node to select</param>
         /// <returns>Either the UriNode Or null if no Node with the given Uri exists</returns>
+        [Obsolete("The GetXNode() methods are obsolete because Nodes are no longer tied to a Graph, if you need a Node with a specific value simply create it", true)]
         public IUriNode GetUriNode(Uri uri)
         {
-            return this._g.GetUriNode(uri);
+            throw new NotSupportedException();
         }
 
         /// <summary>

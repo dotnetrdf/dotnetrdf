@@ -37,6 +37,8 @@ namespace VDS.RDF.Writing.Formatting
     public class SparqlXmlFormatter 
         : IResultSetFormatter
     {
+        private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
+
         private String GetBaseHeader()
         {
             return @"<?xml version=""1.0"" encoding=""utf-8""?>
@@ -104,7 +106,7 @@ namespace VDS.RDF.Writing.Formatting
                         switch (value.NodeType)
                         {
                             case NodeType.Blank:
-                                output.Append("<bnode>" + ((IBlankNode)value).InternalID + "</bnode>");
+                                output.Append("<bnode>" + this._bnodeMapper.GetOutputID(((IBlankNode)value).AnonID) + "</bnode>");
                                 break;
                             case NodeType.GraphLiteral:
                                 throw new RdfOutputException(WriterErrorMessages.GraphLiteralsUnserializable("SPARQL XML Results"));
