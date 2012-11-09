@@ -228,6 +228,12 @@ namespace VDS.RDF
             DefaultGZipExtension
         };
 
+        /// <summary>
+        /// Charset constants
+        /// </summary>
+        public const String CharsetUtf8 = "utf-8",
+                            CharsetUtf16 = "utf-16";
+
         #endregion 
 
         /// <summary>

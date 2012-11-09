@@ -971,7 +971,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Charset for the selector
+        /// Gets the Charset for the selector (may be null if none specified)
         /// </summary>
         public String Charset
         {

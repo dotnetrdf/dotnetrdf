@@ -408,7 +408,7 @@ namespace VDS.RDF.Web
             context.Response.Write(new String('-', title.Length) + "\n\n");
 
             //Output Query with Line Numbers
-            if (query != null && !query.Equals(String.Empty))
+            if (!String.IsNullOrEmpty(query))
             {
                 String[] lines = query.Split('\n');
                 for (int l = 0; l < lines.Length; l++)
