@@ -78,6 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\IRdfCollection.cs" />
+    <Compile Include="Collections\ITripleCollection.cs" />
+    <Compile Include="Collections\ThreadSafeTripleCollection.cs" />
     <Compile Include="Common\MultiDictionary.cs" />
     <Compile Include="Common\Trees\BinaryTree.cs" />
     <Compile Include="Common\Trees\BinaryTreeNode.cs" />
@@ -96,23 +99,23 @@
     <Compile Include="Configuration\CollectionFactory.cs" />
     <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
     <Compile Include="Configuration\OperatorFactory.cs" />
-    <Compile Include="Core\BaseDemandGraphCollection.cs" />
+    <Compile Include="Collections\BaseDemandGraphCollection.cs" />
     <Compile Include="Core\BaseGraph.cs" />
-    <Compile Include="Core\BaseGraphCollection.cs" />
+    <Compile Include="Collections\BaseGraphCollection.cs" />
     <Compile Include="Core\BaseTripleStore.cs" />
     <Compile Include="Core\IGraphStore.cs" />
     <Compile Include="Core\Quad.cs" />
-    <Compile Include="Core\SubTreeIndexedTripleCollection.cs" />
+    <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
     <Compile Include="Core\WrapperGraph.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Core\ISparqlResultsReader.cs" />
     <Compile Include="Core\ISparqlResultsWriter.cs" />
-    <Compile Include="Core\BaseTripleCollection.cs" />
+    <Compile Include="Collections\BaseTripleCollection.cs" />
     <Compile Include="Core\Options.cs" />
     <Compile Include="Core\ThreadSafeGraph.cs" />
-    <Compile Include="Core\TreeIndexedTripleCollection.cs" />
-    <Compile Include="Core\WrapperGraphCollection.cs" />
-    <Compile Include="Core\WrapperTripleCollection.cs" />
+    <Compile Include="Collections\TreeIndexedTripleCollection.cs" />
+    <Compile Include="Collections\WrapperGraphCollection.cs" />
+    <Compile Include="Collections\WrapperTripleCollection.cs" />
     <Compile Include="Core\WrapperTripleStore.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
@@ -189,7 +192,7 @@
     <Compile Include="Parsing\SparqlQueryParser.cs" />
     <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
     <Compile Include="Core\Graph.cs" />
-    <Compile Include="Core\GraphCollection.cs" />
+    <Compile Include="Collections\GraphCollection.cs" />
     <Compile Include="Core\GraphLiteralNode.cs" />
     <Compile Include="Storage\AsyncStorageExtensions.cs" />
     <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
@@ -258,7 +261,7 @@
     <Compile Include="Core\UriNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Triple.cs" />
-    <Compile Include="Core\TripleCollection.cs" />
+    <Compile Include="Collections\TripleCollection.cs" />
     <Compile Include="Parsing\Events\RdfXml\XmlEvents.cs" />
     <Compile Include="Parsing\RdfXmlParser.cs" />
     <Compile Include="Parsing\XmlSpecsHelper.cs" />
@@ -285,7 +288,6 @@
     <Compile Include="Configuration\ObjectFactoryFactory.cs" />
     <Compile Include="Configuration\ProxyFactory.cs" />
     <Compile Include="Configuration\ReasonerFactory.cs" />
-    <Compile Include="Core\AdvancedTripleCollections.cs" />
     <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
@@ -306,7 +308,7 @@
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\QueryableGraph.cs" />
     <Compile Include="Core\TripleComparers.cs" />
-    <Compile Include="Core\UnionCollections.cs" />
+    <Compile Include="Collections\UnionCollections.cs" />
     <Compile Include="Core\UnionGraph.cs" />
     <Compile Include="Core\UriFactory.cs" />
     <Compile Include="Core\VariableNode.cs" />

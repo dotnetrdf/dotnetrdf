@@ -28,29 +28,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// Abstract Base Class for Triple Collections
     /// </summary>
-    /// <remarks>
-    /// Designed to allow the underlying storage of a Triple Collection to be changed at a later date without affecting classes that use it.
-    /// </remarks>
     public abstract class BaseTripleCollection
-        : IEnumerable<Triple>, IDisposable
+        : ITripleCollection
     {
         /// <summary>
         /// Adds a Triple to the Collection
         /// </summary>
         /// <param name="t">Triple to add</param>
         /// <remarks>Adding a Triple that already exists should be permitted though it is not necessary to persist the duplicate to underlying storage</remarks>
-        protected abstract internal bool Add(Triple t);
+        public abstract bool Add(Triple t);
 
         /// <summary>
-        /// Determines whether a given Triple is in the Triple Collection
+        /// Determines whether a given Triple is in the collection
         /// </summary>
         /// <param name="t">The Triple to test</param>
-        /// <returns>True if the Triple already exists in the Triple Collection</returns>
+        /// <returns>True if the Triple is contained in the collection</returns>
         public abstract bool Contains(Triple t);
 
         /// <summary>
@@ -62,22 +59,10 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Deletes a Triple from the Collection
+        /// Removes a Triple from the Collection
         /// </summary>
         /// <param name="t">Triple to remove</param>
-        /// <remarks>Deleting something that doesn't exist should have no effect and give no error</remarks>
-        protected abstract internal bool Delete(Triple t);
-
-        /// <summary>
-        /// Gets the given Triple
-        /// </summary>
-        /// <param name="t">Triple to retrieve</param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the given Triple doesn't exist</exception>
-        public abstract Triple this[Triple t]
-        {
-            get;
-        }
+        public abstract bool Remove(Triple t);
 
         /// <summary>
         /// Gets all the Nodes which are Objects of Triples in the Triple Collection
@@ -195,7 +180,7 @@ namespace VDS.RDF
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return Enumerable.Empty<Triple>().GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>

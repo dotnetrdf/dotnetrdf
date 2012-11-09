@@ -26,12 +26,14 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Collections;
 
 namespace VDS.RDF.Query.Datasets
 {
     /// <summary>
     /// A Triple Collection which is a thin wrapper around a <see cref="BaseQuadDataset">BaseQuadDataset</see> to reduce much of the complexity for <see cref="ISparqlDataset">ISparqlDataset</see> implementors around returning of Graphs
     /// </summary>
+    [Obsolete("Obsolete due to obsoletion of ISparqlDataset", true)]
     class QuadDatasetTripleCollection
         : BaseTripleCollection
     {

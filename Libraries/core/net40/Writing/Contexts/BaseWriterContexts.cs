@@ -28,6 +28,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading;
 using System.Text;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -103,7 +104,8 @@ namespace VDS.RDF.Writing.Contexts
     /// <summary>
     /// Interface for Writer Contexts which store collection compression data
     /// </summary>
-    public interface ICollectionCompressingWriterContext : IWriterContext
+    public interface ICollectionCompressingWriterContext 
+        : IWriterContext
     {
         /// <summary>
         /// Gets the mapping from Blank Nodes to Collections
@@ -116,7 +118,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Gets the Triples that should be excluded from standard output as they are part of collections
         /// </summary>
-        BaseTripleCollection TriplesDone
+        ITripleCollection TriplesDone
         {
             get;
         }

@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -66,7 +67,7 @@ namespace VDS.RDF.Writing.Contexts
         private int _nextNamespaceID = 0;
         private BlankNodeOutputMapper _bnodeMapper = new BlankNodeOutputMapper();
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private TripleCollection _triplesDone = new TripleCollection();
+        private ITripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new RDF/XML Writer Context
@@ -302,7 +303,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Stores the Triples that should be excluded from standard output as they are part of collections
         /// </summary>
-        public BaseTripleCollection TriplesDone
+        public ITripleCollection TriplesDone
         {
             get
             {

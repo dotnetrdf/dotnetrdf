@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// Abstract decorator for Graph Collections to make it easier to add new functionality to existing implementations

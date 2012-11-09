@@ -30,7 +30,7 @@ using System.Text;
 using System.Threading;
 using VDS.Common;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// Wrapper class for Graph Collections

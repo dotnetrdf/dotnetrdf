@@ -35,6 +35,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Xml.Schema;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query.Aggregates;
 using VDS.RDF.Query.Algebra;
@@ -432,7 +433,7 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// Assumes the Result Set contains three variables ?s, ?p and ?o to use as the Subject, Predicate and Object respectively.  Only Results for which all three variables have bound values will generate Triples
         /// </remarks>
-        public BaseTripleCollection ToTripleCollection(IGraph g)
+        public ITripleCollection ToTripleCollection(IGraph g)
         {
             return this.ToTripleCollection(g, "s", "p", "o");
         }
@@ -448,9 +449,9 @@ namespace VDS.RDF.Query
         /// <remarks>
         /// Only Results for which all three variables have bound values will generate Triples
         /// </remarks>
-        public BaseTripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
+        public ITripleCollection ToTripleCollection(IGraph g, String subjVar, String predVar, String objVar)
         {
-            BaseTripleCollection tripleCollection = new TreeIndexedTripleCollection();
+            ITripleCollection tripleCollection = new TreeIndexedTripleCollection();
 
             foreach (SparqlResult r in this.Results)
             {

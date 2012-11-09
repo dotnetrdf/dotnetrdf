@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// Represents a union of multiple Triple Collections

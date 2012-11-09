@@ -30,6 +30,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using VDS.RDF.Collections;
 using VDS.RDF.Query;
 
 namespace VDS.RDF
@@ -66,7 +67,7 @@ namespace VDS.RDF
         /// Creates a new instance of a Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
-        public Graph(BaseTripleCollection tripleCollection)
+        public Graph(ITripleCollection tripleCollection)
             : base(tripleCollection) { }
 
         /// <summary>
@@ -74,7 +75,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
         /// <param name="emptyNamespaceMap">Whether the Namespace Map should be empty</param>
-        public Graph(BaseTripleCollection tripleCollection, bool emptyNamespaceMap)
+        public Graph(ITripleCollection tripleCollection, bool emptyNamespaceMap)
             : base(tripleCollection)
         {
             if (emptyNamespaceMap) this._nsmapper.Clear();
@@ -130,7 +131,7 @@ namespace VDS.RDF
         /// <remarks>Current implementation may have some defunct Nodes left in the Graph as only the Triple is retracted</remarks>
         public override bool Retract(Triple t)
         {
-            if (this._triples.Delete(t))
+            if (this._triples.Remove(t))
             {
                 this.RaiseTripleRetracted(t);
                 return true;
@@ -356,7 +357,8 @@ namespace VDS.RDF
     /// <remarks>
     /// Gives better load performance but poorer lookup performance
     /// </remarks>
-    public class NonIndexedGraph : Graph
+    public class NonIndexedGraph
+        : Graph
     {
         /// <summary>
         /// Creates a new Graph which is not indexed

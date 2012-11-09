@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
@@ -101,7 +102,7 @@ namespace VDS.RDF.Writing.Contexts
         : TurtleWriterContext, ICollectionCompressingWriterContext
     {
         private Dictionary<INode, OutputRdfCollection> _collections = new Dictionary<INode, OutputRdfCollection>();
-        private TripleCollection _triplesDone = new TripleCollection();
+        private ITripleCollection _triplesDone = new TripleCollection();
 
         /// <summary>
         /// Creates a new Turtle Writer Context with default settings
@@ -179,7 +180,7 @@ namespace VDS.RDF.Writing.Contexts
         /// <summary>
         /// Stores the Triples that should be excluded from standard output as they are part of collections
         /// </summary>
-        public BaseTripleCollection TriplesDone
+        public ITripleCollection TriplesDone
         {
             get
             {

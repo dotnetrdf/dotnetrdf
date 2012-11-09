@@ -84,7 +84,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Triple Collection for the Graph
         /// </summary>
-        BaseTripleCollection Triples 
+        IEnumerable<Triple> Triples 
         { 
             get; 
         }

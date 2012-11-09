@@ -35,7 +35,7 @@ namespace VDS.RDF
         /// Gets a specific Graph from the Store
         /// </summary>
         /// <param name="u">Graph URI</param>
-        /// <returns></returns>
+        /// <returns>A Graph if it exists in the Store, an error otherwise</returns>
         IGraph this[Uri u]
         { 
             get; 
@@ -58,10 +58,10 @@ namespace VDS.RDF
         /// <summary>
         /// Adds the contents of a Graph to the store using the given URI for the added Quads
         /// </summary>
-        /// <param name="g">Graph</param>
         /// <param name="graphUri">URI of the Graph to add to</param>
+        /// <param name="g">Graph</param>
         /// <returns>True if any quads are added, false otherwise</returns>
-        bool Add(IGraph g, Uri graphUri);
+        bool Add(Uri graphUri, IGraph g);
 
         /// <summary>
         /// Adds a Triple to the Store as a Quad using the given URI
@@ -69,14 +69,14 @@ namespace VDS.RDF
         /// <param name="graphUri">Graph URI</param>
         /// <param name="t">Triple</param>
         /// <returns>True if a quad is added, false otherwise</returns>
-        bool AddTriple(Uri graphUri, Triple t);
+        bool Add(Uri graphUri, Triple t);
 
         /// <summary>
         /// Adds a Quad to the Store
         /// </summary>
         /// <param name="q">Quad</param>
         /// <returns>True if a quad is added, false otherwise</returns>
-        bool AddQuad(Quad q);
+        bool Add(Quad q);
 
         /// <summary>
         /// Copies the contents of one graph to another
@@ -97,18 +97,41 @@ namespace VDS.RDF
         bool Move(Uri srcUri, Uri destUri, bool overwrite);
 
         /// <summary>
-        /// Removes the contents of the given graph from the store
+        /// Removes the contents of the given graph from the store using the graphs stated <see cref="IGraph.BaseUri"/> as the Graph URI for the removed Quads
         /// </summary>
         /// <param name="g">Graph</param>
         /// <returns>True if any quads are removed, false otherwise</returns>
         bool Remove(IGraph g);
 
         /// <summary>
+        /// Removes the contents of the given graph from a specific graph in the store
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="g">Graph</param>
+        /// <returns>True if any quads are removed, false otherwise</returns>
+        bool Remove(Uri graphUri, IGraph g);
+
+        /// <summary>
         /// Removes the contents of the graph with the given URI
         /// </summary>
-        /// <param name="u">URI</param>
+        /// <param name="graphUri">Graph URI</param>
         /// <returns>True if any quads are removed, false otherwise</returns>
-        bool Remove(Uri u);
+        bool Remove(Uri graphUri);
+
+        /// <summary>
+        /// Removes a Triple from the store using the given Graph URI
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="t">Triple</param>
+        /// <returns>True if a quad is removed, false otherwise</returns>
+        bool Remove(Uri graphUri, Triple t);
+
+        /// <summary>
+        /// Removes a Quad from the store
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns>True if a quad is removed, false otherwise</returns>
+        bool Remove(Quad q);
 
         /// <summary>
         /// Get all Triples in the Store
@@ -118,25 +141,130 @@ namespace VDS.RDF
             get;
         }
 
-  //Get all Triples with given Subject in given Graph(s)
-  IEnumerable<Triple> GetTriplesWithSubject(IEnumerable<Uri> graphUris, INode subj);
+        /// <summary>
+        /// Get all Triples with given Subject in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubject(IEnumerable<Uri> graphUris, INode subj);
 
-  //Get all Quads in the store
-  IEnumerable<Quad> Quads { get; }
+        /// <summary>
+        /// Get all Triples with given Subject and Predicate in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubjectPredicate(IEnumerable<Uri> graphUris, INode subj, INode pred);
 
-  //Get all quads that match the given subject across all graphs
-  IEnumerable<Quad> GetQuadsWithSubject(INode subj)
+        /// <summary>
+        /// Get all Triples with given Subject and Object in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithSubjectObject(IEnumerable<Uri> graphUris, INode subj, INode obj);
 
-  //Get all quads that match the given subject in the given graphs
-  IEnumerable<Quad> GetQuadsWithSubject(IEnumerable<Uri> graphUris, INode subj);
+        /// <summary>
+        /// Get all Triples with given Predicate in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicate(IEnumerable<Uri> graphUris, INode pred);
 
-  //Is a Triple found anywhere in the store
-  bool ContainsTriple(Triple t);
+        /// <summary>
+        /// Get all Triples with given Predicate and Object in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithPredicateObject(IEnumerable<Uri> graphUris, INode pred, INode obj);
 
-  //Is the Triple contained in the given Graphs
-  bool ContainsTriple(IEnumerable<Uri> graphUris, Triple t);
+        /// <summary>
+        /// Get all Triples with given Object in given Graph(s)
+        /// </summary>
+        /// <param name="graphUris">Graph URIS to restrict to</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Triple> GetTriplesWithObject(IEnumerable<Uri> graphUris, INode obj);
 
-  //Does a Quad exist in the store
-  bool ContainsQuad(Quad q);
+        /// <summary>
+        /// Get all Quads in the store
+        /// </summary>
+        IEnumerable<Quad> Quads 
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Get all quads that match the given subject across all graphs
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithSubject(INode subj);
+
+        /// <summary>
+        /// Get all quads that match the given subject and predicate across all graphs
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithSubjectPredicate(INode subj, INode pred);
+
+        /// <summary>
+        /// Get all quads that match the given subject across all graphs
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj);
+
+        /// <summary>
+        /// Get all quads that match the given subject and object across all graphs
+        /// </summary>
+        /// <param name="subj">Subject</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithPredicate(INode subj, INode obj);
+
+        /// <summary>
+        /// Get all quads that match the given subject across all graphs
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithPredicateObject(INode pred, INode obj);
+
+        /// <summary>
+        /// Get all quads that match the given subject across all graphs
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithObject(INode obj);
+
+        /// <summary>
+        /// Is the given Triple contained in any graph in the store?
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
+        bool Contains(Triple t);
+
+        /// <summary>
+        /// Is the given Triple contained in the given graphs?
+        /// </summary>
+        /// <param name="graphUris">Graph URIs</param>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
+        bool Contains(IEnumerable<Uri> graphUris, Triple t);
+
+        /// <summary>
+        /// Is the given Quad contained in the store?
+        /// </summary>
+        /// <param name="q">Quad</param>
+        /// <returns></returns>
+        bool Contains(Quad q);
     }
 }

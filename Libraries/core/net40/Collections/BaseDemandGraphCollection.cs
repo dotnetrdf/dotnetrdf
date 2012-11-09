@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// A decorator for graph collections that allows for graphs to be loaded on demand if they don't exist in the underlying graph collection

@@ -407,28 +407,6 @@ namespace VDS.RDF.Writing
         }
 
         /// <summary>
-        /// Determines whether a given Uri refers to one of the Default Graph URIs assigned to the default Graph when parsing from some RDF dataset syntax
-        /// </summary>
-        /// <param name="u">Uri to test</param>
-        /// <returns></returns>
-        [Obsolete("No longer required since all code that uses 'magic' URIs to refer to the default graph has been removed from the API", true)]
-        public static bool IsDefaultGraph(Uri u)
-        {
-            return u == null;
-        }
-
-        /// <summary>
-        /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
-        /// </summary>
-        /// <param name="g">Graph to find collections in</param>
-        /// <param name="triplesDone">Triple Collection in which Triples that have been output are to be listed</param>
-        [Obsolete("Use the alternative overloads of this method which take an ICollectionCompressingWriterContext instead", true)]
-        public static Dictionary<INode, OutputRdfCollection> FindCollections(IGraph g, BaseTripleCollection triplesDone)
-        {
-            throw new NotSupportedException("No longer supported");
-        }
-
-        /// <summary>
         /// Helper method which finds Collections expressed in the Graph which can be compressed into concise collection syntax constructs in some RDF syntaxes
         /// </summary>
         /// <param name="context">Writer Context</param>

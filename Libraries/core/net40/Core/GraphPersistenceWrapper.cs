@@ -34,6 +34,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 
@@ -97,7 +98,7 @@ namespace VDS.RDF
             //Create Event Handlers and attach to the Triple Collection
             this.TripleAddedHandler = new TripleEventHandler(this.OnTripleAsserted);
             this.TripleRemovedHandler = new TripleEventHandler(this.OnTripleRetracted);
-            this.AttachEventHandlers(this._g.Triples);
+            this.AttachEventHandlers(this._g.Triples as ITripleCollection);
         }
 
         /// <summary>
@@ -199,7 +200,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Triple Collection for the Graph
         /// </summary>
-        public BaseTripleCollection Triples
+        public IEnumerable<Triple> Triples
         {
             get 
             {
@@ -985,8 +986,9 @@ namespace VDS.RDF
         /// <remarks>
         /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
         /// </remarks>
-        protected void AttachEventHandlers(BaseTripleCollection tripleCollection)
+        protected void AttachEventHandlers(ITripleCollection tripleCollection)
         {
+            if (tripleCollection == null) return;
             tripleCollection.TripleAdded += this.TripleAddedHandler;
             tripleCollection.TripleRemoved += this.TripleRemovedHandler;
         }
@@ -998,7 +1000,7 @@ namespace VDS.RDF
         /// <remarks>
         /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
         /// </remarks>
-        protected void DetachEventHandlers(BaseTripleCollection tripleCollection)
+        protected void DetachEventHandlers(ITripleCollection tripleCollection)
         {
             tripleCollection.TripleAdded -= this.TripleAddedHandler;
             tripleCollection.TripleRemoved -= this.TripleRemovedHandler;

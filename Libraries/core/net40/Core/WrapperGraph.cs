@@ -160,7 +160,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Triple Collection for the Graph
         /// </summary>
-        public virtual BaseTripleCollection Triples
+        public virtual IEnumerable<Triple> Triples
         {
             get 
             {

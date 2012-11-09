@@ -34,6 +34,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using VDS.Common;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 #if !SILVERLIGHT
 using VDS.RDF.Writing.Serialization;
@@ -58,7 +59,7 @@ namespace VDS.RDF
         /// <summary>
         /// Collection of Triples in the Graph
         /// </summary>
-        protected BaseTripleCollection _triples;
+        protected ITripleCollection _triples;
         /// <summary>
         /// Namespace Mapper
         /// </summary>
@@ -86,7 +87,7 @@ namespace VDS.RDF
         /// Creates a new Base Graph using the given Triple Collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection to use</param>
-        protected BaseGraph(BaseTripleCollection tripleCollection)
+        protected BaseGraph(ITripleCollection tripleCollection)
         {
             this._triples = tripleCollection;
             this._nsmapper = new NamespaceMapper();
@@ -129,7 +130,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the set of Triples described in this Graph
         /// </summary>
-        public virtual BaseTripleCollection Triples
+        public virtual IEnumerable<Triple> Triples
         {
             get
             {
@@ -1014,7 +1015,7 @@ namespace VDS.RDF
         /// <remarks>
         /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
         /// </remarks>
-        protected void AttachEventHandlers(BaseTripleCollection tripleCollection)
+        protected void AttachEventHandlers(ITripleCollection tripleCollection)
         {
             tripleCollection.TripleAdded += this.TripleAddedHandler;
             tripleCollection.TripleRemoved += this.TripleRemovedHandler;
@@ -1027,7 +1028,7 @@ namespace VDS.RDF
         /// <remarks>
         /// May be useful if you replace the Triple Collection after instantiation e.g. as done in <see cref="Query.SparqlView">SparqlView</see>'s
         /// </remarks>
-        protected void DetachEventHandlers(BaseTripleCollection tripleCollection)
+        protected void DetachEventHandlers(ITripleCollection tripleCollection)
         {
             tripleCollection.TripleAdded -= this.TripleAddedHandler;
             tripleCollection.TripleRemoved -= this.TripleRemovedHandler;

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// Abstract decorator for Triple Collections to make it easier to add additional functionality to existing collections
@@ -39,7 +39,7 @@ namespace VDS.RDF
         /// <summary>
         /// Underlying Triple Collection
         /// </summary>
-        protected readonly BaseTripleCollection _triples;
+        protected readonly ITripleCollection _triples;
 
         /// <summary>
         /// Creates a new decorator over the default <see cref="TreeIndexedTripleCollection"/>
@@ -51,7 +51,7 @@ namespace VDS.RDF
         /// Creates a new decorator around the given triple collection
         /// </summary>
         /// <param name="tripleCollection">Triple Collection</param>
-        public WrapperTripleCollection(BaseTripleCollection tripleCollection)
+        public WrapperTripleCollection(ITripleCollection tripleCollection)
         {
             if (tripleCollection == null) throw new ArgumentNullException("tripleCollection");
             this._triples = tripleCollection;
@@ -74,7 +74,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Add(Triple t)
+        public override bool Add(Triple t)
         {
             return this._triples.Add(t);
         }
@@ -92,7 +92,7 @@ namespace VDS.RDF
         /// <summary>
         /// Counts the triples in the collection
         /// </summary>
-        public override int Count
+        public override long Count
         {
             get
             {
@@ -105,22 +105,9 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Delete(Triple t)
+        public override bool Remove(Triple t)
         {
-            return this._triples.Delete(t);
-        }
-
-        /// <summary>
-        /// Gets the specific instance of a Triple from the collection
-        /// </summary>
-        /// <param name="t">Triple</param>
-        /// <returns></returns>
-        public override Triple this[Triple t]
-        {
-            get
-            {
-                return this._triples[t];
-            }
+            return this._triples.Remove(t);
         }
 
         /// <summary>

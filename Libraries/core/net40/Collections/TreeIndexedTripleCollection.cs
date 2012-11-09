@@ -30,7 +30,7 @@ using System.Text;
 using VDS.Common;
 using VDS.Common.Trees;
 
-namespace VDS.RDF
+namespace VDS.RDF.Collections
 {
     /// <summary>
     /// An indexed triple collection that uses our <see cref="MultiDictionary"/> and <see cref="BinaryTree"/> implementations under the hood for the index structures
@@ -58,7 +58,7 @@ namespace VDS.RDF
                              _objVar = new VariableNode("o");
 
         private bool _fullIndexing = false;
-        private int _count = 0;
+        private long _count = 0;
 
         /// <summary>
         /// Creates a new Tree Indexed triple collection
@@ -202,7 +202,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Add(Triple t)
+        public override bool Add(Triple t)
         {
             if (!this.Contains(t))
             {
@@ -227,7 +227,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the count of triples in the collection
         /// </summary>
-        public override int Count
+        public override long Count
         {
             get 
             {
@@ -241,7 +241,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Delete(Triple t)
+        public override bool Remove(Triple t)
         {
             if (this._triples.Remove(t))
             {
@@ -252,27 +252,6 @@ namespace VDS.RDF
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Gets the specific instance of a Triple in the collection
-        /// </summary>
-        /// <param name="t">Triple</param>
-        /// <returns></returns>
-        public override Triple this[Triple t]
-        {
-            get 
-            {
-                Triple actual;
-                if (this._triples.TryGetKey(t, out actual))
-                {
-                    return actual;
-                }
-                else
-                {
-                    throw new KeyNotFoundException("Given triple does not exist in this collection");
-                }
-            }
         }
 
         /// <summary>
@@ -445,17 +424,7 @@ namespace VDS.RDF
         /// </summary>
         public override void Dispose()
         {
-            this._triples.Clear();
-            this._s.Clear();
-            this._p.Clear();
-            this._o.Clear();
-
-            if (this._fullIndexing)
-            {
-                this._so.Clear();
-                this._sp.Clear();
-                this._po.Clear();
-            }
+            //No unmanaged resources to dispose of
         }
 
         /// <summary>
