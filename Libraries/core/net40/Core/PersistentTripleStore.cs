@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Query;
@@ -316,41 +317,7 @@ namespace VDS.RDF
 
         public override bool Contains(Uri graphUri)
         {
-            String uri = graphUri.ToSafeString();
-            if (base.Contains(graphUri))
-            {
-                return true;
-            }
-            else if (!this._removedGraphs.Contains(uri))
-            {
-                //Try and load the Graph and return true if anything is returned
-                Graph g = new Graph();
-                try
-                {
-                    this._manager.LoadGraph(g, graphUri);
-                    if (g.Triples.Count > 0)
-                    {
-                        //If we're going to return true we must also store the Graph in the collection
-                        //for later use
-                        g.BaseUri = graphUri;
-                        this.Add(g, true);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                catch
-                {
-                    //If trying to load the Graph errors then it doesn't exist so return false
-                    return false;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            throw new NotSupportedException();
         }
 
         protected internal override bool Remove(Uri graphUri)
@@ -679,7 +646,7 @@ namespace VDS.RDF
 
                                 case GraphPersistenceActionType.Deleted:
                                     //Need to add back into memory
-                                    this.Add(action.GraphAction.Graph, false);
+                                    this.Add(action.GraphAction.Graph);
                                     break;
                             }
                             this._actions.RemoveAt(0);
@@ -702,7 +669,7 @@ namespace VDS.RDF
                             }
                             else if (action.GraphAction.Action == GraphPersistenceActionType.Deleted)
                             {
-                                this.Add(action.GraphAction.Graph, false);
+                                this.Add(action.GraphAction.Graph);
                             }
                         }
                     }

@@ -6,7 +6,7 @@ using System.Text;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for RDF Collections, RDF collections are sets which are required to ignore duplicate items
+    /// Interface for RDF Collections, RDF collections are sets which are required to ignore duplicates.
     /// </summary>
     /// <typeparam name="T">Type</typeparam>
     public interface IRdfCollection<T>

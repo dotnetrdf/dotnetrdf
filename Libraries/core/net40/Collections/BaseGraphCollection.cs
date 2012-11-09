@@ -33,35 +33,68 @@ namespace VDS.RDF.Collections
     /// <summary>
     /// Abstract Base Class for Graph Collections
     /// </summary>
-    /// <remarks>Designed to allow the underlying storage of a Graph Collection to be changed at a later date without affecting classes that use it</remarks>
     public abstract class BaseGraphCollection 
-        : IEnumerable<IGraph>, IDisposable
+        : IGraphCollection
     {
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection
         /// </summary>
         /// <param name="graphUri">Graph Uri to test</param>
-        /// <returns></returns>
+        /// <returns>True if a graph with the given URI exists in the collection</returns>
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        public abstract bool Contains(Uri graphUri);
+        public abstract bool ContainsKey(Uri graphUri);
 
         /// <summary>
-        /// Adds a Graph to the Collection
+        /// Checks whether the graph given is stored in the collection under the given URI
+        /// </summary>
+        /// <param name="kvp">URI and Graph pair</param>
+        /// <returns>True if the graph given exists in the collection under the given URI</returns>
+        public abstract bool Contains(KeyValuePair<Uri, IGraph> kvp);
+
+        /// <summary>
+        /// Adds a graph to the collection
         /// </summary>
         /// <param name="g">Graph to add</param>
-        /// <param name="mergeIfExists">Sets whether the Graph should be merged with an existing Graph of the same Uri if present</param>
-        protected abstract internal bool Add(IGraph g, bool mergeIfExists);
-
-        /// <summary>
-        /// Removes a Graph from the Collection
-        /// </summary>
-        /// <param name="graphUri">Uri of the Graph to remove</param>
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        protected abstract internal bool Remove(Uri graphUri);
+        public abstract void Add(Uri graphUri, IGraph g);
+
+        /// <summary>
+        /// Adds a graph to the collection
+        /// </summary>
+        /// <param name="kvp">URI and Graph pair</param>
+        /// <remarks>
+        /// The null URI is used to reference the Default Graph
+        /// </remarks>
+        public abstract void Add(KeyValuePair<Uri, IGraph> kvp);
+
+        /// <summary>
+        /// Clears the contents of the collection
+        /// </summary>
+        public abstract void Clear();
+
+        /// <summary>
+        /// Removes a Graph from the collection
+        /// </summary>
+        /// <param name="graphUri">Uri of the Graph to remove</param>
+        /// <returns>True if a Graph is removed, false otherwise</returns>
+        /// <remarks>
+        /// The null URI is used to reference the Default Graph
+        /// </remarks>
+        public abstract bool Remove(Uri graphUri);
+
+        /// <summary>
+        /// Removes a Graph from the collection only if the contents of the graph exactly match the graph stored against that URI in the collection
+        /// </summary>
+        /// <param name="kvp">URI and Graph pair</param>
+        /// <returns>True if a Graph is removed, false otherwise</returns>
+        /// <remarks>
+        /// The null URI is used to reference the Default Graph
+        /// </remarks>
+        public abstract bool Remove(KeyValuePair<Uri, IGraph> kvp);
 
         /// <summary>
         /// Gets the number of Graphs in the Collection
@@ -72,37 +105,98 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
-        /// Provides access to the Graph URIs of Graphs in the Collection
+        /// Gets whether the collection is read only
         /// </summary>
-        public abstract IEnumerable<Uri> GraphUris
+        public virtual bool IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Provides access to the URIs of the graphs in the collection
+        /// </summary>
+        public abstract ICollection<Uri> Keys
         {
             get;
         }
 
         /// <summary>
-        /// Gets a Graph from the Collection
+        /// Provides access to the graphs in the collection
         /// </summary>
-        /// <param name="graphUri">Graph Uri</param>
-        /// <returns></returns>
+        public abstract ICollection<IGraph> Values
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets/Sets a graph in the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns>The graph if it exists in the collection, otherwise an error is thrown</returns>
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        public abstract IGraph this[Uri graphUri] 
+        public abstract IGraph this[Uri graphUri]
         {
             get;
+            set;
+        }
+
+        /// <summary>
+        /// Tries to get the graph associated with a given URI from the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <param name="g">Graph</param>
+        /// <returns>True if a graph with the given URI exists, false otherwise</returns>
+        /// <remarks>
+        /// The null URI is used to reference the Default Graph
+        /// </remarks>
+        public virtual bool TryGetValue(Uri graphUri, out IGraph g)
+        {
+            if (this.ContainsKey(graphUri))
+            {
+                g = this[graphUri];
+                return true;
+            }
+            else
+            {
+                g = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Copies the contents of the collection to an array
+        /// </summary>
+        /// <param name="dest">Array to copy to</param>
+        /// <param name="index">Index to start copying into the array at</param>
+        public virtual void CopyTo(KeyValuePair<Uri, IGraph>[] dest, int index)
+        {
+            if (dest == null) throw new ArgumentNullException("dest", "Null destination array");
+            if (index < 0) throw new ArgumentOutOfRangeException("Index < 0");
+            if ((dest.Length - index) < this.Count) throw new ArgumentException("Insufficient space to copy");
+
+            int i = index;
+            foreach (KeyValuePair<Uri, IGraph> kvp in this)
+            {
+                dest[i] = kvp;
+                i++;
+            }
         }
 
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
         public abstract void Dispose();
 
         /// <summary>
         /// Gets the Enumerator for the Collection
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerator<IGraph> GetEnumerator();
+        public abstract IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator();
 
         /// <summary>
         /// Gets the Enumerator for this Collection
@@ -110,7 +204,7 @@ namespace VDS.RDF.Collections
         /// <returns></returns>
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return Enumerable.Empty<IGraph>().GetEnumerator();
+            return this.GetEnumerator();
         }
 
         /// <summary>

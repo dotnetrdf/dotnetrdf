@@ -39,7 +39,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Underlying Graph Collection
         /// </summary>
-        protected readonly BaseGraphCollection _graphs;
+        protected readonly IGraphCollection _graphs;
 
         /// <summary>
         /// Creates a decorator around a default <see cref="GraphCollection"/> instance
@@ -51,7 +51,7 @@ namespace VDS.RDF.Collections
         /// Creates a decorator around the given graph collection
         /// </summary>
         /// <param name="graphCollection">Graph Collection</param>
-        public WrapperGraphCollection(BaseGraphCollection graphCollection)
+        public WrapperGraphCollection(IGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection");
             this._graphs = graphCollection;
@@ -73,17 +73,16 @@ namespace VDS.RDF.Collections
         /// Adds a Graph to the collection
         /// </summary>
         /// <param name="g">Graph</param>
-        /// <param name="mergeIfExists">Whether to merge into an existing Graph with the same URI</param>
         /// <returns></returns>
-        protected internal override bool Add(IGraph g, bool mergeIfExists)
+        public override bool Add(IGraph g)
         {
-            return this._graphs.Add(g, mergeIfExists);
+            return this._graphs.Add(g);
         }
 
         /// <summary>
         /// Gets whether the collection contains the given Graph
         /// </summary>
-        /// <param name="graphUri"></param>
+        /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {

@@ -5,7 +5,7 @@ using VDS.RDF;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for Triple Collections
+    /// Interface for Triple Collections, a triple collection is a collection of triples where duplicates are ignored.
     /// </summary>
     public interface ITripleCollection
         : IRdfCollection<Triple>

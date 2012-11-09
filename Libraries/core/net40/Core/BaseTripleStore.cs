@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 
 namespace VDS.RDF
@@ -40,7 +41,7 @@ namespace VDS.RDF
         /// <summary>
         /// Collection of Graphs that comprise the Triple Store
         /// </summary>
-        protected BaseGraphCollection _graphs;
+        protected IGraphCollection _graphs;
 
         /// <summary>
         /// Event Handler definitions
@@ -51,7 +52,7 @@ namespace VDS.RDF
         /// Creates a new Base Triple Store
         /// </summary>
         /// <param name="graphCollection">Graph Collection to use</param>
-        protected BaseTripleStore(BaseGraphCollection graphCollection)
+        protected BaseTripleStore(IGraphCollection graphCollection)
         {
             if (graphCollection == null) throw new ArgumentNullException("graphCollection", "Graph Collection must be an non-null instance of a class which derives from BaseGraphCollection");
             this._graphs = graphCollection;

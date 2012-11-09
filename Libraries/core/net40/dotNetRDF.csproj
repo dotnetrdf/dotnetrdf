@@ -78,8 +78,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collections\IGraphCollection.cs" />
     <Compile Include="Collections\IRdfCollection.cs" />
+    <Compile Include="Collections\IRdfDictionary.cs" />
     <Compile Include="Collections\ITripleCollection.cs" />
+    <Compile Include="Collections\ThreadSafeGraphCollection.cs" />
     <Compile Include="Collections\ThreadSafeTripleCollection.cs" />
     <Compile Include="Common\MultiDictionary.cs" />
     <Compile Include="Common\Trees\BinaryTree.cs" />

@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Collections;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Inference;
@@ -66,7 +67,7 @@ namespace VDS.RDF
         /// Creates a new Triple Store using the given Graph collection which may be non-empty
         /// </summary>
         /// <param name="graphCollection">Graph Collection</param>
-        public TripleStore(BaseGraphCollection graphCollection)
+        public TripleStore(IGraphCollection graphCollection)
             : base(graphCollection) { }
 
         #region Selection

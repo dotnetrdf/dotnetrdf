@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
+using VDS.RDF.Collections;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
