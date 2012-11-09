@@ -35,6 +35,7 @@ namespace VDS.RDF
     /// Interface for Triple Stores
     /// </summary>
     /// <remarks>A Triple Store may be a representation of some storage backed actual store or just a temporary collection of Graphs created for working with.  Note that an implementation is not required to provide a definitive view of a Triple Store and may only provide a limited/partial snapshot of the underlying store.  Check the documentation for the various implementations to see what type of view of a Triple Store they actually provide.</remarks>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface ITripleStore 
         : IDisposable
     {
@@ -174,6 +175,7 @@ namespace VDS.RDF
     /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the <see cref="IInMemoryQueryableStore.QueryTriples">QueryTriples</see> enumerable
     /// </para>
     /// </remarks>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface IInMemoryQueryableStore
         : ITripleStore
     {
@@ -379,6 +381,7 @@ namespace VDS.RDF
     /// <remarks>
     /// A Natively Queryable store will typically not load its Graphs and Triples into memory as this is generally unecessary.
     /// </remarks>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface INativelyQueryableStore 
         : ITripleStore
     {
@@ -412,6 +415,7 @@ namespace VDS.RDF
     /// It is the responsibility of the Store class to ensure that commands are permissible before invoking them
     /// </para>
     /// </remarks>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface IUpdateableTripleStore
         : ITripleStore
     {
@@ -440,6 +444,7 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Triple Stores which can have a <see cref="InferenceEngine">InferenceEngine</see> attached to them
     /// </summary>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface IInferencingTripleStore
         : ITripleStore
     {
@@ -473,6 +478,7 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Triple Stores which are backed by some storage layer that may delay persistence and thus require flushing to ensure changes are persisted to the backing store, as a by product such stores will typically have some notion of transactionality
     /// </summary>
+    [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface ITransactionalStore
         : ITripleStore
     {

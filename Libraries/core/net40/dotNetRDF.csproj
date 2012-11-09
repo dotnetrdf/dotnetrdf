@@ -100,6 +100,7 @@
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Core\BaseGraphCollection.cs" />
     <Compile Include="Core\BaseTripleStore.cs" />
+    <Compile Include="Core\IGraphStore.cs" />
     <Compile Include="Core\Quad.cs" />
     <Compile Include="Core\SubTreeIndexedTripleCollection.cs" />
     <Compile Include="Core\WrapperGraph.cs" />
