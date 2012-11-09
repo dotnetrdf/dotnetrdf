@@ -1,40 +1,32 @@
 /*
+dotNetRDF is free and open source software licensed under the MIT License
 
-Copyright dotNetRDF Project 2009-12
-dotnetrdf-develop@lists.sf.net
+-----------------------------------------------------------------------------
 
-------------------------------------------------------------------------
+Copyright (c) 2009-2012 dotNetRDF Project (dotnetrdf-developer@lists.sf.net)
 
-This file is part of dotNetRDF.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
 
-dotNetRDF is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-dotNetRDF is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with dotNetRDF.  If not, see <http://www.gnu.org/licenses/>.
-
-------------------------------------------------------------------------
-
-dotNetRDF may alternatively be used under the LGPL or MIT License
-
-http://www.gnu.org/licenses/lgpl.html
-http://www.opensource.org/licenses/mit-license.php
-
-If these licenses are not suitable for your intended use please contact
-us at the above stated email address to discuss alternative
-terms.
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 using System;
 using System.Security.Cryptography;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
@@ -241,6 +233,51 @@ namespace VDS.RDF.Query
             else
             {
                 throw new DotNetRdfConfigurationException("dotNetRDF.Query.FullText only supports automatically serializing configuration for Lucene analyzers that have an unparameterised constructor or a constructor that takes a Version parameter");
+            }
+        }
+
+        /// <summary>
+        /// Gets either the String form of the Object of the Empty String
+        /// </summary>
+        /// <param name="obj">Object</param>
+        /// <returns>Result of calling <strong>ToString()</strong> on non-null objects and the empty string for null objects</returns>
+        internal static String ToSafeString(this Object obj)
+        {
+            return (obj != null ? obj.ToString() : String.Empty);
+        }
+
+        /// <summary>
+        /// Gets either the String form of the URI of the Empty String
+        /// </summary>
+        /// <param name="u">URI</param>
+        /// <returns>Result of calling <strong>AbsoluteUri</strong> on non-null URIs and the empty string for null URIs</returns>
+        internal static String ToSafeString(this Uri u)
+        {
+            return (u != null ? u.AbsoluteUri : String.Empty);
+        }
+
+        /// <summary>
+        /// Ensures that a specific Object Factory type is registered in a Configuration Graph
+        /// </summary>
+        /// <param name="context">Configuration Serialization Context</param>
+        /// <param name="factoryType">Factory Type</param>
+        internal static void EnsureObjectFactory(this ConfigurationSerializationContext context, Type factoryType)
+        {
+            INode dnrType = context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyType));
+            INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            String assm = Assembly.GetAssembly(factoryType).FullName;
+            if (assm.Contains(',')) assm = assm.Substring(0, assm.IndexOf(','));
+
+            //Firstly need to ensure our object factory has been referenced
+            SparqlParameterizedString factoryCheck = new SparqlParameterizedString();
+            factoryCheck.Namespaces.AddNamespace("dnr", UriFactory.Create(ConfigurationLoader.ConfigurationNamespace));
+            factoryCheck.CommandText = "ASK WHERE { ?factory a dnr:ObjectFactory ; dnr:type '" + factoryType.FullName + ", " + assm + "' . }";
+            SparqlResultSet rset = context.Graph.ExecuteQuery(factoryCheck) as SparqlResultSet;
+            if (!rset.Result)
+            {
+                INode factory = context.Graph.CreateBlankNode();
+                context.Graph.Assert(new Triple(factory, rdfType, context.Graph.CreateUriNode(UriFactory.Create(ConfigurationLoader.ClassObjectFactory))));
+                context.Graph.Assert(new Triple(factory, dnrType, context.Graph.CreateLiteralNode(factoryType.FullName + ", " + assm)));
             }
         }
     }

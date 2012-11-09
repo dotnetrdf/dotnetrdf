@@ -18,6 +18,8 @@
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
     <UseIISExpress>true</UseIISExpress>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,8 +41,11 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Lucene.Net">
-      <HintPath>..\..\Dependencies\net40\Lucene.Net.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -81,15 +86,12 @@
     <None Include="App_Data\InferenceTest.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
       <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
       <Name>dotNetRDF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Libraries\data.sql\dotNetRDF.Data.Sql.csproj">
-      <Project>{9E1D685E-4E8F-4A9D-B073-51FF6C8D8661}</Project>
-      <Name>dotNetRDF.Data.Sql</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
       <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
@@ -123,4 +125,5 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>
