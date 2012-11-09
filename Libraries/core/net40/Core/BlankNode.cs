@@ -384,7 +384,7 @@ namespace VDS.RDF
         /// <param name="reader">XML Reader</param>
         public sealed override void ReadXml(XmlReader reader)
         {
-            this._id = Guid.Parse(reader.ReadElementContentAsString());
+            this._id = new Guid(reader.ReadElementContentAsString());
             //Compute Hash Code
             this._hashcode = (this._nodetype + this.ToString()).GetHashCode();
         }

@@ -1866,9 +1866,6 @@
     <Compile Include="..\net40\Query\Patterns\BlankNodePattern.cs">
       <Link>Query\Patterns\BlankNodePattern.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Patterns\FixedBlankNodePattern.cs">
-      <Link>Query\Patterns\FixedBlankNodePattern.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Patterns\NodeMatchPattern.cs">
       <Link>Query\Patterns\NodeMatchPattern.cs</Link>
     </Compile>
@@ -2446,4 +2443,12 @@
   <PropertyGroup>
     <PreBuildEvent>$(SolutionDir)Build\SyncProjects\bin\Debug\SyncProjects.exe sync $(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj $(ProjectPath)</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Core\Quad.cs">
+      <Link>Core\Quad.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Writing\Formatting\IQuadFormatter.cs">
+      <Link>Writing\Formatting\IQuadFormatter.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
