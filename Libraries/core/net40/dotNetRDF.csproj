@@ -868,12 +868,8 @@
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ChangeLog.txt" />
     <EmbeddedResource Include="Configuration\configuration.ttl" />
     <EmbeddedResource Include="Query\Optimisation\OptimiserStats.ttl" />
-    <Content Include="ReadMe.txt" />
-    <Content Include="ReleaseNotes.txt">
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
