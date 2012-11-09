@@ -491,7 +491,7 @@ namespace VDS.RDF
         /// <summary>
         /// Deserialization only constructor
         /// </summary>
-        protected internal GraphLiteralNode()
+        protected GraphLiteralNode()
             : base() { }
 
         /// <summary>

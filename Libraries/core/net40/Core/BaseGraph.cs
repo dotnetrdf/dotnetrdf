@@ -352,7 +352,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public virtual IGraphLiteralNode CreateGraphLiteralNode()
         {
-            return new GraphLiteralNode();
+            return new GraphLiteralNode(new Graph());
         }
 
         /// <summary>
