@@ -1,6 +1,3 @@
-using System;
-using VDS.RDF.Query.Builder.Expressions;
-
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
@@ -28,15 +25,5 @@ namespace VDS.RDF.Query.Builder
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
         SparqlQuery BuildQuery();
-
-        AssignmentVariableNamePart Bind (Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
-    }
-
-    public sealed class AssignmentVariableNamePart
-    {
-        public IQueryBuilder As(string variableName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

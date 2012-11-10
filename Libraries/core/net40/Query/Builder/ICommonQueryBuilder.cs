@@ -5,33 +5,37 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Common interface for building SPARQL queries 
+    /// Common interface for building SPARQL queries and graph patterns
     /// </summary>
-    public interface ICommonQueryBuilder<out TReturnBuilder>
+    public interface ICommonQueryBuilder<TReturnBuilder>
     {
         /// <summary>
-        /// Adds triple patterns to the SPARQL query
+        /// Adds triple patterns to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Where(params ITriplePattern[] triplePatterns);
         /// <summary>
-        /// Adds triple patterns to the SPARQL query
+        /// Adds triple patterns to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns);
         /// <summary>
-        /// Adds an OPTIONAL graph pattern to the SPARQL query
+        /// Adds an OPTIONAL graph pattern to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern);
         /// <summary>
-        /// Adds a FILTER to the SPARQL query
+        /// Adds a FILTER to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Filter(Func<ExpressionBuilder, BooleanExpression> expr);
         /// <summary>
-        /// Gets the prefix manager, which allows adding prefixes to the query
+        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
         /// </summary>
         INamespaceMapper Prefixes { get; }
         /// <summary>
-        /// Adds a MINUS graph pattern to the SPARQL query
+        /// Adds a MINUS graph pattern to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern);
+        /// <summary>
+        /// Adds a BIND variable assignment to the SPARQL query or graph pattern
+        /// </summary>
+        AssignmentVariableNamePart<TReturnBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Builder.Expressions;
-using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -136,9 +135,11 @@ namespace VDS.RDF.Query.Builder
             return executableQuery;
         }
 
-        public AssignmentVariableNamePart Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public AssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            throw new NotImplementedException();
+            var expressionBuilder = new ExpressionBuilder(Prefixes);
+            var assignmentExpression = buildAssignmentExpression(expressionBuilder);
+            return new AssignmentVariableNamePart<IQueryBuilder>(this, assignmentExpression);
         }
 
         public IQueryBuilder Where(params ITriplePattern[] triplePatterns)

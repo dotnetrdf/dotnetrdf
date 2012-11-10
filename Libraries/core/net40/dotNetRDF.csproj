@@ -136,6 +136,7 @@
     <Compile Include="Query\Algebra\PartitionedMultiset.cs" />
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
+    <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
     <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
     <Compile Include="Query\Builder\ExpressionBuilder.cs" />

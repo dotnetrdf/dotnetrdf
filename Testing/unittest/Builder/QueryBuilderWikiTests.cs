@@ -295,6 +295,8 @@ namespace VDS.RDF.Test.Builder
                 .Bind(ex => ex.Variable("p") * (1 - ex.Variable("discount"))).As("price")
                 .Filter(ex => ex.Variable("price") < 20)
                 .Where(tp => tp.Subject("x").PredicateUri("dc:title").Object("title"));
+            b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
+            b.Prefixes.AddNamespace("ns", new Uri("http://example.com/ns#"));
 
             // when
             var q = b.BuildQuery();
@@ -304,7 +306,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(3, q.RootGraphPattern.TriplePatterns.Count);
             Assert.IsTrue(q.RootGraphPattern.IsFiltered);
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression is LessThanExpression);
-            Assert.AreEqual(1, q.Bindings.Tuples.Count());
+            Assert.IsTrue(q.ToString().Contains("BIND(?p * (1  - ?discount) AS ?price)"));
         }
     }
 }
