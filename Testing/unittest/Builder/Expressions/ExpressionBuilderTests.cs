@@ -168,7 +168,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateStrFunctionWithLiteralParameter()
         {
             // given
-            LiteralExpression literal = new StringExpression("1000");
+            LiteralExpression literal = new TypedLiteralExpression<string>("1000");
 
             // when
             SimpleLiteralExpression str = Builder.Str(literal);
@@ -210,7 +210,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateLangFunctionWithLiteralParameter()
         {
             // given
-            LiteralExpression literal = new StringExpression("1000");
+            LiteralExpression literal = new TypedLiteralExpression<string>("1000");
 
             // when
             SimpleLiteralExpression lang = Builder.Lang(literal);
@@ -238,7 +238,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateDatatypeFunctionWithLiteralParameter()
         {
             // given
-            LiteralExpression literal = new StringExpression("1000");
+            LiteralExpression literal = new TypedLiteralExpression<string>("1000");
 
             // when
             IriExpression lang = Builder.Datatype(literal);
@@ -267,7 +267,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateOldDatatypeFunctionWithLiteralParameter()
         {
             // given
-            LiteralExpression literal = new StringExpression("1000");
+            LiteralExpression literal = new TypedLiteralExpression<string>("1000");
             Builder.UseSparql10 = true;
 
             // when
@@ -307,7 +307,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateBNodeFunctionWithStringLiteralExpressionParameter()
         {
             // given
-            var expression = new StringExpression("str");
+            var expression = new TypedLiteralExpression<string>("str");
 
             // when
             BlankNodeExpression bnode = Builder.BNode(expression);

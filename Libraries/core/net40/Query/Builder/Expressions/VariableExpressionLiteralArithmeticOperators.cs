@@ -1,6 +1,3 @@
-using System;
-using VDS.RDF.Query.Expressions.Arithmetic;
-
 namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class VariableExpression
@@ -27,27 +24,27 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static NumericExpression operator -(int left, VariableExpression right)
         {
-            return new NumericExpression(CreateConstantTerm(left)) - new NumericExpression(right.Expression);
+            return new NumericExpression(left.ToConstantTerm()) - new NumericExpression(right.Expression);
         }
 
         public static NumericExpression operator -(VariableExpression left, int right)
         {
-            return new NumericExpression(left.Expression) - new NumericExpression(CreateConstantTerm(right));
+            return new NumericExpression(left.Expression) - new NumericExpression(right.ToConstantTerm());
         }
 
         public static NumericExpression operator *(int left, VariableExpression right)
         {
-            return new NumericExpression(CreateConstantTerm(left)) - new NumericExpression(right.Expression);
+            return new NumericExpression(left.ToConstantTerm()) - new NumericExpression(right.Expression);
         }
 
         public static NumericExpression operator /(int left, VariableExpression right)
         {
-            return new NumericExpression(CreateConstantTerm(left)) - new NumericExpression(right.Expression);
+            return new NumericExpression(left.ToConstantTerm()) - new NumericExpression(right.Expression);
         }
 
         public static NumericExpression operator +(int left, VariableExpression right)
         {
-            return new NumericExpression(CreateConstantTerm(left)) - new NumericExpression(right.Expression);
+            return new NumericExpression(left.ToConstantTerm()) - new NumericExpression(right.Expression);
         }
     }
 }

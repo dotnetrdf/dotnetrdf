@@ -41,8 +41,8 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             var ifExpr = new BooleanExpression(new VariableTerm("if"));
-            SparqlExpression thenExpr = new StringExpression("then this");
-            SparqlExpression elseExpr = new StringExpression("else that");
+            SparqlExpression thenExpr = new TypedLiteralExpression<string>("then this");
+            SparqlExpression elseExpr = new TypedLiteralExpression<string>("else that");
 
             // when
             RdfTermExpression expression = Builder.If(ifExpr).Then(thenExpr).Else(elseExpr);
@@ -77,7 +77,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             SparqlExpression expr1 = new VariableExpression("x");
-            SparqlExpression expr2 = new StringExpression("str");
+            SparqlExpression expr2 = new TypedLiteralExpression<string>("str");
             SparqlExpression expr3 = new NumericExpression<int>(10);
             SparqlExpression expr4 = new NumericExpression<float>(10.5f) / new NumericExpression<float>(0);
 

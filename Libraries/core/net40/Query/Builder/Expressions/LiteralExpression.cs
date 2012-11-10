@@ -6,15 +6,13 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public class LiteralExpression : RdfTermExpression
     {
-        protected internal static readonly NodeFactory NodeFactory = new NodeFactory();
-
         public LiteralExpression(ISparqlExpression expression) : base(expression)
         {
         }
 
         public static BooleanExpression operator ==(LiteralExpression left, string right)
         {
-            return new BooleanExpression(new EqualsExpression(left.Expression, new ConstantTerm(right.ToLiteral(NodeFactory))));
+            return new BooleanExpression(new EqualsExpression(left.Expression, right.ToConstantTerm()));
         }
 
         public static BooleanExpression operator !=(LiteralExpression left, string right)
@@ -24,7 +22,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator ==(string left, LiteralExpression right)
         {
-            return new BooleanExpression(new EqualsExpression(new ConstantTerm(left.ToLiteral(NodeFactory)), right.Expression));
+            return new BooleanExpression(new EqualsExpression(left.ToConstantTerm(), right.Expression));
         }
 
         public static BooleanExpression operator !=(string left, LiteralExpression right)

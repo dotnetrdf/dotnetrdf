@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public sealed class BooleanExpression : TypedLiteralExpression<bool>
     {
-        public BooleanExpression(ISparqlExpression expression)
+        internal BooleanExpression(ISparqlExpression expression)
             : base(expression)
         {
         }

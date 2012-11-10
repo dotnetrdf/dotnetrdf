@@ -4,14 +4,14 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    public class NumericExpression<T> : TypedLiteralExpression<T>
+    public sealed class NumericExpression<T> : TypedLiteralExpression<T>
     {
         public NumericExpression(T numericValue)
-            : base(new ConstantTerm(numericValue.ToLiteral()))
+            : base(numericValue)
         {
         }
 
-        internal NumericExpression(ISparqlExpression expression)
+        private NumericExpression(ISparqlExpression expression)
             : base(expression)
         {
         }

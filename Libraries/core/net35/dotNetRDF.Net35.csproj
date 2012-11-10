@@ -2496,32 +2496,14 @@
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderRegexStringExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderRegexStringExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\DateTimeExpression.cs">
-      <Link>Query\Builder\Expressions\DateTimeExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\DecimalExpression.cs">
-      <Link>Query\Builder\Expressions\DecimalExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\FloatExpression.cs">
-      <Link>Query\Builder\Expressions\FloatExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\IntegerExpression.cs">
-      <Link>Query\Builder\Expressions\IntegerExpression.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\IriExpression.cs">
       <Link>Query\Builder\Expressions\IriExpression.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpression.cs">
       <Link>Query\Builder\Expressions\LiteralExpression.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\NumericExpression.cs">
-      <Link>Query\Builder\Expressions\NumericExpression.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\RdfTermExpression.cs">
       <Link>Query\Builder\Expressions\RdfTermExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\StringExpression.cs">
-      <Link>Query\Builder\Expressions\StringExpression.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\Builder\GraphPatternBuilder.cs">
       <Link>Query\Builder\GraphPatternBuilder.cs</Link>
@@ -2586,6 +2568,14 @@
     </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs">
       <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\Expressions\LiteralExpressionExtensions.cs">
+      <Link>Query\Builder\Expressions\LiteralExpressionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\NumericExpression.cs">
+      <Link>Query\Builder\Expressions\NumericExpression.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

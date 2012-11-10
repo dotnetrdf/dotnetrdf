@@ -30,9 +30,9 @@ namespace VDS.RDF.Query.Builder
             return new VariableExpression(variable);
         }
 
-        public StringExpression Constant(string value)
+        public TypedLiteralExpression<string> Constant(string value)
         {
-            return new StringExpression(value);
+            return new NumericExpression<string>(value);
         }
 
         public NumericExpression<int> Constant(int value)
@@ -77,7 +77,7 @@ namespace VDS.RDF.Query.Builder
 
         public TypedLiteralExpression<DateTime> Constant(DateTime value)
         {
-            return new DateTimeExpression(value);
+            return new NumericExpression<DateTime>(value);
         }
 
         public RdfTermExpression Constant(Uri value)
@@ -186,7 +186,7 @@ namespace VDS.RDF.Query.Builder
             return new BlankNodeExpression(new BNodeFunction(simpleLiteral.Expression));
         }
 
-        public BlankNodeExpression BNode(StringExpression stringLiteral)
+        public BlankNodeExpression BNode(TypedLiteralExpression<string> stringLiteral)
         {
             return new BlankNodeExpression(new BNodeFunction(stringLiteral.Expression));
         }

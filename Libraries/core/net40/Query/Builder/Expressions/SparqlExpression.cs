@@ -2,7 +2,6 @@ using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
-using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
@@ -28,7 +27,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator !=(SparqlExpression left, SparqlExpression right)
         {
-            return !(left == right);
+            return new BooleanExpression(new NotEqualsExpression(left.Expression, right.Expression));
         }
 
         protected static BooleanExpression Gt(ISparqlExpression left, ISparqlExpression right)
@@ -49,11 +48,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         protected static BooleanExpression Le(ISparqlExpression left, ISparqlExpression right)
         {
             return new BooleanExpression(new LessThanOrEqualToExpression(left, right));
-        }
-
-        protected static ConstantTerm CreateConstantTerm<T>(T value)
-        {
-            return new ConstantTerm(value.ToLiteral());
         }
     }
 }
