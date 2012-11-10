@@ -1,10 +1,8 @@
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
-    public class VariableExpression : SparqlExpression
+    public partial class VariableExpression : SparqlExpression
     {
         public VariableExpression(string variable)
             : base(new VariableTerm(variable))
@@ -19,64 +17,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
         }
 
-        public static BooleanExpression operator >(VariableExpression leftExpression, VariableExpression rightExpression)
+        public static BooleanExpression operator >(VariableExpression left, VariableExpression right)
         {
-            return Gt(leftExpression.Expression, rightExpression);
+            return Gt(left.Expression, right.Expression);
         }
 
-        public static BooleanExpression operator <(VariableExpression leftExpression, VariableExpression rightExpression)
+        public static BooleanExpression operator <(VariableExpression left, VariableExpression right)
         {
-            return Lt(leftExpression.Expression, rightExpression);
+            return Lt(left.Expression, right.Expression);
         }
 
-        public static BooleanExpression operator >=(VariableExpression leftExpression, VariableExpression rightExpression)
+        public static BooleanExpression operator >=(VariableExpression left, VariableExpression right)
         {
-            return Ge(leftExpression.Expression, rightExpression);
+            return Ge(left.Expression, right.Expression);
         }
 
-        public static BooleanExpression operator <=(VariableExpression leftExpression, VariableExpression rightExpression)
+        public static BooleanExpression operator <=(VariableExpression left, VariableExpression right)
         {
-            return Le(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator >(VariableExpression leftExpression, LiteralExpression rightExpression)
-        {
-            return Gt(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator <(VariableExpression leftExpression, LiteralExpression rightExpression)
-        {
-            return Lt(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator >(LiteralExpression leftExpression, VariableExpression rightExpression)
-        {
-            return Gt(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator <(LiteralExpression leftExpression, VariableExpression rightExpression)
-        {
-            return Lt(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator >=(VariableExpression leftExpression, LiteralExpression rightExpression)
-        {
-            return Ge(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator <=(VariableExpression leftExpression, LiteralExpression rightExpression)
-        {
-            return Le(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator >=(LiteralExpression leftExpression, VariableExpression rightExpression)
-        {
-            return Ge(leftExpression.Expression, rightExpression);
-        }
-
-        public static BooleanExpression operator <=(LiteralExpression leftExpression, VariableExpression rightExpression)
-        {
-            return Le(leftExpression.Expression, rightExpression);
+            return Le(left.Expression, right.Expression);
         }
     }
 }

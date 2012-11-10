@@ -2,6 +2,7 @@ using System.Linq;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Set;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
@@ -30,24 +31,29 @@ namespace VDS.RDF.Query.Builder.Expressions
             return !(left == right);
         }
 
-        protected static BooleanExpression Gt(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Gt(ISparqlExpression left, ISparqlExpression right)
         {
-            return new BooleanExpression(new GreaterThanExpression(left, right.Expression));
+            return new BooleanExpression(new GreaterThanExpression(left, right));
         }
 
-        protected static BooleanExpression Lt(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Lt(ISparqlExpression left, ISparqlExpression right)
         {
-            return new BooleanExpression(new LessThanExpression(left, right.Expression));
+            return new BooleanExpression(new LessThanExpression(left, right));
         }
 
-        protected static BooleanExpression Ge(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Ge(ISparqlExpression left, ISparqlExpression right)
         {
-            return new BooleanExpression(new GreaterThanOrEqualToExpression(left, right.Expression));
+            return new BooleanExpression(new GreaterThanOrEqualToExpression(left, right));
         }
 
-        protected static BooleanExpression Le(ISparqlExpression left, SparqlExpression right)
+        protected static BooleanExpression Le(ISparqlExpression left, ISparqlExpression right)
         {
-            return new BooleanExpression(new LessThanOrEqualToExpression(left, right.Expression));
+            return new BooleanExpression(new LessThanOrEqualToExpression(left, right));
+        }
+
+        protected static ConstantTerm CreateConstantTerm<T>(T value)
+        {
+            return new ConstantTerm(value.ToLiteral());
         }
     }
 }

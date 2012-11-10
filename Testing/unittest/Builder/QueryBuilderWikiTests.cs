@@ -262,7 +262,7 @@ namespace VDS.RDF.Test.Builder
             var q = b.BuildQuery();
 
             // then
-            ExistsFunction exists = (ExistsFunction) q.RootGraphPattern.Filter.Expression.Arguments.First();
+            ExistsFunction exists = (ExistsFunction)q.RootGraphPattern.Filter.Expression.Arguments.First();
             Assert.IsTrue(exists.Arguments.Single() is GraphPatternTerm);
             Assert.IsTrue(((GraphPatternTerm)exists.Arguments.Single()).Pattern.IsFiltered);
         }
@@ -283,6 +283,28 @@ namespace VDS.RDF.Test.Builder
             // when
 
             // then
+        }
+
+        [TestMethod]
+        public void BindAssignment()
+        {
+            // given
+            var b = QueryBuilder.Select("title", "price")
+                .Where(tp => tp.Subject("x").PredicateUri("ns:price").Object("p")
+                               .Subject("x").PredicateUri("ns:discount").Object("discount"))
+                .Bind(ex => ex.Variable("p") * (1 - ex.Variable("discount"))).As("price")
+                .Filter(ex => ex.Variable("price") < 20)
+                .Where(tp => tp.Subject("x").PredicateUri("dc:title").Object("title"));
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.IsFalse(q.RootGraphPattern.HasChildGraphPatterns);
+            Assert.AreEqual(3, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.IsTrue(q.RootGraphPattern.IsFiltered);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression is LessThanExpression);
+            Assert.AreEqual(1, q.Bindings.Tuples.Count());
         }
     }
 }

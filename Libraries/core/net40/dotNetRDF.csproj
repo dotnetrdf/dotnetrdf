@@ -141,6 +141,9 @@
     <Compile Include="Query\Builder\ExpressionBuilder.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderRegexStringExtensions.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs" />
+    <Compile Include="Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs" />
     <Compile Include="Query\Builder\Expressions\DateTimeExpression.cs" />
     <Compile Include="Query\Builder\Expressions\DecimalExpression.cs" />
     <Compile Include="Query\Builder\Expressions\FloatExpression.cs" />

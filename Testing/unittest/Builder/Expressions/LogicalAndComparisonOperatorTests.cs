@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder.Expressions;
@@ -260,6 +261,98 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.IsTrue(areEqual is EqualsExpression);
             Assert.AreSame(left.Expression, areEqual.Arguments.ElementAt(0));
             Assert.AreSame(right.Expression, areEqual.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void CanApplyLessThanOperatorBetweenSimpleValuesAndVariables()
+        {
+            // given
+            VariableExpression var = new VariableExpression("var");
+
+            // then
+            Assert.IsTrue((10 < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < 10).Expression is LessThanExpression);
+            Assert.IsTrue((10m < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < 10m).Expression is LessThanExpression);
+            Assert.IsTrue((10f < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < 10f).Expression is LessThanExpression);
+            Assert.IsTrue((10d < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < 10d).Expression is LessThanExpression);
+            Assert.IsTrue(("10" < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < "10").Expression is LessThanExpression);
+            Assert.IsTrue((true < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < true).Expression is LessThanExpression);
+            Assert.IsTrue((new DateTime(2010, 10, 10) < var).Expression is LessThanExpression);
+            Assert.IsTrue((var < new DateTime(2010, 10, 10)).Expression is LessThanExpression);
+        }
+
+        [TestMethod]
+        public void CanApplyLessThanOrEqualOperatorBetweenSimpleValuesAndVariables()
+        {
+            // given
+            VariableExpression var = new VariableExpression("var");
+
+            // then
+            Assert.IsTrue((10 <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= 10).Expression is LessThanExpression);
+            Assert.IsTrue((10m <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= 10m).Expression is LessThanExpression);
+            Assert.IsTrue((10f <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= 10f).Expression is LessThanExpression);
+            Assert.IsTrue((10d <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= 10d).Expression is LessThanExpression);
+            Assert.IsTrue(("10" <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= "10").Expression is LessThanExpression);
+            Assert.IsTrue((true <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= true).Expression is LessThanExpression);
+            Assert.IsTrue((new DateTime(2010, 10, 10) <= var).Expression is LessThanExpression);
+            Assert.IsTrue((var <= new DateTime(2010, 10, 10)).Expression is LessThanExpression);
+        }
+
+        [TestMethod]
+        public void CanApplyGreaterThanOperatorBetweenSimpleValuesAndVariables()
+        {
+            // given
+            VariableExpression var = new VariableExpression("var");
+
+            // then
+            Assert.IsTrue((10 > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > 10).Expression is LessThanExpression);
+            Assert.IsTrue((10m > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > 10m).Expression is LessThanExpression);
+            Assert.IsTrue((10f > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > 10f).Expression is LessThanExpression);
+            Assert.IsTrue((10d > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > 10d).Expression is LessThanExpression);
+            Assert.IsTrue(("10" > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > "10").Expression is LessThanExpression);
+            Assert.IsTrue((true > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > true).Expression is LessThanExpression);
+            Assert.IsTrue((new DateTime(2010, 10, 10) > var).Expression is LessThanExpression);
+            Assert.IsTrue((var > new DateTime(2010, 10, 10)).Expression is LessThanExpression);
+        }
+
+        [TestMethod]
+        public void CanApplyGreaterThanOrEqualOperatorBetweenSimpleValuesAndVariables()
+        {
+            // given
+            VariableExpression var = new VariableExpression("var");
+
+            // then
+            Assert.IsTrue((10 >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= 10).Expression is LessThanExpression);
+            Assert.IsTrue((10m >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= 10m).Expression is LessThanExpression);
+            Assert.IsTrue((10f >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= 10f).Expression is LessThanExpression);
+            Assert.IsTrue((10d >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= 10d).Expression is LessThanExpression);
+            Assert.IsTrue(("10" >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= "10").Expression is LessThanExpression);
+            Assert.IsTrue((true >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= true).Expression is LessThanExpression);
+            Assert.IsTrue((new DateTime(2010, 10, 10) >= var).Expression is LessThanExpression);
+            Assert.IsTrue((var >= new DateTime(2010, 10, 10)).Expression is LessThanExpression);
         }
     }
 }

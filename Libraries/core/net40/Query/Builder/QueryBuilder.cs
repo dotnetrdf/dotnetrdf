@@ -134,7 +134,12 @@ namespace VDS.RDF.Query.Builder
             executableQuery.NamespaceMap.Import(Prefixes);
             executableQuery.RootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
             return executableQuery;
-        } 
+        }
+
+        public AssignmentVariableNamePart Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        {
+            throw new NotImplementedException();
+        }
 
         public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
         {

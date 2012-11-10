@@ -76,27 +76,27 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator >(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Gt(left.Expression, right);
+            return Gt(left.Expression, right.Expression);
         }
 
         public static BooleanExpression operator <(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Lt(left.Expression, right);
+            return Lt(left.Expression, right.Expression);
         }
 
         public static BooleanExpression operator >=(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Ge(left.Expression, right);
+            return Ge(left.Expression, right.Expression);
         }
 
         public static BooleanExpression operator <=(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
-            return Le(left.Expression, right);
+            return Le(left.Expression, right.Expression);
         }
 
         public static BooleanExpression operator ==(TypedLiteralExpression<T> left, T right)
         {
-            return new BooleanExpression(new EqualsExpression(left.Expression, new ConstantTerm(right.ToLiteral())));
+            return new BooleanExpression(new EqualsExpression(left.Expression, CreateConstantTerm(right)));
         }
 
         public static BooleanExpression operator !=(TypedLiteralExpression<T> left, T right)
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator ==(T left, TypedLiteralExpression<T> right)
         {
-            return new BooleanExpression(new EqualsExpression(new ConstantTerm(left.ToLiteral()), right.Expression));
+            return new BooleanExpression(new EqualsExpression(CreateConstantTerm(left), right.Expression));
         }
 
         public static BooleanExpression operator !=(T left, TypedLiteralExpression<T> right)

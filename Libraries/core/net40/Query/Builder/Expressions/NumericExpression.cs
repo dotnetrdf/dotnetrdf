@@ -28,8 +28,8 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static NumericExpression<T> operator *(NumericExpression<T> left, NumericExpression<T> right)
         {
-            var multiplication = new MultiplicationExpression(left.Expression, right.Expression);
-            return new NumericExpression<T>(multiplication);
+            var multiplication = NumericExpression.Multiply(left, right);
+            return new NumericExpression<T>(multiplication.Expression);
         }
 
         public static NumericExpression operator *(NumericExpression<T> left, NumericExpression right)
@@ -49,8 +49,8 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static NumericExpression<T> operator /(NumericExpression<T> left, NumericExpression<T> right)
         {
-            var multiplication = new DivisionExpression(left.Expression, right.Expression);
-            return new NumericExpression<T>(multiplication);
+            var division = NumericExpression.Divide(left, right);
+            return new NumericExpression<T>(division.Expression);
         }
 
         public static NumericExpression operator /(NumericExpression<T> left, NumericExpression right)
@@ -70,8 +70,8 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static NumericExpression<T> operator +(NumericExpression<T> left, NumericExpression<T> right)
         {
-            var multiplication = new AdditionExpression(left.Expression, right.Expression);
-            return new NumericExpression<T>(multiplication);
+            var addition = NumericExpression.Add(left, right);
+            return new NumericExpression<T>(addition.Expression);
         }
 
         public static NumericExpression operator +(NumericExpression<T> left, NumericExpression right)
@@ -91,8 +91,8 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static NumericExpression<T> operator -(NumericExpression<T> left, NumericExpression<T> right)
         {
-            var multiplication = new SubtractionExpression(left.Expression, right.Expression);
-            return new NumericExpression<T>(multiplication);
+            var subtraction = NumericExpression.Subtract(left, right);
+            return new NumericExpression<T>(subtraction.Expression);
         }
 
         public static NumericExpression operator -(NumericExpression<T> left, NumericExpression right)
@@ -153,9 +153,24 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        public static NumericExpression operator *(NumericExpression left, NumericExpression right)
+        internal static NumericExpression Multiply(SparqlExpression left, SparqlExpression right)
         {
             return new NumericExpression(new MultiplicationExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator *(NumericExpression left, NumericExpression right)
+        {
+            return Multiply(left, right);
+        }
+
+        public static NumericExpression operator *(VariableExpression left, NumericExpression right)
+        {
+            return Multiply(left, right);
+        }
+
+        public static NumericExpression operator *(NumericExpression left, VariableExpression right)
+        {
+            return Multiply(left, right);
         }
 
         public static NumericExpression operator *(NumericExpression left, int right)
@@ -233,9 +248,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression<double>(left) * right;
         }
 
-        public static NumericExpression operator /(NumericExpression left, NumericExpression right)
+        internal static NumericExpression Divide(SparqlExpression left, SparqlExpression right)
         {
             return new NumericExpression(new DivisionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator /(NumericExpression left, NumericExpression right)
+        {
+            return Divide(left, right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, VariableExpression right)
+        {
+            return Divide(left, right);
+        }
+
+        public static NumericExpression operator /(VariableExpression left, NumericExpression right)
+        {
+            return Divide(left, right);
         }
 
         public static NumericExpression operator /(NumericExpression left, int right)
@@ -313,9 +343,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression<double>(left) / right;
         }
 
-        public static NumericExpression operator +(NumericExpression left, NumericExpression right)
+        internal static NumericExpression Add(SparqlExpression left, SparqlExpression right)
         {
             return new NumericExpression(new AdditionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator +(NumericExpression left, NumericExpression right)
+        {
+            return Add(left, right);
+        }
+
+        public static NumericExpression operator +(VariableExpression left, NumericExpression right)
+        {
+            return Add(left, right);
+        }
+
+        public static NumericExpression operator +(NumericExpression left, VariableExpression right)
+        {
+            return Add(left, right);
         }
 
         public static NumericExpression operator +(NumericExpression left, int right)
@@ -393,9 +438,24 @@ namespace VDS.RDF.Query.Builder.Expressions
             return new NumericExpression<double>(left) + right;
         }
 
-        public static NumericExpression operator -(NumericExpression left, NumericExpression right)
+        internal static NumericExpression Subtract(SparqlExpression left, SparqlExpression right)
         {
             return new NumericExpression(new SubtractionExpression(left.Expression, right.Expression));
+        }
+
+        public static NumericExpression operator -(NumericExpression left, NumericExpression right)
+        {
+            return Subtract(left, right);
+        }
+
+        public static NumericExpression operator -(VariableExpression left, NumericExpression right)
+        {
+            return Subtract(left, right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, VariableExpression right)
+        {
+            return Subtract(left, right);
         }
 
         public static NumericExpression operator -(NumericExpression left, int right)
@@ -475,22 +535,22 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator >(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Gt(leftExpression.Expression, rightExpression);
+            return Gt(leftExpression.Expression, rightExpression.Expression);
         }
 
         public static BooleanExpression operator <(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Lt(leftExpression.Expression, rightExpression);
+            return Lt(leftExpression.Expression, rightExpression.Expression);
         }
 
         public static BooleanExpression operator >=(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Ge(leftExpression.Expression, rightExpression);
+            return Ge(leftExpression.Expression, rightExpression.Expression);
         }
 
         public static BooleanExpression operator <=(NumericExpression leftExpression, NumericExpression rightExpression)
         {
-            return Le(leftExpression.Expression, rightExpression);
+            return Le(leftExpression.Expression, rightExpression.Expression);
         }
     }
 }

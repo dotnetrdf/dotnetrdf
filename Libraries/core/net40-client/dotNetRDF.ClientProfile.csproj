@@ -2529,4 +2529,17 @@
       <Link>Query\Builder\QueryBuilder.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralExpressionOperators.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralArithmeticOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs">
+      <Link>Query\Builder\Expressions\VariableExpressionLiteralComparisonOperators.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
