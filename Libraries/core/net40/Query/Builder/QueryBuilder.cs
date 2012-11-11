@@ -24,7 +24,7 @@ namespace VDS.RDF.Query.Builder
         private QueryBuilder(SparqlQuery query)
         {
             this._query = query;
-            this.Prefixes = new NamespaceMapper();
+            this.Prefixes = new NamespaceMapper(true);
             _rootGraphPatternBuilder = new GraphPatternBuilder(Prefixes);
         }
 

@@ -268,5 +268,15 @@ namespace VDS.RDF.Test.Builder
             // then
             Assert.AreEqual(3, q.Variables.Count(v => v.IsResultVariable));
         }
+
+        [TestMethod]
+        public void ShouldBeCreatedWithEmptyNamespaceMap()
+        {
+            // when
+            ISelectQueryBuilder builder = QueryBuilder.SelectAll();
+
+            // then
+            Assert.AreEqual(0, builder.Prefixes.Prefixes.Count());
+        }
     }
 }
