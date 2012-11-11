@@ -99,6 +99,7 @@
     <Compile Include="Builder\Expressions\RdfTermExpressionTests.cs" />
     <Compile Include="Builder\Expressions\RegexTests.cs" />
     <Compile Include="Builder\Expressions\SparqlExpressionTestsBase.cs" />
+    <Compile Include="Builder\Expressions\TypedLiteralExpressionTests.cs" />
     <Compile Include="Builder\Expressions\VariableExpressionTests.cs" />
     <Compile Include="Common\BinaryTreeDeleteTests.cs" />
     <Compile Include="Common\BinaryTreeTools.cs" />

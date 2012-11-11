@@ -42,7 +42,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator !=(TypedLiteralExpression<T> left, T right)
         {
-            return !(left == right);
+            return new BooleanExpression(new NotEqualsExpression(left.Expression, right.ToConstantTerm()));
         }
 
         public static BooleanExpression operator ==(T left, TypedLiteralExpression<T> right)
@@ -52,7 +52,47 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator !=(T left, TypedLiteralExpression<T> right)
         {
-            return !(left == right);
+            return new BooleanExpression(new NotEqualsExpression(left.ToConstantTerm(), right.Expression));
+        }
+
+        public static BooleanExpression operator >(TypedLiteralExpression<T> left, T right)
+        {
+            return Gt(left.Expression, right.ToConstantTerm());
+        }
+
+        public static BooleanExpression operator <(TypedLiteralExpression<T> left, T right)
+        {
+            return Lt(left.Expression, right.ToConstantTerm());
+        }
+
+        public static BooleanExpression operator >=(TypedLiteralExpression<T> left, T right)
+        {
+            return Ge(left.Expression, right.ToConstantTerm());
+        }
+
+        public static BooleanExpression operator <=(TypedLiteralExpression<T> left, T right)
+        {
+            return Le(left.Expression, right.ToConstantTerm());
+        }
+
+        public static BooleanExpression operator >(T left, TypedLiteralExpression<T> right)
+        {
+            return Gt(left.ToConstantTerm(), right.Expression);
+        }
+
+        public static BooleanExpression operator <(T left, TypedLiteralExpression<T> right)
+        {
+            return Lt(left.ToConstantTerm(), right.Expression);
+        }
+
+        public static BooleanExpression operator >=(T left, TypedLiteralExpression<T> right)
+        {
+            return Ge(left.ToConstantTerm(), right.Expression);
+        }
+
+        public static BooleanExpression operator <=(T left, TypedLiteralExpression<T> right)
+        {
+            return Le(left.ToConstantTerm(), right.Expression);
         }
     }
 }
