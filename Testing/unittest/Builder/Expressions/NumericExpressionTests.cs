@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
@@ -10,23 +8,21 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Test.Builder.Expressions
 {
     [TestClass]
-    public class NumericExpressionTests
+    public class NumericExpressionTests : SparqlExpressionTestsBase
     {
-        private ISparqlExpression _left, _right;
-
         [TestInitialize]
         public void Setup()
         {
-            _left = 10.ToConstantTerm();
-            _right = 15.ToConstantTerm();
+            Left = 10.ToConstantTerm();
+            Right = 15.ToConstantTerm();
         }
 
         [TestMethod]
         public void ShouldAllowComparingGenericAndNongenericNumericExpressions()
         {
-            var left = new NumericExpression(_left);
+            var left = new NumericExpression(Left);
             var right = new NumericExpression<int>(15);
-            _right = right.Expression;
+            Right = right.Expression;
 
             AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
             AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
@@ -39,9 +35,9 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void ShouldAllowComparingGenericAndNongenericNumericExpressionsReversed()
         {
-            var right = new NumericExpression(_right);
+            var right = new NumericExpression(Right);
             var left = new NumericExpression<int>(15);
-            _left = left.Expression;
+            Left = left.Expression;
 
             AssertExpressionTypeAndCorrectArguments<EqualsExpression>(left == right);
             AssertExpressionTypeAndCorrectArguments<GreaterThanExpression>(left > right);
@@ -54,9 +50,9 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressions()
         {
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
             NumericExpression right = new NumericExpression<int>(15);
-            _right = right.Expression;
+            Right = right.Expression;
 
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
             AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
@@ -67,9 +63,9 @@ namespace VDS.RDF.Test.Builder.Expressions
         [TestMethod]
         public void ShouldAllowArithmeticOperatorsWithGenericAndNongenericNumericExpressionsReversed()
         {
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
             NumericExpression right = new NumericExpression<int>(15);
-            _right = right.Expression;
+            Right = right.Expression;
 
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
             AssertExpressionTypeAndCorrectArguments<DivisionExpression>(left / right);
@@ -81,9 +77,9 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowUsingArithmeticOperatorsWithNumericExpressionAndVariableExpression()
         {
             // given
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
             VariableExpression right = new VariableExpression("number");
-            _right = right.Expression;
+            Right = right.Expression;
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
@@ -96,9 +92,9 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowUsingArithmeticOperatorsWithVariableExpressionAndNumericExpression()
         {
             // given
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
             VariableExpression left = new VariableExpression("number");
-            _left = left.Expression;
+            Left = left.Expression;
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * right);
@@ -112,7 +108,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const int operandValue = 10;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -130,7 +126,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const int operandValue = 10;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -148,7 +144,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const long operandValue = 10;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -166,7 +162,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const long operandValue = 10;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -184,7 +180,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const short operandValue = 10;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -202,7 +198,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const short operandValue = 10;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -220,7 +216,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const decimal operandValue = 10.5m;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -238,7 +234,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const decimal operandValue = 10.5m;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -256,7 +252,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const double operandValue = 10.5d;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -274,7 +270,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const double operandValue = 10.5d;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -292,7 +288,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const float operandValue = 10.5f;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -310,7 +306,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const float operandValue = 10.5f;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -328,7 +324,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const byte operandValue = 10;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -346,7 +342,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const byte operandValue = 10;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -364,7 +360,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const sbyte operandValue = 10;
-            NumericExpression right = new NumericExpression(_right);
+            NumericExpression right = new NumericExpression(Right);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(operandValue * right,
@@ -382,7 +378,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             const sbyte operandValue = 10;
-            NumericExpression left = new NumericExpression(_left);
+            NumericExpression left = new NumericExpression(Left);
 
             // then
             AssertExpressionTypeAndCorrectArguments<MultiplicationExpression>(left * operandValue,
@@ -393,35 +389,6 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
             AssertExpressionTypeAndCorrectArguments<SubtractionExpression>(left - operandValue,
                 assertRightOperand: ex => AssertCorrectConstantTerm(ex, operandValue));
-        }
-
-        private void AssertExpressionTypeAndCorrectArguments<TExpressionType>(SparqlExpression expression,
-            Action<ISparqlExpression> assertLeftOperand = null,
-            Action<ISparqlExpression> assertRightOperand = null)
-        {
-            Assert.AreEqual(typeof(TExpressionType), expression.Expression.GetType());
-            if (assertLeftOperand == null)
-            {
-                Assert.AreSame(_left, expression.Expression.Arguments.ElementAt(0));
-            }
-            else
-            {
-                assertLeftOperand(expression.Expression.Arguments.ElementAt(0));
-            }
-            if (assertRightOperand == null)
-            {
-                Assert.AreSame(_right, expression.Expression.Arguments.ElementAt(1));
-            }
-            else
-            {
-                assertRightOperand(expression.Expression.Arguments.ElementAt(1));
-            }
-        }
-
-        private void AssertCorrectConstantTerm<TConstant>(ISparqlExpression operand, TConstant value)
-        {
-            Assert.IsTrue(operand is ConstantTerm);
-            Assert.AreEqual(value.ToConstantTerm().ToString(), operand.ToString());
         }
     }
 }

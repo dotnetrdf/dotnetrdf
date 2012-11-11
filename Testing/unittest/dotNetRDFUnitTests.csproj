@@ -93,10 +93,12 @@
     <Compile Include="Builder\Expressions\ExpressionBuilderTests.cs" />
     <Compile Include="Builder\Expressions\ExpressionBuilderTestsBase.cs" />
     <Compile Include="Builder\Expressions\FunctionalFormsBuildingTests.cs" />
+    <Compile Include="Builder\Expressions\LiteralExpressionTests.cs" />
     <Compile Include="Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
     <Compile Include="Builder\Expressions\NumericExpressionTests.cs" />
     <Compile Include="Builder\Expressions\RdfTermExpressionTests.cs" />
     <Compile Include="Builder\Expressions\RegexTests.cs" />
+    <Compile Include="Builder\Expressions\SparqlExpressionTestsBase.cs" />
     <Compile Include="Common\BinaryTreeDeleteTests.cs" />
     <Compile Include="Common\BinaryTreeTools.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />

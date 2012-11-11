@@ -17,7 +17,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator !=(LiteralExpression left, string right)
         {
-            return !(left == right);
+            return new BooleanExpression(new NotEqualsExpression(left.Expression, right.ToConstantTerm()));
         }
 
         public static BooleanExpression operator ==(string left, LiteralExpression right)
@@ -27,7 +27,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 
         public static BooleanExpression operator !=(string left, LiteralExpression right)
         {
-            return !(left == right);
+            return new BooleanExpression(new NotEqualsExpression(left.ToConstantTerm(), right.Expression));
         }
     }
 }
