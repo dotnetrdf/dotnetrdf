@@ -101,6 +101,7 @@
     <Compile Include="Builder\Expressions\SparqlExpressionTestsBase.cs" />
     <Compile Include="Builder\Expressions\TypedLiteralExpressionTests.cs" />
     <Compile Include="Builder\Expressions\VariableExpressionTests.cs" />
+    <Compile Include="Builder\GraphPatternBuilderTests.cs" />
     <Compile Include="Common\BinaryTreeDeleteTests.cs" />
     <Compile Include="Common\BinaryTreeTools.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />

@@ -6,6 +6,7 @@ using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions.Comparison;
 using VDS.RDF.Query.Expressions.Conditional;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder
@@ -281,8 +282,19 @@ namespace VDS.RDF.Test.Builder
                     });
 
             // when
+            var q = b.BuildQuery();
 
             // then
+            Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
+            Assert.IsTrue(q.RootGraphPattern.IsFiltered);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression is AndExpression);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(0) is AndExpression);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(1) is EqualsExpression);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(0).Arguments.ElementAt(0) is NotExpression);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(0).Arguments.ElementAt(1) is RegexFunction);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(0).Arguments.ElementAt(0).Arguments.ElementAt(0) is IsBlankFunction);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(1).Arguments.ElementAt(0) is LangFunction);
+            Assert.IsTrue(q.RootGraphPattern.Filter.Expression.Arguments.ElementAt(1).Arguments.ElementAt(1) is ConstantTerm);
         }
 
         [TestMethod]

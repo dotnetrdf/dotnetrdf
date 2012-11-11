@@ -8,7 +8,7 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
-    class GraphPatternBuilder : IGraphPatternBuilder
+    sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
         private readonly IList<Func<ISparqlExpression>> _filterBuilders = new List<Func<ISparqlExpression>>();
@@ -16,7 +16,7 @@ namespace VDS.RDF.Query.Builder
         private readonly INamespaceMapper _prefixes;
         private readonly GraphPatternType _graphPatternType;
 
-        public GraphPatternBuilder(INamespaceMapper prefixes)
+        internal GraphPatternBuilder(INamespaceMapper prefixes)
             : this(prefixes, GraphPatternType.Normal)
         {
         }
@@ -27,12 +27,13 @@ namespace VDS.RDF.Query.Builder
             _graphPatternType = graphPatternType;
         }
 
-        public GraphPattern BuildGraphPattern()
+        internal GraphPattern BuildGraphPattern()
         {
-            if (!_triplePatterns.Any())
+            if (!_triplePatterns.Any() && !_childGraphPatternBuilders.Any() && !_filterBuilders.Any())
             {
                 return null;
             }
+            
             var graphPattern = CreateGraphPattern();
 
             foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns()))
