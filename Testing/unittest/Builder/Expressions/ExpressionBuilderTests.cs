@@ -253,7 +253,6 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             VariableExpression literal = new VariableExpression("s");
-            Builder.UseSparql10 = true;
 
             // when
             IriExpression lang = Builder.Datatype(literal);
@@ -268,7 +267,6 @@ namespace VDS.RDF.Test.Builder.Expressions
         {
             // given
             LiteralExpression literal = new TypedLiteralExpression<string>("1000");
-            Builder.UseSparql10 = true;
 
             // when
             IriExpression lang = Builder.Datatype(literal);

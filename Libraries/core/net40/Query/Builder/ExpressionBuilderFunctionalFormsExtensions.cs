@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
@@ -32,6 +33,20 @@ namespace VDS.RDF.Query.Builder
         {
             var coalesce = new CoalesceFunction(expressions.Select(e => e.Expression));
             return new RdfTermExpression(coalesce);
+        }
+
+        public static BooleanExpression Exists(this ExpressionBuilder eb, Action<IGraphPatternBuilder> buildExistsPattern)
+        {
+            GraphPatternBuilder builder = new GraphPatternBuilder(eb.Prefixes);
+            buildExistsPattern(builder);
+            var existsFunction = new ExistsFunction(builder.BuildGraphPattern(), true);
+            return new BooleanExpression(existsFunction);
+        }
+
+        public static BooleanExpression SameTerm(this ExpressionBuilder eb, SparqlExpression left, SparqlExpression right)
+        {
+            var sameTerm = new SameTermFunction(left.Expression, right.Expression);
+            return new BooleanExpression(sameTerm);
         }
     }
 

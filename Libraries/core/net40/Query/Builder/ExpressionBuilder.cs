@@ -1,4 +1,5 @@
 using System;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
@@ -12,17 +13,23 @@ namespace VDS.RDF.Query.Builder
     public sealed class ExpressionBuilder
     {
         private readonly INamespaceMapper _prefixes;
-        private bool _useSparql10;
+        private SparqlQuerySyntax _sparqlVersion;
 
         internal ExpressionBuilder(INamespaceMapper prefixes)
         {
+            _sparqlVersion = SparqlQuerySyntax.Sparql_1_1;
             _prefixes = prefixes;
         }
 
-        public bool UseSparql10
+        internal INamespaceMapper Prefixes
         {
-            get { return _useSparql10; }
-            set { _useSparql10 = value; }
+            get { return _prefixes; }
+        }
+
+        public SparqlQuerySyntax SparqlVersion
+        {
+            get { return _sparqlVersion; }
+            set { _sparqlVersion = value; }
         }
 
         public VariableExpression Variable(string variable)
@@ -83,112 +90,6 @@ namespace VDS.RDF.Query.Builder
         public RdfTermExpression Constant(Uri value)
         {
             return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
-        }
-
-        public BooleanExpression Exists(Action<IGraphPatternBuilder> buildExistsPattern)
-        {
-            GraphPatternBuilder builder  = new GraphPatternBuilder(_prefixes);
-            buildExistsPattern(builder);
-            var existsFunction = new ExistsFunction(builder.BuildGraphPattern(), true);
-            return new BooleanExpression(existsFunction);
-        }
-
-        public BooleanExpression SameTerm(SparqlExpression left, SparqlExpression right)
-        {
-            var sameTerm = new SameTermFunction(left.Expression, right.Expression);
-            return new BooleanExpression(sameTerm);
-        }
-
-        public BooleanExpression IsIRI(SparqlExpression term)
-        {
-            var isIri = new IsIriFunction(term.Expression);
-            return new BooleanExpression(isIri);
-        }
-
-        public BooleanExpression IsBlank(SparqlExpression term)
-        {
-            var isBlank = new IsBlankFunction(term.Expression);
-            return new BooleanExpression(isBlank);
-        }
-
-        public BooleanExpression IsBlank(string variableName)
-        {
-            return IsBlank(Variable(variableName));
-        }
-
-        public BooleanExpression IsLiteral(SparqlExpression term)
-        {
-            var isLiteral = new IsLiteralFunction(term.Expression);
-            return new BooleanExpression(isLiteral);
-        }
-
-        public BooleanExpression IsNumeric(SparqlExpression term)
-        {
-            var isNumeric = new IsNumericFunction(term.Expression);
-            return new BooleanExpression(isNumeric);
-        }
-
-        public SimpleLiteralExpression Str(VariableExpression variable)
-        {
-            return Str(variable.Expression);
-        }
-
-        public SimpleLiteralExpression Str(LiteralExpression literal)
-        {
-            return Str(literal.Expression);
-        }
-
-        public SimpleLiteralExpression Str(IriExpression iriTerm)
-        {
-            return Str(iriTerm.Expression);
-        }
-
-        private SimpleLiteralExpression Str(ISparqlExpression expression)
-        {
-            return new SimpleLiteralExpression(new StrFunction(expression));
-        }
-
-        public SimpleLiteralExpression Lang(VariableExpression variable)
-        {
-            return new SimpleLiteralExpression(new LangFunction(variable.Expression));
-        }
-
-        public SimpleLiteralExpression Lang(LiteralExpression literal)
-        {
-            return new SimpleLiteralExpression(new LangFunction(literal.Expression));
-        }
-
-        public IriExpression Datatype(VariableExpression variable)
-        {
-            return Datatype(variable.Expression);
-        }
-
-        public IriExpression Datatype(LiteralExpression literal)
-        {
-            return Datatype(literal.Expression);
-        }
-
-        private IriExpression Datatype(ISparqlExpression expression)
-        {
-            var dataTypeFunction = _useSparql10
-                                       ? new DataTypeFunction(expression)
-                                       : new DataType11Function(expression);
-            return new IriExpression(dataTypeFunction);
-        }
-
-        public BlankNodeExpression BNode()
-        {
-            return new BlankNodeExpression(new BNodeFunction());
-        }
-
-        public BlankNodeExpression BNode(SimpleLiteralExpression simpleLiteral)
-        {
-            return new BlankNodeExpression(new BNodeFunction(simpleLiteral.Expression));
-        }
-
-        public BlankNodeExpression BNode(TypedLiteralExpression<string> stringLiteral)
-        {
-            return new BlankNodeExpression(new BNodeFunction(stringLiteral.Expression));
         }
     }
 }

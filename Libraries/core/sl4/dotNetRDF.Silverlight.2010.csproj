@@ -2560,4 +2560,9 @@
       <Link>Query\Builder\AssignmentVariableNamePart.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
+      <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
