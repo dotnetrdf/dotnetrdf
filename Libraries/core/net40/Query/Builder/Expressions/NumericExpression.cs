@@ -178,6 +178,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             return left * new NumericExpression<int>(right);
         }
 
+        public static NumericExpression operator *(NumericExpression left, long right)
+        {
+            return left * new NumericExpression<long>(right);
+        }
+
         public static NumericExpression operator *(NumericExpression left, decimal right)
         {
             return left * new NumericExpression<decimal>(right);
@@ -271,6 +276,11 @@ namespace VDS.RDF.Query.Builder.Expressions
         public static NumericExpression operator /(NumericExpression left, int right)
         {
             return left / new NumericExpression<int>(right);
+        }
+
+        public static NumericExpression operator /(NumericExpression left, long right)
+        {
+            return left / new NumericExpression<long>(right);
         }
 
         public static NumericExpression operator /(NumericExpression left, decimal right)
@@ -368,6 +378,11 @@ namespace VDS.RDF.Query.Builder.Expressions
             return left + new NumericExpression<int>(right);
         }
 
+        public static NumericExpression operator +(NumericExpression left, long right)
+        {
+            return left + new NumericExpression<long>(right);
+        }
+
         public static NumericExpression operator +(NumericExpression left, decimal right)
         {
             return left + new NumericExpression<decimal>(right);
@@ -461,6 +476,11 @@ namespace VDS.RDF.Query.Builder.Expressions
         public static NumericExpression operator -(NumericExpression left, int right)
         {
             return left - new NumericExpression<int>(right);
+        }
+
+        public static NumericExpression operator -(NumericExpression left, long right)
+        {
+            return left - new NumericExpression<long>(right);
         }
 
         public static NumericExpression operator -(NumericExpression left, decimal right)
