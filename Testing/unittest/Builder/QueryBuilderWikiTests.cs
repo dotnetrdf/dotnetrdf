@@ -306,7 +306,30 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(3, q.RootGraphPattern.TriplePatterns.Count);
             Assert.IsTrue(q.RootGraphPattern.IsFiltered);
             Assert.IsTrue(q.RootGraphPattern.Filter.Expression is LessThanExpression);
-            Assert.IsTrue(q.ToString().Contains("BIND(?p * (1  - ?discount) AS ?price)"));
+            Assert.AreEqual(1, q.RootGraphPattern.UnplacedAssignments.Count());
+        }
+
+        [TestMethod]
+        public void SelectExpression()
+        {
+            // given
+            var b = QueryBuilder.Select("title")
+                .And(ex => ex.Variable("p")*(1 - ex.Variable("discount"))).As("price")
+                .Where(tp => tp.Subject("x").PredicateUri("ns:price").Object("p")
+                               .Subject("x").PredicateUri("dc:title").Object("title")
+                               .Subject("x").PredicateUri("ns:discount").Object("discount"));
+            b.Prefixes.AddNamespace("dc", new Uri("http://purl.org/dc/elements/1.1/"));
+            b.Prefixes.AddNamespace("ns", new Uri("http://example.com/ns#"));
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.IsFalse(q.RootGraphPattern.HasChildGraphPatterns);
+            Assert.AreEqual(3, q.RootGraphPattern.TriplePatterns.Count);
+            Assert.IsFalse(q.RootGraphPattern.IsFiltered);
+            Assert.AreEqual(0, q.RootGraphPattern.UnplacedAssignments.Count());
+            Assert.AreEqual(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable));
         }
     }
 }

@@ -134,9 +134,7 @@ namespace VDS.RDF.Query.Builder
 
         public AssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            var expressionBuilder = new ExpressionBuilder(Prefixes);
-            var assignmentExpression = buildAssignmentExpression(expressionBuilder);
-            return new AssignmentVariableNamePart<IGraphPatternBuilder>(this, assignmentExpression);
+            return new AssignmentVariableNamePart<IGraphPatternBuilder>(this, buildAssignmentExpression);
         }
 
         public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)

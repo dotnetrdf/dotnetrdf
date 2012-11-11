@@ -4,10 +4,18 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    public interface ICommonQueryBuilder
+    {
+        /// <summary>
+        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
+        /// </summary>
+        INamespaceMapper Prefixes { get; }
+    }
+
     /// <summary>
     /// Common interface for building SPARQL queries and graph patterns
     /// </summary>
-    public interface ICommonQueryBuilder<TReturnBuilder>
+    public interface ICommonQueryBuilder<TReturnBuilder> : ICommonQueryBuilder where TReturnBuilder : ICommonQueryBuilder
     {
         /// <summary>
         /// Adds triple patterns to the SPARQL query or graph pattern
@@ -25,10 +33,6 @@ namespace VDS.RDF.Query.Builder
         /// Adds a FILTER to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Filter(Func<ExpressionBuilder, BooleanExpression> expr);
-        /// <summary>
-        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
-        /// </summary>
-        INamespaceMapper Prefixes { get; }
         /// <summary>
         /// Adds a MINUS graph pattern to the SPARQL query or graph pattern
         /// </summary>

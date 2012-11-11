@@ -1,3 +1,6 @@
+using System;
+using VDS.RDF.Query.Builder.Expressions;
+
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
@@ -13,5 +16,7 @@ namespace VDS.RDF.Query.Builder
         /// Adds additional SELECT <paramref name="variables"/>
         /// </summary>
         ISelectQueryBuilder And(params string[] variables);
+
+        AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

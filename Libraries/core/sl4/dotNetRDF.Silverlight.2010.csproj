@@ -2555,4 +2555,9 @@
       <Link>Query\Builder\Expressions\NumericExpression.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\AssignmentVariableNamePart.cs">
+      <Link>Query\Builder\AssignmentVariableNamePart.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

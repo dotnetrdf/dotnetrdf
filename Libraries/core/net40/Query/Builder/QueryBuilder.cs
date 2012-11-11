@@ -137,9 +137,7 @@ namespace VDS.RDF.Query.Builder
 
         public AssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            var expressionBuilder = new ExpressionBuilder(Prefixes);
-            var assignmentExpression = buildAssignmentExpression(expressionBuilder);
-            return new AssignmentVariableNamePart<IQueryBuilder>(this, assignmentExpression);
+            return new AssignmentVariableNamePart<IQueryBuilder>(this, buildAssignmentExpression);
         }
 
         public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
@@ -186,6 +184,11 @@ namespace VDS.RDF.Query.Builder
                 _query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
             }
             return this;
+        }
+
+        public AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        {
+            return new AssignmentVariableNamePart<ISelectQueryBuilder>(this, buildAssignmentExpression);
         }
 
         /// <summary>
