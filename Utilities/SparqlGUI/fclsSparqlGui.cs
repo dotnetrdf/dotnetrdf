@@ -50,7 +50,8 @@ namespace VDS.RDF.Utilities.Sparql
 {
     public partial class fclsSparqlGui : Form
     {
-        private ISparqlDataset _dataset = new InMemoryQuadDataset();
+        private TripleStore _store;
+        private ISparqlDataset _dataset;
         private LeviathanQueryProcessor _processor;
         private IRdfWriter _rdfwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
         private ISparqlResultsWriter _resultswriter = new SparqlHtmlWriter();
@@ -70,6 +71,8 @@ namespace VDS.RDF.Utilities.Sparql
         {
             InitializeComponent();
             Constants.WindowIcon = this.Icon;
+            this._store = new TripleStore();
+            this._dataset = new InMemoryQuadDataset(this._store);
             this._processor = new LeviathanQueryProcessor(this._dataset);
 
             //Enable UTF-8 BOM setting if user set
@@ -189,6 +192,7 @@ namespace VDS.RDF.Utilities.Sparql
                     return;
                 }
 
+                this._dataset.Flush();
                 this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
                 this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "File Import Done");
@@ -241,6 +245,8 @@ namespace VDS.RDF.Utilities.Sparql
                     MessageBox.Show("An error occurred while loading RDF from the given URI:\n" + ex.Message, "URI Import Error");
                     return;
                 }
+
+                this._dataset.Flush();
                 this.stsGraphs.Text = this._dataset.GraphUris.Count() + " Graphs";
                 this.stsTriples.Text = this._tripleCount + " Triples";
                 MessageBox.Show("RDF added to the Dataset OK", "URI Import Done");
@@ -824,7 +830,7 @@ namespace VDS.RDF.Utilities.Sparql
                 this._dataset = ((FullTextIndexedDataset)this._dataset).UnderlyingDataset;
                 this._ftIndexer.Dispose();
                 this._ftIndexer = null;
-                this._ftIndex.Close();
+                this._ftIndex.Dispose();
                 this._ftIndex = null;
             }
             this._processor = new LeviathanQueryProcessor(this._dataset);
@@ -863,6 +869,32 @@ namespace VDS.RDF.Utilities.Sparql
         private void chkParallelEval_CheckedChanged(object sender, EventArgs e)
         {
             Options.UsePLinqEvaluation = this.chkParallelEval.Checked;
+        }
+
+
+        private void chkDefaultUnionGraph_CheckedChanged(object sender, EventArgs e)
+        {
+            bool unionDefaultGraph = this.chkDefaultUnionGraph.Checked;
+            if (this._dataset is WebDemandDataset)
+            {
+                if (((WebDemandDataset)this._dataset).UnderlyingDataset is FullTextIndexedDataset)
+                {
+                    this._dataset = new FullTextIndexedDataset(new WebDemandDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph)), this._ftIndexer, false);
+                }
+                else
+                {
+                    this._dataset = new WebDemandDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph));
+                }
+            }
+            else if (this._dataset is FullTextIndexedDataset)
+            {
+                this._dataset = new FullTextIndexedDataset(new InMemoryQuadDataset(this._store, unionDefaultGraph), this._ftIndexer, false);
+            }
+            else
+            {
+                this._dataset = new InMemoryQuadDataset(this._store, unionDefaultGraph);
+            }
+            this._processor = new LeviathanQueryProcessor(this._dataset);
         }
     }
 }

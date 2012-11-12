@@ -10,5 +10,7 @@ PREFIX pf: <http://jena.hpl.hp.com/ARQ/property#>
 SELECT *
 WHERE 
 {
-  ?s a ?type
+  { ?s a ?type }
+  UNION
+  { GRAPH ?g { ?s a ?type } }
 }
