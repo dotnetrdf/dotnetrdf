@@ -62,6 +62,15 @@ namespace VDS.RDF.Query.Builder
         }
 
         /// <summary>
+        /// Creates a new SELECT query which will return an expression
+        /// </summary>
+        public static AssignmentVariableNamePart<ISelectQueryBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        {
+            var queryBuilder = Select(new SparqlVariable[0]);
+            return new AssignmentVariableNamePart<ISelectQueryBuilder>(queryBuilder, buildAssignmentExpression);
+        }
+
+        /// <summary>
         /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>
         /// </summary>
         public static IDescribeQueryBuilder Describe(params Uri[] uris)

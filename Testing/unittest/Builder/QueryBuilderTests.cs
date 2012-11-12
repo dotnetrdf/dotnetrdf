@@ -16,7 +16,7 @@ namespace VDS.RDF.Test.Builder
         {
             SparqlQuery q = QueryBuilder
                 .SelectAll()
-                .Where(tpb=>tpb.Subject("s").Predicate("p").Object("o"))
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
                 .BuildQuery();
             Assert.AreEqual(SparqlQueryType.SelectAll, q.QueryType);
             Assert.IsNotNull(q.RootGraphPattern);
@@ -277,6 +277,22 @@ namespace VDS.RDF.Test.Builder
 
             // then
             Assert.AreEqual(0, builder.Prefixes.Prefixes.Count());
+        }
+
+        [TestMethod]
+        public void CanCreateSelectQueryWithExpressionFirst()
+        {
+            // when
+            SparqlQuery q = QueryBuilder
+                .Select(eb => eb.IsIRI(eb.Variable("o"))).As("isIri").And("o")
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Select, q.QueryType);
+            Assert.AreEqual(2, q.Variables.Count());
+            Assert.AreEqual(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable && v.Name == "isIri"));
+            Assert.AreEqual(1, q.Variables.Count(v => !v.IsProjection && v.IsResultVariable && v.Name == "o"));
         }
     }
 }
