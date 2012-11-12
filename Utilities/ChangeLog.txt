@@ -38,6 +38,7 @@ soh
 
 SparqlGUI
 - Bumped Lucene.Net dependency to latest version
+- Added a Default Graph is union of all graphs option
 
 StoreManager
 - Bumped dependencies to latest version
