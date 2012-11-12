@@ -6,7 +6,9 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// <summary>
     /// Represents a literal expression
     /// </summary>
+#pragma warning disable 660,661
     public class LiteralExpression : RdfTermExpression
+#pragma warning restore 660,661
     {
         internal LiteralExpression(ISparqlExpression expression) : base(expression)
         {

@@ -2,7 +2,9 @@ using System;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+#pragma warning disable 660,661
     public partial class VariableExpression 
+#pragma warning restore 660,661
     {
 #pragma warning disable 1591
         public static BooleanExpression operator >(int left, VariableExpression right)

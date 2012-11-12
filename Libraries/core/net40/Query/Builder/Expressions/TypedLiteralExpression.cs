@@ -6,7 +6,9 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// <summary>
     /// Represents a typed literal
     /// </summary>
+#pragma warning disable 660,661
     public class TypedLiteralExpression<T> : LiteralExpression
+#pragma warning restore 660,661
     {
         protected internal TypedLiteralExpression(T literalValue)
             : base(literalValue.ToConstantTerm())

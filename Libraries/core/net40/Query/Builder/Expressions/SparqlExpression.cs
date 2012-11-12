@@ -8,7 +8,9 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// <summary>
     /// Represents a SPARQL expression (variable, function, operator or term)
     /// </summary>
+#pragma warning disable 660,661
     public abstract class SparqlExpression
+#pragma warning restore 660,661
     {
         protected SparqlExpression(ISparqlExpression expression)
         {
