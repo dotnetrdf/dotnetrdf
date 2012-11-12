@@ -89,17 +89,6 @@ namespace VDS.RDF.Query.Builder
 
         #region Implementation of IGraphPatternBuilder
 
-        [Obsolete("Consider either leaving it here, adding a relevant method to triple pattern builder")]
-        public IGraphPatternBuilder Where(IEnumerable<Triple> ts)
-        {
-            foreach (Triple t in ts)
-            {
-                Triple copy = t;
-                Where(tpb => tpb.Subject(copy.Subject).PredicateUri((IUriNode)copy.Predicate).Object(copy.Object));
-            }
-            return this;
-        }
-
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
             _triplePatterns.Add(() => triplePatterns);
