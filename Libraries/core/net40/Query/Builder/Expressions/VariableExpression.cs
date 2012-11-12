@@ -2,13 +2,19 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    /// <summary>
+    /// Represents an expression, which evaluates to a variable
+    /// </summary>
     public partial class VariableExpression : SparqlExpression
     {
-        public VariableExpression(string variable)
+        internal VariableExpression(string variable)
             : base(new VariableTerm(variable))
         {
         }
 
+        /// <summary>
+        /// Gets the <see cref="VariableTerm"/> represented by this variable expression
+        /// </summary>
         public new VariableTerm Expression
         {
             get
@@ -17,6 +23,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
         }
 
+#pragma warning disable 1591
         public static BooleanExpression operator >(VariableExpression left, VariableExpression right)
         {
             return Gt(left.Expression, right.Expression);
@@ -36,5 +43,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return Le(left.Expression, right.Expression);
         }
+#pragma warning restore 1591
     }
 }

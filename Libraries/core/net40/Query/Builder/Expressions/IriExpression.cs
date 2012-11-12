@@ -4,6 +4,9 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    /// <summary>
+    /// Represents a IRI expression
+    /// </summary>
     public class IriExpression : RdfTermExpression
     {
         internal IriExpression(string iriLiteral) 

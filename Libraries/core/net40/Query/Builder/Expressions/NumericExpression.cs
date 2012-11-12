@@ -1,12 +1,14 @@
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Arithmetic;
-using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    /// <summary>
+    /// Represents a numeric expression of known type
+    /// </summary>
     public sealed class NumericExpression<T> : TypedLiteralExpression<T>
     {
-        public NumericExpression(T numericValue)
+        internal NumericExpression(T numericValue)
             : base(numericValue)
         {
         }
@@ -16,6 +18,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
+#pragma warning disable 1591
         public static implicit operator NumericExpression(NumericExpression<T> expression)
         {
             return new NumericExpression(expression.Expression);
@@ -144,8 +147,12 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return leftExpression <= (NumericExpression)rightExpression;
         }
+#pragma warning restore 1591
     }
 
+    /// <summary>
+    /// Represents a numeric expression of undefined type
+    /// </summary>
     public class NumericExpression : LiteralExpression
     {
         internal NumericExpression(ISparqlExpression expression)
@@ -153,6 +160,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
+#pragma warning disable 1591
         internal static NumericExpression Multiply(SparqlExpression left, SparqlExpression right)
         {
             return new NumericExpression(new MultiplicationExpression(left.Expression, right.Expression));
@@ -572,5 +580,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return Le(leftExpression.Expression, rightExpression.Expression);
         }
+#pragma warning restore 1591
     }
 }

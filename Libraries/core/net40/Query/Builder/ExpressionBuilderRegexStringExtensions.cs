@@ -3,6 +3,9 @@ using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Provides methods for creating SPARQL functions, which operate on strings
+    /// </summary>
     public static class ExpressionBuilderRegexStringExtensions
     {
         public static BooleanExpression Regex(this ExpressionBuilder eb, SparqlExpression text, string pattern)

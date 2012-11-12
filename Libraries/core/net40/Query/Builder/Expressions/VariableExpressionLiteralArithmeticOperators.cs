@@ -2,6 +2,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class VariableExpression
     {
+#pragma warning disable 1591
         public static NumericExpression operator -(VariableExpression left, VariableExpression right)
         {
             return new NumericExpression(left.Expression) - new NumericExpression(right.Expression);
@@ -341,5 +342,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return new NumericExpression(left.Expression) + new NumericExpression<decimal>(right);
         }
+#pragma warning restore 1591
     }
 }

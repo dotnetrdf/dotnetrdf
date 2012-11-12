@@ -4,6 +4,7 @@ namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class VariableExpression 
     {
+#pragma warning disable 1591
         public static BooleanExpression operator >(int left, VariableExpression right)
         {
             return new LiteralExpression(left.ToConstantTerm()) > right;
@@ -423,5 +424,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return left == new LiteralExpression(right.ToConstantTerm());
         }
+#pragma warning restore 1591
     }
 }

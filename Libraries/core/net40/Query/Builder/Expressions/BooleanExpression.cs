@@ -4,6 +4,9 @@ using VDS.RDF.Query.Expressions.Conditional;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    /// <summary>
+    /// Represents a logical expression
+    /// </summary>
     public sealed class BooleanExpression : TypedLiteralExpression<bool>
     {
         internal BooleanExpression(ISparqlExpression expression)
@@ -11,6 +14,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
+#pragma warning disable 1591
         public static BooleanExpression operator &(BooleanExpression left, BooleanExpression right)
         {
             return EitherArgumentNull(left, right) ?? new BooleanExpression(new AndExpression(left.Expression, right.Expression));
@@ -52,5 +56,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return new BooleanExpression(new NotExpression(expression.Expression));
         }
+#pragma warning restore 1591
     }
 }

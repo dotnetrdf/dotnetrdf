@@ -3,6 +3,9 @@ using VDS.RDF.Query.Expressions.Comparison;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
+    /// <summary>
+    /// Represents a typed literal
+    /// </summary>
     public class TypedLiteralExpression<T> : LiteralExpression
     {
         protected internal TypedLiteralExpression(T literalValue)
@@ -15,6 +18,7 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
+#pragma warning disable 1591
         public static BooleanExpression operator >(TypedLiteralExpression<T> left, TypedLiteralExpression<T> right)
         {
             return Gt(left.Expression, right.Expression);
@@ -94,5 +98,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return Le(left.ToConstantTerm(), right.Expression);
         }
+#pragma warning restore 1591
     }
 }

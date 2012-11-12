@@ -1,13 +1,8 @@
-using System;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Expressions.Comparison;
-using VDS.RDF.Query.Expressions.Primary;
-
 namespace VDS.RDF.Query.Builder.Expressions
 {
     public partial class VariableExpression
     {
-
+#pragma warning disable 1591
         public static BooleanExpression operator >(VariableExpression left, LiteralExpression right)
         {
             return Gt(left.Expression, right.Expression);
@@ -47,5 +42,6 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return Le(left.Expression, right.Expression);
         }
+#pragma warning restore 1591
     }
 }
