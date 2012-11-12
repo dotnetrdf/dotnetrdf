@@ -1,9 +1,11 @@
-﻿using VDS.RDF.Parsing;
+﻿using System;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Constructor;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -208,6 +210,110 @@ namespace VDS.RDF.Query.Builder
         public static BlankNodeExpression BNode(this ExpressionBuilder eb, TypedLiteralExpression<string> stringLiteral)
         {
             return new BlankNodeExpression(new BNodeFunction(stringLiteral.Expression));
+        }
+
+        private static LiteralExpression StrDt(ISparqlExpression lexicalForm, ISparqlExpression datatypeIri)
+        {
+            return new LiteralExpression(new StrDtFunction(lexicalForm, datatypeIri));
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a IRI expression parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a SPARQL simple literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, IriExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, datatypeIri.Expression);
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a <see cref="Uri"/> parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a SPARQL simple literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, Uri datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(null, datatypeIri)));
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a variable parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a SPARQL simple literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, VariableExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, datatypeIri.Expression);
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a IRI expression parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, string lexicalForm, IriExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.ToConstantTerm(), datatypeIri.Expression);
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a IRI expression parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, string lexicalForm, VariableExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.ToConstantTerm(), datatypeIri.Expression);
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a simple literal and a <see cref="Uri"/> parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, string lexicalForm, Uri datatypeIri)
+        {
+            return StrDt(lexicalForm.ToConstantTerm(), new ConstantTerm(new UriNode(null, datatypeIri)));
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a variable and a <see cref="Uri"/> parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, VariableExpression lexicalForm, Uri datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(null, datatypeIri)));
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a variable and a <see cref="Uri"/> parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, VariableExpression lexicalForm, VariableExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, datatypeIri.Expression);
+        }
+
+        /// <summary>
+        /// Creates a call to the STRDT function with a variable and a IRI expression parameters
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="lexicalForm">a literal</param>
+        /// <param name="datatypeIri">datatype IRI</param>
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, VariableExpression lexicalForm, IriExpression datatypeIri)
+        {
+            return StrDt(lexicalForm.Expression, datatypeIri.Expression);
         }
     }
 }

@@ -272,7 +272,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateStrFunctionWithIriLiteral()
         {
             // given
-            var iri = new IriExpression("urn:some:uri");
+            var iri = new IriExpression(new Uri("urn:some:uri"));
 
             // when
             SimpleLiteralExpression str = Builder.Str(iri);
@@ -403,6 +403,150 @@ namespace VDS.RDF.Test.Builder.Expressions
             // then
             Assert.IsTrue(bnode.Expression is BNodeFunction);
             Assert.AreSame(expression.Expression, bnode.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndIriExpressionParameters()
+        {
+            // given
+            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithStringAnrIriExpressionParameters()
+        {
+            // given
+            var expression = "literal".ToConstantTerm();
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt("literal", iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreEqual(expression.ToString(), literal.Expression.Arguments.ElementAt(0).ToString());
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndUriParameters()
+        {
+            // given
+            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, new Uri("http://example.com"));
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithVariableExpressionAndUriParameters()
+        {
+            // given
+            var expression = new VariableExpression("literalVar");
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, new Uri("http://example.com"));
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithStringAndUriParameters()
+        {
+            // given
+            var expression = "literal".ToConstantTerm();
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt("literal", new Uri("http://example.com"));
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreEqual(expression.ToString(), literal.Expression.Arguments.ElementAt(0).ToString());
+            Assert.AreEqual(iriExpression.Expression.ToString(), literal.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithStringAndVariableParameters()
+        {
+            // given
+            var expression = "literal".ToConstantTerm();
+            var iriExpression = new VariableExpression("var");
+
+            // when
+            LiteralExpression literal = Builder.StrDt("literal", iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreEqual(expression.ToString(), literal.Expression.Arguments.ElementAt(0).ToString());
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndVariableExpressionParameters()
+        {
+            // given
+            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            var iriExpression = new VariableExpression("var");
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithTwoVariableParameters()
+        {
+            // given
+            var expression = new VariableExpression("literalVar");
+            var iriExpression = new VariableExpression("var");
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrdtFunctionWithVariableAndIriExpressionParameters()
+        {
+            // given
+            var expression = new VariableExpression("literalVar");
+            var iriExpression = new IriExpression(new Uri("http://example.com"));
+
+            // when
+            LiteralExpression literal = Builder.StrDt(expression, iriExpression);
+
+            // then
+            Assert.IsTrue(literal.Expression is StrDtFunction);
+            Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
     }
 }

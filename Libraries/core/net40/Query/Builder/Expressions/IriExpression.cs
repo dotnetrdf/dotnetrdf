@@ -9,8 +9,8 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class IriExpression : RdfTermExpression
     {
-        internal IriExpression(string iriLiteral) 
-            : base(new ConstantTerm(new UriNode(null, new Uri(iriLiteral))))
+        internal IriExpression(Uri iri) 
+            : base(new ConstantTerm(new UriNode(null, iri)))
         {
         }
 

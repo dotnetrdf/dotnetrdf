@@ -251,8 +251,8 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateEqualityComparisonBetweenRdfTerms()
         {
             // given
-            IriExpression left = new IriExpression("urn:unit:test1");
-            IriExpression right = new IriExpression("urn:unit:test1");
+            IriExpression left = new IriExpression(new Uri("urn:unit:test1"));
+            IriExpression right = new IriExpression(new Uri("urn:unit:test1"));
 
             // when
             var areEqual = (left == right).Expression;
