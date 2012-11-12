@@ -6,7 +6,6 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Class responsible for setting the object part of triple patterns
     /// </summary>
-    // todo: extract interface
     public sealed class TriplePatternObjectPart
     {
         private readonly TriplePatternBuilder _triplePatternBuilder;

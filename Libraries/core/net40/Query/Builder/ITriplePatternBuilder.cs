@@ -4,7 +4,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Interface for building triple patterns
+    /// Provides methods for building triple patterns
     /// </summary>
     public interface ITriplePatternBuilder
     {

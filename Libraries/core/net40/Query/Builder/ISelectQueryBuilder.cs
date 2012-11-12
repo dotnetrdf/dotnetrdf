@@ -9,14 +9,16 @@ namespace VDS.RDF.Query.Builder
     public interface ISelectQueryBuilder : IQueryBuilder
     {
         /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
+        /// Adds additional SELECT return <paramref name="variables"/>
         /// </summary>
         ISelectQueryBuilder And(params SparqlVariable[] variables);
         /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
+        /// Adds additional SELECT return <paramref name="variables"/>
         /// </summary>
         ISelectQueryBuilder And(params string[] variables);
-
+        /// <summary>
+        /// Adds additional SELECT expression
+        /// </summary>
         AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

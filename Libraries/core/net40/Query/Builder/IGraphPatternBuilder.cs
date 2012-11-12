@@ -1,9 +1,8 @@
-using System;
-using VDS.RDF.Query.Expressions;
-using VDS.RDF.Query.Patterns;
-
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Provides methods for building graph patterns
+    /// </summary>
     public interface IGraphPatternBuilder : ICommonQueryBuilder<IGraphPatternBuilder>
     {
     }

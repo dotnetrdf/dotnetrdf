@@ -8,7 +8,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Provides static and extension methods for building queries with a fluent style API
+    /// Provides methods for building queries with a fluent style API
     /// </summary>
     /// <remarks>
     /// <para>
@@ -20,6 +20,9 @@ namespace VDS.RDF.Query.Builder
         private readonly SparqlQuery _query;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder;
 
+        /// <summary>
+        /// Gets or sets the namespace mappings for the SPARQL query being built
+        /// </summary>
         public INamespaceMapper Prefixes { get; set; }
 
         private QueryBuilder(SparqlQuery query)
@@ -202,11 +205,6 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-        {
-            return new AssignmentVariableNamePart<ISelectQueryBuilder>(this, buildAssignmentExpression);
-        }
-
         /// <summary>
         /// Adds additional <paramref name="uris"/> to DESCRIBE
         /// </summary>
@@ -233,6 +231,14 @@ namespace VDS.RDF.Query.Builder
                 _query.AddVariable(sparqlVariable.IsResultVariable ? sparqlVariable : CopyVariable(sparqlVariable));
             }
             return this;
+        }
+
+        /// <summary>
+        /// Adds additional SELECT expression
+        /// </summary>
+        public AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        {
+            return new AssignmentVariableNamePart<ISelectQueryBuilder>(this, buildAssignmentExpression);
         }
 
         private SparqlVariable CopyVariable(SparqlVariable sparqlVariable)

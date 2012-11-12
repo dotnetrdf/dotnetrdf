@@ -3,7 +3,7 @@ using System;
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
-    /// Interface for creating DESCRIBE queries
+    /// Provides methods for creating DESCRIBE queries
     /// </summary>
     public interface IDescribeQueryBuilder : IQueryBuilder
     {

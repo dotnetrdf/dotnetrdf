@@ -5,6 +5,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Common interface for building SPARQL queries and graph patterns
+    /// </summary>
     public interface ICommonQueryBuilder
     {
         /// <summary>

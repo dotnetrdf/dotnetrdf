@@ -4,6 +4,9 @@ using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
 {
+    /// <summary>
+    /// Exposes method for assigning a name to an expression variable
+    /// </summary>
     public sealed class AssignmentVariableNamePart<T> where T : ICommonQueryBuilder
     {
         private readonly ISelectQueryBuilder _selectBuilder;
@@ -29,6 +32,10 @@ namespace VDS.RDF.Query.Builder
             _buildAssignmentExpression = buildAssignmentExpression;
         }
 
+        /// <summary>
+        /// Set the expression's variable name
+        /// </summary>
+        /// <returns>the parent query or graph pattern builder</returns>
         public T As(string variableName)
         {
             var expressionBuilder = new ExpressionBuilder(_queryBuilder.Prefixes);

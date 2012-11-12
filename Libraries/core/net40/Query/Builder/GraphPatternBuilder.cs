@@ -16,11 +16,19 @@ namespace VDS.RDF.Query.Builder
         private readonly INamespaceMapper _prefixes;
         private readonly GraphPatternType _graphPatternType;
 
+        /// <summary>
+        /// Creates a builder of a normal graph patterns
+        /// </summary>
         internal GraphPatternBuilder(INamespaceMapper prefixes)
             : this(prefixes, GraphPatternType.Normal)
         {
         }
 
+        /// <summary>
+        /// Creates a builder of a graph pattern
+        /// </summary>
+        /// <param name="prefixes"></param>
+        /// <param name="graphPatternType">MINUS, GRAPH, SERVICE etc.</param>
         private GraphPatternBuilder(INamespaceMapper prefixes, GraphPatternType graphPatternType)
         {
             _prefixes = prefixes;
