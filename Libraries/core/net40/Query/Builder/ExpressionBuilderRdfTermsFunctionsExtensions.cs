@@ -15,6 +15,16 @@ namespace VDS.RDF.Query.Builder
             return new BooleanExpression(isIri);
         }
 
+        /// <summary>
+        /// Creates the isIRI function with a variable parameter
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="variableName">name of variable to check</param>
+        public static BooleanExpression IsIRI(this ExpressionBuilder eb, string variableName)
+        {
+            return eb.IsIRI(eb.Variable(variableName));
+        }
+
         public static BooleanExpression IsBlank(this ExpressionBuilder eb, SparqlExpression term)
         {
             var isBlank = new IsBlankFunction(term.Expression);
@@ -32,10 +42,30 @@ namespace VDS.RDF.Query.Builder
             return new BooleanExpression(isLiteral);
         }
 
+        /// <summary>
+        /// Creates the isLiteral function with a variable parameter
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="variableName">name of variable to check</param>
+        public static BooleanExpression IsLiteral(this ExpressionBuilder eb, string variableName)
+        {
+            return eb.IsLiteral(eb.Variable(variableName));
+        }
+
         public static BooleanExpression IsNumeric(this ExpressionBuilder eb, SparqlExpression term)
         {
             var isNumeric = new IsNumericFunction(term.Expression);
             return new BooleanExpression(isNumeric);
+        }
+
+        /// <summary>
+        /// Creates the isNumeric function with a variable parameter
+        /// </summary>
+        /// <param name="eb"> </param>
+        /// <param name="variableName">name of variable to check</param>
+        public static BooleanExpression IsNumeric(this ExpressionBuilder eb, string variableName)
+        {
+            return eb.IsNumeric(eb.Variable(variableName));
         }
 
         public static SimpleLiteralExpression Str(this ExpressionBuilder eb, VariableExpression variable)

@@ -95,6 +95,20 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateIsIRIFunctionUsingVariableName()
+        {
+            // given
+            SparqlExpression variable = new VariableExpression("x");
+
+            // when
+            BooleanExpression isIRI = Builder.IsIRI("x");
+
+            // then
+            Assert.IsTrue(isIRI.Expression is IsIriFunction);
+            Assert.AreEqual(variable.Expression.ToString(), isIRI.Expression.Arguments.ElementAt(0).ToString());
+        }
+
+        [TestMethod]
         public void CanCreateIsBlankFunction()
         {
             // given
@@ -137,6 +151,20 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateIsLiteralFunctionUsingVariableName()
+        {
+            // given
+            SparqlExpression variable = new VariableExpression("x");
+
+            // when
+            BooleanExpression isLiteral = Builder.IsLiteral("x");
+
+            // then
+            Assert.IsTrue(isLiteral.Expression is IsLiteralFunction);
+            Assert.AreEqual(variable.Expression.ToString(), isLiteral.Expression.Arguments.ElementAt(0).ToString());
+        }
+
+        [TestMethod]
         public void CanCreateIsNumericFunction()
         {
             // given
@@ -148,6 +176,20 @@ namespace VDS.RDF.Test.Builder.Expressions
             // then
             Assert.IsTrue(isNumeric.Expression is IsNumericFunction);
             Assert.AreSame(variable.Expression, isNumeric.Expression.Arguments.ElementAt(0));
+        }
+
+        [TestMethod]
+        public void CanCreateIsNumericFunctionUsingVariableName()
+        {
+            // given
+            SparqlExpression variable = new VariableExpression("x");
+
+            // when
+            BooleanExpression isNumeric = Builder.IsNumeric("x");
+
+            // then
+            Assert.IsTrue(isNumeric.Expression is IsNumericFunction);
+            Assert.AreEqual(variable.Expression.ToString(), isNumeric.Expression.Arguments.ElementAt(0).ToString());
         }
 
         [TestMethod]
