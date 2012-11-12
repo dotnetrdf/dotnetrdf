@@ -48,6 +48,21 @@ namespace VDS.RDF.Query.Builder
             var sameTerm = new SameTermFunction(left.Expression, right.Expression);
             return new BooleanExpression(sameTerm);
         }
+
+        public static BooleanExpression SameTerm(this ExpressionBuilder eb, string left, SparqlExpression right)
+        {
+            return eb.SameTerm(eb.Variable(left), right);
+        }
+
+        public static BooleanExpression SameTerm(this ExpressionBuilder eb, SparqlExpression left, string right)
+        {
+            return eb.SameTerm(left, eb.Variable(right));
+        }
+
+        public static BooleanExpression SameTerm(this ExpressionBuilder eb, string left, string right)
+        {
+            return eb.SameTerm(eb.Variable(left), eb.Variable(right));
+        }
     }
 
     public sealed class IfThenPart

@@ -81,6 +81,54 @@ namespace VDS.RDF.Test.Builder.Expressions
         }
 
         [TestMethod]
+        public void CanCreateSameTermFunctionUsingVariableNameForFirstParameter()
+        {
+            // given
+            SparqlExpression left = new VariableExpression("x");
+            SparqlExpression right = new NumericExpression<int>(10);
+
+            // when
+            BooleanExpression sameTerm = Builder.SameTerm("x", right);
+
+            // then
+            Assert.IsTrue(sameTerm.Expression is SameTermFunction);
+            Assert.AreEqual(left.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(0).ToString());
+            Assert.AreSame(right.Expression, sameTerm.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void CanCreateSameTermFunctionUsingVariableNameForSecondParameter()
+        {
+            // given
+            SparqlExpression right = new VariableExpression("x");
+            SparqlExpression left = new NumericExpression<int>(10);
+
+            // when
+            BooleanExpression sameTerm = Builder.SameTerm(left, "x");
+
+            // then
+            Assert.IsTrue(sameTerm.Expression is SameTermFunction);
+            Assert.AreSame(left.Expression, sameTerm.Expression.Arguments.ElementAt(0));
+            Assert.AreEqual(right.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void CanCreateSameTermFunctionUsingVariableNameForBothParameter()
+        {
+            // given
+            SparqlExpression right = new VariableExpression("x");
+            SparqlExpression left = new VariableExpression("y");
+
+            // when
+            BooleanExpression sameTerm = Builder.SameTerm("y", "x");
+
+            // then
+            Assert.IsTrue(sameTerm.Expression is SameTermFunction);
+            Assert.AreEqual(left.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(0).ToString());
+            Assert.AreEqual(right.Expression.ToString(), sameTerm.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
         public void CanCreateIsIRIFunction()
         {
             // given
