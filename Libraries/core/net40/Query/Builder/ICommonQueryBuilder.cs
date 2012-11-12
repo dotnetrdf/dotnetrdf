@@ -1,5 +1,6 @@
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -33,6 +34,10 @@ namespace VDS.RDF.Query.Builder
         /// Adds a FILTER to the SPARQL query or graph pattern
         /// </summary>
         TReturnBuilder Filter(Func<ExpressionBuilder, BooleanExpression> expr);
+        /// <summary>
+        /// Adds a FILTER expression to the SPARQL query or graph pattern
+        /// </summary>
+        TReturnBuilder Filter(ISparqlExpression expr);
         /// <summary>
         /// Adds a MINUS graph pattern to the SPARQL query or graph pattern
         /// </summary>

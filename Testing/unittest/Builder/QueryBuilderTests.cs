@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Test.Builder
@@ -293,6 +296,20 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(2, q.Variables.Count());
             Assert.AreEqual(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable && v.Name == "isIri"));
             Assert.AreEqual(1, q.Variables.Count(v => !v.IsProjection && v.IsResultVariable && v.Name == "o"));
+        }
+
+        public void ShouldAllowUsingISparqlExpressionForFilter()
+        {
+            // given
+            ISparqlExpression expression = new IsIriFunction(new VariableTerm("x"));
+            var b = QueryBuilder.SelectAll().Filter(expression);
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.IsTrue(q.RootGraphPattern.IsFiltered);
+            Assert.AreSame(expression, q.RootGraphPattern.Filter.Expression);
         }
     }
 }
