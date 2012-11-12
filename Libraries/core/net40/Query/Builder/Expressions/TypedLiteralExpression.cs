@@ -10,12 +10,15 @@ namespace VDS.RDF.Query.Builder.Expressions
     public class TypedLiteralExpression<T> : LiteralExpression
 #pragma warning restore 660,661
     {
-        protected internal TypedLiteralExpression(T literalValue)
+        internal TypedLiteralExpression(T literalValue)
             : base(literalValue.ToConstantTerm())
         {
         }
 
-        protected TypedLiteralExpression(ISparqlExpression expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a typed literal expression
+        /// </summary>
+        public TypedLiteralExpression(ISparqlExpression expression)
             : base(expression)
         {
         }

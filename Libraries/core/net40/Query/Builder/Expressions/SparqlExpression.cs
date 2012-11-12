@@ -12,7 +12,7 @@ namespace VDS.RDF.Query.Builder.Expressions
     public abstract class SparqlExpression
 #pragma warning restore 660,661
     {
-        protected SparqlExpression(ISparqlExpression expression)
+        internal SparqlExpression(ISparqlExpression expression)
         {
             Expression = expression;
         }

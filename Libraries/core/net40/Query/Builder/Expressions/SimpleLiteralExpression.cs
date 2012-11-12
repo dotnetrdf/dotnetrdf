@@ -7,7 +7,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class SimpleLiteralExpression:LiteralExpression
     {
-        internal SimpleLiteralExpression(ISparqlExpression expression) : base(expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a simple literal expression
+        /// </summary>
+        public SimpleLiteralExpression(ISparqlExpression expression) : base(expression)
         {
         }
     }

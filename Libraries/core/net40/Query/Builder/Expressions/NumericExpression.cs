@@ -13,7 +13,10 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        private NumericExpression(ISparqlExpression expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a typed numeric expression
+        /// </summary>
+        public NumericExpression(ISparqlExpression expression)
             : base(expression)
         {
         }
@@ -155,7 +158,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class NumericExpression : LiteralExpression
     {
-        internal NumericExpression(ISparqlExpression expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a numeric expression
+        /// </summary>
+        public NumericExpression(ISparqlExpression expression)
             : base(expression)
         {
         }

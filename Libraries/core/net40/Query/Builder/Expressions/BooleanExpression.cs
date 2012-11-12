@@ -9,7 +9,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public sealed class BooleanExpression : TypedLiteralExpression<bool>
     {
-        internal BooleanExpression(ISparqlExpression expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a boolean expression
+        /// </summary>
+        public BooleanExpression(ISparqlExpression expression)
             : base(expression)
         {
         }

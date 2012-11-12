@@ -7,7 +7,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class RdfTermExpression : SparqlExpression
     {
-        internal RdfTermExpression(ISparqlExpression expression) : base(expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as an RDF term expression
+        /// </summary>
+        public RdfTermExpression(ISparqlExpression expression) : base(expression)
         {
         }
     }

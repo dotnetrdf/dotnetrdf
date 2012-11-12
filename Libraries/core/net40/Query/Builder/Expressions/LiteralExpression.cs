@@ -10,7 +10,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     public class LiteralExpression : RdfTermExpression
 #pragma warning restore 660,661
     {
-        internal LiteralExpression(ISparqlExpression expression) : base(expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a literal expression
+        /// </summary>
+        public LiteralExpression(ISparqlExpression expression) : base(expression)
         {
         }
 

@@ -7,7 +7,10 @@ namespace VDS.RDF.Query.Builder.Expressions
     /// </summary>
     public class BlankNodeExpression : RdfTermExpression
     {
-        internal BlankNodeExpression(ISparqlExpression expression) : base(expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as a blank node expression
+        /// </summary>
+        public BlankNodeExpression(ISparqlExpression expression) : base(expression)
         {
         }
     }

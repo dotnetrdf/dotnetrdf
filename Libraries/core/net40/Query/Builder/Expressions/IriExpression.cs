@@ -14,7 +14,10 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
         }
 
-        internal IriExpression(ISparqlExpression expression) : base(expression)
+        /// <summary>
+        /// Wraps the <paramref name="expression"/> as an IRI expression
+        /// </summary>
+        public IriExpression(ISparqlExpression expression) : base(expression)
         {
         }
     }
