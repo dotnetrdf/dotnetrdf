@@ -315,5 +315,23 @@ namespace VDS.RDF.Query.Builder
         {
             return StrDt(lexicalForm.Expression, datatypeIri.Expression);
         }
+
+        /// <summary>
+        /// Creates a call to the UUID function
+        /// </summary>
+        /// <param name="eb"> </param>
+        public static IriExpression UUID(this ExpressionBuilder eb)
+        {
+            return new IriExpression(new UUIDFunction());
+        }
+
+        /// <summary>
+        /// Creates a call to the StrUUID function
+        /// </summary>
+        /// <param name="eb"> </param>
+        public static SimpleLiteralExpression StrUUID(this ExpressionBuilder eb)
+        {
+            return new SimpleLiteralExpression(new StrUUIDFunction());
+        }
     }
 }

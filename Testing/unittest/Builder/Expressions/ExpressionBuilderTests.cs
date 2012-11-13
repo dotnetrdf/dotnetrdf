@@ -548,5 +548,25 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(expression.Expression, literal.Expression.Arguments.ElementAt(0));
             Assert.AreSame(iriExpression.Expression, literal.Expression.Arguments.ElementAt(1));
         }
+
+        [TestMethod]
+        public void ShouldAllowCreatingStrUuidFucntionCall()
+        {
+            // when
+            SimpleLiteralExpression uuid = Builder.StrUUID();
+
+            // then
+            Assert.IsTrue(uuid.Expression is StrUUIDFunction);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingUuidFucntionCall()
+        {
+            // when
+            IriExpression uuid = Builder.UUID();
+
+            // then
+            Assert.IsTrue(uuid.Expression is UUIDFunction);
+        }
     }
 }
