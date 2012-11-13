@@ -8,8 +8,7 @@ using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder.Expressions
 {
-    [TestClass]
-    public class FunctionalFormsBuildingTests : ExpressionBuilderTestsBase
+    public partial class ExpressionBuilderTests
     {
         [TestMethod]
         public void CanCreateBoundFunctionUsingVariableTerm()

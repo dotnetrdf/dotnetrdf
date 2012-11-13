@@ -12,8 +12,16 @@ using VDS.RDF.Query.Expressions.Primary;
 namespace VDS.RDF.Test.Builder.Expressions
 {
     [TestClass]
-    public class ExpressionBuilderTests : ExpressionBuilderTestsBase
+    public partial class ExpressionBuilderTests
     {
+        private ExpressionBuilder Builder { get; set; }
+
+        [TestInitialize]
+        public void Setup()
+        {
+            Builder = new ExpressionBuilder(new NamespaceMapper(true));
+        }
+
         [TestMethod]
         public void CanCreateVariableTerm()
         {
