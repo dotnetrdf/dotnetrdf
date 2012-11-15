@@ -166,6 +166,7 @@ namespace VDS.RDF.Web
                             {
                                 //Form URL Encoded was declared type so expect a query parameter in the Form parameters
                                 queries = context.Request.Form.GetValues("query");
+                                if (queries == null) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length == 0) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length > 1) throw new ArgumentException("The query parameter was specified multiple times in the POST body");
                                 queryText = queries[0];
