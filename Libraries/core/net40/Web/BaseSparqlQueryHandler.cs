@@ -258,6 +258,7 @@ namespace VDS.RDF.Web
 
                 //Now we're going to parse the Query
                 SparqlQueryParser parser = new SparqlQueryParser(this._config.Syntax);
+                parser.DefaultBaseUri = context.Request.Url;
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);

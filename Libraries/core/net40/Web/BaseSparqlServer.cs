@@ -310,6 +310,7 @@ namespace VDS.RDF.Web
 
                 //Now we're going to parse the Query
                 SparqlQueryParser parser = new SparqlQueryParser(this._config.QuerySyntax);
+                parser.DefaultBaseUri = context.Request.Url;
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 parser.QueryOptimiser = this._config.QueryOptimiser;
                 SparqlQuery query = parser.ParseFromString(queryText);
@@ -570,6 +571,7 @@ namespace VDS.RDF.Web
 
                 //Now we're going to parse the Updates
                 SparqlUpdateParser parser = new SparqlUpdateParser();
+                parser.DefaultBaseUri = context.Request.Url;
                 parser.ExpressionFactories = this._config.ExpressionFactories;
                 SparqlUpdateCommandSet commands = parser.ParseFromString(updateText);
 
@@ -903,7 +905,7 @@ namespace VDS.RDF.Web
         /// <param name="ex">Error</param>
         protected virtual void HandleUpdateErrors(HttpContext context, String title, String update, Exception ex)
         {
-            HandlerHelper.HandleUpdateErrors(new WebContext(context), this._config, title, update, ex);
+            HandlerHelper.HandleUpdateErrors(new WebContext(context), this._config, title, update, ex, (int)HttpStatusCode.InternalServerError);
         }
 
         /// <summary>
