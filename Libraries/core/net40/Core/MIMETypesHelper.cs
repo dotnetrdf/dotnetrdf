@@ -1132,9 +1132,9 @@ namespace VDS.RDF
                 }
             }
 
-            //Default to NTriples
-            contentType = MimeTypesHelper.NTriples[0];
-            IRdfWriter defaultWriter = new NTriplesWriter();
+            //Default to Turtle
+            contentType = MimeTypesHelper.Turtle[0];
+            IRdfWriter defaultWriter = new TurtleWriter();
             MimeTypesHelper.ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }

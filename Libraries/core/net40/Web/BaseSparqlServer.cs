@@ -220,7 +220,7 @@ namespace VDS.RDF.Web
                                 queries = context.Request.Form.GetValues("query");
                                 if (queries.Length == 0) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length > 1) throw new ArgumentException("The query parameter was specified multiple times in the POST body");
-                                queryText = context.Request.Form["query"];
+                                queryText = queries[0];
 
                                 //For Form URL Encoded the Default/Named Graphs may be specified by Form parameters
                                 //Get the Default Graph URIs (if any)
@@ -440,72 +440,134 @@ namespace VDS.RDF.Web
 
             WebContext webContext = new WebContext(context);
 
-            if (context.Request.HttpMethod.Equals("OPTIONS"))
-            {
-                //OPTIONS requests always result in the Service Description document
-                IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
-                HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
-                return;
-            }
-
-            //See if there has been an update submitted
+            //Options we need to determine based on the HTTP Method used
+            String[] updates;
             String updateText = null;
-            if (context.Request.ContentType != null)
-            {
-                if (context.Request.ContentType.Equals(MimeTypesHelper.WWWFormURLEncoded))
-                {
-                    updateText = context.Request.Form["update"];
-                }
-                else if (context.Request.ContentType != null && context.Request.ContentType.Equals(MimeTypesHelper.SparqlUpdate))
-                {
-                    updateText = new StreamReader(context.Request.InputStream).ReadToEnd();
-                }
-            }
-            else
-            {
-                updateText = context.Request.Form["update"];
-            }
-
-            //If no Update sent either show Update Form or give a HTTP 400 response
-            if (updateText == null || updateText.Equals(String.Empty))
-            {
-                if (this._config.ShowUpdateForm)
-                {
-                    this.ShowUpdateForm(context);
-                    return;
-                }
-                else
-                {
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return;
-                }
-            }
-
-            //Get Other options associated with this update
             List<String> userDefaultGraphs = new List<String>();
             List<String> userNamedGraphs = new List<String>();
 
-            //Get the USING URIs (if any)
-            if (context.Request.QueryString["using-graph-uri"] != null)
-            {
-                userDefaultGraphs.AddRange(context.Request.QueryString.GetValues("using-graph-uri"));
-            }
-            else if (context.Request.Form["using-graph-uri"] != null)
-            {
-                userDefaultGraphs.AddRange(context.Request.Form.GetValues("using-graph-uri"));
-            }
-            //Get the USING NAMED URIs (if any)
-            if (context.Request.QueryString["using-named-graph-uri"] != null)
-            {
-                userNamedGraphs.AddRange(context.Request.QueryString.GetValues("using-named-graph-uri"));
-            }
-            else if (context.Request.Form["using-named-graph-uri"] != null)
-            {
-                userNamedGraphs.AddRange(context.Request.Form.GetValues("using-named-graph-uri"));
-            }
-
             try
             {
+                //Decide what to do based on the HTTP Method
+                switch (context.Request.HttpMethod.ToUpper())
+                {
+                    case "OPTIONS":
+                        //OPTIONS requests always result in the Service Description document
+                        IGraph svcDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                        HandlerHelper.SendToClient(webContext, svcDescrip, this._config);
+                        return;
+
+                    case "HEAD":
+                        //Just return from a HEAD request
+                        return;
+
+                    case "GET":
+                        //A GET with an update parameter is a Bad Request
+                        updates = context.Request.QueryString.GetValues("update");
+                        if (updates.Length > 0) throw new ArgumentException("Updates cannot be submitted as GET requests");
+
+                        //Otherwise GET either results in the Service Description if appropriately conneg'd or
+                        //the update form if enabled
+
+                        try
+                        {
+                            //If we might show the Update Form only show the Description if the selected writer is
+                            //not a HTML writer
+                            MimeTypeDefinition definition = MimeTypesHelper.GetDefinitions(HandlerHelper.GetAcceptTypes(webContext)).FirstOrDefault(d => d.CanWriteRdf);
+                            if (definition != null)
+                            {
+                                IRdfWriter writer = definition.GetRdfWriter();
+                                if (!(writer is IHtmlWriter))
+                                {
+                                    //If not a HTML Writer selected then show the Service Description Graph
+                                    //unless an error occurs creating it
+                                    IGraph serviceDescrip = SparqlServiceDescriber.GetServiceDescription(this._config, UriFactory.Create(context.Request.Url.AbsoluteUri), ServiceDescriptionType.Update);
+                                    context.Response.ContentType = definition.CanonicalMimeType;
+                                    context.Response.ContentEncoding = definition.Encoding;
+                                    writer.Save(serviceDescrip, new StreamWriter(context.Response.OutputStream, definition.Encoding));
+                                    return;
+                                }
+                            }
+                        }
+                        catch
+                        {
+                            //Ignore Exceptions - we'll just show the Query Form or return a 400 Bad Request instead
+                        }
+
+                        //If a Writer can't be selected then we'll either show the Update Form or return a 400 Bad Request
+                        if (this._config.ShowUpdateForm)
+                        {
+                            this.ShowUpdateForm(context);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Updates cannot be submitted as GET requests");
+                        }
+                        return;
+
+                    case "POST":
+
+                        if (context.Request.ContentType != null)
+                        {
+                            MimeTypeSelector contentType = MimeTypeSelector.Create(context.Request.ContentType, 0);
+                            if (contentType.Type.Equals(MimeTypesHelper.WWWFormURLEncoded))
+                            {
+                                //Form URL Encoded was declared type so expect an update parameter in the Form parameters
+                                updates = context.Request.Form.GetValues("update");
+                                if (updates.Length == 0) throw new ArgumentException("Required update parameter in POST body was missing");
+                                if (updates.Length > 1) throw new ArgumentException("The update parameter was specified multiple times in the POST body");
+                                updateText = updates[0];
+
+                                //For Form URL Encoded the Using/Using Named Graphs may be specified by Form parameters
+                                //Get the USING URIs (if any)
+                                if (context.Request.Form["using-graph-uri"] != null)
+                                {
+                                    userDefaultGraphs.AddRange(context.Request.Form.GetValues("using-graph-uri"));
+                                }
+                                //Get the USING NAMED URIs (if any)
+                                if (context.Request.Form["using-named-graph-uri"] != null)
+                                {
+                                    userNamedGraphs.AddRange(context.Request.Form.GetValues("using-named-graph-uri"));
+                                }
+
+                                break;
+                            }
+                            else if (contentType.Type.Equals(MimeTypesHelper.SparqlUpdate))
+                            {
+                                //application/sparql-update was declared type so expect utf-8 charset (if present)
+                                if (contentType.Charset != null && !contentType.Charset.ToLower().Equals(MimeTypesHelper.CharsetUtf8)) throw new ArgumentException("HTTP POST request was received with a " + MimeTypesHelper.SparqlUpdate + " Content-Type but a non UTF-8 charset parameter");
+
+                                using (StreamReader reader = new StreamReader(context.Request.InputStream))
+                                {
+                                    updateText = reader.ReadToEnd();
+                                    reader.Close();
+                                }
+
+                                //For application/sparql-update the Using/Using Named Graphs may be specified by querystring parameters
+                                //Get the USING URIs (if any)
+                                if (context.Request.QueryString["using-graph-uri"] != null)
+                                {
+                                    userDefaultGraphs.AddRange(context.Request.QueryString.GetValues("using-graph-uri"));
+                                }
+                                //Get the USING NAMED URIs (if any)
+                                if (context.Request.QueryString["using-named-graph-uri"] != null)
+                                {
+                                    userNamedGraphs.AddRange(context.Request.QueryString.GetValues("using-named-graph-uri"));
+                                }
+
+                                break;
+                            }
+                            else
+                            {
+                                throw new ArgumentException("HTTP POST made to SPARQL update endpoint had an invalid Content-Type header, only " + MimeTypesHelper.WWWFormURLEncoded + " and " + MimeTypesHelper.SparqlUpdate + " are acceptable");
+                            }
+                        }
+                        throw new ArgumentException("HTTP POST made to SPARQL Query endpoint was missing the required Content-Type header");
+
+                    default:
+                        throw new NotSupportedException("HTTP " + context.Request.HttpMethod.ToUpper() + " is not supported by a SPARQL Update endpoint");
+                }
+
                 //Now we're going to parse the Updates
                 SparqlUpdateParser parser = new SparqlUpdateParser();
                 parser.ExpressionFactories = this._config.ExpressionFactories;
@@ -522,7 +584,7 @@ namespace VDS.RDF.Web
                 }
                 if (!isAuth) return;
 
-                //First check actions to see whether they are all permissible and apply USING/USING NAMED paramaters
+                //First check actions to see whether they are all permissible and apply USING/USING NAMED parameters
                 foreach (SparqlUpdateCommand cmd in commands.Commands)
                 {
                     //Authenticate each action
@@ -582,6 +644,14 @@ namespace VDS.RDF.Web
             catch (RdfException rdfEx)
             {
                 HandleUpdateErrors(context, "RDF Error", updateText, rdfEx);
+            }
+            catch (NotSupportedException notSupEx)
+            {
+                HandleUpdateErrors(context, "HTTP Request Error", null, notSupEx, (int)HttpStatusCode.MethodNotAllowed);
+            }
+            catch (ArgumentException argEx)
+            {
+                HandleUpdateErrors(context, "HTTP Request Error", null, argEx, (int)HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {

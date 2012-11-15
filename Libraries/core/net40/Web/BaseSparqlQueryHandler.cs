@@ -168,7 +168,7 @@ namespace VDS.RDF.Web
                                 queries = context.Request.Form.GetValues("query");
                                 if (queries.Length == 0) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length > 1) throw new ArgumentException("The query parameter was specified multiple times in the POST body");
-                                queryText = context.Request.Form["query"];
+                                queryText = queries[0];
 
                                 //For Form URL Encoded the Default/Named Graphs may be specified by Form parameters
                                 //Get the Default Graph URIs (if any)
