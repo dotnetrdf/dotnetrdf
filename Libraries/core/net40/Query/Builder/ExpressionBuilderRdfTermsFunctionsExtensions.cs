@@ -103,7 +103,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="variable">a SPARQL variable</param>
-        public static SimpleLiteralExpression Str(this ExpressionBuilder eb, VariableExpression variable)
+        public static LiteralExpression Str(this ExpressionBuilder eb, VariableExpression variable)
         {
             return Str(variable.Expression);
         }
@@ -113,7 +113,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="literal">a SPARQL literal expression</param>
-        public static SimpleLiteralExpression Str(this ExpressionBuilder eb, LiteralExpression literal)
+        public static LiteralExpression Str(this ExpressionBuilder eb, LiteralExpression literal)
         {
             return Str(literal.Expression);
         }
@@ -123,14 +123,14 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="iriTerm">an RDF IRI term</param>
-        public static SimpleLiteralExpression Str(this ExpressionBuilder eb, IriExpression iriTerm)
+        public static LiteralExpression Str(this ExpressionBuilder eb, IriExpression iriTerm)
         {
             return Str(iriTerm.Expression);
         }
 
-        private static SimpleLiteralExpression Str(ISparqlExpression expression)
+        private static LiteralExpression Str(ISparqlExpression expression)
         {
-            return new SimpleLiteralExpression(new StrFunction(expression));
+            return new LiteralExpression(new StrFunction(expression));
         }
 
         /// <summary>
@@ -138,9 +138,9 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="variable">a SPARQL variable</param>
-        public static SimpleLiteralExpression Lang(this ExpressionBuilder eb, VariableExpression variable)
+        public static LiteralExpression Lang(this ExpressionBuilder eb, VariableExpression variable)
         {
-            return new SimpleLiteralExpression(new LangFunction(variable.Expression));
+            return new LiteralExpression(new LangFunction(variable.Expression));
         }
 
         /// <summary>
@@ -148,9 +148,9 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="literal">a SPARQL literal expression</param>
-        public static SimpleLiteralExpression Lang(this ExpressionBuilder eb, LiteralExpression literal)
+        public static LiteralExpression Lang(this ExpressionBuilder eb, LiteralExpression literal)
         {
-            return new SimpleLiteralExpression(new LangFunction(literal.Expression));
+            return new LiteralExpression(new LangFunction(literal.Expression));
         }
 
         /// <summary>
@@ -197,7 +197,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         /// <param name="eb"> </param>
         /// <param name="simpleLiteral">a SPARQL simple literal</param>
-        public static BlankNodeExpression BNode(this ExpressionBuilder eb, SimpleLiteralExpression simpleLiteral)
+        public static BlankNodeExpression BNode(this ExpressionBuilder eb, LiteralExpression simpleLiteral)
         {
             return new BlankNodeExpression(new BNodeFunction(simpleLiteral.Expression));
         }
@@ -223,7 +223,7 @@ namespace VDS.RDF.Query.Builder
         /// <param name="eb"> </param>
         /// <param name="lexicalForm">a SPARQL simple literal</param>
         /// <param name="datatypeIri">datatype IRI</param>
-        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, IriExpression datatypeIri)
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, LiteralExpression lexicalForm, IriExpression datatypeIri)
         {
             return StrDt(lexicalForm.Expression, datatypeIri.Expression);
         }
@@ -234,7 +234,7 @@ namespace VDS.RDF.Query.Builder
         /// <param name="eb"> </param>
         /// <param name="lexicalForm">a SPARQL simple literal</param>
         /// <param name="datatypeIri">datatype IRI</param>
-        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, Uri datatypeIri)
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, LiteralExpression lexicalForm, Uri datatypeIri)
         {
             return StrDt(lexicalForm.Expression, new ConstantTerm(new UriNode(null, datatypeIri)));
         }
@@ -245,7 +245,7 @@ namespace VDS.RDF.Query.Builder
         /// <param name="eb"> </param>
         /// <param name="lexicalForm">a SPARQL simple literal</param>
         /// <param name="datatypeIri">datatype IRI</param>
-        public static LiteralExpression StrDt(this ExpressionBuilder eb, SimpleLiteralExpression lexicalForm, VariableExpression datatypeIri)
+        public static LiteralExpression StrDt(this ExpressionBuilder eb, LiteralExpression lexicalForm, VariableExpression datatypeIri)
         {
             return StrDt(lexicalForm.Expression, datatypeIri.Expression);
         }
@@ -329,9 +329,9 @@ namespace VDS.RDF.Query.Builder
         /// Creates a call to the StrUUID function
         /// </summary>
         /// <param name="eb"> </param>
-        public static SimpleLiteralExpression StrUUID(this ExpressionBuilder eb)
+        public static LiteralExpression StrUUID(this ExpressionBuilder eb)
         {
-            return new SimpleLiteralExpression(new StrUUIDFunction());
+            return new LiteralExpression(new StrUUIDFunction());
         }
     }
 }

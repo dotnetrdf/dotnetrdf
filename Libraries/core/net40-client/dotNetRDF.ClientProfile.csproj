@@ -2489,9 +2489,6 @@
     <Compile Include="..\net40\Query\Builder\Expressions\TypedLiteralExpression.cs">
       <Link>Query\Builder\Expressions\TypedLiteralExpression.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\Expressions\SimpleLiteralExpression.cs">
-      <Link>Query\Builder\Expressions\SimpleLiteralExpression.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\TriplePatternBuilder.cs">
       <Link>Query\Builder\TriplePatternBuilder.cs</Link>
     </Compile>

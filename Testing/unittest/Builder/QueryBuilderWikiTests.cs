@@ -218,6 +218,7 @@ namespace VDS.RDF.Test.Builder
                 .Filter(
                     fb =>
                         !fb.Exists(ex => ex.Where(tpb => tpb.Subject("person").PredicateUri("foaf:name").Object("name"))));
+            b.Prefixes.AddNamespace("rdf", new Uri("http://www.w3.org/1999/02/22-rdf-syntax-ns#"));
             b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
 
             // when

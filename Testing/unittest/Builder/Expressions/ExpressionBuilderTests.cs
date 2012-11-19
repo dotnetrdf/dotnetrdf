@@ -255,7 +255,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var variable = new VariableExpression("x");
 
             // when
-            SimpleLiteralExpression str = Builder.Str(variable);
+            LiteralExpression str = Builder.Str(variable);
 
             // then
             Assert.IsTrue(str.Expression is StrFunction);
@@ -269,7 +269,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             LiteralExpression literal = new TypedLiteralExpression<string>("1000");
 
             // when
-            SimpleLiteralExpression str = Builder.Str(literal);
+            LiteralExpression str = Builder.Str(literal);
 
             // then
             Assert.IsTrue(str.Expression is StrFunction);
@@ -283,7 +283,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var iri = new IriExpression(new Uri("urn:some:uri"));
 
             // when
-            SimpleLiteralExpression str = Builder.Str(iri);
+            LiteralExpression str = Builder.Str(iri);
 
             // then
             Assert.IsTrue(str.Expression is StrFunction);
@@ -297,7 +297,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             var variable = new VariableExpression("x");
 
             // when
-            SimpleLiteralExpression lang = Builder.Lang(variable);
+            LiteralExpression lang = Builder.Lang(variable);
 
             // then
             Assert.IsTrue(lang.Expression is LangFunction);
@@ -311,7 +311,7 @@ namespace VDS.RDF.Test.Builder.Expressions
             LiteralExpression literal = new TypedLiteralExpression<string>("1000");
 
             // when
-            SimpleLiteralExpression lang = Builder.Lang(literal);
+            LiteralExpression lang = Builder.Lang(literal);
 
             // then
             Assert.IsTrue(lang.Expression is LangFunction);
@@ -389,7 +389,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void CanCreateBNodeFunctionWithSimpleLiteralExpressionParameter()
         {
             // given
-            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
 
             // when
             BlankNodeExpression bnode = Builder.BNode(expression);
@@ -417,7 +417,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndIriExpressionParameters()
         {
             // given
-            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new IriExpression(new Uri("http://example.com"));
 
             // when
@@ -449,7 +449,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndUriParameters()
         {
             // given
-            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new IriExpression(new Uri("http://example.com"));
 
             // when
@@ -513,7 +513,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowCreatingStrdtFunctionWithLiteralExpressionAndVariableExpressionParameters()
         {
             // given
-            SimpleLiteralExpression expression = new SimpleLiteralExpression(new VariableTerm("S"));
+            LiteralExpression expression = new LiteralExpression(new VariableTerm("S"));
             var iriExpression = new VariableExpression("var");
 
             // when
@@ -561,7 +561,7 @@ namespace VDS.RDF.Test.Builder.Expressions
         public void ShouldAllowCreatingStrUuidFucntionCall()
         {
             // when
-            SimpleLiteralExpression uuid = Builder.StrUUID();
+            LiteralExpression uuid = Builder.StrUUID();
 
             // then
             Assert.IsTrue(uuid.Expression is StrUUIDFunction);

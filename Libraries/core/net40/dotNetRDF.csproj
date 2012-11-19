@@ -161,7 +161,6 @@
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
     <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
     <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
-    <Compile Include="Query\Builder\Expressions\SimpleLiteralExpression.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
     <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />
