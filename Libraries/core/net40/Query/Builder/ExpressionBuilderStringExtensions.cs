@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Provides methods for creating SPARQL functions, which operate on strings
     /// </summary>
-    public static class ExpressionBuilderRegexStringExtensions
+    public static class ExpressionBuilderStringExtensions
     {
         public static BooleanExpression Regex(this ExpressionBuilder eb, SparqlExpression text, string pattern)
         {
@@ -327,6 +327,41 @@ namespace VDS.RDF.Query.Builder
         public static TypedLiteralExpression<string> Substr(this ExpressionBuilder eb, VariableExpression str, VariableExpression startingLoc, VariableExpression length)
         {
             return Substr(str.Expression, startingLoc.Expression, length.Expression);
-        } 
+        }
+
+        private static BooleanExpression LangMatches(ISparqlExpression languageTag, ISparqlExpression languageRange)
+        {
+            return new BooleanExpression(new LangMatchesFunction(languageTag, languageRange));
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, string languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, string languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, LiteralExpression languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.Expression);
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, LiteralExpression languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.Expression);
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, VariableExpression languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.Expression);
+        }
+
+        public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, VariableExpression languageRange)
+        {
+            return LangMatches(languageTag.Expression, languageRange.Expression);
+        }
     }
 }

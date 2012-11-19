@@ -466,5 +466,99 @@ namespace VDS.RDF.Test.Builder.Expressions
             Assert.AreSame(startLocation.Expression, strlen.Expression.Arguments.ElementAt(1));
             Assert.AreSame(length.Expression, strlen.Expression.Arguments.ElementAt(2));
         }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndStringParameters()
+        {
+            // given
+            var languageTag = new TypedLiteralExpression<string>("title");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreEqual("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithVariableAndStringParameters()
+        {
+            // given
+            var languageTag = new VariableExpression("title");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, "fr");
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreEqual("\"fr\"", strlen.Expression.Arguments.ElementAt(1).ToString());
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndLiteralExpressionParameters()
+        {
+            // given
+            LiteralExpression languageTag = new TypedLiteralExpression<string>("title");
+            LiteralExpression languageRange = new TypedLiteralExpression<string>("*");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithVariableAndLiteralExpressionParameters()
+        {
+            // given
+            var languageTag = new VariableExpression("title");
+            LiteralExpression languageRange = new TypedLiteralExpression<string>("*");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithLiteralExpressionAndVariableParameters()
+        {
+            // given
+            LiteralExpression languageTag = new TypedLiteralExpression<string>("title");
+            var languageRange = new VariableExpression("range");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingCallToLangMatchesFunctionWithTwoVariableParameters()
+        {
+            // given
+            var languageTag = new VariableExpression("title");
+            VariableExpression languageRange = new VariableExpression("range");
+
+            // when
+            BooleanExpression strlen = Builder.LangMatches(languageTag, languageRange);
+
+            // then
+            Assert.IsTrue(strlen.Expression is LangMatchesFunction);
+            Assert.AreSame(languageTag.Expression, strlen.Expression.Arguments.ElementAt(0));
+            Assert.AreSame(languageRange.Expression, strlen.Expression.Arguments.ElementAt(1));
+        }
     }
 }

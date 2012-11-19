@@ -2470,9 +2470,6 @@
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderFunctionalFormsExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\ExpressionBuilderRegexStringExtensions.cs">
-      <Link>Query\Builder\ExpressionBuilderRegexStringExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\Expressions\IriExpression.cs">
       <Link>Query\Builder\Expressions\IriExpression.cs</Link>
     </Compile>
@@ -2560,6 +2557,11 @@
   <ItemGroup>
     <Compile Include="..\net40\Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs">
       <Link>Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\ExpressionBuilderStringExtensions.cs">
+      <Link>Query\Builder\ExpressionBuilderStringExtensions.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

@@ -43,7 +43,7 @@ namespace VDS.RDF.Query.Builder.Expressions
             }
             if (typeof(T) == typeof(string))
             {
-                return ((string)(object)numericValue).ToLiteral(NodeFactory);
+                return new LiteralNode(null, numericValue.ToString());
             }
             if (typeof(T) == typeof(DateTime))
             {
