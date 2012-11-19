@@ -402,5 +402,31 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(5, q.Limit);
             Assert.AreEqual(10, q.Offset);
         }
+
+        [TestMethod]
+        public void ShouldAllowBuildingAskQueries()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.Ask()
+                                        .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                        .BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Ask, q.QueryType);
+        }
+
+        [TestMethod]
+        public void ShouldAllowBuildingConstructQueries()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.Construct(gpb => gpb.Where(tpb => tpb.Subject("o").Predicate("p").Object("s")))
+                                        .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                        .BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
+            Assert.IsNotNull(q.ConstructTemplate);
+            Assert.AreEqual(1, q.ConstructTemplate.TriplePatterns.Count);
+        }
     }
 }

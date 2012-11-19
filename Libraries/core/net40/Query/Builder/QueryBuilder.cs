@@ -25,11 +25,30 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public INamespaceMapper Prefixes { get; set; }
 
-        private QueryBuilder(SparqlQuery query)
+        private QueryBuilder(SparqlQueryType queryType)
         {
-            this._query = query;
+            this._query = new SparqlQuery { QueryType = queryType };
             this.Prefixes = new NamespaceMapper(true);
             _rootGraphPatternBuilder = new GraphPatternBuilder(Prefixes);
+        }
+
+        public static IQueryBuilder Ask()
+        {
+            return new QueryBuilder(SparqlQueryType.Ask);
+        }
+
+        public static IQueryBuilder Construct(Action<IGraphPatternBuilder> buildConstructTemplate)
+        {
+            var queryBuilder = new QueryBuilder(SparqlQueryType.Construct);
+            GraphPatternBuilder graphPatternBuilder = new GraphPatternBuilder(queryBuilder.Prefixes);
+            buildConstructTemplate(graphPatternBuilder);
+            return queryBuilder.Construct(graphPatternBuilder.BuildGraphPattern());
+        }
+
+        private IQueryBuilder Construct(GraphPattern constructTemplate)
+        {
+            _query.ConstructTemplate = constructTemplate;
+            return this;
         }
 
         /// <summary>
@@ -37,9 +56,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static ISelectQueryBuilder SelectAll()
         {
-            SparqlQuery q = new SparqlQuery();
-            q.QueryType = SparqlQueryType.SelectAll;
-            return new QueryBuilder(q);
+            return new QueryBuilder(SparqlQueryType.SelectAll);
         }
 
         /// <summary>
@@ -49,9 +66,7 @@ namespace VDS.RDF.Query.Builder
         /// <param name="variables">query result variables</param>
         public static ISelectQueryBuilder Select(params SparqlVariable[] variables)
         {
-            SparqlQuery q = new SparqlQuery();
-            q.QueryType = SparqlQueryType.Select;
-            return new QueryBuilder(q).And(variables);
+            return new QueryBuilder(SparqlQueryType.Select).And(variables);
         }
 
         /// <summary>
@@ -79,9 +94,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IDescribeQueryBuilder Describe(params Uri[] uris)
         {
-            SparqlQuery q = new SparqlQuery();
-            q.QueryType = SparqlQueryType.Describe;
-            return new QueryBuilder(q).And(uris);
+            return new QueryBuilder(SparqlQueryType.Describe).And(uris);
         }
 
         /// <summary>
@@ -89,9 +102,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IDescribeQueryBuilder Describe(params string[] variables)
         {
-            SparqlQuery q = new SparqlQuery();
-            q.QueryType = SparqlQueryType.Describe;
-            return new QueryBuilder(q).And(variables);
+            return new QueryBuilder(SparqlQueryType.Describe).And(variables);
         }
 
         #region Implementation of IQueryBuilder
@@ -243,7 +254,7 @@ namespace VDS.RDF.Query.Builder
                 return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Aggregate);
             }
 
-            if(sparqlVariable.IsProjection)
+            if (sparqlVariable.IsProjection)
             {
                 return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Projection);
             }
