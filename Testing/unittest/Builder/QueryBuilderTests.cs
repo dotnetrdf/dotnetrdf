@@ -298,6 +298,7 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(1, q.Variables.Count(v => !v.IsProjection && v.IsResultVariable && v.Name == "o"));
         }
 
+        [TestMethod]
         public void ShouldAllowUsingISparqlExpressionForFilter()
         {
             // given
@@ -310,6 +311,96 @@ namespace VDS.RDF.Test.Builder
             // then
             Assert.IsTrue(q.RootGraphPattern.IsFiltered);
             Assert.AreSame(expression, q.RootGraphPattern.Filter.Expression);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingLimit()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Limit(5)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(5, q.Limit);
+            Assert.AreEqual(0, q.Offset);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingNegativeLimit()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Limit(5).Limit(-10)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(-1, q.Limit);
+            Assert.AreEqual(0, q.Offset);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingOffset()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Offset(10)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(-1, q.Limit);
+            Assert.AreEqual(10, q.Offset);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingLimitMultipleTimes()
+        {
+            // given
+            int limit = 5;
+
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Limit(limit++).Limit(limit++).Limit(limit++).Limit(limit++).Limit(limit)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(limit, q.Limit);
+            Assert.AreEqual(0, q.Offset);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingOffsetMultipleTimes()
+        {
+            // given
+            int offset = 5;
+
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Offset(offset++).Offset(offset++).Offset(offset++).Offset(offset++).Offset(offset)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(-1, q.Limit);
+            Assert.AreEqual(offset, q.Offset);
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingLimitAndOffset()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.SelectAll()
+                .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                .Limit(5).Offset(10)
+                .BuildQuery();
+
+            // then
+            Assert.AreEqual(5, q.Limit);
+            Assert.AreEqual(10, q.Offset);
         }
     }
 }

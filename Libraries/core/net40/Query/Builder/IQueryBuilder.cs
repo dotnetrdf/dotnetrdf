@@ -12,15 +12,12 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Applies a LIMIT
         /// </summary>
+        /// <param name="limit">Limit value. Pass negative to disable LIMIT</param>
         IQueryBuilder Limit(int limit);
         /// <summary>
         /// Applies an OFFSET
         /// </summary>
         IQueryBuilder Offset(int offset);
-        /// <summary>
-        /// Applies both a LIMIT and OFFSET
-        /// </summary>
-        IQueryBuilder Slice(int limit, int offset);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>

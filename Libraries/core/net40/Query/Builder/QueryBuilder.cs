@@ -132,11 +132,6 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public IQueryBuilder Slice(int limit, int offset)
-        {
-            return Limit(limit).Offset(offset);
-        }
-
         public SparqlQuery BuildQuery()
         {
             // returns a copy to prevent changes in either
