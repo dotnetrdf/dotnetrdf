@@ -97,7 +97,7 @@ namespace VDS.RDF.Web
         /// <summary>
         /// Constants for SPARQL Service Description Properties
         /// </summary>
-        public const String PropertyUrl = "url",
+        public const String PropertyEndpoint = "endpoint",
                             PropertyFeatures = "feature",
                             PropertyDefaultEntailmentRegime = "defaultEntailmentRegime",
                             PropertySupportedEntailmentRegime = "supportedEntailmentRegime",
@@ -145,7 +145,7 @@ namespace VDS.RDF.Web
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
             g.Assert(descrip, url, descrip);
 
             //Add the sd:supportedLanguage - Requires Query Language to be configurable through the Configuration API
@@ -224,7 +224,7 @@ namespace VDS.RDF.Web
                 g.Assert(queryNode, rdfType, service);
 
                 //Add its sd:url
-                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
                 g.Assert(queryNode, url, queryNode);
 
                 //Add the sd:supportedLanguage
@@ -284,7 +284,7 @@ namespace VDS.RDF.Web
                 g.Assert(updateNode, rdfType, service);
 
                 //Add its sd:url
-                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
                 g.Assert(updateNode, url, updateNode);
 
                 //Add the sd:supportedLanguage
@@ -329,7 +329,7 @@ namespace VDS.RDF.Web
                 g.Assert(protocolNode, rdfType, service);
 
                 //Add its sd:url
-                IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+                IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
                 g.Assert(protocolNode, url, protocolNode);
 
                 //Add the Input Formats
@@ -389,7 +389,7 @@ namespace VDS.RDF.Web
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
             g.Assert(descrip, url, descrip);
 
             //Add the sd:supportedLanguage
@@ -438,7 +438,7 @@ namespace VDS.RDF.Web
             g.Assert(descrip, rdfType, service);
 
             //Add its sd:url
-            IUriNode url = g.CreateUriNode("sd:" + PropertyUrl);
+            IUriNode url = g.CreateUriNode("sd:" + PropertyEndpoint);
             g.Assert(descrip, url, descrip);
 
             //Add the Input Formats

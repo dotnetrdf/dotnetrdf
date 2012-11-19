@@ -60,7 +60,8 @@ namespace VDS.RDF.Web
     /// </code>
     /// </para>
     /// </remarks>
-    public class QueryHandler : BaseSparqlQueryHandler
+    public class QueryHandler
+        : BaseSparqlQueryHandler
     {
         /// <summary>
         /// Loads the Handler Configuration

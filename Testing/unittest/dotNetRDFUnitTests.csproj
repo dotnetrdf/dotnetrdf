@@ -103,6 +103,7 @@
     <Compile Include="Builder\GraphPatternBuilderTests.cs" />
     <Compile Include="Common\BinaryTreeDeleteTests.cs" />
     <Compile Include="Common\BinaryTreeTools.cs" />
+    <Compile Include="Common\MultiDictionaryTests.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
