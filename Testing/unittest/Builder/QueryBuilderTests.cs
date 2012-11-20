@@ -428,5 +428,33 @@ namespace VDS.RDF.Test.Builder
             Assert.IsNotNull(q.ConstructTemplate);
             Assert.AreEqual(1, q.ConstructTemplate.TriplePatterns.Count);
         }
+
+        [TestMethod]
+        public void ShouldAllowBuildingConstructQueriesWithNullBuilderFunction()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.Construct(null)
+                                        .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                        .BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
+            Assert.IsNull(q.ConstructTemplate);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void ShouldAllowBuildingConstructQueriesWithoutBuilderFunction()
+        {
+            // when
+            SparqlQuery q = QueryBuilder.Construct()
+                                        .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                        .BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
+            Assert.IsNull(q.ConstructTemplate);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
     }
 }

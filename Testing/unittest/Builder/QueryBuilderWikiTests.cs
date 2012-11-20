@@ -344,5 +344,42 @@ namespace VDS.RDF.Test.Builder
             Assert.AreEqual(0, q.RootGraphPattern.UnplacedAssignments.Count());
             Assert.AreEqual(1, q.Variables.Count(v => v.IsProjection && v.IsResultVariable));
         }
+
+        [TestMethod]
+        public void BasicConstruct()
+        {
+            // given
+            var b = QueryBuilder.Construct(c => c.Where(t => t.Subject(new Uri("http://example.org/person#Alice"))
+                                                              .PredicateUri("vcard:FN")
+                                                              .Object<ILiteralNode>("Alice")))
+                .Where(tp => tp.Subject("x").PredicateUri("foaf:name").Object("name"));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+            b.Prefixes.AddNamespace("vcard", new Uri("http://www.w3.org/2001/vcard-rdf/3.0#"));
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
+            Assert.AreEqual(1, q.ConstructTemplate.TriplePatterns.Count);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        [TestMethod]
+        public void ConstructWhere()
+        {
+            // given
+            var b = QueryBuilder.Construct()
+                                .Where(tp => tp.Subject("x").PredicateUri("foaf:name").Object("name"));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
+            Assert.IsNull(q.ConstructTemplate);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
     }
 }
