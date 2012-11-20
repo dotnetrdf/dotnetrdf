@@ -381,5 +381,21 @@ namespace VDS.RDF.Test.Builder
             Assert.IsNull(q.ConstructTemplate);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
         }
+
+        [TestMethod]
+        public void Ask()
+        {
+            // given
+            var b = QueryBuilder.Ask()
+                                .Where(t => t.Subject("x").PredicateUri("foaf:name").ObjectLiteral("Alice"));
+            b.Prefixes.AddNamespace("foaf", new Uri("http://xmlns.com/foaf/0.1/"));
+
+            // when
+            var q = b.BuildQuery();
+
+            // then
+            Assert.AreEqual(SparqlQueryType.Ask, q.QueryType);
+            Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
     }
 }
