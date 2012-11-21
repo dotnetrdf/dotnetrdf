@@ -580,6 +580,17 @@ namespace VDS.RDF.Parsing
                 }
             }
 
+
+            //Check WHERE clause for scoping of BINDs if applicable
+            if (context.SyntaxMode != SparqlQuerySyntax.Sparql_1_0)
+            {
+                if (context.Query.RootGraphPattern != null)
+                {
+                    HashSet<String> used = new HashSet<String>();
+                    this.CheckBindScoping(context.Query.RootGraphPattern, used);
+                }
+            }
+
             return context.Query;
         }
 
@@ -3724,6 +3735,81 @@ namespace VDS.RDF.Parsing
             else
             {
                 return expr.Arguments.All(arg => this.IsProjectableExpression(context, arg, projectedSoFar));
+            }
+        }
+
+        private void CheckBindScoping(GraphPattern group, HashSet<String> usedSoFar)
+        {
+            if (group.IsUnion)
+            {
+                //For UNION copy the used so far and check each union separately
+                HashSet<String> copy = new HashSet<string>(usedSoFar);
+                foreach (GraphPattern child in group.ChildGraphPatterns)
+                {
+                    HashSet<String> used = new HashSet<string>(copy);
+                    this.CheckBindScoping(child, used);
+                    foreach (String var in used)
+                    {
+                        usedSoFar.Add(var);
+                    }
+                }
+            }
+            else if (group.IsService)
+            {
+                //Do nothing for SERVICE
+                return;
+            }
+            else
+            {
+                //Normal scope checking
+               
+                //Check child graph patterns first as they count as their own group
+                foreach (GraphPattern gp in group.ChildGraphPatterns)
+                {
+                    this.CheckBindScoping(gp, usedSoFar);
+                }
+
+                //Then check the triple patterns and unplaced assignments
+                foreach (ITriplePattern tp in group.TriplePatterns)
+                {
+                    switch (tp.PatternType)
+                    {
+                        case TriplePatternType.Match:
+                        case TriplePatternType.Path:
+                        case TriplePatternType.PropertyFunction:
+                        case TriplePatternType.SubQuery:
+                            foreach (String var in tp.Variables)
+                            {
+                                usedSoFar.Add(var);
+                            }
+                            break;
+                        case TriplePatternType.LetAssignment:
+                            usedSoFar.Add(((IAssignmentPattern)tp).VariableName);
+                            break;
+                        case TriplePatternType.BindAssignment:
+                            IAssignmentPattern assignment = (IAssignmentPattern)tp;
+                            if (usedSoFar.Contains(assignment.VariableName)) throw new RdfParseException(assignment.ToString() + " tries to assign to variable ?" + assignment.VariableName + " which is already used in this group graph pattern");
+                            usedSoFar.Add(assignment.VariableName);
+                            break;
+                        case TriplePatternType.Filter:
+                            //Ignored for these purposes
+                            break;
+                        default:
+                            throw new RdfParseException("Unknown Triple Pattern type");
+                    }
+                }
+                foreach (IAssignmentPattern assignment in group.UnplacedAssignments)
+                {
+                    if (assignment.PatternType == TriplePatternType.LetAssignment)
+                    {
+                        usedSoFar.Add(assignment.VariableName);
+                    }
+                    else
+                    {
+                        if (usedSoFar.Contains(assignment.VariableName)) throw new RdfParseException(assignment.ToString() + " tries to assign to variable ?" + assignment.VariableName + " which is already used in this group graph pattern");
+                        usedSoFar.Add(assignment.VariableName);
+                    }
+                }
             }
         }
 
