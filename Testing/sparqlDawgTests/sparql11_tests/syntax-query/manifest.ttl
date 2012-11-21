@@ -437,7 +437,7 @@
    mf:action  <syntax-bindings-09.rq> ;.
 
 :test_52 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:Approved ;
+   dawgt:approval dawgt:Obsoleted ;
    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-01-31#resolution_3> ;
    mf:name    "PrefixName with backslash-escaped colons" ;
    mf:action  <qname-escape-01.rq> ;.
