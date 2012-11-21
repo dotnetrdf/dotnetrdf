@@ -317,7 +317,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod,ExpectedException(typeof(RdfParseException))]
-        public void SparqlBindToExistingVariable2()
+        public void SparqlBindScope1()
         {
             String query = @"PREFIX : <http://www.example.org>
  SELECT *
@@ -334,7 +334,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SparqlBindToExistingVariable3()
+        public void SparqlBindScope2()
         {
             String query = @"PREFIX : <http://www.example.org>
  SELECT *
@@ -348,7 +348,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SparqlBindToExistingVariable4()
+        public void SparqlBindScope3()
         {
             String query = @" PREFIX : <http://www.example.org>
  SELECT *
@@ -363,7 +363,7 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
-        public void SparqlBindToExistingVariable5()
+        public void SparqlBindScope4()
         {
             String query = @" PREFIX : <http://www.example.org>
  SELECT *
@@ -373,8 +373,7 @@ namespace VDS.RDF.Test
     :s :q ?o1
     }
     { BIND((1+?o) AS ?o1) }
- }
-";
+ }";
 
             SparqlQueryParser parser = new SparqlQueryParser();
             parser.ParseFromString(query);
