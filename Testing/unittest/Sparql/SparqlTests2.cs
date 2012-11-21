@@ -363,6 +363,24 @@ namespace VDS.RDF.Test
         }
 
         [TestMethod]
+        public void SparqlBindToExistingVariable5()
+        {
+            String query = @" PREFIX : <http://www.example.org>
+ SELECT *
+ WHERE {
+    { 
+    :s :p ?o .
+    :s :q ?o1
+    }
+    { BIND((1+?o) AS ?o1) }
+ }
+";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            parser.ParseFromString(query);
+        }
+
+        [TestMethod]
         public void SparqlLet()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . LET (?triple := fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o))) }";
