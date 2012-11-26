@@ -1000,6 +1000,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-net35" description="Copy the latest 3.5 build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-net35">
@@ -1007,6 +1008,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
@@ -1014,6 +1016,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
@@ -1021,6 +1024,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
@@ -1028,6 +1032,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
@@ -1035,6 +1040,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
