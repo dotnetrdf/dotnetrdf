@@ -115,6 +115,11 @@ namespace VDS.RDF.GUI.WinForms
             this.Text = this.GetTitle(title);
         }
 
+        /// <summary>
+        /// Creates a new Result Set viewer form
+        /// </summary>
+        /// <param name="results">Result Set</param>
+        /// <param name="nsmap">Namespace Map to use for display</param>
         public ResultSetViewerForm(SparqlResultSet results, INamespaceMapper nsmap)
             : this(results)
         {
@@ -122,6 +127,12 @@ namespace VDS.RDF.GUI.WinForms
             if (nsmap != null) this._formatter = new SparqlFormatter(nsmap);
         }
 
+        /// <summary>
+        /// Creates a new Result Set viewer form
+        /// </summary>
+        /// <param name="results">Result Set</param>
+        /// <param name="title">Form subtitle</param>
+        /// <param name="nsmap">Namespace Map to use for display</param>
         public ResultSetViewerForm(SparqlResultSet results, String title, INamespaceMapper nsmap)
             : this(results, title)
         {

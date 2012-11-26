@@ -99,7 +99,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     this.FillConnectionsMenu(this.mnuFavouriteConnections, this._faveConnections, 0, true, this._faveConnectionsFile);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 //If errors occur then ignore Recent Connections
             }
@@ -552,7 +552,7 @@ namespace VDS.RDF.Utilities.StoreManager
                     CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
                     ttlwriter.Save(this._recentConnections, this._recentConnectionsFile);
                 }
-                catch (Exception ex)
+                catch
                 {
                     MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
@@ -619,7 +619,7 @@ namespace VDS.RDF.Utilities.StoreManager
                         CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter();
                         ttlwriter.Save(config, persistentFile);
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         MessageBox.Show("Unable to persist a Connections File to disk", "Internal Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }

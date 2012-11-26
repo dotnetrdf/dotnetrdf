@@ -126,7 +126,7 @@ namespace VDS.RDF.Utilities.StoreManager
                                     //Add to Recent Connections
                                     Program.MainForm.AddRecentConnection(manager);
                                 }
-                                catch (Exception ex)
+                                catch
                                 {
                                     // silently ignore this error? seems like if MaxRecentConnections is hit, there is a bug in removing old connections...
                                 }
