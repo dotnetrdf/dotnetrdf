@@ -1037,6 +1037,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets whether the selector is for a specific MIME type e.g. type/sub-type
+        /// </summary>
+        public bool IsSpecific
+        {
+            get
+            {
+                return this._isSpecific;
+            }
+        }
+
+        /// <summary>
         /// Sorts the selector in precedence order according to the content negotiation rules from the relevant RFCs
         /// </summary>
         /// <param name="other">Selector to compare against</param>

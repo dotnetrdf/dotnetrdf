@@ -83,7 +83,7 @@ namespace VDS.RDF.Parsing
         /// </remarks>
         public static ParsingTextReader Create(TextReader input)
         {
-            return Create(input, BlockingTextReader.DefaultBufferSize);
+            return Create(input, BufferedTextReader.DefaultBufferSize);
         }
 
         /// <summary>
@@ -109,26 +109,48 @@ namespace VDS.RDF.Parsing
         /// <param name="input">Input Stream</param>
         public static ParsingTextReader Create(Stream input)
         {
-            return Create(input, BlockingTextReader.DefaultBufferSize);
+            return Create(input, BufferedTextReader.DefaultBufferSize);
         }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input reader</param>
+        /// <returns></returns>
         public static BlockingTextReader CreateBlocking(TextReader input)
         {
-            return CreateBlocking(input, BlockingTextReader.DefaultBufferSize);
+            return CreateBlocking(input, BufferedTextReader.DefaultBufferSize);
         }
 
+        /// <summary>
+        /// Creates a new Blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input reader</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        /// <returns></returns>
         public static BlockingTextReader CreateBlocking(TextReader input, int bufferSize)
         {
             if (input is BlockingTextReader) return (BlockingTextReader)input;
             return new BlockingTextReader(input, bufferSize);
         }
 
+        /// <summary>
+        /// Creates a new non-blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input reader</param>
+        /// <returns></returns>
         public static NonBlockingTextReader CreateNonBlocking(TextReader input)
         {
             if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
             return new NonBlockingTextReader(input);
         }
 
+        /// <summary>
+        /// Creates a new non-blocking Text Reader
+        /// </summary>
+        /// <param name="input">Input reader</param>
+        /// <param name="bufferSize">Buffer Size</param>
+        /// <returns></returns>
         public static NonBlockingTextReader CreateNonBlocking(TextReader input, int bufferSize)
         {
             if (input is NonBlockingTextReader) return (NonBlockingTextReader)input;
@@ -147,10 +169,25 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public const int DefaultBufferSize = 1024;
 
+        /// <summary>
+        /// Buffer array
+        /// </summary>
         protected char[] _buffer;
+        /// <summary>
+        /// Current buffer position
+        /// </summary>
         protected int _pos = -1;
+        /// <summary>
+        /// Current buffer size (may be less than length of buffer array)
+        /// </summary>
         protected int _bufferAmount = -1;
+        /// <summary>
+        /// Whether underlying reader has been exhausted
+        /// </summary>
         protected bool _finished = false;
+        /// <summary>
+        /// Underlying reader
+        /// </summary>
         protected readonly TextReader _reader;
 
         /// <summary>
@@ -416,6 +453,9 @@ namespace VDS.RDF.Parsing
         internal NonBlockingTextReader(Stream input)
             : this(new StreamReader(input)) { }
 
+        /// <summary>
+        /// Fills the buffer in a non-blocking manner
+        /// </summary>
         protected override void FillBuffer()
         {
             this._pos = -1;
