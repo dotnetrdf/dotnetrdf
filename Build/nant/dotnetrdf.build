@@ -1289,22 +1289,22 @@
         <include name="**/*" />
       </fileset>
     </zip>
-    <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
+    <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset failonempty="true">
         <include name="**/*" />
         <exclude name=".hg/*" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
-	<exclude name="**/*.dll" />
+        <exclude name="**/*.dll" />
         <exclude name="**/*.exe" />
         <exclude name="**/*.pdb" />
         <exclude name="Testing/" />
         <exclude name="TestResults/" />
         <exclude name="Samples/" />
-	<exclude name="*.zip" />
-	<exclude name="Utilities/bsbm/" />
-	<exclude name="Build/ndoc3/docs/" />
-	<exclude name="Build/NuGet/*/lib/**/*" />
+        <exclude name="*.zip" />
+        <exclude name="Utilities/bsbm/" />
+        <exclude name="Build/ndoc3/docs/" />
+        <exclude name="Build/NuGet/*/lib/**/*" />
         <exclude name="packages/" />
       </fileset>
     </zip>
