@@ -66,7 +66,7 @@
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -76,16 +76,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common">
+      <HintPath>..\..\..\packages\VDS.Common.1.0.2\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\MultiDictionary.cs" />
-    <Compile Include="Common\Trees\BinaryTree.cs" />
-    <Compile Include="Common\Trees\BinaryTreeNode.cs" />
-    <Compile Include="Common\Trees\AVLTree.cs" />
-    <Compile Include="Common\Trees\ITree.cs" />
-    <Compile Include="Common\Trees\ScapegoatTree.cs" />
-    <Compile Include="Common\Trees\TreeExtensions.cs" />
-    <Compile Include="Common\Trees\UnbalancedBinaryTree.cs" />
     <Compile Include="Compatability\HashSet.cs" />
     <Compile Include="Compatability\HtmlTextWriter.cs" />
     <Compile Include="Compatability\HtmlTextWriterAttribute.cs" />
@@ -263,9 +258,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
-    <Compile Include="Common\HashSlot.cs" />
-    <Compile Include="Common\IHashSlot.cs" />
-    <Compile Include="Common\StringTrie.cs" />
     <Compile Include="Configuration\CachedObjectKey.cs" />
     <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
     <Compile Include="Configuration\CredentialsFactory.cs" />
@@ -282,7 +274,6 @@
     <Compile Include="Configuration\ObjectFactoryFactory.cs" />
     <Compile Include="Configuration\ProxyFactory.cs" />
     <Compile Include="Configuration\ReasonerFactory.cs" />
-    <Compile Include="Core\AdvancedTripleCollections.cs" />
     <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
@@ -310,9 +301,7 @@
     <Compile Include="Core\VariableContext.cs" />
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Events.cs" />
-    <Compile Include="Common\HashTable.cs" />
     <Compile Include="Indexing.cs" />
-    <Compile Include="Common\NestedReference.cs" />
     <Compile Include="Ontology\Individual.cs" />
     <Compile Include="Ontology\Ontology.cs" />
     <Compile Include="Ontology\OntologyClass.cs" />
@@ -739,9 +728,6 @@
     <Compile Include="Storage\Virtualisation\SimpleVirtualNodes.cs" />
     <Compile Include="Storage\Virtualisation\VirtualNode.cs" />
     <Compile Include="Storage\Virtualisation\VirtualNodeCache.cs" />
-    <Compile Include="Common\ThreadIsolatedReference.cs" />
-    <Compile Include="Common\Trie.cs" />
-    <Compile Include="Common\TrieNode.cs" />
     <Compile Include="Update\Commands\AddCommand.cs" />
     <Compile Include="Update\Commands\BaseModifyCommand.cs" />
     <Compile Include="Update\Commands\BaseTransferCommand.cs" />

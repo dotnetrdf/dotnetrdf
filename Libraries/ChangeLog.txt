@@ -17,9 +17,11 @@ Changed
  - Fixed a bug related to losing FILTERS when building queries using the internal APIs
  - Fixed a bug related to ToString() form of some API built queries
  - Fixed a bug related to graph scoping of full text search
+ - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance
 - Dependencies
- - Updated Json.Net dependency to 4.5r10
+ - Updated Json.Net dependency to 4.5r11
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
+ - Externalized the VDS.Common namespace as a dependency version 1.0.1
  - All dependencies are now maintained using NuGet
 - Build
  - Query.FullText Library is now always strong named
@@ -39,6 +41,7 @@ Removed
 - Marks the obsolete JosekiConnector as obsolete unusable
 - Removed the obsolete TalisPlatformConnector
 - Removed the obsolete IndexedTripleCollection and it's descendants
+- Removed the obsolete AdvancedTripleCollections
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
 - Marks the obsolete HashTable classes as obsolete unusable

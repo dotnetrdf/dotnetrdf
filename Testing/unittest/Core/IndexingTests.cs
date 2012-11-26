@@ -28,7 +28,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VDS.Common;
+using VDS.Common.Collections;
 using VDS.Common.Trees;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;

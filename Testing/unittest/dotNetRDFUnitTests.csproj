@@ -63,7 +63,7 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.4.5.10\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -76,6 +76,9 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common">
+      <HintPath>..\..\packages\VDS.Common.1.0.2\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Libraries\Data\Virtuoso\net40\DataExtensions.cs">
@@ -85,9 +88,6 @@
       <Link>Query\FullText\FullTextExtensions.cs</Link>
     </Compile>
     <Compile Include="BaseTest.cs" />
-    <Compile Include="Common\BinaryTreeDeleteTests.cs" />
-    <Compile Include="Common\BinaryTreeTools.cs" />
-    <Compile Include="Common\MultiDictionaryTests.cs" />
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
@@ -95,7 +95,6 @@
     <Compile Include="Configuration\LoadObjectTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
-    <Compile Include="Common\BinaryTreeTests.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
     <Compile Include="Core\MimeTypesTests.cs" />
     <Compile Include="Core\UriTests.cs" />

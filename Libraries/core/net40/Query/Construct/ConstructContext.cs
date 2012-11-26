@@ -25,7 +25,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using System.Collections.Generic;
-using VDS.Common;
+using VDS.Common.Collections;
+using VDS.Common.References;
 using VDS.RDF.Query.Algebra;
 
 namespace VDS.RDF.Query.Construct

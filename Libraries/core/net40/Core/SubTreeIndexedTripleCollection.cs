@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VDS.Common;
+using VDS.Common.Collections;
 using VDS.Common.Trees;
 
 namespace VDS.RDF
