@@ -515,6 +515,17 @@ namespace VDS.RDF.Writing
                 context.TriplesDone.Add(t);
             }
 
+            //Also check for the rare case where the subject is the key to a collection
+            if (context.Collections.ContainsKey(subj))
+            {
+                OutputRdfCollection collection = context.Collections[subj];
+                if (!collection.IsExplicit)
+                {
+                    this.GenerateCollectionItemOutput(context, collection);
+                    collection.HasBeenWritten = true;
+                }
+            }
+
             context.Writer.WriteEndElement();
             context.NamespaceMap.DecrementNesting();
         }
@@ -688,7 +699,7 @@ namespace VDS.RDF.Writing
                 //First see if there is a typed triple available (only applicable if we have more than one triple)
                 INode rdfType = context.Graph.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
                 Triple typeTriple = c.Triples.FirstOrDefault(t => t.Predicate.Equals(rdfType) && t.Object.NodeType == NodeType.Uri);
-                if (/*c.Triples.Count > 1 &&*/ typeTriple != null)
+                if (typeTriple != null)
                 {
                     //Should be safe to invoke GenerateSubjectOutput but we can't allow rdf:Description
                     this.GenerateSubjectOutput(context, c.Triples, false);
@@ -696,7 +707,7 @@ namespace VDS.RDF.Writing
                 else
                 {
                     //Otherwise we invoke GeneratePredicateOutput (and use rdf:parseType="Resource" if there was more than 1 triple)
-                    /*if (c.Triples.Count > 1)*/ context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
+                    context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
                     foreach (Triple t in c.Triples)
                     {
                         this.GeneratePredicateOutput(context, t);
@@ -716,30 +727,34 @@ namespace VDS.RDF.Writing
                 //Going to need rdf:parseType="Resource" on current predicate
                 context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
 
-                //Then output the elements of the Collection
-                int toClose = c.Triples.Count;
-                while (c.Triples.Count > 0)
-                {
-                    Triple t = c.Triples[0];
-                    c.Triples.RemoveAt(0);
+                this.GenerateCollectionItemOutput(context, c);
+            }
+        }
 
-                    //rdf:first Node
-                    context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
-                    this.GenerateObjectOutput(context, t);
+        private void GenerateCollectionItemOutput(RdfXmlWriterContext context, OutputRdfCollection c)
+        {
+            //Then output the elements of the Collection
+            int toClose = c.Triples.Count;
+            while (c.Triples.Count > 0)
+            {
+                Triple t = c.Triples[0];
+                c.Triples.RemoveAt(0);
 
-                    context.TriplesDone.Add(t);
-                    context.Writer.WriteEndElement();
+                //rdf:first Node
+                context.Writer.WriteStartElement("rdf", "first", NamespaceMapper.RDF);
+                this.GenerateObjectOutput(context, t);
 
-                    //rdf:rest Node
-                    context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
-                    //context.Writer.WriteAttributeString("rdf", "parseType", NamespaceMapper.RDF, "Resource");
-                }
-                //Terminate the list and close all the open rdf:rest elements
-                context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
-                for (int i = 0; i < toClose; i++)
-                {
-                    context.Writer.WriteEndElement();
-                }
+                context.TriplesDone.Add(t);
+                context.Writer.WriteEndElement();
+
+                //rdf:rest Node
+                context.Writer.WriteStartElement("rdf", "rest", NamespaceMapper.RDF);
+            }
+            //Terminate the list and close all the open rdf:rest elements
+            context.Writer.WriteAttributeString("rdf", "resource", NamespaceMapper.RDF, RdfSpecsHelper.RdfListNil);
+            for (int i = 0; i < toClose; i++)
+            {
+                context.Writer.WriteEndElement();
             }
         }
 
