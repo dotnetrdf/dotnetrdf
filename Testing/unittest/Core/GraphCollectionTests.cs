@@ -59,6 +59,16 @@ namespace VDS.RDF.Test.Core
         }
 
         [TestMethod]
+        public void GraphCollectionBasic3()
+        {
+            GraphCollection collection = new GraphCollection();
+            Graph g = new Graph();
+            collection.Add(g, true);
+
+            Assert.IsTrue(collection.Contains(g.BaseUri));
+        }
+
+        [TestMethod]
         public void GraphCollectionDiskDemand1()
         {
             TripleStore store = new TripleStore(new DiskDemandGraphCollection());

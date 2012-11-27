@@ -1,6 +1,14 @@
 ﻿Change Log
 ==========
 
+0.8.1 RC2
+---------
+
+Changed
+- Bug Fixes
+ - Fixed a critical bug in GraphCollection caused by a change in a dependency that wasn't caught by our existing
+   regression tests
+
 0.8.0 RC1
 ---------
 
