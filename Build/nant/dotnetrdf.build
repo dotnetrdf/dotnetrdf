@@ -1270,6 +1270,7 @@
                    dist-libs-nightly,
                    dist-utils-stable,
                    dist-utils-nightly,
+                   dist-utils-installer,
                    dist-libs-nuget">
     
   </target>

@@ -159,6 +159,8 @@ Release History
 
 26/11/2012 - Release of Version 0.8.0 RC 1 (Build 0.8.0.1930)
 
+27/11/2012 - Release of Version 0.8.1 RC 2 (Build 0.8.1.1939)
+
 Acknowledgements
 ----------------
 
