@@ -218,6 +218,7 @@ namespace VDS.RDF.Web
                             {
                                 //Form URL Encoded was declared type so expect a query parameter in the Form parameters
                                 queries = context.Request.Form.GetValues("query");
+                                if (queries == null) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length == 0) throw new ArgumentException("Required query parameter in POST body was missing");
                                 if (queries.Length > 1) throw new ArgumentException("The query parameter was specified multiple times in the POST body");
                                 queryText = queries[0];
@@ -465,7 +466,7 @@ namespace VDS.RDF.Web
                     case "GET":
                         //A GET with an update parameter is a Bad Request
                         updates = context.Request.QueryString.GetValues("update");
-                        if (updates.Length > 0) throw new ArgumentException("Updates cannot be submitted as GET requests");
+                        if (updates != null && updates.Length > 0) throw new ArgumentException("Updates cannot be submitted as GET requests");
 
                         //Otherwise GET either results in the Service Description if appropriately conneg'd or
                         //the update form if enabled
@@ -515,6 +516,7 @@ namespace VDS.RDF.Web
                             {
                                 //Form URL Encoded was declared type so expect an update parameter in the Form parameters
                                 updates = context.Request.Form.GetValues("update");
+                                if (updates == null) throw new ArgumentException("Required update parameter in POST body was missing");
                                 if (updates.Length == 0) throw new ArgumentException("Required update parameter in POST body was missing");
                                 if (updates.Length > 1) throw new ArgumentException("The update parameter was specified multiple times in the POST body");
                                 updateText = updates[0];
@@ -568,6 +570,10 @@ namespace VDS.RDF.Web
                     default:
                         throw new NotSupportedException("HTTP " + context.Request.HttpMethod.ToUpper() + " is not supported by a SPARQL Update endpoint");
                 }
+
+                //Clean up protocol provided dataset
+                userDefaultGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
+                userNamedGraphs.RemoveAll(g => String.IsNullOrEmpty(g));
 
                 //Now we're going to parse the Updates
                 SparqlUpdateParser parser = new SparqlUpdateParser();
@@ -1094,14 +1100,14 @@ namespace VDS.RDF.Web
             output.RenderEndTag();
             output.WriteBreak();
 
-            //output.WriteEncodedText("Default Graph URI: ");
-            //output.AddAttribute(HtmlTextWriterAttribute.Name, "default-graph-uri");
-            //output.AddAttribute(HtmlTextWriterAttribute.Type, "text");
-            //output.AddAttribute(HtmlTextWriterAttribute.Size, "100");
-            //output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultGraphURI);
-            //output.RenderBeginTag(HtmlTextWriterTag.Input);
-            //output.RenderEndTag();
-            //output.WriteBreak();
+            output.WriteEncodedText("Default Graph URI: ");
+            output.AddAttribute(HtmlTextWriterAttribute.Name, "using-graph-uri");
+            output.AddAttribute(HtmlTextWriterAttribute.Type, "text");
+            output.AddAttribute(HtmlTextWriterAttribute.Size, "100");
+            output.AddAttribute(HtmlTextWriterAttribute.Value, this._config.DefaultGraphURI);
+            output.RenderBeginTag(HtmlTextWriterTag.Input);
+            output.RenderEndTag();
+            output.WriteBreak();
 
             output.AddAttribute(HtmlTextWriterAttribute.Type, "submit");
             output.AddAttribute(HtmlTextWriterAttribute.Value, "Perform Update");

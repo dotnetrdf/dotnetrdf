@@ -1317,6 +1317,11 @@ namespace VDS.RDF.Parsing
                                 this.TryParseFilterClause(context, pattern);
                                 break;
 
+                            case Token.BIND:
+                                //BIND Clause
+                                this.TryParseBindAssignment(context, pattern);
+                                break;
+
                             case Token.OPTIONAL:
                                 //OPTIONAL Clause
                                 if (!child.IsEmpty)
@@ -1396,7 +1401,6 @@ namespace VDS.RDF.Parsing
                             case Token.BLANKNODE:
                             case Token.BLANKNODEWITHID:
                             case Token.LET:
-                            case Token.BIND:
                             case Token.LEFTSQBRACKET:
                             case Token.LEFTBRACKET:
                                 //Start of some Triple Patterns
@@ -3726,7 +3730,7 @@ namespace VDS.RDF.Parsing
                 return expr.Arguments.All(arg => this.IsProjectableExpression(context, arg, projectedSoFar));
             }
         }
-
+        
         #endregion
     }
 }

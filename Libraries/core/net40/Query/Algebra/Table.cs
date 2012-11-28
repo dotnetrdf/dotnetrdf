@@ -30,23 +30,38 @@ using System.Text;
 
 namespace VDS.RDF.Query.Algebra
 {
+    /// <summary>
+    /// Represents a fixed set of solutions
+    /// </summary>
     public class Table
         : ITerminalOperator
     {
         private BaseMultiset _table;
 
+        /// <summary>
+        /// Creates a new fixed set of solutions
+        /// </summary>
+        /// <param name="table">Table</param>
         public Table(BaseMultiset table)
         {
             if (table == null) throw new ArgumentNullException("table");
             this._table = table;
         }
 
+        /// <summary>
+        /// Returns the fixed set of solutions
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             context.OutputMultiset = this._table;
             return context.OutputMultiset;
         }
 
+        /// <summary>
+        /// Gets the variables used in the algebra
+        /// </summary>
         public IEnumerable<string> Variables
         {
             get
@@ -55,16 +70,28 @@ namespace VDS.RDF.Query.Algebra
             }
         }
 
+        /// <summary>
+        /// Throws an error as this cannot be converted back into a query
+        /// </summary>
+        /// <returns></returns>
         public SparqlQuery ToQuery()
         {
             throw new NotSupportedException("Cannot convert Table to Query");
         }
 
+        /// <summary>
+        /// Throws an error as this cannot be converted back into a graph pattern
+        /// </summary>
+        /// <returns></returns>
         public Patterns.GraphPattern ToGraphPattern()
         {
             throw new NotSupportedException("Cannot convert Table to Graph Pattern");
         }
 
+        /// <summary>
+        /// Gets the string representation of the algebra
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return "Table()";

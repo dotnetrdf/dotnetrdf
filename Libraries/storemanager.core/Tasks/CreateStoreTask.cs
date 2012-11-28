@@ -46,7 +46,7 @@ namespace VDS.RDF.Utilities.StoreManager.Tasks
         /// Creates a task for creating a Store
         /// </summary>
         /// <param name="server">Server</param>
-        /// <param name="id"></param>
+        /// <param name="template">Template</param>
         public CreateStoreTask(IStorageServer server, IStoreTemplate template)
             : base("Create Store")
         {

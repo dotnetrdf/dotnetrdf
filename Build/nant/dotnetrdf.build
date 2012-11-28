@@ -28,11 +28,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="080" />
-  <property name="dotnetrdf.releasetype" value="rc1" />
-  <property name="dotnetrdf.toolsversion" value="070" />
+  <property name="dotnetrdf.version" value="081" />
+  <property name="dotnetrdf.releasetype" value="rc2" />
+  <property name="dotnetrdf.toolsversion" value="071" />
   <property name="dotnetrdf.toolsreleasetype" value="beta" />
-  <property name="dotnetrdf.nuspecversion" value="0.8.0" />
+  <property name="dotnetrdf.nuspecversion" value="0.8.1" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -1000,6 +1000,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40/" file="Libraries/core/net40/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-net35" description="Copy the latest 3.5 build to the Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-net35">
@@ -1007,6 +1008,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35/" file="Libraries/core/net35/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-silverlight" description="Copy the latest Silverlight build to the Silverlight Nightly Build directory" unless="${dotnetrdf.nobuild}"  depends="compile-core-silverlight">
@@ -1014,6 +1016,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4/" file="Libraries/core/sl4/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-windowsphone" description="Copy the latest Windows Phone build to the Windows Phone Nightly Build directory" unless="${dotnetrdf.nobuild}" if="${dotnetrdf.nowindowsphone != 'true'}"  depends="compile-core-windowsphone">
@@ -1021,6 +1024,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/sl4-wp/" file="Libraries/core/sl4-wp/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile" description="Copy the latest Client Profile build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile">
@@ -1028,6 +1032,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net40-client/" file="Libraries/core/net40-client/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-core-clientprofile-net35" description="Copy the latest Client Profile 3.5 build to the Client Profile Nightly Build directory" unless="${dotnetrdf.nobuild}" depends="compile-core-clientprofile-net35">
@@ -1035,6 +1040,7 @@
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/dotNetRDF.xml" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/HtmlAgilityPack.dll" />
     <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/Newtonsoft.Json.dll" />
+    <copy overwrite="true" todir="bin/nightlies/Libraries/Core/net35-client/" file="Libraries/core/net35-client/bin/Debug/VDS.Common.dll" />
   </target>
 
   <target name="build-data-virtuoso" description="Copy the latest Data.Virtuoso build to the Data.Virtuoso nightly build directory" unless="${dotnetrdf.nobuild}" depends="compile-data-virtuoso">
@@ -1264,6 +1270,7 @@
                    dist-libs-nightly,
                    dist-utils-stable,
                    dist-utils-nightly,
+                   dist-utils-installer,
                    dist-libs-nuget">
     
   </target>
@@ -1283,22 +1290,22 @@
         <include name="**/*" />
       </fileset>
     </zip>
-    <zip zipfile="${dotnetrdf.srczip}" ziplevel="9"> 
+    <zip zipfile="${dotnetrdf.srczip}" ziplevel="9">
       <fileset failonempty="true">
         <include name="**/*" />
-        <exclude name=".hg/*" />
+        <exclude name=".hg/" />
         <exclude name="**/bin/**/*" />
         <exclude name="**/obj/**/*" />
-	<exclude name="**/*.dll" />
+        <exclude name="**/*.dll" />
         <exclude name="**/*.exe" />
         <exclude name="**/*.pdb" />
         <exclude name="Testing/" />
         <exclude name="TestResults/" />
         <exclude name="Samples/" />
-	<exclude name="*.zip" />
-	<exclude name="Utilities/bsbm/" />
-	<exclude name="Build/ndoc3/docs/" />
-	<exclude name="Build/NuGet/*/lib/**/*" />
+        <exclude name="*.zip" />
+        <exclude name="Utilities/bsbm/" />
+        <exclude name="Build/ndoc3/docs/" />
+        <exclude name="Build/NuGet/*/lib/**/*" />
         <exclude name="packages/" />
       </fileset>
     </zip>
@@ -1442,7 +1449,8 @@
     <exec workingdir="Build/nuget/Core/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.nuspec" />
-      <arg value="-verbose" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1493,7 +1501,8 @@
     <exec workingdir="Build/nuget/Data.Virtuoso/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Data.Virtuoso.nuspec" />
-      <arg value="-verbose" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
 
@@ -1544,7 +1553,8 @@
     <exec workingdir="Build/nuget/Query.FullText/" program="nuget.exe">
       <arg value="pack" />
       <arg value="dotNetRDF.Query.FullText.nuspec" />
-      <arg value="-verbose" />
+      <arg value="-Verbosity" />
+      <arg value="detailed" />
     </exec>
   </target>
   

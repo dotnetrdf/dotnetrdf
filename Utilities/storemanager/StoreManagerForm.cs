@@ -223,7 +223,7 @@ namespace VDS.RDF.Utilities.StoreManager
         /// <summary>
         /// Runs an Update
         /// </summary>
-        private void Update()
+        private void SparqlUpdate()
         {
             if (!this._manager.IsReady)
             {
@@ -585,7 +585,7 @@ namespace VDS.RDF.Utilities.StoreManager
 
         private void btnSparqlUpdate_Click(object sender, EventArgs e)
         {
-            this.Update();
+            this.SparqlUpdate();
         }
 
         private void chkImportDefaultUri_CheckedChanged(object sender, EventArgs e)

@@ -317,6 +317,26 @@ namespace VDS.RDF.Test.Writing
             g.LoadFromString(fragment);
 
             this.CheckFailure(g);
-        }       
+        }
+
+        [TestMethod]
+        public void WritingRdfXmlPrettySubjectCollection1()
+        {
+            String graph = @"@prefix ex: <http://example.com/>. (1) ex:someProp ""Value"".";
+            Graph g = new Graph();
+            g.LoadFromString(graph, new TurtleParser());
+
+            PrettyRdfXmlWriter writer = new PrettyRdfXmlWriter();
+            System.IO.StringWriter strWriter = new System.IO.StringWriter();
+            writer.Save(g, strWriter);
+
+            Console.WriteLine(strWriter.ToString());
+            Console.WriteLine();
+
+            Graph h = new Graph();
+            h.LoadFromString(strWriter.ToString(), new RdfXmlParser());
+
+            Assert.AreEqual(g, h, "Graphs should be equal");
+        }
     }
 }

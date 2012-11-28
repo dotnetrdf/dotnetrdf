@@ -102,6 +102,9 @@ namespace VDS.RDF.Query.FullText.Search
             private set;
         }
 
+        /// <summary>
+        /// Gets the Graph URI of the result
+        /// </summary>
         public Uri GraphUri
         {
             get;

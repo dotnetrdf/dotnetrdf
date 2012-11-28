@@ -58,7 +58,7 @@ namespace VDS.RDF.Test.Sparql
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
@@ -85,7 +85,7 @@ namespace VDS.RDF.Test.Sparql
                 g.BaseUri = null;
                 store.Add(g, true);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
@@ -112,7 +112,7 @@ namespace VDS.RDF.Test.Sparql
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
@@ -139,7 +139,7 @@ namespace VDS.RDF.Test.Sparql
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
 
                 Console.WriteLine("SPARQL View Populated");
@@ -197,7 +197,7 @@ namespace VDS.RDF.Test.Sparql
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 if (view.Triples.Count == 0) view.UpdateView();
                 int lastCount = view.Triples.Count;
 
@@ -212,7 +212,7 @@ namespace VDS.RDF.Test.Sparql
                 FileLoader.Load(h, "Turtle.ttl");
                 store.Add(h);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 view.UpdateView();
 
                 Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the added Graph is not in the set of Graphs over which the query operates");
@@ -220,7 +220,7 @@ namespace VDS.RDF.Test.Sparql
                 //Remove this Graph and check the View still doesn't change
                 store.Remove(h.BaseUri);
 
-                Thread.Sleep(200);
+                Thread.Sleep(500);
                 view.UpdateView();
 
                 Assert.IsTrue(view.Triples.Count == lastCount, "View should not have changed since the removed Graph is not in the set of Graphs over which the query operates");

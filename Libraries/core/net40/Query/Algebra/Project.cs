@@ -67,7 +67,7 @@ namespace VDS.RDF.Query.Algebra
             catch (RdfQueryTimeoutException)
             {
                 //If not partial results throw the error
-                if (!context.Query.PartialResultsOnTimeout) throw;
+                if (context.Query == null || !context.Query.PartialResultsOnTimeout) throw;
             }
 
             IEnumerable<SparqlVariable> vars;
@@ -353,8 +353,15 @@ namespace VDS.RDF.Query.Algebra
         /// <returns></returns>
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
-            context.InputMultiset = context.Evaluate(this._pattern);
-
+            try
+            {
+                context.InputMultiset = context.Evaluate(this._pattern);
+            }
+            catch (RdfQueryTimeoutException)
+            {
+                //If not partial results throw the error
+                if (context.Query == null || !context.Query.PartialResultsOnTimeout) throw;
+            }
             HashSet<SparqlVariable> vars;
             bool selectAll = false;
             if (context.Query != null)

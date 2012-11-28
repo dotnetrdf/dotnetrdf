@@ -196,22 +196,43 @@ namespace VDS.RDF.Test.Sparql
         }
 
         [TestMethod]
-        public void SparqlGroupByAggregateEmptyGroup()
+        public void SparqlGroupByAggregateEmptyGroup1()
         {
             String query = @"PREFIX ex: <http://example.com/>
-SELECT ?x (MAX(?value) AS ?max)
+SELECT (MAX(?value) AS ?max)
 WHERE {
 	?x ex:p ?value
-} GROUP BY ?x";
+}";
 
             SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
             LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            Console.WriteLine(q.ToAlgebra().ToString());
+
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results == null) Assert.Fail("Null results");
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
             Assert.AreEqual(1, results.Count, "Should be a single result");
             Assert.IsTrue(results.First().All(kvp => kvp.Value == null), "Should be no bound values");
+        }
+
+        [TestMethod]
+        public void SparqlGroupByAggregateEmptyGroup2()
+        {
+            String query = @"PREFIX ex: <http://example.com/>
+SELECT (MAX(?value) AS ?max)
+WHERE {
+	?x ex:p ?value
+} GROUP BY ?x";
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            LeviathanQueryProcessor processor = new LeviathanQueryProcessor(new TripleStore());
+            Console.WriteLine(q.ToAlgebra().ToString());
+
+            SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
+            if (results == null) Assert.Fail("Null results");
+
+            Assert.IsTrue(results.IsEmpty, "Results should be empty");
         }
 
         [TestMethod]

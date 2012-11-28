@@ -133,6 +133,11 @@ namespace VDS.RDF.Query.Grouping
             this._name = name;
         }
 
+        /// <summary>
+        /// Creates a new Group By which groups by a given Variable and assigns to another variable
+        /// </summary>
+        /// <param name="name">Variable Name</param>
+        /// <param name="assignVariable">Assign Variable</param>
         public GroupByVariable(String name, String assignVariable)
             : this(name)
         {

@@ -47,64 +47,8 @@ namespace VDS.RDF.GUI
         private static Icon _windowIcon = null;
 
         /// <summary>
-        /// Filename Filter for RDF Graphs for Open/Save Dialogs
+        /// Gets/Sets the Window Icon to use
         /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(true,false,false,false,false,true) instead", true)]
-        public const String RdfFilter = "All Supported RDF Formats|*.nt;*.ttl;*.n3;*.rdf;*.json;*.html;*.xhtml;*.htm|NTriples Files (*.nt)|*.nt|Turtle Files (*.ttl)|*.ttl|Notation 3 Files (*.n3)|*.n3|RDF/XML Files (*.rdf)|*.rdf|RDF/JSON Files (*.json)|*.json|RDFa Files|*.html,*.xhtml,*.htm|All Files|*.*";
-
-        /// <summary>
-        /// Filename Filter for RDF Datasets for Open/Save Dialogs
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(false,true,false,false,false,true) instead", true)]
-        public const String RdfDatasetFilter = "All Supported RDF Dataset Formats|*.nq;*.trig;*.xml|NQuads Files (*.nq)|*.nq|TriG Files (*.trig)|*.trig|TriX Files (*.xml)|*.xml|All Files|*.*";
-
-        /// <summary>
-        /// Filname Filter for SPARQL Results for Open/Save Dialogs
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(false,false,true,false,false,true) instead", true)]
-        public const String SparqlResultsFilter = "All Supported SPARQL Result Formats|*.srx;*.srj;*.json|SPARQL Results XML Files (*.srx)|*.srx|SPARQL Results JSON Files (*.srj,*.json)|*.srj,*.json|HTML Files (*.html,*.htm,*.xhtml)|*.html,*.xhtml,*.htm|All Files|*.*";
-
-        /// <summary>
-        /// Filename Filter for SPARQL Queries
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(false,false,false,true,false,true) instead", true)]
-        public const String SparqlQueryFilter = "SPARQL Query Files|*.rq|All Files|*.*";
-
-        /// <summary>
-        /// Filename Filter for SPARQL Updates
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(false,false,false,false,true,true) instead", true)]
-        public const String SparqlUpdateFilter = "SPARQL Update Files|*.ru|All Files|*.*";
-
-        /// <summary>
-        /// Filename Filter for Formats which can be used to serialise RDF and SPARQL Results but which are not standardised
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(true,true,false,false,false,true) instead", true)]
-        public const String NonStandardFilter = "Comma Separated Values Files (*.csv)|*.csv|Tab Separated Values Files (*.tsv)|*.tsv";
-
-        /// <summary>
-        /// Filename Filter for RDF Graphs/Datasets for Open/Save Dialogs
-        /// </summary>
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter(true,true,false,false,false,true) instead", true)]
-        public static String RdfOrDatasetFilter
-        {
-            get
-            {
-                return RdfFilter + "|" + RdfDatasetFilter;
-            }
-        }
-
-        [Obsolete("Use MimeTypesHelper.GetFilenameFilter() instead", true)]
-        public static String AllFilter
-        {
-            get
-            {
-                String temp = RdfFilter + "|" + RdfDatasetFilter + "|" + SparqlResultsFilter + "|" + SparqlQueryFilter + "|" + SparqlUpdateFilter;
-                temp = temp.Replace("All Files|*.*|", "");
-                return temp;
-            }
-        }
-
         public static Icon WindowIcon
         {
             get
@@ -122,9 +66,15 @@ namespace VDS.RDF.GUI
     /// Comparer which compares objects based on the value of their ToString() method
     /// </summary>
     /// <typeparam name="T">Type to compare</typeparam>
-    class ToStringComparer<T> : IComparer<T>
+    class ToStringComparer<T> 
+        : IComparer<T>
     {
-
+        /// <summary>
+        /// Compares two objects by their ToString() values
+        /// </summary>
+        /// <param name="x">Object 1</param>
+        /// <param name="y">Object 2</param>
+        /// <returns></returns>
         public int Compare(T x, T y)
         {
             if (x == null && y == null)

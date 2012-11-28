@@ -11,7 +11,7 @@ This package contains the Core Library for the following .Net profiles:
 - Silverlight 4
 - Silverlight 4 for Windows Phone 7
 
-It also contains the Data plugins for our OpenLink Virtuoso support, builds
+It also contains the Data plugin for our OpenLink Virtuoso support, builds
 are provided for the following .Net profiles:
 - .Net 4.0
 - .Net 4.0 Client Profile

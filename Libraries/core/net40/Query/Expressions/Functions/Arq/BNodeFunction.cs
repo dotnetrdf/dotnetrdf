@@ -123,19 +123,25 @@ namespace VDS.RDF.Query.Expressions.Functions.Arq
             }
         }
 
+        /// <summary>
+        /// Gets the arguments of the expression
+        /// </summary>
         public override IEnumerable<ISparqlExpression> Arguments
         {
             get
             {
-                return Enumerable.Empty<ISparqlExpression>();
+                return this._expr.AsEnumerable();
             }
         }
 
+        /// <summary>
+        /// Gets the variables in the expression
+        /// </summary>
         public override IEnumerable<string> Variables
         {
             get
             {
-                return Enumerable.Empty<String>();
+                return this._expr.Variables;
             }
         }
     }

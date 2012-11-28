@@ -147,7 +147,9 @@ namespace VDS.RDF.Test
             FileLoader.Load(h, "InferenceTest.ttl");
 
             //Remove MSG from 2nd Graph
-            h.Retract(h.GetTriplesWithSubject(h.GetBlankNode("autos1")).ToList());
+            INode toRemove = h.Nodes.BlankNodes().FirstOrDefault();
+            if (toRemove == null) Assert.Inconclusive("No MSGs in test graph");
+            h.Retract(h.GetTriplesWithSubject(toRemove).ToList());
 
             GraphDiffReport report = g.Difference(h);
             TestTools.ShowDifferences(report);
