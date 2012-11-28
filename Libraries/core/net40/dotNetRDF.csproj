@@ -137,6 +137,7 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
     <Compile Include="Query\Builder\Expressions\BooleanExpression.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Query\Builder\GraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\GraphPatternType.cs" />
     <Compile Include="Query\Builder\ICommonQueryBuilder.cs" />
+    <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeQueryBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ISelectQueryBuilder.cs" />

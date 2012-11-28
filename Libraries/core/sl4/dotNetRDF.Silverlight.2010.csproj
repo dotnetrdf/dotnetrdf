@@ -2564,4 +2564,12 @@
       <Link>Query\Builder\ExpressionBuilderStringExtensions.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\DescribeGraphPatternBuilder.cs">
+      <Link>Query\Builder\DescribeGraphPatternBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDescribeGraphPatternBuilder.cs">
+      <Link>Query\Builder\IDescribeGraphPatternBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

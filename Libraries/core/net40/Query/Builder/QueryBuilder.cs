@@ -19,7 +19,7 @@ namespace VDS.RDF.Query.Builder
     {
         private readonly SparqlQuery _query;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder;
-        private GraphPatternBuilder _constructGraphPatternBuilder;
+        private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
 
         /// <summary>
         /// Gets or sets the namespace mappings for the SPARQL query being built
@@ -38,7 +38,7 @@ namespace VDS.RDF.Query.Builder
             return new QueryBuilder(SparqlQueryType.Ask);
         }
 
-        public static IQueryBuilder Construct(Action<IGraphPatternBuilder> buildConstructTemplate)
+        public static IQueryBuilder Construct(Action<IDescribeGraphPatternBuilder> buildConstructTemplate)
         {
             if (buildConstructTemplate == null)
             {
@@ -46,7 +46,7 @@ namespace VDS.RDF.Query.Builder
             }
 
             var queryBuilder = new QueryBuilder(SparqlQueryType.Construct);
-            GraphPatternBuilder graphPatternBuilder = new GraphPatternBuilder(queryBuilder.Prefixes);
+            DescribeGraphPatternBuilder graphPatternBuilder = new DescribeGraphPatternBuilder(new GraphPatternBuilder(queryBuilder.Prefixes));
             buildConstructTemplate(graphPatternBuilder);
             return queryBuilder.Construct(graphPatternBuilder);
         }
@@ -56,7 +56,7 @@ namespace VDS.RDF.Query.Builder
             return new QueryBuilder(SparqlQueryType.Construct);
         }
 
-        private IQueryBuilder Construct(GraphPatternBuilder graphPatternBuilder)
+        private IQueryBuilder Construct(DescribeGraphPatternBuilder graphPatternBuilder)
         {
             _constructGraphPatternBuilder = graphPatternBuilder;
             return this;
