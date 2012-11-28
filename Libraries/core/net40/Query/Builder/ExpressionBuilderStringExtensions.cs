@@ -2,7 +2,6 @@ using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
 using VDS.RDF.Query.Expressions.Functions.Sparql.String;
-using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder
 {
@@ -11,14 +10,91 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public static class ExpressionBuilderStringExtensions
     {
-        public static BooleanExpression Regex(this ExpressionBuilder eb, SparqlExpression text, string pattern)
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, VariableExpression text, string pattern)
         {
-            return new BooleanExpression(new RegexFunction(text.Expression, eb.Constant(pattern).Expression));
+            return Regex(text.Expression, pattern.ToSimpleLiteral(), null);
         }
 
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, VariableExpression text, VariableExpression pattern)
+        {
+            return Regex(text.Expression, pattern.Expression, null);
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, string pattern)
+        {
+            return Regex(text.Expression, pattern.ToSimpleLiteral(), null);
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, LiteralExpression pattern)
+        {
+            return Regex(text.Expression, pattern.Expression, null);
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, VariableExpression pattern)
+        {
+            return Regex(text.Expression, pattern.Expression, null);
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
         public static BooleanExpression Regex(this ExpressionBuilder eb, SparqlExpression text, string pattern, string flags)
         {
-            return new BooleanExpression(new RegexFunction(text.Expression, eb.Constant(pattern).Expression, eb.Constant(flags).Expression));
+            return Regex(text.Expression, eb.Constant(pattern).Expression, flags.ToConstantTerm());
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, VariableExpression text, VariableExpression pattern, string flags)
+        {
+            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, string pattern, string flags)
+        {
+            return Regex(text.Expression, pattern.ToSimpleLiteral(), flags.ToConstantTerm());
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, LiteralExpression pattern, string flags)
+        {
+            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+        }
+
+        /// <summary>
+        /// Creates a call to the REGEX function
+        /// </summary>
+        public static BooleanExpression Regex(this ExpressionBuilder eb, LiteralExpression text, VariableExpression pattern, string flags)
+        {
+            return Regex(text.Expression, pattern.Expression, flags.ToConstantTerm());
+        }
+
+        private static BooleanExpression Regex(ISparqlExpression text, ISparqlExpression pattern, ISparqlExpression flags)
+        {
+            RegexFunction regex = flags == null ? new RegexFunction(text, pattern) : new RegexFunction(text, pattern, flags);
+
+            return new BooleanExpression(regex);
         }
 
         /// <summary>
@@ -334,31 +410,49 @@ namespace VDS.RDF.Query.Builder
             return new BooleanExpression(new LangMatchesFunction(languageTag, languageRange));
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, string languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, string languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.ToConstantTerm());
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, LiteralExpression languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.Expression);
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, LiteralExpression languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.Expression);
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, LiteralExpression languageTag, VariableExpression languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.Expression);
         }
 
+        /// <summary>
+        /// Creates a call to the LANGMATCHES function
+        /// </summary>
         public static BooleanExpression LangMatches(this ExpressionBuilder eb, VariableExpression languageTag, VariableExpression languageRange)
         {
             return LangMatches(languageTag.Expression, languageRange.Expression);

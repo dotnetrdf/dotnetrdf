@@ -11,7 +11,7 @@ namespace VDS.RDF.Test.Builder.Expressions
     public partial class ExpressionBuilderTests
     {
         [TestMethod]
-        public void CanCreateRegexExpressionWithVariableAndString()
+        public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParameters()
         {
             // given
             VariableExpression var = new VariableExpression("mail");
@@ -21,8 +21,164 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(regex is RegexFunction);
-            Assert.IsTrue(regex.Arguments.ElementAt(0) is VariableTerm);
+            Assert.AreEqual(2, regex.Arguments.Count());
+            Assert.AreSame(var.Expression, regex.Arguments.ElementAt(0));
             Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithTwoVariableParameters()
+        {
+            // given
+            VariableExpression text = new VariableExpression("mail");
+            VariableExpression pattern = new VariableExpression("pattern");
+
+            // when
+            var regex = Builder.Regex(text, pattern).Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(2, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParameters()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+
+            // when
+            var regex = Builder.Regex(text, "@gmail.com$").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(2, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParameters()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+            VariableExpression pattern = new VariableExpression("pattern");
+
+            // when
+            var regex = Builder.Regex(text, pattern).Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(2, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParameters()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+            LiteralExpression pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral());
+
+            // when
+            var regex = Builder.Regex(text, pattern).Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(2, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithVariableAndStringParametersAndStringFlags()
+        {
+            // given
+            VariableExpression var = new VariableExpression("mail");
+
+            // when
+            var regex = Builder.Regex(var, "@gmail.com$", "i").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(3, regex.Arguments.Count());
+            Assert.AreSame(var.Expression, regex.Arguments.ElementAt(0));
+            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithTwoVariableParametersAndStringFlags()
+        {
+            // given
+            VariableExpression text = new VariableExpression("mail");
+            VariableExpression pattern = new VariableExpression("pattern");
+
+            // when
+            var regex = Builder.Regex(text, pattern, "i").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(3, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithLiteralAndStringParametersAndStringFlags()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+
+            // when
+            var regex = Builder.Regex(text, "@gmail.com$", "i").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(3, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.IsTrue(regex.Arguments.ElementAt(1) is ConstantTerm);
+            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithLiteralAndVariableParametersAndStringFlags()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+            VariableExpression pattern = new VariableExpression("pattern");
+
+            // when
+            var regex = Builder.Regex(text, pattern, "i").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(3, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
+        }
+
+        [TestMethod]
+        public void ShouldAllowCreatingRegexFunctionWithTwoLiteralParametersAndStringFlags()
+        {
+            // given
+            LiteralExpression text = new LiteralExpression("mail".ToSimpleLiteral());
+            LiteralExpression pattern = new LiteralExpression("@gmail.com$".ToSimpleLiteral());
+
+            // when
+            var regex = Builder.Regex(text, pattern, "i").Expression;
+
+            // then
+            Assert.IsTrue(regex is RegexFunction);
+            Assert.AreEqual(3, regex.Arguments.Count());
+            Assert.AreSame(text.Expression, regex.Arguments.ElementAt(0));
+            Assert.AreSame(pattern.Expression, regex.Arguments.ElementAt(1));
+            Assert.IsTrue(regex.Arguments.ElementAt(2) is ConstantTerm);
         }
 
         [TestMethod]

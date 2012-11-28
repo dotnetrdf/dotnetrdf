@@ -61,9 +61,20 @@ namespace VDS.RDF.Query.Builder.Expressions
             throw new ArgumentException(String.Format("Unsupported type for literal node: {0}", typeof(T)));
         }
 
+        /// <summary>
+        /// Creates a typed literal term
+        /// </summary>
         internal static ConstantTerm ToConstantTerm<T>(this T value)
         {
             return new ConstantTerm(ToLiteral(value));
+        }
+
+        /// <summary>
+        /// Creates an untyped literal term (simple literal)
+        /// </summary>
+        internal static ConstantTerm ToSimpleLiteral(this string value)
+        {
+            return new ConstantTerm(new LiteralNode(null, value));
         }
     }
 }
