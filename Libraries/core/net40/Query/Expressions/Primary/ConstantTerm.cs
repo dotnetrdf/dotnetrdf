@@ -133,6 +133,14 @@ namespace VDS.RDF.Query.Expressions.Primary
         }
 
         /// <summary>
+        /// Node this Term represents
+        /// </summary>
+        internal IValuedNode Node
+        {
+            get { return _node; }
+        }
+
+        /// <summary>
         /// Transforms the Expression using the given Transformer
         /// </summary>
         /// <param name="transformer">Expression Transformer</param>

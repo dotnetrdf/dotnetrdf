@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Test.Builder.Expressions
 {
@@ -40,6 +41,20 @@ namespace VDS.RDF.Test.Builder.Expressions
                 assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
             AssertExpressionTypeAndCorrectArguments<NotEqualsExpression>(TestingStringValue != right,
                 assertLeftOperand: op => AssertCorrectConstantTerm(op, TestingStringValue));
+        }
+
+        [TestMethod]
+        public void ShouldAllowExtractingUntypedLiteral()
+        {
+            // given
+            var literal = new LiteralExpression(5.5.ToConstantTerm());
+
+            // when
+            LiteralExpression simpleLiteral = literal.ToSimpleLiteral();
+
+            // then
+            Assert.IsTrue(simpleLiteral.Expression is ConstantTerm);
+            Assert.AreEqual("\"5.5\"", simpleLiteral.Expression.ToString());
         }
     }
 }

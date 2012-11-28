@@ -1,5 +1,6 @@
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Comparison;
+using VDS.RDF.Query.Expressions.Primary;
 
 namespace VDS.RDF.Query.Builder.Expressions
 {
@@ -37,6 +38,12 @@ namespace VDS.RDF.Query.Builder.Expressions
         {
             return new BooleanExpression(new NotEqualsExpression(left.ToConstantTerm(), right.Expression));
 #pragma warning restore 1591
+        }
+
+        public LiteralExpression ToSimpleLiteral()
+        {
+            ConstantTerm constant = (ConstantTerm) Expression;
+            return new LiteralExpression(constant.Node.AsString().ToSimpleLiteral());
         }
     }
 }
