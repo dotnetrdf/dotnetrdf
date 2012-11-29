@@ -4,6 +4,7 @@ namespace VDS.RDF.Query.Builder
     {
         Normal,
         Optional,
-        Minus
+        Minus,
+        Union
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -91,6 +92,9 @@ namespace VDS.RDF.Query.Builder
                 case GraphPatternType.Minus:
                     graphPattern.IsMinus = true;
                     break;
+                case GraphPatternType.Union:
+                    graphPattern.IsUnion = true;
+                    break;
             }
             return graphPattern;
         }
@@ -116,18 +120,31 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Optional);
-            buildGraphPattern(optionalGraphPattern);
-            _childGraphPatternBuilders.Add(optionalGraphPattern);
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Optional);
             return this;
         }
 
         public IGraphPatternBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            var optionalGraphPattern = new GraphPatternBuilder(Prefixes, GraphPatternType.Minus);
-            buildGraphPattern(optionalGraphPattern);
-            _childGraphPatternBuilders.Add(optionalGraphPattern);
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Minus);
             return this;
+        }
+
+        public IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            GraphPatternBuilder union;
+            if (_graphPatternType == GraphPatternType.Union)
+            {
+                union = this;
+            }
+            else
+            {
+                union = new GraphPatternBuilder(Prefixes, GraphPatternType.Union);
+                union._childGraphPatternBuilders.Add(this);
+            }
+
+            union.AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
+            return union;
         }
 
         public AssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
@@ -157,5 +174,12 @@ namespace VDS.RDF.Query.Builder
         }
 
         #endregion
+
+        private void AddChildGraphPattern(Action<IGraphPatternBuilder> buildGraphPattern, GraphPatternType graphPatternType)
+        {
+            var childBuilder = new GraphPatternBuilder(Prefixes, graphPatternType);
+            buildGraphPattern(childBuilder);
+            _childGraphPatternBuilders.Add(childBuilder);
+        }
     }
 }

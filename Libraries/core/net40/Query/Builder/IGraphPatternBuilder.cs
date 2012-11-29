@@ -1,3 +1,5 @@
+using System;
+
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
@@ -5,5 +7,6 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public interface IGraphPatternBuilder : ICommonQueryBuilder<IGraphPatternBuilder>
     {
+        IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern);
     }
 }
