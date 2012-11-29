@@ -38,11 +38,6 @@ namespace VDS.RDF.Query.Builder
 
         internal GraphPattern BuildGraphPattern()
         {
-            if (!_triplePatterns.Any() && !_childGraphPatternBuilders.Any() && !_filterBuilders.Any())
-            {
-                return null;
-            }
-            
             var graphPattern = CreateGraphPattern();
 
             foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns()))
@@ -150,6 +145,12 @@ namespace VDS.RDF.Query.Builder
         public AssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new AssignmentVariableNamePart<IGraphPatternBuilder>(this, buildAssignmentExpression);
+        }
+
+        public IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Normal);
+            return this;
         }
 
         public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)

@@ -21,16 +21,6 @@ namespace VDS.RDF.Test.Builder
         }
 
         [TestMethod]
-        public void ShouldReturnNullIfThereAreNoFiltersTriplePatternsOrChildGraphPatterns()
-        {
-            // when
-            var graphPattern = _builder.BuildGraphPattern();
-
-            // then
-            Assert.IsNull(graphPattern);
-        }
-
-        [TestMethod]
         public void ShouldAllowUsingISparqlExpressionForFilter()
         {
             // given
@@ -87,6 +77,23 @@ namespace VDS.RDF.Test.Builder
             foreach (var childGraphPattern in graphPattern.ChildGraphPatterns)
             {
                 Assert.AreEqual(1, childGraphPattern.TriplePatterns.Count);
+            }
+        }
+
+        [TestMethod]
+        public void ShouldAllowAddingSimpleChildGraphPatterns()
+        {
+            // given
+            _builder.Child(cp => cp.Child(cp2 => cp2.Child(cp3 => cp3.Child(cp4 => cp4.Child(last => { })))));
+
+            // when
+            var graphPattern = _builder.BuildGraphPattern();
+
+            // then
+            for (int i = 0; i < 4; i++)
+            {
+                Assert.AreEqual(1, graphPattern.ChildGraphPatterns.Count);
+                graphPattern = graphPattern.ChildGraphPatterns.Single();
             }
         }
     }

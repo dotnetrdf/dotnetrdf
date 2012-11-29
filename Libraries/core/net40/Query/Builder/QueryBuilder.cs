@@ -161,7 +161,11 @@ namespace VDS.RDF.Query.Builder
             // being reflected in one another
             SparqlQuery executableQuery = _query.Copy();
             executableQuery.NamespaceMap.Import(Prefixes);
-            executableQuery.RootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
+            var rootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
+            if (!rootGraphPattern.IsEmpty)
+            {
+                executableQuery.RootGraphPattern = rootGraphPattern;
+            }
             if (_constructGraphPatternBuilder != null)
             {
                 executableQuery.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern();
@@ -172,6 +176,12 @@ namespace VDS.RDF.Query.Builder
         public AssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
             return new AssignmentVariableNamePart<IQueryBuilder>(this, buildAssignmentExpression);
+        }
+
+        public IQueryBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            _rootGraphPatternBuilder.Child(buildGraphPattern);
+            return this;
         }
 
         public IQueryBuilder Where(params ITriplePattern[] triplePatterns)

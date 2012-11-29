@@ -49,5 +49,7 @@ namespace VDS.RDF.Query.Builder
         /// Adds a BIND variable assignment to the SPARQL query or graph pattern
         /// </summary>
         AssignmentVariableNamePart<TReturnBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
+
+        TReturnBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern);
     }
 }
