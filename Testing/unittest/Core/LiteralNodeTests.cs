@@ -8,7 +8,7 @@ namespace VDS.RDF.Test.Core
     public class LiteralNodeTests
     {
         [TestMethod]
-        public void ShouldCreateLiteralNodeByCultureInvariantToString()
+        public void NodeToLiteralCultureInvariantToString()
         {
             // given
             INodeFactory nodeFactory = new NodeFactory();

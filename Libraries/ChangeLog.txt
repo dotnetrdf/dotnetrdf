@@ -1,6 +1,17 @@
 ﻿Change Log
 ==========
 
+0.8.2 RC3
+---------
+
+Changed
+- Bug Fixes
+ - Fixed a subtle bug in GraphCollection caused by the previous fix in 0.8.1 RC2
+ - Fixed a bug with ToLiteral() not using the invariant culture
+- Dependencies
+ - Updated VDS.Common to 1.1.0
+ - Corrected NuGet dependency on Json.Net to 4.5.11 to match our builds
+
 0.8.1 RC2
 ---------
 
