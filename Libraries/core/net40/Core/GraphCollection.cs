@@ -44,11 +44,6 @@ namespace VDS.RDF
         protected const int DefaultGraphID = 0;
 
         /// <summary>
-        /// Internal Constant used as the URI for the default graph
-        /// </summary>
-        protected readonly Uri DefaultGraphUri = new Uri("urn:dotnetrdf:default-graph");
-
-        /// <summary>
         /// Dictionary of Graph Uri Enhanced Hash Codes to Graphs
         /// </summary>
         /// <remarks>See <see cref="Extensions.GetEnhancedHashCode">GetEnhancedHashCode()</see></remarks>
@@ -59,17 +54,7 @@ namespace VDS.RDF
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<Uri, IGraph>(u => (!EqualityHelper.AreUrisEqual(u, DefaultGraphUri) ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
-        }
-
-        /// <summary>
-        /// Gets the Graph URI, ensures that the key to the MultiDictionary won't be null
-        /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <returns></returns>
-        protected Uri GetGraphUri(Uri graphUri)
-        {
-            return (graphUri != null ? graphUri : DefaultGraphUri);
+            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
         }
 
         /// <summary>
@@ -79,7 +64,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public override bool Contains(Uri graphUri)
         {
-            return this._graphs.ContainsKey(this.GetGraphUri(graphUri));
+            return this._graphs.ContainsKey(graphUri);
         }
 
         /// <summary>
@@ -90,13 +75,13 @@ namespace VDS.RDF
         /// <exception cref="RdfException">Throws an RDF Exception if the Graph has no Base Uri or if the Graph already exists in the Collection and the <paramref name="mergeIfExists"/> parameter was not set to true</exception>
         protected internal override bool Add(IGraph g, bool mergeIfExists)
         {
-            if (this._graphs.ContainsKey(this.GetGraphUri(g.BaseUri)))
+            if (this._graphs.ContainsKey(g.BaseUri))
             {
                 //Already exists in the Graph Collection
                 if (mergeIfExists)
                 {
                     //Merge into the existing Graph
-                    this._graphs[this.GetGraphUri(g.BaseUri)].Merge(g);
+                    this._graphs[g.BaseUri].Merge(g);
                     return true;
                 }
                 else
@@ -108,7 +93,7 @@ namespace VDS.RDF
             else
             {
                 //Safe to add a new Graph
-                this._graphs.Add(this.GetGraphUri(g.BaseUri), g);
+                this._graphs.Add(g.BaseUri, g);
                 this.RaiseGraphAdded(g);
                 return true;
             }
@@ -121,9 +106,9 @@ namespace VDS.RDF
         protected internal override bool Remove(Uri graphUri)
         {
             IGraph g;
-            if (this._graphs.TryGetValue(this.GetGraphUri(graphUri), out g))
+            if (this._graphs.TryGetValue(graphUri, out g))
             {
-                if (this._graphs.Remove(this.GetGraphUri(graphUri)))
+                if (this._graphs.Remove(graphUri))
                 {
                     this.RaiseGraphRemoved(g);
                     return true;
@@ -165,7 +150,7 @@ namespace VDS.RDF
             get 
             {
                 IGraph g;
-                if (this._graphs.TryGetValue(this.GetGraphUri(graphUri), out g))
+                if (this._graphs.TryGetValue(graphUri, out g))
                 {
                     return g;
                 }
