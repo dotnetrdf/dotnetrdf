@@ -1,0 +1,549 @@
+@prefix rdf:	<http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ns1:	<http://schema.org/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	rdf:type	ns1:Movie .
+@prefix dbpedia-owl:	<http://dbpedia.org/ontology/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	rdf:type	dbpedia-owl:Work ,
+		dbpedia-owl:Film .
+@prefix owl:	<http://www.w3.org/2002/07/owl#> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	rdf:type	owl:Thing ,
+		ns1:CreativeWork .
+@prefix ns4:	<http://es.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns4:Koroshiya_1 .
+@prefix ns5:	<http://pt.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns5:Ichi_the_Killer .
+@prefix ns6:	<http://de.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns6:Ichi_the_Killer .
+@prefix ns7:	<http://fr.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns7:Ichi_the_Killer ,
+		<http://it.dbpedia.org/resource/Ichi_the_Killer_(film)> .
+@prefix ns8:	<http://ja.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns8:殺し屋1 ,
+		<http://rdf.freebase.com/ns/m.01t66_> ,
+		<http://data.linkedmdb.org/resource/film/39175> .
+@prefix ns9:	<http://pl.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	owl:sameAs	ns9:Ichi_zabójca .
+@prefix foaf:	<http://xmlns.com/foaf/0.1/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/8/8a/Ichithekillerposter.jpg> .
+@prefix dcterms:	<http://purl.org/dc/terms/> .
+@prefix category:	<http://dbpedia.org/resource/Category:> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	dcterms:subject	category:Crime_drama_films ,
+		<http://dbpedia.org/resource/Category:2000s_crime_films> ,
+		category:Yakuza_films ,
+		category:Japanese_films ,
+		<http://dbpedia.org/resource/Category:2001_films> ,
+		category:Films_directed_by_Takashi_Miike ,
+		category:Central_Park_Media .
+@prefix dbpprop:	<http://dbpedia.org/property/> .
+@prefix dbpedia:	<http://dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	dbpprop:distributor	dbpedia:Media_Blasters ;
+	dbpprop:director	dbpedia:Takashi_Miike ;
+	dbpprop:writer	<http://dbpedia.org/resource/Sakichi_Sat%C5%8D> ,
+		dbpedia:Hideo_Yamamoto ;
+	dbpprop:starring	dbpedia:Tadanobu_Asano ,
+		<http://dbpedia.org/resource/Nao_%C5%8Cmori> ,
+		dbpedia:Shinya_Tsukamoto ,
+		dbpedia:Alien_Sun .
+@prefix ns15:	<http://dbpedia.org/resource/Template:> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	dbpprop:wikiPageUsesTemplate	ns15:Infobox_film ,
+		ns15:IMDb_title ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Ichithekillerposter.jpg/200px-Ichithekillerposter.jpg> ;
+	dbpprop:music	dbpedia:Boredoms ,
+		dbpedia:Seiichi_Yamamoto .
+@prefix xsd:	<http://www.w3.org/2001/XMLSchema#> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	dbpprop:id	"296042"^^xsd:int ;
+	dbpedia-owl:distributor	dbpedia:Media_Blasters ;
+	dbpedia-owl:releaseDate	"2003-05-30"^^xsd:date ,
+		"2001-09-14"^^xsd:date ,
+		"2001-12-22"^^xsd:date ;
+	dbpedia-owl:cinematography	dbpedia:Hideo_Yamamoto ;
+	dbpedia-owl:musicComposer	dbpedia:Boredoms ,
+		dbpedia:Seiichi_Yamamoto ;
+	dbpedia-owl:country	dbpedia:Japan ;
+	dbpedia-owl:director	dbpedia:Takashi_Miike ;
+	dbpedia-owl:writer	<http://dbpedia.org/resource/Sakichi_Sat%C5%8D> ,
+		dbpedia:Hideo_Yamamoto ;
+	dbpedia-owl:starring	dbpedia:Alien_Sun ,
+		<http://dbpedia.org/resource/Nao_%C5%8Cmori> ,
+		dbpedia:Shinya_Tsukamoto ,
+		dbpedia:Tadanobu_Asano ;
+	dbpedia-owl:runtime	7740.0 .
+@prefix ns17:	<http://www.w3.org/ns/prov#> .
+<http://dbpedia.org/resource/Ichi_the_Killer_(film)>	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Ichi_the_Killer_(film)?oldid=495364624> ;
+	dbpprop:hasPhotoCollection	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/Ichi_the_Killer_(film)> ;
+	foaf:isPrimaryTopicOf	<http://en.wikipedia.org/wiki/Ichi_the_Killer_(film)> .
+@prefix ns18:	<http://dbpedia.org/resource/Pok%C3%A9mon:> .
+ns18:_The_First_Movie	rdf:type	ns1:CreativeWork ,
+		dbpedia-owl:Film ,
+		dbpedia-owl:Work ,
+		ns1:Movie .
+@prefix ns19:	<http://umbel.org/umbel/rc/> .
+ns18:_The_First_Movie	rdf:type	ns19:Movie_CW ,
+		owl:Thing .
+@prefix ns20:	<http://es.dbpedia.org/resource/Pok\u00E9mon:> .
+ns18:_The_First_Movie	owl:sameAs	ns20:_The_First_Movie .
+@prefix ns21:	<http://ko.dbpedia.org/resource/\uADF9\uC7A5\uD310_\uD3EC\uCF13\uBAAC\uC2A4\uD130:> .
+ns18:_The_First_Movie	owl:sameAs	ns21:_뮤츠의_역습 ,
+		ns8:劇場版ポケットモンスター_ミュウツーの逆襲 .
+@prefix ns22:	<http://pl.dbpedia.org/resource/Pok\u00E9mon:> .
+ns18:_The_First_Movie	owl:sameAs	ns22:_Film_pierwszy .
+@prefix ns23:	<http://ru.dbpedia.org/resource/\u041F\u043E\u043A\u0435\u043C\u043E\u043D:> .
+ns18:_The_First_Movie	owl:sameAs	ns23:_Мьюту_против_Мью .
+@prefix ns24:	<http://it.dbpedia.org/resource/> .
+ns18:_The_First_Movie	owl:sameAs	ns24:Pokémon_il_film_-_Mew_contro_Mewtwo .
+@prefix ns25:	<http://el.dbpedia.org/resource/\u03A0\u03CC\u03BA\u03B5\u03BC\u03BF\u03BD:> .
+ns18:_The_First_Movie	owl:sameAs	ns25:_Η_Πρώτη_Ταινία .
+@prefix ns26:	<http://fr.dbpedia.org/resource/Pok\u00E9mon,_le_film_:> .
+ns18:_The_First_Movie	owl:sameAs	ns26:_Mewtwo_contre-attaque .
+@prefix ns27:	<http://pt.dbpedia.org/resource/Pok\u00E9mon:> .
+ns18:_The_First_Movie	owl:sameAs	ns27:_The_First_Movie ,
+		<http://rdf.freebase.com/ns/m.07fpw5> ;
+	dbpedia-owl:wikiPageExternalLink	<http://pokemonthemovie.warnerbros.com/> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/b/b5/Pok\u00E9mon-TheFirstMoviePoster.jpg> ;
+	dcterms:subject	category:Cloning_in_fiction ,
+		<http://dbpedia.org/resource/Category:Warner_Bros._films> ,
+		category:Japanese-language_films ,
+		<http://dbpedia.org/resource/Category:1998_anime_films> ,
+		<http://dbpedia.org/resource/Category:Pok%C3%A9mon_films> ,
+		category:English-language_soundtracks ,
+		category:Animated_films ,
+		category:Fantasy-comedy_films ,
+		category:Atlantic_Records_soundtracks ,
+		<http://dbpedia.org/resource/Category:Children\u0027s_fantasy_films> ,
+		<http://dbpedia.org/resource/Category:1998_Japanese_films> ,
+		category:American_films ,
+		category:English-language_films .
+dbpedia:The_Cat_Returns	rdf:type	<http://dbpedia.org/class/yago/2002Films> .
+@prefix yago:	<http://dbpedia.org/class/yago/> .
+dbpedia:The_Cat_Returns	rdf:type	yago:AnimeSpin-offs ,
+		<http://dbpedia.org/class/yago/Children\u0027sFantasyFilms> ,
+		yago:JapaneseFilms ,
+		yago:FilmsFeaturingAnthropomorphicCharacters ,
+		yago:FilmsAboutCats ,
+		yago:FilmSpin-offs ,
+		yago:AnimeFilms ,
+		yago:SequElFilms ,
+		yago:Japanese-languAgeFilms ,
+		yago:FilmsDistributedByDisney ;
+	owl:sameAs	ns6:Das_Königreich_der_Katzen ,
+		<http://rdf.freebase.com/ns/m.033mlr> .
+@prefix ns29:	<http://cs.dbpedia.org/resource/> .
+dbpedia:The_Cat_Returns	owl:sameAs	ns29:Kočičí_oplátka ,
+		ns8:猫の恩返し ,
+		<http://ru.dbpedia.org/resource/\u0412\u043E\u0437\u0432\u0440\u0430\u0449\u0435\u043D\u0438\u0435_\u043A\u043E\u0442\u0430_(\u043C\u0430\u043D\u0433\u0430)> ,
+		ns4:Haru_en_el_reino_de_los_gatos ,
+		ns7:Le_Royaume_des_chats .
+@prefix ns30:	<http://ko.dbpedia.org/resource/> .
+dbpedia:The_Cat_Returns	owl:sameAs	ns30:고양이의_보은 ,
+		ns9:Narzeczona_dla_kota ,
+		ns5:O_Reino_dos_Gatos ,
+		ns24:Neko_no_ongaeshi ;
+	dbpedia-owl:wikiPageExternalLink	<http://musings.elisair.com/dvd-videos/making-the-cat-returns/> ,
+		<http://www.animefringe.com/magazine/2005/04/short/02.php> ,
+		<http://anime.about.com/od/toppicks/tp/aatp071705.htm> .
+@prefix ns31:	<http://www.animenewsnetwork.com/review/the-cat-returns/> .
+dbpedia:The_Cat_Returns	dbpedia-owl:wikiPageExternalLink	ns31:dvd ,
+		<http://www.themanime.org/editorials.php?id=23> .
+@prefix ns32:	<http://www.teenreads.com/reviews/> .
+dbpedia:The_Cat_Returns	dbpedia-owl:wikiPageExternalLink	ns32:baron-the-cat-returns ,
+		<http://schoolgirlmilkycrisis.com/blog/?p=93> ,
+		<http://dvd.ign.com/articles/583/583549p1.html> ,
+		<http://movies.ign.com/articles/858/858622p1.html> ,
+		<http://movies.ign.com/articles/858/858622p2.html> ,
+		<http://movies.ign.com/articles/858/858622p3.html> ,
+		<http://www.nausicaa.net/miyazaki/neko/> ,
+		<http://www.themanime.org/viewreview.php?id=759> ,
+		<http://www.mania.com/baron-cat-returns-vol-01_article_82076.html> ,
+		<http://www.animefringe.com/magazine/2005/03/review/02.php> ,
+		<http://www.onlineghibli.com/cat_returns/> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/8/8e/Cat_Returns.jpg> ;
+	dcterms:subject	category:Viz_Media_manga ,
+		category:Films_based_on_manga ,
+		category:Animated_features_released_by_GKIDS ,
+		category:Films_distributed_by_Disney ,
+		category:Film_spin-offs ,
+		category:Japanese-language_films ,
+		category:Films_featuring_anthropomorphic_characters ,
+		category:Drama_anime_and_manga ,
+		category:Japanese_films ,
+		<http://dbpedia.org/resource/Category:2002_films> ,
+		category:Animated_features_released_by_Studio_Ghibli ,
+		category:Anime_spin-offs ,
+		category:Adventure_anime_and_manga ,
+		<http://dbpedia.org/resource/Category:2002_anime> ,
+		category:Animated_features_released_by_Toho ,
+		category:Fantasy_anime_and_manga ,
+		<http://dbpedia.org/resource/Category:Children\u0027s_fantasy_films> ,
+		category:Anime_films ;
+	dbpprop:distributor	dbpedia:Toho ;
+	dbpprop:director	dbpedia:Hiroyuki_Morita ;
+	dbpprop:producer	dbpedia:Hayao_Miyazaki ,
+		<http://dbpedia.org/resource/Toshio_Suzuki_(producer)> ;
+	dbpprop:starring	dbpedia:Chizuru_Ikewaki ,
+		dbpedia:Aki_Maeda ,
+		<http://dbpedia.org/resource/Y%C5%8Dsuke_Saito> ,
+		<http://dbpedia.org/resource/Tetsur%C5%8D_Tamba> ,
+		dbpedia:Yoshihiko_Hakamada ,
+		dbpedia:Tetsu_Watanabe ;
+	dbpprop:studio	dbpedia:Studio_Ghibli .
+@prefix ns33:	<http://dbpedia.org/resource/Template:Infobox_animanga/> .
+dbpedia:The_Cat_Returns	dbpprop:wikiPageUsesTemplate	ns33:Print ,
+		ns15:Infobox_Japanese_film ,
+		ns33:Header ,
+		ns15:IMDb_title ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Cat_Returns.jpg/200px-Cat_Returns.jpg> ;
+	dbpprop:publisher	dbpedia:Tokuma_Shoten ;
+	dbpprop:music	dbpedia:Yuji_Nomi ;
+	dbpprop:id	"347618"^^xsd:int ;
+	dbpprop:screenplay	dbpedia:Reiko_Yoshida ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/The_Cat_Returns?oldid=490568729> .
+@prefix ns34:	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/> .
+dbpedia:The_Cat_Returns	dbpprop:hasPhotoCollection	ns34:The_Cat_Returns .
+@prefix ns35:	<http://en.wikipedia.org/wiki/> .
+dbpedia:The_Cat_Returns	foaf:isPrimaryTopicOf	ns35:The_Cat_Returns .
+@prefix ns36:	<http://www.w3.org/2006/03/wn/wn20/instances/> .
+dbpedia:The_Cat_Returns	dbpprop:wordnet_type	ns36:synset-cartoon-noun-2 .
+@prefix ns37:	<http://dbpedia.org/resource/Fullmetal_Alchemist_the_Movie:> .
+ns37:_Conqueror_of_Shamballa	rdf:type	ns1:CreativeWork ,
+		dbpedia-owl:Work ,
+		dbpedia-owl:Film ,
+		ns1:Movie ,
+		owl:Thing ,
+		ns19:Movie_CW ;
+	owl:sameAs	<http://rdf.freebase.com/ns/m.07ghv5> .
+@prefix ns38:	<http://de.dbpedia.org/resource/Fullmetal_Alchemist_\u2013_Der_Film:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns38:_Der_Eroberer_von_Shamballa ,
+		ns8:劇場版_鋼の錬金術師_シャンバラを征く者 .
+@prefix ns39:	<http://es.dbpedia.org/resource/Fullmetal_Alchemist:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns39:_Conquistador_de_Shamballa .
+@prefix ns40:	<http://fr.dbpedia.org/resource/Fullmetal_Alchemist:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns40:_Conqueror_of_Shamballa ,
+		ns9:Conqueror_of_Shamballa .
+@prefix ns41:	<http://el.dbpedia.org/resource/Fullmetal_Alchemist_\u03B7_\u03A4\u03B1\u03B9\u03BD\u03AF\u03B1:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns41:_ο_Κατακτητής_της_Σαμπάλα ,
+		ns24:Il_conquistatore_di_Shamballa .
+@prefix ns42:	<http://pt.dbpedia.org/resource/Fullmetal_Alchemist_the_Movie:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns42:_Conqueror_of_Shamballa .
+@prefix ns43:	<http://ru.dbpedia.org/resource/Fullmetal_Alchemist:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns43:_Conqueror_of_Shamballa .
+@prefix ns44:	<http://cs.dbpedia.org/resource/Fullmetal_Alchemist:> .
+ns37:_Conqueror_of_Shamballa	owl:sameAs	ns44:_The_Conqueror_of_Shamballa ;
+	dbpedia-owl:wikiPageExternalLink	<http://www.sonymusic.co.jp/Animation/hagaren/hagaren-movie/index.html> ,
+		<http://www.fullmetalalchemist.com/movie/index.htm> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/e/ed/Fullmetal_Alchemist_the_Movie_-_Conqueror_of_Shamballa.jpg> ;
+	dcterms:subject	<http://dbpedia.org/resource/Category:2005_films> ,
+		<http://dbpedia.org/resource/Category:Bones_(studio)> ,
+		category:Anime_films ,
+		category:Fullmetal_Alchemist ,
+		category:Japanese_films ,
+		category:Shochiku_films ,
+		category:Films_set_in_the_1920s ,
+		category:Films_with_Nazi_occultism ,
+		category:Funimation_Entertainment ,
+		<http://dbpedia.org/resource/Category:2005_anime> ;
+	foaf:homepage	<http://www.sonymusic.co.jp/Animation/hagaren/hagaren-movie/index.html> ;
+	dbpprop:creator	dbpedia:Hiromu_Arakawa ;
+	dbpprop:director	dbpedia:Seiji_Mizushima ;
+	dbpprop:producer	dbpedia:Seiji_Takeda ;
+	dbpprop:released	"2007-09-17"^^xsd:date ,
+		"2005-07-23"^^xsd:date ,
+		"2006-08-25"^^xsd:date ;
+	dbpprop:wikiPageUsesTemplate	ns15:Infobox_film ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Fullmetal_Alchemist_the_Movie_-_Conqueror_of_Shamballa.jpg/200px-Fullmetal_Alchemist_the_Movie_-_Conqueror_of_Shamballa.jpg> ;
+	dbpprop:music	dbpedia:Michiru_Oshima ;
+	dbpprop:productionCompany	dbpedia:Aniplex ,
+		<http://dbpedia.org/resource/Bones_(studio)> ;
+	dbpprop:movieMusic	dbpedia:Michiru_Oshima ;
+	dbpedia-owl:distributor	dbpedia:Manga_Entertainment ,
+		dbpedia:Madman_Entertainment ,
+		dbpedia:Shochiku ,
+		dbpedia:Revelation_Films ,
+		dbpedia:Funimation_Entertainment ;
+	dbpedia-owl:releaseDate	"2006-08-25"^^xsd:date ,
+		"2007-09-17"^^xsd:date ,
+		"2005-07-23"^^xsd:date ;
+	dbpedia-owl:musicComposer	dbpedia:Michiru_Oshima ;
+	dbpedia-owl:director	dbpedia:Seiji_Mizushima ;
+	dbpedia-owl:producer	dbpedia:Seiji_Takeda ;
+	dbpedia-owl:runtime	6300.0 ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Fullmetal_Alchemist_the_Movie:_Conqueror_of_Shamballa?oldid=495503380> .
+@prefix ns45:	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/Fullmetal_Alchemist_the_Movie:> .
+ns37:_Conqueror_of_Shamballa	dbpprop:hasPhotoCollection	ns45:_Conqueror_of_Shamballa .
+@prefix ns46:	<http://en.wikipedia.org/wiki/Fullmetal_Alchemist_the_Movie:> .
+ns37:_Conqueror_of_Shamballa	foaf:isPrimaryTopicOf	ns46:_Conqueror_of_Shamballa ;
+	dbpprop:wordnet_type	ns36:synset-movie-noun-1 .
+<http://dbpedia.org/resource/Avalon_(2001_film)>	rdf:type	yago:FilmsDirectedByMamoruOshii ,
+		yago:FilmsAboutVideoGames ,
+		dbpedia-owl:Film ,
+		dbpedia-owl:Work ,
+		yago:FilmsAboutTelepresence ,
+		ns1:CreativeWork ,
+		ns19:Movie_CW ,
+		yago:JapaneseScienceFictionFilms ,
+		owl:Thing ,
+		yago:DystopianFilms ,
+		yago:PolishScienceFictionFilms ,
+		ns1:Movie ,
+		<http://dbpedia.org/class/yago/2001Films> ,
+		yago:Polish-languAgeFilms ,
+		<http://dbpedia.org/class/yago/2000sScienceFictionFilms> ;
+	owl:sameAs	<http://it.dbpedia.org/resource/Avalon_(film_2001)> ,
+		<http://fr.dbpedia.org/resource/Avalon_(film,_2001)> ,
+		<http://ko.dbpedia.org/resource/\uC544\uBC1C\uB860_(2001\uB144_\uC601\uD654)> ,
+		ns29:Smrtící_Avalon ,
+		ns6:Avalon_–_Spiel_um_dein_Leben ,
+		<http://pl.dbpedia.org/resource/Avalon_(film_2001)> ,
+		<http://ja.dbpedia.org/resource/\u30A2\u30F4\u30A1\u30ED\u30F3_(\u6620\u753B)> ,
+		<http://ru.dbpedia.org/resource/\u0410\u0432\u0430\u043B\u043E\u043D_(\u0444\u0438\u043B\u044C\u043C,_2001)> ,
+		<http://rdf.freebase.com/ns/m.03kc9d> ;
+	dbpedia-owl:wikiPageExternalLink	<http://web.archive.org/web/20041012224357/http:/www.monolith.pl/avalon/index.html> ,
+		<http://www.ninesisters.org> ,
+		<http://www.rottentomatoes.com/m/1126021-avalon/> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/2/24/Avalonenpolognetheatricalpolish.png> ;
+	dcterms:subject	category:Cyberpunk_films ,
+		category:Polish_science_fiction_films ,
+		category:Films_about_telepresence ,
+		category:Polish-language_films ,
+		<http://dbpedia.org/resource/Category:2001_films> ,
+		<http://dbpedia.org/resource/Category:2000s_science_fiction_films> ,
+		category:Japanese_films ,
+		category:Films_about_video_games ,
+		category:Japanese_science_fiction_films ,
+		category:MF_Bunko_J ,
+		category:Films_directed_by_Mamoru_Oshii ,
+		category:Dystopian_films ;
+	foaf:homepage	<http://web.archive.org/web/20041012224357/http:/www.monolith.pl/avalon/index.html> ;
+	dbpprop:distributor	dbpedia:Miramax_Films ;
+	dbpprop:director	dbpedia:Mamoru_Oshii ;
+	dbpprop:writer	<http://dbpedia.org/resource/Kazunori_It%C5%8D> ;
+	dbpprop:starring	dbpedia:Dariusz_Biskupski ,
+		<http://dbpedia.org/resource/Ma%C5%82gorzata_Foremniak> ;
+	dbpprop:released	"2001-10-04"^^xsd:date ,
+		"2001-11-12"^^xsd:date ,
+		"2001-10-20"^^xsd:date ;
+	dbpprop:wikiPageUsesTemplate	ns15:Infobox_film ,
+		ns15:IMDb_title ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Avalonenpolognetheatricalpolish.png/200px-Avalonenpolognetheatricalpolish.png> ;
+	dbpprop:music	dbpedia:Kenji_Kawai ;
+	dbpprop:id	"267287"^^xsd:int ;
+	dbpedia-owl:distributor	dbpedia:Miramax_Films ;
+	dbpedia-owl:releaseDate	"2001-10-04"^^xsd:date ,
+		"2001-10-20"^^xsd:date ,
+		"2001-11-12"^^xsd:date ;
+	dbpedia-owl:musicComposer	dbpedia:Kenji_Kawai ;
+	dbpedia-owl:director	dbpedia:Mamoru_Oshii ;
+	dbpedia-owl:writer	<http://dbpedia.org/resource/Kazunori_It%C5%8D> ;
+	dbpedia-owl:starring	dbpedia:Dariusz_Biskupski ,
+		<http://dbpedia.org/resource/Ma%C5%82gorzata_Foremniak> ;
+	dbpedia-owl:runtime	6360.0 ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Avalon_(2001_film)?oldid=493764279> ;
+	dbpprop:hasPhotoCollection	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/Avalon_(2001_film)> ;
+	foaf:isPrimaryTopicOf	<http://en.wikipedia.org/wiki/Avalon_(2001_film)> ;
+	dbpprop:wordnet_type	ns36:synset-movie-noun-1 .
+<http://dbpedia.org/resource/Stray_Dog_(film)>	rdf:type	yago:FilmsDirectedByAkiraKurosawa ,
+		ns19:Movie_CW ,
+		yago:JapaneseFilms ,
+		dbpedia-owl:Work ,
+		dbpedia-owl:Film ,
+		ns1:CreativeWork ,
+		owl:Thing ,
+		<http://dbpedia.org/class/yago/1949Films> ,
+		yago:Japanese-languAgeFilms ,
+		yago:PoliceDetectiveFilms ,
+		yago:JapaneseThrillerFilms ,
+		yago:ProceduralFilms ,
+		<http://dbpedia.org/class/yago/1940sThrillerFilms> ,
+		ns1:Movie ,
+		yago:Black-and-whiteFilms ;
+	owl:sameAs	ns29:Toulavý_pes ,
+		ns6:Ein_streunender_Hund ,
+		<http://data.linkedmdb.org/resource/film/1510> ,
+		ns7:Chien_enragé ,
+		ns24:Cane_randagio ,
+		<http://ja.dbpedia.org/resource/\u91CE\u826F\u72AC_(1949\u5E74\u306E\u6620\u753B)> .
+@prefix ns47:	<http://ru.dbpedia.org/resource/> .
+<http://dbpedia.org/resource/Stray_Dog_(film)>	owl:sameAs	ns47:Бездомный_пёс ,
+		<http://rdf.freebase.com/ns/m.03jzs6> ,
+		ns5:Nora_Inu ;
+	dbpedia-owl:wikiPageExternalLink	<http://www.jmdb.ne.jp/1949/by001430.htm> ,
+		<http://www.criterion.com/current/posts/604-excess-in-stray-dog> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/f/ff/Nora_inu_poster.jpg> ;
+	dcterms:subject	<http://dbpedia.org/resource/Category:1949_films> ,
+		category:Film_noir ,
+		category:Films_directed_by_Akira_Kurosawa ,
+		<http://dbpedia.org/resource/Category:1940s_thriller_films> ,
+		category:Police_detective_films ,
+		category:Japanese_thriller_films ,
+		category:Procedural_films ,
+		category:Buddy_films ,
+		category:Japanese-language_films ,
+		category:Black-and-white_films ,
+		category:Japanese_films ;
+	dbpprop:cinematography	dbpedia:Asakazu_Nakai ;
+	dbpprop:editing	<http://dbpedia.org/resource/Toshio_Got%C5%8D> ,
+		dbpedia:Yoshi_Sugihara ;
+	dbpprop:distributor	dbpedia:Toho ;
+	dbpprop:language	dbpedia:Japanese_language ;
+	dbpprop:director	dbpedia:Akira_Kurosawa ;
+	dbpprop:producer	dbpedia:Sojiro_Motoki ;
+	dbpprop:writer	dbpedia:Ryuzo_Kikushima ;
+	dbpprop:starring	dbpedia:Toshiro_Mifune ,
+		dbpedia:Takashi_Shimura ;
+	dbpprop:wikiPageUsesTemplate	ns15:Infobox_film ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Nora_inu_poster.jpg/200px-Nora_inu_poster.jpg> ;
+	dbpprop:music	dbpedia:Fumio_Hayasaka ;
+	dbpedia-owl:distributor	dbpedia:Toho ;
+	dbpedia-owl:cinematography	dbpedia:Asakazu_Nakai ;
+	dbpedia-owl:musicComposer	dbpedia:Fumio_Hayasaka ;
+	dbpedia-owl:language	dbpedia:Japanese_language ;
+	dbpedia-owl:director	dbpedia:Akira_Kurosawa ;
+	dbpedia-owl:producer	dbpedia:Sojiro_Motoki ;
+	dbpedia-owl:writer	dbpedia:Ryuzo_Kikushima ,
+		dbpedia:Akira_Kurosawa ;
+	dbpedia-owl:starring	dbpedia:Takashi_Shimura ,
+		dbpedia:Toshiro_Mifune ;
+	dbpedia-owl:runtime	7320.0 ;
+	dbpedia-owl:editing	<http://dbpedia.org/resource/Toshio_Got%C5%8D> ,
+		dbpedia:Yoshi_Sugihara ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Stray_Dog_(film)?oldid=489735843> ;
+	dbpprop:hasPhotoCollection	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/Stray_Dog_(film)> ;
+	foaf:isPrimaryTopicOf	<http://en.wikipedia.org/wiki/Stray_Dog_(film)> ;
+	dbpprop:wordnet_type	ns36:synset-movie-noun-1 .
+<http://dbpedia.org/resource/Godzilla_vs._the_Sea_Monster>	rdf:type	yago:GodzillaFilms ,
+		<http://dbpedia.org/class/yago/1960sHorrorFilms> ,
+		<http://dbpedia.org/class/yago/1966Films> ,
+		yago:Movie106613686 ,
+		yago:SequElFilms ,
+		yago:Japanese-languAgeFilms ,
+		yago:FilmsDirectedByJunFukuDA ,
+		<http://dbpedia.org/class/yago/1960sScienceFictionFilms> ,
+		<http://dbpedia.org/class/yago/Children\u0027sFantasyFilms> ,
+		yago:JapaneseFilms ,
+		ns19:Movie_CW ,
+		yago:MysteryScienceTheater3000Films ;
+	owl:sameAs	<http://data.linkedmdb.org/resource/film/11> ,
+		<http://rdf.freebase.com/ns/m.034xx> ,
+		ns9:Ebirah_-_potwór_z_głębin ,
+		<http://it.dbpedia.org/resource/Il_ritorno_di_Godzilla_(film_1966)> ,
+		ns8:ゴジラ・エビラ・モスラ_南海の大決闘 ,
+		ns6:Frankenstein_und_die_Ungeheuer_aus_dem_Meer .
+@prefix ns48:	<http://fr.dbpedia.org/resource/Godzilla,_Ebirah_et_Mothra_:> .
+<http://dbpedia.org/resource/Godzilla_vs._the_Sea_Monster>	owl:sameAs	ns48:_Duel_dans_les_mers_du_sud ;
+	dbpedia-owl:wikiPageExternalLink	<http://www.godzillamovies.org/index/> ,
+		<http://hollywoodgothique.com/godzillavstheseamonster1966.html> ,
+		<http://cinefantastiqueonline.com/2009/04/godzilla-father-son-sadamasa-arikawa-interview/> ,
+		<http://www.tohokingdom.com/movies/ebirah_horror_of_the_deep.htm> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/6/68/Godzilla_vs_the_Sea_Monster_1966.jpg> ;
+	dcterms:subject	<http://dbpedia.org/resource/Category:1960s_science_fiction_films> ,
+		category:Giant_monster_films ,
+		category:Sequel_films ,
+		<http://dbpedia.org/resource/Category:1960s_horror_films> ,
+		category:Films_directed_by_Jun_Fukuda ,
+		category:Monster_movies ,
+		category:Godzilla_films ,
+		category:Kaiju_films ,
+		category:Mothra ,
+		<http://dbpedia.org/resource/Category:1966_films> ,
+		category:Japanese-language_films ,
+		category:Terrorism_in_fiction ,
+		category:Mystery_Science_Theater_3000_episodes ,
+		category:Japanese_films ;
+	dbpprop:distributor	dbpedia:Toho ,
+		dbpedia:Walter_Reade_Organization ;
+	dbpprop:director	dbpedia:Jun_Fukuda ;
+	dbpprop:producer	dbpedia:Tomoyuki_Tanaka ;
+	dbpprop:writer	dbpedia:Shinichi_Sekizawa ;
+	dbpprop:starring	dbpedia:Akira_Takarada ;
+	dbpprop:released	"1967"^^xsd:int ,
+		"1966-12-17"^^xsd:date ;
+	dbpprop:wikiPageUsesTemplate	ns15:Rotten_Tomatoes ,
+		ns15:IMDb_title ,
+		ns15:Infobox_Japanese_film ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Godzilla_vs_the_Sea_Monster_1966.jpg/200px-Godzilla_vs_the_Sea_Monster_1966.jpg> ;
+	dbpprop:music	dbpedia:Masaru_Sato ;
+	dbpprop:id	"60464"^^xsd:int ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Godzilla_vs._the_Sea_Monster?oldid=494852395> ;
+	dbpprop:hasPhotoCollection	<http://www4.wiwiss.fu-berlin.de/flickrwrappr/photos/Godzilla_vs._the_Sea_Monster> ;
+	foaf:isPrimaryTopicOf	<http://en.wikipedia.org/wiki/Godzilla_vs._the_Sea_Monster> ;
+	dbpprop:wordnet_type	ns36:synset-movie-noun-1 .
+dbpedia:Destroy_All_Monsters	rdf:type	yago:FilmsAboutDragons ,
+		yago:GodzillaFilms ,
+		yago:Movie106613686 ,
+		yago:SequElFilms ,
+		<http://dbpedia.org/class/yago/FilmsDirectedByIshir%C5%8DHonda> ,
+		yago:Japanese-languAgeFilms ,
+		yago:CrossoverFilms ,
+		<http://dbpedia.org/class/yago/1960sScienceFictionFilms> ,
+		<http://dbpedia.org/class/yago/Children\u0027sFantasyFilms> ,
+		yago:JapaneseFilms ,
+		yago:PterosaursInFiction ,
+		ns19:Movie_CW ,
+		<http://dbpedia.org/class/yago/1968Films> ,
+		yago:ADVFilms ;
+	owl:sameAs	<http://data.linkedmdb.org/resource/film/38099> ,
+		ns6:Frankenstein_und_die_Monster_aus_dem_All ,
+		ns9:Zniszczyć_wszystkie_potwory ,
+		<http://rdf.freebase.com/ns/m.034yn> ,
+		ns47:Уничтожить_всех_монстров ,
+		ns24:Gli_eredi_di_King_Kong ,
+		ns7:Les_envahisseurs_attaquent ,
+		ns8:怪獣総進撃 ;
+	dbpedia-owl:wikiPageExternalLink	<http://www.tohokingdom.com/movies/destroy_all_monsters.htm> ,
+		<http://www.godzillamovies.org/index/> ;
+	foaf:depiction	<http://upload.wikimedia.org/wikipedia/commons/c/c9/Destroy_All_Monsters_1968.jpg> ;
+	dcterms:subject	<http://dbpedia.org/resource/Category:1960s_science_fiction_films> ,
+		category:Giant_monster_films ,
+		category:Sequel_films ,
+		category:ADV_Films ,
+		category:Films_about_dragons ,
+		category:Monster_movies ,
+		category:Mothra ,
+		category:Godzilla_films ,
+		category:Kaiju_films ,
+		category:Pterosaurs_in_fiction ,
+		category:Crossover_tokusatsu ,
+		category:Crossover_films ,
+		category:Japanese-language_films ,
+		<http://dbpedia.org/resource/Category:Films_directed_by_Ishir%C5%8D_Honda> ,
+		<http://dbpedia.org/resource/Category:1968_films> ,
+		category:Films_set_in_the_future ,
+		category:Japanese_films ;
+	dbpprop:cinematography	dbpedia:Taiichi_Kankura ;
+	dbpprop:editing	dbpedia:Ryohei_Fujii ;
+	dbpprop:language	dbpedia:English_language ,
+		dbpedia:Japanese_language ;
+	dbpprop:director	<http://dbpedia.org/resource/Ishir%C5%8D_Honda> ;
+	dbpprop:producer	dbpedia:Tomoyuki_Tanaka ;
+	dbpprop:writer	dbpedia:Takeshi_Kimura ,
+		<http://dbpedia.org/resource/Ishir%C5%8D_Honda> ;
+	dbpprop:starring	<http://dbpedia.org/resource/Ky%C3%B4ko_Ai> ,
+		dbpedia:Jun_Tazaki ,
+		dbpedia:Akira_Kubo ,
+		dbpedia:Yoshio_Tsuchiya ,
+		dbpedia:Yukiko_Kobayashi ;
+	dbpprop:released	"1969-05-23"^^xsd:date ,
+		"1968-08-01"^^xsd:date ;
+	dbpprop:wikiPageUsesTemplate	ns15:Rotten_Tomatoes ,
+		ns15:IMDb_title ,
+		ns15:Infobox_Japanese_film ;
+	dbpedia-owl:thumbnail	<http://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Destroy_All_Monsters_1968.jpg/200px-Destroy_All_Monsters_1968.jpg> ;
+	dbpprop:music	dbpedia:Akira_Ifukube ;
+	dbpprop:id	"63172"^^xsd:int ;
+	ns17:wasDerivedFrom	<http://en.wikipedia.org/wiki/Destroy_All_Monsters?oldid=494710003> ;
+	dbpprop:hasPhotoCollection	ns34:Destroy_All_Monsters ;
+	foaf:isPrimaryTopicOf	ns35:Destroy_All_Monsters ;
+	dbpprop:wordnet_type	ns36:synset-movie-noun-1 .
+<http://dbpedia.org/resource/Audition_(film)>	rdf:type	dbpedia-owl:Film ,
+		dbpedia-owl:Work ,
+		ns1:Movie ,
+		ns1:CreativeWork ,
+		ns19:Movie_CW ,
+		owl:Thing ;
+	owl:sameAs	<http://data.linkedmdb.org/resource/film/1122> ,
+		<http://rdf.freebase.com/ns/m.02ssvp> ,
+		<http://ja.dbpedia.org/resource/\u30AA\u30FC\u30C7\u30A3\u30B7\u30E7\u30F3_(\u6620\u753B)> ,
+		<http://ru.dbpedia.org/resource/\u041A\u0438\u043D\u043E\u043F\u0440\u043E\u0431\u0430_(\u0444\u0438\u043B\u044C\u043C)> ,
+		<http://de.dbpedia.org/resource/Audition_(Film)> ,
+		ns24:Audition ,
+		ns5:Ôdishon ,
+		<http://fr.dbpedia.org/resource/Audition_(film,_1999)> ,
+		<http://es.dbpedia.org/resource/Audition_(pel\u00EDcula)> .

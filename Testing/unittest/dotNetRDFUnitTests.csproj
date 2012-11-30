@@ -159,6 +159,9 @@
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\dbpedia_malformed.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\full-minuend.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
