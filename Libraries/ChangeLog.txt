@@ -5,6 +5,8 @@
 ---------
 
 Changed
+- Bug Fixes
+ - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
 
