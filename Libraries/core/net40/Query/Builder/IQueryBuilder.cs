@@ -1,3 +1,6 @@
+using System;
+using VDS.RDF.Query.Builder.Expressions;
+
 namespace VDS.RDF.Query.Builder
 {
     /// <summary>
@@ -18,6 +21,14 @@ namespace VDS.RDF.Query.Builder
         /// Applies an OFFSET
         /// </summary>
         IQueryBuilder Offset(int offset);
+
+        IQueryBuilder OrderBy(string variableName);
+
+        IQueryBuilder OrderByDescending(string variableName);
+
+        IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
+
+        IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>

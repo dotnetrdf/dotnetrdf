@@ -6,7 +6,9 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Functions.Sparql.String;
 using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Test.Builder
@@ -448,13 +450,111 @@ namespace VDS.RDF.Test.Builder
         {
             // when
             SparqlQuery q = QueryBuilder.Construct()
-                                        .Where(tpb => tpb.Subject("s").Predicate("p").Object("o"))
+                                        .Where(BuildSPOPattern)
                                         .BuildQuery();
 
             // then
             Assert.AreEqual(SparqlQueryType.Construct, q.QueryType);
             Assert.IsNull(q.ConstructTemplate);
             Assert.AreEqual(1, q.RootGraphPattern.TriplePatterns.Count);
+        }
+
+        private static void BuildSPOPattern(ITriplePatternBuilder tpb)
+        {
+            tpb.Subject("s").Predicate("p").Object("o");
+        }
+
+        [TestMethod]
+        public void ShouldAllowOrderingQueryByVariableAscending()
+        {
+            // when
+            SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+                                                  .Where(BuildSPOPattern)
+                                                  .OrderBy("s")
+                                                  .BuildQuery();
+
+            // then
+            Assert.IsNotNull(sparqlQuery.OrderBy);
+            Assert.IsNull(sparqlQuery.OrderBy.Child);
+            Assert.IsTrue(sparqlQuery.OrderBy is OrderByVariable);
+            Assert.IsFalse(sparqlQuery.OrderBy.Descending);
+            Assert.AreEqual("s", (sparqlQuery.OrderBy as OrderByVariable).Variables.Single());
+        }
+
+        [TestMethod]
+        public void ShouldAllowOrderingQueryByVariableDescending()
+        {
+            // when
+            SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+                                                  .Where(BuildSPOPattern)
+                                                  .OrderByDescending("s")
+                                                  .BuildQuery();
+
+            // then
+            Assert.IsNotNull(sparqlQuery.OrderBy);
+            Assert.IsNull(sparqlQuery.OrderBy.Child);
+            Assert.IsTrue(sparqlQuery.OrderBy is OrderByVariable);
+            Assert.IsTrue(sparqlQuery.OrderBy.Descending);
+            Assert.AreEqual("s", (sparqlQuery.OrderBy as OrderByVariable).Variables.Single());
+        }
+
+        [TestMethod]
+        public void ShouldAllowOrderingQueryByExpressionAscending()
+        {
+            // when
+            SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+                                                  .Where(BuildSPOPattern)
+                                                  .OrderBy(expr => expr.Str(expr.Variable("s"))) 
+                                                  .BuildQuery();
+
+            // then
+            Assert.IsNotNull(sparqlQuery.OrderBy);
+            Assert.IsNull(sparqlQuery.OrderBy.Child);
+            Assert.IsTrue(sparqlQuery.OrderBy is OrderByExpression);
+            Assert.IsFalse(sparqlQuery.OrderBy.Descending);
+            Assert.IsTrue((sparqlQuery.OrderBy as OrderByExpression).Expression is StrFunction);
+        }
+
+        [TestMethod]
+        public void ShouldAllowOrderingQueryByExpressionDescending()
+        {
+            // when
+            SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+                                                  .Where(BuildSPOPattern)
+                                                  .OrderByDescending(expr => expr.Str(expr.Variable("s")))
+                                                  .BuildQuery();
+
+            // then
+            Assert.IsNotNull(sparqlQuery.OrderBy);
+            Assert.IsNull(sparqlQuery.OrderBy.Child);
+            Assert.IsTrue(sparqlQuery.OrderBy is OrderByExpression);
+            Assert.IsTrue(sparqlQuery.OrderBy.Descending);
+            Assert.IsTrue((sparqlQuery.OrderBy as OrderByExpression).Expression is StrFunction);
+        }
+
+        [TestMethod]
+        public void ShouldAllowChainingMultipleVariableAndExpressionOrderings()
+        {
+            // when
+            SparqlQuery sparqlQuery = QueryBuilder.SelectAll()
+                                                  .Where(BuildSPOPattern)
+                                                  .OrderBy("s")
+                                                  .OrderByDescending("p")
+                                                  .OrderBy("o")
+                                                  .OrderByDescending(expr => expr.Str(expr.Variable("s")))
+                                                  .OrderBy(expr => expr.Str(expr.Variable("p")))
+                                                  .OrderByDescending(expr => expr.Str(expr.Variable("o")))
+                                                  .BuildQuery();
+
+            // then
+            ISparqlOrderBy currentOrdering = sparqlQuery.OrderBy;
+
+            for (int i = 0; i < 6; i++)
+            {
+                Assert.IsNotNull(currentOrdering);
+                currentOrdering = currentOrdering.Child;
+            }
+            Assert.IsNull(currentOrdering);
         }
     }
 }

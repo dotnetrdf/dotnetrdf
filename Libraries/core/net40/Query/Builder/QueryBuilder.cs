@@ -3,6 +3,7 @@ using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Ordering;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -152,6 +153,57 @@ namespace VDS.RDF.Query.Builder
         {
             _query.Offset = offset;
             return this;
+        }
+
+        public IQueryBuilder OrderBy(string variableName)
+        {
+            AppendOrdering(new OrderByVariable(variableName), false);
+            return this;
+        }
+
+        public IQueryBuilder OrderByDescending(string variableName)
+        {
+            AppendOrdering(new OrderByVariable(variableName), true);
+            return this;
+        }
+
+        public IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        {
+            AppendOrdering(buildOrderExpression, false);
+            return this;
+        }
+
+        public IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
+        {
+            AppendOrdering(buildOrderExpression, true);
+            return this;
+        }
+
+        private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
+        {
+            var expressionBuilder = new ExpressionBuilder(Prefixes);
+            var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
+            var orderBy = new OrderByExpression(sparqlExpression);
+            AppendOrdering(orderBy, descending);
+        }
+
+        private void AppendOrdering(ISparqlOrderBy orderBy, bool descending)
+        {
+            orderBy.Descending = descending;
+
+            if (_query.OrderBy == null)
+            {
+                _query.OrderBy = orderBy;
+            }
+            else
+            {
+                ISparqlOrderBy lastOrderBy = _query.OrderBy;
+                while (lastOrderBy.Child != null)
+                {
+                    lastOrderBy = lastOrderBy.Child;
+                }
+                lastOrderBy.Child = orderBy;
+            }
         }
 
         public SparqlQuery BuildQuery()
