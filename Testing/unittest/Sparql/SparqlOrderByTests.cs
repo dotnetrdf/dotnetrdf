@@ -1,4 +1,4 @@
-/*
+﻿/*
 dotNetRDF is free and open source software licensed under the MIT License
 
 -----------------------------------------------------------------------------
@@ -23,38 +23,43 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-using System;
-using VDS.Web.Logging;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query.Ordering;
 
-namespace VDS.Web.Modules
+namespace VDS.RDF.Test.Sparql
 {
-    /// <summary>
-    /// Module using to perform request logging
-    /// </summary>
-    public class LoggingModule
-        : IHttpListenerModule
+    [TestClass]
+    public class SparqlOrderByTests
     {
-        /// <summary>
-        /// Process a request by asking each logger registered on the server to log it
-        /// </summary>
-        /// <param name="context">Server Context</param>
-        /// <returns></returns>
-        public bool ProcessRequest(HttpServerContext context)
+        [TestMethod]
+        public void ShouldAllowConstructingWithRawVariableName()
         {
-            foreach (IHttpLogger logger in context.Server.Loggers)
-            {
-                try
-                {
-                    logger.LogRequest(context);
-                }
-                catch (Exception ex)
-                {
-                    context.Server.LogErrors(ex);
-                }
-            }
+            // when
+            var ordering = new OrderByVariable("name");
 
-            //Logging Module always returns true to allow other Modules to execute
-            return true;
+            // then
+            Assert.AreEqual("name", ordering.Variables.Single());
+        }
+
+        [TestMethod]
+        public void ShouldAllowConstructingWithVariableNameWithDollarSign()
+        {
+            // when
+            var ordering = new OrderByVariable("$name");
+
+            // then
+            Assert.AreEqual("name", ordering.Variables.Single());
+        }
+
+        [TestMethod]
+        public void ShouldAllowConstructingWithVariableNameWithQuestionMark()
+        {
+            // when
+            var ordering = new OrderByVariable("?name");
+
+            // then
+            Assert.AreEqual("name", ordering.Variables.Single());
         }
     }
 }

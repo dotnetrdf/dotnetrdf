@@ -28,11 +28,11 @@
 
   <!-- Version Properties -->
   <!-- When generating ZIP files with the dist targets use the command line -d option to set these appropriately -->
-  <property name="dotnetrdf.version" value="082" />
-  <property name="dotnetrdf.releasetype" value="rc3" />
-  <property name="dotnetrdf.toolsversion" value="072" />
-  <property name="dotnetrdf.toolsreleasetype" value="beta" />
-  <property name="dotnetrdf.nuspecversion" value="0.8.2" />
+  <property name="dotnetrdf.version" value="090" />
+  <property name="dotnetrdf.releasetype" value="rc4" />
+  <property name="dotnetrdf.toolsversion" value="080" />
+  <property name="dotnetrdf.toolsreleasetype" value="rc1" />
+  <property name="dotnetrdf.nuspecversion" value="0.9.0" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
@@ -50,99 +50,99 @@
   
   <!-- Project Generation Targets which generate some Project Files from others -->
 
-  <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-net35" description="Syncs the dotNetRDF .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Core .Net 3.5 project file with the Core Library -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35/dotNetRDF.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file" depends="compile-buildtools" unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectsync-core-silverlight" description="Syncs the dotNetRDF Silverlight build project file"  unless="${dotnetrdf.nosilverlight == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Silverlight project file with the Core Library -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/sl4/dotNetRDF.Silverlight.2010.csproj" />
     </exec>    
   </target>
 
-  <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file" depends="compile-buildtools" unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
+  <target name="projectsync-core-windowsphone" description="Syncs the dotNetRDF Windows Phone build project file"  unless="${dotnetrdf.nowindowsphone == 'true' or dotnetrdf.nocompile == 'true'}">
     <!-- This exec task syncs the Windows Phone project file with the Core Library -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/sl4-wp/dotNetRDF.WindowsPhone.2010.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-core-clientprofile" description="Syncs the dotNetRDF Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile" description="Syncs the dotNetRDF Client Profile build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net40-client/dotNetRDF.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/core/net40/dotNetRDF.csproj" />
       <arg value="Libraries/core/net35-client/dotNetRDF.ClientProfile.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-query-fulltext-clientprofile" description="Syncs the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile" description="Syncs the dotNetRDF Query.FullText .Net 4.0 Client Profile build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 4.0 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net40-client/dotNetRDF.Query.FullText.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-query-fulltext-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 project file with the Query.FullText project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net35/dotNetRDF.Query.FullText.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-query-fulltext-clientprofile-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file" depends="compile-buildtools"  unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-query-fulltext-clientprofile-net35" description="Syncs the dotNetRDF Query.FullText .Net 3.5 Client Profile build project file"   unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Query.FullText .Net 3.5 Client Profile project file with the Query.FullText project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Query/FullText/net40/dotNetRDF.Query.FullText.csproj" />
       <arg value="Libraries/Query/FullText/net35-client/dotNetRDF.Query.FullText.ClientProfile.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-data-virtuoso-clientprofile" description="Syncs the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-clientprofile" description="Syncs the dotNetRDF Data.Virtuoso .Net 4.0 Client Profile build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 4.0 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net40-client/dotNetRDF.Data.Virtuoso.ClientProfile.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-data-virtuoso-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 project file with the Data.Virtuoso project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net35/dotNetRDF.Data.Virtuoso.Net35.csproj" />
     </exec>
   </target>
 
-  <target name="projectsync-data-virtuoso-clientprofile-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
+  <target name="projectsync-data-virtuoso-clientprofile-net35" description="Syncs the dotNetRDF Data.Virtuoso .Net 3.5 Client Profile build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Data.Virtuoso .Net 3.5 Client Profile project file with the Data.Virtuoso project file -->
-    <exec program="Build/SyncProjects/bin/Debug/SyncProjects.exe">
+    <exec program="Build/SyncProjects/SyncProjects.exe">
       <arg value="sync" />
       <arg value="Libraries/Data/Virtuoso/net40/dotNetRDF.Data.Virtuoso.csproj" />
       <arg value="Libraries/Data/Virtuoso/net35-client/dotNetRDF.Data.Virtuoso.ClientProfile.Net35.csproj" />
@@ -151,7 +151,7 @@
   
   <!-- License Targets which enforce License headers on the code -->
 
-  <target name="License" description="Applies License headers to all targets"
+  <target name="license" description="Applies License headers to all targets"
           depends="license-libs,license-tests,license-utils" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-libs" description="Applies License headers to all library targets"
@@ -159,8 +159,7 @@
                    license-data-virtuoso,
                    license-query-fulltext,
                    license-editor-core,license-editor-wpf,
-                   license-storemanager-core,
-                   license-httpserver" unless="${dotnetrdf.nocompile}" />
+                   license-storemanager-core" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-tests" description="Applies License headers to all test targets"
           depends="license-libs,
@@ -176,8 +175,8 @@
                    license-util-webdeploy,
                    license-util-storemanager" unless="${dotnetrdf.nocompile}" />
 
-  <target name="license-core" description="Applies License headers to the Core Library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+  <target name="license-core" description="Applies License headers to the Core Library"  unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core/net40/" />
       <arg value="-exclude-exts" />
@@ -194,7 +193,7 @@
   </target>
 
   <target name="license-core-silverlight" description="Applies License headers to the Core Library Silverlight build" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/core/sl4/" />
       <arg value="-exclude-exts" />
@@ -211,7 +210,7 @@
   </target>
 
   <target name="license-data-virtuoso" description="Applies License headers to the Data.Virtuoso library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/Data/Virtuoso/" />
       <arg value="-exclude-exts" />
@@ -228,7 +227,7 @@
   </target>
 
   <target name="license-query-fulltext" description="Applies License headers to the Query.FullText library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/Query/FullText/net40/" />
       <arg value="-exclude-exts" />
@@ -245,7 +244,7 @@
   </target>
 
   <target name="license-gui-winforms" description="Applies License headers to the dotNetRDF.WinForms library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/gui.winforms/" />
       <arg value="-exclude-exts" />
@@ -262,7 +261,7 @@
   </target>
 
   <target name="license-editor-core" description="Applies License headers to the rdfEditor.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/editor/" />
       <arg value="-exclude-exts" />
@@ -279,7 +278,7 @@
   </target>
 
   <target name="license-editor-wpf" description="Applies License headers to the rdfEditor.Core.Wpf library" depends="license-editor-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/editor.wpf/" />
       <arg value="-exclude-exts" />
@@ -296,7 +295,7 @@
   </target>
 
   <target name="license-storemanager-core" description="Applies License headers to the StoreManager.Core library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/storemanager.core/" />
       <arg value="-exclude-exts" />
@@ -312,25 +311,8 @@
     </exec>
   </target>
 
-  <target name="license-httpserver" description="Applies License headers to the VDS.Web.Server library" depends="compile-buildtools" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
-      <arg value="-directory" />
-      <arg value="Libraries/httpserver/" />
-      <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.License.exclude.exts}" />
-      <arg value="-exclude" />
-      <arg value="${dotnetrdf.License.exclude.regex}" />
-      <arg value="-license-search" />
-      <arg value="${dotnetrdf.License.search}" />
-      <arg value="-license-file" />
-      <arg value="${dotnetrdf.License.replace}" />
-      <arg value="-fix" />
-      <arg value="${dotnetrdf.License.overwrite}" />
-    </exec>
-  </target>
-
   <target name="license-tests-informal" description="Applies License headers to the Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/testsuite/" />
       <arg value="-exclude-exts" />
@@ -347,7 +329,7 @@
   </target>
 
   <target name="license-unit-tests" description="Applies License headers to the Unit Tests library" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/unittest/" />
       <arg value="-exclude-exts" />
@@ -364,7 +346,7 @@
   </target>
 
   <target name="license-dawg-tests" description="Applies License headers to the DAWG Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Testing/sparqlDawgTests/" />
       <arg value="-exclude-exts" />
@@ -381,7 +363,7 @@
   </target>
 
   <target name="license-util-convert" description="Applies License headers to the rdfConvert utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfConvert/" />
       <arg value="-exclude-exts" />
@@ -398,7 +380,7 @@
   </target>
 
   <target name="license-util-editor-wpf" description="Applies License headers to the rdfEditor.Wpf utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfEditor.Wpf/" />
       <arg value="-exclude-exts" />
@@ -415,7 +397,7 @@
   </target>
 
   <target name="license-util-opt-stats" description="Applies License headers to the rdfOptStats utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfOptStats/" />
       <arg value="-exclude-exts" />
@@ -432,7 +414,7 @@
   </target>
 
   <target name="license-util-query-cmd" description="Applies License headers to the rdfQuery utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfQuery/" />
       <arg value="-exclude-exts" />
@@ -449,7 +431,7 @@
   </target>
 
   <target name="license-util-query-gui" description="Applies License headers to the SparqlGUI utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/SparqlGUI/" />
       <arg value="-exclude-exts" />
@@ -465,8 +447,8 @@
     </exec>
   </target>
 
-  <target name="license-util-server-cmd" description="Applies License headers to the rdfServer utility" depends="license-core,license-httpserver" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+  <target name="license-util-server-cmd" description="Applies License headers to the rdfServer utility" depends="license-core" unless="${dotnetrdf.nocompile}">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfServer/" />
       <arg value="-exclude-exts" />
@@ -483,7 +465,7 @@
   </target>
 
   <target name="license-util-server-gui" description="Applies License headers to the rdfServer utility" depends="license-util-server-cmd" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfServerGUI/" />
       <arg value="-exclude-exts" />
@@ -500,7 +482,7 @@
   </target>
 
   <target name="license-util-webdeploy" description="Applies License headers to the rdfWebDeploy utility" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/rdfWebDeploy/" />
       <arg value="-exclude-exts" />
@@ -517,7 +499,7 @@
   </target>
 
   <target name="license-util-storemanager" description="Applies License headers to the StoreManager utility" depends="license-core,license-storemanager-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/bin/Debug/LicenseChecker.exe" failonerror="true">
+    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Utilities/StoreManager/" />
       <arg value="-exclude-exts" />
@@ -581,8 +563,7 @@
 
   <target name="compile-libs-utils" description="Compiles all the additional libraries needed for the Toolkit distribution" unless="${dotnetrdf.nocompile}"
           depends="compile-editor-core,compile-editor-wpf,
-                   compile-storemanager-core,
-                   compile-httpserver">
+                   compile-storemanager-core">
   </target>
 
   <target name="compile-utils" description="Compiles the dotNetRDF Toolkit" unless="${dotnetrdf.nocompile}"
@@ -646,21 +627,6 @@
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
       <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-buildtools" description="Compiles Build Tools needed by the compile and build process" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/SyncProjects/SyncProjects.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-    </exec>
-    <exec program="${msBuild.exe}" failonerror="true">
-      <arg value="Build/LicenseChecker/LicenseChecker.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
     </exec>
   </target>
 
@@ -825,19 +791,6 @@
     <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
     <exec program="${msBuild.exe}" failonerror="true" verbose="true">
       <arg value="Libraries/storemanager.core/StoreManager.Core.csproj" />
-      <arg line="/p:Configuration=Debug" />
-      <arg line="/p:PostBuildEvent=" />
-      <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />
-      <arg line="/p:KeyOriginatorFile=&quot;${dotnetrdf.keyfile}&quot;" />
-      <arg line="/Property:SolutionDir=${project::get-base-directory()}" />
-    </exec>
-  </target>
-
-  <target name="compile-httpserver" description="Compiles just the VDS.Web.Server Library" depends="license-httpserver" unless="${dotnetrdf.nocompile}">
-    <property name="nant.settings.currentframework" value="net-4.0" />
-    <property name="msBuild.exe" value="${framework::get-framework-directory(framework::get-target-framework())}\msbuild.exe" />
-    <exec program="${msBuild.exe}" failonerror="true" verbose="true">
-      <arg value="Libraries/httpserver/VDS.Web.Server.csproj" />
       <arg line="/p:Configuration=Debug" />
       <arg line="/p:PostBuildEvent=" />
       <arg line="/p:NoWarn=&quot;${dotnetrdf.nowarn}&quot;" />

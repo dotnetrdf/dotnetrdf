@@ -117,6 +117,7 @@
     <Compile Include="Sparql\OperatorTests.cs" />
     <Compile Include="Sparql\DatasetTests.cs" />
     <Compile Include="Sparql\SetTests.cs" />
+    <Compile Include="Sparql\SparqlOrderByTests.cs" />
     <Compile Include="Sparql\SparqlQueryTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
@@ -156,6 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="resources\bad_rdfa.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\dbpedia_malformed.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\full-minuend.ttl">

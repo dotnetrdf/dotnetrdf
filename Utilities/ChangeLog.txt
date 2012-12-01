@@ -3,7 +3,7 @@ dotNetRDF Toolkit for Windows/Mono
 
 A Toolkit of command line utilities and GUI tools for working with RDF data
 
-Version 0.7.2 Beta
+Version 0.8.0 RC 1
 
 dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -11,7 +11,7 @@ dotnetrdf-develop@lists.sf.net
 Change Log
 ----------
 
-This represents a summary of additions, changes and removals for the 0.7.2 release of the dotNetRDF Toolkit
+This represents a summary of additions, changes and removals for the 0.8.0 release of the dotNetRDF Toolkit
 for Windows/Mono detailed by Tool.
 
 Note: While some tools may have no changes all tools benefit from being upgraded to the latest release of the

@@ -167,7 +167,7 @@ namespace VDS.RDF.Query.Ordering
         /// <param name="name">Variable to order upon</param>
         public OrderByVariable(String name)
         {
-            this._varname = name.Substring(1);
+            this._varname = name.TrimStart('?', '$');
         }
 
         /// <summary>
