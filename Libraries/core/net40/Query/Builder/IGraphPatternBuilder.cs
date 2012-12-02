@@ -7,6 +7,9 @@ namespace VDS.RDF.Query.Builder
     /// </summary>
     public interface IGraphPatternBuilder : ICommonQueryBuilder<IGraphPatternBuilder>
     {
+        /// <summary>
+        /// Creates a UNION of the current graph pattern and a new one
+        /// </summary>
         IGraphPatternBuilder Union(Action<IGraphPatternBuilder> buildGraphPattern);
     }
 }

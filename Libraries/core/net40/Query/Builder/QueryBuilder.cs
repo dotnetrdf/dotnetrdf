@@ -59,11 +59,17 @@ namespace VDS.RDF.Query.Builder
             _sparqlQueryType = sparqlQueryType;
         }
 
+        /// <summary>
+        /// Creates a new ASK query
+        /// </summary>
         public static IQueryBuilder Ask()
         {
             return new QueryBuilder(SparqlQueryType.Ask);
         }
 
+        /// <summary>
+        /// Creates a new CONSTRUCT query
+        /// </summary>
         public static IQueryBuilder Construct(Action<IDescribeGraphPatternBuilder> buildConstructTemplate)
         {
             if (buildConstructTemplate == null)
@@ -77,6 +83,9 @@ namespace VDS.RDF.Query.Builder
             return queryBuilder.Construct(graphPatternBuilder);
         }
 
+        /// <summary>
+        /// Creates a new CONSTRUCT WHERE query
+        /// </summary>
         public static IQueryBuilder Construct()
         {
             return new QueryBuilder(SparqlQueryType.Construct);
@@ -154,36 +163,55 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
+        /// <summary>
+        /// Applies a LIMIT
+        /// </summary>
+        /// <param name="limit">Limit value. Pass negative to disable LIMIT</param>
         public IQueryBuilder Limit(int limit)
         {
             _queryLimit = limit;
             return this;
         }
 
+        /// <summary>
+        /// Applies an OFFSET
+        /// </summary>
         public IQueryBuilder Offset(int offset)
         {
             _queryOffset = offset;
             return this;
         }
 
+        /// <summary>
+        /// Adds ascending ordering by a variable to the query
+        /// </summary>
         public IQueryBuilder OrderBy(string variableName)
         {
             _buildOrderings.Add(prefixes => new OrderByVariable(variableName));
             return this;
         }
 
+        /// <summary>
+        /// Adds descending ordering by a variable to the query
+        /// </summary>
         public IQueryBuilder OrderByDescending(string variableName)
         {
             _buildOrderings.Add(prefixes => new OrderByVariable(variableName) { Descending = true });
             return this;
         }
 
+        /// <summary>
+        /// Adds ascending ordering by an expression to the query
+        /// </summary>
         public IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, false);
             return this;
         }
 
+        /// <summary>
+        /// Adds descending ordering by an expression to the query
+        /// </summary>
         public IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression)
         {
             AppendOrdering(buildOrderExpression, true);

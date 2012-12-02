@@ -8,14 +8,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Common interface for building SPARQL queries and graph patterns
     /// </summary>
-    public interface ICommonQueryBuilder
-    {
-    }
-
-    /// <summary>
-    /// Common interface for building SPARQL queries and graph patterns
-    /// </summary>
-    public interface ICommonQueryBuilder<TReturnBuilder> : ICommonQueryBuilder where TReturnBuilder : ICommonQueryBuilder
+    public interface ICommonQueryBuilder<out TReturnBuilder>
     {
         /// <summary>
         /// Adds triple patterns to the SPARQL query or graph pattern
@@ -45,7 +38,9 @@ namespace VDS.RDF.Query.Builder
         /// Adds a BIND variable assignment to the SPARQL query or graph pattern
         /// </summary>
         IAssignmentVariableNamePart<TReturnBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
-
+        /// <summary>
+        /// Addsa "normal" child graph pattern
+        /// </summary>
         TReturnBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern);
     }
 }

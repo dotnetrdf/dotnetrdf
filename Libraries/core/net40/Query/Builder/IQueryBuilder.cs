@@ -25,13 +25,21 @@ namespace VDS.RDF.Query.Builder
         /// Applies an OFFSET
         /// </summary>
         IQueryBuilder Offset(int offset);
-
+        /// <summary>
+        /// Adds ascending ordering by a variable to the query
+        /// </summary>
         IQueryBuilder OrderBy(string variableName);
-
+        /// <summary>
+        /// Adds descending ordering by a variable to the query
+        /// </summary>
         IQueryBuilder OrderByDescending(string variableName);
-
+        /// <summary>
+        /// Adds ascending ordering by an expression to the query
+        /// </summary>
         IQueryBuilder OrderBy(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
-
+        /// <summary>
+        /// Adds descending ordering by an expression to the query
+        /// </summary>
         IQueryBuilder OrderByDescending(Func<ExpressionBuilder, SparqlExpression> buildOrderExpression);
         /// <summary>
         /// Builds and returns a <see cref="SparqlQuery"/>
