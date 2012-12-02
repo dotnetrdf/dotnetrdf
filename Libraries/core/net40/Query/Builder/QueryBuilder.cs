@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Ordering;
@@ -18,14 +16,15 @@ namespace VDS.RDF.Query.Builder
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder
+    public sealed class QueryBuilder : IQueryBuilder
     {
+        private readonly DescribeBuilder _describeBuilder;
         private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
         private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
         private readonly SelectBuilder _selectBuilder;
         private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
-        private SparqlQueryType _sparqlQueryType;
-        private int _queryLimit;
+        private readonly SparqlQueryType _sparqlQueryType;
+        private int _queryLimit = -1;
         private int _queryOffset;
         private INamespaceMapper _prefixes = new NamespaceMapper(true);
 
@@ -47,6 +46,12 @@ namespace VDS.RDF.Query.Builder
             : this(selectBuilder.SparqlQueryType)
         {
             _selectBuilder = selectBuilder;
+        }
+
+        internal QueryBuilder(DescribeBuilder describeBuilder)
+            : this(describeBuilder.SparqlQueryType)
+        {
+            _describeBuilder = describeBuilder;
         }
 
         private QueryBuilder(SparqlQueryType sparqlQueryType)
@@ -117,47 +122,34 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            SelectBuilder queryBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
-            return new SelectAssignmentVariableNamePart(queryBuilder, buildAssignmentExpression);
+            SelectBuilder selectBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
+            return new SelectAssignmentVariableNamePart(selectBuilder, buildAssignmentExpression);
         }
 
         /// <summary>
         /// Creates a new query, which will DESCRIBE the given <paramref name="uris"/>
         /// </summary>
-        public static IDescribeQueryBuilder Describe(params Uri[] uris)
+        public static IDescribeBuilder Describe(params Uri[] uris)
         {
-            return new QueryBuilder(SparqlQueryType.Describe).And(uris);
+            return new DescribeBuilder().And(uris);
         }
 
         /// <summary>
         /// Creates a new query, which will DESCRIBE the given <paramref name="variables"/>
         /// </summary>
-        public static IDescribeQueryBuilder Describe(params string[] variables)
+        public static IDescribeBuilder Describe(params string[] variables)
         {
-            return new QueryBuilder(SparqlQueryType.Describe).And(variables);
+            return new DescribeBuilder().And(variables);
         }
-
-        #region Implementation of IQueryBuilder
 
         /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>
         public IQueryBuilder Distinct()
         {
-            switch (_sparqlQueryType)
+            if (_selectBuilder != null)
             {
-                case SparqlQueryType.Select:
-                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                case SparqlQueryType.SelectAll:
-                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
-                    break;
-                case SparqlQueryType.SelectReduced:
-                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
-                    break;
-                case SparqlQueryType.SelectAllReduced:
-                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
-                    break;
+                _selectBuilder.Distinct();
             }
             return this;
         }
@@ -228,6 +220,14 @@ namespace VDS.RDF.Query.Builder
                 foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
                 {
                     executableQuery.AddVariable(selectVariable);
+                }
+            }
+            else if (_describeBuilder != null)
+            {
+                executableQuery.QueryType = _describeBuilder.SparqlQueryType;
+                foreach (var describeVariable in _describeBuilder.DescribeVariables)
+                {
+                    executableQuery.AddDescribeVariable(describeVariable);
                 }
             }
 
@@ -310,35 +310,5 @@ namespace VDS.RDF.Query.Builder
             RootGraphPatternBuilder.Filter(buildExpression);
             return this;
         }
-
-        #endregion
-
-        #region Implementation of IDescribeQueryBuilder
-
-        /// <summary>
-        /// Adds additional <paramref name="variables"/> to DESCRIBE
-        /// </summary>
-        public IDescribeQueryBuilder And(params string[] variables)
-        {
-            foreach (var variableName in variables)
-            {
-                //_query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds additional <paramref name="uris"/> to DESCRIBE
-        /// </summary>
-        public IDescribeQueryBuilder And(params Uri[] uris)
-        {
-            foreach (var uri in uris)
-            {
-                //_query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
-            }
-            return this;
-        }
-
-        #endregion
     }
 }

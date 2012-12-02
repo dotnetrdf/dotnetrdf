@@ -5,15 +5,19 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Provides methods for creating DESCRIBE queries
     /// </summary>
-    public interface IDescribeQueryBuilder : IQueryBuilder
+    public interface IDescribeBuilder : ICommonQueryBuilder<IQueryBuilder>
     {
         /// <summary>
         /// Adds additional <paramref name="variables"/> to DESCRIBE
         /// </summary>
-        IDescribeQueryBuilder And(params string[] variables);
+        IDescribeBuilder And(params string[] variables);
         /// <summary>
         /// Adds additional <paramref name="uris"/> to DESCRIBE
         /// </summary>
-        IDescribeQueryBuilder And(params Uri[] uris);
+        IDescribeBuilder And(params Uri[] uris);
+        /// <summary>
+        /// Builds a simple DESCRIBE query without the WHERE part
+        /// </summary>
+        SparqlQuery BuildQuery();
     }
 }

@@ -133,6 +133,7 @@
     <Compile Include="Query\Algebra\PropertyFunction.cs" />
     <Compile Include="Query\Algebra\Table.cs" />
     <Compile Include="Query\Builder\BindAssignmentVariableNamePart.cs" />
+    <Compile Include="Query\Builder\DescribeBuilder.cs" />
     <Compile Include="Query\Builder\DescribeGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ExpressionBuilderRdfTermsFunctionsExtensions.cs" />
     <Compile Include="Query\Builder\Expressions\BlankNodeExpression.cs" />
@@ -153,13 +154,14 @@
     <Compile Include="Query\Builder\AssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\ICommonQueryBuilder.cs" />
     <Compile Include="Query\Builder\IDescribeGraphPatternBuilder.cs" />
-    <Compile Include="Query\Builder\IDescribeQueryBuilder.cs" />
+    <Compile Include="Query\Builder\IDescribeBuilder.cs" />
     <Compile Include="Query\Builder\IGraphPatternBuilder.cs" />
     <Compile Include="Query\Builder\ISelectBuilder.cs" />
     <Compile Include="Query\Builder\ITriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\PatternItemFactory.cs" />
     <Compile Include="Query\Builder\Expressions\SparqlExpression.cs" />
     <Compile Include="Query\Builder\Expressions\TypedLiteralExpression.cs" />
+    <Compile Include="Query\Builder\QueryTypeSpecificBuilderBase.cs" />
     <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\SelectBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
