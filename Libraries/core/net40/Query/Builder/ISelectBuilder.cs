@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Interface for creating SELECT queries
     /// </summary>
-    public interface ISelectBuilder : ICommonQueryBuilder<IQueryBuilder>
+    public interface ISelectBuilder : IQueryWithVariablesBuilder
     {
         /// <summary>
         /// Adds additional SELECT return <paramref name="variables"/>

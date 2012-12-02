@@ -4,7 +4,7 @@ using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class DescribeBuilder : QueryTypeSpecificBuilderBase, IDescribeBuilder
+    sealed class DescribeBuilder : IDescribeBuilder
     {
         readonly List<IToken> _describeVariables = new List<IToken>();
 
@@ -32,12 +32,12 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public SparqlQuery BuildQuery()
+        public IQueryBuilder GetQueryBuilder()
         {
-            return CreateQueryBuilder().BuildQuery();
+            return new QueryBuilder(this);
         }
 
-        internal override SparqlQueryType SparqlQueryType
+        internal SparqlQueryType SparqlQueryType
         {
             get { return SparqlQueryType.Describe; }
         }
@@ -45,11 +45,6 @@ namespace VDS.RDF.Query.Builder
         internal IEnumerable<IToken> DescribeVariables
         {
             get { return _describeVariables; }
-        }
-
-        protected override QueryBuilder CreateQueryBuilder()
-        {
-            return new QueryBuilder(this);
         }
     }
 }

@@ -5,7 +5,7 @@ using VDS.RDF.Query.Builder.Expressions;
 
 namespace VDS.RDF.Query.Builder
 {
-    sealed class SelectBuilder : QueryTypeSpecificBuilderBase, ISelectBuilder
+    sealed class SelectBuilder : ISelectBuilder
     {
         private readonly IList<Func<INamespaceMapper, SparqlVariable>> _buildSelectVariables = new List<Func<INamespaceMapper, SparqlVariable>>();
         private SparqlQueryType _sparqlQueryType;
@@ -15,7 +15,7 @@ namespace VDS.RDF.Query.Builder
             _sparqlQueryType = sparqlQueryType;
         }
 
-        internal override SparqlQueryType SparqlQueryType
+        internal SparqlQueryType SparqlQueryType
         {
             get { return _sparqlQueryType; }
         }
@@ -106,7 +106,7 @@ namespace VDS.RDF.Query.Builder
             }
         }
 
-        protected override QueryBuilder CreateQueryBuilder()
+        public IQueryBuilder GetQueryBuilder()
         {
             return new QueryBuilder(this);
         }

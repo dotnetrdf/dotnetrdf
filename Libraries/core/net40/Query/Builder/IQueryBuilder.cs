@@ -6,7 +6,7 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Interface for building SPARQL queries 
     /// </summary>
-    public interface IQueryBuilder : ICommonQueryBuilder<IQueryBuilder>
+    public interface IQueryBuilder
     {
         /// <summary>
         /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
@@ -45,5 +45,9 @@ namespace VDS.RDF.Query.Builder
         /// Builds and returns a <see cref="SparqlQuery"/>
         /// </summary>
         SparqlQuery BuildQuery();
+        /// <summary>
+        /// Adds a BIND variable assignment to the root graph pattern
+        /// </summary>
+        IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
     }
 }

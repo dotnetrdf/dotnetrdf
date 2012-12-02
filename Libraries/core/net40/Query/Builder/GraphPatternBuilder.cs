@@ -90,8 +90,6 @@ namespace VDS.RDF.Query.Builder
             return graphPattern;
         }
 
-        #region Implementation of IGraphPatternBuilder
-
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
             _triplePatterns.Add(prefixes => triplePatterns);
@@ -169,8 +167,6 @@ namespace VDS.RDF.Query.Builder
             _filterBuilders.Add(namespaceMapper => expr);
             return this;
         }
-
-        #endregion
 
         private void AddChildGraphPattern(Action<IGraphPatternBuilder> buildGraphPattern, GraphPatternType graphPatternType)
         {

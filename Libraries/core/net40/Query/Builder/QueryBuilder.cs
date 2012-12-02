@@ -317,53 +317,5 @@ namespace VDS.RDF.Query.Builder
         {
             return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
-
-        public IQueryBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            RootGraphPatternBuilder.Child(buildGraphPattern);
-            return this;
-        }
-
-        public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
-        {
-            RootGraphPatternBuilder.Where(triplePatterns);
-            return this;
-        }
-
-        public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
-        {
-            RootGraphPatternBuilder.Where(buildTriplePatterns);
-            return this;
-        }
-
-        internal IQueryBuilder Where(Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
-        {
-            RootGraphPatternBuilder.Where(buildTriplePatternFunc);
-            return this;
-        }
-
-        public IQueryBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            RootGraphPatternBuilder.Optional(buildGraphPattern);
-            return this;
-        }
-
-        public IQueryBuilder Filter(ISparqlExpression expr)
-        {
-            RootGraphPatternBuilder.Filter(expr);
-            return this;
-        }
-
-        public IQueryBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
-        {
-            RootGraphPatternBuilder.Minus(buildGraphPattern);
-            return this;
-        }
-
-        public IQueryBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
-        {
-            RootGraphPatternBuilder.Filter(buildExpression);
-            return this;
-        }
     }
 }
