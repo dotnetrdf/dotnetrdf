@@ -278,7 +278,7 @@ namespace VDS.RDF.Test.Builder
         public void ShouldBeCreatedWithEmptyNamespaceMap()
         {
             // when
-            ISelectQueryBuilder builder = QueryBuilder.SelectAll();
+            IQueryBuilder builder = QueryBuilder.SelectAll().Where();
 
             // then
             Assert.AreEqual(0, builder.Prefixes.Prefixes.Count());

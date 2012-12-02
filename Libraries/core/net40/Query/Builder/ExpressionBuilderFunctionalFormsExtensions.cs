@@ -70,9 +70,9 @@ namespace VDS.RDF.Query.Builder
         /// <param name="buildExistsPattern">a function, which will create the graph pattern parameter</param>
         public static BooleanExpression Exists(this ExpressionBuilder eb, Action<IGraphPatternBuilder> buildExistsPattern)
         {
-            GraphPatternBuilder builder = new GraphPatternBuilder(eb.Prefixes);
+            GraphPatternBuilder builder = new GraphPatternBuilder();
             buildExistsPattern(builder);
-            var existsFunction = new ExistsFunction(builder.BuildGraphPattern(), true);
+            var existsFunction = new ExistsFunction(builder.BuildGraphPattern(eb.Prefixes), true);
             return new BooleanExpression(existsFunction);
         }
 

@@ -9,10 +9,12 @@ namespace VDS.RDF.Query.Builder
     {
         private readonly IList<ITriplePattern> _patterns = new List<ITriplePattern>();
         private readonly PatternItemFactory _patternItemFactory;
+        private readonly INamespaceMapper _prefixes;
 
-        public TriplePatternBuilder(INamespaceMapper namespaceMapper)
+        public TriplePatternBuilder(INamespaceMapper prefixes)
         {
-            _patternItemFactory = new PatternItemFactory(namespaceMapper);
+            _prefixes = prefixes;
+            _patternItemFactory = new PatternItemFactory();
         }
 
         public TriplePatternPredicatePart Subject(string subjectVariableName)
@@ -22,7 +24,7 @@ namespace VDS.RDF.Query.Builder
 
         public TriplePatternPredicatePart Subject<TNode>(string subject) where TNode : INode
         {
-            return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject));
+            return Subject(PatternItemFactory.CreatePatternItem(typeof(TNode), subject, _prefixes));
         }
 
         public TriplePatternPredicatePart Subject(INode subjectNode)
@@ -37,7 +39,7 @@ namespace VDS.RDF.Query.Builder
 
         public TriplePatternPredicatePart Subject(PatternItem subject)
         {
-            return new TriplePatternPredicatePart(this, subject);
+            return new TriplePatternPredicatePart(this, subject, _prefixes);
         }
 
         public ITriplePattern[] Patterns

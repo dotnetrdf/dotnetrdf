@@ -10,10 +10,12 @@ namespace VDS.RDF.Query.Builder
     {
         private readonly PatternItem _subjectPatternItem;
         private readonly TriplePatternBuilder _triplePatternBuilder;
+        private readonly INamespaceMapper _prefixes;
 
-        internal TriplePatternPredicatePart(TriplePatternBuilder triplePatternBuilder, PatternItem subjectPatternItem)
+        internal TriplePatternPredicatePart(TriplePatternBuilder triplePatternBuilder, PatternItem subjectPatternItem, INamespaceMapper prefixes)
         {
             _subjectPatternItem = subjectPatternItem;
+            _prefixes = prefixes;
             _triplePatternBuilder = triplePatternBuilder;
         }
 
@@ -31,7 +33,7 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public TriplePatternObjectPart Predicate(PatternItem predicate)
         {
-            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate);
+            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
         }
 
         /// <summary>
@@ -46,10 +48,10 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Sets a <see cref="Uri"/> as <see cref="IMatchTriplePattern.Predicate"/> using a QName
         /// </summary>
-        /// <remarks>A relevant prefix/base URI must be added to <see cref="ICommonQueryBuilder.Prefixes"/></remarks>
+        /// <remarks>A relevant prefix/base URI must be added to <see cref="IQueryBuilder.Prefixes"/></remarks>
         public TriplePatternObjectPart PredicateUri(string predicateQName)
         {
-            var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName);
+            var predicate = _triplePatternBuilder.PatternItemFactory.CreateNodeMatchPattern(predicateQName, _prefixes);
             return CreateTriplePatternObjectPart(predicate);
         }
 
@@ -64,7 +66,7 @@ namespace VDS.RDF.Query.Builder
 
         private TriplePatternObjectPart CreateTriplePatternObjectPart(PatternItem predicate)
         {
-            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate);
+            return new TriplePatternObjectPart(_triplePatternBuilder, _subjectPatternItem, predicate, _prefixes);
         }
     }
 }

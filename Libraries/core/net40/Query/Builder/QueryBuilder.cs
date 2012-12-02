@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Builder.Expressions;
@@ -16,22 +18,40 @@ namespace VDS.RDF.Query.Builder
     /// A <see cref="SparqlQuery"/> is mutable by definition so calling any of the extension methods in this API will cause the existing query it is called on to be changed.  You can call <see cref="SparqlQuery.Copy()"/> on an existing query to create a new copy if you want to make different queries starting from the same base query
     /// </para>
     /// </remarks>
-    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder, ISelectQueryBuilder
+    public sealed class QueryBuilder : IQueryBuilder, IDescribeQueryBuilder
     {
-        private readonly SparqlQuery _query;
-        private readonly GraphPatternBuilder _rootGraphPatternBuilder;
+        private readonly GraphPatternBuilder _rootGraphPatternBuilder = new GraphPatternBuilder();
         private DescribeGraphPatternBuilder _constructGraphPatternBuilder;
+        private readonly SelectBuilder _selectBuilder;
+        private readonly IList<Func<INamespaceMapper, ISparqlOrderBy>> _buildOrderings = new List<Func<INamespaceMapper, ISparqlOrderBy>>();
+        private SparqlQueryType _sparqlQueryType;
+        private int _queryLimit;
+        private int _queryOffset;
+        private INamespaceMapper _prefixes = new NamespaceMapper(true);
 
         /// <summary>
         /// Gets or sets the namespace mappings for the SPARQL query being built
         /// </summary>
-        public INamespaceMapper Prefixes { get; set; }
-
-        private QueryBuilder(SparqlQueryType queryType)
+        public INamespaceMapper Prefixes
         {
-            this._query = new SparqlQuery { QueryType = queryType };
-            this.Prefixes = new NamespaceMapper(true);
-            _rootGraphPatternBuilder = new GraphPatternBuilder(Prefixes);
+            get { return _prefixes; }
+            set { _prefixes = value; }
+        }
+
+        internal GraphPatternBuilder RootGraphPatternBuilder
+        {
+            get { return _rootGraphPatternBuilder; }
+        }
+
+        internal QueryBuilder(SelectBuilder selectBuilder)
+            : this(selectBuilder.SparqlQueryType)
+        {
+            _selectBuilder = selectBuilder;
+        }
+
+        private QueryBuilder(SparqlQueryType sparqlQueryType)
+        {
+            _sparqlQueryType = sparqlQueryType;
         }
 
         public static IQueryBuilder Ask()
@@ -47,7 +67,7 @@ namespace VDS.RDF.Query.Builder
             }
 
             var queryBuilder = new QueryBuilder(SparqlQueryType.Construct);
-            DescribeGraphPatternBuilder graphPatternBuilder = new DescribeGraphPatternBuilder(new GraphPatternBuilder(queryBuilder.Prefixes));
+            DescribeGraphPatternBuilder graphPatternBuilder = new DescribeGraphPatternBuilder(new GraphPatternBuilder());
             buildConstructTemplate(graphPatternBuilder);
             return queryBuilder.Construct(graphPatternBuilder);
         }
@@ -66,9 +86,9 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT * query
         /// </summary>
-        public static ISelectQueryBuilder SelectAll()
+        public static IQueryBuilder SelectAll()
         {
-            return new QueryBuilder(SparqlQueryType.SelectAll);
+            return new QueryBuilder(new SelectBuilder(SparqlQueryType.SelectAll));
         }
 
         /// <summary>
@@ -76,9 +96,9 @@ namespace VDS.RDF.Query.Builder
         /// <paramref name="variables"/>
         /// </summary>
         /// <param name="variables">query result variables</param>
-        public static ISelectQueryBuilder Select(params SparqlVariable[] variables)
+        public static ISelectBuilder Select(params SparqlVariable[] variables)
         {
-            return new QueryBuilder(SparqlQueryType.Select).And(variables);
+            return new SelectBuilder(SparqlQueryType.Select).And(variables);
         }
 
         /// <summary>
@@ -86,7 +106,7 @@ namespace VDS.RDF.Query.Builder
         /// <paramref name="variables"/>
         /// </summary>
         /// <param name="variables">query result variables</param>
-        public static ISelectQueryBuilder Select(params string[] variables)
+        public static ISelectBuilder Select(params string[] variables)
         {
             SparqlVariable[] sparqlVariables = variables.Select(var => new SparqlVariable(var, true)).ToArray();
             return Select(sparqlVariables);
@@ -95,10 +115,10 @@ namespace VDS.RDF.Query.Builder
         /// <summary>
         /// Creates a new SELECT query which will return an expression
         /// </summary>
-        public static AssignmentVariableNamePart<ISelectQueryBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public static IAssignmentVariableNamePart<ISelectBuilder> Select(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            var queryBuilder = Select(new SparqlVariable[0]);
-            return new AssignmentVariableNamePart<ISelectQueryBuilder>(queryBuilder, buildAssignmentExpression);
+            SelectBuilder queryBuilder = (SelectBuilder)Select(new SparqlVariable[0]);
+            return new SelectAssignmentVariableNamePart(queryBuilder, buildAssignmentExpression);
         }
 
         /// <summary>
@@ -124,20 +144,19 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public IQueryBuilder Distinct()
         {
-            if (_query.HasDistinctModifier) return this;
-            switch (_query.QueryType)
+            switch (_sparqlQueryType)
             {
                 case SparqlQueryType.Select:
-                    _query.QueryType = SparqlQueryType.SelectDistinct;
+                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAll:
-                    _query.QueryType = SparqlQueryType.SelectAllDistinct;
+                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
                     break;
                 case SparqlQueryType.SelectReduced:
-                    _query.QueryType = SparqlQueryType.SelectDistinct;
+                    _sparqlQueryType = SparqlQueryType.SelectDistinct;
                     break;
                 case SparqlQueryType.SelectAllReduced:
-                    _query.QueryType = SparqlQueryType.SelectAllDistinct;
+                    _sparqlQueryType = SparqlQueryType.SelectAllDistinct;
                     break;
             }
             return this;
@@ -145,25 +164,25 @@ namespace VDS.RDF.Query.Builder
 
         public IQueryBuilder Limit(int limit)
         {
-            _query.Limit = limit;
+            _queryLimit = limit;
             return this;
         }
 
         public IQueryBuilder Offset(int offset)
         {
-            _query.Offset = offset;
+            _queryOffset = offset;
             return this;
         }
 
         public IQueryBuilder OrderBy(string variableName)
         {
-            AppendOrdering(new OrderByVariable(variableName), false);
+            _buildOrderings.Add(prefixes => new OrderByVariable(variableName));
             return this;
         }
 
         public IQueryBuilder OrderByDescending(string variableName)
         {
-            AppendOrdering(new OrderByVariable(variableName), true);
+            _buildOrderings.Add(prefixes => new OrderByVariable(variableName) { Descending = true });
             return this;
         }
 
@@ -181,29 +200,13 @@ namespace VDS.RDF.Query.Builder
 
         private void AppendOrdering(Func<ExpressionBuilder, SparqlExpression> orderExpression, bool descending)
         {
-            var expressionBuilder = new ExpressionBuilder(Prefixes);
-            var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
-            var orderBy = new OrderByExpression(sparqlExpression);
-            AppendOrdering(orderBy, descending);
-        }
-
-        private void AppendOrdering(ISparqlOrderBy orderBy, bool descending)
-        {
-            orderBy.Descending = descending;
-
-            if (_query.OrderBy == null)
-            {
-                _query.OrderBy = orderBy;
-            }
-            else
-            {
-                ISparqlOrderBy lastOrderBy = _query.OrderBy;
-                while (lastOrderBy.Child != null)
+            _buildOrderings.Add(prefixes =>
                 {
-                    lastOrderBy = lastOrderBy.Child;
-                }
-                lastOrderBy.Child = orderBy;
-            }
+                    var expressionBuilder = new ExpressionBuilder(prefixes);
+                    var sparqlExpression = orderExpression.Invoke(expressionBuilder).Expression;
+                    var orderBy = new OrderByExpression(sparqlExpression) { Descending = descending };
+                    return orderBy;
+                });
         }
 
         public SparqlQuery BuildQuery()
@@ -211,64 +214,100 @@ namespace VDS.RDF.Query.Builder
             // returns a copy to prevent changes in either
             // QueryBuilder or the retrieved SparqlQuery(variableName) from
             // being reflected in one another
-            SparqlQuery executableQuery = _query.Copy();
+            SparqlQuery executableQuery = new SparqlQuery
+                {
+                    QueryType = _sparqlQueryType,
+                    Limit = _queryLimit,
+                    Offset = _queryOffset
+                };
             executableQuery.NamespaceMap.Import(Prefixes);
-            var rootGraphPattern = _rootGraphPatternBuilder.BuildGraphPattern();
+
+            if (_selectBuilder != null)
+            {
+                executableQuery.QueryType = _selectBuilder.SparqlQueryType;
+                foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
+                {
+                    executableQuery.AddVariable(selectVariable);
+                }
+            }
+
+            var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
             if (!rootGraphPattern.IsEmpty)
             {
                 executableQuery.RootGraphPattern = rootGraphPattern;
             }
+
             if (_constructGraphPatternBuilder != null)
             {
-                executableQuery.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern();
+                executableQuery.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern(Prefixes);
             }
+
+            BuildAndChainOrderings(executableQuery);
+
             return executableQuery;
         }
 
-        public AssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        private void BuildAndChainOrderings(SparqlQuery executableQuery)
         {
-            return new AssignmentVariableNamePart<IQueryBuilder>(this, buildAssignmentExpression);
+            IList<ISparqlOrderBy> orderings = (from orderByBuilder in _buildOrderings
+                                               select orderByBuilder(Prefixes)).ToList();
+            for (int i = 1; i < orderings.Count; i++)
+            {
+                orderings[i - 1].Child = orderings[i];
+            }
+            executableQuery.OrderBy = orderings.FirstOrDefault();
+        }
+
+        public IAssignmentVariableNamePart<IQueryBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        {
+            return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
 
         public IQueryBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            _rootGraphPatternBuilder.Child(buildGraphPattern);
+            RootGraphPatternBuilder.Child(buildGraphPattern);
             return this;
         }
 
         public IQueryBuilder Where(params ITriplePattern[] triplePatterns)
         {
-            _rootGraphPatternBuilder.Where(triplePatterns);
+            RootGraphPatternBuilder.Where(triplePatterns);
             return this;
         }
 
         public IQueryBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            _rootGraphPatternBuilder.Where(buildTriplePatterns);
+            RootGraphPatternBuilder.Where(buildTriplePatterns);
+            return this;
+        }
+
+        internal IQueryBuilder Where(Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
+        {
+            RootGraphPatternBuilder.Where(buildTriplePatternFunc);
             return this;
         }
 
         public IQueryBuilder Optional(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            _rootGraphPatternBuilder.Optional(buildGraphPattern);
+            RootGraphPatternBuilder.Optional(buildGraphPattern);
             return this;
         }
 
         public IQueryBuilder Filter(ISparqlExpression expr)
         {
-            _rootGraphPatternBuilder.Filter(expr);
+            RootGraphPatternBuilder.Filter(expr);
             return this;
         }
 
         public IQueryBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
         {
-            _rootGraphPatternBuilder.Minus(buildGraphPattern);
+            RootGraphPatternBuilder.Minus(buildGraphPattern);
             return this;
         }
 
         public IQueryBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
         {
-            _rootGraphPatternBuilder.Filter(buildExpression);
+            RootGraphPatternBuilder.Filter(buildExpression);
             return this;
         }
 
@@ -283,7 +322,7 @@ namespace VDS.RDF.Query.Builder
         {
             foreach (var variableName in variables)
             {
-                _query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
+                //_query.AddDescribeVariable(new VariableToken(variableName, 0, 0, 0));
             }
             return this;
         }
@@ -295,56 +334,9 @@ namespace VDS.RDF.Query.Builder
         {
             foreach (var uri in uris)
             {
-                _query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
+                //_query.AddDescribeVariable(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
             }
             return this;
-        }
-
-        #endregion
-
-        #region Implementation of ISelectQueryBuilder
-
-        /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
-        /// </summary>
-        public ISelectQueryBuilder And(params SparqlVariable[] variables)
-        {
-            foreach (var sparqlVariable in variables)
-            {
-                _query.AddVariable(sparqlVariable.IsResultVariable ? sparqlVariable : CopyVariable(sparqlVariable));
-            }
-            return this;
-        }
-
-        /// <summary>
-        /// Adds additional SELECT expression
-        /// </summary>
-        public AssignmentVariableNamePart<ISelectQueryBuilder> And(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-        {
-            return new AssignmentVariableNamePart<ISelectQueryBuilder>(this, buildAssignmentExpression);
-        }
-
-        private SparqlVariable CopyVariable(SparqlVariable sparqlVariable)
-        {
-            if (sparqlVariable.IsAggregate)
-            {
-                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Aggregate);
-            }
-
-            if (sparqlVariable.IsProjection)
-            {
-                return new SparqlVariable(sparqlVariable.Name, sparqlVariable.Projection);
-            }
-
-            return new SparqlVariable(sparqlVariable.Name, true);
-        }
-
-        /// <summary>
-        /// Adds additional SELECT <paramref name="variables"/>
-        /// </summary>
-        ISelectQueryBuilder ISelectQueryBuilder.And(params string[] variables)
-        {
-            return And(variables.Select(var => new SparqlVariable(var, true)).ToArray());
         }
 
         #endregion

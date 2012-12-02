@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -12,45 +11,42 @@ namespace VDS.RDF.Query.Builder
     sealed class GraphPatternBuilder : IGraphPatternBuilder
     {
         private readonly IList<GraphPatternBuilder> _childGraphPatternBuilders = new List<GraphPatternBuilder>();
-        private readonly IList<Func<ISparqlExpression>> _filterBuilders = new List<Func<ISparqlExpression>>();
-        private readonly IList<Func<ITriplePattern[]>> _triplePatterns = new List<Func<ITriplePattern[]>>();
-        private readonly INamespaceMapper _prefixes;
+        private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
+        private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
         private readonly GraphPatternType _graphPatternType;
 
         /// <summary>
         /// Creates a builder of a normal graph patterns
         /// </summary>
-        internal GraphPatternBuilder(INamespaceMapper prefixes)
-            : this(prefixes, GraphPatternType.Normal)
+        internal GraphPatternBuilder()
+            : this(GraphPatternType.Normal)
         {
         }
 
         /// <summary>
         /// Creates a builder of a graph pattern
         /// </summary>
-        /// <param name="prefixes"></param>
         /// <param name="graphPatternType">MINUS, GRAPH, SERVICE etc.</param>
-        private GraphPatternBuilder(INamespaceMapper prefixes, GraphPatternType graphPatternType)
+        private GraphPatternBuilder(GraphPatternType graphPatternType)
         {
-            _prefixes = prefixes;
             _graphPatternType = graphPatternType;
         }
 
-        internal GraphPattern BuildGraphPattern()
+        internal GraphPattern BuildGraphPattern(INamespaceMapper prefixes)
         {
             var graphPattern = CreateGraphPattern();
 
-            foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns()))
+            foreach (var triplePattern in _triplePatterns.SelectMany(getTriplePatterns => getTriplePatterns(prefixes)))
             {
                 AddTriplePattern(graphPattern, triplePattern);
             }
             foreach (var graphPatternBuilder in _childGraphPatternBuilders)
             {
-                graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern());
+                graphPattern.AddGraphPattern(graphPatternBuilder.BuildGraphPattern(prefixes));
             }
             foreach (var buildFilter in _filterBuilders)
             {
-                graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter()));
+                graphPattern.AddFilter(new UnaryExpressionFilter(buildFilter(prefixes)));
             }
 
             return graphPattern;
@@ -98,18 +94,23 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Where(params ITriplePattern[] triplePatterns)
         {
-            _triplePatterns.Add(() => triplePatterns);
+            _triplePatterns.Add(prefixes => triplePatterns);
             return this;
         }
 
         public IGraphPatternBuilder Where(Action<ITriplePatternBuilder> buildTriplePatterns)
         {
-            _triplePatterns.Add(() =>
+            return Where(prefixes =>
                 {
-                    var builder = new TriplePatternBuilder(Prefixes);
+                    var builder = new TriplePatternBuilder(prefixes);
                     buildTriplePatterns(builder);
                     return builder.Patterns;
                 });
+        }
+
+        internal IGraphPatternBuilder Where(Func<INamespaceMapper, ITriplePattern[]> buildTriplePatternFunc)
+        {
+            _triplePatterns.Add(buildTriplePatternFunc);
             return this;
         }
 
@@ -134,7 +135,7 @@ namespace VDS.RDF.Query.Builder
             }
             else
             {
-                union = new GraphPatternBuilder(Prefixes, GraphPatternType.Union);
+                union = new GraphPatternBuilder(GraphPatternType.Union);
                 union._childGraphPatternBuilders.Add(this);
             }
 
@@ -142,9 +143,9 @@ namespace VDS.RDF.Query.Builder
             return union;
         }
 
-        public AssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
+        public IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            return new AssignmentVariableNamePart<IGraphPatternBuilder>(this, buildAssignmentExpression);
+            return new BindAssignmentVariableNamePart(this, buildAssignmentExpression);
         }
 
         public IGraphPatternBuilder Child(Action<IGraphPatternBuilder> buildGraphPattern)
@@ -155,9 +156,9 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Filter(Func<ExpressionBuilder, BooleanExpression> buildExpression)
         {
-            _filterBuilders.Add(() =>
+            _filterBuilders.Add(namespaceMapper =>
                 {
-                    var builder = new ExpressionBuilder(Prefixes);
+                    var builder = new ExpressionBuilder(namespaceMapper);
                     return buildExpression(builder).Expression;
                 });
             return this;
@@ -165,20 +166,15 @@ namespace VDS.RDF.Query.Builder
 
         public IGraphPatternBuilder Filter(ISparqlExpression expr)
         {
-            _filterBuilders.Add(() => expr);
+            _filterBuilders.Add(namespaceMapper => expr);
             return this;
-        }
-
-        public INamespaceMapper Prefixes
-        {
-            get { return _prefixes; }
         }
 
         #endregion
 
         private void AddChildGraphPattern(Action<IGraphPatternBuilder> buildGraphPattern, GraphPatternType graphPatternType)
         {
-            var childBuilder = new GraphPatternBuilder(Prefixes, graphPatternType);
+            var childBuilder = new GraphPatternBuilder(graphPatternType);
             buildGraphPattern(childBuilder);
             _childGraphPatternBuilders.Add(childBuilder);
         }

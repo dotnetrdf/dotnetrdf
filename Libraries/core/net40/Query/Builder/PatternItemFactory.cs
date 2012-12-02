@@ -10,21 +10,15 @@ namespace VDS.RDF.Query.Builder
     internal class PatternItemFactory
     {
         private readonly NodeFactory _nodeFactory = new NodeFactory();
-        private readonly INamespaceMapper _namespaceMapper;
-
-        public PatternItemFactory(INamespaceMapper namespaceMapper)
-        {
-            _namespaceMapper = namespaceMapper;
-        }
 
         internal PatternItem CreateVariablePattern(string variableName)
         {
             return new VariablePattern(variableName);
         }
 
-        internal PatternItem CreateNodeMatchPattern(string qName)
+        internal PatternItem CreateNodeMatchPattern(string qName, INamespaceMapper namespaceMapper)
         {
-            var qNameResolved = Tools.ResolveQName(qName, _namespaceMapper, null);
+            var qNameResolved = Tools.ResolveQName(qName, namespaceMapper, null);
             return CreateNodeMatchPattern(new Uri(qNameResolved));
         }
 
@@ -43,11 +37,11 @@ namespace VDS.RDF.Query.Builder
             return new BlankNodePattern(blankNodeIdentifier);
         }
 
-        public PatternItem CreatePatternItem(Type nodeType, string patternString)
+        internal PatternItem CreatePatternItem(Type nodeType, string patternString, INamespaceMapper namespaceMapper)
         {
             if (nodeType == typeof(IUriNode))
             {
-                return CreateNodeMatchPattern(patternString);
+                return CreateNodeMatchPattern(patternString, namespaceMapper);
             }
             if (nodeType == typeof(IBlankNode))
             {
@@ -65,21 +59,21 @@ namespace VDS.RDF.Query.Builder
             throw new ArgumentException(string.Format("Invalid node type {0}", nodeType));
         }
 
-        public PatternItem CreateLiteralNodeMatchPattern(object literal)
+        internal PatternItem CreateLiteralNodeMatchPattern(object literal)
         {
             var literalString = GetLiteralString(literal);
 
             return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString));
         }
 
-        public PatternItem CreateLiteralNodeMatchPattern(object literal, Uri datatype)
+        internal PatternItem CreateLiteralNodeMatchPattern(object literal, Uri datatype)
         {
             var literalString = GetLiteralString(literal);
 
             return new NodeMatchPattern(_nodeFactory.CreateLiteralNode(literalString, datatype));
         }
 
-        public PatternItem CreateLiteralNodeMatchPattern(object literal, string langSpec)
+        internal PatternItem CreateLiteralNodeMatchPattern(object literal, string langSpec)
         {
             var literalString = GetLiteralString(literal);
 

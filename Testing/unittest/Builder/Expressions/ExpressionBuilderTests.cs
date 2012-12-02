@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions.Conditional;
@@ -15,11 +16,13 @@ namespace VDS.RDF.Test.Builder.Expressions
     public partial class ExpressionBuilderTests
     {
         private ExpressionBuilder Builder { get; set; }
+        private Mock<INamespaceMapper> _prefixes;
 
         [TestInitialize]
         public void Setup()
         {
-            Builder = new ExpressionBuilder(new NamespaceMapper(true));
+            _prefixes = new Mock<INamespaceMapper>(MockBehavior.Strict);
+            Builder = new ExpressionBuilder(_prefixes.Object);
         }
 
         [TestMethod]
@@ -67,7 +70,7 @@ namespace VDS.RDF.Test.Builder.Expressions
 
             // then
             Assert.IsTrue(exists.Expression is ExistsFunction);
-            var graphPatternTerm = (GraphPatternTerm) ((ExistsFunction) exists.Expression).Arguments.ElementAt(0);
+            var graphPatternTerm = (GraphPatternTerm)((ExistsFunction)exists.Expression).Arguments.ElementAt(0);
             Assert.AreEqual(1, graphPatternTerm.Pattern.TriplePatterns.Count);
             Assert.AreEqual(3, graphPatternTerm.Pattern.Variables.Count());
         }

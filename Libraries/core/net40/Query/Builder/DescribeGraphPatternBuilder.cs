@@ -24,9 +24,9 @@ namespace VDS.RDF.Query.Builder
             return this;
         }
 
-        public GraphPattern BuildGraphPattern()
+        public GraphPattern BuildGraphPattern(INamespaceMapper prefixes)
         {
-            return _builder.BuildGraphPattern();
+            return _builder.BuildGraphPattern(prefixes);
         }
     }
 }

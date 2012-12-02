@@ -14,19 +14,19 @@ namespace VDS.RDF.Query.Builder
 
         internal ExpressionBuilder(INamespaceMapper prefixes)
         {
-            SparqlVersion = SparqlQuerySyntax.Sparql_1_1;
             _prefixes = prefixes;
-        }
-
-        internal INamespaceMapper Prefixes
-        {
-            get { return _prefixes; }
+            SparqlVersion = SparqlQuerySyntax.Sparql_1_1;
         }
 
         /// <summary>
         /// SPARQL syntax verions to use when creating expressions
         /// </summary>
         public SparqlQuerySyntax SparqlVersion { get; set; }
+
+        internal INamespaceMapper Prefixes
+        {
+            get { return _prefixes; }
+        }
 
         /// <summary>
         /// Creates a SPARQL variable

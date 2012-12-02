@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using VDS.RDF.Query.Builder;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
@@ -13,11 +14,13 @@ namespace VDS.RDF.Test.Builder
     public class GraphPatternBuilderTests
     {
         private GraphPatternBuilder _builder;
+        private Mock<INamespaceMapper> _namespaceMapper;
 
         [TestInitialize]
         public void Setup()
         {
-            _builder = new GraphPatternBuilder(new NamespaceMapper());
+            _namespaceMapper = new Mock<INamespaceMapper>(MockBehavior.Strict);
+            _builder = new GraphPatternBuilder();
         }
 
         [TestMethod]
@@ -28,7 +31,7 @@ namespace VDS.RDF.Test.Builder
             _builder.Filter(expression);
 
             // when
-            GraphPattern graphPattern = _builder.BuildGraphPattern();
+            GraphPattern graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
 
             // then
             Assert.IsTrue(graphPattern.IsFiltered);
@@ -44,7 +47,7 @@ namespace VDS.RDF.Test.Builder
             // when
             var unionBuilder =
                 _builder.Union(union => union.Where(t => t.Subject("x").Predicate("y").Object("z")));
-            var graphPattern = ((GraphPatternBuilder)unionBuilder).BuildGraphPattern();
+            var graphPattern = ((GraphPatternBuilder)unionBuilder).BuildGraphPattern(_namespaceMapper.Object);
 
             // then
             Assert.IsTrue(graphPattern.IsUnion);
@@ -69,7 +72,7 @@ namespace VDS.RDF.Test.Builder
                         .Union(union => union.Where(buildTriplePattern))
                         .Union(union => union.Where(buildTriplePattern))
                         .Union(union => union.Where(buildTriplePattern));
-            var graphPattern = ((GraphPatternBuilder)unionBuilder).BuildGraphPattern();
+            var graphPattern = ((GraphPatternBuilder)unionBuilder).BuildGraphPattern(_namespaceMapper.Object);
 
             // then
             Assert.IsTrue(graphPattern.IsUnion);
@@ -87,7 +90,7 @@ namespace VDS.RDF.Test.Builder
             _builder.Child(cp => cp.Child(cp2 => cp2.Child(cp3 => cp3.Child(cp4 => cp4.Child(last => { })))));
 
             // when
-            var graphPattern = _builder.BuildGraphPattern();
+            var graphPattern = _builder.BuildGraphPattern(_namespaceMapper.Object);
 
             // then
             for (int i = 0; i < 4; i++)

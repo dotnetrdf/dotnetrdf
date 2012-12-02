@@ -1,5 +1,6 @@
 using System;
 using VDS.RDF.Query.Builder.Expressions;
+using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Builder
@@ -7,58 +8,49 @@ namespace VDS.RDF.Query.Builder
     /// <summary>
     /// Exposes method for assigning a name to an expression variable
     /// </summary>
-    public sealed class AssignmentVariableNamePart<T> where T : ICommonQueryBuilder
+    public interface IAssignmentVariableNamePart<out T>
     {
-        private readonly ISelectQueryBuilder _selectBuilder;
-        private readonly IGraphPatternBuilder _graphPatternBuilder;
-        private readonly T _queryBuilder;
-        private readonly Func<ExpressionBuilder, SparqlExpression> _buildAssignmentExpression;
-
-        internal AssignmentVariableNamePart(ISelectQueryBuilder selectBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-            : this((T)selectBuilder, buildAssignmentExpression)
-        {
-            _selectBuilder = selectBuilder;
-        }
-
-        internal AssignmentVariableNamePart(IGraphPatternBuilder graphPatternBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-            : this((T)graphPatternBuilder, buildAssignmentExpression)
-        {
-            _graphPatternBuilder = graphPatternBuilder;
-        }
-
-        private AssignmentVariableNamePart(T builder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
-        {
-            _queryBuilder = builder;
-            _buildAssignmentExpression = buildAssignmentExpression;
-        }
-
         /// <summary>
         /// Set the expression's variable name
         /// </summary>
         /// <returns>the parent query or graph pattern builder</returns>
-        public T As(string variableName)
+        T As(string variableName);
+
+        //{
+        //    var expressionBuilder = new ExpressionBuilder(_prefixes);
+        //    var assignment = _buildAssignmentExpression(expressionBuilder);
+        //    var bindPattern = new BindPattern(variableName, assignment.Expression);
+        //    if (_selectBuilder != null)
+        //    {
+        //        _selectBuilder.And(new SparqlVariable(variableName, assignment.Expression));
+        //        return (T)_selectBuilder;
+        //    }
+
+        //    if (_graphPatternBuilder != null)
+        //    {
+        //        _graphPatternBuilder.Where(bindPattern);
+        //        return (T)_graphPatternBuilder;
+        //    }
+
+        //    // todo: refactor as lookup table
+        //    throw new InvalidOperationException(string.Format("Invalid type of T for creating assignment: {0}", typeof(T)));
+        //}
+    }
+
+    internal abstract class AssignmentVariableNamePart
+    {
+        private readonly Func<ExpressionBuilder, SparqlExpression> _buildAssignmentExpression;
+
+        protected AssignmentVariableNamePart(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
         {
-            var expressionBuilder = new ExpressionBuilder(_queryBuilder.Prefixes);
+            _buildAssignmentExpression = buildAssignmentExpression;
+        }
+
+        protected ISparqlExpression BuildAssignmentExpression(INamespaceMapper prefixes)
+        {
+            var expressionBuilder = new ExpressionBuilder(prefixes);
             var assignment = _buildAssignmentExpression(expressionBuilder);
-            var bindPattern = new BindPattern(variableName, assignment.Expression);
-            if (typeof(T) == typeof(ISelectQueryBuilder))
-            {
-                _selectBuilder.And(new SparqlVariable(variableName, assignment.Expression));
-            }
-            else if (typeof(T) == typeof(IGraphPatternBuilder))
-            {
-                _graphPatternBuilder.Where(bindPattern);
-            }
-            else if (typeof(T) == typeof(IQueryBuilder))
-            {
-                ((IQueryBuilder)_queryBuilder).Where(bindPattern);
-            }
-            else
-            {
-                // todo: refactor as lookup table
-                throw new InvalidOperationException(string.Format("Invalid type of T for creating assignment: {0}", typeof(T)));
-            }
-            return _queryBuilder;
+            return assignment.Expression;
         }
     }
 }

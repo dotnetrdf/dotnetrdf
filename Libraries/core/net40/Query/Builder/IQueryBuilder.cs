@@ -9,6 +9,10 @@ namespace VDS.RDF.Query.Builder
     public interface IQueryBuilder : ICommonQueryBuilder<IQueryBuilder>
     {
         /// <summary>
+        /// Gets the prefix manager, which allows adding prefixes to the query or graph pattern
+        /// </summary>
+        INamespaceMapper Prefixes { get; set; }
+        /// <summary>
         /// Applies the DISTINCT modifier if the Query is a SELECT, otherwise leaves query unchanged (since results from any other query are DISTINCT by default)
         /// </summary>
         IQueryBuilder Distinct();
