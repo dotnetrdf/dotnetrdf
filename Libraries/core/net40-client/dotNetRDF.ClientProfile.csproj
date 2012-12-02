@@ -2418,14 +2418,8 @@
     <Compile Include="..\net40\Query\Builder\ICommonQueryBuilder.cs">
       <Link>Query\Builder\ICommonQueryBuilder.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Query\Builder\IDescribeQueryBuilder.cs">
-      <Link>Query\Builder\IDescribeQueryBuilder.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\Builder\IGraphPatternBuilder.cs">
       <Link>Query\Builder\IGraphPatternBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Query\Builder\ISelectQueryBuilder.cs">
-      <Link>Query\Builder\ISelectQueryBuilder.cs</Link>
     </Compile>
     <Compile Include="..\net40\Query\Builder\ITriplePatternBuilder.cs">
       <Link>Query\Builder\ITriplePatternBuilder.cs</Link>
@@ -2500,6 +2494,29 @@
     </Compile>
     <Compile Include="..\net40\Query\Builder\IDescribeGraphPatternBuilder.cs">
       <Link>Query\Builder\IDescribeGraphPatternBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\BindAssignmentVariableNamePart.cs">
+      <Link>Query\Builder\BindAssignmentVariableNamePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\DescribeBuilder.cs">
+      <Link>Query\Builder\DescribeBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\IDescribeBuilder.cs">
+      <Link>Query\Builder\IDescribeBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\ISelectBuilder.cs">
+      <Link>Query\Builder\ISelectBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\QueryTypeSpecificBuilderBase.cs">
+      <Link>Query\Builder\QueryTypeSpecificBuilderBase.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\SelectAssignmentVariableNamePart.cs">
+      <Link>Query\Builder\SelectAssignmentVariableNamePart.cs</Link>
+    </Compile>
+    <Compile Include="..\net40\Query\Builder\SelectBuilder.cs">
+      <Link>Query\Builder\SelectBuilder.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

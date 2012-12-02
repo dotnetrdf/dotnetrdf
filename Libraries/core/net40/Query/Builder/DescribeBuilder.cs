@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF.Query.Builder
@@ -14,7 +13,10 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public IDescribeBuilder And(params string[] variables)
         {
-            _describeVariables.AddRange(from variableName in variables select new VariableToken(variableName, 0, 0, 0));
+            foreach (var variableName in variables)
+            {
+                _describeVariables.Add(new VariableToken(variableName, 0, 0, 0));   
+            }
             return this;
         }
 
@@ -23,7 +25,10 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         public IDescribeBuilder And(params Uri[] uris)
         {
-            _describeVariables.AddRange(from uri in uris select new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
+            foreach (var uri in uris)
+            {
+                _describeVariables.Add(new UriToken(string.Format("<{0}>", uri), 0, 0, 0));
+            }
             return this;
         }
 
