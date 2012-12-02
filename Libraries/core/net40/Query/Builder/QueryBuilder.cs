@@ -203,48 +203,75 @@ namespace VDS.RDF.Query.Builder
 
         public SparqlQuery BuildQuery()
         {
-            // returns a copy to prevent changes in either
-            // QueryBuilder or the retrieved SparqlQuery(variableName) from
-            // being reflected in one another
-            SparqlQuery executableQuery = new SparqlQuery
+            SparqlQuery query = new SparqlQuery
                 {
                     QueryType = _sparqlQueryType,
                     Limit = _queryLimit,
                     Offset = _queryOffset
                 };
-            executableQuery.NamespaceMap.Import(Prefixes);
+            query.NamespaceMap.Import(Prefixes);
 
-            if (_selectBuilder != null)
+            switch (_sparqlQueryType)
             {
-                executableQuery.QueryType = _selectBuilder.SparqlQueryType;
-                foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
-                {
-                    executableQuery.AddVariable(selectVariable);
-                }
-            }
-            else if (_describeBuilder != null)
-            {
-                executableQuery.QueryType = _describeBuilder.SparqlQueryType;
-                foreach (var describeVariable in _describeBuilder.DescribeVariables)
-                {
-                    executableQuery.AddDescribeVariable(describeVariable);
-                }
+                case SparqlQueryType.Construct:
+                    BuildConstructGraphPattern(query);
+                    break;
+                case SparqlQueryType.Describe:
+                case SparqlQueryType.DescribeAll:
+                    BuildDecribeVariables(query);
+                    break;
+                case SparqlQueryType.Select:
+                case SparqlQueryType.SelectAll:
+                case SparqlQueryType.SelectAllDistinct:
+                case SparqlQueryType.SelectAllReduced:
+                case SparqlQueryType.SelectDistinct:
+                case SparqlQueryType.SelectReduced:
+                    BuildReturnVariables(query);
+                    break;
             }
 
+            BuildRootGraphPattern(query);
+            BuildAndChainOrderings(query);
+
+            return query;
+        }
+
+        private void BuildDecribeVariables(SparqlQuery query)
+        {
+            if (_describeBuilder == null) return;
+
+            query.QueryType = _describeBuilder.SparqlQueryType;
+            foreach (var describeVariable in _describeBuilder.DescribeVariables)
+            {
+                query.AddDescribeVariable(describeVariable);
+            }
+        }
+
+        private void BuildConstructGraphPattern(SparqlQuery query)
+        {
+            if (_constructGraphPatternBuilder == null) return;
+
+            query.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern(Prefixes);
+        }
+
+        private void BuildRootGraphPattern(SparqlQuery query)
+        {
             var rootGraphPattern = RootGraphPatternBuilder.BuildGraphPattern(Prefixes);
             if (!rootGraphPattern.IsEmpty)
             {
-                executableQuery.RootGraphPattern = rootGraphPattern;
+                query.RootGraphPattern = rootGraphPattern;
             }
+        }
 
-            if (_constructGraphPatternBuilder != null)
+        private void BuildReturnVariables(SparqlQuery query)
+        {
+            if (_selectBuilder == null) return;
+
+            query.QueryType = _selectBuilder.SparqlQueryType;
+            foreach (SparqlVariable selectVariable in _selectBuilder.BuildVariables(Prefixes))
             {
-                executableQuery.ConstructTemplate = _constructGraphPatternBuilder.BuildGraphPattern(Prefixes);
+                query.AddVariable(selectVariable);
             }
-
-            BuildAndChainOrderings(executableQuery);
-
-            return executableQuery;
         }
 
         private void BuildAndChainOrderings(SparqlQuery executableQuery)
