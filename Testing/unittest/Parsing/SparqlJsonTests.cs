@@ -103,5 +103,23 @@ namespace VDS.RDF.Test.Parsing
 
             Assert.AreEqual(1, results.Count);
         }
+
+        [TestMethod]
+        public void ParsingSparqlJsonGuid1()
+        {
+            String data = @"{
+ ""head"" : { ""vars"" : [ ""guid"" ] } ,
+ ""results"" : {
+  ""bindings"" : [
+    { ""guid"" : { ""type"" : ""literal"" , ""value"" : """ + Guid.NewGuid().ToString() + @""" } }
+  ]
+ }
+}";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
     }
 }
