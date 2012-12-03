@@ -722,6 +722,23 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
+        /// Checks whether a JSON Token is valid as the value for a RDF term
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns></returns>
+        private bool IsValidValue(SparqlJsonParserContext context)
+        {
+            switch (context.Input.TokenType)
+            {
+                case JsonToken.String:
+                case JsonToken.Date:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         /// Helper method for raising Error messages with attached Line Information
         /// </summary>
         /// <param name="context">Parser Context</param>
