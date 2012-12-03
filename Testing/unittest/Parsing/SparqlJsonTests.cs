@@ -31,5 +31,77 @@ namespace VDS.RDF.Test.Parsing
 
             Assert.AreEqual(1, results.Count);
         }
+
+        [TestMethod]
+        public void ParsingSparqlJsonNumerics1()
+        {
+            String data = @"{
+ ""head"" : { ""vars"" : [ ""num"" ] } ,
+ ""results"" : {
+  ""bindings"" : [
+    { ""num"" : { ""type"" : ""literal"" , ""value"" : ""1234"" } }
+  ]
+ }
+}";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonNumerics2()
+        {
+            String data = @"{
+ ""head"" : { ""vars"" : [ ""num"" ] } ,
+ ""results"" : {
+  ""bindings"" : [
+    { ""num"" : { ""type"" : ""literal"" , ""value"" : 1234 } }
+  ]
+ }
+}";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [TestMethod]
+        public void ParsingSparqlJsonBoolean1()
+        {
+            String data = @"{
+ ""head"" : { ""vars"" : [ ""bool"" ] } ,
+ ""results"" : {
+  ""bindings"" : [
+    { ""bool"" : { ""type"" : ""literal"" , ""value"" : ""true"" } }
+  ]
+ }
+}";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingSparqlJsonBoolean2()
+        {
+            String data = @"{
+ ""head"" : { ""vars"" : [ ""bool"" ] } ,
+ ""results"" : {
+  ""bindings"" : [
+    { ""bool"" : { ""type"" : ""literal"" , ""value"" : true } }
+  ]
+ }
+}";
+
+            SparqlResultSet results = new SparqlResultSet();
+            this._parser.Load(results, new StringReader(data));
+
+            Assert.AreEqual(1, results.Count);
+        }
     }
 }
