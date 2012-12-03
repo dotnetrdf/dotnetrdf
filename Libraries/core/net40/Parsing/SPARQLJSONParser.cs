@@ -574,7 +574,7 @@ namespace VDS.RDF.Parsing
 
                         //Check that we get a Property Value as a String
                         context.Input.Read();
-                        if (context.Input.TokenType != JsonToken.String)
+                        if (!this.IsValidValue(context))
                         {
                             throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
                         }
