@@ -109,6 +109,7 @@
     <Compile Include="Parsing\SparqlJsonTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\Turtle11.cs" />
+    <Compile Include="Parsing\TurtleMemberSubmission.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
     <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
     <Compile Include="Sparql\FormattingTests.cs" />
@@ -1118,7 +1119,7 @@
     <EmbeddedResource Include="Sparql\SampleWeightings.n3" />
   </ItemGroup>
   <ItemGroup>
-<None Include="resources\rdfxml\amp-in-url\test001.nt" />
+    <None Include="resources\rdfxml\amp-in-url\test001.nt" />
     <None Include="resources\rdfxml\amp-in-url\test001.rdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -1964,9 +1965,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="resources\rdfxml\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>

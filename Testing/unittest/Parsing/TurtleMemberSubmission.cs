@@ -35,11 +35,10 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Test.Parsing
 {
-   
     [TestClass]
-    public class Turtle11
+    public class TurtleMemberSubmission
     {
-        private TurtleParser _ttlParser = new TurtleParser(TurtleSyntax.W3C);
+        private TurtleParser _ttlParser = new TurtleParser(TurtleSyntax.Original);
         private NTriplesParser _ntParser = new NTriplesParser();
         private int _count, _pass, _fail, _indeterminate;
 
@@ -115,7 +114,7 @@ WHERE
                     else
                     {
                         String lastSegment = u.Segments[u.Segments.Length - 1];
-                        return "turtle11/" + lastSegment;
+                        return "turtle/" + lastSegment;
                     }
                     break;
                 default:
@@ -211,11 +210,11 @@ WHERE
         }
 
         [TestMethod]
-        public void ParsingTurtleW3CSuite()
+        public void ParsingTurtleOriginalSuite()
         {
             //Run manifests
-            this.RunManifest("turtle11/manifest.ttl", true);
-            this.RunManifest("turtle11/manifest-bad.ttl", false);            
+            this.RunManifest("turtle/manifest.ttl", true);
+            this.RunManifest("turtle/manifest-bad.ttl", false);            
 
             Console.WriteLine(this._count + " Tests - " + this._pass + " Passed - " + this._fail + " Failed");
             Console.WriteLine((((double)this._pass / (double)this._count) * 100) + "% Passed");
@@ -225,7 +224,7 @@ WHERE
         }
 
         [TestMethod]
-        public void ParsingTurtleW3CBaseTurtleStyle1()
+        public void ParsingTurtleOriginalBaseTurtleStyle1()
         {
             //Dot required
             String graph = "@base <http://example.org/> .";
@@ -236,7 +235,7 @@ WHERE
         }
 
         [TestMethod,ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CBaseTurtleStyle2()
+        public void ParsingTurtleOriginalBaseTurtleStyle2()
         {
             //Missing dot
             String graph = "@base <http://example.org/>";
@@ -247,9 +246,9 @@ WHERE
         }
 
         [TestMethod,ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CBaseSparqlStyle1()
+        public void ParsingTurtleOriginalBaseSparqlStyle1()
         {
-            //Forbidden dot
+            //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/> .";
             Graph g = new Graph();
             this._ttlParser.Load(g, new StringReader(graph));
@@ -257,10 +256,10 @@ WHERE
             Assert.AreEqual(new Uri("http://example.org"), g.BaseUri);
         }
 
-        [TestMethod]
-        public void ParsingTurtleW3CBaseSparqlStyle2()
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleOriginalBaseSparqlStyle2()
         {
-            //No dot required
+            //Forbidden in Original Turtle
             String graph = "BASE <http://example.org/>";
             Graph g = new Graph();
             this._ttlParser.Load(g, new StringReader(graph));
@@ -269,7 +268,7 @@ WHERE
         }
 
         [TestMethod]
-        public void ParsingTurtleW3CPrefixTurtleStyle1()
+        public void ParsingTurtleOriginalPrefixTurtleStyle1()
         {
             //Dot required
             String graph = "@prefix ex: <http://example.org/> .";
@@ -280,7 +279,7 @@ WHERE
         }
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CPrefixTurtleStyle2()
+        public void ParsingTurtleOriginalPrefixTurtleStyle2()
         {
             //Missing dot
             String graph = "@prefix ex: <http://example.org/>";
@@ -291,9 +290,9 @@ WHERE
         }
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
-        public void ParsingTurtleW3CPrefixSparqlStyle1()
+        public void ParsingTurtleOriginalPrefixSparqlStyle1()
         {
-            //Forbidden dot
+            //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/> .";
             Graph g = new Graph();
             this._ttlParser.Load(g, new StringReader(graph));
@@ -301,10 +300,10 @@ WHERE
             Assert.AreEqual(new Uri("http://example.org"), g.NamespaceMap.GetNamespaceUri("ex"));
         }
 
-        [TestMethod]
-        public void ParsingTurtleW3CPrefixSparqlStyle2()
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleOriginalPrefixSparqlStyle2()
         {
-            //No dot required
+            //Forbidden in Original Turtle
             String graph = "PREFIX ex: <http://example.org/>";
             Graph g = new Graph();
             this._ttlParser.Load(g, new StringReader(graph));
