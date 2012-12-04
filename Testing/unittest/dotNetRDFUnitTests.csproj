@@ -102,9 +102,11 @@
     <Compile Include="Core\MimeTypesTests.cs" />
     <Compile Include="Core\UriTests.cs" />
     <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\BaseParserSuite.cs" />
     <Compile Include="Parsing\CachingTests.cs" />
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\N3.cs" />
     <Compile Include="Parsing\RelativeUriTests.cs" />
     <Compile Include="Parsing\SparqlJsonTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
