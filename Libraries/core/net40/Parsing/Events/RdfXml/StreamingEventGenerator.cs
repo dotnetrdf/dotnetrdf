@@ -199,6 +199,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                             RootEvent root = new RootEvent(this.GetBaseUri(), this._reader.Value, this.GetPosition());
                             root.DocumentElement = (ElementEvent)this._rootEl;
                             root.Children.Add((ElementEvent)this._rootEl);
+
+                            if (root.BaseUri.Equals(String.Empty))
+                            {
+                                root.BaseUri = this._currentBaseUri;                                
+                            }
+
                             return root;
                         }
                         else
