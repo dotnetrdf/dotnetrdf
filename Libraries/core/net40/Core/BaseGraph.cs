@@ -33,7 +33,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using VDS.Common;
+using VDS.Common.Collections;
 using VDS.RDF.Collections;
 using VDS.RDF.Parsing;
 #if !SILVERLIGHT
