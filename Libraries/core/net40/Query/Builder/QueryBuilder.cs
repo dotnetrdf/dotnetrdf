@@ -237,7 +237,6 @@ namespace VDS.RDF.Query.Builder
                     Limit = _queryLimit,
                     Offset = _queryOffset
                 };
-            query.NamespaceMap.Import(Prefixes);
 
             switch (_sparqlQueryType)
             {
@@ -260,6 +259,8 @@ namespace VDS.RDF.Query.Builder
 
             BuildRootGraphPattern(query);
             BuildAndChainOrderings(query);
+
+            query.NamespaceMap.Import(Prefixes);
 
             return query;
         }
