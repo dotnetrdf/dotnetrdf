@@ -1118,6 +1118,831 @@
     <EmbeddedResource Include="Sparql\SampleWeightings.n3" />
   </ItemGroup>
   <ItemGroup>
+<None Include="resources\rdfxml\amp-in-url\test001.nt" />
+    <None Include="resources\rdfxml\amp-in-url\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\datatypes-intensional\test001.nt" />
+    <None Include="resources\rdfxml\datatypes-intensional\test002.nt" />
+    <None Include="resources\rdfxml\datatypes\test001.nt" />
+    <None Include="resources\rdfxml\datatypes\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\datatypes\test002.nt" />
+    <None Include="resources\rdfxml\datatypes\test002.rdf" />
+    <None Include="resources\rdfxml\datatypes\test002b.nt" />
+    <None Include="resources\rdfxml\datatypes\test003a.nt" />
+    <None Include="resources\rdfxml\datatypes\test003b.nt" />
+    <None Include="resources\rdfxml\datatypes\test004a.nt" />
+    <None Include="resources\rdfxml\datatypes\test004b.nt" />
+    <None Include="resources\rdfxml\datatypes\test004c.nt" />
+    <None Include="resources\rdfxml\datatypes\test005a.nt" />
+    <None Include="resources\rdfxml\datatypes\test005b.nt" />
+    <None Include="resources\rdfxml\datatypes\test006.nt" />
+    <None Include="resources\rdfxml\datatypes\test007a.nt" />
+    <None Include="resources\rdfxml\datatypes\test007b.nt" />
+    <None Include="resources\rdfxml\datatypes\test008a.nt" />
+    <None Include="resources\rdfxml\datatypes\test008b.nt" />
+    <None Include="resources\rdfxml\datatypes\test009a.nt" />
+    <None Include="resources\rdfxml\datatypes\test009b.nt" />
+    <None Include="resources\rdfxml\datatypes\test010.nt" />
+    <None Include="resources\rdfxml\datatypes\test011a.nt" />
+    <None Include="resources\rdfxml\datatypes\test011b.nt" />
+    <None Include="resources\rdfxml\horst-01\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\Manifest.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\pfps-10\test001a.nt" />
+    <None Include="resources\rdfxml\pfps-10\test001b.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-literals\error001.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-literals\error002.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-literals\test001.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-literals\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\test001.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-uris\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\test002.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-uris\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test001.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test002.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test003.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test004.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test005.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test005.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test006.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test007.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test008.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-element-not-mandatory\test001.nt" />
+    <None Include="resources\rdfxml\rdf-element-not-mandatory\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0001.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0003.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0004.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0005.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0006.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0009.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0010.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0011.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0012.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0013.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0014.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-abouteach\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-abouteach\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\error1.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test1.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test1.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test2.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test2.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test3.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test3.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-duplicate-member-props\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-duplicate-member-props\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test006.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test007.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test008.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test009.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test010.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test011.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test012.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test013.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test014.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test015.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test016.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test017.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-para196\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-para196\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-018.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-019.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-020.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-001.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-002.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-003.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-004.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-005.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-006.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-007.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-008.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-009.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-010.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-011.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-012.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-013.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-014.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-015.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-016.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-017.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-018.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-018.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-019.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-019.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-020.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-020.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-021.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-021.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-022.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-022.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-023.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-023.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-024.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-024.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-025.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-025.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-026.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-026.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-027.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-027.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-028.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-028.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-029.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-029.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-030.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-030.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-031.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-031.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-032.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-032.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-033.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-033.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-034.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-034.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-035.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-035.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-036.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-036.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-037.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-037.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-001.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-002.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-003.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-reification-required\test001.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-reification-required\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-seq-representation\empty.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-seq-representation\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test003a.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test003b.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-uri-substructure\error001.nt" />
+    <None Include="resources\rdfxml\rdfms-uri-substructure\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-uri-substructure\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test006.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test007a.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test007b.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test007c.nt" />
+    <None Include="resources\rdfxml\rdfs-container-membership-superProperty\not1C.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-container-membership-superProperty\not1P.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\nonconclusions005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\nonconclusions006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\premises005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\premises006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test002.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test003.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test004.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-entailment\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-entailment\test002.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subClassOf\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subClassOf\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subPropertyOf\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subPropertyOf\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-subClassOf-a-Property\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-subPropertyOf-semantics\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-subPropertyOf-semantics\test002.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test001a.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test001b.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test002a.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test002b.nt" />
+    <None Include="resources\rdfxml\tex-01\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\tex-01\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test001.nt" />
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test002.nt" />
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xml-canon\test001.nt" />
+    <None Include="resources\rdfxml\xml-canon\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test001.nt" />
+    <None Include="resources\rdfxml\xmlbase\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test002.nt" />
+    <None Include="resources\rdfxml\xmlbase\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test003.nt" />
+    <None Include="resources\rdfxml\xmlbase\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test004.nt" />
+    <None Include="resources\rdfxml\xmlbase\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test005.nt" />
+    <None Include="resources\rdfxml\xmlbase\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test006.nt" />
+    <None Include="resources\rdfxml\xmlbase\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test007.nt" />
+    <None Include="resources\rdfxml\xmlbase\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test008.nt" />
+    <None Include="resources\rdfxml\xmlbase\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test009.nt" />
+    <None Include="resources\rdfxml\xmlbase\test009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test010.nt" />
+    <None Include="resources\rdfxml\xmlbase\test010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test011.nt" />
+    <None Include="resources\rdfxml\xmlbase\test011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test012.nt" />
+    <None Include="resources\rdfxml\xmlbase\test012.rdf">
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test013.nt" />
+    <None Include="resources\rdfxml\xmlbase\test013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test014.nt" />
+    <None Include="resources\rdfxml\xmlbase\test014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test015.nt" />
+    <None Include="resources\rdfxml\xmlbase\test015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test016.nt" />
+    <None Include="resources\rdfxml\xmlbase\test016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
