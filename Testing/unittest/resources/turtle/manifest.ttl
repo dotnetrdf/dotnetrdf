@@ -175,11 +175,13 @@
         mf:result  <test-27.out>
      ]
 
-     [  mf:name      "test-28" ;
-        rdfs:comment "decimal data types (serializing test)" ;
-        mf:action [ qt:data   <test-28.ttl> ] ;
-        mf:result  <test-28.out>
-     ]
+	 # Per http://lists.w3.org/Archives/Public/public-rdf-comments/2012Jul/0049.html this test is bad and
+	 # should not be required for Turtle compliance
+     #[  mf:name      "test-28" ;
+     #   rdfs:comment "decimal data types (serializing test)" ;
+     #   mf:action [ qt:data   <test-28.ttl> ] ;
+     #   mf:result  <test-28.out>
+     #]
 
      [  mf:name      "test-29" ;
         rdfs:comment "Escaping U+0001 to U+007F in a URI" ;
