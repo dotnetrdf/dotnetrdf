@@ -30,3 +30,7 @@ Testing\unittest\resources\UnitTestConfig.properties
 
 #nuget
 packages/**
+
+# other
+syntax: regexp
+dll-.+$
