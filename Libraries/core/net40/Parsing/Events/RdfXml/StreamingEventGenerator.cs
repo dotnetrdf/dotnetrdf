@@ -39,7 +39,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// <remarks>
     /// Currently unimplemented stub class
     /// </remarks>
-    public class StreamingEventGenerator : IRdfXmlJitEventGenerator
+    public class StreamingEventGenerator
+        : IRdfXmlJitEventGenerator
     {
         private XmlReader _reader;
         private bool _requireEndElement = false;

@@ -107,6 +107,7 @@
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
     <Compile Include="Parsing\N3.cs" />
+    <Compile Include="Parsing\RdfXml.cs" />
     <Compile Include="Parsing\RelativeUriTests.cs" />
     <Compile Include="Parsing\SparqlJsonTests.cs" />
     <Compile Include="Parsing\TriGTests.cs" />

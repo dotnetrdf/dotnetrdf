@@ -40,7 +40,7 @@ namespace VDS.RDF.Test.Parsing
         : BaseRdfParserSuite
     {
         public TurtleMemberSubmission()
-            : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle/") { }
+            : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle\\") { }
 
         [TestMethod]
         public void ParsingTurtleOriginalSuite()

@@ -37,21 +37,21 @@ namespace VDS.RDF.Test.Parsing
 {
    
     [TestClass]
-    public class N3
+    public class RdfXmlDomParser
         : BaseRdfParserSuite
     {
-        public N3()
-            : base(new Notation3Parser(), new NTriplesParser(), "n3\\")
+        public RdfXmlDomParser()
+            : base(new RdfXmlParser(RdfXmlParserMode.DOM), new NTriplesParser(), "rdfxml\\")
         {
             this.CheckResults = false;
         }
 
         [TestMethod]
-        public void ParsingN3Suite()
+        public void ParsingRdfXmlSuiteDOM()
         {
             //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".n3") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".n3") && f.Contains("bad"), false);
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
@@ -60,6 +60,49 @@ namespace VDS.RDF.Test.Parsing
 
             if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
             if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlIDsDOM()
+        {
+            IGraph g = new Graph();
+            g.BaseUri = BaseRdfParserSuite.BaseUri;
+            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
+        }
+    }
+
+    [TestClass]
+    public class RdfXmlStreamingParser
+        : BaseRdfParserSuite
+    {
+        public RdfXmlStreamingParser()
+            : base(new RdfXmlParser(RdfXmlParserMode.Streaming), new NTriplesParser(), "rdfxml\\")
+        {
+            this.CheckResults = false;
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlSuiteStreaming()
+        {
+            //Run manifests
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && !f.Contains("error"), true);
+            this.RunAllDirectories(f => Path.GetExtension(f).Equals(".rdf") && f.Contains("error"), false);
+
+            if (this.Count == 0) Assert.Fail("No tests found");
+
+            Console.WriteLine(this.Count + " Tests - " + this.Passed + " Passed - " + this.Failed + " Failed");
+            Console.WriteLine((((double)this.Passed / (double)this.Count) * 100) + "% Passed");
+
+            if (this.Failed > 0) Assert.Fail(this.Failed + " Tests failed");
+            if (this.Indeterminate > 0) Assert.Inconclusive(this.Indeterminate + " Tests are indeterminate");
+        }
+
+        [TestMethod]
+        public void ParsingRdfXmlIDsStreaming()
+        {
+            IGraph g = new Graph();
+            g.BaseUri = BaseRdfParserSuite.BaseUri;
+            this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
         }
     }
 }

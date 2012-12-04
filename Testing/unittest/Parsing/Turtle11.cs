@@ -41,7 +41,7 @@ namespace VDS.RDF.Test.Parsing
         : BaseRdfParserSuite
     {
         public Turtle11()
-            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11/") { }
+            : base(new TurtleParser(TurtleSyntax.W3C), new NTriplesParser(), "turtle11\\") { }
 
         [TestMethod]
         public void ParsingTurtleW3CSuite()

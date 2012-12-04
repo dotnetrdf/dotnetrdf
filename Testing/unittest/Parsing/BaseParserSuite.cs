@@ -18,7 +18,7 @@ namespace VDS.RDF.Test.Parsing
         private bool _check = true;
         private int _count, _pass, _fail, _indeterminate;
 
-        private static Uri BaseUri = new Uri("http://www.w3.org/2001/sw/DataAccess/df1/tests/");
+        public static Uri BaseUri = new Uri("http://www.w3.org/2001/sw/DataAccess/df1/tests/");
 
         public BaseRdfParserSuite(IRdfReader testParser, IRdfReader resultsParser, String baseDir)
         {
@@ -161,6 +161,20 @@ WHERE
             }
         }
 
+        protected void RunAllDirectories(Func<String, bool> isTest, bool shouldParse)
+        {
+            this.RunAllDirectories(this._baseDir, isTest, shouldParse);
+        }
+
+        protected void RunAllDirectories(String dir, Func<String, bool> isTest, bool shouldParse)
+        {
+            foreach (String subdir in Directory.GetDirectories(dir))
+            {
+                this.RunDirectory(subdir, isTest, shouldParse);
+                this.RunAllDirectories(subdir, isTest, shouldParse);
+            }
+        }
+
         private String GetFile(INode n)
         {
             switch (n.NodeType)
@@ -174,7 +188,7 @@ WHERE
                     else
                     {
                         String lastSegment = u.Segments[u.Segments.Length - 1];
-                        return this._baseDir + "/" + lastSegment;
+                        return Path.Combine(this._baseDir, lastSegment);
                     }
                 default:
                     Assert.Fail("Malformed manifest file, input file must be a  URI");
