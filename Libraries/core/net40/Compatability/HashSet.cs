@@ -35,7 +35,7 @@ using System.Linq;
 using System.Net;
 using System.Collections;
 using System.Collections.Generic;
-using VDS.Common;
+using VDS.Common.Collections;
 
 namespace VDS.RDF
 {

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using VDS.Common;
+using VDS.Common.Collections;
 
 namespace VDS.RDF.Collections
 {
@@ -47,7 +47,15 @@ namespace VDS.RDF.Collections
         /// Dictionary of Graph URI Enhanced Hash Codes to Graphs
         /// </summary>
         /// <remarks>See <see cref="Extensions.GetEnhancedHashCode">GetEnhancedHashCode()</see></remarks>
-        protected MultiDictionary<Uri, IGraph> _graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
+        protected MultiDictionary<Uri, IGraph> _graphs;
+
+        /// <summary>
+        /// Creates a new Graph Collection
+        /// </summary>
+        public GraphCollection()
+        {
+            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
+        }
 
         /// <summary>
         /// Checks whether the Graph with the given Uri exists in this Graph Collection

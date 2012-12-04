@@ -3,7 +3,7 @@
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
-Version 0.8.0 RC 1
+Version 0.9.0 RC 4
 
 dotNetRDF Project 2009-12
 dotnetrdf-develop@lists.sf.net
@@ -65,12 +65,12 @@ Requirements
 
 To use this library you will need .Net Framework 3.5 SP1 or higher and you may need to install/have available the 
 following third party libraries:
-- JSON.Net 4.5r10 which can be obtained from http://json.codeplex.com
+- JSON.Net 4.5r11 which can be obtained from http://json.codeplex.com
 - HtmlAgilityPack 1.4.6 which can be obtained from http://www.codeplex.com/htmlagilitypack
+- VDS.Common 1.1.0 which can be obtained form http://bitbucket.org/rvesse/vds-common
 
-The relevant DLLs (HtmlAgilityPack.dll and Newtonsoft.Json.dll) are included with
-this release and if you wish to use the library you may need to reference these DLLs as well to ensure it is available in your
-project for dotNetRDF to use.
+The relevant DLLs are included with this release and if you wish to use the library you may need to reference these
+DLLs as well to ensure it is available in your project for dotNetRDF to use.
 
 To use either the any of the other libraries you must include the Core library and its dependencies
 
@@ -157,7 +157,15 @@ Release History
 
 26/9/2012 - Release of Version 0.7.2 Beta (Build 0.7.2.1527)
 
-?/11/2012 - Release of Version 0.8.0 RC 1 (Build 0.8.0.?)
+26/11/2012 - Release of Version 0.8.0 RC 1 (Build 0.8.0.1930)
+
+27/11/2012 - Release of Version 0.8.1 RC 2 (Build 0.8.1.1939)
+
+29/11/2012 - Release of Version 0.8.2 RC 3 (Build 0.8.2.1954)
+
+?/12/2012 - Release of Version 0.9.0 RC 4 (Build 0.9.0.?)
+
+29/11/2012 - Relase of Version 0.8.2 RC 3 (Build 0.8.2.1954)
 
 Acknowledgements
 ----------------

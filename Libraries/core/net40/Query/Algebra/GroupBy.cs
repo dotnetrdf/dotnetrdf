@@ -64,7 +64,7 @@ namespace VDS.RDF.Query.Algebra
         {
             BaseMultiset results = context.Evaluate(this._pattern);
 
-            //Identity/Null yields
+            //Identity/Null yields an empty multiset
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
             {
                 results = new Multiset();

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>dotNetRDF.Query.FullText</id>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <authors>RobVesse,tpluscode,kal_ahmed,ronmichael</authors>
     <owners>RobVesse</owners>
     <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
@@ -12,7 +12,7 @@
     <description>dotNetRDF.Query.FullText provides Full Text SPARQL support as a plugin for the dotNetRDF Leviathan SPARQL Engine using Lucene.Net</description>
     <tags>RDF Semantic Web SPARQL Query Full Text Lucene</tags>
     <dependencies>
-      <dependency id="dotNetRDF" version="0.8.0" />
+      <dependency id="dotNetRDF" version="0.9.0" />
       <dependency id="Lucene.Net" version="3.0.3" />
     </dependencies>
   </metadata>

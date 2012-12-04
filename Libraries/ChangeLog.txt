@@ -4,6 +4,39 @@
 1.9.0
 -----
 
+Changed
+- Core API
+ - Reorganised namespaces
+ - Simplified data models - INode, Triple, Quad, IGraph, IGraphStore
+
+0.9.0 RC4
+---------
+
+Changed
+- Bug Fixes
+ - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
+ - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
+- Dependencies
+ - Externalized the VDS.Web.Server library as a dependency version 1.0.0
+
+0.8.2 RC3
+---------
+
+Changed
+- Bug Fixes
+ - Fixed a subtle bug in GraphCollection caused by the previous fix in 0.8.1 RC2
+ - Fixed a bug with ToLiteral() not using the invariant culture
+- Dependencies
+ - Updated VDS.Common to 1.1.0
+ - Corrected NuGet dependency on Json.Net to 4.5.11 to match our builds
+
+0.8.1 RC2
+---------
+
+Changed
+- Bug Fixes
+ - Fixed a critical bug in GraphCollection caused by a change in a dependency that wasn't caught by our existing
+   regression tests
 
 0.8.0 RC1
 ---------
@@ -21,9 +54,11 @@ Changed
  - Fixed a bug related to losing FILTERS when building queries using the internal APIs
  - Fixed a bug related to ToString() form of some API built queries
  - Fixed a bug related to graph scoping of full text search
+ - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance
 - Dependencies
- - Updated Json.Net dependency to 4.5r10
+ - Updated Json.Net dependency to 4.5r11
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
+ - Externalized the VDS.Common namespace as a dependency version 1.0.1
  - All dependencies are now maintained using NuGet
 - Build
  - Query.FullText Library is now always strong named
@@ -43,6 +78,7 @@ Removed
 - Marks the obsolete JosekiConnector as obsolete unusable
 - Removed the obsolete TalisPlatformConnector
 - Removed the obsolete IndexedTripleCollection and it's descendants
+- Removed the obsolete AdvancedTripleCollections
 - Marks some obsolete property and class constants in ConfigurationLoader as obsolete unusable
 - Removes the previously obsoleted property and class constants in ConfigurationLoader
 - Marks the obsolete HashTable classes as obsolete unusable

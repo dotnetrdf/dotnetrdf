@@ -408,7 +408,7 @@ namespace VDS.RDF.Web
             context.Response.Write(new String('-', title.Length) + "\n\n");
 
             //Output Query with Line Numbers
-            if (query != null && !query.Equals(String.Empty))
+            if (!String.IsNullOrEmpty(query))
             {
                 String[] lines = query.Split('\n');
                 for (int l = 0; l < lines.Length; l++)
@@ -459,14 +459,12 @@ namespace VDS.RDF.Web
         {
             //Clear any existing Response
             context.Response.Clear();
+            context.Response.StatusCode = statusCode;
 
             if (config != null)
             {
-                if (!config.ShowErrors)
-                {
-                    context.Response.StatusCode = statusCode;
-                    return;
-                }
+                //If not showing errors then we won't return our custom error description
+                if (!config.ShowErrors) return;
             }
 
             //Set to Plain Text output and report the error

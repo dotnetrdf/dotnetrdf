@@ -11,6 +11,7 @@ Uses code (3rd Party Libraries) from the following sources:
 - Lucene.Net -> http://incubator.apache.org/lucene.net/
 - FileAssociation by Brendan Grant -> http://www.codeproject.com/KB/dotnet/System_File_Association.aspx
 - ICSharpCode.AvalonEdit by Daniel Grunwald -> http://wiki.sharpdevelop.net/AvalonEdit.ashx
+- VDS.Common by Rob Vesse -> http://bitbucket.org/rvesse/vds-common
 
 Each of our releases artifacts requires some subset of our dependencies so your download will only include 
 those that are necessary.

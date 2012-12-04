@@ -34,7 +34,7 @@ namespace VDS.RDF.Test.Query.Aggregates
     public class CountDistinctAggregateTests
     {
         [TestMethod]
-        public void CorrectlyAppliesDistinctWhenToStringCalled()
+        public void SparqlCountDistinctWhenToStringCalled()
         {
             // given
             var aggregate = new CountDistinctAggregate(new VariableTerm("var"));
@@ -47,7 +47,7 @@ namespace VDS.RDF.Test.Query.Aggregates
         }
 
         [TestMethod]
-        public void ContainsDistinctModifier()
+        public void SparqlCountDistinctHasDistinctModifier()
         {
             // given
             var term = new VariableTerm("var");

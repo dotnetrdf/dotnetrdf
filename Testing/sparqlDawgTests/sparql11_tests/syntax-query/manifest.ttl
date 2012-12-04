@@ -490,29 +490,15 @@
    mf:name    "syntax-BINDscope6.rq" ;
    mf:action  <syntax-BINDscope6.rq> ;.
 
-# Remove these next two commented test when the WG aopproves their replacements :test_61a and :test_62a
-
-## :test_61 rdf:type   mf:PositiveSyntaxTest11 ;
-##    dawgt:approval dawgt:Approved ;
-##    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
-##    mf:name    "syntax-BINDscope7.rq" ;
-##    mf:action  <syntax-BINDscope7.rq> ;.
-
-## :test_62 rdf:type   mf:PositiveSyntaxTest11 ;
-##    dawgt:approval dawgt:Approved ;
-##    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
-##    mf:name    "syntax-BINDscope8.rq" ;
-##    mf:action  <syntax-BINDscope8.rq> ;.
-
 :test_61a rdf:type   mf:NegativeSyntaxTest11 ;
-##    dawgt:approval dawgt:Approved ;
-##    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
     mf:name    "syntax-BINDscope7.rq" ;
     mf:action  <syntax-BINDscope7.rq> ;.
 
 :test_62a rdf:type   mf:NegativeSyntaxTest11 ;
-##    dawgt:approval dawgt:Approved ;
-##    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-08-07#resolution_2> ;
+    dawgt:approval dawgt:Approved ;
+    dawgt:approvedBy <http://www.w3.org/2009/sparql/meeting/2012-09-25#resolution_2> ;
     mf:name    "syntax-BINDscope8.rq" ;
     mf:action  <syntax-BINDscope8.rq> ;.
 

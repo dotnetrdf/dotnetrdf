@@ -313,6 +313,7 @@ namespace VDS.RDF.Test.Parsing
                     {
                         Console.WriteLine(t.ToString());
                     }
+                    Console.WriteLine();
 
                     Assert.AreEqual(expectedTriples[s], g.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
                     Assert.AreEqual(expectedSubjects[s], g.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
@@ -320,11 +321,20 @@ namespace VDS.RDF.Test.Parsing
                     //Try outputting with each of the available writers
                     for (int i = 0; i < writers.Count; i++)
                     {
-                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
-                        Graph h = new Graph();
-                        VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
-
                         Console.WriteLine("Trying " + writers[i].GetType().ToString());
+                        String temp = VDS.RDF.Writing.StringWriter.Write(g, writers[i]);
+                        Console.WriteLine(temp);
+                        Graph h = new Graph();
+                        try
+                        {
+                            VDS.RDF.Parsing.StringParser.Parse(h, temp, readers[i]);
+                        }
+                        catch (RdfParseException)
+                        {
+                            Console.WriteLine(temp);
+                            throw;
+                        }
+
                         Assert.AreEqual(expectedTriples[s], h.Triples.Count, "Should have produced " + expectedTriples[s] + " Triples");
                         Assert.AreEqual(expectedSubjects[s], h.Triples.SubjectNodes.Distinct().Count(), "Should have produced " + expectedSubjects[s] + " distinct subjects");
 
@@ -524,6 +534,15 @@ namespace VDS.RDF.Test.Parsing
             SparqlResultSet results = new SparqlResultSet();
             SparqlXmlParser parser = new SparqlXmlParser();
             parser.Load(results, "bad_srx.srx");
+        }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleDBPediaMalformedData()
+        {
+            Graph g = new Graph();
+            TurtleParser parser = new TurtleParser();
+            parser.Load(g, "dbpedia_malformed.ttl");
+            Assert.IsFalse(g.IsEmpty);
         }
     }
 }

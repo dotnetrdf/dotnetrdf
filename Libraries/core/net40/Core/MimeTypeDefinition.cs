@@ -971,7 +971,7 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Charset for the selector
+        /// Gets the Charset for the selector (may be null if none specified)
         /// </summary>
         public String Charset
         {
@@ -1033,6 +1033,17 @@ namespace VDS.RDF
             get
             {
                 return this._isInvalid;
+            }
+        }
+
+        /// <summary>
+        /// Gets whether the selector is for a specific MIME type e.g. type/sub-type
+        /// </summary>
+        public bool IsSpecific
+        {
+            get
+            {
+                return this._isSpecific;
             }
         }
 

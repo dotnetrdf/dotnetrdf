@@ -228,6 +228,12 @@ namespace VDS.RDF
             DefaultGZipExtension
         };
 
+        /// <summary>
+        /// Charset constants
+        /// </summary>
+        public const String CharsetUtf8 = "utf-8",
+                            CharsetUtf16 = "utf-16";
+
         #endregion 
 
         /// <summary>
@@ -1126,9 +1132,9 @@ namespace VDS.RDF
                 }
             }
 
-            //Default to NTriples
-            contentType = MimeTypesHelper.NTriples[0];
-            IRdfWriter defaultWriter = new NTriplesWriter();
+            //Default to Turtle
+            contentType = MimeTypesHelper.Turtle[0];
+            IRdfWriter defaultWriter = new TurtleWriter();
             MimeTypesHelper.ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }

@@ -62,8 +62,8 @@
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\HtmlAgilityPack.1.4.6\lib\Net20\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.10\lib\net35\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.11\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -73,6 +73,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common, Version=1.1.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\VDS.Common.1.1.0\lib\net35-client\VDS.Common.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,33 +94,9 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)Build\SyncProjects\bin\Debug\SyncProjects.exe sync $(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj $(ProjectPath)</PreBuildEvent>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" sync "$(SolutionDir)\Libraries\core\net40\dotNetRDF.csproj" "$(ProjectPath)"</PreBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\net40\Common\MultiDictionary.cs">
-      <Link>Common\MultiDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\BinaryTree.cs">
-      <Link>Common\Trees\BinaryTree.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\BinaryTreeNode.cs">
-      <Link>Common\Trees\BinaryTreeNode.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\AVLTree.cs">
-      <Link>Common\Trees\AVLTree.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\ITree.cs">
-      <Link>Common\Trees\ITree.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\ScapegoatTree.cs">
-      <Link>Common\Trees\ScapegoatTree.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\TreeExtensions.cs">
-      <Link>Common\Trees\TreeExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trees\UnbalancedBinaryTree.cs">
-      <Link>Common\Trees\UnbalancedBinaryTree.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Compatability\HashSet.cs">
       <Link>Compatability\HashSet.cs</Link>
     </Compile>
@@ -641,15 +621,6 @@
     <Compile Include="..\net40\Callbacks.cs">
       <Link>Callbacks.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Common\HashSlot.cs">
-      <Link>Common\HashSlot.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\IHashSlot.cs">
-      <Link>Common\IHashSlot.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\StringTrie.cs">
-      <Link>Common\StringTrie.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Configuration\CachedObjectKey.cs">
       <Link>Configuration\CachedObjectKey.cs</Link>
     </Compile>
@@ -697,9 +668,6 @@
     </Compile>
     <Compile Include="..\net40\Configuration\ReasonerFactory.cs">
       <Link>Configuration\ReasonerFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Core\AdvancedTripleCollections.cs">
-      <Link>Core\AdvancedTripleCollections.cs</Link>
     </Compile>
     <Compile Include="..\net40\Core\BaseEndpoint.cs">
       <Link>Core\BaseEndpoint.cs</Link>
@@ -782,14 +750,8 @@
     <Compile Include="..\net40\Events.cs">
       <Link>Events.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Common\HashTable.cs">
-      <Link>Common\HashTable.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Indexing.cs">
       <Link>Indexing.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\NestedReference.cs">
-      <Link>Common\NestedReference.cs</Link>
     </Compile>
     <Compile Include="..\net40\Ontology\Individual.cs">
       <Link>Ontology\Individual.cs</Link>
@@ -2065,15 +2027,6 @@
     </Compile>
     <Compile Include="..\net40\Storage\Virtualisation\VirtualNodeCache.cs">
       <Link>Storage\Virtualisation\VirtualNodeCache.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\ThreadIsolatedReference.cs">
-      <Link>Common\ThreadIsolatedReference.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\Trie.cs">
-      <Link>Common\Trie.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Common\TrieNode.cs">
-      <Link>Common\TrieNode.cs</Link>
     </Compile>
     <Compile Include="..\net40\Update\Commands\AddCommand.cs">
       <Link>Update\Commands\AddCommand.cs</Link>

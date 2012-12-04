@@ -76,6 +76,7 @@ namespace VDS.RDF.Utilities.Sparql
             this.btnInspect = new System.Windows.Forms.Button();
             this.ofdBrowse = new System.Windows.Forms.OpenFileDialog();
             this.grpQueryOptions = new System.Windows.Forms.GroupBox();
+            this.chkParallelEval = new System.Windows.Forms.CheckBox();
             this.chkUnsafeOptimisation = new System.Windows.Forms.CheckBox();
             this.chkFullTextIndexing = new System.Windows.Forms.CheckBox();
             this.chkLogExplanation = new System.Windows.Forms.CheckBox();
@@ -108,7 +109,7 @@ namespace VDS.RDF.Utilities.Sparql
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.chkParallelEval = new System.Windows.Forms.CheckBox();
+            this.chkDefaultUnionGraph = new System.Windows.Forms.CheckBox();
             this.grpDataset.SuspendLayout();
             this.grpQuery.SuspendLayout();
             this.grpQueryOptions.SuspendLayout();
@@ -324,6 +325,7 @@ namespace VDS.RDF.Utilities.Sparql
             // 
             // grpQueryOptions
             // 
+            this.grpQueryOptions.Controls.Add(this.chkDefaultUnionGraph);
             this.grpQueryOptions.Controls.Add(this.chkParallelEval);
             this.grpQueryOptions.Controls.Add(this.chkUnsafeOptimisation);
             this.grpQueryOptions.Controls.Add(this.chkFullTextIndexing);
@@ -344,6 +346,19 @@ namespace VDS.RDF.Utilities.Sparql
             this.grpQueryOptions.TabIndex = 5;
             this.grpQueryOptions.TabStop = false;
             this.grpQueryOptions.Text = "Query Options";
+            // 
+            // chkParallelEval
+            // 
+            this.chkParallelEval.Checked = true;
+            this.chkParallelEval.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkParallelEval.Location = new System.Drawing.Point(6, 179);
+            this.chkParallelEval.Name = "chkParallelEval";
+            this.chkParallelEval.Size = new System.Drawing.Size(177, 31);
+            this.chkParallelEval.TabIndex = 12;
+            this.chkParallelEval.Text = "Enable Parallel Query Evaluation";
+            this.ttpTips.SetToolTip(this.chkParallelEval, "Enables/Disables whether we can use parallel query evaluation");
+            this.chkParallelEval.UseVisualStyleBackColor = true;
+            this.chkParallelEval.CheckedChanged += new System.EventHandler(this.chkParallelEval_CheckedChanged);
             // 
             // chkUnsafeOptimisation
             // 
@@ -384,10 +399,10 @@ namespace VDS.RDF.Utilities.Sparql
             // chkUseUtf8Bom
             // 
             this.chkUseUtf8Bom.AutoSize = true;
-            this.chkUseUtf8Bom.Location = new System.Drawing.Point(189, 40);
+            this.chkUseUtf8Bom.Location = new System.Drawing.Point(189, 186);
             this.chkUseUtf8Bom.Name = "chkUseUtf8Bom";
             this.chkUseUtf8Bom.Size = new System.Drawing.Size(155, 17);
-            this.chkUseUtf8Bom.TabIndex = 3;
+            this.chkUseUtf8Bom.TabIndex = 13;
             this.chkUseUtf8Bom.Text = "Use BOM for UTF-8 Output";
             this.ttpTips.SetToolTip(this.chkUseUtf8Bom, "Disable this option if you plan to use data exported from this tool in non-Window" +
         "s tools that may have an issue with the UTF-8 BOM");
@@ -705,18 +720,16 @@ namespace VDS.RDF.Utilities.Sparql
             this.label1.TabIndex = 0;
             this.label1.Text = "Manage Queries:";
             // 
-            // chkParallelEval
+            // chkDefaultUnionGraph
             // 
-            this.chkParallelEval.Checked = true;
-            this.chkParallelEval.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkParallelEval.Location = new System.Drawing.Point(6, 179);
-            this.chkParallelEval.Name = "chkParallelEval";
-            this.chkParallelEval.Size = new System.Drawing.Size(177, 31);
-            this.chkParallelEval.TabIndex = 12;
-            this.chkParallelEval.Text = "Enable Parallel Query Evaluation";
-            this.ttpTips.SetToolTip(this.chkParallelEval, "Enables/Disables whether we can use parallel query evaluation");
-            this.chkParallelEval.UseVisualStyleBackColor = true;
-            this.chkParallelEval.CheckedChanged += new System.EventHandler(this.chkParallelEval_CheckedChanged);
+            this.chkDefaultUnionGraph.AutoSize = true;
+            this.chkDefaultUnionGraph.Location = new System.Drawing.Point(189, 40);
+            this.chkDefaultUnionGraph.Name = "chkDefaultUnionGraph";
+            this.chkDefaultUnionGraph.Size = new System.Drawing.Size(191, 17);
+            this.chkDefaultUnionGraph.TabIndex = 3;
+            this.chkDefaultUnionGraph.Text = "Default Graph is union of all graphs";
+            this.chkDefaultUnionGraph.UseVisualStyleBackColor = true;
+            this.chkDefaultUnionGraph.CheckedChanged += new System.EventHandler(this.chkDefaultUnionGraph_CheckedChanged);
             // 
             // fclsSparqlGui
             // 
@@ -814,6 +827,7 @@ namespace VDS.RDF.Utilities.Sparql
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox chkUnsafeOptimisation;
         private System.Windows.Forms.CheckBox chkParallelEval;
+        private System.Windows.Forms.CheckBox chkDefaultUnionGraph;
     }
 }
 

@@ -574,7 +574,7 @@ namespace VDS.RDF.Parsing
 
                         //Check that we get a Property Value as a String
                         context.Input.Read();
-                        if (context.Input.TokenType != JsonToken.String)
+                        if (!this.IsValidValue(context))
                         {
                             throw Error(context, "Unexpected Token '" + context.Input.TokenType.ToString() + "' encountered, expected a Property Value describing one of the properties of an Variable Binding");
                         }
@@ -718,6 +718,23 @@ namespace VDS.RDF.Parsing
             else
             {
                 throw new RdfParseException("Unexpected End of Input while trying to parse the 'boolean' property of the JSON Result Set Object");
+            }
+        }
+
+        /// <summary>
+        /// Checks whether a JSON Token is valid as the value for a RDF term
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns></returns>
+        private bool IsValidValue(SparqlJsonParserContext context)
+        {
+            switch (context.Input.TokenType)
+            {
+                case JsonToken.String:
+                case JsonToken.Date:
+                    return true;
+                default:
+                    return false;
             }
         }
 
