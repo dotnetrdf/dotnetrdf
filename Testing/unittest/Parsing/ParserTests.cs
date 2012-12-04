@@ -535,5 +535,14 @@ namespace VDS.RDF.Test.Parsing
             SparqlXmlParser parser = new SparqlXmlParser();
             parser.Load(results, "bad_srx.srx");
         }
+
+        [TestMethod, ExpectedException(typeof(RdfParseException))]
+        public void ParsingTurtleDBPediaMalformedData()
+        {
+            Graph g = new Graph();
+            TurtleParser parser = new TurtleParser();
+            parser.Load(g, "dbpedia_malformed.ttl");
+            Assert.IsFalse(g.IsEmpty);
+        }
     }
 }
