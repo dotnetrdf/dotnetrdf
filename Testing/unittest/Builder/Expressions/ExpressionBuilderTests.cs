@@ -579,5 +579,18 @@ namespace VDS.RDF.Test.Builder.Expressions
             // then
             Assert.IsTrue(uuid.Expression is UUIDFunction);
         }
+
+        [TestMethod]
+        public void ShouldAllowCastingAsXsdInt()
+        {
+            // given
+            SparqlExpression expression = new VariableExpression("variable");
+
+            // when
+            SparqlCastBuilder cast = Builder.Cast(expression);
+
+            // then
+            Assert.IsNotNull(cast);
+        }
     }
 }

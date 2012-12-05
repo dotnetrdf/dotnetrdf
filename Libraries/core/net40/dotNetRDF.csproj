@@ -164,6 +164,7 @@
     <Compile Include="Query\Builder\QueryBuilderExtensions.cs" />
     <Compile Include="Query\Builder\SelectAssignmentVariableNamePart.cs" />
     <Compile Include="Query\Builder\SelectBuilder.cs" />
+    <Compile Include="Query\Builder\SparqlCastBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternBuilder.cs" />
     <Compile Include="Query\Builder\TriplePatternObjectPart.cs" />
     <Compile Include="Query\Builder\TriplePatternPredicatePart.cs" />

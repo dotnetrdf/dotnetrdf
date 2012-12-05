@@ -123,5 +123,13 @@ namespace VDS.RDF.Query.Builder
         {
             return new RdfTermExpression(new ConstantTerm(new UriNode(null, value)));
         }
+
+        /// <summary>
+        /// Builds a SPARQL constructor function call
+        /// </summary>
+        public SparqlCastBuilder Cast(SparqlExpression castedExpression)
+        {
+            return new SparqlCastBuilder(castedExpression);
+        }
     }
 }

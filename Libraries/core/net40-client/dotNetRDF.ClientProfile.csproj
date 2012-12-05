@@ -2521,4 +2521,9 @@
       <Link>Query\Builder\QueryBuilderExtensions.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\net40\Query\Builder\SparqlCastBuilder.cs">
+      <Link>Query\Builder\SparqlCastBuilder.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>
