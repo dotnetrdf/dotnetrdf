@@ -107,6 +107,7 @@
     <Compile Include="Parsing\GZipTests.cs" />
     <Compile Include="Parsing\LangSpecTests.cs" />
     <Compile Include="Parsing\N3.cs" />
+    <Compile Include="Parsing\NTriples.cs" />
     <Compile Include="Parsing\RdfA.cs" />
     <Compile Include="Parsing\RdfXml.cs" />
     <Compile Include="Parsing\RelativeUriTests.cs" />
@@ -259,6 +260,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\n3\trailing-semicolon.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\rdfa\webscience.html">
@@ -2747,7 +2751,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\nquads\" />
-    <Folder Include="resources\ntriples\" />
     <Folder Include="resources\trig\" />
     <Folder Include="resources\trix\" />
   </ItemGroup>
