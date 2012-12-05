@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Parsing.Events;
 using VDS.RDF.Parsing.Events.RdfXml;
 
@@ -113,7 +114,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IRdfHandler handler, Stream stream)
             : base(handler)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, String.Empty));
+            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(stream, handler.GetBaseUri().ToSafeString()));
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace VDS.RDF.Parsing.Contexts
         public RdfXmlParserContext(IRdfHandler handler, TextReader input)
             : base(handler)
         {
-            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, String.Empty));
+            this._queue = new StreamingEventQueue<IRdfXmlEvent>(new StreamingEventGenerator(input, handler.GetBaseUri().ToSafeString()));
         }
 
         /// <summary>

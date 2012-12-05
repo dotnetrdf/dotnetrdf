@@ -8,8 +8,11 @@ Changed
 - Bug Fixes
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
  - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
+ - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
+- Build
+ - Improved our test architecture significantly
 
 0.8.2 RC3
 ---------

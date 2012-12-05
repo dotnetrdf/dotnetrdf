@@ -1,0 +1,4 @@
+ASK WHERE {
+	?x0 <http://purl.org/dc/elements/1.1/title> "Internet Applications" .
+	<http://internet-apps.blogspot.com/> <http://purl.org/dc/elements/1.1/creator> <http://www.blogger.com/profile/1109404> .
+}

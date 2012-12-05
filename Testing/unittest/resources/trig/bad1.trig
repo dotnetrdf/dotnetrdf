@@ -1,0 +1,9 @@
+﻿
+
+# TriG Bad Example Document 1
+# No closing bracket on Graph
+
+@prefix ex: <http://www.example.org/vocabulary#> .
+@prefix : <http://www.example.org/exampleDocument#> .
+
+:G1 = { :G1 a ex:noClosingBracket
