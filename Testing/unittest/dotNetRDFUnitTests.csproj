@@ -327,6 +327,24 @@
     <Compile Include="Sparql\DataTableTests.cs" />
     <Compile Include="Sparql\DefaultGraphTests2.cs" />
     <Compile Include="Sparql\ExplainProcessorTests.cs" />
+    <Content Include="resources\trix\curies.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\curies.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\datatypes.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\datatypes.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\examples.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\multiple-stylesheets.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\turtle11\bad-00.ttl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1466,6 +1484,30 @@
     <Content Include="resources\rdfa\TC_TEMPLATE.xhtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="resources\trig\bad1.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\bad2.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example1.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example2.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example3.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example4.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example5.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example6.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="resources\turtle11\base1.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -2751,8 +2793,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="resources\nquads\" />
-    <Folder Include="resources\trig\" />
-    <Folder Include="resources\trix\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

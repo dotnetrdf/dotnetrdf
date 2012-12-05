@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<?xml-stylesheet type="text/xml" href="datatypes.xslt" ?>
+
+<TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
+  <graph>
+    <triple>
+      <uri>http://example.com/foo</uri>
+      <uri>http://example.com/bytesLength</uri>
+      <decimal>277</decimal>
+    </triple>
+    <triple>
+      <uri>http://example.com/1</uri>
+      <uri>http://example.com/number</uri>
+      <integer>1234</integer>
+    </triple>
+    <triple>
+      <uri>http://example.com/1</uri>
+      <uri>http://example.com/number</uri>
+      <double>12.4e5</double>
+    </triple>
+  </graph>
+</TriX>
