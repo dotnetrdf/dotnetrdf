@@ -112,6 +112,7 @@
     <Compile Include="Parsing\RdfXml.cs" />
     <Compile Include="Parsing\RelativeUriTests.cs" />
     <Compile Include="Parsing\SparqlJsonTests.cs" />
+    <Compile Include="Parsing\TriG.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\Turtle11.cs" />
     <Compile Include="Parsing\TurtleMemberSubmission.cs" />
