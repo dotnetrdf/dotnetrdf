@@ -1,0 +1,5 @@
+ASK WHERE {
+    <http://www.example.org#sub> <http://www.example.org/lower#one> <http://www.example.org#lower> .
+    <http://www.example.org#sub> <http://www.example.org/upper#two> <http://www.example.org#UPPER> .
+    <http://www.example.org#sub> <http://www.example.org/mixed#three> <http://www.example.org#MiXeD> .
+}

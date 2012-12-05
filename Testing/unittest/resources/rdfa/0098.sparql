@@ -1,0 +1,4 @@
+ASK WHERE { 
+	<http://www.w3.org/2006/07/SWD/RDFa/testsuite/xhtml1-testcases/0098.xhtml#A> <http://xmlns.com/foaf/0.1/knows> _:a .
+	_:a <http://xmlns.com/foaf/0.1/name> "Ivan Herman" .
+}
