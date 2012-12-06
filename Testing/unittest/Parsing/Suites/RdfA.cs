@@ -35,7 +35,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Test.Parsing.Suites
 {
     [TestClass]
     public class RdfA
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingRdfA10Suite()
+        public void ParsingSuiteRdfA10()
         {
             String[] wantOutput = {  };
             bool outputAll = false;

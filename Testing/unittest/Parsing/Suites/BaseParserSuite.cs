@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Test.Parsing.Suites
 {
     [TestClass]
     public abstract class BaseRdfParserSuite

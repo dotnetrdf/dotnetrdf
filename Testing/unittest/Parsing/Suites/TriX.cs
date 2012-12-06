@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Test.Parsing.Suites
 {
    
     [TestClass]
@@ -47,7 +47,7 @@ namespace VDS.RDF.Test.Parsing
         }
 
         [TestMethod]
-        public void ParsingTriXSuite()
+        public void ParsingSuiteTriX()
         {
             //Run manifests
             this.RunDirectory(f => Path.GetExtension(f).Equals(".xml") && !f.Contains("bad"), true);

@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Test.Parsing.Suites
 {
     [TestClass]
     public class TurtleMemberSubmission
@@ -43,7 +43,7 @@ namespace VDS.RDF.Test.Parsing
             : base(new TurtleParser(TurtleSyntax.Original), new NTriplesParser(), "turtle\\") { }
 
         [TestMethod]
-        public void ParsingTurtleOriginalSuite()
+        public void ParsingSuiteTurtleOriginal()
         {
             //Run manifests
             this.RunManifest("turtle/manifest.ttl", true);

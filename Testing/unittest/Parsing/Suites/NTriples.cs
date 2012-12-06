@@ -33,25 +33,24 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Test.Parsing.Suites
 {
    
     [TestClass]
-    public class TriG
-        : BaseDatasetParserSuite
+    public class NTriples
+        : BaseRdfParserSuite
     {
-        public TriG()
-            : base(new TriGParser(), new NQuadsParser(), "trig\\")
+        public NTriples()
+            : base(new NTriplesParser(), new NTriplesParser(), "ntriples\\")
         {
             this.CheckResults = false;
         }
 
         [TestMethod]
-        public void ParsingTriGSuite()
+        public void ParsingSuiteNTriples()
         {
             //Run manifests
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && !f.Contains("bad"), true);
-            this.RunDirectory(f => Path.GetExtension(f).Equals(".trig") && f.Contains("bad"), false);
+            this.RunDirectory(f => Path.GetExtension(f).Equals(".nt"), true);
 
             if (this.Count == 0) Assert.Fail("No tests found");
 
