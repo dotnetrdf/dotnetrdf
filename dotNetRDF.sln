@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core Library", "Core Librar
 		Libraries\core\net40\Compiler Symbols.txt = Libraries\core\net40\Compiler Symbols.txt
 		Libraries\core\net40\Compiling.txt = Libraries\core\net40\Compiling.txt
 		Libraries\ReadMe.txt = Libraries\ReadMe.txt
+		Libraries\ReleaseNotes.txt = Libraries\ReleaseNotes.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NDoc", "NDoc", "{BF556CC4-9192-4D6B-9BA4-CDFF06FD0E53}"
