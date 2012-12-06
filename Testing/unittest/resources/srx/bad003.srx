@@ -1,0 +1,9 @@
+﻿<?xml version="1.0"?>
+<!-- Missing Header -->
+<sparql xmlns="http://www.w3.org/2005/sparql-results#"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+
+  <boolean>true</boolean>
+
+</sparql>
