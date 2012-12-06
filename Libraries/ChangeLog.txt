@@ -11,6 +11,7 @@ Changed
  - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
+ - Updated VDS.Common to 1.1.1
 - Build
  - Improved our test architecture significantly
 
