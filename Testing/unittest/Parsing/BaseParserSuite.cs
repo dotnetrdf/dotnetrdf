@@ -276,7 +276,7 @@ WHERE
             {
                 if (shouldParse)
                 {
-                    Console.WriteLine("Failed when was expected to parse (Test Failed");
+                    Console.WriteLine("Failed when was expected to parse (Test Failed)");
                     TestTools.ReportError("Parse Error", parseEx);
                     this._fail++;
                 }
@@ -556,7 +556,7 @@ WHERE
             {
                 if (shouldParse)
                 {
-                    Console.WriteLine("Failed when was expected to parse (Test Failed");
+                    Console.WriteLine("Failed when was expected to parse (Test Failed)");
                     TestTools.ReportError("Parse Error", parseEx);
                     this._fail++;
                 }

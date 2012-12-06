@@ -33,7 +33,6 @@ _:x <http://example.org/width>  "46"^^<http://example.org/int> .
 -->
 
 <graph>
-  <id>1</id>
    <triple>
       <uri>http://example.org/Widget</uri>
       <uri>http://example.org/dimensions</uri>
@@ -87,7 +86,6 @@ RDF Test Case: language-tag-case-not-significant
 -->
 
 <graph>
-  <id>2</id>
    <triple>
       <uri>http://example.org/tests/language-tag-case-not-significant</uri>
       <uri>http://example.org/entailmentRules</uri>
@@ -128,7 +126,6 @@ RDF Closure Rule: rdf1
 -->
 
 <graph>
-  <id>3</id>
    <triple>
       <uri>http://example.org/rules/rdf1</uri>
       <uri>http://example.org/premise</uri>
