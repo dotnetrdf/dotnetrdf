@@ -114,6 +114,7 @@
     <Compile Include="Parsing\RdfXml.cs" />
     <Compile Include="Parsing\RelativeUriTests.cs" />
     <Compile Include="Parsing\SparqlJsonTests.cs" />
+    <Compile Include="Parsing\Suites\SparqlResultsXml.cs" />
     <Compile Include="Parsing\TriG.cs" />
     <Compile Include="Parsing\TriGTests.cs" />
     <Compile Include="Parsing\TriX.cs" />
@@ -2820,7 +2821,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Parsing\Suites\" />
     <Folder Include="resources\nquads\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
