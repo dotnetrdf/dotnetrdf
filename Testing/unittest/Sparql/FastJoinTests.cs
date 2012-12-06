@@ -38,7 +38,7 @@ using VDS.RDF.Query.Patterns;
 //This is not compiled currently as this was used while prototyping FastJoin which has been removed from the core library
 //as the algorithm is now fully integrated rather than a custom Algebra operator
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class FastJoinTests

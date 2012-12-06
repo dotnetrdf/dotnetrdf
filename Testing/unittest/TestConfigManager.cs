@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     /// <summary>
     /// Manager for Unit Test Configuration which is basically key value properties used in various tests.  Primarily intended for tests that rely on per system software like triple stores

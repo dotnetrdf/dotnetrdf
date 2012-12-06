@@ -35,7 +35,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class UpdateTests

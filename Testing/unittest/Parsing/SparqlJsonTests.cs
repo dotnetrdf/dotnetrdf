@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Parsing
 {
     [TestClass]
     public class SparqlJsonTests

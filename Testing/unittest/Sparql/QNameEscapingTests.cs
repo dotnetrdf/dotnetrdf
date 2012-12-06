@@ -31,7 +31,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class QNameEscapingTests

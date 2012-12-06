@@ -36,7 +36,7 @@ using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test.Writing.Serialization
+namespace VDS.RDF.Writing.Serialization
 {
     [TestClass]
     public class ResultSerializationTests

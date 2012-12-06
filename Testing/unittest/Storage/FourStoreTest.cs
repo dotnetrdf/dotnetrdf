@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Storage
+namespace VDS.RDF.Storage
 {
     /// <summary>
     /// Summary description for FourStoreTest

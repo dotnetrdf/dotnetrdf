@@ -34,7 +34,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class UpdateTests

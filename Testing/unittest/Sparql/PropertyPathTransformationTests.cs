@@ -35,7 +35,7 @@ using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
  
     [TestClass]

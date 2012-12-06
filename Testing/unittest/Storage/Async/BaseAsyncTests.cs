@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Storage;
 
-namespace VDS.RDF.Test.Storage
+namespace VDS.RDF.Storage
 {
     [TestClass]
     public abstract class BaseAsyncTests

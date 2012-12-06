@@ -38,7 +38,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Update;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class SparqlTests

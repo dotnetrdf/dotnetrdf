@@ -34,7 +34,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class BlankNodeVariableTests

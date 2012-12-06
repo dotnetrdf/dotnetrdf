@@ -34,7 +34,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Parsing
 {
     [TestClass]
     public class SpeedTesting

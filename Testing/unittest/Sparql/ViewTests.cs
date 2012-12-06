@@ -33,9 +33,9 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Inference;
 using VDS.RDF.Storage;
-using VDS.RDF.Test.Storage;
+using VDS.RDF.Storage;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class ViewTests

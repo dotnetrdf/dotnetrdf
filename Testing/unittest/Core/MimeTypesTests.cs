@@ -31,7 +31,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Core
+namespace VDS.RDF.Core
 {
     [TestClass]
     public class MimeTypesTests

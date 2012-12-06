@@ -34,7 +34,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Parsing
 {
     [TestClass]
     public class VariableNodeTests

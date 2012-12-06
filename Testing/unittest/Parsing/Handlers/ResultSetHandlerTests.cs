@@ -35,7 +35,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers
 {
     [TestClass]
     public class ResultSetHandlerTests

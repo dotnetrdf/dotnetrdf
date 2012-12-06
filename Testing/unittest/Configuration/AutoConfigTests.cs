@@ -33,7 +33,7 @@ using VDS.RDF.Nodes;
 using VDS.RDF.Query.Operators;
 using VDS.RDF.Query.Operators.DateTime;
 
-namespace VDS.RDF.Test.Configuration
+namespace VDS.RDF.Configuration
 {
     [TestClass]
     public class AutoConfigTests

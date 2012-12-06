@@ -37,7 +37,7 @@ using VDS.RDF.Storage;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Storage
+namespace VDS.RDF.Storage
 {
     [TestClass]
     public class FusekiTest

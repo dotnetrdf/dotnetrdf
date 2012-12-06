@@ -34,7 +34,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Writing
+namespace VDS.RDF.Writing
 {
     [TestClass]
     public class SparqlTsvTests

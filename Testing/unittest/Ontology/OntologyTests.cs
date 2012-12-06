@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 
 
-namespace VDS.RDF.Test.Ontology
+namespace VDS.RDF.Ontology
 {
     [TestClass]
     public class OntologyTests

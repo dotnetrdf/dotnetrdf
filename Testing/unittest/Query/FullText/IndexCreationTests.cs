@@ -36,7 +36,7 @@ using VDS.RDF.Query.FullText.Indexing.Lucene;
 using VDS.RDF.Query.FullText.Schema;
 using VDS.RDF.Query.FullText.Search.Lucene;
 
-namespace VDS.RDF.Test.Query.FullText
+namespace VDS.RDF.Query.FullText
 {
     [TestClass]
     public class IndexCreationTests

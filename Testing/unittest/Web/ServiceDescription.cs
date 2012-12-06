@@ -33,7 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Web
+namespace VDS.RDF.Web
 {
     /// <summary>
     /// Summary description for ServiceDescription

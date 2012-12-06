@@ -36,7 +36,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Sparql
+namespace VDS.RDF.Sparql
 {
     [TestClass]
     public class RemoteEndpoints

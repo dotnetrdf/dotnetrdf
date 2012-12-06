@@ -33,7 +33,7 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Query.Inference.Pellet;
 using VDS.RDF.Query.Inference.Pellet.Services;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class PelletTests

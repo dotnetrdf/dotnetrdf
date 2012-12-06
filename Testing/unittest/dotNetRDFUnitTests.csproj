@@ -8,7 +8,7 @@
     <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VDS.RDF.Test</RootNamespace>
+    <RootNamespace>VDS.RDF</RootNamespace>
     <AssemblyName>dotNetRDF.Test</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

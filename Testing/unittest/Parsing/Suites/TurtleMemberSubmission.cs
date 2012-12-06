@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing.Suites
+namespace VDS.RDF.Parsing.Suites
 {
     [TestClass]
     public class TurtleMemberSubmission

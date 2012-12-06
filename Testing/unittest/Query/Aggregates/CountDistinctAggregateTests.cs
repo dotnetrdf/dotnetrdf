@@ -28,7 +28,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Aggregates.Sparql;
 using VDS.RDF.Query.Expressions.Primary;
 
-namespace VDS.RDF.Test.Query.Aggregates
+namespace VDS.RDF.Query.Aggregates
 {
     [TestClass]
     public class CountDistinctAggregateTests

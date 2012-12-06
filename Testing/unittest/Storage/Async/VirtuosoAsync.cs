@@ -30,7 +30,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Storage;
 
-namespace VDS.RDF.Test.Storage.Async
+namespace VDS.RDF.Storage.Async
 {
     [TestClass]
     public class VirtuosoAsync

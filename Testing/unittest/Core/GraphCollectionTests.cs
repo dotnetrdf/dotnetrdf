@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VDS.RDF.Test.Core
+namespace VDS.RDF.Core
 {
     [TestClass]
     public class GraphCollectionTests
