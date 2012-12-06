@@ -16,5 +16,9 @@
       <dependency id="HtmlAgilityPack" version="1.4.6" />
       <dependency id="VDS.Common" version="1.1.1" />
     </dependencies>
+    <releaseNotes>
+      - Updated VDS.Common dependency to latest version
+      - Package now include PDBs to aid debugging
+    </releaseNotes>
   </metadata>
 </package>

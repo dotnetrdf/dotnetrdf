@@ -14,6 +14,7 @@ Changed
  - Updated VDS.Common to 1.1.1
 - Build
  - Improved our test architecture significantly
+ - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF
 
 0.8.2 RC3
 ---------
