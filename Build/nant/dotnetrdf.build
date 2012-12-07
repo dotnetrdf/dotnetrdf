@@ -163,7 +163,7 @@
 
   <target name="license-tests" description="Applies License headers to all test targets"
           depends="license-libs,
-                   license-tests-informal,license-unit-tests,license-dawg-tests" unless="${dotnetrdf.nocompile}" />
+                   license-unit-tests,license-dawg-tests" unless="${dotnetrdf.nocompile}" />
 
   <target name="license-utils" description="Applies License headers to all utility targets"
           depends="license-libs,
@@ -298,23 +298,6 @@
     <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
       <arg value="-directory" />
       <arg value="Libraries/storemanager.core/" />
-      <arg value="-exclude-exts" />
-      <arg value="${dotnetrdf.License.exclude.exts}" />
-      <arg value="-exclude" />
-      <arg value="${dotnetrdf.License.exclude.regex}" />
-      <arg value="-license-search" />
-      <arg value="${dotnetrdf.License.search}" />
-      <arg value="-license-file" />
-      <arg value="${dotnetrdf.License.replace}" />
-      <arg value="-fix" />
-      <arg value="${dotnetrdf.License.overwrite}" />
-    </exec>
-  </target>
-
-  <target name="license-tests-informal" description="Applies License headers to the Tests project" depends="license-core" unless="${dotnetrdf.nocompile}">
-    <exec program="Build/LicenseChecker/LicenseChecker.exe" failonerror="true">
-      <arg value="-directory" />
-      <arg value="Testing/testsuite/" />
       <arg value="-exclude-exts" />
       <arg value="${dotnetrdf.License.exclude.exts}" />
       <arg value="-exclude" />
