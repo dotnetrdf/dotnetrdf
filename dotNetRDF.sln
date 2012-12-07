@@ -73,7 +73,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF", "Libraries\core
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSBM", "Samples\bsbm\BSBM.csproj", "{38C7644F-11E4-4C98-A82B-63A9AC8D17AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDFUnitTests", "Testing\unittest\dotNetRDFUnitTests.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Test", "Testing\unittest\dotNetRDF.Test.csproj", "{BD80F826-56A3-4A88-B466-DDFA0691FFB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreManager", "Utilities\storemanager\StoreManager.csproj", "{5B73EE4C-D365-437B-B3DC-8D8831BF74F3}"
 EndProject

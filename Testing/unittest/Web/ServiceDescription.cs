@@ -60,7 +60,7 @@ namespace VDS.RDF.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(path);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -194,7 +194,7 @@ namespace VDS.RDF.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 

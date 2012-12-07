@@ -44,7 +44,7 @@ namespace VDS.RDF.Writing.Serialization
         [TestMethod]
         public void SerializationXmlTriple()
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(Triple));
 
             Graph g = new Graph();
