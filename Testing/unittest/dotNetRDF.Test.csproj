@@ -131,7 +131,6 @@
     <Compile Include="Query\DefaultGraphTests2.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
-    <Compile Include="Query\FastJoinTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
     <Compile Include="Query\FormattingTests.cs" />
     <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
@@ -164,7 +163,6 @@
     <Compile Include="Query\SparqlTests.cs" />
     <Compile Include="Query\SparqlTests2.cs" />
     <Compile Include="Query\StrictOptimiserTest.cs" />
-    <Compile Include="Query\UpdateTests.cs" />
     <Compile Include="Query\VariableSubstitutionTests.cs" />
     <Compile Include="Query\ViewTests.cs" />
     <Compile Include="Query\WeightedOptimiserTests.cs" />
@@ -182,8 +180,9 @@
     <Compile Include="Storage\Async\VirtuosoAsync.cs" />
     <Compile Include="TestConfigManager.cs" />
     <Compile Include="TestTools.cs" />
-    <Compile Include="Update\UpdateTests.cs" />
+    <Compile Include="Update\UpdateTests2.cs" />
     <Compile Include="Storage\VirtuosoTest.cs" />
+    <Compile Include="Update\UpdateTests1.cs" />
     <Compile Include="Writing\GraphVizTests.cs" />
     <Compile Include="Writing\WriterTests.cs" />
   </ItemGroup>

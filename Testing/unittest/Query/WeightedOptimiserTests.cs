@@ -34,7 +34,7 @@ using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class WeightedOptimiserTests

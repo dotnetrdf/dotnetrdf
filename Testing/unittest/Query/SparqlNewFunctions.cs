@@ -32,7 +32,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     /// <summary>
     /// Summary description for SparqlNewFunctions

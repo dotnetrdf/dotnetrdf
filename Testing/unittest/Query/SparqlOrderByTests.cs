@@ -27,7 +27,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Ordering;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class SparqlOrderByTests

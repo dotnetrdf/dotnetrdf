@@ -42,7 +42,7 @@ using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class LeviathanTests

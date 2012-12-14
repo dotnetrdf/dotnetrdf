@@ -35,7 +35,7 @@ using VDS.RDF.Query.Operators.Numeric;
 using VDS.RDF.Query.Operators.DateTime;
 using VDS.RDF.Configuration;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class OperatorTests

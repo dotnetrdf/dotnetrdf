@@ -36,7 +36,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Paths;
 using VDS.RDF.Query.Patterns;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class PropertyPathEvaluationTests

@@ -35,10 +35,10 @@ using VDS.RDF.Query.Inference;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Update
 {
     [TestClass]
-    public class UpdateTests
+    public class UpdateTests1
     {
         public const String InsertPatterns1 = @"ex:IndividualA rdf:type          tpl:MyIndividualClass .
 _:template        rdf:type          tpl:MyTemplate .

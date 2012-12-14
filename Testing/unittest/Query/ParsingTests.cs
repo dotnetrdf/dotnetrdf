@@ -35,7 +35,7 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class ParsingTests

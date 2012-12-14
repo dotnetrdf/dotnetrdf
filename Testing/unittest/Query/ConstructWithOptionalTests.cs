@@ -34,7 +34,7 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
 
     [TestClass]

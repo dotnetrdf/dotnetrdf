@@ -34,10 +34,10 @@ using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 
-namespace VDS.RDF
+namespace VDS.RDF.Update
 {
     [TestClass]
-    public class UpdateTests
+    public class UpdateTests2
     {
         [TestMethod]
         public void SparqlUpdateCreateDrop()

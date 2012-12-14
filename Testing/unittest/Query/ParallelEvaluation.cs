@@ -40,7 +40,7 @@ using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Sparql
+namespace VDS.RDF.Query
 {
     [TestClass]
     public class ParallelEvaluation
