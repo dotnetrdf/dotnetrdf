@@ -222,7 +222,7 @@ namespace VDS.RDF.Update.Commands
                     //If there are USING URIs reset the Active Graph afterwards
                     //Also flag the dataset as no longer being OK as this flag is used in the finally 
                     //block to determine whether the Active Graph needs resetting which it may do if the
-                    //evaluation of the 
+                    //evaluation of the query fails for any reason
                     context.Data.ResetActiveGraph();
                     datasetOk = false;
                 }
