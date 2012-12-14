@@ -333,5 +333,31 @@ namespace VDS.RDF.Query
 
             Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
+
+        [TestMethod]
+        public void SparqlPropertyPathEvaluationGraphInteraction()
+        {
+            String query = @"PREFIX ex: <http://www.example.org/schema#>
+PREFIX in: <http://www.example.org/instance#>
+
+SELECT ?x
+FROM NAMED <http://example/1>
+FROM NAMED <http://example/2>
+WHERE
+{
+  GRAPH ?g { in:a ex:p1 / ex:p2 ?x . }
+}";
+
+            String data = @"<http://www.example.org/instance#a> <http://www.example.org/schema#p1> <http://www.example.org/instance#b> <http://example/1> .
+<http://www.example.org/instance#b> <http://www.example.org/schema#p2> <http://www.example.org/instance#c> <http://example/2> .";
+
+            TripleStore store = new TripleStore();
+            store.LoadFromString(data, new NQuadsParser());
+
+            SparqlResultSet results = store.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(0, results.Results.Count);
+        }
     }
 }
