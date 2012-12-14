@@ -153,6 +153,7 @@
     <Compile Include="Query\ResultAccessTests.cs" />
     <Compile Include="Query\ResultSetWriterTests.cs" />
     <Compile Include="Query\ScalarArgumentsTests.cs" />
+    <Compile Include="Query\SequenceTests.cs" />
     <Compile Include="Query\ServiceTests.cs" />
     <Compile Include="Query\SetTests.cs" />
     <Compile Include="Query\SparqlNewFunctions.cs" />
@@ -1537,6 +1538,30 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\srx\test002.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graph.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graph.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graphs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graphs.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_full.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_full.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_named_graphs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_named_graphs.ru">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">

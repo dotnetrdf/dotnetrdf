@@ -1,0 +1,11 @@
+ASK {
+    GRAPH <http://example.org/protocol-update-dataset-full-test/> {
+        <http://kasei.us/2009/09/sparql/data/data1.rdf> <http://example.org/in> "default" .
+        <http://kasei.us/2009/09/sparql/data/data2.rdf> <http://example.org/in> <http://kasei.us/2009/09/sparql/data/data2.rdf> .
+    }
+    FILTER NOT EXISTS {
+        GRAPH <http://example.org/protocol-update-dataset-full-test/> {
+            <http://kasei.us/2009/09/sparql/data/data3.rdf> ?p ?o
+        }
+    }
+}
