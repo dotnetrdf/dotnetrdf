@@ -9,6 +9,8 @@ Changed
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
  - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
  - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
+ - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables
+ - Fix a corner base base in interaction between GRAPH clauses and property paths
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
  - Updated VDS.Common to 1.1.1
