@@ -44,7 +44,7 @@ namespace VDS.RDF.Query
     public class SparqlTests
     {
         [TestMethod]
-        public void SparqlJoinWithoutVars()
+        public void SparqlJoinWithoutVars1()
         {
             String data = @"<http://s> <http://p> <http://o> .
 <http://x> <http://y> <http://z> .";
@@ -56,6 +56,39 @@ namespace VDS.RDF.Query
             Assert.IsNotNull(results);
             Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
             Assert.IsTrue(results.Result);
+        }
+
+        [TestMethod]
+        public void SparqlJoinWithoutVars2()
+        {
+            String data = @"<http://s> <http://p> <http://o> .
+<http://x> <http://y> <http://z> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, new NTriplesParser());
+            g.BaseUri = new Uri("http://example/graph");
+
+            SparqlResultSet results = g.ExecuteQuery("ASK WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.IsTrue(results.Result);
+        }
+
+        [TestMethod]
+        public void SparqlJoinWithoutVars3()
+        {
+            String data = @"<http://s> <http://p> <http://o> .
+<http://x> <http://y> <http://z> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, new NTriplesParser());
+            g.BaseUri = new Uri("http://example/graph");
+
+            SparqlResultSet results = g.ExecuteQuery("SELECT * WHERE { GRAPH <http://example/graph> { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> } }") as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(SparqlResultsType.VariableBindings, results.ResultsType);
+            Assert.AreEqual(1, results.Results.Count);
+            Assert.AreEqual(0, results.Variables.Count());
         }
 
         [TestMethod]
