@@ -128,9 +128,10 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    GraphPattern breakPattern = new GraphPattern();
-                    breakPattern.AddAssignment(p);
-                    this._graphPatterns.Add(breakPattern);
+                    //GraphPattern breakPattern = new GraphPattern();
+                    //breakPattern.AddAssignment(p);
+                    //this._graphPatterns.Add(breakPattern);
+                    this._unplacedAssignments.Add(p);
                 }
             }
             else
@@ -1026,8 +1027,12 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (this._unplacedAssignments.Count > 0)
                 {
-                    //Unplaced assignments get Joined as a BGP here
-                    complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                    //Unplaced assignments get Extended over the algebra so far here
+                    //complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                    foreach (IAssignmentPattern p in this._unplacedAssignments)
+                    {
+                        complex = new Extend(complex, p.AssignExpression, p.VariableName);
+                    }
                 }
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {
