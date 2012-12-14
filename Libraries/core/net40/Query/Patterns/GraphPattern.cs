@@ -136,7 +136,6 @@ namespace VDS.RDF.Query.Patterns
             else
             {
                 this._unplacedAssignments.Add(p);
-                //this.BreakBGP();
             }
         }
 

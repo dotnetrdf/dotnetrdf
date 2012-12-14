@@ -11,6 +11,7 @@ INSERT {
         ?s a dc:BibliographicResource
     }
 }
+USING <http://kasei.us/2009/09/sparql/data/data1.rdf>
 WHERE {
     ?s a foaf:Document
 }

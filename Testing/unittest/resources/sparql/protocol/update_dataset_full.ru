@@ -11,6 +11,8 @@ INSERT {
         ?s <http://example.org/in> ?in
     }
 }
+USING <http://kasei.us/2009/09/sparql/data/data1.rdf>
+USING NAMED <http://kasei.us/2009/09/sparql/data/data2.rdf>
 WHERE {
     {
         GRAPH ?g { ?s a foaf:Document }

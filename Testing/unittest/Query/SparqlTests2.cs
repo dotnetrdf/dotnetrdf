@@ -32,6 +32,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Functions;
@@ -377,6 +378,30 @@ namespace VDS.RDF
 
             SparqlQueryParser parser = new SparqlQueryParser();
             parser.ParseFromString(query);
+        }
+
+        [TestMethod]
+        public void SparqlBindScope5()
+        {
+            String query = @"PREFIX : <http://example.org>
+SELECT *
+WHERE
+{
+  GRAPH ?g { :s :p ?o }
+  BIND (?g AS ?in)
+}";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToString());
+
+            ISparqlAlgebra algebra = q.ToAlgebra();
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOfType(algebra, typeof(Select));
+
+            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
+            Assert.IsInstanceOfType(algebra, typeof(Extend));
         }
 
         [TestMethod]
