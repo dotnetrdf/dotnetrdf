@@ -44,6 +44,21 @@ namespace VDS.RDF.Query
     public class SparqlTests
     {
         [TestMethod]
+        public void SparqlJoinWithoutVars()
+        {
+            String data = @"<http://s> <http://p> <http://o> .
+<http://x> <http://y> <http://z> .";
+
+            Graph g = new Graph();
+            g.LoadFromString(data, new NTriplesParser());
+
+            SparqlResultSet results = g.ExecuteQuery("ASK WHERE { <http://s> <http://p> <http://o> . <http://x> <http://y> <http://z> }") as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
+            Assert.IsTrue(results.Result);
+        }
+
+        [TestMethod]
         public void SparqlParameterizedStringWithNulls()
         {
             SparqlParameterizedString query = new SparqlParameterizedString();

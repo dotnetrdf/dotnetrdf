@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 
@@ -30,6 +31,10 @@ namespace VDS.RDF.Query
             Assert.AreEqual(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-graphs-test/")].Triples.Count());
 
             SparqlQuery query = this._queryParser.ParseFromFile("sparql\\protocol\\update_dataset_default_graphs.rq");
+
+            ISparqlAlgebra algebra = query.ToAlgebra();
+            Console.WriteLine(algebra.ToString());
+
             SparqlResultSet results = queryProcessor.ProcessQuery(query) as SparqlResultSet;
             Assert.IsNotNull(results);
             Assert.AreEqual(SparqlResultsType.Boolean, results.ResultsType);
