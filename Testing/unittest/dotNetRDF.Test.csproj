@@ -121,23 +121,57 @@
     <Compile Include="Parsing\Suites\Turtle11.cs" />
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Query\AlgebraReverseTranslation.cs" />
+    <Compile Include="Query\BindingsTests.cs" />
+    <Compile Include="Query\BlankNodeVariableTests.cs" />
+    <Compile Include="Query\ConstructWithOptionalTests.cs" />
+    <Compile Include="Query\DatasetTests.cs" />
+    <Compile Include="Query\DataTableTests.cs" />
+    <Compile Include="Query\DefaultGraphTests.cs" />
+    <Compile Include="Query\DefaultGraphTests2.cs" />
+    <Compile Include="Query\DescribeAlgorithms.cs" />
+    <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\FastJoinTests.cs" />
+    <Compile Include="Query\FilterPlacementTests.cs" />
+    <Compile Include="Query\FormattingTests.cs" />
     <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
-    <Compile Include="Sparql\FormattingTests.cs" />
-    <Compile Include="Sparql\LeviathanTests.cs" />
     <Compile Include="Parsing\LoaderTests.cs" />
     <Compile Include="Core\NamespaceMapperTest.cs" />
-    <Compile Include="Sparql\OperatorTests.cs" />
-    <Compile Include="Sparql\DatasetTests.cs" />
-    <Compile Include="Sparql\SetTests.cs" />
-    <Compile Include="Sparql\SparqlOrderByTests.cs" />
-    <Compile Include="Sparql\SparqlQueryTests.cs" />
+    <Compile Include="Query\GroupByTests.cs" />
+    <Compile Include="Query\LeviathanTests.cs" />
+    <Compile Include="Query\NegationTests.cs" />
+    <Compile Include="Query\OperatorTests.cs" />
+    <Compile Include="Query\OptimiserTests.cs" />
+    <Compile Include="Query\ParallelEvaluation.cs" />
+    <Compile Include="Query\ParsingTests.cs" />
+    <Compile Include="Query\PropertyPathEvaluationTests.cs" />
+    <Compile Include="Query\PropertyPathTransformationTests.cs" />
+    <Compile Include="Query\QNameEscapingTests.cs" />
+    <Compile Include="Query\QueryFormattingTests.cs" />
+    <Compile Include="Query\QueryThreadSafety.cs" />
+    <Compile Include="Query\QueryTimeouts.cs" />
+    <Compile Include="Query\RemoteEndpoints.cs" />
+    <Compile Include="Query\ResultAccessTests.cs" />
+    <Compile Include="Query\ResultSetWriterTests.cs" />
+    <Compile Include="Query\ScalarArgumentsTests.cs" />
+    <Compile Include="Query\ServiceTests.cs" />
+    <Compile Include="Query\SetTests.cs" />
+    <Compile Include="Query\SparqlNewFunctions.cs" />
+    <Compile Include="Query\SparqlOrderByTests.cs" />
+    <Compile Include="Query\SparqlParsingComplex.cs" />
+    <Compile Include="Query\SparqlProcessorsWithHandlersTests.cs" />
+    <Compile Include="Query\SparqlQueryTests.cs" />
+    <Compile Include="Query\SparqlTests.cs" />
+    <Compile Include="Query\SparqlTests2.cs" />
+    <Compile Include="Query\StrictOptimiserTest.cs" />
+    <Compile Include="Query\UpdateTests.cs" />
+    <Compile Include="Query\VariableSubstitutionTests.cs" />
+    <Compile Include="Query\ViewTests.cs" />
+    <Compile Include="Query\WeightedOptimiserTests.cs" />
     <Compile Include="Storage\NativeStoreTests.cs" />
     <Compile Include="Ontology\OntologyTests.cs" />
     <Compile Include="Parsing\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sparql\ResultAccessTests.cs" />
-    <Compile Include="Sparql\SparqlTests.cs" />
-    <Compile Include="Sparql\VariableSubstitutionTests.cs" />
     <Compile Include="Storage\Async\AllegroGraphAsync.cs" />
     <Compile Include="Storage\Async\DydraAsync.cs" />
     <Compile Include="Storage\Async\FourStoreAsync.cs" />
@@ -325,13 +359,6 @@
     <Compile Include="Query\FullText\IndexCreationTests.cs" />
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
-    <Compile Include="Sparql\AlgebraReverseTranslation.cs" />
-    <Compile Include="Sparql\BindingsTests.cs" />
-    <Compile Include="Sparql\BlankNodeVariableTests.cs" />
-    <Compile Include="Sparql\ConstructWithOptionalTests.cs" />
-    <Compile Include="Sparql\DataTableTests.cs" />
-    <Compile Include="Sparql\DefaultGraphTests2.cs" />
-    <Compile Include="Sparql\ExplainProcessorTests.cs" />
     <Content Include="resources\trix\curies.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1765,22 +1792,6 @@
     <Content Include="resources\turtle\test-30.out">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Sparql\FastJoinTests.cs" />
-    <Compile Include="Sparql\FilterPlacementTests.cs" />
-    <Compile Include="Sparql\NegationTests.cs" />
-    <Compile Include="Sparql\OptimiserTests.cs" />
-    <Compile Include="Sparql\ParallelEvaluation.cs" />
-    <Compile Include="Sparql\PropertyPathEvaluationTests.cs" />
-    <Compile Include="Sparql\PropertyPathTransformationTests.cs" />
-    <Compile Include="Sparql\QNameEscapingTests.cs" />
-    <Compile Include="Sparql\QueryFormattingTests.cs" />
-    <Compile Include="Sparql\QueryThreadSafety.cs" />
-    <Compile Include="Sparql\QueryTimeouts.cs" />
-    <Compile Include="Sparql\RemoteEndpoints.cs" />
-    <Compile Include="Sparql\ServiceTests.cs" />
-    <Compile Include="Sparql\SparqlProcessorsWithHandlersTests.cs" />
-    <Compile Include="Sparql\StrictOptimiserTest.cs" />
-    <Compile Include="Sparql\WeightedOptimiserTests.cs" />
     <Compile Include="Storage\Async\BaseAsyncTests.cs" />
     <Compile Include="Storage\Async\InMemoryAsync.cs" />
     <Compile Include="Storage\AllegroGraphTests.cs" />
@@ -1803,17 +1814,6 @@
     <Compile Include="Query\PelletTests.cs" />
     <Compile Include="Parsing\RdfATests.cs" />
     <Compile Include="Parsing\RdfXmlTests.cs" />
-    <Compile Include="Sparql\DefaultGraphTests.cs" />
-    <Compile Include="Sparql\GroupByTests.cs" />
-    <Compile Include="Sparql\ParsingTests.cs" />
-    <Compile Include="Sparql\ScalarArgumentsTests.cs" />
-    <Compile Include="Sparql\SparqlNewFunctions.cs" />
-    <Compile Include="Sparql\SparqlParsingComplex.cs" />
-    <Compile Include="Sparql\SparqlTests2.cs" />
-    <Compile Include="Sparql\DescribeAlgorithms.cs" />
-    <Compile Include="Sparql\ResultSetWriterTests.cs" />
-    <Compile Include="Sparql\UpdateTests.cs" />
-    <Compile Include="Sparql\ViewTests.cs" />
     <Compile Include="Storage\SparqlGraphStoreProtocolTest.cs" />
     <Compile Include="Parsing\VariableNodeTests.cs" />
     <Compile Include="Web\ETagTests.cs" />
@@ -1966,7 +1966,6 @@
     <Content Include="resources\writetostore.nq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Sparql\SampleWeightings.n3" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\rdfxml\amp-in-url\test001.nt" />
