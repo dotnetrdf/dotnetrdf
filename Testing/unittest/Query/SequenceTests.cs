@@ -102,6 +102,8 @@ namespace VDS.RDF.Query
             SparqlUpdateCommandSet updates = this._updateParser.ParseFromFile("sparql\\protocol\\update_dataset_full.ru");
             updateProcessor.ProcessCommandSet(updates);
 
+            Console.WriteLine(updates.ToString());
+
             Assert.AreEqual(5, dataset.Graphs.Count());
             Assert.AreEqual(2, dataset[UriFactory.Create("http://example.org/protocol-update-dataset-full-test/")].Triples.Count());
 

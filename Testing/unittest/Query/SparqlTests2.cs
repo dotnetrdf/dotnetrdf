@@ -405,6 +405,44 @@ WHERE
         }
 
         [TestMethod]
+        public void SparqlBindScope6()
+        {
+            String query = @"PREFIX : <http://example.org>
+SELECT *
+WHERE
+{
+  {
+    GRAPH ?g { :s :p ?o }
+    BIND (?g AS ?in)
+  }
+  UNION
+  {
+    :s :p ?o .
+    BIND('default' AS ?in)
+  }
+}";
+
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString(query);
+
+            Console.WriteLine(q.ToString());
+
+            ISparqlAlgebra algebra = q.ToAlgebra();
+            Console.WriteLine(algebra.ToString());
+            Assert.IsInstanceOfType(algebra, typeof(Select));
+
+            algebra = ((IUnaryOperator)algebra).InnerAlgebra;
+            Assert.IsInstanceOfType(algebra, typeof(Union));
+
+            IUnion union = (Union)algebra;
+            ISparqlAlgebra lhs = union.Lhs;
+            Assert.IsInstanceOfType(lhs, typeof(Extend));
+
+            ISparqlAlgebra rhs = union.Rhs;
+            Assert.IsInstanceOfType(rhs, typeof(Join));
+        }
+
+        [TestMethod]
         public void SparqlLet()
         {
             String query = "PREFIX fn: <" + XPathFunctionFactory.XPathFunctionsNamespace + "> SELECT ?triple WHERE { ?s ?p ?o . LET (?triple := fn:concat(STR(?s), ' ', STR(?p), ' ', STR(?o))) }";
