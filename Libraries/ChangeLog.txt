@@ -7,8 +7,10 @@
 Added
 - Ontology API
  - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass
- - Added Siblings property on OntologyClass
+ - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty
+ - Added Siblings property on OntologyClass and OntologyProperty
  - Added IsTopClass and IsBottomClass property on OntologyClass
+ - Added IsTopProperty and IsBottomProperty on OntologyProperty
  - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph
  - Added AsClass() and AsProperty() methods on OntologyResource
 
