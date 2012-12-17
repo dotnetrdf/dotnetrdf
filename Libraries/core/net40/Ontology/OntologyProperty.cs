@@ -787,6 +787,20 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Gets the Sibling properties of this property, if this property is the root of the ontology nothing is returned even if there are multiple root properties
+        /// </summary>
+        public IEnumerable<OntologyProperty> Siblings
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSuperProperty)
+                       .Select(p => new OntologyProperty(p, this._graph))
+                       .SelectMany(p => p.DirectSubProperties)
+                       .Where(p => !p.Resource.Equals(this._resource)).Distinct();
+            }
+        }
+
+        /// <summary>
         /// Gets all the inverse properties of this property
         /// </summary>
         public IEnumerable<OntologyProperty> InverseProperties

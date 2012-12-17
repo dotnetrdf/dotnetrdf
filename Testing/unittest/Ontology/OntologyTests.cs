@@ -386,5 +386,41 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(3, speed.DirectSubProperties.Count());
             Assert.AreEqual(0, speed.IndirectSubProperties.Count());
         }
+
+        [TestMethod]
+        public void OntologyPropertyTopAndBottom()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property Speed
+            OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+            Assert.IsTrue(speed.IsTopProperty);
+            Assert.IsFalse(speed.IsBottomProperty);
+
+            //Get the property AirSpeed
+            OntologyProperty airSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/AirSpeed"));
+            Assert.IsFalse(airSpeed.IsTopProperty);
+            Assert.IsTrue(airSpeed.IsBottomProperty);
+        }
+
+        [TestMethod]
+        public void OntologyPropertySiblings()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property LimitedSpeed
+            OntologyProperty limitedSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/LimitedSpeed"));
+
+            //Get siblings
+            List<OntologyProperty> siblings = limitedSpeed.Siblings.ToList();
+            Assert.AreEqual(2, siblings.Count);
+            Assert.IsFalse(siblings.Contains(limitedSpeed));
+        }
     }
 }
