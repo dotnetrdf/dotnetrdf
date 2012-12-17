@@ -322,5 +322,46 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(3, groundVehicle.DirectSubClasses.Count());
             Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
         }
+
+        [TestMethod]
+        public void OntologyClassSiblings()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Cars
+            OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+
+            //Get siblings
+            List<OntologyClass> siblings = car.Siblings.ToList();
+            Assert.AreEqual(2, siblings.Count);
+            Assert.IsFalse(siblings.Contains(car));
+        }
+
+        [TestMethod]
+        public void OntologyClassTopAndBottom()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Vehicles
+            OntologyClass vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+            Assert.IsTrue(vehicle.IsTopClass);
+            Assert.IsFalse(vehicle.IsBottomClass);
+
+            //Get the class of cars
+            OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+            Assert.IsFalse(car.IsTopClass);
+            Assert.IsFalse(car.IsBottomClass);
+
+            //Get the class of sports cars
+            OntologyClass sportsCar = g.CreateOntologyClass(new Uri("http://example.org/vehicles/SportsCar"));
+            Assert.IsFalse(sportsCar.IsTopClass);
+            Assert.IsTrue(sportsCar.IsBottomClass);
+        }
     }
 }

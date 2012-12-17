@@ -574,6 +574,20 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Gets the Sibling classes of this class, if this class is the root of the ontology nothing is returned even if there are multiple root classes
+        /// </summary>
+        public IEnumerable<OntologyClass> Siblings
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSuperClass)
+                       .Select(c => new OntologyClass(c, this._graph))
+                       .SelectMany(c => c.DirectSubClasses)
+                       .Where(c => !c.Resource.Equals(this._resource)).Distinct();
+            }
+        }
+
+        /// <summary>
         /// Gets the equivalent classes of this class
         /// </summary>
         public IEnumerable<OntologyClass> EquivalentClasses
@@ -630,6 +644,28 @@ namespace VDS.RDF.Ontology
                 INode range = this._graph.CreateUriNode(UriFactory.Create(NamespaceMapper.RDFS + "range"));
                 return (from t in this._graph.GetTriplesWithPredicateObject(range, this._resource)
                         select new OntologyProperty(t.Subject, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets whether something is a Top Class i.e. has no super classes
+        /// </summary>
+        public bool IsTopClass
+        {
+            get
+            {
+                return !this.SuperClasses.Any();
+            }
+        }
+
+        /// <summary>
+        /// Gets whether something is a Bottom Class i.e. has no sub classes
+        /// </summary>
+        public bool IsBottomClass
+        {
+            get
+            {
+                return !this.SubClasses.Any();
             }
         }
 
