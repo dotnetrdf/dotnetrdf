@@ -41,6 +41,8 @@ namespace VDS.RDF.Ontology
         : OntologyResource
     {
         private const String PropertyDerivedClass = "derivedClass";
+        private const String PropertyDirectSubClass = "directSubClass";
+        private const String PropertyDirectSuperClass = "directSuperClass";
 
         /// <summary>
         /// Creates a new representation of a Class in the given Ontology Mode
@@ -61,9 +63,11 @@ namespace VDS.RDF.Ontology
             //Find derived classes
             IUriNode subClassOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubClassOf));
             this._resourceProperties.Add(PropertyDerivedClass, new List<INode>());
+            this._resourceProperties.Add(PropertyDirectSubClass, new List<INode>());
             foreach (Triple t in this._graph.GetTriplesWithPredicateObject(subClassOf, this._resource))
             {
                 if (!this._resourceProperties[PropertyDerivedClass].Contains(t.Subject)) this._resourceProperties[PropertyDerivedClass].Add(t.Subject);
+                if (!this._resourceProperties[PropertyDirectSubClass].Contains(t.Subject)) this._resourceProperties[PropertyDirectSubClass].Add(t.Subject);
             }
             int c = 0; 
             do
@@ -79,8 +83,11 @@ namespace VDS.RDF.Ontology
             } while (c < this._resourceProperties[PropertyDerivedClass].Count);
 
             //Find additional super classes
+            this._resourceProperties.Add(PropertyDirectSuperClass, new List<INode>());
             if (this._resourceProperties.ContainsKey(OntologyHelper.PropertySubClassOf))
             {
+                this._resourceProperties[PropertyDirectSuperClass].AddRange(this._resourceProperties[OntologyHelper.PropertySubClassOf]);
+
                 do
                 {
                     c = this._resourceProperties[OntologyHelper.PropertySubClassOf].Count;
@@ -508,6 +515,30 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Gets the direct sub-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyClass> DirectSubClasses
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSubClass).Select(c => new OntologyClass(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the indirect sub-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyClass> IndirectSubClasses
+        {
+            get
+            {
+                return (from c in this.GetResourceProperty(PropertyDerivedClass)
+                        where !this.GetResourceProperty(PropertyDirectSubClass).Contains(c)
+                        select new OntologyClass(c, this._graph));
+            }
+        }
+
+        /// <summary>
         /// Gets the super-classes of this class (both direct and indirect)
         /// </summary>
         public IEnumerable<OntologyClass> SuperClasses
@@ -515,6 +546,30 @@ namespace VDS.RDF.Ontology
             get
             {
                 return this.GetResourceProperty(OntologyHelper.PropertySubClassOf).Select(c => new OntologyClass(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the direct super-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyClass> DirectSuperClasses
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSuperClass).Select(c => new OntologyClass(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the indirect super-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyClass> IndirectSuperClasses
+        {
+            get
+            {
+                return (from c in this.GetResourceProperty(OntologyHelper.PropertySubClassOf)
+                        where !this.GetResourceProperty(PropertyDirectSuperClass).Contains(c)
+                        select new OntologyClass(c, this._graph));
             }
         }
 

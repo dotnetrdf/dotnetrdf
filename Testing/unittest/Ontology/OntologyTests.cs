@@ -299,5 +299,28 @@ namespace VDS.RDF.Ontology
                 Console.WriteLine(domain.ToString());
             }
         }
+
+        [TestMethod]
+        public void OntologyClassSubClasses()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Ground Vehicles
+            OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
+            Console.WriteLine("Got the class of Ground Vehicles");
+
+            //Check counts of super classes
+            Assert.AreEqual(1, groundVehicle.SuperClasses.Count());
+            Assert.AreEqual(1, groundVehicle.DirectSuperClasses.Count());
+            Assert.AreEqual(0, groundVehicle.IndirectSuperClasses.Count());
+
+            //Check counts of sub-classes
+            Assert.AreEqual(5, groundVehicle.SubClasses.Count());
+            Assert.AreEqual(3, groundVehicle.DirectSubClasses.Count());
+            Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
+        }
     }
 }

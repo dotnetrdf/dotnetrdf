@@ -72,7 +72,9 @@
     <Content Include="App_Data\ServerIntro.txt" />
     <Content Include="index.htm" />
     <Content Include="sparql.css" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserHandler.cs" />
