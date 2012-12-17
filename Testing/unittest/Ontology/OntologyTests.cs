@@ -363,5 +363,28 @@ namespace VDS.RDF.Ontology
             Assert.IsFalse(sportsCar.IsTopClass);
             Assert.IsTrue(sportsCar.IsBottomClass);
         }
+
+        [TestMethod]
+        public void OntologyPropertySubProperties()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property of Ground Speed
+            OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
+
+            //Check counts of super properties
+            Assert.AreEqual(1, groundSpeed.SuperProperties.Count());
+            Assert.AreEqual(1, groundSpeed.DirectSuperProperties.Count());
+            Assert.AreEqual(0, groundSpeed.IndirectSuperProperty.Count());
+
+            //Check counts of sub-properties
+            OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+            Assert.AreEqual(3, speed.SubProperties.Count());
+            Assert.AreEqual(3, speed.DirectSubProperties.Count());
+            Assert.AreEqual(0, speed.IndirectSubProperties.Count());
+        }
     }
 }

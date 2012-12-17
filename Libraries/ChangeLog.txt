@@ -4,6 +4,15 @@
 0.9.0 RC4
 ---------
 
+Added
+- Ontology API
+ - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass
+ - Added Siblings property on OntologyClass
+ - Added IsTopClass and IsBottomClass property on OntologyClass
+ - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph
+ - Added AsClass() and AsProperty() methods on OntologyResource
+
+
 Changed
 - Bug Fixes
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
