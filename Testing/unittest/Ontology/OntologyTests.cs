@@ -422,5 +422,19 @@ namespace VDS.RDF.Ontology
             Assert.AreEqual(2, siblings.Count);
             Assert.IsFalse(siblings.Contains(limitedSpeed));
         }
+
+        [TestMethod]
+        public void OntologyClassCount()
+        {
+            OntologyGraph g = new OntologyGraph();
+            g.LoadFromFile("swrc.owl");
+            Assert.IsFalse(g.IsEmpty);
+
+            //Count classes, raw and distinct count should be same
+            int count = g.OwlClasses.Count();
+            int distinctCount = g.OwlClasses.Select(c => c.Resource).Distinct().Count();
+
+            Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
+        }
     }
 }
