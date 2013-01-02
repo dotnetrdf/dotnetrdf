@@ -424,7 +424,7 @@ namespace VDS.RDF.Ontology
         }
 
         [TestMethod]
-        public void OntologyClassCount()
+        public void OntologyClassCount1()
         {
             OntologyGraph g = new OntologyGraph();
             g.LoadFromFile("swrc.owl");
@@ -434,7 +434,34 @@ namespace VDS.RDF.Ontology
             int count = g.OwlClasses.Count();
             int distinctCount = g.OwlClasses.Select(c => c.Resource).Distinct().Count();
 
+            Console.WriteLine("Count = " + count);
+            Console.WriteLine("Distinct Count = " + distinctCount);
+
             Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
+        }
+
+        [TestMethod]
+        public void OntologyClassCount2()
+        {
+            OntologyGraph g = new OntologyGraph();
+            g.LoadFromFile("swrc.owl");
+            Assert.IsFalse(g.IsEmpty);
+
+            OntologyClass classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));
+            int count = 0;
+            HashSet<INode> resources = new HashSet<INode>();
+
+            //This iterates over the things that are a class
+            foreach (OntologyResource c in classOfClasses.Instances)
+            {
+                count++;
+                resources.Add(c.Resource);
+            }
+
+            Console.WriteLine("Count = " + count);
+            Console.WriteLine("Distinct Count = " + resources.Count);
+
+            Assert.AreEqual(resources.Count, count);
         }
     }
 }
