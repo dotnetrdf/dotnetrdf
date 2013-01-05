@@ -1,5 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
 using VDS.RDF.Query.Expressions.Primary;
 
@@ -9,7 +12,17 @@ namespace VDS.RDF.Query.Expressions
     public class ReplaceFunctionTests
     {
         [TestMethod]
-        public void SparqlExpressionsReplaceNullInCanParallelise1()
+        public void SparqlParsingReplaceExpression()
+        {
+            SparqlQueryParser parser = new SparqlQueryParser();
+            SparqlQuery q = parser.ParseFromString("SELECT (REPLACE(?term, 'find', 'replace') AS ?test) { }");
+
+            ISparqlExpression expr = q.Variables.First().Projection;
+            Assert.IsInstanceOfType(expr, typeof(VDS.RDF.Query.Expressions.Functions.Sparql.String.ReplaceFunction));
+        }
+
+        [TestMethod]
+        public void SparqlExpressionsXPathReplaceNullInCanParallelise1()
         {
             // when
             var find = new ConstantTerm(new StringNode(null, "find"));
@@ -21,7 +34,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         [TestMethod]
-        public void SparqlExpressionsReplaceNullInCanParallelise2()
+        public void SparqlExpressionsXPathReplaceNullInCanParallelise2()
         {
             // when
             var find = new VariableTerm("find");
