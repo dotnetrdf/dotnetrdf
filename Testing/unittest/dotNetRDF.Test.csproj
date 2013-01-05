@@ -131,6 +131,7 @@
     <Compile Include="Query\DefaultGraphTests2.cs" />
     <Compile Include="Query\DescribeAlgorithms.cs" />
     <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
     <Compile Include="Query\FilterPlacementTests.cs" />
     <Compile Include="Query\FormattingTests.cs" />
     <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
