@@ -9,7 +9,7 @@ namespace VDS.RDF.Query.Expressions
     public class ReplaceFunctionTests
     {
         [TestMethod]
-        public void CanParalleliseShouldNotThrowWhenFindExpressionsIsConstant()
+        public void SparqlExpressionsReplaceNullInCanParallelise1()
         {
             // when
             var find = new ConstantTerm(new StringNode(null, "find"));
@@ -21,7 +21,7 @@ namespace VDS.RDF.Query.Expressions
         }
 
         [TestMethod]
-        public void CanParalleliseShouldNotThrowWhenReplaceExpressionsIsConstant()
+        public void SparqlExpressionsReplaceNullInCanParallelise2()
         {
             // when
             var find = new VariableTerm("find");
