@@ -318,9 +318,10 @@ namespace VDS.RDF.Update.Commands
                                     graphUri = gp.GraphSpecifier.Value;
                                     break;
                                 case Token.VARIABLE:
-                                    if (s.ContainsVariable(gp.GraphSpecifier.Value))
+                                    String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    if (s.ContainsVariable(graphVar))
                                     {
-                                        INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                        INode temp = s[graphVar];
                                         if (temp == null)
                                         {
                                             //If the Variable is not bound then skip
@@ -415,9 +416,10 @@ namespace VDS.RDF.Update.Commands
                                     graphUri = gp.GraphSpecifier.Value;
                                     break;
                                 case Token.VARIABLE:
-                                    if (s.ContainsVariable(gp.GraphSpecifier.Value))
+                                    String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                    if (s.ContainsVariable(graphVar))
                                     {
-                                        INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                        INode temp = s[graphVar];
                                         if (temp == null)
                                         {
                                             //If the Variable is not bound then skip
