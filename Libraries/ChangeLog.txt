@@ -22,6 +22,8 @@ Changed
  - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
  - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables
  - Fix a corner base base in interaction between GRAPH clauses and property paths
+ - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used
+ - Fix a bug with the XPath Replace function
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
  - Updated VDS.Common to 1.1.1
