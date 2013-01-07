@@ -389,5 +389,48 @@ INSERT { GRAPH :a { ?s ?p ?o } } WHERE { GRAPH :b { ?s ?p ?o } }";
             Assert.AreEqual(1, store[new Uri("http://test/a")].Triples.Count, "Expected 1 Triple");
 
         }
+
+        [TestMethod]
+        public void SparqlUpdateInsertWithGraphClause1()
+        {
+            Graph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+
+            String updates = "INSERT { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
+            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(commands);
+
+            Assert.AreEqual(2, dataset.GraphUris.Count());
+            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
+        }
+
+        [TestMethod]
+        public void SparqlUpdateDeleteWithGraphClause1()
+        {
+            Graph g = new Graph();
+            g.Assert(g.CreateUriNode(UriFactory.Create("http://subject")), g.CreateUriNode(UriFactory.Create("http://predicate")), g.CreateUriNode(UriFactory.Create("http://object")));
+            Graph h = new Graph();
+            h.Merge(g);
+            h.BaseUri = UriFactory.Create("http://subject");
+
+            InMemoryDataset dataset = new InMemoryDataset(g);
+            dataset.AddGraph(h);
+            dataset.Flush();
+
+            Assert.AreEqual(2, dataset.GraphUris.Count());
+
+            String updates = "DELETE { GRAPH ?s { ?s ?p ?o } } WHERE { ?s ?p ?o }";
+            SparqlUpdateCommandSet commands = new SparqlUpdateParser().ParseFromString(updates);
+
+            LeviathanUpdateProcessor processor = new LeviathanUpdateProcessor(dataset);
+            processor.ProcessCommandSet(commands);
+
+            Assert.AreEqual(1, dataset.GraphUris.Count());
+            Assert.IsTrue(dataset.HasGraph(UriFactory.Create("http://subject")));
+        }
     }
 }
