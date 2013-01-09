@@ -80,6 +80,11 @@ namespace VDS.RDF.Collections
             this._graphs.Add(graphUri, g);
         }
 
+        public override void Add(KeyValuePair<Uri, IGraph> kvp)
+        {
+            this._graphs.Add(kvp);
+        }
+
         /// <summary>
         /// Gets whether the collection contains the given Graph
         /// </summary>
@@ -90,6 +95,11 @@ namespace VDS.RDF.Collections
             return this._graphs.ContainsKey(graphUri);
         }
 
+        public override bool Contains(KeyValuePair<Uri, IGraph> kvp)
+        {
+            return this._graphs.Contains(kvp);
+        }
+
         /// <summary>
         /// Removes a Graph from the collection
         /// </summary>
@@ -98,6 +108,16 @@ namespace VDS.RDF.Collections
         public override bool Remove(Uri graphUri)
         {
             return this._graphs.Remove(graphUri);
+        }
+
+        public override bool Remove(KeyValuePair<Uri, IGraph> kvp)
+        {
+            return this._graphs.Remove(kvp);
+        }
+
+        public override void Clear()
+        {
+            return this._graphs.Clear();
         }
 
         /// <summary>
@@ -113,7 +133,7 @@ namespace VDS.RDF.Collections
             }
             set
             {
-
+                this._graphs[graphUri] = value;
             }
         }
 
@@ -153,6 +173,17 @@ namespace VDS.RDF.Collections
             get 
             {
                 return this._graphs.Keys;
+            }
+        }
+
+        /// <summary>
+        /// Gets the graphs in the collection
+        /// </summary>
+        public override ICollection<IGraph> Values
+        {
+            get 
+            {
+                return this._graphs.Values;
             }
         }
     }
