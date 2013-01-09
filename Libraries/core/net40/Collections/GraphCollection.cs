@@ -62,7 +62,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="graphUri">Graph Uri to test</param>
         /// <returns></returns>
-        public override bool Contains(Uri graphUri)
+        public override bool ContainsKey(Uri graphUri)
         {
             return this._graphs.ContainsKey(graphUri);
         }
@@ -71,20 +71,20 @@ namespace VDS.RDF.Collections
         /// Adds a Graph to the Collection
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override bool Add(IGraph g)
+        public override void Add(Uri graphUri, IGraph g)
         {
-            if (this._graphs.ContainsKey(g.BaseUri))
+            //TODO: If Graph URI does not match Base URI of graph instance rename graph
+            if (this._graphs.ContainsKey(graphUri))
             {
                 //Merge into the existing Graph
-                this._graphs[g.BaseUri].Merge(g);
-                return true;
+                this._graphs[graphUri].Merge(g);
+                this.RaiseGraphAdded(this._graphs[graphUri]);
             }
             else
             {
                 //Safe to add a new Graph
-                this._graphs.Add(g.BaseUri, g);
+                this._graphs.Add(graphUri, g);
                 this.RaiseGraphAdded(g);
-                return true;
             }
         }
 
@@ -108,9 +108,22 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
+        /// Clears the graphs from the collection
+        /// </summary>
+        public override void Clear()
+        {
+            List<IGraph> gs = this._graphs.Values.ToList();
+            this._graphs.Clear();
+            foreach (IGraph g in gs)
+            {
+                this.RaiseGraphRemoved(g);
+            }
+        } 
+
+        /// <summary>
         /// Gets the number of Graphs in the Collection
         /// </summary>
-        public override long Count
+        public override int Count
         {
             get
             {
@@ -119,13 +132,24 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
-        /// Provides access to the Graph URIs of Graphs in the Collection
+        /// Provides access to the URIs of the Graphs in the Collection
         /// </summary>
-        public override IEnumerable<Uri> GraphUris
+        public override ICollection<Uri> Keys
         {
             get
             {
                 return this._graphs.Keys;
+            }
+        }
+
+        /// <summary>
+        /// Gets the graphs in the collection
+        /// </summary>
+        public override ICollection<IGraph> Values
+        {
+            get 
+            {
+                return this._graphs.Values; 
             }
         }
 
@@ -148,24 +172,19 @@ namespace VDS.RDF.Collections
                     throw new RdfException("The Graph with the given URI does not exist in this Graph Collection");
                 }
             }
+            set
+            {
+                this.Add(graphUri, value);
+            }
         }
 
         /// <summary>
         /// Gets the Enumerator for the Collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<IGraph> GetEnumerator()
+        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
         {
-            return this._graphs.Values.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Gets the Enumerator for this Collection
-        /// </summary>
-        /// <returns></returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
+            return this._graphs.GetEnumerator();
         }
 
         /// <summary>

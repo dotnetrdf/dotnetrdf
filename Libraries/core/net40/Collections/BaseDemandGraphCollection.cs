@@ -55,7 +55,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        public override bool Contains(Uri graphUri)
+        public override bool ContainsKey(Uri graphUri)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace VDS.RDF.Collections
                     //Remember to set the Graph URI to the URI being asked for prior to adding it to the underlying collection
                     //in case the loading process sets it otherwise
                     g.BaseUri = graphUri;
-                    base.Add(g, false);
+                    base.Add(g);
                     return true;
                 }
             }

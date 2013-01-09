@@ -51,7 +51,18 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="kvp">URI and Graph pair</param>
         /// <returns>True if the graph given exists in the collection under the given URI</returns>
-        public abstract bool Contains(KeyValuePair<Uri, IGraph> kvp);
+        public virtual bool Contains(KeyValuePair<Uri, IGraph> kvp)
+        {
+            IGraph g;
+            if (this.TryGetValue(kvp.Key, out g))
+            {
+                return kvp.Value.Equals(g);
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Adds a graph to the collection
@@ -69,7 +80,10 @@ namespace VDS.RDF.Collections
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        public abstract void Add(KeyValuePair<Uri, IGraph> kvp);
+        public virtual void Add(KeyValuePair<Uri, IGraph> kvp)
+        {
+            this.Add(kvp.Key, kvp.Value);
+        }
 
         /// <summary>
         /// Clears the contents of the collection
@@ -94,7 +108,25 @@ namespace VDS.RDF.Collections
         /// <remarks>
         /// The null URI is used to reference the Default Graph
         /// </remarks>
-        public abstract bool Remove(KeyValuePair<Uri, IGraph> kvp);
+        public virtual bool Remove(KeyValuePair<Uri, IGraph> kvp)
+        {
+            IGraph g;
+            if (this.TryGetValue(kvp.Key, out g))
+            {
+                if (kvp.Value.Equals(g))
+                {
+                    return this.Remove(kvp.Key);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Gets the number of Graphs in the Collection

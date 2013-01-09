@@ -72,11 +72,12 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Adds a Graph to the collection
         /// </summary>
+        /// <param name="graphUri">Graph URI</param>
         /// <param name="g">Graph</param>
         /// <returns></returns>
-        public override bool Add(IGraph g)
+        public override void Add(Uri graphUri, IGraph g)
         {
-            return this._graphs.Add(g);
+            this._graphs.Add(graphUri, g);
         }
 
         /// <summary>
@@ -84,9 +85,36 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        public override bool Contains(Uri graphUri)
+        public override bool ContainsKey(Uri graphUri)
         {
-            return this._graphs.Contains(graphUri);
+            return this._graphs.ContainsKey(graphUri);
+        }
+
+        /// <summary>
+        /// Removes a Graph from the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        public override bool Remove(Uri graphUri)
+        {
+            return this._graphs.Remove(graphUri);
+        }
+
+        /// <summary>
+        /// Gets a Graph from the collection
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns></returns>
+        public override IGraph this[Uri graphUri]
+        {
+            get
+            {
+                return this._graphs[graphUri];
+            }
+            set
+            {
+
+            }
         }
 
         /// <summary>
@@ -112,7 +140,7 @@ namespace VDS.RDF.Collections
         /// Gets the enumerator for the collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<IGraph> GetEnumerator()
+        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
         {
             return this._graphs.GetEnumerator();
         }
@@ -120,34 +148,11 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets the URIs of the Graphs in the collection
         /// </summary>
-        public override IEnumerable<Uri> GraphUris
+        public override ICollection<Uri> Keys
         {
             get 
             {
-                return this._graphs.GraphUris;
-            }
-        }
-
-        /// <summary>
-        /// Removes a Graph from the collection
-        /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <returns></returns>
-        protected internal override bool Remove(Uri graphUri)
-        {
-            return this._graphs.Remove(graphUri);
-        }
-
-        /// <summary>
-        /// Gets a Graph from the collection
-        /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <returns></returns>
-        public override IGraph this[Uri graphUri]
-        {
-            get
-            {
-                return this._graphs[graphUri];
+                return this._graphs.Keys;
             }
         }
     }

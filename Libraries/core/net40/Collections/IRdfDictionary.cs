@@ -6,7 +6,7 @@ using System.Text;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// Interface for RDF dictionaries, RDF dictionaries are special cases of a normal dictionary where values with duplicate keys are merged together
+    /// Interface for RDF dictionaries, RDF dictionaries are special cases of a normal dictionary where values with duplicate keys are merged together rather than maintained separately
     /// </summary>
     /// <typeparam name="TKey">Key Type</typeparam>
     /// <typeparam name="TValue">Value Type</typeparam>
