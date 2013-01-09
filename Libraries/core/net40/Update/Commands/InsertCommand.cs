@@ -222,7 +222,7 @@ namespace VDS.RDF.Update.Commands
                     //If there are USING URIs reset the Active Graph afterwards
                     //Also flag the dataset as no longer being OK as this flag is used in the finally 
                     //block to determine whether the Active Graph needs resetting which it may do if the
-                    //evaluation of the 
+                    //evaluation of the query fails for any reason
                     context.Data.ResetActiveGraph();
                     datasetOk = false;
                 }
@@ -298,9 +298,10 @@ namespace VDS.RDF.Update.Commands
                                         graphUri = gp.GraphSpecifier.Value;
                                         break;
                                     case Token.VARIABLE:
-                                        if (s.ContainsVariable(gp.GraphSpecifier.Value))
+                                        String graphVar = gp.GraphSpecifier.Value.Substring(1);
+                                        if (s.ContainsVariable(graphVar))
                                         {
-                                            INode temp = s[gp.GraphSpecifier.Value.Substring(1)];
+                                            INode temp = s[graphVar];
                                             if (temp == null)
                                             {
                                                 //If the Variable is not bound then skip

@@ -33,7 +33,7 @@ using VDS.Common.Trees;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     /// <summary>
     /// Summary description for IndexingTests

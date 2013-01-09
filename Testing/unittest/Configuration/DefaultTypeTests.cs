@@ -30,7 +30,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
 
-namespace VDS.RDF.Test.Configuration
+namespace VDS.RDF.Configuration
 {
     [TestClass]
     public class DefaultTypeTests

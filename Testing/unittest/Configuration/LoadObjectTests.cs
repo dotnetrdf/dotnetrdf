@@ -31,7 +31,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
 using VDS.RDF.Query.PropertyFunctions;
 
-namespace VDS.RDF.Test.Configuration
+namespace VDS.RDF.Configuration
 {
     [TestClass]
     public class LoadObjectTests

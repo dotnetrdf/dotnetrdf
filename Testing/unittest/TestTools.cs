@@ -36,7 +36,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     public class TestTools
     {

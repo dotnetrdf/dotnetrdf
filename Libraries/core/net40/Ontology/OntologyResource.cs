@@ -1113,6 +1113,30 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Casts a Resource into an Ontology Class
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Anything may be cast to a <see cref="OntologyClass"/> regardless of whether it actually represents a class in the ontology
+        /// </remarks>
+        public OntologyClass AsClass()
+        {
+            return new OntologyClass(this._resource, this._graph);
+        }
+
+        /// <summary>
+        /// Casts a Resource into an Ontology Property
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// Anything may be cast to a <see cref="OntologyProperty"/> regardless of whether it actually represents a property in the ontology
+        /// </remarks>
+        public OntologyProperty AsProperty()
+        {
+            return new OntologyProperty(this._resource, this._graph);
+        }
+
+        /// <summary>
         /// Casts a Resource into a Graph
         /// </summary>
         /// <param name="resource">Resource</param>

@@ -31,9 +31,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 using VDS.RDF.Storage;
-using VDS.RDF.Test.Storage;
+using VDS.RDF.Storage;
 
-namespace VDS.RDF.Test.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers
 {
     /// <summary>
     /// Summary description for WriteToStoreHandlerTests

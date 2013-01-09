@@ -128,15 +128,15 @@ namespace VDS.RDF.Query.Patterns
                 }
                 else
                 {
-                    GraphPattern breakPattern = new GraphPattern();
-                    breakPattern.AddAssignment(p);
-                    this._graphPatterns.Add(breakPattern);
+                    //GraphPattern breakPattern = new GraphPattern();
+                    //breakPattern.AddAssignment(p);
+                    //this._graphPatterns.Add(breakPattern);
+                    this._unplacedAssignments.Add(p);
                 }
             }
             else
             {
                 this._unplacedAssignments.Add(p);
-                //this.BreakBGP();
             }
         }
 
@@ -582,7 +582,7 @@ namespace VDS.RDF.Query.Patterns
         {
             get
             {
-                return (this._graphPatterns.Count == 1 && this._triplePatterns.Count == 0 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion);
+                return (this._graphPatterns.Count == 1 && this._triplePatterns.Count == 0 && !this._isFiltered && !this._isGraph && !this._isOptional && !this._isUnion && this._unplacedAssignments.Count == 0);
             }
         }
 
@@ -937,8 +937,11 @@ namespace VDS.RDF.Query.Patterns
                 ISparqlAlgebra bgp = new Bgp(this._triplePatterns);
                 if (this._unplacedAssignments.Count > 0)
                 {
-                    //If we have any unplaced LETs these get Joined onto the BGP
-                    bgp = Join.CreateJoin(bgp, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                    //If we have any unplaced LETs these get Extended onto the BGP
+                    foreach (IAssignmentPattern p in this._unplacedAssignments)
+                    {
+                        bgp = new Extend(bgp, p.AssignExpression, p.VariableName);
+                    }
                 }
                 //Apply Inline Data
                 if (this.HasInlineData) bgp = Join.CreateJoin(bgp, new Bindings(this._data));
@@ -1027,8 +1030,12 @@ namespace VDS.RDF.Query.Patterns
                 }
                 if (this._unplacedAssignments.Count > 0)
                 {
-                    //Unplaced assignments get Joined as a BGP here
-                    complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                    //Unplaced assignments get Extended over the algebra so far here
+                    //complex = Join.CreateJoin(complex, new Bgp(this._unplacedAssignments.OfType<ITriplePattern>()));
+                    foreach (IAssignmentPattern p in this._unplacedAssignments)
+                    {
+                        complex = new Extend(complex, p.AssignExpression, p.VariableName);
+                    }
                 }
                 if (this._isFiltered && (this._filter != null || this._unplacedFilters.Count > 0))
                 {

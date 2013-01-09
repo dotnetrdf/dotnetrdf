@@ -39,7 +39,8 @@ namespace VDS.RDF.Parsing.Events.RdfXml
     /// <remarks>
     /// Currently unimplemented stub class
     /// </remarks>
-    public class StreamingEventGenerator : IRdfXmlJitEventGenerator
+    public class StreamingEventGenerator
+        : IRdfXmlJitEventGenerator
     {
         private XmlReader _reader;
         private bool _requireEndElement = false;
@@ -198,6 +199,12 @@ namespace VDS.RDF.Parsing.Events.RdfXml
                             RootEvent root = new RootEvent(this.GetBaseUri(), this._reader.Value, this.GetPosition());
                             root.DocumentElement = (ElementEvent)this._rootEl;
                             root.Children.Add((ElementEvent)this._rootEl);
+
+                            if (root.BaseUri.Equals(String.Empty))
+                            {
+                                root.BaseUri = this._currentBaseUri;                                
+                            }
+
                             return root;
                         }
                         else

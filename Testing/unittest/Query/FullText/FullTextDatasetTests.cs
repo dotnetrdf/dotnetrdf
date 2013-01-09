@@ -42,7 +42,7 @@ using VDS.RDF.Query.FullText.Search;
 using VDS.RDF.Query.FullText.Search.Lucene;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Query.FullText
+namespace VDS.RDF.Query.FullText
 {
     [TestClass]
     public class FullTextDatasetTests

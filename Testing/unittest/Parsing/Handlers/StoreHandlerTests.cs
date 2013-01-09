@@ -30,7 +30,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Test.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers
 {
     [TestClass]
     public class StoreHandlerTests

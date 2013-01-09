@@ -30,7 +30,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Datasets;
 
-namespace VDS.RDF.Test.Update
+namespace VDS.RDF.Update
 {
     [TestClass]
     public class TransactionalUpdateQuadTests

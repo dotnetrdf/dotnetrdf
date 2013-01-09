@@ -30,7 +30,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Web
+namespace VDS.RDF.Web
 {
     [TestClass]
     public class ConnegTests

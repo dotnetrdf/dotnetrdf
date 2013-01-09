@@ -31,7 +31,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Test.Update
+namespace VDS.RDF.Update
 {
     [TestClass]
     public class UpdateTimeouts

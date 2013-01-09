@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Writing
+namespace VDS.RDF.Writing
 {
     [TestClass]
     public class FormattingTests

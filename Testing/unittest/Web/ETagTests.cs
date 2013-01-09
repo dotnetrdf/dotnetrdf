@@ -32,7 +32,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Web;
 
-namespace VDS.RDF.Test.Web
+namespace VDS.RDF.Web
 {
     [TestClass]
     public class ETagTests

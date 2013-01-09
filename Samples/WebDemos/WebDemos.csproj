@@ -72,12 +72,15 @@
     <Content Include="App_Data\ServerIntro.txt" />
     <Content Include="index.htm" />
     <Content Include="sparql.css" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserHandler.cs" />
     <Compile Include="MonkeyExpressionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestDumper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App_Data\books.rq" />

@@ -30,9 +30,9 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Storage;
-using VDS.RDF.Test.Storage;
+using VDS.RDF.Storage;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class NativeStoreTests

@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     /// <summary>
     /// Based on code from the Jena project - <a href="http://jena.cvs.sourceforge.net/viewvc/jena/jena2/src/test/java/com/hp/hpl/jena/regression/HyperCube.java?revision=1.1&view=markup">View original Java source</a>

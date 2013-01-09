@@ -30,7 +30,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     /// <summary>
     /// Some Tests for Hard Graph Matching based on the types of tests that Jena uses

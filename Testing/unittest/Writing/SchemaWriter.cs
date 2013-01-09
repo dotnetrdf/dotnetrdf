@@ -33,7 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing;
 
-namespace VDS.RDF.Test.Writing
+namespace VDS.RDF.Writing
 {
     [TestClass]
     public class SchemaWriter

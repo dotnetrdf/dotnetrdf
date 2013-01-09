@@ -30,7 +30,7 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Parsing
 {
     [TestClass]
     public class RdfXmlNamespaces

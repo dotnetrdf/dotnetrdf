@@ -143,7 +143,14 @@ namespace VDS.RDF.Query.Patterns
                 //to enabled since a Trim will be done at the end of whatever BGP we are being evaluated in
 
                 //Once we have our results can join then into our input
-                context.OutputMultiset = initialInput.Join(result);
+                if (result is NullMultiset)
+                {
+                    context.OutputMultiset = new NullMultiset();
+                }
+                else
+                {
+                    context.OutputMultiset = initialInput.Join(result);
+                }
 
                 //If we reach here we've successfully evaluated the simple pattern and can return
                 return;

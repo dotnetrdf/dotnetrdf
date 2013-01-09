@@ -153,10 +153,10 @@ namespace VDS.RDF.Query.Optimisation
             }
 
             //Regardless of what we've placed already we now place all remaining assignments
-            foreach (IAssignmentPattern assignment in gp.UnplacedAssignments.ToList())
-            {
-                gp.InsertAssignment(assignment, gp.TriplePatterns.Count);
-            }
+            //foreach (IAssignmentPattern assignment in gp.UnplacedAssignments.ToList())
+            //{
+            //    gp.InsertAssignment(assignment, gp.TriplePatterns.Count);
+            //}
 
 
             if (this.ShouldPlaceFilters)

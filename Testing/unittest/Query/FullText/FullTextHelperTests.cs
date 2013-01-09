@@ -34,7 +34,7 @@ using VDS.RDF.Query.Patterns;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Query.FullText
+namespace VDS.RDF.Query.FullText
 {
     [TestClass]
     public class FullTextHelperTests

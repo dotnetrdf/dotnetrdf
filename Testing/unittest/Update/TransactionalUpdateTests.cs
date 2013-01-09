@@ -32,7 +32,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Update;
 
-namespace VDS.RDF.Test.Update
+namespace VDS.RDF.Update
 {
     /// <summary>
     /// Provides a suite of unit tests for SPARQL Update Transactions run against the <see cref="InMemoryDataset">InMemoryDataset</see>

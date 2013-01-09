@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class NamespaceMapperTest : BaseTest

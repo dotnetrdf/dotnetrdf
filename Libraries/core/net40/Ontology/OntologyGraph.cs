@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Ontology
 {
@@ -43,7 +44,10 @@ namespace VDS.RDF.Ontology
         /// <summary>
         /// Creates a new Ontology Graph
         /// </summary>
-        public OntologyGraph() { }
+        public OntologyGraph() 
+        {
+            this.NamespaceMap.AddNamespace("owl", UriFactory.Create(NamespaceMapper.OWL));
+        }
 
         /// <summary>
         /// Gets/Creates an ontology resource in the Graph
@@ -163,6 +167,118 @@ namespace VDS.RDF.Ontology
         public virtual Individual CreateIndividual(Uri resource, Uri @class)
         {
             return this.CreateIndividual(this.CreateUriNode(resource), this.CreateUriNode(@class));
+        }
+
+        /// <summary>
+        /// Get all OWL classes defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyClass> OwlClasses
+        {
+            get
+            {
+                return this.GetClasses(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlClass)));
+            }
+        }
+
+        /// <summary>
+        /// Get all the RDFS classes defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyClass> RdfClasses
+        {
+            get
+            {
+                return this.GetClasses(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsClass)));
+            }
+        }
+
+        /// <summary>
+        /// Gets all classes defined in the graph using the standard rdfs:Class and owl:Class types
+        /// </summary>
+        public IEnumerable<OntologyClass> AllClasses
+        {
+            get
+            {
+                return this.RdfClasses.Concat(this.OwlClasses);
+            }
+        }
+
+        /// <summary>
+        /// Get all classes defined in the graph where anything of a specific type is considered a class
+        /// </summary>
+        /// <param name="classType">Type which represents classes</param>
+        /// <returns>Enumeration of classes</returns>
+        public IEnumerable<OntologyClass> GetClasses(INode classType)
+        {
+            INode rdfType = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            return (from t in this.GetTriplesWithPredicateObject(rdfType, classType)
+                    select this.CreateOntologyClass(t.Subject));
+        }
+
+        /// <summary>
+        /// Gets all RDF properties defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyProperty> RdfProperties
+        {
+            get
+            {
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.RdfsProperty)));
+            }
+        }
+
+        /// <summary>
+        /// Gets all OWL Object properties defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyProperty> OwlObjectProperties
+        {
+            get
+            {
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlObjectProperty)));
+            }
+        }
+
+        /// <summary>
+        /// Gets all OWL Data properties defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyProperty> OwlDataProperties
+        {
+            get
+            {
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDataProperty)));
+            }
+        }
+
+        /// <summary>
+        /// Gets all OWL Annotation properties defined in the graph
+        /// </summary>
+        public IEnumerable<OntologyProperty> OwlAnnotationProperties
+        {
+            get
+            {
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlAnnotationProperty)));
+            }
+        }
+
+        /// <summary>
+        /// Gets all properties defined in the graph using any of the standard property types (rdf:Property, owl:AnnotationProperty, owl:DataProperty, owl:ObjectProperty)
+        /// </summary>
+        public IEnumerable<OntologyProperty> AllProperties
+        {
+            get
+            {
+                return this.RdfProperties.Concat(this.OwlAnnotationProperties).Concat(this.OwlDataProperties).Concat(this.OwlObjectProperties);
+            }
+        }
+
+        /// <summary>
+        /// Get all properties defined in the graph where anything of a specific type is considered a property
+        /// </summary>
+        /// <param name="propertyType">Type which represents properties</param>
+        /// <returns>Enumeration of properties</returns>
+        public IEnumerable<OntologyProperty> GetProperties(INode propertyType)
+        {
+            INode rdfType = this.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
+            return (from t in this.GetTriplesWithPredicateObject(rdfType, propertyType)
+                    select this.CreateOntologyProperty(t.Subject));
         }
     }
 }
