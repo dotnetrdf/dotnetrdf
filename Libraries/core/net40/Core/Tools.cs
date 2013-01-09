@@ -244,7 +244,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        throw new RdfParseException("Cannot resolve a QName in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined");
+                        throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
                     }
                 }
             }
