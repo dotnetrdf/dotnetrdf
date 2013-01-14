@@ -36,7 +36,7 @@ using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test.Writing.Serialization
+namespace VDS.RDF.Writing.Serialization
 {
     [TestClass]
     public class ResultSerializationTests
@@ -45,7 +45,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Console.WriteLine("Input: " + r.ToString());
 
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(SparqlResult));
             serializer.Serialize(writer, r);
             Console.WriteLine("Serialized Form:");
@@ -75,7 +75,7 @@ namespace VDS.RDF.Test.Writing.Serialization
 
         private void TestXmlSerialization(SparqlResultSet results)
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(SparqlResultSet));
 
             serializer.Serialize(writer, results);
@@ -147,7 +147,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Console.WriteLine("Input: " + r.ToString());
 
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             DataContractSerializer serializer = new DataContractSerializer(typeof(SparqlResult));
             serializer.WriteObject(new XmlTextWriter(writer), r);
             Console.WriteLine("Serialized Form:");
@@ -177,7 +177,7 @@ namespace VDS.RDF.Test.Writing.Serialization
 
         private void TestDataContractSerialization(SparqlResultSet results)
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             DataContractSerializer serializer = new DataContractSerializer(typeof(SparqlResultSet));
 
             serializer.WriteObject(new XmlTextWriter(writer), results);

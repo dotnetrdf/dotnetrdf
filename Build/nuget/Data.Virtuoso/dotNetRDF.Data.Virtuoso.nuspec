@@ -15,5 +15,8 @@
       <dependency id="dotNetRDF" version="0.9.0" />
       <dependency id="OpenLink.Data.Virtuoso" version="6.2.3128.1" />
     </dependencies>
+    <releaseNotes>
+      - Package now include PDBs to aid debugging
+    </releaseNotes>
   </metadata>
 </package>

@@ -1,3 +1,0 @@
-ASK WHERE {
-	?x0 <http://purl.org/dc/elements/1.1/creator> "Mark Birbeck" .
-}

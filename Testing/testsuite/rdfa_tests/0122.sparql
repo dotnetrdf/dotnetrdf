@@ -1,4 +1,0 @@
-# This is a negative test. No triples should be generated from the XHTML+RDFa input document.
-ASK WHERE {
- <http://www.example.org/section1.html> <http://www.w3.org/1999/xhtml/vocab#up> ?obj .
-}

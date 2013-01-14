@@ -41,6 +41,8 @@ namespace VDS.RDF.Ontology
         : OntologyResource
     {
         private const String PropertyDerivedProperty = "derivedProperty";
+        private const String PropertyDirectSubProperty = "directSubProperty";
+        private const String PropertyDirectSuperProperty = "directSuperProperty";
 
         /// <summary>
         /// Creates a new Ontology Property for the given resource in the given Graph
@@ -63,9 +65,11 @@ namespace VDS.RDF.Ontology
             //Find derived properties
             IUriNode subPropertyOf = this._graph.CreateUriNode(UriFactory.Create(OntologyHelper.PropertySubPropertyOf));
             this._resourceProperties.Add(PropertyDerivedProperty, new List<INode>());
+            this._resourceProperties.Add(PropertyDirectSubProperty, new List<INode>());
             foreach (Triple t in this._graph.GetTriplesWithPredicateObject(subPropertyOf, this._resource))
             {
                 if (!this._resourceProperties[PropertyDerivedProperty].Contains(t.Subject)) this._resourceProperties[PropertyDerivedProperty].Add(t.Subject);
+                if (!this._resourceProperties[PropertyDirectSubProperty].Contains(t.Subject)) this._resourceProperties[PropertyDirectSubProperty].Add(t.Subject);
             }
             int c = 0;
             do
@@ -81,8 +85,11 @@ namespace VDS.RDF.Ontology
             } while (c < this._resourceProperties[PropertyDerivedProperty].Count);
 
             //Find additional super properties
+            this._resourceProperties.Add(PropertyDirectSuperProperty, new List<INode>());
             if (this._resourceProperties.ContainsKey(OntologyHelper.PropertySubPropertyOf))
             {
+                this._resourceProperties[PropertyDirectSuperProperty].AddRange(this._resourceProperties[OntologyHelper.PropertySubPropertyOf]);
+
                 do
                 {
                     c = this._resourceProperties[OntologyHelper.PropertySubPropertyOf].Count;
@@ -699,6 +706,30 @@ namespace VDS.RDF.Ontology
         }
 
         /// <summary>
+        /// Gets the direct sub-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyProperty> DirectSubProperties
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSubProperty).Select(p => new OntologyProperty(p, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the indirect sub-classes of this class
+        /// </summary>
+        public IEnumerable<OntologyProperty> IndirectSubProperties
+        {
+            get
+            {
+                return (from c in this.GetResourceProperty(PropertyDerivedProperty)
+                        where !this.GetResourceProperty(PropertyDirectSubProperty).Contains(c)
+                        select new OntologyProperty(c, this._graph));
+            }
+        }
+
+        /// <summary>
         /// Gets the super-properties of this property (both direct and indirect)
         /// </summary>
         public IEnumerable<OntologyProperty> SuperProperties
@@ -706,6 +737,66 @@ namespace VDS.RDF.Ontology
             get
             {
                 return this.GetResourceProperty(OntologyHelper.PropertySubPropertyOf).Select(c => new OntologyProperty(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the direct super-properties of this property
+        /// </summary>
+        public IEnumerable<OntologyProperty> DirectSuperProperties
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSuperProperty).Select(c => new OntologyProperty(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets the indirect super-properties of this property
+        /// </summary>
+        public IEnumerable<OntologyProperty> IndirectSuperProperty
+        {
+            get
+            {
+                return (from c in this.GetResourceProperty(OntologyHelper.PropertySubPropertyOf)
+                        where !this.GetResourceProperty(PropertyDirectSuperProperty).Contains(c)
+                        select new OntologyProperty(c, this._graph));
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this is a top property i.e. has no super properties defined
+        /// </summary>
+        public bool IsTopProperty
+        {
+            get
+            {
+                return !this.SuperProperties.Any();
+            }
+        }
+
+        /// <summary>
+        /// Gets whether this is a btoom property i.e. has no sub properties defined
+        /// </summary>
+        public bool IsBottomProperty
+        {
+            get
+            {
+                return !this.SubProperties.Any();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Sibling properties of this property, if this property is the root of the ontology nothing is returned even if there are multiple root properties
+        /// </summary>
+        public IEnumerable<OntologyProperty> Siblings
+        {
+            get
+            {
+                return this.GetResourceProperty(PropertyDirectSuperProperty)
+                       .Select(p => new OntologyProperty(p, this._graph))
+                       .SelectMany(p => p.DirectSubProperties)
+                       .Where(p => !p.Resource.Equals(this._resource)).Distinct();
             }
         }
 

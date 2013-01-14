@@ -37,7 +37,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Test.Writing.Serialization
+namespace VDS.RDF.Writing.Serialization
 {
     [TestClass]
     public class NodeSerializationTests
@@ -48,7 +48,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Console.WriteLine("Input: " + n.ToString());
 
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(t);
             serializer.Serialize(writer, n);
             Console.WriteLine("Serialized Form:");
@@ -116,7 +116,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         {
             Console.WriteLine("Input: " + n.ToString());
 
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             DataContractSerializer serializer = new DataContractSerializer(t);
             serializer.WriteObject(new XmlTextWriter(writer), n);
             Console.WriteLine("Serialized Form:");

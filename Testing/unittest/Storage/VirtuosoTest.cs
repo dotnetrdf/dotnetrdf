@@ -36,7 +36,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Storage;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Storage
+namespace VDS.RDF.Storage
 {
     [TestClass]
     public class VirtuosoTest : BaseTest

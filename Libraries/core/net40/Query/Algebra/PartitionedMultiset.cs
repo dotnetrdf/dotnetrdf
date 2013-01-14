@@ -79,6 +79,29 @@ namespace VDS.RDF.Query.Algebra
         }
 
         /// <summary>
+        /// Does a Union of this Multiset and another Multiset
+        /// </summary>
+        /// <param name="other">Other Multiset</param>
+        /// <returns></returns>
+        public override BaseMultiset Union(BaseMultiset other)
+        {
+            if (other is IdentityMultiset) return this;
+            if (other is NullMultiset) return this;
+            if (other.IsEmpty) return this;
+
+            Multiset m = new Multiset();
+            foreach (ISet s in this.Sets)
+            {
+                m.Add(s.Copy());
+            }
+            foreach (ISet s in other.Sets)
+            {
+                m.Add(s.Copy());
+            }
+            return m;
+        }
+
+        /// <summary>
         /// Determines whether a given Value is present for a given Variable in any Set in this Multiset
         /// </summary>
         /// <param name="var">Variable</param>

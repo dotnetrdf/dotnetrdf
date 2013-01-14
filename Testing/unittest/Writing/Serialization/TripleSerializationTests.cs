@@ -36,7 +36,7 @@ using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-namespace VDS.RDF.Test.Writing.Serialization
+namespace VDS.RDF.Writing.Serialization
 {
     [TestClass]
     public class TripleSerializationTests
@@ -44,7 +44,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         [TestMethod]
         public void SerializationXmlTriple()
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(Triple));
 
             Graph g = new Graph();

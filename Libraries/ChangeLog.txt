@@ -4,15 +4,32 @@
 0.9.0 RC4
 ---------
 
+Added
+- Ontology API
+ - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass
+ - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty
+ - Added Siblings property on OntologyClass and OntologyProperty
+ - Added IsTopClass and IsBottomClass property on OntologyClass
+ - Added IsTopProperty and IsBottomProperty on OntologyProperty
+ - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph
+ - Added AsClass() and AsProperty() methods on OntologyResource
+
+
 Changed
 - Bug Fixes
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
  - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
  - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
+ - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables
+ - Fix a corner base base in interaction between GRAPH clauses and property paths
+ - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used
+ - Fix a bug with the XPath Replace function
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
+ - Updated VDS.Common to 1.1.1
 - Build
  - Improved our test architecture significantly
+ - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF
 
 0.8.2 RC3
 ---------

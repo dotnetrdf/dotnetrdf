@@ -198,9 +198,25 @@ namespace VDS.RDF.Query.Algebra
                         result = context.Evaluate(this._pattern);
 
                         //Merge the Results into our overall Results
-                        if (result is NullMultiset || result is IdentityMultiset)
+                        if (result is NullMultiset)
                         {
-                            //Don't do anything
+                            //Don't do anything, adds nothing to the results
+                        }
+                        else if (result is IdentityMultiset)
+                        {
+                            //Adds a single row to the results
+                            if (this._graphSpecifier.TokenType == Token.VARIABLE)
+                            {
+                                //Include graph variable if not yet bound
+                                INode currGraph = (currGraphUri == null) ? null : new UriNode(null, currGraphUri);
+                                Set s = new Set();
+                                s.Add(this._graphSpecifier.Value.Substring(1), currGraph);
+                                finalResult.Add(s);
+                            }
+                            else
+                            {
+                                finalResult.Add(new Set());
+                            }
                         }
                         else
                         {
@@ -225,7 +241,7 @@ namespace VDS.RDF.Query.Algebra
                                         result.Remove(id);
                                     }
                                 }
-                            } 
+                            }
                             //Union solutions into the Results
                             finalResult.Union(result);
                         }

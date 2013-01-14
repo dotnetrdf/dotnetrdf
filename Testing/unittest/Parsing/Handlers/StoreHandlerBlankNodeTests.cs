@@ -31,7 +31,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test.Parsing.Handlers
+namespace VDS.RDF.Parsing.Handlers
 {
     [TestClass]
     public class StoreHandlerBlankNodeTests

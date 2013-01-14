@@ -33,7 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 
-namespace VDS.RDF.Test.Configuration
+namespace VDS.RDF.Configuration
 {
     [TestClass]
     public class ConfigurationApiTests

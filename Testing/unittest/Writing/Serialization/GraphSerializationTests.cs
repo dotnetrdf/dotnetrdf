@@ -38,7 +38,7 @@ using Newtonsoft.Json.Serialization;
 using VDS.RDF.Parsing;
 using VDS.RDF.Parsing.Handlers;
 
-namespace VDS.RDF.Test.Writing.Serialization
+namespace VDS.RDF.Writing.Serialization
 {
     [TestClass]
     public class GraphSerializationTests
@@ -46,7 +46,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         private void TestGraphSerializationXml<T>(T g)
             where T : class, IGraph
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             XmlSerializer serializer = new XmlSerializer(typeof(T));
 
             serializer.Serialize(writer, g);
@@ -119,7 +119,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         private void TestGraphSerializationDataContract<T>(T g)
             where T : class, IGraph
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             DataContractSerializer serializer = new DataContractSerializer(typeof(T));
 
             serializer.WriteObject(new XmlTextWriter(writer), g);
@@ -144,7 +144,7 @@ namespace VDS.RDF.Test.Writing.Serialization
         private void TestGraphSerializationJson<T>(T g)
             where T : class, IGraph
         {
-            StringWriter writer = new StringWriter();
+            System.IO.StringWriter writer = new System.IO.StringWriter();
             JsonSerializer serializer = new JsonSerializer();
             serializer.TypeNameHandling = TypeNameHandling.All;
 

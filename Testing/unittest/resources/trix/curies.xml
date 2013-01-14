@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
-<?xml-stylesheet type="text/xml" href="curies.xslt" ?>
+<?xml-stylesheet type="text/xml" href="trix/curies.xslt" ?>
 
 <TriX xmlns="http://www.w3.org/2004/03/trix/trix-1/">
   <graph>

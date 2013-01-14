@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class ListTests

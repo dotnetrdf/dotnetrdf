@@ -35,7 +35,7 @@ using VDS.RDF.Writing;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class BasicTests1 : BaseTest

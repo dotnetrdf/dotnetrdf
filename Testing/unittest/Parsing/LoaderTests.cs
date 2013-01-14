@@ -34,7 +34,7 @@ using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Parsing
+namespace VDS.RDF.Parsing
 {
     [TestClass]
     public class LoaderTests
@@ -227,7 +227,7 @@ namespace VDS.RDF.Test.Parsing
         public void ParsingEmbeddedResourceInExternalAssembly()
         {
             Graph g = new Graph();
-            EmbeddedResourceLoader.Load(g, "VDS.RDF.Test.embedded.ttl, dotNetRDF.Test");
+            EmbeddedResourceLoader.Load(g, "VDS.RDF.embedded.ttl, dotNetRDF.Test");
 
             TestTools.ShowGraph(g);
 

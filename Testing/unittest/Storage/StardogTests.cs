@@ -36,9 +36,9 @@ using VDS.RDF.Storage.Management;
 using VDS.RDF.Storage.Management.Provisioning;
 using VDS.RDF.Update;
 using VDS.RDF.Writing.Formatting;
-using VDS.RDF.Test.Update;
+using VDS.RDF.Update;
 
-namespace VDS.RDF.Test.Storage
+namespace VDS.RDF.Storage
 {
     [TestClass]
     public class StardogTests

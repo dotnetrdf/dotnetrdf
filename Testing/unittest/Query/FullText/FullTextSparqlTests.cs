@@ -41,7 +41,7 @@ using VDS.RDF.Query.Optimisation;
 using VDS.RDF.Query.PropertyFunctions;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Query.FullText
+namespace VDS.RDF.Query.FullText
 {
     [TestClass]
     public class FullTextSparqlTests

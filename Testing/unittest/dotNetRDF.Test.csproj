@@ -1,0 +1,2884 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BD80F826-56A3-4A88-B466-DDFA0691FFB8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+      <HintPath>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.0.10827.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VDS.Common, Version=1.1.1.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\VDS.Common.1.1.1\lib\net40-client\VDS.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Libraries\Data\Virtuoso\net40\DataExtensions.cs">
+      <Link>DataExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Libraries\Query\FullText\net40\FullTextExtensions.cs">
+      <Link>Query\FullText\FullTextExtensions.cs</Link>
+    </Compile>
+    <Compile Include="BaseTest.cs" />
+    <Compile Include="Builder\Expressions\ArithmeticOperatorsTests.cs" />
+    <Compile Include="Builder\Expressions\ExpressionBuilderTests.cs" />
+    <Compile Include="Builder\Expressions\FunctionalFormsBuildingTests.cs" />
+    <Compile Include="Builder\Expressions\LiteralExpressionTests.cs" />
+    <Compile Include="Builder\Expressions\LogicalAndComparisonOperatorTests.cs" />
+    <Compile Include="Builder\Expressions\NumericExpressionTests.cs" />
+    <Compile Include="Builder\Expressions\RdfTermExpressionTests.cs" />
+    <Compile Include="Builder\Expressions\ExpressionBuilderStringFunctionTests.cs" />
+    <Compile Include="Builder\Expressions\SparqlCastBuilderTests.cs" />
+    <Compile Include="Builder\Expressions\SparqlExpressionTestsBase.cs" />
+    <Compile Include="Builder\Expressions\TypedLiteralExpressionTests.cs" />
+    <Compile Include="Builder\Expressions\VariableExpressionTests.cs" />
+    <Compile Include="Builder\GraphPatternBuilderTests.cs" />
+    <Compile Include="Configuration\AutoConfigTests.cs" />
+    <Compile Include="Configuration\ConfigLookupTests.cs" />
+    <Compile Include="Configuration\ConfigSerializationTests.cs" />
+    <Compile Include="Configuration\DefaultTypeTests.cs" />
+    <Compile Include="Configuration\LoadObjectTests.cs" />
+    <Compile Include="Core\BasicTests1.cs" />
+    <Compile Include="Core\BasicTests2.cs" />
+    <Compile Include="Core\GraphCollectionTests.cs" />
+    <Compile Include="Core\LiteralNodeTests.cs" />
+    <Compile Include="Core\MimeTypesTests.cs" />
+    <Compile Include="Core\TripleCollectionTests.cs" />
+    <Compile Include="Core\UriTests.cs" />
+    <Compile Include="Core\ValuedNodeTests.cs" />
+    <Compile Include="Parsing\Suites\BaseParserSuite.cs" />
+    <Compile Include="Parsing\CachingTests.cs" />
+    <Compile Include="Parsing\GZipTests.cs" />
+    <Compile Include="Parsing\LangSpecTests.cs" />
+    <Compile Include="Parsing\Suites\N3.cs" />
+    <Compile Include="Parsing\Suites\NTriples.cs" />
+    <Compile Include="Parsing\Suites\RdfA.cs" />
+    <Compile Include="Parsing\Suites\RdfXml.cs" />
+    <Compile Include="Parsing\RelativeUriTests.cs" />
+    <Compile Include="Parsing\SparqlJsonTests.cs" />
+    <Compile Include="Parsing\Suites\SparqlResultsXml.cs" />
+    <Compile Include="Parsing\Suites\TriG.cs" />
+    <Compile Include="Parsing\TriGTests.cs" />
+    <Compile Include="Parsing\Suites\TriX.cs" />
+    <Compile Include="Parsing\Suites\Turtle11.cs" />
+    <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
+    <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
+    <Compile Include="Query\AlgebraReverseTranslation.cs" />
+    <Compile Include="Query\BindingsTests.cs" />
+    <Compile Include="Query\BlankNodeVariableTests.cs" />
+    <Compile Include="Query\ConstructWithOptionalTests.cs" />
+    <Compile Include="Query\DatasetTests.cs" />
+    <Compile Include="Query\DataTableTests.cs" />
+    <Compile Include="Query\DefaultGraphTests.cs" />
+    <Compile Include="Query\DefaultGraphTests2.cs" />
+    <Compile Include="Query\DescribeAlgorithms.cs" />
+    <Compile Include="Query\ExplainProcessorTests.cs" />
+    <Compile Include="Query\Expressions\ReplaceFunctionTests.cs" />
+    <Compile Include="Query\FilterPlacementTests.cs" />
+    <Compile Include="Query\FormattingTests.cs" />
+    <Compile Include="Query\FullText\FullTextGraphScopingTests.cs" />
+    <Compile Include="Parsing\LoaderTests.cs" />
+    <Compile Include="Core\NamespaceMapperTest.cs" />
+    <Compile Include="Query\GroupByTests.cs" />
+    <Compile Include="Query\LeviathanTests.cs" />
+    <Compile Include="Builder\QueryBuilderTests.cs" />
+    <Compile Include="Builder\QueryBuilderWikiTests.cs" />
+    <Compile Include="Query\OptimiserTests.cs" />
+    <Compile Include="Sparql\SetTests.cs" />
+    <Compile Include="Sparql\SetTests.cs" />
+    <Compile Include="Builder\TriplePatternBuilderTests.cs" />
+    <Compile Include="Query\ParsingTests.cs" />
+    <Compile Include="Query\PropertyPathEvaluationTests.cs" />
+    <Compile Include="Query\PropertyPathTransformationTests.cs" />
+    <Compile Include="Query\QNameEscapingTests.cs" />
+    <Compile Include="Query\QueryFormattingTests.cs" />
+    <Compile Include="Query\QueryThreadSafety.cs" />
+    <Compile Include="Query\QueryTimeouts.cs" />
+    <Compile Include="Query\RemoteEndpoints.cs" />
+    <Compile Include="Query\ResultAccessTests.cs" />
+    <Compile Include="Query\ResultSetWriterTests.cs" />
+    <Compile Include="Query\ScalarArgumentsTests.cs" />
+    <Compile Include="Query\SequenceTests.cs" />
+    <Compile Include="Query\ServiceTests.cs" />
+    <Compile Include="Query\SetTests.cs" />
+    <Compile Include="Query\SparqlNewFunctions.cs" />
+    <Compile Include="Query\SparqlOrderByTests.cs" />
+    <Compile Include="Query\SparqlParsingComplex.cs" />
+    <Compile Include="Query\SparqlProcessorsWithHandlersTests.cs" />
+    <Compile Include="Query\SparqlQueryTests.cs" />
+    <Compile Include="Query\SparqlTests.cs" />
+    <Compile Include="Query\SparqlTests2.cs" />
+    <Compile Include="Query\StrictOptimiserTest.cs" />
+    <Compile Include="Query\VariableSubstitutionTests.cs" />
+    <Compile Include="Query\ViewTests.cs" />
+    <Compile Include="Query\WeightedOptimiserTests.cs" />
+    <Compile Include="Storage\NativeStoreTests.cs" />
+    <Compile Include="Ontology\OntologyTests.cs" />
+    <Compile Include="Parsing\ParserTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storage\Async\AllegroGraphAsync.cs" />
+    <Compile Include="Storage\Async\DydraAsync.cs" />
+    <Compile Include="Storage\Async\FourStoreAsync.cs" />
+    <Compile Include="Storage\Async\FusekiAsync.cs" />
+    <Compile Include="Storage\Async\SesameAsync.cs" />
+    <Compile Include="Storage\Async\SparqlGraphStoreAsync.cs" />
+    <Compile Include="Storage\Async\StardogAsync.cs" />
+    <Compile Include="Storage\Async\VirtuosoAsync.cs" />
+    <Compile Include="TestConfigManager.cs" />
+    <Compile Include="TestTools.cs" />
+    <Compile Include="Update\UpdateTests2.cs" />
+    <Compile Include="Storage\VirtuosoTest.cs" />
+    <Compile Include="Update\UpdateTests1.cs" />
+    <Compile Include="Writing\GraphVizTests.cs" />
+    <Compile Include="Writing\WriterTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\core\net40\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Data\Virtuoso\net40\dotNetRDF.Data.Virtuoso.csproj">
+      <Project>{9088435D-24F9-4D53-BE71-9A9BFBAA34EE}</Project>
+      <Name>dotNetRDF.Data.Virtuoso</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\Query\FullText\net40\dotNetRDF.Query.FullText.csproj">
+      <Project>{09097771-84FD-4DC8-A259-1CB0591714EA}</Project>
+      <Name>dotNetRDF.Query.FullText</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\bad_rdfa.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\dbpedia_malformed.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\full-minuend.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\anon-prop.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-formula-predicate.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-keywords3.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-literal-predicate.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-single-quote.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-this-quantifiers.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-this-rules.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-thisadoc.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-zero-objects.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\bad-zero-predicates.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\contexts.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\djb1a.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\dot-dash.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\equals1.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\equals2.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\hiragana.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\keywords1.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\keywords2.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\lists.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\lstring.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\manifest.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\no-last-nl.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\numbers.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\path1.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\path2.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\qvars1.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\qvars2.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\strquot.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\too-nested.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\n3\trailing-semicolon.n3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ntriples\test.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\webscience.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\webscience.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rvesse.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr1.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\MergePart1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\MergePart2.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\CompareToTests.cs" />
+    <Compile Include="Core\GraphDiffTests.cs" />
+    <Compile Include="Core\HardGraphMatching.cs" />
+    <Compile Include="Core\Hypercube.cs" />
+    <Compile Include="Core\IndexingTests.cs" />
+    <Compile Include="Core\ListTests.cs" />
+    <Compile Include="Parsing\BaseUriAssignmentTests.cs" />
+    <Compile Include="Parsing\BlockingTextReaderTests.cs" />
+    <Compile Include="Parsing\EmptyFileParsing.cs" />
+    <Compile Include="Parsing\Handlers\ChainedHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\UriLoaderHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\CountHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\FileLoaderHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\GraphHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\MultiHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\PagingHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\ResultSetHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandlerBlankNodeTests.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\WriteThroughHandlerTests.cs" />
+    <Compile Include="Parsing\Handlers\WriteToStoreHandlerTests.cs" />
+    <Compile Include="Parsing\ObjectParserTests.cs" />
+    <Compile Include="Parsing\RdfXmlNamespaces.cs" />
+    <Compile Include="Parsing\SpeedTesting.cs" />
+    <Compile Include="Parsing\StringReaderEncodingTests.cs" />
+    <Compile Include="Query\FullText\FullTextConfigTests.cs" />
+    <Compile Include="Query\FullText\FullTextDatasetTests.cs" />
+    <Compile Include="Query\FullText\FullTextHelperTests.cs" />
+    <Compile Include="Query\FullText\FullTextIncrementalIndexAndSearch.cs" />
+    <Compile Include="Query\FullText\FullTextOptimiserTests.cs" />
+    <Compile Include="Query\FullText\FullTextSparqlTests.cs" />
+    <Compile Include="Query\FullText\FullTextSparqlTests2.cs" />
+    <Compile Include="Query\FullText\IndexCreationTests.cs" />
+    <Compile Include="Query\FullText\IndexSearchTests.cs" />
+    <Compile Include="Query\FullText\LuceneTestHarness.cs" />
+    <Content Include="resources\trix\curies.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\curies.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\datatypes.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\datatypes.xslt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\examples.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\trix\multiple-stylesheets.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-00.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-01.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-02.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-03.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-04.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-05.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-06.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-07.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-08.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-09.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-10.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-11.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-12.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-13.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\bad-14.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\base1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\base2.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\default.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\default1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\escapedNamespace1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\escapedPrefix1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\manifest-bad.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\manifest.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\prefix1.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\rdf-schema.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\rdfq-results.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\rdfs-namespace.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-00.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-01.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-02.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-03.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-04.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-05.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-06.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-07.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-08.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-09.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-10.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-11.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-12.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-13.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-14.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-15.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-16.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-17.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-18.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-19.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-20.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-21.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-22.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-23.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-24.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-25.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-26.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-27.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-28-out.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-28.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-29.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\test-30.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle11\type.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-00.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-01.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-02.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-03.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-04.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-05.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-06.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-07.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-08.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-09.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-10.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-11.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-12.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-13.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-14.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\bad-15.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\manifest-bad.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\manifest.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdf-schema.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdfq-results.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdfs-namespace.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-00.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-01.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-02.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-03.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-04.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-05.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-06.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-07.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-08.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-09.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-10.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-11.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-12.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-13.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-14.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-15.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-16.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-17.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-18.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-19.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-20.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-21.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-22.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-23.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-24.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-25.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-26.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-27.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-28-out.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-28.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-29.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-30.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\urlencodes-in-rdfxml.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\full-minuend.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\full-minuend.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\full-minuend-rhs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\full-minuend-lhs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="..\..\Samples\bsbm\App_Data\dataset_50.ttl.gz">
+      <Link>resources\dataset_50.ttl.gz</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="resources\rdfxml-relative-uri.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-bad-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-good-property.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
+    <Content Include="resources\rdfa\0001.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0002.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0002.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0003.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0003.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0004.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0004.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0005.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0005.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0006.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0006.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0007.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0007.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0008.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0008.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0009.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0009.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0010.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0010.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0011.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0011.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0012.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0012.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0013.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0013.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0014.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0014.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0015.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0015.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0016.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0016.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0017.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0017.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0018.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0018.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0019.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0019.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0020.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0020.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0021.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0021.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0022.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0022.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0023.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0023.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0024.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0024.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0025.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0025.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0026.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0026.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0027.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0027.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0028.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0028.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0029.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0029.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0030.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0030.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0031.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0031.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0032.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0032.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0033.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0033.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0034.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0034.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0035.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0035.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0036.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0036.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0037.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0037.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0038.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0038.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0039.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0039.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0040.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0040.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0041.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0041.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0042.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0042.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0043.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0043.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0044.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0044.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0045.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0045.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0046.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0046.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0047.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0047.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0048.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0048.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0049.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0049.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0050.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0050.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0051.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0051.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0052.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0052.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0053.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0053.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0054.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0054.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0055.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0055.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0056.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0056.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0057.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0057.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0058.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0058.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0059.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0059.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0060.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0060.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0061.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0061.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0062.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0062.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0063.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0063.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0064.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0064.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0065.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0065.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0066.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0066.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0067.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0067.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0068.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0068.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0069.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0069.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0070.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0070.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0071.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0071.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0072.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0072.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0073.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0073.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0074.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0074.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0075.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0075.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0076.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0076.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0077.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0077.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0078.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0078.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0079.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0079.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0080.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0080.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0081.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0081.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0082.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0082.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0083.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0083.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0084.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0084.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0085.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0085.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0086.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0086.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0087.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0087.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0088.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0088.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0089.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0089.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0090.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0090.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0091.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0091.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0092.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0092.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0093.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0093.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0094.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0094.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0095.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0095.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0096.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0096.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0097.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0097.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0098.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0098.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0099.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0099.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0100.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0100.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0101.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0101.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0102.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0102.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0103.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0103.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0104.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0104.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0105.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0105.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0106.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0106.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0107.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0107.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0108.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0108.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0109.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0109.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0110.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0110.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0111.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0111.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0112.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0112.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0113.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0113.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0114.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0114.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0115.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0115.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0116.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0116.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0117.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0117.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0118.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0118.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0119.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0119.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0120.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0120.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0121.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0121.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0122.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0122.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0123.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0123.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0124.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0124.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0125.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0125.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0126.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\0126.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\1001.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\1001.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\rdfa-xhtml1-test-manifest.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfa\TC_TEMPLATE.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad001.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad002.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad003.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad004.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad005.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\bad006.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\test001.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\srx\test002.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graph.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graph.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graphs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_default_graphs.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_full.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_full.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_named_graphs.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sparql\protocol\update_dataset_named_graphs.ru">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\swrc.owl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="resources\trig\bad1.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\bad2.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example1.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example2.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example3.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example4.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example5.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\trig\example6.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\base1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\base2.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\default.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\escapedNamespace1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\escapedPrefix1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\prefix1.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\rdf-schema.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\rdfq-results.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\rdfs-namespace.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-00.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-01.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-02.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-03.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-04.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-05.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-06.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-07.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-08.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-09.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-10.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-11.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-12.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-13.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-14.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-15.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-16.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-17.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-18.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-19.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-20.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-21.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-22.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-23.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-24.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-25.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-26.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-27.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-28.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-29.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\test-30.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\turtle11\type.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="resources\UnitTestConfig.properties">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdf-schema.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdfq-results.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\rdfs-namespace.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-00.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-01.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-02.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-03.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-04.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-05.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-06.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-07.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-08.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-09.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-10.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-11.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-12.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-13.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-14.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-15.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-16.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-17.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-18.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-19.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-20.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-21.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-22.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-23.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-24.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-25.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-26.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-27.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-28.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-29.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\turtle\test-30.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Compile Include="Storage\Async\BaseAsyncTests.cs" />
+    <Compile Include="Storage\Async\InMemoryAsync.cs" />
+    <Compile Include="Storage\AllegroGraphTests.cs" />
+    <Compile Include="Configuration\ConfigurationApiTests.cs" />
+    <Compile Include="Storage\DydraTests.cs" />
+    <Compile Include="Storage\FourStoreTest.cs" />
+    <Compile Include="Storage\FusekiTest.cs" />
+    <Compile Include="Storage\PersistentTripleStoreTests.cs" />
+    <Compile Include="Storage\SesameTests.cs" />
+    <Compile Include="Core\EventTests.cs" />
+    <Compile Include="Storage\StardogTests.cs" />
+    <Compile Include="Update\GenericUpdateProcessorTests.cs" />
+    <Compile Include="Update\TransactionalUpdateQuadTests.cs" />
+    <Compile Include="Update\TransactionalUpdateTests.cs" />
+    <Compile Include="Update\UpdateTimeouts.cs" />
+    <Compile Include="Web\ConnegTests.cs" />
+    <Compile Include="Writing\CollectionCompressionTests.cs" />
+    <Compile Include="Writing\CompressionTests.cs" />
+    <Compile Include="Writing\FormattingTests.cs" />
+    <Compile Include="Query\PelletTests.cs" />
+    <Compile Include="Parsing\RdfATests.cs" />
+    <Compile Include="Parsing\RdfXmlTests.cs" />
+    <Compile Include="Storage\SparqlGraphStoreProtocolTest.cs" />
+    <Compile Include="Parsing\VariableNodeTests.cs" />
+    <Compile Include="Web\ETagTests.cs" />
+    <Compile Include="Web\ServiceDescription.cs" />
+    <Compile Include="Writing\OwlOneOf.cs" />
+    <Compile Include="Writing\RdfXmlWriterTests.cs" />
+    <Compile Include="Writing\SchemaWriter.cs" />
+    <Compile Include="Writing\Serialization\GraphSerializationTests.cs" />
+    <Compile Include="Writing\Serialization\NodeSerializationTests.cs" />
+    <Compile Include="Writing\Serialization\ResultSerializationTests.cs" />
+    <Compile Include="Writing\Serialization\TripleSerializationTests.cs" />
+    <Compile Include="Writing\SparqlTsvTests.cs" />
+    <Compile Include="Writing\SparqlXmlTests.cs" />
+    <Compile Include="Writing\StringEscapingTest.cs" />
+    <Compile Include="Writing\StoreWriterTests.cs" />
+    <Content Include="resources\bad_profile.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\charescaping.owl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr3b.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr3.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr2b.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr2.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\gr1b.xhtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\example.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\InferenceTest.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\json.owl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\list-3.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\list-3.srx.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\no-distinct-opt.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\no-distinct-opt.srx.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\property-path-duplicates.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\result-opt-3.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\result-opt-3.ttl.out">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\Turtle.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\bnodes.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\bnodes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\noise.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="embedded.ttl" />
+    <Content Include="resources\chado-in-owl.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\complex-collections.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\cyrillic.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\describe-algos.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\anton.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\anton.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\childgraphpattern.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\childgraphpattern2.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\multiple-options.trig">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ttl-with-bom.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\ttl-without-bom.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\multiple-optionals-alternate.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\bad_srx.srx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\dbpedia-query-time.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\sequence2.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="resources\empty-string-rdfxml.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="resources\sequence.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\no-gap-prefixes.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\now01.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\rdfxml-namespaces.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\multiple-optionals.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="resources\UnitTestConfig.template" />
+    <Content Include="resources\writetostore.nq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\rdfxml\amp-in-url\test001.nt" />
+    <None Include="resources\rdfxml\amp-in-url\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\datatypes-intensional\test001.nt" />
+    <None Include="resources\rdfxml\datatypes-intensional\test002.nt" />
+    <None Include="resources\rdfxml\datatypes\test001.nt" />
+    <None Include="resources\rdfxml\datatypes\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\datatypes\test002.nt" />
+    <None Include="resources\rdfxml\datatypes\test002.rdf" />
+    <None Include="resources\rdfxml\datatypes\test002b.nt" />
+    <None Include="resources\rdfxml\datatypes\test003a.nt" />
+    <None Include="resources\rdfxml\datatypes\test003b.nt" />
+    <None Include="resources\rdfxml\datatypes\test004a.nt" />
+    <None Include="resources\rdfxml\datatypes\test004b.nt" />
+    <None Include="resources\rdfxml\datatypes\test004c.nt" />
+    <None Include="resources\rdfxml\datatypes\test005a.nt" />
+    <None Include="resources\rdfxml\datatypes\test005b.nt" />
+    <None Include="resources\rdfxml\datatypes\test006.nt" />
+    <None Include="resources\rdfxml\datatypes\test007a.nt" />
+    <None Include="resources\rdfxml\datatypes\test007b.nt" />
+    <None Include="resources\rdfxml\datatypes\test008a.nt" />
+    <None Include="resources\rdfxml\datatypes\test008b.nt" />
+    <None Include="resources\rdfxml\datatypes\test009a.nt" />
+    <None Include="resources\rdfxml\datatypes\test009b.nt" />
+    <None Include="resources\rdfxml\datatypes\test010.nt" />
+    <None Include="resources\rdfxml\datatypes\test011a.nt" />
+    <None Include="resources\rdfxml\datatypes\test011b.nt" />
+    <None Include="resources\rdfxml\horst-01\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\horst-01\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\Manifest.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\pfps-10\test001a.nt" />
+    <None Include="resources\rdfxml\pfps-10\test001b.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-literals\error001.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-literals\error002.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-literals\test001.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-literals\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\test001.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-uris\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-charmod-uris\test002.nt" />
+    <None Include="resources\rdfxml\rdf-charmod-uris\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test001.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test002.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test003.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test004.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test005.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test005.rdf">
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test006.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test007.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test008.nt" />
+    <None Include="resources\rdfxml\rdf-containers-syntax-vs-schema\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-element-not-mandatory\test001.nt" />
+    <None Include="resources\rdfxml\rdf-element-not-mandatory\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\error0009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0001.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0003.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0004.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0005.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0006.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0009.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0010.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0011.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0012.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0013.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0014.nt" />
+    <None Include="resources\rdfxml\rdf-ns-prefix-confusion\test0014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-abouteach\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-abouteach\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\error1.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test1.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test1.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test2.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test2.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test3.nt" />
+    <None Include="resources\rdfxml\rdfms-difference-between-ID-and-about\test3.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-duplicate-member-props\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-duplicate-member-props\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test006.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test007.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test008.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test009.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test010.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test011.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test012.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test013.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test014.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test015.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test016.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test017.nt" />
+    <None Include="resources\rdfxml\rdfms-empty-property-elements\test017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-identity-anon-resources\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-literal-is-xml-structure\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-not-id-and-resource-attr\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-para196\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-para196\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-parseType\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-id\error007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-018.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-019.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\error-020.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-001.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-002.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-003.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-004.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-005.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-006.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-007.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-008.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-009.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-010.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-011.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-012.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-012.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-013.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-014.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-015.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-016.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-017.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-017.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-018.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-018.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-019.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-019.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-020.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-020.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-021.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-021.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-022.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-022.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-023.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-023.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-024.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-024.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-025.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-025.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-026.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-026.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-027.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-027.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-028.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-028.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-029.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-029.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-030.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-030.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-031.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-031.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-032.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-032.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-033.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-033.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-034.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-034.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-035.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-035.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-036.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-036.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-037.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\test-037.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-001.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-002.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-003.nt" />
+    <None Include="resources\rdfxml\rdfms-rdf-names-use\warn-003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-reification-required\test001.nt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-reification-required\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-seq-representation\empty.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-seq-representation\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test003a.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test003b.nt" />
+    <None Include="resources\rdfxml\rdfms-seq-representation\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\error006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-syntax-incomplete\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-uri-substructure\error001.nt" />
+    <None Include="resources\rdfxml\rdfms-uri-substructure\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-uri-substructure\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-xml-literal-namespaces\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test001.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test002.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test003.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test004.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test005.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test006.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfms-xmllang\test007a.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test007b.nt" />
+    <None Include="resources\rdfxml\rdfms-xmllang\test007c.nt" />
+    <None Include="resources\rdfxml\rdfs-container-membership-superProperty\not1C.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-container-membership-superProperty\not1P.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\nonconclusions005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\nonconclusions006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\premises005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\premises006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test002.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test003.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test004.nt" />
+    <None Include="resources\rdfxml\rdfs-domain-and-range\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-entailment\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-entailment\test002.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subClassOf\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subClassOf\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subPropertyOf\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-no-cycles-in-subPropertyOf\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\rdfs-subClassOf-a-Property\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-subPropertyOf-semantics\test001.nt" />
+    <None Include="resources\rdfxml\rdfs-subPropertyOf-semantics\test002.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test001a.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test001b.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test002a.nt" />
+    <None Include="resources\rdfxml\statement-entailment\test002b.nt" />
+    <None Include="resources\rdfxml\tex-01\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\tex-01\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test001.nt" />
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test002.nt" />
+    <None Include="resources\rdfxml\unrecognised-xml-attributes\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xml-canon\test001.nt" />
+    <None Include="resources\rdfxml\xml-canon\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\error001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test001.nt" />
+    <None Include="resources\rdfxml\xmlbase\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test002.nt" />
+    <None Include="resources\rdfxml\xmlbase\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test003.nt" />
+    <None Include="resources\rdfxml\xmlbase\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test004.nt" />
+    <None Include="resources\rdfxml\xmlbase\test004.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test005.nt" />
+    <None Include="resources\rdfxml\xmlbase\test005.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test006.nt" />
+    <None Include="resources\rdfxml\xmlbase\test006.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test007.nt" />
+    <None Include="resources\rdfxml\xmlbase\test007.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test008.nt" />
+    <None Include="resources\rdfxml\xmlbase\test008.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test009.nt" />
+    <None Include="resources\rdfxml\xmlbase\test009.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test010.nt" />
+    <None Include="resources\rdfxml\xmlbase\test010.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test011.nt" />
+    <None Include="resources\rdfxml\xmlbase\test011.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test012.nt" />
+    <None Include="resources\rdfxml\xmlbase\test012.rdf">
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test013.nt" />
+    <None Include="resources\rdfxml\xmlbase\test013.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test014.nt" />
+    <None Include="resources\rdfxml\xmlbase\test014.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test015.nt" />
+    <None Include="resources\rdfxml\xmlbase\test015.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlbase\test016.nt" />
+    <None Include="resources\rdfxml\xmlbase\test016.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test001.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test002.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="resources\rdfxml\xmlsch-02\test003.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\rdfa\0001.sparql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\nquads\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>IF not EXIST "$(ProjectDir)resources\UnitTestConfig.properties" copy "$(ProjectDir)resources\UnitTestConfig.template" "$(ProjectDir)resources\UnitTestConfig.properties"</PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -33,7 +33,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test.Web
+namespace VDS.RDF.Web
 {
     /// <summary>
     /// Summary description for ServiceDescription
@@ -60,7 +60,7 @@ namespace VDS.RDF.Test.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -90,7 +90,7 @@ namespace VDS.RDF.Test.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(path);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -136,7 +136,7 @@ namespace VDS.RDF.Test.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -165,7 +165,7 @@ namespace VDS.RDF.Test.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 
@@ -194,7 +194,7 @@ namespace VDS.RDF.Test.Web
 
             NTriplesFormatter formatter = new NTriplesFormatter();
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(server);
+            HttpWebRequest request = (HttpWebRequest)System.Net.WebRequest.Create(server);
             request.Method = "OPTIONS";
             request.Accept = MimeTypesHelper.HttpAcceptHeader;
 

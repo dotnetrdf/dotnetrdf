@@ -93,10 +93,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     }
                 }
             }
-            else
-            {
-                this._findExpr = find;
-            }
+            this._findExpr = find;
 
             //Get the Replace
             if (replace is ConstantTerm)
@@ -109,10 +106,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                     this._fixedReplace = true;
                 }
             }
-            else
-            {
-                this._replaceExpr = replace;
-            }
+            this._replaceExpr = replace;
 
             //Get the Options
             if (options != null)
@@ -121,10 +115,7 @@ namespace VDS.RDF.Query.Expressions.Functions.XPath.String
                 {
                     this.ConfigureOptions(options.Evaluate(null, 0), false);
                 }
-                else
-                {
-                    this._optionExpr = options;
-                }
+                this._optionExpr = options;
             }
         }
 

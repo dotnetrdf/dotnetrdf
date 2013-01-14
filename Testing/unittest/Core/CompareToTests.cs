@@ -34,7 +34,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Writing;
 using VDS.RDF.Writing.Formatting;
 
-namespace VDS.RDF.Test
+namespace VDS.RDF
 {
     [TestClass]
     public class CompareToTests

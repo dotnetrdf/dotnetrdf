@@ -36,7 +36,7 @@ using VDS.RDF.Query.FullText;
 using VDS.RDF.Query.FullText.Schema;
 
 
-namespace VDS.RDF.Test.Query.FullText
+namespace VDS.RDF.Query.FullText
 {
     public static class LuceneTestHarness
     {

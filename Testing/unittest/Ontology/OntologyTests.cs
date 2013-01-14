@@ -33,7 +33,7 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query.Inference;
 
 
-namespace VDS.RDF.Test.Ontology
+namespace VDS.RDF.Ontology
 {
     [TestClass]
     public class OntologyTests
@@ -298,6 +298,170 @@ namespace VDS.RDF.Test.Ontology
             {
                 Console.WriteLine(domain.ToString());
             }
+        }
+
+        [TestMethod]
+        public void OntologyClassSubClasses()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Ground Vehicles
+            OntologyClass groundVehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/GroundVehicle"));
+            Console.WriteLine("Got the class of Ground Vehicles");
+
+            //Check counts of super classes
+            Assert.AreEqual(1, groundVehicle.SuperClasses.Count());
+            Assert.AreEqual(1, groundVehicle.DirectSuperClasses.Count());
+            Assert.AreEqual(0, groundVehicle.IndirectSuperClasses.Count());
+
+            //Check counts of sub-classes
+            Assert.AreEqual(5, groundVehicle.SubClasses.Count());
+            Assert.AreEqual(3, groundVehicle.DirectSubClasses.Count());
+            Assert.AreEqual(2, groundVehicle.IndirectSubClasses.Count());
+        }
+
+        [TestMethod]
+        public void OntologyClassSiblings()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Cars
+            OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+
+            //Get siblings
+            List<OntologyClass> siblings = car.Siblings.ToList();
+            Assert.AreEqual(2, siblings.Count);
+            Assert.IsFalse(siblings.Contains(car));
+        }
+
+        [TestMethod]
+        public void OntologyClassTopAndBottom()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the class of Vehicles
+            OntologyClass vehicle = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Vehicle"));
+            Assert.IsTrue(vehicle.IsTopClass);
+            Assert.IsFalse(vehicle.IsBottomClass);
+
+            //Get the class of cars
+            OntologyClass car = g.CreateOntologyClass(new Uri("http://example.org/vehicles/Car"));
+            Assert.IsFalse(car.IsTopClass);
+            Assert.IsFalse(car.IsBottomClass);
+
+            //Get the class of sports cars
+            OntologyClass sportsCar = g.CreateOntologyClass(new Uri("http://example.org/vehicles/SportsCar"));
+            Assert.IsFalse(sportsCar.IsTopClass);
+            Assert.IsTrue(sportsCar.IsBottomClass);
+        }
+
+        [TestMethod]
+        public void OntologyPropertySubProperties()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property of Ground Speed
+            OntologyProperty groundSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/GroundSpeed"));
+
+            //Check counts of super properties
+            Assert.AreEqual(1, groundSpeed.SuperProperties.Count());
+            Assert.AreEqual(1, groundSpeed.DirectSuperProperties.Count());
+            Assert.AreEqual(0, groundSpeed.IndirectSuperProperty.Count());
+
+            //Check counts of sub-properties
+            OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+            Assert.AreEqual(3, speed.SubProperties.Count());
+            Assert.AreEqual(3, speed.DirectSubProperties.Count());
+            Assert.AreEqual(0, speed.IndirectSubProperties.Count());
+        }
+
+        [TestMethod]
+        public void OntologyPropertyTopAndBottom()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property Speed
+            OntologyProperty speed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/Speed"));
+            Assert.IsTrue(speed.IsTopProperty);
+            Assert.IsFalse(speed.IsBottomProperty);
+
+            //Get the property AirSpeed
+            OntologyProperty airSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/AirSpeed"));
+            Assert.IsFalse(airSpeed.IsTopProperty);
+            Assert.IsTrue(airSpeed.IsBottomProperty);
+        }
+
+        [TestMethod]
+        public void OntologyPropertySiblings()
+        {
+            //Load Test Data
+            Console.WriteLine("Loading in the standard test data InferenceTest.ttl");
+            OntologyGraph g = new OntologyGraph();
+            FileLoader.Load(g, "InferenceTest.ttl");
+
+            //Get the property LimitedSpeed
+            OntologyProperty limitedSpeed = g.CreateOntologyProperty(new Uri("http://example.org/vehicles/LimitedSpeed"));
+
+            //Get siblings
+            List<OntologyProperty> siblings = limitedSpeed.Siblings.ToList();
+            Assert.AreEqual(2, siblings.Count);
+            Assert.IsFalse(siblings.Contains(limitedSpeed));
+        }
+
+        [TestMethod]
+        public void OntologyClassCount1()
+        {
+            OntologyGraph g = new OntologyGraph();
+            g.LoadFromFile("swrc.owl");
+            Assert.IsFalse(g.IsEmpty);
+
+            //Count classes, raw and distinct count should be same
+            int count = g.OwlClasses.Count();
+            int distinctCount = g.OwlClasses.Select(c => c.Resource).Distinct().Count();
+
+            Console.WriteLine("Count = " + count);
+            Console.WriteLine("Distinct Count = " + distinctCount);
+
+            Assert.IsTrue(count == distinctCount, "Expected raw and distinct counts to be the same, got " + count + " and " + distinctCount);
+        }
+
+        [TestMethod]
+        public void OntologyClassCount2()
+        {
+            OntologyGraph g = new OntologyGraph();
+            g.LoadFromFile("swrc.owl");
+            Assert.IsFalse(g.IsEmpty);
+
+            OntologyClass classOfClasses = g.CreateOntologyClass(g.CreateUriNode("owl:Class"));
+            int count = 0;
+            HashSet<INode> resources = new HashSet<INode>();
+
+            //This iterates over the things that are a class
+            foreach (OntologyResource c in classOfClasses.Instances)
+            {
+                count++;
+                resources.Add(c.Resource);
+            }
+
+            Console.WriteLine("Count = " + count);
+            Console.WriteLine("Distinct Count = " + resources.Count);
+
+            Assert.AreEqual(resources.Count, count);
         }
     }
 }

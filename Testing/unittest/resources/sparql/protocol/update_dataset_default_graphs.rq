@@ -1,0 +1,11 @@
+ASK {
+    GRAPH <http://example.org/protocol-update-dataset-graphs-test/> {
+        <http://kasei.us/2009/09/sparql/data/data1.rdf> a <http://purl.org/dc/terms/BibliographicResource> .
+        <http://kasei.us/2009/09/sparql/data/data2.rdf> a <http://purl.org/dc/terms/BibliographicResource> .
+    }
+    FILTER NOT EXISTS {
+        GRAPH <http://example.org/protocol-update-dataset-graphs-test/> {
+            <http://kasei.us/2009/09/sparql/data/data3.rdf> a <http://purl.org/dc/terms/BibliographicResource> .
+        }
+    }
+}
