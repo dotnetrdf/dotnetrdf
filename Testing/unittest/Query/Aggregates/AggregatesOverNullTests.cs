@@ -110,5 +110,54 @@ namespace VDS.RDF.Query.Aggregates
             SparqlResult r = results.First();
             Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
         }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullMax1()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o }");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.IsNull(r["Max"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullMax2()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (MAX(?s) AS ?Max) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.IsNull(r["Max"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullMin1()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o }");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.IsNull(r["Min"]);
+        }
+
+        
+        [TestMethod]
+        public void SparqlAggregatesOverNullMin2()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (MIN(?s) AS ?Min) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.IsNull(r["Min"]);
+        }
     }
 }
