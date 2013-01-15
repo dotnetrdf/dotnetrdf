@@ -62,5 +62,29 @@ namespace VDS.RDF.Query.Aggregates
             SparqlResult r = results.First();
             Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
         }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullSum1()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o }");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullSum2()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (SUM(?s) AS ?Sum) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
+        }
     }
 }
