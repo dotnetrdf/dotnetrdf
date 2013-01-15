@@ -589,6 +589,7 @@ namespace VDS.RDF.Query
             {
                 httpRequest.Credentials = this.Credentials;
             }
+            httpRequest.PreAuthenticate = true;
 
 #if !NO_PROXY
             //Use a Proxy if required

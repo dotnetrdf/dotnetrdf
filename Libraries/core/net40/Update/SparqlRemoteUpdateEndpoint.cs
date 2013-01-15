@@ -126,6 +126,7 @@ namespace VDS.RDF.Update
                 {
                     request.Credentials = this.Credentials;
                 }
+                request.PreAuthenticate = true;
 
 #if !NO_PROXY
                 //Use a Proxy if required
@@ -200,6 +201,25 @@ namespace VDS.RDF.Update
             request.Method = "POST";
             request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
             request.Accept = MimeTypesHelper.Any;
+
+            //Apply Credentials to request if necessary
+            if (this.Credentials != null)
+            {
+                request.Credentials = this.Credentials;
+            }
+            request.PreAuthenticate = true;
+
+#if !NO_PROXY
+            //Use a Proxy if required
+            if (this.Proxy != null)
+            {
+                request.Proxy = this.Proxy;
+                if (this.UseCredentialsForProxy)
+                {
+                    request.Proxy.Credentials = this.Credentials;
+                }
+            }
+#endif
 
 #if DEBUG
             if (Options.HttpDebugging)
