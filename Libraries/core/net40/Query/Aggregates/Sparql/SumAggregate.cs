@@ -82,15 +82,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
         /// <returns></returns>
         public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
         {
-            if (this._varname != null)
-            {
-                //Ensured the SUMmed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(this._varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a SUM Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-            }
-
             //Prep Variables
             long lngtotal = 0;
             decimal dectotal = 0.0m;
