@@ -1205,6 +1205,7 @@ namespace VDS.RDF.Storage
                 NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                 request.Credentials = credentials;                
             }
+            request.PreAuthenticate = true;
 
             return base.GetProxiedRequest(request);
         }
