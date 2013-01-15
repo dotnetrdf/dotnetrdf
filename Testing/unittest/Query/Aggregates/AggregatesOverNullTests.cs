@@ -42,6 +42,18 @@ namespace VDS.RDF.Query.Aggregates
         [TestMethod]
         public void SparqlAggregatesOverNullCount3()
         {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(*) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual((0).ToLiteral(this._factory), r["Count"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullCount4()
+        {
             SparqlQuery q = this._parser.ParseFromString("SELECT (COUNT(?s) AS ?Count) WHERE { ?s ?p ?o } GROUP BY ?s");
             SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
             Assert.IsNotNull(results);
