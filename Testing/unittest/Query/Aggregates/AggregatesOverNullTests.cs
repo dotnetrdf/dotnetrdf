@@ -86,5 +86,29 @@ namespace VDS.RDF.Query.Aggregates
             SparqlResult r = results.First();
             Assert.AreEqual((0).ToLiteral(this._factory), r["Sum"]);
         }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullAvg1()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o }");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullAvg2()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (AVG(?s) AS ?Avg) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual((0).ToLiteral(this._factory), r["Avg"]);
+        }
     }
 }
