@@ -159,5 +159,29 @@ namespace VDS.RDF.Query.Aggregates
             SparqlResult r = results.First();
             Assert.IsNull(r["Min"]);
         }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullGroupConcat1()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o }");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
+        }
+
+        [TestMethod]
+        public void SparqlAggregatesOverNullGroupConcat2()
+        {
+            SparqlQuery q = this._parser.ParseFromString("SELECT (GROUP_CONCAT(?s) AS ?GroupConcat) WHERE { ?s ?p ?o } GROUP BY ?s");
+            SparqlResultSet results = this._processor.ProcessQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
+
+            SparqlResult r = results.First();
+            Assert.AreEqual(this._factory.CreateLiteralNode(String.Empty), r["GroupConcat"]);
+        }
     }
 }
