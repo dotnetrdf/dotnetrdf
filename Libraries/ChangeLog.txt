@@ -24,6 +24,7 @@ Changed
  - Fix a corner base base in interaction between GRAPH clauses and property paths
  - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used
  - Fix a bug with the XPath Replace function
+ - Fix a bug with applying aggregates over empty intermediate results giving incorrect results
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
  - Updated VDS.Common to 1.1.2
