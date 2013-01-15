@@ -1789,7 +1789,9 @@ namespace VDS.RDF.Storage
                 NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
                 request.Credentials = credentials;
             }
+#if !SILVERLIGHT
             request.PreAuthenticate = true;
+#endif
 
             return request;
         }

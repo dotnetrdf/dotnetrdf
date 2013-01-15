@@ -207,7 +207,9 @@ namespace VDS.RDF.Update
             {
                 request.Credentials = this.Credentials;
             }
+#if !SILVERLIGHT
             request.PreAuthenticate = true;
+#endif
 
 #if !NO_PROXY
             //Use a Proxy if required
