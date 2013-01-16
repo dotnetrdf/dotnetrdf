@@ -426,7 +426,12 @@ namespace VDS.RDF
         /// Gets/Sets whether Basic HTTP authentication should be forced
         /// </summary>
         /// <remarks>
+        /// <para>
         /// There have been reported problems where some servers don't cope nicely with the HTTP authentication challenge response procedure resulting in failed HTTP requests.  If the server only uses Basic HTTP authentication then you can opt to force dotNetRDF to always include the HTTP basic authentication header in requests and thus workaround this problem.
+        /// </para>
+        /// <para>
+        /// <strong>Warning:</strong> Under Silverlight this will only work correctly if usernames and passwords are composed only of characters within the ASCII range.
+        /// </para>
         /// </remarks>
         public static bool ForceHttpBasicAuth
         {

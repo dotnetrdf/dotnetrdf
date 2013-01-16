@@ -6,31 +6,34 @@
 
 Added
 - Ontology API
- - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass
- - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty
- - Added Siblings property on OntologyClass and OntologyProperty
- - Added IsTopClass and IsBottomClass property on OntologyClass
- - Added IsTopProperty and IsBottomProperty on OntologyProperty
- - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph
- - Added AsClass() and AsProperty() methods on OntologyResource
+ - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass (CORE-295)
+ - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty (CORE-295)
+ - Added Siblings property on OntologyClass and OntologyProperty (CORE-296)
+ - Added IsTopClass and IsBottomClass property on OntologyClass (CORE-293)
+ - Added IsTopProperty and IsBottomProperty on OntologyProperty (CORE-293)
+ - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph (CORE-293)
+ - Added AsClass() and AsProperty() methods on OntologyResource (CORE-293)
 
 
 Changed
 - Bug Fixes
- - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
- - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
- - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
- - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables
- - Fix a corner base base in interaction between GRAPH clauses and property paths
- - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used
- - Fix a bug with the XPath Replace function
- - Fix a bug with applying aggregates over empty intermediate results giving incorrect results
+ - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$ 
+ - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities (CORE-290)
+ - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI (CORE-216)
+ - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables (CORE-294)
+ - Fix a corner base base in interaction between GRAPH clauses and property paths (CORE-294)
+ - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used (CORE-300)
+ - Fix a bug with the XPath Replace function (CORE-299)
+ - Fix a bug with applying aggregates over empty intermediate results giving incorrect results (CORE-304)
+ - Add an opt-in workaround for HTTP Basic Authentication against badly behaved server (CORE-301)
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
  - Updated VDS.Common to 1.1.2
 - Build
  - Improved our test architecture significantly
- - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF
+ - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF (CORE-292)
+- Storage, Query and Update
+ - Always enable PreAuthenticate for HTTP requests where possible to reduce HTTP requests (CORE-302)
 
 0.8.2 RC3
 ---------
@@ -58,16 +61,16 @@ Added
 
 Changed
 - Bug Fixes
- - Fixed an internal API inconsistency
+ - Fixed an internal API inconsistency (CORE-285)
  - Fixed a bug in the BNODE() function
- - Fixed a bug in Extend that could occur when many Extends were nested together
+ - Fixed a bug in Extend that could occur when many Extends were nested together (CORE-287)
  - Fixed an intermittent race condition in the implementation of parallel Left Join
  - Fixed a bug in the evaluation of some complex GROUP BY statements
- - Fixed a bug in the string representation of CountDistinctAggregate
+ - Fixed a bug in the string representation of CountDistinctAggregate (CORE-286)
  - Fixed a bug related to losing FILTERS when building queries using the internal APIs
- - Fixed a bug related to ToString() form of some API built queries
+ - Fixed a bug related to ToString() form of some API built queries (CORE-286)
  - Fixed a bug related to graph scoping of full text search
- - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance
+ - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance (CORE-289)
 - Dependencies
  - Updated Json.Net dependency to 4.5r11
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
@@ -79,12 +82,12 @@ Changed
  - Data.Virtuoso NuGet package now references OpenLink.Data.Virtuoso as a dependency instead of including it in the package
  - All alternative builds are now part of the solution rather than being generated only by the NAnt builds
 - Parsing/Writing
- - Improved how parsers and writers are selected by file extension
- - Improved content negotiation logic to properly support quality factors and type ranges
- - Avoid using blocking IO when parsing from file/memory streams
+ - Improved how parsers and writers are selected by file extension (CORE-282)
+ - Improved content negotiation logic to properly support quality factors and type ranges (CORE-282)
+ - Avoid using blocking IO when parsing from file/memory streams (CORE-282)
 - Query
  - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
- - Improved how GROUP BY, aggregates and Project Expressions are implemented internally
+ - Improved how GROUP BY, aggregates and Project Expressions are implemented internally (CORE-284)
  - Improved parallel implementation of Left Join
 
 Removed
