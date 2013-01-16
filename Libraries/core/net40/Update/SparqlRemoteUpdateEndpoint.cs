@@ -124,9 +124,21 @@ namespace VDS.RDF.Update
                 //Apply Credentials to request if necessary
                 if (this.Credentials != null)
                 {
-                    request.Credentials = this.Credentials;
+                    if (Options.ForceHttpBasicAuth)
+                    {
+                        //Forcibly include a HTTP basic authentication header
+                        string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                        request.Headers.Add("Authorization", "Basic " + credentials);
+                    }
+                    else
+                    {
+                        //Leave .Net to cope with HTTP auth challenge response
+                        request.Credentials = this.Credentials;
+#if !SILVERLIGHT
+                        request.PreAuthenticate = true;
+#endif
+                    }
                 }
-                request.PreAuthenticate = true;
 
 #if !NO_PROXY
                 //Use a Proxy if required
@@ -205,11 +217,26 @@ namespace VDS.RDF.Update
             //Apply Credentials to request if necessary
             if (this.Credentials != null)
             {
-                request.Credentials = this.Credentials;
-            }
+                if (Options.ForceHttpBasicAuth)
+                {
+                    //Forcibly include a HTTP basic authentication header
 #if !SILVERLIGHT
-            request.PreAuthenticate = true;
+                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    request.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    request.Headers["Authorization"] = "Basic " + credentials;
 #endif
+                }
+                else
+                {
+                    //Leave .Net to cope with HTTP auth challenge response
+                    request.Credentials = this.Credentials;
+#if !SILVERLIGHT
+                    request.PreAuthenticate = true;
+#endif
+                }
+            }
 
 #if !NO_PROXY
             //Use a Proxy if required
