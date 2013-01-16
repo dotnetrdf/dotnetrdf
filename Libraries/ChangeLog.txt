@@ -104,56 +104,56 @@ Removed
 - Marks the obsolete Tools.CopyStream() method as obsolete unusable
 - Marks the obsolete FastRdfXmlWriter as obsolete unusable
 
-0.7.0 Beta
+0.7.2 Beta
 ----------
 
 Added
 - Configuration API
- - More auto-configuration methods
- - Helper methods for loading configuration graphs
+ - More auto-configuration methods (CORE-270)
+ - Helper methods for loading configuration graphs (CORE-270)
   - Supports new ability to have one configuration graph import another URI/file
- - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties
- - Support for specifying custom Triple and Graph Collections
- - Support for loading IStorageServer instances
- - Support for loading SPARQL operators and property function factories
- - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation
+ - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties (CORE-270)
+ - Support for specifying custom Triple and Graph Collections (CORE-270)
+ - Support for loading IStorageServer instances (CORE-270)
+ - Support for loading SPARQL operators and property function factories (CORE-270)
+ - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation (CORE-270)
 - Query
- - Added IsMinusCompatibleWith() method to ISet interface
- - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic
- - Support for SPARQL property functions
-  - Refactored Query.FullText to be a true property function
+ - Added IsMinusCompatibleWith() method to ISet interface (CORE-238)
+ - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic (CORE-264)
+ - Support for SPARQL property functions (CORE-268)
+  - Refactored Query.FullText to be a true property function (CORE-268)
 
 Changed
 - Bug Fixes
- - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
- - Bug fix to TreeIndexedTripleCollection
- - Bug fix to corner case MINUS logic in SPARQL 1.1
- - Bug fix to corner case GROUP BY and aggregate interaction logic
+ - Some logic fixes to AllegroGraphConnector and AllegroGraphServer (CORE-263)
+ - Bug fix to TreeIndexedTripleCollection (CORE-265)
+ - Bug fix to corner case MINUS logic in SPARQL 1.1 (CORE-238)
+ - Bug fix to corner case GROUP BY and aggregate interaction logic (CORE-238)
  - Bug fix to improve handling of & when outputting XML - Kal Ahmed
- - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary
+ - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary (CORE-274)
  - Bug fix for a parsing error when property paths are nested in Blank Node predicate object lists
  - Bug fix for proper parser detection when selecting based on a .abc.gz filename
- - Bug fix for error in Lazy evaluation of some queries
- - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
- - Bug fix for some prefix validation bugs in SPARQL 1.1
- - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
+ - Bug fix for error in Lazy evaluation of some queries (CORE-238)
+ - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases (COR-238)
+ - Bug fix for some prefix validation bugs in SPARQL 1.1 (CORE-238)
+ - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables (CORE-238)
  - Bug fix for pathological case of Graph isomporphism not being handled correctly in GraphMatcher
- - Bug fix for use of Uri.EscapeDataString() on long strings
- - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance
- - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour
- - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames
+ - Bug fix for use of Uri.EscapeDataString() on long strings (CORE-278)
+ - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance (CORE-279)
+ - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour (CORE-238)
+ - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames (CORE-280)
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
  - Bumped HtmlAgilityPack version to 1.4.6
 - Core API
- - Made TreeIndexedTripleCollection the default triple collection implementation
+ - Made TreeIndexedTripleCollection the default triple collection implementation (CORE-265)
 - Parsing
- - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax
+ - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax (CORE-261)
 - Query
- - Improves SPARQL 1.1 support to near 100% compliance
+ - Improves SPARQL 1.1 support to near 100% compliance (CORE-238)
 - Storage
- - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
- - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
+ - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace (CORE-263)
+ - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider (CORE-263)
  - Talis is no longer supported since the Talis Platform is in the process of winding down for public usage
 
 Removed
