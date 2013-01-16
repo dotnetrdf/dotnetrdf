@@ -140,6 +140,7 @@
     <Compile Include="Core\NamespaceMapperTest.cs" />
     <Compile Include="Query\GroupByTests.cs" />
     <Compile Include="Query\LeviathanTests.cs" />
+    <Compile Include="Query\Medusa\MedusaQueryEngineTests.cs" />
     <Compile Include="Query\NegationTests.cs" />
     <Compile Include="Query\OperatorTests.cs" />
     <Compile Include="Query\OptimiserTests.cs" />
