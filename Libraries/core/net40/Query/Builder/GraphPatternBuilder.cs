@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Query.Builder.Expressions;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Filters;
@@ -14,6 +15,7 @@ namespace VDS.RDF.Query.Builder
         private readonly IList<Func<INamespaceMapper, ISparqlExpression>> _filterBuilders = new List<Func<INamespaceMapper, ISparqlExpression>>();
         private readonly IList<Func<INamespaceMapper, ITriplePattern[]>> _triplePatterns = new List<Func<INamespaceMapper, ITriplePattern[]>>();
         private readonly GraphPatternType _graphPatternType;
+        private readonly IToken _graphSpecifier;
 
         /// <summary>
         /// Creates a builder of a normal graph patterns
@@ -30,6 +32,12 @@ namespace VDS.RDF.Query.Builder
         private GraphPatternBuilder(GraphPatternType graphPatternType)
         {
             _graphPatternType = graphPatternType;
+        }
+
+        internal GraphPatternBuilder(GraphPatternType graphPatternType, IToken graphSpecifier)
+        {
+            _graphPatternType = graphPatternType;
+            _graphSpecifier = graphSpecifier;
         }
 
         internal GraphPattern BuildGraphPattern(INamespaceMapper prefixes)
@@ -86,6 +94,14 @@ namespace VDS.RDF.Query.Builder
                 case GraphPatternType.Union:
                     graphPattern.IsUnion = true;
                     break;
+                case GraphPatternType.Graph:
+                    graphPattern.IsGraph = true;
+                    graphPattern.GraphSpecifier = _graphSpecifier;
+                    break;
+                case GraphPatternType.Service:
+                    graphPattern.IsService = true;
+                    graphPattern.GraphSpecifier = _graphSpecifier;
+                    break;
             }
             return graphPattern;
         }
@@ -121,6 +137,25 @@ namespace VDS.RDF.Query.Builder
         public IGraphPatternBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern)
         {
             AddChildGraphPattern(buildGraphPattern, GraphPatternType.Minus);
+            return this;
+        }
+
+        public IGraphPatternBuilder Graph(Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Graph, new UriToken(string.Format("<{0}>", graphUri), 0, 0, 0));
+            return this;
+        }
+
+        public IGraphPatternBuilder Graph(string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Graph, new VariableToken(graphVariable, 0, 0, 0));
+            return this;
+        }
+
+        public IGraphPatternBuilder Service(Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            AddChildGraphPattern(buildGraphPattern, GraphPatternType.Service,
+                                 new UriToken(string.Format("<{0}>", serviceUri), 0, 0, 0));
             return this;
         }
 
@@ -171,6 +206,13 @@ namespace VDS.RDF.Query.Builder
         private void AddChildGraphPattern(Action<IGraphPatternBuilder> buildGraphPattern, GraphPatternType graphPatternType)
         {
             var childBuilder = new GraphPatternBuilder(graphPatternType);
+            buildGraphPattern(childBuilder);
+            _childGraphPatternBuilders.Add(childBuilder);
+        }
+
+        private void AddChildGraphPattern(Action<IGraphPatternBuilder> buildGraphPattern, GraphPatternType graphPatternType, IToken graphSpecifier)
+        {
+            var childBuilder = new GraphPatternBuilder(graphPatternType, graphSpecifier);
             buildGraphPattern(childBuilder);
             _childGraphPatternBuilders.Add(childBuilder);
         }

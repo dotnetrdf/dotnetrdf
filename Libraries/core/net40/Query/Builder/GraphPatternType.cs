@@ -5,6 +5,8 @@ namespace VDS.RDF.Query.Builder
         Normal,
         Optional,
         Minus,
-        Union
+        Union,
+        Graph,
+        Service
     }
 }

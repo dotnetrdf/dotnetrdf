@@ -6,7 +6,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query.Builder
 {
     public static class QueryBuilderExtensions
-    {       
+    {
         public static IQueryBuilder Where(this IQueryWithVariablesBuilder describeBuilder, params ITriplePattern[] triplePatterns)
         {
             return describeBuilder.GetQueryBuilder().Where(triplePatterns);
@@ -35,6 +35,21 @@ namespace VDS.RDF.Query.Builder
         public static IQueryBuilder Minus(this IQueryWithVariablesBuilder describeBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             return describeBuilder.GetQueryBuilder().Minus(buildGraphPattern);
+        }
+
+        public static IQueryBuilder Graph(this IQueryWithVariablesBuilder describeBuilder, Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            return describeBuilder.GetQueryBuilder().Graph(graphUri, buildGraphPattern);
+        }
+
+        public static IQueryBuilder Graph(this IQueryWithVariablesBuilder describeBuilder, string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            return describeBuilder.GetQueryBuilder().Graph(graphVariable, buildGraphPattern);
+        }
+
+        public static IQueryBuilder Service(this IQueryWithVariablesBuilder describeBuilder, Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            return describeBuilder.GetQueryBuilder().Service(serviceUri, buildGraphPattern);
         }
 
         public static IAssignmentVariableNamePart<IQueryBuilder> Bind(this IDescribeBuilder describeBuilder, Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression)
@@ -94,6 +109,24 @@ namespace VDS.RDF.Query.Builder
         public static IQueryBuilder Minus(this IQueryBuilder queryBuilder, Action<IGraphPatternBuilder> buildGraphPattern)
         {
             ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Minus(buildGraphPattern);
+            return queryBuilder;
+        }
+
+        public static IQueryBuilder Graph(this IQueryBuilder queryBuilder, Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Graph(graphUri, buildGraphPattern);
+            return queryBuilder;
+        }
+
+        public static IQueryBuilder Graph(this IQueryBuilder queryBuilder, string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Graph(graphVariable, buildGraphPattern);
+            return queryBuilder;
+        }
+
+        public static IQueryBuilder Service(this IQueryBuilder queryBuilder, Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern)
+        {
+            ((QueryBuilder)queryBuilder).RootGraphPatternBuilder.Service(serviceUri, buildGraphPattern);
             return queryBuilder;
         }
 

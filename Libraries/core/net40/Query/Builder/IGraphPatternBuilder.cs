@@ -39,6 +39,18 @@ namespace VDS.RDF.Query.Builder
         /// </summary>
         IGraphPatternBuilder Minus(Action<IGraphPatternBuilder> buildGraphPattern);
         /// <summary>
+        /// Adds a GRAPH graph pattern to the graph pattern
+        /// </summary>
+        IGraphPatternBuilder Graph(Uri graphUri, Action<IGraphPatternBuilder> buildGraphPattern);
+        /// <summary>
+        /// Adds a GRAPH graph pattern to the graph pattern
+        /// </summary>
+        IGraphPatternBuilder Graph(string graphVariable, Action<IGraphPatternBuilder> buildGraphPattern);
+        /// <summary>
+        /// Adds a SERVICE graph pattern to the graph pattern
+        /// </summary>
+        IGraphPatternBuilder Service(Uri serviceUri, Action<IGraphPatternBuilder> buildGraphPattern);
+        /// <summary>
         /// Adds a BIND variable assignment to the graph pattern
         /// </summary>
         IAssignmentVariableNamePart<IGraphPatternBuilder> Bind(Func<ExpressionBuilder, SparqlExpression> buildAssignmentExpression);
