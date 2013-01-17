@@ -159,8 +159,6 @@
     <Compile Include="Builder\QueryBuilderTests.cs" />
     <Compile Include="Builder\QueryBuilderWikiTests.cs" />
     <Compile Include="Query\OptimiserTests.cs" />
-    <Compile Include="Sparql\SetTests.cs" />
-    <Compile Include="Sparql\SetTests.cs" />
     <Compile Include="Builder\TriplePatternBuilderTests.cs" />
     <Compile Include="Query\ParsingTests.cs" />
     <Compile Include="Query\PropertyPathEvaluationTests.cs" />
