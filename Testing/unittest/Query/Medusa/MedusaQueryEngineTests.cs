@@ -5,6 +5,11 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Query.Expressions;
+using VDS.RDF.Query.Expressions.Functions.Sparql;
+using VDS.RDF.Query.Expressions.Functions.Sparql.Boolean;
+using VDS.RDF.Query.Expressions.Primary;
+using VDS.RDF.Query.Filters;
 using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Medusa
@@ -76,6 +81,36 @@ namespace VDS.RDF.Query.Medusa
             IEnumerable<ISet> sets = processor.ProcessAlgebra(slice, null);
             Assert.IsTrue(sets.Any());
             Assert.AreEqual(3, sets.Count());
+        }
+
+        [TestMethod]
+        public void SparqlMedusaUnion1()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            ISparqlAlgebra union = new Union(new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")))
+                                             , new Bgp(new TriplePattern(new VariablePattern("x"), new VariablePattern("y"), new VariablePattern("z"))));
+            MedusaQueryProcessor processor = new MedusaQueryProcessor(new InMemoryDataset(g));
+
+            IEnumerable<ISet> sets = processor.ProcessAlgebra(union, null);
+            Assert.IsTrue(sets.Any());
+            Assert.AreEqual(g.Triples.Count * 2, sets.Count());
+        }
+
+        [TestMethod]
+        public void SparqlMedusaFilter1()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            ISparqlAlgebra filter = new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")));
+            filter = new Filter(filter, new UnaryExpressionFilter(new IsBlankFunction(new VariableTerm("s"))));
+            MedusaQueryProcessor processor = new MedusaQueryProcessor(new InMemoryDataset(g));
+
+            IEnumerable<ISet> sets = processor.ProcessAlgebra(filter, null);
+            Assert.IsTrue(sets.Any());
+            Assert.AreEqual(g.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).Count(), sets.Count());
         }
     }
 }

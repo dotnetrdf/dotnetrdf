@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
@@ -65,7 +66,26 @@ namespace VDS.RDF.Query
 
         public override IEnumerable<ISet> ProcessFilter(IFilter filter, ISet context)
         {
-            throw new NotImplementedException();
+            //HACK: Here we are kinda abusing the existing machinery for the sake of proof of concept
+
+            Func<ISet, bool> canAccept = (s => {
+                try
+                {
+                    SparqlEvaluationContext evalContext = new SparqlEvaluationContext(null, this._data);
+                    evalContext.InputMultiset = new Multiset();
+                    evalContext.InputMultiset.Add(s);
+                    IValuedNode node = filter.SparqlFilter.Expression.Evaluate(evalContext, 1);
+                    return node.AsSafeBoolean();
+                }
+                catch (RdfQueryException)
+                {
+                    return false;
+                }
+            });
+
+            return (from s in this.ProcessAlgebra(filter.InnerAlgebra, context)
+                    where canAccept(s)
+                    select s);
         }
 
         public override IEnumerable<ISet> ProcessGraph(Algebra.Graph graph, ISet context)
