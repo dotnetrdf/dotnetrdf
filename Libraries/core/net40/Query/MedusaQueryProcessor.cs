@@ -19,12 +19,26 @@ using VDS.RDF.Query.Patterns;
  * - Union
  * - Distinct
  * - Slice i.e. LIMIT and OFFSET
+ * - Join
  * 
- * 
+ * Much of the POC is very hacky because of the various supporting APIs are quite closely tied to the Leviathan
+ * engine.  Some APIs that it would be useful to change are as follows:
+ * - Generally we want to move to a model where the query processor controls all evaluation i.e. not defer it
+ *   to the ISparqlAlgebra classes.  Eventually they should all have their Evaluate() methods removed and that
+ *   code migrated into LeviathanQueryProcessor.  This helps to have a cleaner separation between the structural
+ *   representation of the algebra and the evaluation of it.
+ * - Modify ISparqlExpression to operate directly on a ISet instance, may still need to provide some sort
+ *   of Context object in order to support certain functions.  This context can be made a subset of the existing
+ *   SparqlEvaluationContext
+ * - Similarily modifying IMatchTriplePattern to allow retrieving triples based on an ISet or an IEnumerable<ISet>
+ *   would help.  The better alternative may be to reimplement the functionality directly here
  **/
 
 namespace VDS.RDF.Query
 {
+    /// <summary>
+    /// An alternative query engine that is designed to be streaming and thus significantly more memory efficient
+    /// </summary>
     public class MedusaQueryProcessor
         : BaseQueryAlgebraProcessor<IEnumerable<ISet>, ISet>, ISparqlQueryPatternProcessor<IEnumerable<ISet>, ISet>
     {
@@ -143,7 +157,27 @@ namespace VDS.RDF.Query
 
         public override IEnumerable<ISet> ProcessJoin(IJoin join, ISet context)
         {
-            throw new NotImplementedException();
+            IEnumerable<ISet> lhs = this.ProcessAlgebra(join.Lhs, context);
+
+            if (join.Lhs.Variables.IsDisjoint(join.Rhs.Variables))
+            {
+                IEnumerable<ISet> rhs = this.ProcessAlgebra(join.Rhs, context);
+
+                //Do a product
+                return (from x in lhs
+                        from y in rhs
+                        select x.Join(y));
+            }
+            else
+            {
+                //Do a join
+                ISparqlAlgebra rhsAlgebra = join.Rhs;
+                List<String> vars = join.Lhs.Variables.Where(v => join.Rhs.Variables.Contains(v)).ToList();
+                return (from x in lhs
+                        from y in this.ProcessAlgebra(rhsAlgebra, x)
+                        where x.IsCompatibleWith(y, vars)
+                        select x.Join(y));
+            }
         }
 
         public override IEnumerable<ISet> ProcessLeftJoin(ILeftJoin leftJoin, ISet context)

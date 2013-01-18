@@ -99,6 +99,49 @@ namespace VDS.RDF.Query.Medusa
         }
 
         [TestMethod]
+        public void SparqlMedusaJoin1()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            ISparqlAlgebra join = new Join(new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")))
+                                           , new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o2"))));
+            InMemoryDataset ds = new InMemoryDataset(g);
+            MedusaQueryProcessor processor = new MedusaQueryProcessor(ds);
+            LeviathanQueryProcessor lvnProcessor = new LeviathanQueryProcessor(ds);
+
+            IEnumerable<ISet> sets = processor.ProcessAlgebra(join, null);
+            Assert.IsTrue(sets.Any());
+
+            IEnumerable<ISet> lvnSets = lvnProcessor.ProcessAlgebra(join, new SparqlEvaluationContext(null, ds)).Sets;
+            Assert.IsTrue(lvnSets.Any());
+
+            Assert.AreEqual(lvnSets.Count(), sets.Count());
+        }
+
+        [TestMethod]
+        public void SparqlMedusaJoin2()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+            g.Retract(g.Triples.Skip(10).ToList());
+
+            ISparqlAlgebra join = new Join(new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")))
+                                           , new Bgp(new TriplePattern(new VariablePattern("x"), new VariablePattern("y"), new VariablePattern("z"))));
+            InMemoryDataset ds = new InMemoryDataset(g);
+            MedusaQueryProcessor processor = new MedusaQueryProcessor(ds);
+            LeviathanQueryProcessor lvnProcessor = new LeviathanQueryProcessor(ds);
+
+            IEnumerable<ISet> sets = processor.ProcessAlgebra(join, null);
+            Assert.IsTrue(sets.Any());
+
+            IEnumerable<ISet> lvnSets = lvnProcessor.ProcessAlgebra(join, new SparqlEvaluationContext(null, ds)).Sets;
+            Assert.IsTrue(lvnSets.Any());
+
+            Assert.AreEqual(lvnSets.Count(), sets.Count());
+        }
+
+        [TestMethod]
         public void SparqlMedusaFilter1()
         {
             Graph g = new Graph();
