@@ -7,6 +7,22 @@ using VDS.RDF.Query.Algebra;
 using VDS.RDF.Query.Datasets;
 using VDS.RDF.Query.Patterns;
 
+/**
+ * This is proof of concept code designed to show a very basic and bare bones outline of how a query engine
+ * that is streaming rather than block based can be constructed.
+ * 
+ * Currently this POC supports the following:
+ * - Empty BGPs
+ * - BGPs with a single match triple pattern in
+ * - Filter
+ * - Extend
+ * - Union
+ * - Distinct
+ * - Slice i.e. LIMIT and OFFSET
+ * 
+ * 
+ **/
+
 namespace VDS.RDF.Query
 {
     public class MedusaQueryProcessor
@@ -61,20 +77,42 @@ namespace VDS.RDF.Query
 
         public override IEnumerable<ISet> ProcessExtend(Extend extend, ISet context)
         {
-            throw new NotImplementedException();
+            //HACK: Once again we abuse the existing machinery for the sake of expidiency
+
+            Func<ISet, ISet> tryExtend = (s =>
+            {
+                try
+                {
+                    SparqlEvaluationContext evalContext = new SparqlEvaluationContext(null, this._data);
+                    evalContext.InputMultiset = new Multiset();
+                    evalContext.InputMultiset.Add(s);
+
+                    IValuedNode node = extend.AssignExpression.Evaluate(evalContext, s.ID);
+                    s.Add(extend.VariableName, node);
+                    return s;
+                }
+                catch (RdfQueryException)
+                {
+                    return s;
+                }
+            });
+
+            return (from s in this.ProcessAlgebra(extend.InnerAlgebra, context)
+                    select tryExtend(s));
         }
 
         public override IEnumerable<ISet> ProcessFilter(IFilter filter, ISet context)
         {
             //HACK: Here we are kinda abusing the existing machinery for the sake of proof of concept
 
-            Func<ISet, bool> canAccept = (s => {
+            Func<ISet, bool> canAccept = (s =>
+            {
                 try
                 {
                     SparqlEvaluationContext evalContext = new SparqlEvaluationContext(null, this._data);
                     evalContext.InputMultiset = new Multiset();
                     evalContext.InputMultiset.Add(s);
-                    IValuedNode node = filter.SparqlFilter.Expression.Evaluate(evalContext, 1);
+                    IValuedNode node = filter.SparqlFilter.Expression.Evaluate(evalContext, s.ID);
                     return node.AsSafeBoolean();
                 }
                 catch (RdfQueryException)

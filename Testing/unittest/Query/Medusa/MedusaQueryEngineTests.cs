@@ -112,5 +112,21 @@ namespace VDS.RDF.Query.Medusa
             Assert.IsTrue(sets.Any());
             Assert.AreEqual(g.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).Count(), sets.Count());
         }
+
+        [TestMethod]
+        public void SparqlMedusaExtend1()
+        {
+            Graph g = new Graph();
+            g.LoadFromEmbeddedResource("VDS.RDF.Configuration.configuration.ttl");
+
+            ISparqlAlgebra extend = new Bgp(new TriplePattern(new VariablePattern("s"), new VariablePattern("p"), new VariablePattern("o")));
+            extend = new Extend(extend, new IsBlankFunction(new VariableTerm("s")), "blank");
+            MedusaQueryProcessor processor = new MedusaQueryProcessor(new InMemoryDataset(g));
+
+            IEnumerable<ISet> sets = processor.ProcessAlgebra(extend, null);
+            Assert.IsTrue(sets.Any());
+            Assert.IsTrue(sets.Any(s => s.ContainsVariable("blank")));
+            Assert.AreEqual(g.Triples.Where(t => t.Subject.NodeType == NodeType.Blank).Count(), sets.Where(s => s["blank"].Equals((true).ToLiteral(g))).Count());
+        }
     }
 }
