@@ -9,7 +9,7 @@ using VDS.RDF.Query.Patterns;
 namespace VDS.RDF.Query
 {
     public class MedusaQueryProcessor
-        : BaseQueryAlgebraProcessor<IEnumerable<ISet>, ISet>
+        : BaseQueryAlgebraProcessor<IEnumerable<ISet>, ISet>, ISparqlQueryPatternProcessor<IEnumerable<ISet>, ISet>
     {
         private ISparqlDataset _data;
 
@@ -37,9 +37,7 @@ namespace VDS.RDF.Query
                 if (bgp.TriplePatterns.First() is IMatchTriplePattern)
                 {
                     IMatchTriplePattern match = (IMatchTriplePattern)bgp.TriplePatterns.First();
-                    IEnumerable<Triple> ts;// = match.GetTriples(context); //TODO: Need an overload which accepts a ISet
-                    //return (from t in ts
-                    //        where match.Accepts(context, t)); //TODO: Need an overload which accepts an ISet
+                    return this.ProcessMatchPattern(match, context);
                 }
             }
             throw new NotImplementedException();
@@ -177,6 +175,73 @@ namespace VDS.RDF.Query
         }
 
         public override IEnumerable<ISet> ProcessZeroOrMorePath(ZeroOrMorePath path, ISet context)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region ISparqlQueryPatternProcessor<IEnumerable<ISet>,ISet> Members
+
+        public IEnumerable<ISet> ProcessTriplePattern(ITriplePattern pattern, ISet context)
+        {
+            switch (pattern.PatternType)
+            {
+                case TriplePatternType.BindAssignment:
+                case TriplePatternType.LetAssignment:
+                    return this.ProcessAssignmentPattern((IAssignmentPattern)pattern, context);
+                case TriplePatternType.Filter:
+                    return this.ProcessFilterPattern((IFilterPattern)pattern, context);
+                case TriplePatternType.Match:
+                    return this.ProcessMatchPattern((IMatchTriplePattern)pattern, context);
+                case TriplePatternType.Path:
+                    return this.ProcessPathPattern((IPropertyPathPattern)pattern, context);
+                case TriplePatternType.PropertyFunction:
+                    return this.ProcessFunctionPattern((IPropertyFunctionPattern)pattern, context);
+                case TriplePatternType.SubQuery:
+                    return this.ProcessSubQueryPattern((ISubQueryPattern)pattern, context);
+                default:
+                    throw new RdfQueryException("Unsupported Triple Pattern Type");
+            }
+        }
+
+        public IEnumerable<ISet> ProcessMatchPattern(IMatchTriplePattern match, ISet context)
+        {
+            //HACK: Really we should have a proper implementation of this, right now we are just
+            //calling into the existing Leviathan machinery
+            //However this is just to prove the concept of a streaming engine so it doesn't matter too much
+
+            SparqlEvaluationContext evalContext = new SparqlEvaluationContext(null, this._data);
+            evalContext.InputMultiset = new Multiset();
+            if (context != null) evalContext.InputMultiset.Add(context);
+
+            IEnumerable<Triple> ts = match.GetTriples(evalContext);
+            return (from t in ts
+                    where match.Accepts(evalContext, t)
+                    select match.CreateResult(t));
+        }
+
+        public IEnumerable<ISet> ProcessFilterPattern(IFilterPattern filter, ISet context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> ProcessAssignmentPattern(IAssignmentPattern assignment, ISet context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> ProcessPathPattern(IPropertyPathPattern path, ISet context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> ProcessFunctionPattern(IPropertyFunctionPattern function, ISet context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<ISet> ProcessSubQueryPattern(ISubQueryPattern subquery, ISet context)
         {
             throw new NotImplementedException();
         }

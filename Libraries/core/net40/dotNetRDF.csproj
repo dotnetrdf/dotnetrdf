@@ -139,6 +139,7 @@
     <Compile Include="Query\Expressions\Functions\Sparql\CallFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\BaseUUIDFunction.cs" />
     <Compile Include="Query\Expressions\Functions\Sparql\String\UUIDFunction.cs" />
+    <Compile Include="Query\ISparqlQueryPatternProcessor.cs" />
     <Compile Include="Query\MedusaQueryProcessor.cs" />
     <Compile Include="Query\Operators\BaseOperator.cs" />
     <Compile Include="Query\Operators\DateTime\BaseDateTimeOperator.cs" />
