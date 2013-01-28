@@ -65,7 +65,15 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
         /// </remarks>
-        public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ssK";
+        public const String XmlSchemaDateTimeFormat = "yyyy-MM-dd\\THH:mm:ss.ffffffK";
+
+        /// <summary>
+        /// Date Time Formatting string which meets the specified format for xsd:dateTime, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
+        /// </summary>
+        /// <remarks>
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// </remarks>
+        public const String XmlSchemaDateTimeFormatImprecise = "yyyy-MM-dd\\THH:mm:ssK";
 
         /// <summary>
         /// Date Time Formatting string which meets the specified format for xsd:date
@@ -81,7 +89,15 @@ namespace VDS.RDF.Parsing
         /// <remarks>
         /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
         /// </remarks>
-        public const String XmlSchemaTimeFormat = "HH:mm:ssK";
+        public const String XmlSchemaTimeFormat = "HH:mm:ss.ffffffK";
+
+        /// <summary>
+        /// Date Time Formatting string which meets the the specified format for xsd:time, this formatting string is imprecise in the sense that it does not preserve the fractional seconds.
+        /// </summary>
+        /// <remarks>
+        /// Use with the <see cref="DateTime.ToString()">DateTime.ToString()</see> method to format a DateTime into appropriate string format
+        /// </remarks>
+        public const String XmlSchemaTimeFormatImprecise = "HH:mm:ssK";
 
 
 
