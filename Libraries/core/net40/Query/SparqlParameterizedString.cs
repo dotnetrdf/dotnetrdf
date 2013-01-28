@@ -346,7 +346,39 @@ namespace VDS.RDF.Query
         /// <param name="value">Integer</param>
         public void SetLiteral(String name, DateTime value)
         {
-            this.SetParameter(name, value.ToLiteral(this._g));
+            this.SetLiteral(name, value, true);
+        }
+
+        /// <summary>
+        /// Sets the Parameter to a Date Time Literal
+        /// </summary>
+        /// <param name="name">Parameter</param>
+        /// <param name="value">Integer</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        public void SetLiteral(String name, DateTime value, bool precise)
+        {
+            this.SetParameter(name, value.ToLiteral(this._g, precise));
+        }
+
+        /// <summary>
+        /// Sets the Parameter to a Date Time Literal
+        /// </summary>
+        /// <param name="name">Parameter</param>
+        /// <param name="value">Integer</param>
+        public void SetLiteral(String name, DateTimeOffset value)
+        {
+            this.SetLiteral(name, value, true);
+        }
+
+        /// <summary>
+        /// Sets the Parameter to a Date Time Literal
+        /// </summary>
+        /// <param name="name">Parameter</param>
+        /// <param name="value">Integer</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        public void SetLiteral(String name, DateTimeOffset value, bool precise)
+        {
+            this.SetParameter(name, value.ToLiteral(this._g, precise));
         }
 
         /// <summary>
