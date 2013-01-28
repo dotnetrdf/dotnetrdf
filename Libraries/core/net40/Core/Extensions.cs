@@ -1434,6 +1434,33 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a new Date Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns>Literal representing the date time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTimeOffset dt, INodeFactory factory)
+        {
+            return ToLiteral(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Date Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the date time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTimeOffset dt, INodeFactory factory, bool precise)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaDateTimeFormat : XmlSpecsHelper.XmlSchemaDateTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        }
+
+        /// <summary>
         /// Creates a new Date typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
@@ -1441,6 +1468,20 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteralDate(this DateTime dt, INodeFactory factory)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
+        }
+
+        /// <summary>
+        /// Creates a new Date typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralDate(this DateTimeOffset dt, INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
@@ -1486,6 +1527,33 @@ namespace VDS.RDF
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
             return factory.CreateLiteralNode(XmlConvert.ToString(t), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDuration));
+        }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTimeOffset dt, INodeFactory factory)
+        {
+            return ToLiteralTime(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTimeOffset dt, INodeFactory factory, bool precise)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaTimeFormat : XmlSpecsHelper.XmlSchemaTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime));
         }
 
         /// <summary>
