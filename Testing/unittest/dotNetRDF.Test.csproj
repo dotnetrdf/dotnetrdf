@@ -204,6 +204,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Query\SampleWeightings.n3" />
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
