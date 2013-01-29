@@ -232,7 +232,7 @@ WHERE {
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             if (results == null) Assert.Fail("Null results");
 
-            Assert.IsTrue(results.IsEmpty, "Results should be empty");
+            Assert.IsFalse(results.IsEmpty, "Results should not be empty");
         }
 
         [TestMethod]
