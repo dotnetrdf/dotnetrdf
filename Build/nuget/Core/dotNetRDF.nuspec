@@ -14,12 +14,13 @@
     <dependencies>
       <dependency id="Newtonsoft.Json" version="4.5.11" />
       <dependency id="HtmlAgilityPack" version="1.4.6" />
-      <dependency id="VDS.Common" version="1.1.2" />
+      <dependency id="VDS.Common" version="[1.1.2]" />
     </dependencies>
     <releaseNotes>
       - Updated VDS.Common dependency to latest version (1.1.2)
       - Package now include PDBs to aid debugging
       - Assorted bug fixes, see ChangeLog for details
+      - Improvements to Ontology API
     </releaseNotes>
   </metadata>
 </package>
