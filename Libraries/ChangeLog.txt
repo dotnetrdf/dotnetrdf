@@ -14,7 +14,6 @@ Added
  - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph (CORE-293)
  - Added AsClass() and AsProperty() methods on OntologyResource (CORE-293)
 
-
 Changed
 - Bug Fixes
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$ 
@@ -35,6 +34,15 @@ Changed
  - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF (CORE-292)
 - Storage, Query and Update
  - Always enable PreAuthenticate for HTTP requests where possible to reduce HTTP requests (CORE-302)
+ 
+Removed
+- Removed the obsolete JosekiConnector as obsolete unusable
+- Removed some obsolete property and class constants in ConfigurationLoader as obsolete unusable
+- Removed the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
+- Removed the obsolete IndexingHelper static class as obsolete unusable
+- Removed the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
+- Removed the obsolete Tools.StreamCopy() method as obsolete unusable
+- Removed the obsolete FastRdfXmlWriter as obsolete unusable
 
 0.8.2 RC3
 ---------

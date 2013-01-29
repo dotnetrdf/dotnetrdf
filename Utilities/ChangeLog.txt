@@ -5,7 +5,7 @@ A Toolkit of command line utilities and GUI tools for working with RDF data
 
 Version 0.8.0 RC 1
 
-dotNetRDF Project 2009-12
+dotNetRDF Project 2009-13
 dotnetrdf-develop@lists.sf.net
 
 Change Log
@@ -21,10 +21,12 @@ upgrade to these latest versions.
 rdfConvert
 
 rdfEditor (Not available under Mono)
+- Minor UI tweaks
  
 rdfOptStats
    
 rdfQuery
+- Improvements to SPARQL 1.1 query support
 
 rdfServer
 
@@ -35,6 +37,7 @@ rdfWebDeploy
 soh 
 
 SparqlGUI
+- Improvements to SPARQL 1.1 query support
 
 StoreManager
 

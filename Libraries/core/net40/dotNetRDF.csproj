@@ -802,7 +802,6 @@
     <Compile Include="Storage\AllegroGraphConnector.cs" />
     <Compile Include="Storage\FourStoreConnector.cs" />
     <Compile Include="Storage\BatchTriple.cs" />
-    <Compile Include="Storage\JosekiConnector.cs" />
     <Compile Include="Storage\SesameHttpProtocolConnector.cs" />
     <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
     <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
@@ -836,7 +835,6 @@
     <Compile Include="Writing\RdfXmlWriter.cs" />
     <Compile Include="Writing\HtmlWriter.cs" />
     <Compile Include="Writing\CsvWriter.cs" />
-    <Compile Include="Writing\FastRdfXmlWriter.cs" />
     <Compile Include="Writing\Notation3Writer.cs" />
     <Compile Include="Writing\NQuadsWriter.cs" />
     <Compile Include="Writing\RdfJsonWriter.cs" />
