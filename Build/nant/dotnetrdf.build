@@ -32,7 +32,7 @@
   <property name="dotnetrdf.releasetype" value="rc4" />
   <property name="dotnetrdf.toolsversion" value="080" />
   <property name="dotnetrdf.toolsreleasetype" value="rc1" />
-  <property name="dotnetrdf.nuspecversion" value="0.9.0" />
+  <property name="dotnetrdf.nuspecversion" value="0.9.0.2110" />
 
   <!-- Note that FTP credentials are not included in the file for obvious reasons -->
   <!-- If you want to use the upload targets then use the command line -d option to set these appropriately -->
