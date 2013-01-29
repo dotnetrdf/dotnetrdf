@@ -506,8 +506,7 @@
 
   <target name="compile" description="Compile the dotNetRDF released builds" unless="${dotnetrdf.nocompile}" 
           depends="compile-libs,
-                   compile-utils,
-                   compile-utils-installer">
+                   compile-utils">
   </target>
 
   <target name="compile-libs" description="Copiles all libraries for main distribution and toolkit" unless="${dotnetrdf.nocompile}"
