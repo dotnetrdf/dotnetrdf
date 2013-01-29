@@ -339,14 +339,14 @@ namespace VDS.RDF.Writing.Serialization
             this.TestGraphSerializationJson(g);
         }
 
-        [TestMethod]
-        public void SerializationJsonGraph5()
-        {
-            Graph g = new Graph();
-            EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
+        //[TestMethod]
+        //public void SerializationJsonGraph5()
+        //{
+        //    Graph g = new Graph();
+        //    EmbeddedResourceLoader.Load(new PagingHandler(new GraphHandler(g), 50), "VDS.RDF.Configuration.configuration.ttl");
 
-            this.TestGraphSerializationJson(new MockWrapperGraph(g));
-        }
+        //    this.TestGraphSerializationJson(new MockWrapperGraph(g));
+        //}
 
     }
 
