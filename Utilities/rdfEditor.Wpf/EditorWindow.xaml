@@ -236,7 +236,12 @@
         </Menu>
         
         <TabControl Name="tabDocuments" TabStripPlacement="Top" Grid.Row="1" SelectionChanged="tabDocuments_SelectionChanged">
-            
+            <TabControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Save" Click="mnuSave_Click" InputGestureText="Ctrl+S" />
+                    <MenuItem Header="Close" Click="mnuClose_Click" InputGestureText="Ctrl+W" />
+                </ContextMenu>
+            </TabControl.ContextMenu>
         </TabControl>
         
         <StatusBar Name="stsBar" DockPanel.Dock="Bottom" Grid.Row="2" Grid.Column="0">
