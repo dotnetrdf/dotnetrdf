@@ -9,6 +9,7 @@
   <property name="dotnetrdf.nobuild" value="" />
   <property name="dotnetrdf.nosign" value="" />
   <property name="dotnetrdf.nocompile" value="" />
+  <property name="dotnetrdf.nodist" value="" />
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
 
@@ -1214,7 +1215,11 @@
   
   <!-- Dist Targets for creating the distribution ZIP Files -->
 
-  <target name="dist" description="Creates the Distribution ZIP Files"
+  <target name="no-dist" description="Sets that no distributions should be built" depends="no-build">
+    <property name="dotnetrdf.nodist" value="true" />
+  </target>
+
+  <target name="dist" description="Creates the Distribution ZIP Files" unless="${dotnetrdf.nodist}"
           depends="dist-libs-stable,
                    dist-libs-nightly,
                    dist-utils-stable,
@@ -1224,7 +1229,7 @@
     
   </target>
 
-  <target name="dist-libs-stable" description="Creates the ZIP files for the stable API Release" depends="build-release-libs">
+  <target name="dist-libs-stable" description="Creates the ZIP files for the stable API Release" depends="build-release-libs" unless="${dotnetrdf.nodist}">
     <zip zipfile="${dotnetrdf.libzip}" ziplevel="9">
       <fileset>
         <include name="Acknowledgments.txt" />
@@ -1260,7 +1265,7 @@
     </zip>
   </target>
 
-  <target name="dist-libs-nightly" description="Creates the ZIP files for the nightly API release" depends="build-libs">
+  <target name="dist-libs-nightly" description="Creates the ZIP files for the nightly API release" depends="build-libs" unless="${dotnetrdf.nodist}">
     <zip zipfile="${dotnetrdf.nightlyzip}" ziplevel="9">
       <fileset>
         <include name="Acknowledgments.txt" />
@@ -1277,7 +1282,7 @@
     </zip>
   </target>
 
-  <target name="dist-utils-stable" description="Creates the ZIP files for the stable Toolkit release" depends="build-release-utils">
+  <target name="dist-utils-stable" description="Creates the ZIP files for the stable Toolkit release" depends="build-release-utils" unless="${dotnetrdf.nodist}">
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
       <fileset>
         <include name="Acknowledgments.txt" />
@@ -1293,7 +1298,7 @@
     </zip>
   </target>
 
-  <target name="dist-utils-nightly" description="Creates the ZIP files for the nightly Toolkit release" depends="build-release-utils">
+  <target name="dist-utils-nightly" description="Creates the ZIP files for the nightly Toolkit release" depends="build-release-utils" unless="${dotnetrdf.nodist}">
     <zip zipfile="${dotnetrdf.toolkitzip}" ziplevel="9">
       <fileset>
         <include name="Acknowledgments.txt" />
@@ -1309,7 +1314,7 @@
     </zip>
   </target>
 
-  <target name="dist-utils-installer" description="Creates the Toolkit Installer ZIP" depends="compile-utils-installer">
+  <target name="dist-utils-installer" description="Creates the Toolkit Installer ZIP" depends="compile-utils-installer" unless="${dotnetrdf.nodist}">
     <zip zipfile="${dotnetrdf.toolkitinstaller}" ziplevel="9">
       <fileset>
         <include name="Acknowledgments.txt" />
@@ -1325,13 +1330,13 @@
     </zip>
   </target>
 
-  <target name="dist-libs-nuget" description="Creates the NuGet packages" 
+  <target name="dist-libs-nuget" description="Creates the NuGet packages" unless="${dotnetrdf.nodist}" 
           depends="dist-libs-nuget-core,
                    dist-libs-nuget-data-virtuoso,
                    dist-libs-nuget-query-fulltext">
   </target>
 
-  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-core" description="Creates the Core Library NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Core/lib/net40/">
@@ -1403,7 +1408,7 @@
     </exec>
   </target>
 
-  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-data-virtuoso" description="Creates the Data.Virtuoso NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Data.Virtuoso/lib/net40">
@@ -1455,7 +1460,7 @@
     </exec>
   </target>
 
-  <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs">
+  <target name="dist-libs-nuget-query-fulltext" description="Creates the Query.FullText NuGet package" depends="build-release-libs" unless="${dotnetrdf.nodist}">
     <!-- Firstly clean out the relevant directories -->
     <delete>
       <fileset basedir="Build/nuget/Query.FullText/lib/net40">
