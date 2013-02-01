@@ -11,7 +11,8 @@
   <property name="dotnetrdf.nocompile" value="" />
   <property name="dotnetrdf.nosilverlight" value="" />
   <property name="dotnetrdf.nowindowsphone" value="${dotnetrdf.nosilverlight}" />
-
+  <property name="dotnetrdf.noportable" value="${dotnetrdf.nosilverlight}" />
+  
   <!-- Set the Compiler Warnings we want to ignore -->
   <property name="dotnetrdf.nowarn" value="1591;0067" />
   
@@ -86,6 +87,14 @@
     </exec>
   </target>
 
+  <target name="projectsync-core-portable" unless="${dotnetrdf.noportable == 'true' or dotnetrdf.nocompile == 'true'}">
+	<exec program="Build/SyncProjects/SyncProjects.exe">
+		<arg value="sync" />
+		<arg value="Libraries/core/net40/dotNetRDF.csproj" />
+		<arg value="Libraries/core/portable/dotNetRDF.Portable.csproj" />
+	</exec>
+  </target>
+  
   <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
     <exec program="Build/SyncProjects/SyncProjects.exe">

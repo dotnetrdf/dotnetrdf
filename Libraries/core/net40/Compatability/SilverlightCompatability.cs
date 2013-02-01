@@ -32,7 +32,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+#if !NO_HTMLAGILITYPACK
 using HtmlAgilityPack;
+#endif
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 
@@ -149,6 +151,7 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_HTMLAGILITYPACK
         public static HtmlNode SelectSingleNode(this HtmlNode node, String xpath)
         {
             if (!xpath.ToCharArray().All(c => Char.IsLetterOrDigit(c) || c == '/') || xpath.Contains("//"))
@@ -199,6 +202,7 @@ namespace VDS.RDF
 
             return results;
         }
+#endif
 
         public static int FindIndex<T>(this List<T> list, Predicate<T> match)
         {

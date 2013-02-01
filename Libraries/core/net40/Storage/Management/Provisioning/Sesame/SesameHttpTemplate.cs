@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using VDS.RDF;
 
 namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
