@@ -56,7 +56,9 @@ namespace VDS.RDF
         public const String UseAllegroGraph = "Storage.AllegroGraph",
                             AllegroGraphServer = "Storage.AllegroGraph.Server",
                             AllegroGraphCatalog = "Storage.AllegroGraph.Catalog",
-                            AllegroGraphRepository = "Storage.AllegroGraph.Repository";
+                            AllegroGraphRepository = "Storage.AllegroGraph.Repository",
+                            AllegroGraphUser = "Storage.AllegroGraph.User",
+                            AllegroGraphPassword = "Storage.AllegroGraph.Password";
 
         public const String UseDydra = "Storage.Dydra",
                             DydraAccount = "Storage.Dydra.Account",

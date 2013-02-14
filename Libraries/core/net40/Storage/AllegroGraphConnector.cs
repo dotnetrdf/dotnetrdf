@@ -31,6 +31,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+#if !NO_WEB
+using System.Web;
+#endif
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VDS.RDF.Configuration;
@@ -53,7 +56,10 @@ namespace VDS.RDF.Storage
     /// </para>
     /// </remarks>
     public class AllegroGraphConnector
-        : BaseSesameHttpProtocolConnector, IConfigurationSerializable
+        : BaseSesameHttpProtocolConnector, IConfigurationSerializable, IAsyncUpdateableStorage
+#if !NO_SYNC_HTTP
+        , IUpdateableStorage
+#endif
     {
         private String _agraphBase;
         private String _catalog;
@@ -65,7 +71,7 @@ namespace VDS.RDF.Storage
         /// <param name="catalogID">Catalog ID</param>
         /// <param name="storeID">Store ID</param>
         public AllegroGraphConnector(String baseUri, String catalogID, String storeID)
-            : this(baseUri, storeID, catalogID, (String)null, (String)null) { }
+            : this(baseUri, catalogID, storeID, (String)null, (String)null) { }
 
         /// <summary>
         /// Creates a new Connection to an AllegroGraph store in the Root Catalog (AllegroGraph 4.x and higher)
@@ -95,6 +101,7 @@ namespace VDS.RDF.Storage
             }
             this._store = storeID;
             this._catalog = catalogID;
+            this._updatePath = String.Empty;
 
             this._server = new AllegroGraphServer(this._baseUri, this._catalog);
         }
@@ -167,6 +174,145 @@ namespace VDS.RDF.Storage
             get
             {
                 return (this._catalog != null ? this._catalog : "<ROOT>");
+            }
+        }
+
+#if !NO_SYNC_HTTP
+
+        /// <summary>
+        /// Makes a SPARQL Update request to the Allegro Graph server
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        public virtual void Update(string sparqlUpdate)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("query=");
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
+                using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
+                {
+                    writer.Write(postData);
+                    writer.Close();
+                }
+
+#if DEBUG
+                if (Options.HttpDebugging)
+                {
+                    Tools.HttpDebugRequest(request);
+                }
+#endif
+
+                //Get the Response and process based on the Content Type
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+#if DEBUG
+                    if (Options.HttpDebugging)
+                    {
+                        Tools.HttpDebugResponse(response);
+                    }
+#endif
+                    //If we get here it completed OK
+                    response.Close();
+                }
+            }
+            catch (WebException webEx)
+            {
+                throw StorageHelper.HandleHttpError(webEx, "updating");
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Makes a SPARQL Update request to the Allegro Graph server
+        /// </summary>
+        /// <param name="sparqlUpdate">SPARQL Update</param>
+        /// <param name="callback">Callback</param>
+        /// <param name="state">State to pass to the callback</param>
+        public virtual void Update(string sparqlUpdate, AsyncStorageCallback callback, Object state)
+        {
+            try
+            {
+                HttpWebRequest request;
+
+                //Create the Request
+                request = this.CreateRequest(this._repositoriesPrefix + this._store + this._updatePath, MimeTypesHelper.Any, "POST", new Dictionary<String, String>());
+
+                //Build the Post Data and add to the Request Body
+                request.ContentType = MimeTypesHelper.WWWFormURLEncoded;
+                StringBuilder postData = new StringBuilder();
+                postData.Append("query=");
+                postData.Append(HttpUtility.UrlEncode(EscapeQuery(sparqlUpdate)));
+
+                request.BeginGetRequestStream(r =>
+                {
+                    try
+                    {
+                        Stream stream = request.EndGetRequestStream(r);
+                        using (StreamWriter writer = new StreamWriter(stream))
+                        {
+                            writer.Write(postData);
+                            writer.Close();
+                        }
+
+#if DEBUG
+                        if (Options.HttpDebugging)
+                        {
+                            Tools.HttpDebugRequest(request);
+                        }
+#endif
+
+                        //Get the Response and process based on the Content Type
+                        request.BeginGetResponse(r2 =>
+                        {
+                            try
+                            {
+                                HttpWebResponse response = (HttpWebResponse)request.EndGetResponse(r2);
+#if DEBUG
+                                if (Options.HttpDebugging)
+                                {
+                                    Tools.HttpDebugResponse(response);
+                                }
+#endif
+                                //If we get here it completed OK
+                                response.Close();
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate), state);
+                            }
+                            catch (WebException webEx)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+                            }
+                            catch (Exception ex)
+                            {
+                                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
+                            }
+                        }, state);
+                    }
+                    catch (WebException webEx)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+                    }
+                    catch (Exception ex)
+                    {
+                        callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
+                    }
+                }, state);
+            }
+            catch (WebException webEx)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleHttpError(webEx, "updating")), state);
+            }
+            catch (Exception ex)
+            {
+                callback(this, new AsyncStorageCallbackArgs(AsyncStorageOperation.SparqlUpdate, sparqlUpdate, StorageHelper.HandleError(ex, "updating")), state);
             }
         }
 

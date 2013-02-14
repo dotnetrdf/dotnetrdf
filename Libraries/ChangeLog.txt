@@ -5,6 +5,8 @@
 -----
 
 Changed
+- Storage API
+ - SesameNativeTemplate is now a public class
 
 Removed
 
