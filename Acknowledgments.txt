@@ -92,3 +92,7 @@ improvements in the code:
  - Uldis Bojars
  - Antonio Nunziante
  - Constantinos Orphinades
+ - Daeron Meyer
+ - Andrew Matthews
+ - Nicolas Gauthier
+ - Dimitri Kourkoulis

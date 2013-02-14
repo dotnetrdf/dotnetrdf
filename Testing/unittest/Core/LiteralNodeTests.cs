@@ -26,8 +26,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Globalization;
 using System.Threading;
-using VDS.RDF.Writing.Formatting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
+using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Core
 {
@@ -92,6 +94,90 @@ namespace VDS.RDF.Core
             {
                 Thread.CurrentThread.CurrentCulture = sysCulture;
             }
+        }
+
+        [TestMethod]
+        public void NodeToLiteralDateTimePrecision1()
+        {
+            DateTimeOffset now = DateTimeOffset.Now;
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode litNow = now.ToLiteral(factory);
+
+            //Print out
+            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Console.WriteLine("Node Form: " + formatter.Format(litNow));
+
+            //Extract and check it round tripped
+            DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+
+            TimeSpan diff = now - now2;
+            Console.WriteLine("Difference: " + diff.ToString());
+            Assert.IsTrue(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
+        }
+
+        [TestMethod]
+        public void NodeToLiteralDateTimePrecision2()
+        {
+            DateTime now = DateTime.Now;
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode litNow = now.ToLiteral(factory);
+
+            //Print out
+            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Console.WriteLine("Node Form: " + formatter.Format(litNow));
+
+            //Extract and check it round tripped
+            DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+
+            TimeSpan diff = now - now2;
+            Console.WriteLine("Difference: " + diff.ToString());
+            Assert.IsTrue(diff < new TimeSpan(10), "Loss of precision should be at most 1 micro-second");
+        }
+
+        [TestMethod]
+        public void NodeToLiteralDateTimePrecision3()
+        {
+            DateTimeOffset now = DateTimeOffset.Now;
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode litNow = now.ToLiteral(factory, false);
+
+            //Print out
+            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Console.WriteLine("Node Form: " + formatter.Format(litNow));
+
+            //Extract and check it round tripped
+            DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+
+            TimeSpan diff = now - now2;
+            Console.WriteLine("Difference: " + diff.ToString());
+            Assert.IsTrue(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
+        }
+
+        [TestMethod]
+        public void NodeToLiteralDateTimePrecision4()
+        {
+            DateTime now = DateTime.Now;
+            NodeFactory factory = new NodeFactory();
+            ILiteralNode litNow = now.ToLiteral(factory, false);
+
+            //Print out
+            Console.WriteLine("Original: " + now.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+            NTriplesFormatter formatter = new NTriplesFormatter();
+            Console.WriteLine("Node Form: " + formatter.Format(litNow));
+
+            //Extract and check it round tripped
+            DateTimeOffset now2 = litNow.AsValuedNode().AsDateTime();
+            Console.WriteLine("Extracted: " + now2.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat));
+
+            TimeSpan diff = now - now2;
+            Console.WriteLine("Difference: " + diff.ToString());
+            Assert.IsTrue(diff < new TimeSpan(0,0,1), "Loss of precision should be at most 1 second");
         }
     }
 }

@@ -2230,9 +2230,6 @@
     <Compile Include="..\net40\Storage\BatchTriple.cs">
       <Link>Storage\BatchTriple.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Storage\JosekiConnector.cs">
-      <Link>Storage\JosekiConnector.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Storage\SesameHttpProtocolConnector.cs">
       <Link>Storage\SesameHttpProtocolConnector.cs</Link>
     </Compile>
@@ -2331,9 +2328,6 @@
     </Compile>
     <Compile Include="..\net40\Writing\CsvWriter.cs">
       <Link>Writing\CsvWriter.cs</Link>
-    </Compile>
-    <Compile Include="..\net40\Writing\FastRdfXmlWriter.cs">
-      <Link>Writing\FastRdfXmlWriter.cs</Link>
     </Compile>
     <Compile Include="..\net40\Writing\Notation3Writer.cs">
       <Link>Writing\Notation3Writer.cs</Link>

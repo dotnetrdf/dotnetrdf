@@ -866,7 +866,7 @@ namespace VDS.RDF.Storage
                                 }
                                 else
                                 {
-                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received");
+                                    throw new RdfQueryException("Expected a single string value representing the serialization of the Graph resulting from a CONSTRUCT/DESCRIBE query but this was not received (Got " + results.Rows.Count + " row(s) with " + results.Columns.Count +  "column(s)");
                                 }
                                 break;
 

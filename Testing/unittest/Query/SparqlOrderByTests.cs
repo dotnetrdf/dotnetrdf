@@ -33,7 +33,7 @@ namespace VDS.RDF.Query
     public class SparqlOrderByTests
     {
         [TestMethod]
-        public void ShouldAllowConstructingWithRawVariableName()
+        public void SparqlOrderByWithRawVariableName()
         {
             // when
             var ordering = new OrderByVariable("name");
@@ -43,7 +43,7 @@ namespace VDS.RDF.Query
         }
 
         [TestMethod]
-        public void ShouldAllowConstructingWithVariableNameWithDollarSign()
+        public void SparqlOrderByWithVariableNameWithDollarSign()
         {
             // when
             var ordering = new OrderByVariable("$name");
@@ -53,7 +53,7 @@ namespace VDS.RDF.Query
         }
 
         [TestMethod]
-        public void ShouldAllowConstructingWithVariableNameWithQuestionMark()
+        public void SparqlOrderByWithVariableNameWithQuestionMark()
         {
             // when
             var ordering = new OrderByVariable("?name");

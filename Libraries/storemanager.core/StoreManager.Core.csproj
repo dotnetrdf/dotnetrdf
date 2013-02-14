@@ -49,7 +49,6 @@
     <Compile Include="Connections\BuiltIn\FourStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\FusekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\InMemoryConnectionDefinition.cs" />
-    <Compile Include="Connections\BuiltIn\JosekiConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SesameConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SparqlGraphStoreConnectionDefinition.cs" />
     <Compile Include="Connections\BuiltIn\SparqlQueryConnectionDefinition.cs" />
