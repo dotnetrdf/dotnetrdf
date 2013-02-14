@@ -136,7 +136,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper");
+                throw new RdfException("The Namespace URI for the given Prefix '" + prefix + "' is not known by the in-scope NamespaceMapper.  Did you forget to define a namespace for this prefix?");
             }
         }
 

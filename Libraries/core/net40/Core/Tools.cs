@@ -42,28 +42,6 @@ namespace VDS.RDF
     public static class Tools
     {
         /// <summary>
-        /// Copies Byte by Byte from one Stream to another
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        [Obsolete("Deprecated for public use, will be made removed in future releases", true)]
-        public static void StreamCopy(Stream input, Stream output)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Copies an Input Stream into a local Memory Stream and then seeks it to the start before returning it
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <returns>Memory Stream with a local copy of the Input Stream seeked to the origin and ready to read from</returns>
-        [Obsolete("Deprecated for public use, will be removed in future release", true)]
-        public static MemoryStream StreamCopyLocal(Stream input)
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
         /// Checks whether a Uri is valid as a Base Uri for resolving Relative URIs against
         /// </summary>
         /// <param name="baseUri">Base Uri to test</param>
@@ -244,7 +222,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        throw new RdfParseException("Cannot resolve a QName in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined");
+                        throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
                     }
                 }
             }

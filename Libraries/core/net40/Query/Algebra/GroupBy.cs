@@ -100,6 +100,9 @@ namespace VDS.RDF.Query.Algebra
                 }
                 groupSet.AddGroup(group);
             }
+            //If grouping produced no groups and there are aggregates present
+            //then an implicit group is created
+            if (groups.Count == 0 && this._aggregates.Count > 0) groupSet.AddGroup(new BindingGroup());
 
             //Apply the aggregates
             context.InputMultiset = groupSet;

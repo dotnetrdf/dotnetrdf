@@ -6,38 +6,60 @@
 
 Changed
 - Core API
- - Reorganised namespaces
- - Simplified data models - INode, Triple, Quad, IGraph, IGraphStore
+ - Nodes are no longer scoped to graphs
+ - Simplified data models - INode, Triple, Quad, IGraph and IQuadStore
+
+1.0.0
+-----
+
+Changed
+
+Removed
+
 
 0.9.0 RC4
 ---------
 
 Added
 - Ontology API
- - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass
- - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty
- - Added Siblings property on OntologyClass and OntologyProperty
- - Added IsTopClass and IsBottomClass property on OntologyClass
- - Added IsTopProperty and IsBottomProperty on OntologyProperty
- - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph
- - Added AsClass() and AsProperty() methods on OntologyResource
+ - Added Direct/Indirect SubClasses and SuperClasses property on OntologyClass (CORE-295)
+ - Added Direct/Indirect SubProperties and SuperProperties property on OntologyProperty (CORE-295)
+ - Added Siblings property on OntologyClass and OntologyProperty (CORE-296)
+ - Added IsTopClass and IsBottomClass property on OntologyClass (CORE-293)
+ - Added IsTopProperty and IsBottomProperty on OntologyProperty (CORE-293)
+ - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph (CORE-293)
+ - Added AsClass() and AsProperty() methods on OntologyResource (CORE-293)
 
 
 Changed
 - Bug Fixes
- - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$
- - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities
- - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI
- - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables
- - Fix a corner base base in interaction between GRAPH clauses and property paths
- - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used
- - Fix a bug with the XPath Replace function
+ - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$ 
+ - Fix a bug in SparqlJsonParser relating to some valid data being rejected due to Json.Net perculiarities (CORE-290)
+ - Fix a bug in the streaming mode of the RDF/XML parser not respecting external Base URI (CORE-216)
+ - Fix a corner case bug in interaction between GRAPH clause and inner patterns that match but have no variables (CORE-294)
+ - Fix a corner base base in interaction between GRAPH clauses and property paths (CORE-294)
+ - Fix a bug in INSERT/DELETE commands when a GRAPH clause with an unbound variable is used (CORE-300)
+ - Fix a bug with the XPath Replace function (CORE-299)
+ - Fix a bug with applying aggregates over empty intermediate results giving incorrect results (CORE-304)
+ - Add an opt-in workaround for HTTP Basic Authentication against badly behaved server (CORE-301)
+ - Fix a bug with loss of precision when converting DateTime to xsd:dateTime literals (CORE-305)
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
- - Updated VDS.Common to 1.1.1
+ - Updated VDS.Common to 1.1.2
 - Build
- - Improved our test architecture significantly
- - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF
+ - Improved our test architecture significantly (CORE-216)
+ - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF (CORE-292)
+- Storage, Query and Update
+ - Always enable PreAuthenticate for HTTP requests where possible to reduce HTTP requests (CORE-302)
+ 
+Removed
+- Removed the obsolete JosekiConnector as obsolete unusable
+- Removed some obsolete property and class constants in ConfigurationLoader as obsolete unusable
+- Removed the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
+- Removed the obsolete IndexingHelper static class as obsolete unusable
+- Removed the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
+- Removed the obsolete Tools.StreamCopy() method as obsolete unusable
+- Removed the obsolete FastRdfXmlWriter as obsolete unusable
 
 0.8.2 RC3
 ---------
@@ -65,16 +87,16 @@ Added
 
 Changed
 - Bug Fixes
- - Fixed an internal API inconsistency
+ - Fixed an internal API inconsistency (CORE-285)
  - Fixed a bug in the BNODE() function
- - Fixed a bug in Extend that could occur when many Extends were nested together
+ - Fixed a bug in Extend that could occur when many Extends were nested together (CORE-287)
  - Fixed an intermittent race condition in the implementation of parallel Left Join
- - Fixed several bugs in the evaluation of some complex GROUP BY statements
- - Fixed a bug in the string representation of CountDistinctAggregate
+ - Fixed a bug in the evaluation of some complex GROUP BY statements
+ - Fixed a bug in the string representation of CountDistinctAggregate (CORE-286)
  - Fixed a bug related to losing FILTERS when building queries using the internal APIs
- - Fixed a bug related to ToString() form of some API built queries
+ - Fixed a bug related to ToString() form of some API built queries (CORE-286)
  - Fixed a bug related to graph scoping of full text search
- - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance
+ - Fixes various bugs related to SPARQL 1.1 Protocol and Service Description compliance (CORE-289)
 - Dependencies
  - Updated Json.Net dependency to 4.5r11
  - Updated Query.FullText Library to use Lucene.Net 3.0.3
@@ -86,12 +108,12 @@ Changed
  - Data.Virtuoso NuGet package now references OpenLink.Data.Virtuoso as a dependency instead of including it in the package
  - All alternative builds are now part of the solution rather than being generated only by the NAnt builds
 - Parsing/Writing
- - Improved how parsers and writers are selected by file extension
- - Improved content negotiation logic to properly support quality factors and type ranges
- - Avoid using blocking IO when parsing from file/memory streams
+ - Improved how parsers and writers are selected by file extension (CORE-282)
+ - Improved content negotiation logic to properly support quality factors and type ranges (CORE-282)
+ - Avoid using blocking IO when parsing from file/memory streams (CORE-282)
 - Query
  - Improved how Distinct() algebra behaves with respect to trimming temporary variables to better support complex property paths
- - Improved how GROUP BY, aggregates and Project Expressions are implemented internally
+ - Improved how GROUP BY, aggregates and Project Expressions are implemented internally (CORE-284)
  - Improved parallel implementation of Left Join
 
 Removed
@@ -108,56 +130,56 @@ Removed
 - Marks the obsolete Tools.CopyStream() method as obsolete unusable
 - Marks the obsolete FastRdfXmlWriter as obsolete unusable
 
-0.7.0 Beta
+0.7.2 Beta
 ----------
 
 Added
 - Configuration API
- - More auto-configuration methods
- - Helper methods for loading configuration graphs
+ - More auto-configuration methods (CORE-270)
+ - Helper methods for loading configuration graphs (CORE-270)
   - Supports new ability to have one configuration graph import another URI/file
- - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties
- - Support for specifying custom Triple and Graph Collections
- - Support for loading IStorageServer instances
- - Support for loading SPARQL operators and property function factories
- - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation
+ - More overloads for GetConfigurationX() methods to select values based on a selection of possible properties (CORE-270)
+ - Support for specifying custom Triple and Graph Collections (CORE-270)
+ - Support for loading IStorageServer instances (CORE-270)
+ - Support for loading SPARQL operators and property function factories (CORE-270)
+ - Support for automatically configuring static properties e.g. Options.UsePLinqEvaluation (CORE-270)
 - Query
- - Added IsMinusCompatibleWith() method to ISet interface
- - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic
- - Support for SPARQL property functions
-  - Refactored Query.FullText to be a true property function
+ - Added IsMinusCompatibleWith() method to ISet interface (CORE-238)
+ - Support for extended SPARQL Operators e.g. using + for Date Time arithmetic (CORE-264)
+ - Support for SPARQL property functions (CORE-268)
+  - Refactored Query.FullText to be a true property function (CORE-268)
 
 Changed
 - Bug Fixes
- - Some logic fixes to AllegroGraphConnector and AllegroGraphServer
- - Bug fix to TreeIndexedTripleCollection
- - Bug fix to corner case MINUS logic in SPARQL 1.1
- - Bug fix to corner case GROUP BY and aggregate interaction logic
+ - Some logic fixes to AllegroGraphConnector and AllegroGraphServer (CORE-263)
+ - Bug fix to TreeIndexedTripleCollection (CORE-265)
+ - Bug fix to corner case MINUS logic in SPARQL 1.1 (CORE-238)
+ - Bug fix to corner case GROUP BY and aggregate interaction logic (CORE-238)
  - Bug fix to improve handling of & when outputting XML - Kal Ahmed
- - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary
+ - Bug fix for a logic flaw in GraphCollection exposed when deriving from GraphCollection caused by the refactor to use of MultiDictionary (CORE-274)
  - Bug fix for a parsing error when property paths are nested in Blank Node predicate object lists
  - Bug fix for proper parser detection when selecting based on a .abc.gz filename
- - Bug fix for error in Lazy evaluation of some queries
- - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases
- - Bug fix for some prefix validation bugs in SPARQL 1.1
- - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables
+ - Bug fix for error in Lazy evaluation of some queries (CORE-238)
+ - Bug fix for subtle logic errors in SPARQL dataset resolution in some rare cases (COR-238)
+ - Bug fix for some prefix validation bugs in SPARQL 1.1 (CORE-238)
+ - Bug fix for doing unecessary extra work in a SPARQL DISTINCT operation and not discarding temporary variables (CORE-238)
  - Bug fix for pathological case of Graph isomporphism not being handled correctly in GraphMatcher
- - Bug fix for use of Uri.EscapeDataString() on long strings
- - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance
- - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour
- - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames
+ - Bug fix for use of Uri.EscapeDataString() on long strings (CORE-278)
+ - Bug fix to a corner case where a ScapegoatTree could lose data in a rebalance (CORE-279)
+ - Bug fix to QueryableGraph not being properly aware of change in default graph behaviour (CORE-238)
+ - Bug fix for RdfXmlParser incorrectly resolving some bad property QNames (CORE-280)
 - Dependencies
  - Bumped JSON.Net version to 4.5r9
  - Bumped HtmlAgilityPack version to 1.4.6
 - Core API
- - Made TreeIndexedTripleCollection the default triple collection implementation
+ - Made TreeIndexedTripleCollection the default triple collection implementation (CORE-265)
 - Parsing
- - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax
+ - Turtle parser now allows SPARQL style BASE and PREFIX when using W3C standard syntax (CORE-261)
 - Query
- - Improves SPARQL 1.1 support to near 100% compliance
+ - Improves SPARQL 1.1 support to near 100% compliance (CORE-238)
 - Storage
- - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace
- - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider
+ - Moved IStorageServer implementations into separate classes (AllegroGraphServer, SesameServer and StardogServer) in own namespace (CORE-263)
+ - Added ParentServer and AsyncParentServer properties to IStorageProvider and IAsyncStorageProvider (CORE-263)
  - Talis is no longer supported since the Talis Platform is in the process of winding down for public usage
 
 Removed
@@ -175,8 +197,8 @@ Removed
 
 Added
 - Core API
- - New Indexing data structures
- - New decorator classes to make it simpler to wrap extra functionality around existing implementations:
+ - New Indexing data structures (CORE-247, CORE-52)
+ - New decorator classes to make it simpler to wrap extra functionality around existing implementations: (CORE-255)
   - WrapperGraph
   - WrapperGraphCollection
   - WrapperTripleCollection
@@ -184,30 +206,30 @@ Added
 
 Changed
 - Bug Fixes
- - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi
- - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles
- - Fixed a bug with GraphDiff and null reference handling
+ - Fixed a bug with parsers being too restrictive on permitted language specifier formats - thanks to Csaba Gonczi (CORE-253)
+ - Fixed a subtle bug around percent encoded characters in URIs - thanks to Rob Styles (CORE-258)
+ - Fixed a bug with GraphDiff and null reference handling (CORE-259)
 - Core API
  - IGraph changes:
-  - Changes definition of Assert() and Retract() to return booleans
-  - Removes unecessary overloads of Assert() and Retract()
+  - Changes definition of Assert() and Retract() to return booleans (CORE-254)
+  - Removes unecessary overloads of Assert() and Retract() (CORE-254)
  - ITripleStore changes:
-  - Changes definition of  Add() and Remove() to return booleans
+  - Changes definition of  Add() and Remove() to return booleans (CORE-254)
   - Adds indexer for accessing graphs and obsoletes the Graph() method in favour of this
  - Triple Collection changes:
-  - BaseTripleCollection now defines Add() and Delete() as returning booleans
-  - Refactored internals of TripleCollection to use our new MultiDictionary data structure
-  - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight
+  - BaseTripleCollection now defines Add() and Delete() as returning booleans (CORE-254)
+  - Refactored internals of TripleCollection to use our new MultiDictionary data structure (CORE-247)
+  - ThreadSafeTripleCollection is now a decorator that can be applied to any BaseTripleCollection instance, also made it available on Silverlight (CORE-255)
  - Graph Collection changes:
-  - Refactored internals of GraphCollection to use our new MultiDictionary data structure
-  - ThreadSafeGraphCollection is now a decorator that can be applied to any BaseGraphCollection instance, also made it available on Silverlight
-  - DiskDemandGraphCollection and WebDemandGraphCollection are now both decorators and so can be combined on top of each other as desired
+  - Refactored internals of GraphCollection to use our new MultiDictionary data structure (CORE-247)
+  - ThreadSafeGraphCollection is now a decorator that can be applied to any BaseGraphCollection instance, also made it available on Silverlight (CORE-255)
+  - DiskDemandGraphCollection and WebDemandGraphCollection are now both decorators and so can be combined on top of each other as desired (CORE-255)
 - Query
- - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans
+ - ISparqlDataset now defines AddGraph() and RemoveGraph() as returning booleans (CORE-254)
 - Storage API
- - Refactored IStorageServer API
- - Added support for creating stores with Sesame - thanks to Jeen Broekstra
- - Standardized error handling across Storage Providers as far as possible - thanks to Ron Michael Zettlemoyer
+ - Refactored IStorageServer API (CORE-249)
+ - Added support for creating stores with Sesame - thanks to Jeen Broekstra (CORE-249)
+ - Standardized error handling across Storage Providers as far as possible - thanks to Ron Michael Zettlemoyer (CORE-262)
  - Stardog
   - Avoid any transaction if calling UpdateGraph() without any updates - thanks to Ron Michael Zettlemoyer
 
@@ -226,26 +248,26 @@ Removed
 Added
 - Query
  - Added an implicit join optimiser
- - Added a filtered product optimiser
- - Added support for UUID and STRUUID functions
- - Added support for VALUES syntax
+ - Added a filtered product optimiser (CORE-224)
+ - Added support for UUID and STRUUID functions (CORE-222)
+ - Added support for VALUES syntax (CORE-222)
 
 Changed
 - Bug Fixes
- - Fix for a bug with FILTER and BIND in the WHERE clause of INSERT/DELETE causing incorrect behaviour due to an over optimization issue
- - Fix for a bug with ASK queries and SparqlRemoteEndpoint.QueryWithResultSet()
- - Fix for a bug with Stardog connectivity related to defunct connection string parameter
- - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed
- - Fix for a bug with multi-threaded access to our Trie implementation
- - Fix for a bug with nested aggregates evaluating when they should error i.e. inner aggregate gives unbound
- - Fix for bugs readrding insertion and deletion of Blank Node containing triples via the UpdateGraph() method when using Virtuoso
+ - Fix for a bug with FILTER and BIND in the WHERE clause of INSERT/DELETE causing incorrect behaviour due to an over optimization issue (CORE-225)
+ - Fix for a bug with ASK queries and SparqlRemoteEndpoint.QueryWithResultSet() (CORE-229)
+ - Fix for a bug with Stardog connectivity related to defunct connection string parameter (CORE-230)
+ - Fix for a bug with multi-threaded access to MimeTypesHelper failing if it hadn't been previously accessed (CORE-228)
+ - Fix for a bug with multi-threaded access to our Trie implementation (CORE-228)
+ - Fix for a bug with nested aggregates evaluating when they should error i.e. inner aggregate gives unbound (CORE-232)
+ - Fix for bugs readrding insertion and deletion of Blank Node containing triples via the UpdateGraph() method when using Virtuoso (
  - Fix for calling CreateUriNode() with a relative URI on a Graph not automatically resolving against Graph Base URI
 - Parsing
- - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader
+ - Refactored IStoreReader API to be consistent with IRdfReader and ISparqlResultsReader (CORE-212)
 - Query
- - Default behaviour is now not to have a union default graph
- - BINDINGS syntax now disabled in favour of the new VALUES syntax from latest editors draft
- - Revised STRAFTER and STRBEFORE implementation to latest editors draft
+ - Default behaviour is now not to have a union default graph (CORE-211)
+ - BINDINGS syntax now disabled in favour of the new VALUES syntax from latest editors draft (CORE-222)
+ - Revised STRAFTER and STRBEFORE implementation to latest editors draft (CORE-222)
  - Turned on PLinq Evaluation by default, following operations are parallelised currently:
   - Join
   - LeftJoin
@@ -253,13 +275,13 @@ Changed
   - Filter
   - Extend
 - Storage
- - Major refactor and reorganisation of interfaces within Storage namespace to have more consistent naming
- - Supports a standard async access API over almost all existing storage providers
- - Adds a new IStorageServer interface for providers like Sesame and AllegroGraph which allow multiple stores to be managed
+ - Major refactor and reorganisation of interfaces within Storage namespace to have more consistent naming (CORE-215)
+ - Supports a standard async access API over almost all existing storage providers (CORE-68)
+ - Adds a new IStorageServer interface for providers like Sesame and AllegroGraph which allow multiple stores to be managed (CORE-215)
 - Serialization
- - Refactored IStoreWriter API to be consistent with IRdfWriter and ISparqlResultsWriter
+ - Refactored IStoreWriter API to be consistent with IRdfWriter and ISparqlResultsWriter (CORE-212)
 - Update
- - Refactored code around ISparqlHttpProtocolProcessor to make it easier to expose this feature on non-ASP.Net web servers
+ - Refactored code around ISparqlHttpProtocolProcessor to make it easier to expose this feature on non-ASP.Net web servers (CORE-183)
 
 Removed
 - Obsolete ISelector API removed

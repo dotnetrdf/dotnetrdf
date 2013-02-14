@@ -1106,8 +1106,26 @@ namespace VDS.RDF.Storage
             //Add Credentials if needed
             if (this._hasCredentials)
             {
-                NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
-                request.Credentials = credentials;
+                if (Options.ForceHttpBasicAuth)
+                {
+                    //Forcibly include a HTTP basic authentication header
+#if !SILVERLIGHT
+                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this._username + ":" + this._pwd));
+                    request.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this._username + ":" + this._pwd));
+                    request.Headers["Authorization"] = "Basic " + credentials;
+#endif
+                }
+                else
+                {
+                    //Leave .Net to cope with HTTP auth challenge response
+                    NetworkCredential credentials = new NetworkCredential(this._username, this._pwd);
+                    request.Credentials = credentials;
+#if !SILVERLIGHT
+                    request.PreAuthenticate = true;
+#endif
+                }
             }
 
             return base.GetProxiedRequest(request);

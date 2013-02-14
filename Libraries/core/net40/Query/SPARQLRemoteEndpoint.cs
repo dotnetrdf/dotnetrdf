@@ -587,7 +587,25 @@ namespace VDS.RDF.Query
             //Apply Credentials to request if necessary
             if (this.Credentials != null)
             {
-                httpRequest.Credentials = this.Credentials;
+                if (Options.ForceHttpBasicAuth)
+                {
+                    //Forcibly include a HTTP basic authentication header
+#if !SILVERLIGHT
+                    string credentials = Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers.Add("Authorization", "Basic " + credentials);
+#else
+                    string credentials = Convert.ToBase64String(Encoding.UTF8.GetBytes(this.Credentials.UserName + ":" + this.Credentials.Password));
+                    httpRequest.Headers["Authorization"] = "Basic " + credentials;
+#endif
+                }
+                else
+                {
+                    //Leave .Net to handle the HTTP auth challenge response itself
+                    httpRequest.Credentials = this.Credentials;
+#if !SILVERLIGHT
+                    httpRequest.PreAuthenticate = true;
+#endif
+                }
             }
 
 #if !NO_PROXY

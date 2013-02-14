@@ -78,9 +78,9 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.1.1.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+    <Reference Include="VDS.Common, Version=1.1.2.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\VDS.Common.1.1.1\lib\net40-client\VDS.Common.dll</HintPath>
+      <HintPath>..\..\packages\VDS.Common.1.1.2\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +120,7 @@
     <Compile Include="Parsing\Suites\TriX.cs" />
     <Compile Include="Parsing\Suites\Turtle11.cs" />
     <Compile Include="Parsing\Suites\TurtleMemberSubmission.cs" />
+    <Compile Include="Query\Aggregates\AggregatesOverNullTests.cs" />
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
     <Compile Include="Query\BindingsTests.cs" />
@@ -203,6 +204,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Query\SampleWeightings.n3" />
     <Content Include="resources\bad_rdfa.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
