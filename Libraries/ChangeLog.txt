@@ -5,8 +5,11 @@
 -----
 
 Changed
+- Bug Fixes
+ - Fix for one form of AllegroGraphConnector constructor confusing Store and Catalog IDs
 - Storage API
  - SesameNativeTemplate is now a public class
+ - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
 
 Removed
 
