@@ -96,6 +96,7 @@
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
+    <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />
