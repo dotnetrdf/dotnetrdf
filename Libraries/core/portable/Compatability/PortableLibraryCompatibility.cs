@@ -14,4 +14,16 @@ namespace VDS.RDF
     {
         public DescriptionAttribute(string desc) { }
     }
+
+    public class ReadOnlyAttribute : Attribute
+    {
+        public ReadOnlyAttribute(bool readOnly)
+        {
+        }
+    }
+
+    public class TypeConverterAttribute : Attribute
+    {
+        public TypeConverterAttribute(Type converterType){}
+    }
 }
