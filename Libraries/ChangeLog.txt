@@ -7,6 +7,8 @@
 Changed
 - Bug Fixes
  - Fix for one form of AllegroGraphConnector constructor confusing Store and Catalog IDs
+- Dependencies
+ - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter (CORE-317, CORE-292)
 - Core API
  - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
 - Storage API

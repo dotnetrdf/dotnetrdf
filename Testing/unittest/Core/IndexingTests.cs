@@ -49,7 +49,7 @@ namespace VDS.RDF
             ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             //Use a dud hash function to put everything into a single bucket
-            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1);
+            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false);
             dictionary.Add(canonical, 1);
             Assert.AreEqual(1, dictionary[canonical]);
             dictionary[alternate] = 2;
@@ -86,7 +86,7 @@ namespace VDS.RDF
 
             //Use a dud hash function to put everything into a single bucket and use
             //the FastNodeComparer
-            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, new FastNodeComparer(), MultiDictionaryMode.AVL);
+            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.AVL);
             dictionary.Add(canonical, 1);
             Assert.AreEqual(1, dictionary[canonical]);
             dictionary.Add(alternate, 2);
