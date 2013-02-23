@@ -83,12 +83,20 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     public class SesameNativeTemplate
         : BaseSesameTemplate
     {
+        /// <summary>
+        /// Creates a Sesame Native store template
+        /// </summary>
+        /// <param name="id">Store ID</param>
         public SesameNativeTemplate(String id)
             : base(id, "Sesame Native", "A Sesame native store resides on disk")
         {
             this.IndexMode = SesameNativeIndexMode.SPOC;
         }
 
+        /// <summary>
+        /// Gets the template graph used to specify the configuration of a Sesame repository
+        /// </summary>
+        /// <returns>Template Graph</returns>
         public override IGraph GetTemplateGraph()
         {
             IGraph g = this.GetBaseTemplateGraph();
