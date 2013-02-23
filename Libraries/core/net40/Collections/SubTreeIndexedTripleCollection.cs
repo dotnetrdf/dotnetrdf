@@ -119,7 +119,7 @@ namespace VDS.RDF.Collections
             }
             else
             {
-                subtree = new MultiDictionary<Triple, List<Triple>>(hashFunc, comparer, MultiDictionaryMode.AVL);
+                subtree = new MultiDictionary<Triple, List<Triple>>(hashFunc, false, comparer, MultiDictionaryMode.AVL);
                 subtree.Add(t, new List<Triple> { t });
                 index.Add(n, subtree);
             }

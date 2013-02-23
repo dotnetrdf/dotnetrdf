@@ -58,7 +58,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// <para>
     /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
     /// </para>
-    /// <pre>
+    /// <code>
     /// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
     /// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
     /// @prefix sr: &lt;http://www.openrdf.org/config/repository/sail#&gt;.
@@ -75,20 +75,28 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     ///          ns:tripleIndexes "{this.IndexMode}"
     ///       ]
     ///    ].
-    /// </pre>
+    /// </code>
     /// <para>
     /// The placeholders of the form <strong>{this.Property}</strong> represent properties of this class whose values will be inserted into the repository config graph and used to create a new store in Sesame.
     /// </para>
     /// </remarks>
-    class SesameNativeTemplate
+    public class SesameNativeTemplate
         : BaseSesameTemplate
     {
+        /// <summary>
+        /// Creates a Sesame Native store template
+        /// </summary>
+        /// <param name="id">Store ID</param>
         public SesameNativeTemplate(String id)
             : base(id, "Sesame Native", "A Sesame native store resides on disk")
         {
             this.IndexMode = SesameNativeIndexMode.SPOC;
         }
 
+        /// <summary>
+        /// Gets the template graph used to specify the configuration of a Sesame repository
+        /// </summary>
+        /// <returns>Template Graph</returns>
         public override IGraph GetTemplateGraph()
         {
             IGraph g = this.GetBaseTemplateGraph();

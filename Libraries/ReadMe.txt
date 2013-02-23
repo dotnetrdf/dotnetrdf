@@ -3,6 +3,8 @@ dotNetRDF
 
 A Library for RDF manipulation and parsing in .Net using C# 3.0
 
+Documentation may be found at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki
+
 This package contains the Core Library for the following .Net profiles:
 - .Net 4.0
 - .Net 4.0 Client Profile

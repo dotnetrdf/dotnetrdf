@@ -23,22 +23,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-namespace VDS.Common
-{
-    /// <summary>
-    /// Top Level Namespace for common data structures that are using throughout the dotNetRDF library but are not necessarily RDF specific
-    /// </summary>
-    class NamespaceDoc
-    {
-
-    }
-}
-
 namespace VDS.RDF
 {
     /// <summary>
     /// <para>
-    /// Top Level Namespace for the <strong>dotNetRDF Library</strong> which embodies a simple but powerful API for manipulating RDF.   
+    /// Top Level Namespace for the <strong>dotNetRDF Library</strong> which embodies a simple but powerful API for working with RDF and SPARQL.   
     /// </para>
     /// <para>
     /// Specific Namespaces within the Hierarchy provide <see cref="VDS.RDF.Parsing">Parsing</see> and <see cref="VDS.RDF.Writing">Serialization</see> functionality along with a host of related classes to support these functions.
@@ -56,16 +45,11 @@ namespace VDS.RDF
     ///     <li>Dydra</li>
     ///     <li>4store</li>
     ///     <li>Fuseki</li>
-    ///     <li>Joseki</li>
     ///     <li>Any Sesame HTTP Protocol compliant store e.g. Sesame, OWLIM</li>
     ///     <li>Any SPARQL Graph Store HTTP Protocol for RDF Graph Management compliant stores</li>
     ///     <li>Stardog</li>
     ///     <li>Virtuoso</li>
     /// </ul>
-    /// </para>
-    /// <h4>SQL Storage</h4>
-    /// <para>
-    /// <strong>Warning:</strong> The SQL Storage feature is now deprecated and no longer included in the release, please transition to one of the aforementioned 3rd party triple stores which are far more performant and all use the same <see cref="IStorageProvider">IStorageProvider</see> interface.  Do not use this support for any new development
     /// </para>
     /// <h3>ASP.Net Integration</h3>
     /// <para>
@@ -81,32 +65,7 @@ namespace VDS.RDF
     /// </para>
     /// <h3>Notes</h3>
     /// <para>
-    /// dotNetRDF is now in Beta, this means it should be relatively stable for production scenarios but that the API is subject to changes in subsequent releases should we feel it necessary.  As it is a Beta release users should be aware that the software will not be bug free.  While we continually work to improve the quality of this library and to eliminate bugs as we find them we are at the same time attempting to enhance the library by adding more functionality so it is inevitable that some bugs will persist.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
-    /// </para>
-    /// <para>
-    /// Be aware that the SPARQL support <em>in particular</em> represents our efforts to match the latest editors drafts of the SPARQL 1.1 specifications.  These specifications are changing all the time and the SPARQL support in this release will not necessarily reflect the very latest features at your time of reading until SPARQL 1.1 becomes fully standardised.
-    /// </para>
-    /// <h4>Breaking Changes</h4>
-    /// <h5>0.7.x vs 0.6.x API</h5>
-    /// <para>
-    /// The 0.7.x release makes some substantial changes to the API though we have tried to make these backwards compatible as far as possible.  The key breaking changes are the removal of several obsoleted APIs around selection and node collections, rather than providing an explicit node collection graphs now simply allow you to obtain an enumerable over the Nodes of the Graph.
-    /// </para>
-    /// <para>
-    /// The more noticeable but mostly backwards compatible change is the reorganisation of the <see cref="VDS.RDF.Storage"/> namespace, the interfaces in that namespace have been renamed to have more descriptive and consistent naming and we have introduced new interfaces for asynchronous access to storage.  The old interfaces remain as marker interfaces which inherit from the new interfaces so existing code will not need to be changed but will result in compiler warnings reminding you to upgrade to the new interface names.  The following table summarizes the old and new interface names:
-    /// </para>
-    /// <table class="dtTABLE" cellspacing="0">
-    ///     <tr><th>Old Name</th><th>New Name</th></tr>
-    ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
-    ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
-    ///     <tr><td><see cref="IUpdateableGenericIOManager"/></td><td><see cref="IUpdateableStorage"/></td></tr>
-    ///     <tr><td><see cref="IMultiStoreGenericIOManager"/></td><td><see cref="IStorageServer"/></td></tr>
-    /// </table>
-    /// <para>
-    /// There are also some improvements to the <see cref="IStoreReader"/> and <see cref="IStoreWriter"/> interfaces such that they can now be used to read/write directly from files and streams.  The old <see cref="IStorageParams"/> APIs are marked as obsolete and will be removed in future releases, please update your code to use the newer methods which are more user friendly.
-    /// </para>
-    /// <h5>0.6.x vs 0.5.x API</h5>
-    /// <para>
-    /// The 0.6.x release has limited breaking changes and these are primarily in the internals of the SPARQL engine and so should only affect advanced users of the API.  Specifically the <see cref="VDS.RDF.Query.Dataset.ISparqlDataset"/> interface was updated and the <see cref="VDS.RDF.Query.Expressions.ISparqlExpression"/> interface refactored in terms of the new <see cref="IValuedNode"/> interface.  A variety of methods and classes previously marked obsolete are not either removed or marked obsolete unusable.
+    /// dotNetRDF 1.0.0 is now a stable release, this means it should be stable for production scenarios.  However it is open source software and despite our best efforts there may still be bugs.  Please help us improve this library by emailing us when you find a bug, you can use the <a href="mailto:dotnetrdf-bugs@lists.sourceforge.net">Bug Reports list</a> to report bugs, the <a href="mailto:dotnetrdf-support@lists.sourceforge.net">Support list</a> to ask questions and the <a href="mailto:dotnetrdf-develop@lists.sourceforge.net">Developer list</a> to request new features or discuss development plans (all these are SourceForge mailing lists which require subscription).
     /// </para>
     /// <h4>Alternative Builds</h4>
     /// <h5>Mono Build</h5>

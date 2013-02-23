@@ -476,33 +476,16 @@ namespace VDS.RDF.Storage
         /// Creates a new RDF Storage Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
-        public RdfStorageException(String errorMsg) : base(errorMsg) { }
+        public RdfStorageException(String errorMsg) 
+            : base(errorMsg) { }
 
         /// <summary>
         /// Creates a new RDF Storage Exception
         /// </summary>
         /// <param name="errorMsg">Error Message</param>
         /// <param name="cause">Exception which caused this Exception</param>
-        public RdfStorageException(String errorMsg, Exception cause) : base(errorMsg, cause) { }
-    }
-
-    /// <summary>
-    /// Class of exceptions that may occur when interacting with the Talis Platform
-    /// </summary>
-    public class TalisException : RdfStorageException
-    {
-        /// <summary>
-        /// Creates a new Talis Exception
-        /// </summary>
-        /// <param name="message">Error Message</param>
-        public TalisException(String message) : base(message) { }
-
-        /// <summary>
-        /// Creates a new Talis Exception
-        /// </summary>
-        /// <param name="message">Error Message</param>
-        /// <param name="cause">Exception that caused this exception to be thrown</param>
-        public TalisException(String message, Exception cause) : base(message, cause) { }
+        public RdfStorageException(String errorMsg, Exception cause) 
+            : base(errorMsg, cause) { }
     }
 }
 

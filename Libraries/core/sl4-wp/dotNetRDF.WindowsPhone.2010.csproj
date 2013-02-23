@@ -19,6 +19,7 @@
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,9 +59,9 @@
     <Reference Include="System.Xml.XPath">
       <HintPath>C:\Program Files (x86)\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.XPath.dll</HintPath>
     </Reference>
-    <Reference Include="VDS.Common, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="VDS.Common, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\packages\VDS.Common.1.1.2\lib\sl4-wp\VDS.Common.dll</HintPath>
+      <HintPath>..\..\..\packages\VDS.Common.1.2.0\lib\sl4-wp\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

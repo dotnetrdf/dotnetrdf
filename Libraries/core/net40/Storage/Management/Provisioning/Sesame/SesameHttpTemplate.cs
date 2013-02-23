@@ -38,7 +38,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     /// <para>
     /// This template generates a Sesame repository config graph like the following, depending on exact options the graph may differ:
     /// </para>
-    /// <pre>
+    /// <code>
     /// @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;.
     /// @prefix rep: &lt;http://www.openrdf.org/config/repository#&gt;.
     /// @prefix hr: &lt;http://www.openrdf.org/config/repository/http#&gt;.
@@ -50,7 +50,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
     ///    ];
     ///    rep:repositoryID "{this.ID}" ;
     ///    rdfs:label "{this.Label}" .
-    /// </pre>
+    /// </code>
     /// <para>
     /// The placeholders of the form <strong>{this.Property}</strong> represent properties of this class whose values will be inserted into the repository config graph and used to create a new store in Sesame.
     /// </para>
