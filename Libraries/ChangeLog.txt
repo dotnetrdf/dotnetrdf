@@ -16,6 +16,7 @@ Changed
  - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
 
 Removed
+- Removed defunct TalisException
 
 
 0.9.0 RC4
