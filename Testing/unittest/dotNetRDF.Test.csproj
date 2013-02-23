@@ -78,9 +78,9 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="VDS.Common, Version=1.1.2.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
+    <Reference Include="VDS.Common, Version=1.2.0.0, Culture=neutral, PublicKeyToken=ab5f4eb908061bf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\VDS.Common.1.1.2\lib\net40-client\VDS.Common.dll</HintPath>
+      <HintPath>..\..\packages\VDS.Common.1.2.0\lib\net40-client\VDS.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +96,7 @@
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
+    <Compile Include="Core\AbstractTripleStoreTests.cs" />
     <Compile Include="Core\BasicTests1.cs" />
     <Compile Include="Core\BasicTests2.cs" />
     <Compile Include="Core\GraphCollectionTests.cs" />

@@ -27,6 +27,8 @@ Storage.AllegroGraph=false
 Storage.AllegroGraph.Server=http://localhost:9875
 Storage.AllegroGraph.Catalog=test
 Storage.AllegroGraph.Repository=unit-test
+Storage.AllegroGraph.User=
+Storage.AllegroGraph.Password=
 
 # A Dydra account to use for testing
 Storage.Dydra=false

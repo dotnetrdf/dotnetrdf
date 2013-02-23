@@ -45,7 +45,19 @@ namespace VDS.RDF.Storage
                 Assert.Inconclusive("Test Config marks AllegroGraph as unavailable, cannot run this test");
             }
 
-            return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository));
+            return new AllegroGraphConnector(TestConfigManager.GetSetting(TestConfigManager.AllegroGraphServer), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphCatalog), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphRepository), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphUser), TestConfigManager.GetSetting(TestConfigManager.AllegroGraphPassword));
+        }
+
+        [TestInitialize]
+        public void Setup()
+        {
+            Options.HttpDebugging = true;
+        }
+
+        [TestCleanup]
+        public void Teardown()
+        {
+            Options.HttpDebugging = false;
         }
 
         [TestMethod]
@@ -132,6 +144,20 @@ namespace VDS.RDF.Storage
             {
                 Assert.Fail("Failed to get a Graph as expected");
             }
+        }
+
+        [TestMethod]
+        public void StorageAllegroGraphSparqlUpdate()
+        {
+            AllegroGraphConnector agraph = AllegroGraphTests.GetConnection();
+
+            String updates = "INSERT DATA { GRAPH <http://example.org/new-graph> { <http://subject> <http://predicate> <http://object> } }";
+
+            agraph.Update(updates);
+
+            SparqlResultSet results = agraph.Query("SELECT * WHERE { GRAPH <http://example.org/new-graph> { ?s ?p ?o } }") as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.AreEqual(1, results.Count);
         }
     }
 }

@@ -54,7 +54,7 @@ namespace VDS.RDF
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
+            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), true, new UriComparer(), MultiDictionaryMode.AVL);
         }
 
         /// <summary>
