@@ -15,6 +15,11 @@ License
 
 dotNetRDF is licensed under the MIT License, see License.txt for details
 
+Documentation
+-------------
+
+Documentation may be found at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki
+
 Core Library Usage
 ------------------
 
@@ -38,7 +43,7 @@ using VDS.RDF;
 VB
 Imports VDS.RDF
 
-Please see the API at http://www.dotnetrdf.org/content.asp?pageID=API for further details on Namespaces,
+Please see the API documentation at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki for further details on Namespaces,
 Classes, Methods etc
 
 Plugin Library Usage
@@ -99,8 +104,6 @@ Parsing
  
 Query and Update
 - Queries and Updates are not always thread safe - see User Guide for details on how to guarantee this
-- Support is almost 100% to the latest specification but there are still a couple of things that may change so
-  we do not guarantee 100% compliance
  
 Change History
 --------------
