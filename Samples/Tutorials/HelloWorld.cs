@@ -8,6 +8,8 @@ public class HelloWorld
 {
     public static void Main(String[] args)
     {
+        Console.WriteLine(Environment.CurrentDirectory);
+
         Graph g = new Graph();
 
         IUriNode dotNetRDF = g.CreateUriNode(new Uri("http://www.dotnetrdf.org"));

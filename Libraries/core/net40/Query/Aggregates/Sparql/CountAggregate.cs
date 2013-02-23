@@ -69,12 +69,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             int c = 0;
             if (this._varname != null)
             {
-                //Ensure the COUNTed variable is in the Variables of the Results
-                if (!context.Binder.Variables.Contains(this._varname))
-                {
-                    throw new RdfQueryException("Cannot use the Variable " + this._expr.ToString() + " in a COUNT Aggregate since the Variable does not occur in a Graph Pattern");
-                }
-
                 //Just Count the number of results where the variable is bound
                 VariableTerm varExpr = (VariableTerm)this._expr;
                 foreach (int id in bindingIDs)

@@ -412,6 +412,16 @@ namespace VDS.RDF.Storage
                 result = manager.Query("CONSTRUCT {?s ?p ?o} FROM <http://example.org/> WHERE {?s ?p ?o}");
                 CheckQueryResult(result, false);
 
+                Console.WriteLine("DESCRIBEing a resource");
+
+                //Try a DESCRIBE
+                result = manager.Query("DESCRIBE <http://example.org/one>");
+                CheckQueryResult(result, false);
+
+                //Try another DESCRIBE
+                result = manager.Query("DESCRIBE <http://example.org/noSuchThing>");
+                CheckQueryResult(result, false);
+
                 Console.WriteLine("SELECTing the same Graph");
 
                 //Try a SELECT query

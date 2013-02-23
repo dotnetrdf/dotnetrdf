@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Nodes;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
@@ -81,6 +82,18 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             : base(expr, sepExpr)
         {
             this._customSeparator = true;
+        }
+
+        /// <summary>
+        /// Applies the aggregate over the given bindings
+        /// </summary>
+        /// <param name="context">Evaluation Context</param>
+        /// <param name="bindingIDs">Binding IDs</param>
+        /// <returns></returns>
+        public override IValuedNode Apply(SparqlEvaluationContext context, IEnumerable<int> bindingIDs)
+        {
+            IValuedNode n = base.Apply(context, bindingIDs);
+            return new StringNode(n.Graph, n.AsString());
         }
 
         /// <summary>

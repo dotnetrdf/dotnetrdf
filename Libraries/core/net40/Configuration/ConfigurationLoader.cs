@@ -156,12 +156,6 @@ namespace VDS.RDF.Configuration
                             ;
 
         /// <summary>
-        /// URI Constants for <strong>obsolete usable</strong> configuration properties
-        /// </summary>
-        [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", true)]
-        public const String PropertyGenericManager = ConfigurationNamespace + "genericManager";
-
-        /// <summary>
         /// URI Constants for configuration classes
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
@@ -201,13 +195,6 @@ namespace VDS.RDF.Configuration
                             ClassRdfWriter = ConfigurationNamespace + "RdfWriter",
                             ClassDatasetWriter = ConfigurationNamespace + "DatasetWriter",
                             ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
-
-
-        /// <summary>
-        /// URI Constants for <strong>obsolete usable</strong> configuration classes
-        /// </summary>
-        [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", true)]
-        public const String ClassGenericManager = ConfigurationNamespace + "GenericIOManager";
 
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
@@ -447,16 +434,6 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories() which has the same functionality", true)]
-        public static void AutoDetectObjectFactories(IGraph g)
-        {
-            ConfigurationLoader.AutoConfigureObjectFactories(g);
-        }
-
-        /// <summary>
-        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
         public static void AutoConfigureObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -474,16 +451,6 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Auto-detection of Object Loaders failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:ObjectFactory but failed to load as an object which implements the IObjectFactory interface");
                 }
             }
-        }
-
-        /// <summary>
-        /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureReadersAndWriters() which has the same functionality", true)]
-        public static void AutoDetectReadersAndWriters(IGraph g)
-        {
-            ConfigurationLoader.AutoConfigureReadersAndWriters(g);
         }
 
         /// <summary>
