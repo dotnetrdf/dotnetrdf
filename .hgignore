@@ -13,6 +13,8 @@ Build/nuget/*/lib/*
 dotNetRDF*.zip
 _UpgradeReport*
 UpgradeLog*
+log-file.txt
+
 
 # Files not to version control
 *.suo
