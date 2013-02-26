@@ -95,7 +95,7 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <see cref="IGraph.Dipose()">Dispose()</see> method of all Graphs contained in the Collection</remarks>
         public abstract void Dispose();
 
         /// <summary>
