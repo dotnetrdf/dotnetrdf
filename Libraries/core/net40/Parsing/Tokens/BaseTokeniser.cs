@@ -667,7 +667,7 @@ namespace VDS.RDF.Parsing.Tokens
         /// Handles the special SPARQL escapes that can occur in a local name
         /// </summary>
         /// <remarks>
-        /// Unlike <see cref="BaseTokeniser.HandleEscapes()">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping
+        /// Unlike <see cref="BaseTokeniser.HandleEscapes(TokeniserEscapeMode)">HandleEscapes()</see> this only unescapes unicode escapes, other escapes are simply validated and passed through for later unescaping
         /// </remarks>
         protected void HandleSparqlLocalNameEscapes()
         {

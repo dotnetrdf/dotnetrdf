@@ -59,7 +59,7 @@ namespace VDS.RDF.Update.Protocol
         /// </summary>
         /// <param name="context">HTTP Context</param>
         /// <remarks>
-        /// Implemented by making a call to <see cref="IStorageProvider.LoadGraph">LoadGraph()</see> on the underlying <see cref="IStorageProvider">IStorageProvider</see>
+        /// Implemented by making a call to <see cref="IStorageProvider.LoadGraph(Uri)">LoadGraph()</see> on the underlying <see cref="IStorageProvider">IStorageProvider</see>
         /// </remarks>
         public override void ProcessGet(IHttpContext context)
         {
@@ -87,7 +87,7 @@ namespace VDS.RDF.Update.Protocol
         /// <strong>Warning: </strong> If the underlying <see cref="IStorageProvider">IStorageProvider</see> is read-only then this operation returns a 403 Forbidden.
         /// </para>
         /// <para>
-        /// Otherwise this is implemented using <see cref="IStorageProvider.UpdateGraph">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
+        /// Otherwise this is implemented using <see cref="IStorageProvider.UpdateGraph(Uri, IEnumerable{Triple}, IEnumerable{Triple})">UpdateGraph()</see> if updates are supported, if not then the Graph has to be loaded, the POSTed data merged into it and then the Graph is saved again.
         /// </para>
         /// </remarks>
         public override void ProcessPost(IHttpContext context)
