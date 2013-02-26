@@ -569,91 +569,173 @@ namespace VDS.RDF.Writing
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a character followed by a new line
+        /// </summary>
+        /// <param name="value">Character</param>
         public override void WriteLine(char value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes some characters followed by a new line
+        /// </summary>
+        /// <param name="buffer">Characters</param>
         public override void WriteLine(char[] buffer)
         {
             this._writer.WriteLine(buffer);
         }
 
+        /// <summary>
+        /// Writes some portion of the characters followed by a new line
+        /// </summary>
+        /// <param name="buffer">Characters</param>
+        /// <param name="index">Index to start at</param>
+        /// <param name="count">Number of characters to write</param>
         public override void WriteLine(char[] buffer, int index, int count)
         {
             this._writer.WriteLine(buffer, index, count);
         }
 
+        /// <summary>
+        /// Writes a decimal followed by a new line
+        /// </summary>
+        /// <param name="value">Decimal</param>
         public override void WriteLine(decimal value)
         {
              this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a double followed by a new line
+        /// </summary>
+        /// <param name="value">Double</param>
         public override void WriteLine(double value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a float followed by a new line
+        /// </summary>
+        /// <param name="value">Float</param>
         public override void WriteLine(float value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes an integer followed by a new line
+        /// </summary>
+        /// <param name="value">Integer</param>
         public override void WriteLine(int value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a long integer followed by a new line
+        /// </summary>
+        /// <param name="value">Long Integer</param>
         public override void WriteLine(long value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes an object followed by a new line
+        /// </summary>
+        /// <param name="value">Object</param>
         public override void WriteLine(object value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a string followed by a new line
+        /// </summary>
+        /// <param name="value">String</param>
         public override void WriteLine(string value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a formatted string followed by a new line
+        /// </summary>
+        /// <param name="format">String</param>
+        /// <param name="arg0">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0)
         {
             this._writer.WriteLine(format, arg0);
         }
 
+        /// <summary>
+        /// Writes a formatted string followed by a new line
+        /// </summary>
+        /// <param name="format">String</param>
+        /// <param name="arg0">Argument to insert into string</param>
+        /// <param name="arg1">Argument to insert into string</param>
         public override void WriteLine(string format, object arg0, object arg1)
         {
             this._writer.WriteLine(format, arg0, arg1);
         }
 
+        /// <summary>
+        /// Writes a formatted string followed by a new line
+        /// </summary>
+        /// <param name="format">String</param>
+        /// <param name="arg">Arguments to insert into string</param>
         public override void WriteLine(string format, params object[] arg)
         {
             this._writer.WriteLine(format, arg);
         }
 
+        /// <summary>
+        /// Writes an unsigned integer followed by a new line
+        /// </summary>
+        /// <param name="value">Unsigned Integer</param>
         public override void WriteLine(uint value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes an unsigned long integer followed by a new line
+        /// </summary>
+        /// <param name="value">Unsigned Long Integer</param>
         public override void WriteLine(ulong value)
         {
             this._writer.WriteLine(value);
         }
 
+        /// <summary>
+        /// Writes a string on a line with no tabs
+        /// </summary>
+        /// <param name="s">String</param>
         public void WriteLineNoTabs(String s)
         {
-            throw new NotImplementedException();
+            this._writer.WriteLine();
+            this._writer.WriteLine(s);
         }
 
+        /// <summary>
+        /// Writes a style attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <param name="value">Value</param>
         public void WriteStyleAttribute(String name, String value)
         {
             this._writer.Write(name + ": " + this.EncodeStyle(value) + ";");
         }
 
+        /// <summary>
+        /// Writes a style attribute
+        /// </summary>
+        /// <param name="name">Attribute Name</param>
+        /// <param name="value">Value</param>
+        /// <param name="fEncode">Whether to encode the value</param>
         public void WriteStyleAttribute(String name, String value, Boolean fEncode)
         {
             if (fEncode) value = this.EncodeAttribute(value);
