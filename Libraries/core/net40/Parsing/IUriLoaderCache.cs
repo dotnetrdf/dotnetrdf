@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !NO_URICACHE
 
 using System;
+using System.Collections.Generic;
 using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
@@ -74,7 +75,7 @@ namespace VDS.RDF.Parsing
         /// <exception cref="KeyNotFoundException">Thrown if there is no ETag for the given URI</exception>
         /// <remarks>
         /// <para>
-        /// Calling code <strong>MUST</strong> always use the <see cref="IUriLoaderCache.HasETag()">HasETag()</see> method prior to using this method so it should be safe to throw the <see cref="KeyNotFoundException">KeyNotFoundException</see> if there is no ETag for the given URI
+        /// Calling code <strong>MUST</strong> always use the <see cref="HasETag(Uri)">HasETag()</see> method prior to using this method so it should be safe to throw the <see cref="KeyNotFoundException">KeyNotFoundException</see> if there is no ETag for the given URI
         /// </para>
         /// </remarks>
         String GetETag(Uri u);

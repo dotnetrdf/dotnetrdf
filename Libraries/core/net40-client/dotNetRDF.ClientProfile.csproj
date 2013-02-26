@@ -515,9 +515,6 @@
     <Compile Include="..\net40\Parsing\Tokens\Notation3Tokeniser.cs">
       <Link>Parsing\Tokens\Notation3Tokeniser.cs</Link>
     </Compile>
-    <Compile Include="..\net40\Writing\InternalXmlWriter.cs">
-      <Link>Writing\InternalXmlWriter.cs</Link>
-    </Compile>
     <Compile Include="..\net40\Query\SparqlRemoteEndpoint.cs">
       <Link>Query\SparqlRemoteEndpoint.cs</Link>
     </Compile>
