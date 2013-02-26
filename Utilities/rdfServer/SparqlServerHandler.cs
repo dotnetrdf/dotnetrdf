@@ -859,6 +859,7 @@ namespace VDS.RDF.Utilities.Server
             output.AddAttribute(HtmlTextWriterAttribute.Name, "sparqlUpdate");
             output.AddAttribute("method", "post");
             output.AddAttribute("action", context.Request.Url.AbsoluteUri);
+            output.AddAttribute("enctype", MimeTypesHelper.WWWFormURLEncoded);
             output.RenderBeginTag(HtmlTextWriterTag.Form);
 
             if (!this._config.IntroductionText.Equals(String.Empty))

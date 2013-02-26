@@ -22,6 +22,7 @@ log-file.txt
 *.user
 temp*.txt
 _ReSharper*/
+*.lnk
 
 # NuGet Package Management Stuff
 .nuget/*.exe
