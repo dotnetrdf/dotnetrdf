@@ -208,7 +208,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Adds a CSS style that will be used in the style attribute of the next element to be written
         /// </summary>
-        /// <param name="name">CSS Attribute</param>
+        /// <param name="key">CSS Attribute</param>
         /// <param name="value">Value</param>
         public void AddStyleAttribute(HtmlTextWriterStyle key, String value)
         {
@@ -226,7 +226,7 @@ namespace VDS.RDF.Writing
         /// <summary>
         /// Flush the writer
         /// </summary>
-        public void Flush()
+        public override void Flush()
         {
             this._writer.Flush();
         }
