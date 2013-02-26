@@ -101,6 +101,7 @@ namespace VDS.RDF.Storage
             }
         }
 
+        
         /// <summary>
         /// Makes a query against the in-memory copy of the Stores data
         /// </summary>

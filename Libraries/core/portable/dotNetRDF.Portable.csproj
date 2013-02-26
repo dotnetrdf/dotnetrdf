@@ -33,7 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Compatability\CryptoConfig.cs" />
     <Compile Include="Compatability\PortableLibraryCompatibility.cs" />
+    <Compile Include="Crypto\HashAlgorithm.cs" />
+    <Compile Include="Crypto\ICryptoTransform.cs" />
+    <Compile Include="Crypto\SHA1.cs" />
+    <Compile Include="Crypto\SHA1CryptoServiceProvider.cs" />
+    <Compile Include="Crypto\SHA1Managed.cs" />
+    <Compile Include="Crypto\SHA256.cs" />
+    <Compile Include="Crypto\SHA256Managed.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -2368,5 +2376,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mono\" />
   </ItemGroup>
 </Project>

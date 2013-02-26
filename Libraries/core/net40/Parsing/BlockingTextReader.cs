@@ -352,6 +352,12 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if PORTABLE
+        public void Close()
+        {
+            // No-op as portable library version of TextReader has no Close() method
+        }
+#else
         /// <summary>
         /// Closes the reader and the underlying reader
         /// </summary>
@@ -359,6 +365,7 @@ namespace VDS.RDF.Parsing
         {
             this._reader.Close();
         }
+#endif
 
         /// <summary>
         /// Disposes of the reader and the underlying reader

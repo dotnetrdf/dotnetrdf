@@ -294,12 +294,20 @@ namespace VDS.RDF.Writing
             this._writer.Write(value);
         }
 
+#if PORTABLE
+        public void Write(string format, object arg0)
+#else
         public override void Write(string format, object arg0)
+#endif
         {
             this._writer.Write(format, arg0);
         }
 
+#if PORTABLE
+        public void Write(string format, object arg0, object arg1)
+#else
         public override void Write(string format, object arg0, object arg1)
+#endif
         {
             this._writer.Write(format, arg0, arg1);
         }
@@ -455,12 +463,20 @@ namespace VDS.RDF.Writing
             this._writer.WriteLine(value);
         }
 
+#if PORTABLE
+        public void WriteLine(string format, object arg0)
+#else
         public override void WriteLine(string format, object arg0)
+#endif
         {
             this._writer.WriteLine(format, arg0);
         }
 
+#if PORTABLE
+        public void WriteLine(string format, object arg0, object arg1)
+#else
         public override void WriteLine(string format, object arg0, object arg1)
+#endif
         {
             this._writer.WriteLine(format, arg0, arg1);
         }

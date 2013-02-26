@@ -43,7 +43,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsLetter(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.LowercaseLetter:
                 case UnicodeCategory.ModifierLetter:
@@ -56,6 +56,14 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private static UnicodeCategory GetUnicodeCategory(char c)
+        {
+#if PORTABLE
+            return CharUnicodeInfo.GetUnicodeCategory(c);
+#else
+            return Char.GetUnicodeCategory(c);
+#endif
+        }
         /// <summary>
         /// Checks whether a given Character is considered a Letter or Digit
         /// </summary>
@@ -73,7 +81,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsLetterModifier(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.ModifierLetter:
                 case UnicodeCategory.NonSpacingMark:
@@ -90,7 +98,7 @@ namespace VDS.RDF.Parsing
         /// <returns></returns>
         public static bool IsDigit(char c)
         {
-            switch (Char.GetUnicodeCategory(c))
+            switch (GetUnicodeCategory(c))
             {
                 case UnicodeCategory.DecimalDigitNumber:
                 case UnicodeCategory.LetterNumber:
