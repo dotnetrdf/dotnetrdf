@@ -30,17 +30,28 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Definition of an auto-completer
+    /// </summary>
     public class AutoCompleteDefinition
     {
         private String _name;
         private Type _type;
 
+        /// <summary>
+        /// Creates a new auto-complete definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="autoCompleteType">Type of the auto-complete implementation</param>
         public AutoCompleteDefinition(String name, Type autoCompleteType)
         {
             this._name = name;
             this._type = autoCompleteType;
         }
 
+        /// <summary>
+        /// Name of the Syntax for which auto-completion is provided
+        /// </summary>
         public String Name
         {
             get
@@ -49,6 +60,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Type of the auto-completer
+        /// </summary>
         public Type Type
         {
             get

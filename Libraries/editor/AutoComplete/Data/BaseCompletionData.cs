@@ -30,7 +30,11 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public abstract class BaseCompletionData : ICompletionData
+    /// <summary>
+    /// Abstract base implementation of auto-complete data
+    /// </summary>
+    public abstract class BaseCompletionData
+        : ICompletionData
     {
         private const double DefaultPriority = 1.0d;
 
@@ -51,6 +55,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             this._priority = priority;
         }
 
+        /// <summary>
+        /// Gets the description
+        /// </summary>
         public String Description
         {
             get
@@ -59,6 +66,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Gets the priority
+        /// </summary>
         public double Priority
         {
             get
@@ -67,6 +77,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Gets the display text
+        /// </summary>
         public String DisplayText
         {
             get
@@ -75,6 +88,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Gets the insertion text
+        /// </summary>
         public String InsertionText
         {
             get
@@ -83,6 +99,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Sort relative to other completion data
+        /// </summary>
+        /// <param name="other">Other data</param>
+        /// <returns></returns>
         public int CompareTo(ICompletionData other)
         {
             int c = this.Priority.CompareTo(other.Priority);
@@ -96,6 +117,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Sort relative to other object
+        /// </summary>
+        /// <param name="obj">Other object</param>
+        /// <returns></returns>
         public int CompareTo(object obj)
         {
             if (obj == null) return 1;
@@ -109,6 +135,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Equality to other object
+        /// </summary>
+        /// <param name="obj">Other Object</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -122,16 +153,29 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
             }
         }
 
+        /// <summary>
+        /// Equality to other completion data
+        /// </summary>
+        /// <param name="other">Other Data</param>
+        /// <returns></returns>
         public bool Equals(ICompletionData other)
         {
             return this.GetHashCode().Equals(other.GetHashCode());
         }
 
+        /// <summary>
+        /// Hash Code of the data
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return this.ToString().GetHashCode();
         }
 
+        /// <summary>
+        /// String representation of the data
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return this.GetType().Name + ": " + this.InsertionText;
