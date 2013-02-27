@@ -46,7 +46,7 @@ namespace VDS.RDF.Storage
     /// The <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL Graph Store HTTP Protocol</a> is defined as part of SPARQL 1.1 and is currently a working draft so implementations are not guaranteed to be fully compliant with the draft and the protocol may change in the future.
     /// </para>
     /// <para>
-    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
+    /// <strong>Note:</strong> While this connector supports the update of a Graph the Graph Store HTTP Protocol only allows for the addition of data to an existing Graph and not the removal of data, therefore any calls to <see cref="SparqlHttpProtocolConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple})">UpdateGraph()</see> that would require the removal of Triple(s) will result in an error.
     /// </para>
     /// </remarks>
     public class SparqlHttpProtocolConnector 

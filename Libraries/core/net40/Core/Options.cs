@@ -98,7 +98,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
+        /// Gets/Sets the Mode used to compute Literal Equality (Default is <see cref="VDS.RDF.LiteralEqualityMode.Strict">Strict</see> which enforces the W3C RDF Specification)
         /// </summary>
         public static LiteralEqualityMode LiteralEqualityMode
         {
