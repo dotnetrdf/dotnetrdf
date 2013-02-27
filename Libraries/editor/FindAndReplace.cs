@@ -32,20 +32,45 @@ using System.Text.RegularExpressions;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Modes for find and replace
+    /// </summary>
     public enum FindReplaceMode
     {
+        /// <summary>
+        /// Find
+        /// </summary>
         Find,
+        /// <summary>
+        /// Find and Replace
+        /// </summary>
         FindAndReplace
     }
 
+    /// <summary>
+    /// Find and Replace Scopes
+    /// </summary>
     public enum FindAndReplaceScope
     {
+        /// <summary>
+        /// Current Document
+        /// </summary>
         CurrentDocument,
+        /// <summary>
+        /// Selection
+        /// </summary>
         Selection
     }
 
+    /// <summary>
+    /// Abstract implementation of find and replace for text editors
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public abstract class FindAndReplace<T>
     {
+        /// <summary>
+        /// Creates a new find and replace
+        /// </summary>
         public FindAndReplace()
         {
             this.UseRegex = false;
@@ -61,64 +86,103 @@ namespace VDS.RDF.Utilities.Editor
             this.RecentReplaceTexts = new BindingList<string>();
         }
 
+        /// <summary>
+        /// Indicates whether search should restart from start
+        /// </summary>
+        /// <returns>True if search should restart from start when end of document is reached, false otherwise</returns>
         protected abstract bool ShouldRestartSearchFromStart();
 
+        /// <summary>
+        /// Shows a message
+        /// </summary>
+        /// <param name="message">Message</param>
         protected abstract void ShowMessage(String message);
 
+        /// <summary>
+        /// Gets/Sets the scope
+        /// </summary>
         public FindAndReplaceScope Scope
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets the find text
+        /// </summary>
         public String FindText
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets the replace text
+        /// </summary>
         public String ReplaceText
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets whether to match case
+        /// </summary>
         public bool MatchCase
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets whether to match the whole word
+        /// </summary>
         public bool MatchWholeWord
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets whether to use regex
+        /// </summary>
         public bool UseRegex
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets whether to search upwards instead of downwards in a document
+        /// </summary>
         public bool SearchUp
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets recent find text
+        /// </summary>
         public BindingList<String> RecentFindTexts
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets recent replace text
+        /// </summary>
         public BindingList<String> RecentReplaceTexts
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Finds the first occurrence of the currently configured search in the given text editor
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public void Find(ITextEditorAdaptor<T> editor)
         {
             bool fromStart = (editor.CaretOffset == 0);
@@ -134,6 +198,11 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Finds the next occurrence of the currently configured search in the given text editor
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
+        /// <returns>True if a match if found, false otherwise</returns>
         public bool FindNext(ITextEditorAdaptor<T> editor)
         {
             if (this.Scope == FindAndReplaceScope.CurrentDocument || editor.SelectionLength == 0)
@@ -146,6 +215,13 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Finds the next occurrence of the currently configured search in the given text editor within the specified bounds
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
+        /// <param name="minPos">Minimum Position</param>
+        /// <param name="maxPos">Maximum Position</param>
+        /// <returns></returns>
         public bool FindNext(ITextEditorAdaptor<T> editor, int minPos, int maxPos)
         {
             if (String.IsNullOrEmpty(this.FindText))
@@ -277,6 +353,10 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Replace the next occurrence of the currently configured search in the given text editor
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public void Replace(ITextEditorAdaptor<T> editor)
         {
             if (String.IsNullOrEmpty(this.ReplaceText))
@@ -319,6 +399,10 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Replace all occurrences of the currently configured search in the given text editor
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public void ReplaceAll(ITextEditorAdaptor<T> editor)
         {
             if (String.IsNullOrEmpty(this.ReplaceText))
