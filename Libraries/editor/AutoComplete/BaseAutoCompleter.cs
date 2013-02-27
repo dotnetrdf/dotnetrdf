@@ -43,6 +43,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         private AutoCompleteState _lastCompletion = AutoCompleteState.None;
         private AutoCompleteState _temp = AutoCompleteState.None;
 
+        /// <summary>
+        /// Text Editor
+        /// </summary>
         protected ITextEditorAdaptor<T> _editor;
         private int _startOffset = 0;
 

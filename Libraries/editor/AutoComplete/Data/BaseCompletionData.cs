@@ -41,12 +41,30 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
         private String _display, _insert, _descrip;
         private double _priority = DefaultPriority;
 
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="displayText">Display Text</param>
+        /// <param name="insertText">Insertion Text</param>
         public BaseCompletionData(String displayText, String insertText)
             : this(displayText, insertText, String.Empty, DefaultPriority) { }
 
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="displayText">Display Text</param>
+        /// <param name="insertText">Insertion Text</param>
+        /// <param name="description">Description</param>
         public BaseCompletionData(String displayText, String insertText, String description)
             : this(displayText, insertText, description, DefaultPriority) { }
 
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="displayText">Display Text</param>
+        /// <param name="insertText">Insertion Text</param>
+        /// <param name="description">Description</param>
+        /// <param name="priority">Priority</param>
         public BaseCompletionData(String displayText, String insertText, String description, double priority)
         {
             this._display = displayText;
