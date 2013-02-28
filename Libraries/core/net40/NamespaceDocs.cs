@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
 {
     /// <summary>
     /// <para>
-    /// Namespace for Query Classes which provide querying capabilities on RDF
+    /// Namespace for Query Classes which provide querying capabilities on RDF.
     /// </para>
     /// <para>
     /// Query capabilities are centered around support for the SPARQL standard.  You can execute full SPARQL 1.1 queries over in-memory data or submit queries to remote SPARQL endpoints.
