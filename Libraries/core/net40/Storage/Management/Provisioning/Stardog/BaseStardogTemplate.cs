@@ -212,7 +212,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
         }
 
         /// <summary>
-        /// Gets/Sets whether to
+        /// Gets/Sets whether to persist indexes synchronously
         /// </summary>
         [DefaultValue(StardogServer.DatabaseOptions.DefaultPersistIndexSync),
          Category("Index Options"),

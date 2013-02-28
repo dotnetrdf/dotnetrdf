@@ -318,7 +318,7 @@ namespace VDS.RDF.Parsing
         }
 
         /// <summary>
-        /// Uses the rules described in the remarks for the <see cref="StringParser.Parse">Parse()</see> to return the most likely Parser
+        /// Uses the rules described in the remarks for the <see cref="StringParser.Parse(IGraph, String)">Parse()</see> to return the most likely Parser
         /// </summary>
         /// <param name="data">Raw RDF String</param>
         public static IRdfReader GetParser(String data)

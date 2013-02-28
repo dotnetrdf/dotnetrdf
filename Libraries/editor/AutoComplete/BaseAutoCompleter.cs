@@ -32,6 +32,10 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Abstract base implementation of an auto-completer
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public abstract class BaseAutoCompleter<T> 
         : IAutoCompleter<T>
     {
@@ -39,9 +43,16 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         private AutoCompleteState _lastCompletion = AutoCompleteState.None;
         private AutoCompleteState _temp = AutoCompleteState.None;
 
+        /// <summary>
+        /// Text Editor
+        /// </summary>
         protected ITextEditorAdaptor<T> _editor;
         private int _startOffset = 0;
 
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public BaseAutoCompleter(ITextEditorAdaptor<T> editor)
         {
             this._editor = editor;
@@ -49,6 +60,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Current Text Management
 
+        /// <summary>
+        /// Gets/Sets the start offset
+        /// </summary>
         public int StartOffset
         {
             get
@@ -61,6 +75,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the length
+        /// </summary>
         public int Length
         {
             get
@@ -69,6 +86,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets the current text
+        /// </summary>
         public String CurrentText
         {
             get
@@ -86,6 +106,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #endregion
 
+        /// <summary>
+        /// Detect the state of the auto-completer
+        /// </summary>
         public void DetectState()
         {
             //Don't do anything if currently disabled
@@ -97,11 +120,21 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             //TODO: Want to call some method in ITextEditorAdaptor which tells it what syntax element we are currently in
         }
 
+        /// <summary>
+        /// Method which derived classes should override to add their state detection logic
+        /// </summary>
         protected virtual void DetectStateInternal()
         { }
 
+        /// <summary>
+        /// Try to auto-complete the given text
+        /// </summary>
+        /// <param name="newText">Text</param>
         public abstract void TryAutoComplete(String newText);
 
+        /// <summary>
+        /// Gets/Sets the auto-complete state
+        /// </summary>
         public AutoCompleteState State
         {
             get
@@ -114,6 +147,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the last completion state
+        /// </summary>
         public AutoCompleteState LastCompletion
         {
             get
@@ -126,6 +162,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the temporary state
+        /// </summary>
         protected AutoCompleteState TemporaryState
         {
             get

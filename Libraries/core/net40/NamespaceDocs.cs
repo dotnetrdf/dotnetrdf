@@ -132,7 +132,10 @@ namespace VDS.RDF.Configuration.Permissions
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are primarily used internally in the SPARQL engine.  These all derive from the standard Node implementations so can be used interchangeably with those if desired.
+    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, this is an extension of the <see cref="INode"/> interface that provides strongly typed access to the value of a node.
+    /// <para>
+    /// These implementations are primarily used internally in the SPARQL engine, however as these all derive from the standard <see cref="INode"/> implementations they can be used interchangeably with those if desired.
+    /// </para>
     /// </summary>
     class NamespaceDoc
     {
@@ -144,13 +147,10 @@ namespace VDS.RDF.Ontology
 {
     /// <summary>
     /// <para>
-    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a> and is an experimental part of the library.  It allows for a more resource-centric way of manipulating RDF graphs within the dotNetRDF API.
+    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a>.  It allows for a more ontology-centric way of manipulating RDF graphs within the dotNetRDF API.
     /// </para>
     /// <para>
     /// The <see cref="OntologyResource">OntologyResource</see> is the base class of resources and allows for the retrieval and manipulation of various common properties of a resource.  More specialised classes like <see cref="OntologyClass">OntologyClass</see> and <see cref="OntologyProperty">OntologyProperty</see> are used to work with classes and properties etc.
-    /// </para>
-    /// <para>
-    /// One key feature of this part of the API is the <see cref="ReasonerGraph">ReasonerGraph</see> which allows you to wrap an existing Graph with a reasoner to get a unified view over the original Triples and materialised inferences without modifying your original Graph.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -163,10 +163,10 @@ namespace VDS.RDF.Parsing
 {
     /// <summary>
     /// <para>
-    /// Namespace for Parsing Classes and variety of supporting Classes.
+    /// Namespace for Parsing classes and variety of supporting Classes.
     /// </para>
     /// <para>
-    /// Classes here are primarily implementations of <see cref="ITokeniser">ITokeniser</see> and <see cref="IRdfReader">IRdfReader</see> with some implementations of <see cref="IStoreReader">IStoreReader</see> and a few other specialised classes.
+    /// Classes here are primarily implementations of <see cref="IRdfReader">IRdfReader</see> with some implementations of <see cref="IStoreReader">IStoreReader</see> and a few other specialised classes.
     /// </para>
     /// <para>
     /// Has child namespaces <see cref="VDS.RDF.Parsing.Events">Events</see> and <see cref="VDS.RDF.Parsing.Tokens">Tokens</see> for supporting Event and Token based Parsing.
@@ -209,7 +209,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// Namespace for RDF and SPARQL Results Handlers
     /// </para>
     /// <para>
-    /// Handlers are part of a major parser subsystem rewrite introduced in the 0.4.1 release.  They allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can both take arbitrary actions with the data and choose to end parsing early.
+    /// Handlers are a powerful low level part of the parsers API, they allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can take arbitrary actions with the data and choose to end parsing as soon as desired.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
 {
     /// <summary>
     /// <para>
-    /// Namespace for Query Classes which provide Querying capabilities on RDF Graphs
+    /// Namespace for Query Classes which provide querying capabilities on RDF.
     /// </para>
     /// <para>
     /// Query capabilities are centered around support for the SPARQL standard.  You can execute full SPARQL 1.1 queries over in-memory data or submit queries to remote SPARQL endpoints.
@@ -679,7 +679,7 @@ namespace VDS.RDF.Query.Inference.Pellet
     /// Namespace which provides a client for interacting with a Pellet Server
     /// </para>
     /// <para>
-    /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.  You may also want to consider using the <see cref="StardogConnector"/> which is the triple store from the same people who developed Pellet and which integrates some Pellet capabilities.
+    /// Due to Pellet Server being a relatively new product it is currently only possible to reason over external knowledge bases on a Pellet Server and not to use Pellet to reason over in-memory data.  As Pellet Server is updated in the future this client will be updated to take advantage of those updates and to eventually provide for in-memory reasoning.  You may also want to consider using the <see cref="VDS.RDF.Storage.StardogConnector"/> which is the triple store from the same people who developed Pellet and which integrates some Pellet capabilities.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -810,16 +810,6 @@ namespace VDS.RDF.Storage
     /// <para>
     /// Storage is managed via the <see cref="IStorageProvider">IStorageProvider</see> interface, see the <a href="http://www.dotnetrdf.org/content.asp?pageID=Triple%20Store%20Integration">Triple Store Integration</a> documentation on the main website for more detail.
     /// </para>
-    /// <para>
-    /// Note that this is the new name for the old <see cref="IGenericIOManager"/> interface, the following table summarizes name changes to the interfaces in this API which were made in the 0.7.x releases.  Note that in the 0.7.x initial release the old interface names were preserved as marker interfaces to enable backwards compatibility with existing code.
-    /// </para>
-    /// <table class="dtTABLE" cellspacing="0">
-    ///     <tr><th>Old Name</th><th>New Name</th></tr>
-    ///     <tr><td><see cref="IGenericIOManager"/></td><td><see cref="IStorageProvider"/></td></tr>
-    ///     <tr><td><see cref="IQueryableGenericIOManager"/></td><td><see cref="IQueryableStorage"/></td></tr>
-    ///     <tr><td><see cref="IUpdateableGenericIOManager"/></td><td><see cref="IUpdateableStorage"/></td></tr>
-    ///     <tr><td><see cref="IMultiStoreGenericIOManager"/></td><td><see cref="IStorageServer"/></td></tr>
-    /// </table>
     /// <h3>Data Provider Libraries</h3>
     /// <para>
     /// From the 0.5.0 release onwards any triple store integration that requires additional dependencies are provided with their own library to reduce dependencies in the Core library and allow that functionality to be optional.  The following stores are currently provided in separate libraries:
@@ -870,7 +860,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Sesame
 {
     /// <summary>
     /// <para>
-    /// Namespace containing implementations of <see cref="IStorageTemplate"/> which provide templates for creating new stores on Sesame servers
+    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Sesame servers
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -883,7 +873,7 @@ namespace VDS.RDF.Storage.Management.Provisioning.Stardog
 {
     /// <summary>
     /// <para>
-    /// Namespace containing implementations of <see cref="IStorageTemplate"/> which provide templates for creating new stores on Stardog servers
+    /// Namespace containing implementations of <see cref="IStoreTemplate"/> which provide templates for creating new stores on Stardog servers
     /// </para>
     /// </summary>
     class NamespaceDoc

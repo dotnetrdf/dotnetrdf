@@ -27,16 +27,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Auto-completer implementation for SPARQL Update
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class SparqlUpdateAutoCompleter<T>
         : SparqlAutoCompleter<T>
     {
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public SparqlUpdateAutoCompleter(ITextEditorAdaptor<T> editor)
-            : base(editor, null)
+            : base(editor, SparqlQuerySyntax.Sparql_1_1)
         {
             foreach (String keyword in SparqlSpecsHelper.SparqlUpdate11Keywords)
             {

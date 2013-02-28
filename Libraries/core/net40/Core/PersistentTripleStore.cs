@@ -45,10 +45,10 @@ namespace VDS.RDF
     /// <strong>Note:</strong> This is a transactional implementation - this means that changes made are not persisted until you either call <see cref="PersistentTripleStore.Flush()">Flush()</see> or you dispose of the instance.  Alternatively you may invoke the <see cref="PersistentTripleStore.Discard()">Discard()</see> method to throw away changes made to the in-memory state.
     /// </para>
     /// <para>
-    /// The actual level of persistence provided will vary according to the <see cref="IStorageProvider">IStorageProvider</see> instance you use.  For example if the <see cref="IStorageProvider.DeleteGraph()">DeleteGraph()</see> method is not supported then Graph removals won't persist in the underlying store.  Similarily an instance which is read-only will allow you to pull out existing graphs from the store but won't persist any changes.
+    /// The actual level of persistence provided will vary according to the <see cref="IStorageProvider">IStorageProvider</see> instance you use.  For example if the <see cref="IStorageProvider.DeleteGraph(Uri)">DeleteGraph()</see> method is not supported then Graph removals won't persist in the underlying store.  Similarily an instance which is read-only will allow you to pull out existing graphs from the store but won't persist any changes.
     /// </para>
     /// <para>
-    /// The Contains() method of the underlying <see cref="BaseGraphCollection">BaseGraphCollection</see> has been overridden so that invoking Contains causes the Graph from the underlying store to be loaded if it exists, this means that operations like <see cref="PersistentTripleStore.HasGraph()">HasGraph()</see> may be slower than expected or cause applications to stop while they wait to load data from the store.
+    /// The Contains() method of the underlying <see cref="BaseGraphCollection">BaseGraphCollection</see> has been overridden so that invoking Contains causes the Graph from the underlying store to be loaded if it exists, this means that operations like <see cref="BaseTripleStore.HasGraph(Uri)">HasGraph()</see> may be slower than expected or cause applications to stop while they wait to load data from the store.
     /// </para>
     /// <h3>SPARQL Query Behaviour</h3>
     /// <para>

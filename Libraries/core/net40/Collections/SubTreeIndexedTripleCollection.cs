@@ -33,14 +33,11 @@ using VDS.Common.Trees;
 namespace VDS.RDF.Collections
 {
     /// <summary>
-    /// An indexed triple collection that uses our <see cref="MultiDictionary"/> and <see cref="BinaryTree"/> implementations under the hood for the index structures
+    /// An indexed triple collection that uses our <see cref="MultiDictionary{TKey,TValue}"/> and <see cref="BinaryTree{TNode,TKey,TValue}"/> implementations under the hood for the index structures
     /// </summary>
     /// <remarks>
     /// <para>
-    /// A variation on <see cref="TreeIndexedTripleCollection"/> which structures the indexes slightly differently to reduce memory usage.
-    /// </para>
-    /// <para>
-    /// While the index structures may seem marginally more complex than our <see cref="HashTable"/> based <see cref="IndexedTripleCollection"/> in testing they actually perform faster, they also have the benefit of guaranteeing that index lookups never return irrelevant triples which is possible with the <see cref="IndexedTripleCollection"/> due to the way <see cref="HashTable"/> handles key collisions.
+    /// A variation on <see cref="TreeIndexedTripleCollection"/> which structures the indexes slightly differently, this may give differing performance and reduced memory usage in some scenarios.
     /// </para>
     /// </remarks>
     public class SubTreeIndexedTripleCollection

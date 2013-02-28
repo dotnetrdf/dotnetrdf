@@ -35,18 +35,31 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
+    /// <summary>
+    /// An element generator that converts validation errors into error highlights
+    /// </summary>
     public class ValidationErrorElementGenerator
         : VisualLineElementGenerator
     {
         private WpfEditorAdaptor _adaptor;
         private VisualOptions<FontFamily, Color> _options;
 
+        /// <summary>
+        /// Creates a new generator
+        /// </summary>
+        /// <param name="adaptor">Text Editor</param>
+        /// <param name="options">Visual Options</param>
         public ValidationErrorElementGenerator(WpfEditorAdaptor adaptor, VisualOptions<FontFamily, Color> options)
         {
             this._adaptor = adaptor;
             this._options = options;
         }
 
+        /// <summary>
+        /// Creates an element if applicable
+        /// </summary>
+        /// <param name="offset">Offset</param>
+        /// <returns>Element</returns>
         public override VisualLineElement ConstructElement(int offset)
         {
             RdfParseException parseEx = this.GetException();
@@ -70,6 +83,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             return new ValidationErrorLineText(this._options, this.CurrentContext.VisualLine, endOffset - startOffset);
         }
 
+        /// <summary>
+        /// Gets the first offset that the generator is interested in after the given offset (if any)
+        /// </summary>
+        /// <param name="startOffset">Start Offset</param>
+        /// <returns></returns>
         public override int GetFirstInterestedOffset(int startOffset)
         {
             RdfParseException parseEx = this.GetException();
@@ -110,6 +128,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the exception if and only if it is a parser error and has position information
+        /// </summary>
+        /// <returns>Parser Error with position information or null</returns>
         private RdfParseException GetException()
         {
             if (this._adaptor.ErrorToHighlight == null) return null;

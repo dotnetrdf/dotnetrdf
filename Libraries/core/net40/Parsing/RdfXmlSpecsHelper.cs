@@ -239,7 +239,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test</param>
         /// <returns>True if is an rdf:ID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs in the <see cref="ValidateID()">ValidateID</see> method which is called at other points in the Parsing</remarks>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
         public static bool IsIDAttribute(AttributeEvent attr)
         {
             //QName must be rdf:id
@@ -268,7 +268,7 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="attr">Attribute to Test</param>
         /// <returns>True if is an rdf:nodeID attribute</returns>
-        /// <remarks>Does some validation on ID value but other validation occurs in the <see cref="ValidateID()">ValidateID</see> method which is called at other points in the Parsing</remarks>
+        /// <remarks>Does some validation on ID value but other validation occurs at other points in the Parsing</remarks>
         public static bool IsNodeIDAttribute(AttributeEvent attr)
         {
             //QName must be rdf:nodeID
@@ -366,7 +366,6 @@ namespace VDS.RDF.Parsing
         /// </summary>
         /// <param name="value">ID Value to Test</param>
         /// <returns>True if the ID is valid</returns>
-        /// <remarks>Actual Validation conditions on IDs are stricter than this and this is handled separately by the <see cref="ValidateID()">ValidateID</see> method</remarks>
         public static bool IsRdfID(String value)
         {
             //Must be a valid NCName as defined in the XML Namespace Specification

@@ -32,6 +32,12 @@ using VDS.RDF.Utilities.Editor.AutoComplete;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// The document manager is a manager for all the documents being managed by an editor
+    /// </summary>
+    /// <typeparam name="TControl">Control Type</typeparam>
+    /// <typeparam name="TFont">Font Type</typeparam>
+    /// <typeparam name="TColor">Colour Type</typeparam>
     public class DocumentManager<TControl, TFont, TColor>
         where TFont : class
         where TColor : struct
@@ -50,6 +56,10 @@ namespace VDS.RDF.Utilities.Editor
         private SaveChangesCallback<TControl> _defaultSaveChangesCallback = new SaveChangesCallback<TControl>(d => SaveChangesMode.Discard);
         private SaveAsCallback<TControl> _defaultSaveAsCallback = new SaveAsCallback<TControl>(d => null);
 
+        /// <summary>
+        /// Creates a new document manager
+        /// </summary>
+        /// <param name="factory">Text Editor factory</param>
         public DocumentManager(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
@@ -73,6 +83,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region General State
 
+        /// <summary>
+        /// Gets/Sets the default title for documents
+        /// </summary>
         public String DefaultTitle
         {
             get
@@ -85,6 +98,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the default syntax for documents
+        /// </summary>
         public String DefaultSyntax
         {
             get
@@ -97,6 +113,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the manager options
+        /// </summary>
         public ManagerOptions<TControl> Options
         {
             get
@@ -105,6 +124,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the visual options
+        /// </summary>
         public VisualOptions<TFont, TColor> VisualOptions
         {
             get
@@ -117,6 +139,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the active document or null if there are no documents
+        /// </summary>
         public Document<TControl> ActiveDocument
         {
             get
@@ -132,6 +157,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the index of the active document or -1 if there are no documents
+        /// </summary>
         public int ActiveDocumentIndex
         {
             get
@@ -147,6 +175,12 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets a document by index
+        /// </summary>
+        /// <param name="index">Index</param>
+        /// <returns>Document</returns>
+        /// <exception cref="IndexOutOfRangeException">Thrown if the index is outside the range of acceptable document indexes</exception>
         public Document<TControl> this[int index]
         {
             get
@@ -162,6 +196,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets all the documents
+        /// </summary>
         public IEnumerable<Document<TControl>> Documents
         {
             get
@@ -170,6 +207,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the count of documents
+        /// </summary>
         public int Count
         {
             get
@@ -182,6 +222,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Default Callbacks
 
+        /// <summary>
+        /// Gets/Sets the default save changes callback
+        /// </summary>
         public SaveChangesCallback<TControl> DefaultSaveChangesCallback
         {
             get
@@ -197,6 +240,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the default save as callback
+        /// </summary>
         public SaveAsCallback<TControl> DefaultSaveAsCallback
         {
             get
@@ -216,6 +262,12 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Document Management
 
+        /// <summary>
+        /// Helper method which adjusts the active document index appropriately
+        /// <para>
+        /// This includes handling the wrap around of the index when switching to the next/previous document and when closing the last document.
+        /// </para>
+        /// </summary>
         private void CorrectIndex()
         {
             if (this._documents.Count > 0)
@@ -232,21 +284,41 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Creates a new document
+        /// </summary>
+        /// <returns>New Document</returns>
         public Document<TControl> New()
         {
             return this.New(this._defaultTitle + (++this._nextID));
         }
 
+        /// <summary>
+        /// Creates a new document and makes it the active document if desired
+        /// </summary>
+        /// <param name="switchTo">Whether to make the new document the active document</param>
+        /// <returns>New Document</returns>
         public Document<TControl> New(bool switchTo)
         {
             return this.New(this._defaultTitle + (++this._nextID), switchTo);
         }
 
+        /// <summary>
+        /// Creates a new document
+        /// </summary>
+        /// <param name="title">Title</param>
+        /// <returns>New Document</returns>
         public Document<TControl> New(String title)
         {
             return this.New(title, false);
         }
 
+        /// <summary>
+        /// Creates a new document and makes it the active document if desired
+        /// </summary>
+        /// <param name="title">Title</param>
+        /// <param name="switchTo">Whether to make the new document the active document</param>
+        /// <returns>New Document</returns>
         public Document<TControl> New(String title, bool switchTo)
         {
             Document<TControl> doc = new Document<TControl>(this._factory.CreateAdaptor(), null, title);
@@ -283,21 +355,41 @@ namespace VDS.RDF.Utilities.Editor
             return doc;
         }
 
+        /// <summary>
+        /// Creates a new document from the active document
+        /// </summary>
+        /// <returns>New Document</returns>
         public Document<TControl> NewFromActive()
         {
             return this.NewFromExisting(this.ActiveDocument, false);
         }
 
+        /// <summary>
+        /// Creates a new document from the active document and makes it the active document if desired
+        /// </summary>
+        /// <param name="switchTo">Whether to make it the active document</param>
+        /// <returns>New Document</returns>
         public Document<TControl> NewFromActive(bool switchTo)
         {
             return this.NewFromExisting(this.ActiveDocument, switchTo);
         }
 
+        /// <summary>
+        /// Creates a new document from an existing document
+        /// </summary>
+        /// <param name="doc">Existing Document</param>
+        /// <returns>New Document</returns>
         public Document<TControl> NewFromExisting(Document<TControl> doc)
         {
             return this.NewFromExisting(doc, false);
         }
 
+        /// <summary>
+        /// Creates a new document from an existing document and makes it the active document 
+        /// </summary>
+        /// <param name="doc">Existing Document</param>
+        /// <param name="switchTo">Whether to make it the active document</param>
+        /// <returns>New Document</returns>
         public Document<TControl> NewFromExisting(Document<TControl> doc, bool switchTo)
         {
             Document<TControl> clonedDoc = this.New();
@@ -311,16 +403,26 @@ namespace VDS.RDF.Utilities.Editor
             return clonedDoc;
         }
 
+        /// <summary>
+        /// Close the active document
+        /// </summary>
+        /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close()
         {
             return this.Close(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public bool Close(SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
+        /// <summary>
+        /// Close the active document
+        /// </summary>
+        /// <param name="saveChanges">Save Changes Callback</param>
+        /// <param name="saveAs">Save As Callback</param>
+        /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
+        public bool Close(SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
             if (this._documents.Count > 0)
             {
-                if (!this.Close(this.ActiveDocument, callback, saveAs)) return false;
+                if (!this.Close(this.ActiveDocument, saveChanges, saveAs)) return false;
                 this._documents.RemoveAt(this._current);
                 this.CorrectIndex();
                 return true;
@@ -331,17 +433,29 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Closes the specified document
+        /// </summary>
+        /// <param name="index">Document Index</param>
+        /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
         public bool Close(int index)
         {
             return this.Close(index, this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public bool Close(int index, SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
+        /// <summary>
+        /// Close the specified document
+        /// </summary>
+        /// <param name="index">Document Index</param>
+        /// <param name="saveChanges">Save Changes Callback</param>
+        /// <param name="saveAs">Save As Callback</param>
+        /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
+        public bool Close(int index, SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
             if (index >= 0 && index < this._documents.Count)
             {
                 Document<TControl> doc = this._documents[index];
-                if (!this.Close(doc, callback, saveAs)) return false;
+                if (!this.Close(doc, saveChanges, saveAs)) return false;
                 this._documents.RemoveAt(index);
                 this.CorrectIndex();
                 return true;
@@ -352,12 +466,19 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        private bool Close(Document<TControl> doc, SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
+        /// <summary>
+        /// Close the specified document
+        /// </summary>
+        /// <param name="doc">Document to close</param>
+        /// <param name="saveChanges">Save Changes Callback</param>
+        /// <param name="saveAs">Save As Callback</param>
+        /// <returns>True if the document was closed, false otherwise.  May be false if the application cancels the close.</returns>
+        private bool Close(Document<TControl> doc, SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
             //Get Confirmation to save/discard changes - allows application to cancel close
             if (doc.HasChanged)
             {
-                switch (callback(doc))
+                switch (saveChanges(doc))
                 {
                     case SaveChangesMode.Cancel:
                         return false;
@@ -388,32 +509,57 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
-        public void CloseAll()
+        /// <summary>
+        /// Close all documents
+        /// </summary>
+        /// <returns>True if all documents are closed, false otherwise.  May be false if the application cancels one/more of the close operations</returns>
+        public bool CloseAll()
         {
-            this.CloseAll(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
+            return this.CloseAll(this._defaultSaveChangesCallback, this._defaultSaveAsCallback);
         }
 
-        public void CloseAll(SaveChangesCallback<TControl> callback, SaveAsCallback<TControl> saveAs)
+        /// <summary>
+        /// Closes all documents
+        /// </summary>
+        /// <param name="saveChanges">Save Changes callback</param>
+        /// <param name="saveAs">Save As callback</param>
+        /// <returns>True if all documents are closed, false otherwise.  May be false if the application cancels one/more of the close operations</returns>
+        public bool CloseAll(SaveChangesCallback<TControl> saveChanges, SaveAsCallback<TControl> saveAs)
         {
-            while (this._documents.Count > 0)
+            int i = 0;
+            while (i < this._documents.Count)
             {
                 //Get Confirmation to save/discard changes - allows application to cancel close
-                Document<TControl> doc = this._documents[0];
-                if (!this.Close(doc, callback, saveAs)) return;
-                this._documents.RemoveAt(0);
+                if (!this.Close(i, saveChanges, saveAs))
+                {
+                    //If the document was not closed increment the counter
+                    //Otherwise we will be stuck trying to close the same document forever
+                    i++;
+                }
             }
+            return this._documents.Count == 0;
         }
 
+        /// <summary>
+        /// Reloads all documents
+        /// </summary>
         public void ReloadAll()
         {
             this._documents.ForEach(d => d.Reload());
         }
 
+        /// <summary>
+        /// Saves all documents
+        /// </summary>
         public void SaveAll()
         {
             this.SaveAll(this._defaultSaveAsCallback);
         }
 
+        /// <summary>
+        /// Saves all documents
+        /// </summary>
+        /// <param name="saveAs">Save As callback</param>
         public void SaveAll(SaveAsCallback<TControl> saveAs)
         {
             foreach (Document<TControl> doc in this._documents)
@@ -433,6 +579,11 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Switches to a specific document
+        /// </summary>
+        /// <param name="index">Document Index</param>
+        /// <exception cref="IndexOutOfRangeException">Thrown if the given index is not valid</exception>
         public void SwitchTo(int index)
         {
             if (index >= 0 && index < this._documents.Count)
@@ -449,6 +600,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Switch to the previous document
+        /// </summary>
         public void PrevDocument()
         {
             if (this._documents.Count > 1)
@@ -458,6 +612,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Switch to the next document
+        /// </summary>
         public void NextDocument()
         {
             if (this._documents.Count > 1)
@@ -471,6 +628,11 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Event Handling
 
+        /// <summary>
+        /// Handles the validator changed event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         private void HandleValidatorChanged(Object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
@@ -496,6 +658,11 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handles the text changed event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         private void HandleTextChanged(Object sender, DocumentChangedEventArgs<TControl> args)
         {
             //Update Syntax Validation if appropriate
@@ -513,6 +680,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the higlighting toggled event
+        /// </summary>
         private void HandleHighlightingToggled()
         {
             foreach (Document<TControl> doc in this._documents)
@@ -521,6 +691,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the highlight errors toggled event
+        /// </summary>
         private void HandleHighlightErrorsToggled()
         {
             foreach (Document<TControl> doc in this._documents)
@@ -529,6 +702,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the auto-complete toggled event
+        /// </summary>
         private void HandleAutoCompleteToggled()
         {
             foreach (Document<TControl> doc in this._documents)
@@ -537,6 +713,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the symbol selection toggled event
+        /// </summary>
         private void HandleSymbolSelectionToggled()
         {
             foreach (Document<TControl> doc in this._documents)
@@ -545,6 +724,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the symbol selector changed event
+        /// </summary>
         private void HandleSymbolSelectorChanged()
         {
             foreach (Document<TControl> doc in this._documents)
@@ -553,6 +735,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Handle the visual options changed event
+        /// </summary>
         private void HandleVisualOptionsChanged()
         {
             if (this._visualOptions != null)
@@ -586,8 +771,14 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Event which is raised when the active document changes
+        /// </summary>
         public event DocumentChangedHandler<TControl> ActiveDocumentChanged;
 
+        /// <summary>
+        /// Event which is raised when a new document is created
+        /// </summary>
         public event DocumentChangedHandler<TControl> DocumentCreated;
 
         #endregion

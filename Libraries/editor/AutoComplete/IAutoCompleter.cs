@@ -30,18 +30,35 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Interface for auto-completers
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public interface IAutoCompleter<T>
     {
+        /// <summary>
+        /// Detect current auto-complete state, typically called when the user moves the cursor to a new position in the file
+        /// </summary>
         void DetectState();
 
+        /// <summary>
+        /// Try to auto-complete
+        /// </summary>
+        /// <param name="newText">New Text</param>
         void TryAutoComplete(String newText);
 
+        /// <summary>
+        /// Gets/Sets the state
+        /// </summary>
         AutoCompleteState State
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Gets/Sets the last completion
+        /// </summary>
         AutoCompleteState LastCompletion
         {
             get;

@@ -30,6 +30,11 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Visual options for text editors
+    /// </summary>
+    /// <typeparam name="TFont">Font Type</typeparam>
+    /// <typeparam name="TColor">Colour Type</typeparam>
     public abstract class VisualOptions<TFont, TColor>
         where TFont : class
         where TColor: struct
@@ -49,6 +54,9 @@ namespace VDS.RDF.Utilities.Editor
                         _errorBackground = null;
         private String _errorDecoration = null;
 
+        /// <summary>
+        /// Gets/Sets whether clickable URIs are enabled
+        /// </summary>
         public bool EnableClickableUris
         {
             get
@@ -65,6 +73,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show line numbers
+        /// </summary>
         public bool ShowLineNumbers
         {
             get
@@ -81,6 +92,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show spaces
+        /// </summary>
         public bool ShowSpaces
         {
             get
@@ -97,6 +111,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show tabs
+        /// </summary>
         public bool ShowTabs
         {
             get
@@ -113,6 +130,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show new line characters
+        /// </summary>
         public bool ShowEndOfLine
         {
             get
@@ -129,6 +149,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets word wrap
+        /// </summary>
         public bool WordWrap
         {
             get
@@ -145,6 +168,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the font face
+        /// </summary>
         public TFont FontFace
         {
             get
@@ -177,6 +203,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the font face for error highlights
+        /// </summary>
         public TFont ErrorFontFace
         {
             get
@@ -209,6 +238,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the font size
+        /// </summary>
         public double FontSize
         {
             get
@@ -225,6 +257,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the foreground colour
+        /// </summary>
         public TColor Foreground
         {
             get
@@ -256,6 +291,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the background colour
+        /// </summary>
         public TColor Background
         {
             get
@@ -287,6 +325,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the foreground colour for error highlights
+        /// </summary>
         public TColor ErrorForeground
         {
             get
@@ -318,6 +359,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the background colour for error highlights
+        /// </summary>
         public TColor ErrorBackground
         {
             get
@@ -349,6 +393,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the decoration for error highlights
+        /// </summary>
         public String ErrorDecoration
         {
             get
@@ -365,8 +412,14 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Event which is raised whenever options change
+        /// </summary>
         public event OptionsChanged Changed;
 
+        /// <summary>
+        /// Helper method for raising the options changed event
+        /// </summary>
         protected void RaiseChanged()
         {
             OptionsChanged d = this.Changed;
@@ -374,5 +427,8 @@ namespace VDS.RDF.Utilities.Editor
         }
     }
 
+    /// <summary>
+    /// Delegate for option changed events
+    /// </summary>
     public delegate void OptionsChanged();
 }

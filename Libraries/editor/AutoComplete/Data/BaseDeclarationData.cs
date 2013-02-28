@@ -30,20 +30,43 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public abstract class BaseDeclarationData : BaseCompletionData
+    /// <summary>
+    /// Completion data for Base URI declarations
+    /// </summary>
+    public abstract class BaseDeclarationData 
+        : BaseCompletionData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="prefix">Prefix text</param>
+        /// <param name="postfix">Postfix text</param>
         public BaseDeclarationData(String prefix, String postfix)
             : base("<New Base URI Declaration>", prefix + "<Enter Base URI here>" + postfix, "Inserts a new Base URI declaration") { }
     }
 
-    public class TurtleStyleBaseDeclarationData : BaseDeclarationData
+    /// <summary>
+    /// Completion data for Turtle Style Base URI declarations
+    /// </summary>
+    public class TurtleStyleBaseDeclarationData 
+        : BaseDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
         public TurtleStyleBaseDeclarationData()
             : base("@base ", ".") { }
     }
 
-    public class SparqlStyleBaseDeclarationData : BaseDeclarationData
+    /// <summary>
+    /// Completion data for SPARQL style Base URI declarations
+    /// </summary>
+    public class SparqlStyleBaseDeclarationData 
+        : BaseDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
         public SparqlStyleBaseDeclarationData()
             : base("BASE", String.Empty) { }
     }

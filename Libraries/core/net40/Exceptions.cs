@@ -552,7 +552,7 @@ namespace VDS.RDF.Update
     /// Class for representing malformed SPARQL Updates
     /// </summary>
     /// <remarks>
-    /// This is distinct from a <see cref="RdfParseException">RdfParseException</see> as it is possible for an update to be syntactically valid but semantically malformed
+    /// This is distinct from a <see cref="VDS.RDF.Parsing.RdfParseException">RdfParseException</see> as it is possible for an update to be syntactically valid but semantically malformed
     /// </remarks>
     public class SparqlUpdateMalformedException
         : SparqlUpdateException

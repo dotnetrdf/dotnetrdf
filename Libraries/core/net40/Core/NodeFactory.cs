@@ -256,7 +256,7 @@ namespace VDS.RDF
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="CountHandler">CountHandler</see> to speed up processing
+    /// Intended for usage in scenarios where the user of the factory does not care about the values returned, for example it is used internally in the <see cref="VDS.RDF.Parsing.Handlers.CountHandler">CountHandler</see> to speed up processing
     /// </para>
     /// </remarks>
     class MockNodeFactory

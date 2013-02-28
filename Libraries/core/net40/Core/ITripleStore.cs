@@ -162,10 +162,10 @@ namespace VDS.RDF
     /// </summary>
     /// <remarks>
     /// <para>
-    /// An in memory Triple Store will typically load most of the Graphs and consequently Triples contained within it into Memory as the in memory SPARQL implementation only operates over the part of the Triple Store loaded in memory.  This being said there is no reason why an in memory store can't provide a Snapshot view of an underlying store to allow only the relevant parts of Store to be loaded and queried (the <see cref="OnDemandTripleStore">OnDemandTripleStore</see> does just this)
+    /// An in memory Triple Store will typically load most of the Graphs and consequently Triples contained within it into Memory as the in memory SPARQL implementation only operates over the part of the Triple Store loaded in memory.  This being said there is no reason why an in memory store can't provide a Snapshot view of an underlying store to allow only the relevant parts of Store to be loaded and queried.
     /// </para>
     /// <para>
-    /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the <see cref="IInMemoryQueryableStore.QueryTriples">QueryTriples</see> enumerable
+    /// All the Selection Methods which do not specify a subset of Graphs on such a Triple Store <strong>should</strong> operate over the entire store
     /// </para>
     /// </remarks>
     [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
@@ -435,7 +435,7 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Interface for Triple Stores which can have a <see cref="InferenceEngine">InferenceEngine</see> attached to them
+    /// Interface for Triple Stores which can have a <see cref="IInferenceEngine">IInferenceEngine</see> attached to them
     /// </summary>
     [Obsolete("Obsolete, superceded by the more general IGraphStore interface", true)]
     public interface IInferencingTripleStore

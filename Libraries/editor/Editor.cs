@@ -30,6 +30,12 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Represents the RDF Editor
+    /// </summary>
+    /// <typeparam name="TControl">Control Type</typeparam>
+    /// <typeparam name="TFont">Font Type</typeparam>
+    /// <typeparam name="TColor">Colour Type</typeparam>
     public class Editor<TControl, TFont, TColor>
         where TFont : class
         where TColor : struct
@@ -37,6 +43,10 @@ namespace VDS.RDF.Utilities.Editor
         private DocumentManager<TControl, TFont, TColor> _docManager;
         private ITextEditorAdaptorFactory<TControl> _factory;
 
+        /// <summary>
+        /// Creates a new editor
+        /// </summary>
+        /// <param name="factory">Text Editor factory</param>
         public Editor(ITextEditorAdaptorFactory<TControl> factory)
         {
             if (factory == null) throw new ArgumentNullException("factory");
@@ -44,6 +54,9 @@ namespace VDS.RDF.Utilities.Editor
             this._docManager = new DocumentManager<TControl, TFont, TColor>(this._factory);
         }
 
+        /// <summary>
+        /// Gets the document manager
+        /// </summary>
         public DocumentManager<TControl, TFont, TColor> DocumentManager
         {
             get
@@ -52,6 +65,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the text editor factory
+        /// </summary>
         public ITextEditorAdaptorFactory<TControl> TextEditorFactory
         {
             get

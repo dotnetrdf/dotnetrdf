@@ -63,6 +63,12 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Applies visual options to the editor
+        /// </summary>
+        /// <typeparam name="TFont">Font Type</typeparam>
+        /// <typeparam name="TColor">Colour Type</typeparam>
+        /// <param name="options">Options</param>
         public abstract void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
             where TFont : class
             where TColor : struct;
@@ -168,10 +174,19 @@ namespace VDS.RDF.Utilities.Editor
         /// <param name="line">Line</param>
         public abstract void ScrollToLine(int line);
 
+        /// <summary>
+        /// Refresh the editor
+        /// </summary>
         public virtual void Refresh() { }
 
+        /// <summary>
+        /// Begin an update on the editor
+        /// </summary>
         public virtual void BeginUpdate() { }
 
+        /// <summary>
+        /// End an update on the editor
+        /// </summary>
         public virtual void EndUpdate() { }
 
         #endregion
@@ -258,6 +273,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Highlighting
 
+        /// <summary>
+        /// Gets/Sets the symbol selector
+        /// </summary>
         public virtual ISymbolSelector<T> SymbolSelector
         {
             get;
@@ -321,7 +339,7 @@ namespace VDS.RDF.Utilities.Editor
         }
 
         /// <summary>
-        /// Method called when a new auto-completer is specified which should be overridden by implementations to wire up the editor to calling <see cref="IAutoCompleter<T>.TryAutoComplete">TryAutoComplete</see> where appropriate
+        /// Method called when a new auto-completer is specified which should be overridden by implementations to wire up the editor to calling <see cref="IAutoCompleter{T}.TryAutoComplete">TryAutoComplete</see> where appropriate
         /// </summary>
         protected virtual void AttachAutoCompleter() { }
 
@@ -367,6 +385,10 @@ namespace VDS.RDF.Utilities.Editor
             this.RaiseEvent(sender, this.TextChanged);
         }
 
+        /// <summary>
+        /// Helper method that can be used to raise the DoubleClick event
+        /// </summary>
+        /// <param name="sender">Sender for the event</param>
         protected void RaiseDoubleClick(Object sender)
         {
             this.RaiseEvent(sender, this.DoubleClick);
@@ -377,6 +399,9 @@ namespace VDS.RDF.Utilities.Editor
         /// </summary>
         public event TextEditorEventHandler<T> TextChanged;
 
+        /// <summary>
+        /// Event which is raised when the editor receives a double click
+        /// </summary>
         public event TextEditorEventHandler<T> DoubleClick;
 
         #endregion
