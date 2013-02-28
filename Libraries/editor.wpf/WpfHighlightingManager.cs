@@ -36,16 +36,26 @@ using VDS.RDF.Utilities.Editor.Syntax;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
+    /// <summary>
+    /// A highlighting manager that configures AvalonEdit highlighting
+    /// </summary>
     public static class WpfHighlightingManager
     {
         private static bool _init = false;
         private static bool _useCustomSyntaxFiles = false;
 
+        /// <summary>
+        /// Initialize the manager
+        /// </summary>
         public static void Initialise()
         {
             Initialise(false);
         }
 
+        /// <summary>
+        /// Initialize the manager
+        /// </summary>
+        /// <param name="useCustomSyntaxFiles">Whether to use custom syntax definitions in place of the embedded definitions</param>
         public static void Initialise(bool useCustomSyntaxFiles)
         {
             if (!_init)
@@ -70,6 +80,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Attempts to load a highlighting definition from a file
+        /// </summary>
+        /// <param name="filename">Filename</param>
+        /// <returns>Highlighting Definition</returns>
         private static IHighlightingDefinition LoadHighlighting(String filename)
         {
             if (File.Exists(Path.Combine("syntax/", filename)))
@@ -82,6 +97,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Attempts to load a highlighting definition optionally using the embedded resource where available
+        /// </summary>
+        /// <param name="filename">Filename</param>
+        /// <param name="useResourceIfAvailable">Whether to use embedded resources</param>
+        /// <returns>Highlight Definition</returns>
         private static IHighlightingDefinition LoadHighlighting(String filename, bool useResourceIfAvailable)
         {
             if (useResourceIfAvailable)

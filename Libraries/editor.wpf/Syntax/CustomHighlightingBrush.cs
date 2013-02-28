@@ -33,27 +33,48 @@ using ICSharpCode.AvalonEdit.Rendering;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
-    public class CustomHighlightingBrush : HighlightingBrush
+    /// <summary>
+    /// A custom highlighting brush that uses a solid colour brush
+    /// </summary>
+    public class CustomHighlightingBrush 
+        : HighlightingBrush
     {
         private SolidColorBrush _brush;
 
+        /// <summary>
+        /// Creates a new brush
+        /// </summary>
+        /// <param name="c">Colour</param>
         public CustomHighlightingBrush(Color c)
         {
             this._brush = new SolidColorBrush(c);
             this._brush.Freeze();
         }
 
+        /// <summary>
+        /// Creates a new brush from an existing brush
+        /// </summary>
+        /// <param name="b">Brish</param>
         public CustomHighlightingBrush(SolidColorBrush b)
         {
             this._brush = b;
             this._brush.Freeze();
         }
 
+        /// <summary>
+        /// Gets the brush
+        /// </summary>
+        /// <param name="context">Context</param>
+        /// <returns></returns>
         public override Brush GetBrush(ITextRunConstructionContext context)
         {
             return this._brush;
         }
 
+        /// <summary>
+        /// Gets the string representation of the brush
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return this._brush.ToString();

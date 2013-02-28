@@ -106,7 +106,7 @@ namespace VDS.RDF.Parsing.Events
     }
 
     /// <summary>
-    /// Represents a Queue of events which are streamed from an instance of a <see cref="IJitEventGenerator">IJitEventGenerator</see> for use by an event based parser
+    /// Represents a Queue of events which are streamed from an instance of a <see cref="IJitEventGenerator{T}">IJitEventGenerator</see> for use by an event based parser
     /// </summary>
     public class StreamingEventQueue<T> : EventQueue<T> where T : IEvent
     {

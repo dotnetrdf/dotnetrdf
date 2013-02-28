@@ -150,7 +150,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncSafeConnector.UpdateGraph">UpdateGraph()</see> method
+        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncSafeConnector.UpdateGraph(Uri, IEnumerable{Triple}, IEnumerable{Triple})">UpdateGraph()</see> method
         /// </summary>
         public abstract bool UpdateSupported
         {
@@ -158,7 +158,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncSafeConnector.DeleteGraph">DeleteGraph()</see> method
+        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncSafeConnector.DeleteGraph(Uri)">DeleteGraph()</see> method
         /// </summary>
         public abstract bool DeleteSupported
         {
@@ -166,7 +166,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncSafeConnector.ListGraphs">ListGraphs()</see> method
+        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncSafeConnector.ListGraphs()">ListGraphs()</see> method
         /// </summary>
         public abstract bool ListGraphsSupported
         {

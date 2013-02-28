@@ -32,9 +32,11 @@ using System.Text;
 namespace VDS.RDF.Utilities.Editor.Selection
 {
     /// <summary>
-    /// Selector which selects the symbol deliminated by a starting &lt; " or new line and by an ending &gt; " or new line.  If there is already a selection it selects the surrounding symbol
+    /// Abstract base implementation of selectors, if there is already a selection it selects the surrounding symbol
     /// </summary>
-    public abstract class BaseSelector<T> : ISymbolSelector<T>
+    /// <typeparam name="T">Control Type</typeparam>
+    public abstract class BaseSelector<T>
+        : ISymbolSelector<T>
     {
         private bool _includeDelim = false;
 

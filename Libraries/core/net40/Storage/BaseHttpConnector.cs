@@ -219,7 +219,7 @@ namespace VDS.RDF.Storage
     }
 
     /// <summary>
-    /// Abstract Base Class for HTTP Based <see cref="IAsyncStorageProivder">IAsyncStorageProvider</see> implementations
+    /// Abstract Base Class for HTTP Based <see cref="IAsyncStorageProvider">IAsyncStorageProvider</see> implementations
     /// </summary>
     /// <remarks>
     /// <para>
@@ -649,7 +649,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph">UpdateGraph()</see> method
+        /// Gets whether the Store supports Triple level updates via the <see cref="BaseAsyncHttpConnector.UpdateGraph(Uri,IEnumerable{Triple},IEnumerable{Triple},AsyncStorageCallback,Object)">UpdateGraph()</see> method
         /// </summary>
         public abstract bool UpdateSupported
         {
@@ -657,7 +657,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph">DeleteGraph()</see> method
+        /// Gets whether the Store supports Graph deletion via the <see cref="BaseAsyncHttpConnector.DeleteGraph(Uri, AsyncStorageCallback, Object)">DeleteGraph()</see> method
         /// </summary>
         public abstract bool DeleteSupported
         {
@@ -665,7 +665,7 @@ namespace VDS.RDF.Storage
         }
 
         /// <summary>
-        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs">ListGraphs()</see> method
+        /// Gets whether the Store supports listing graphs via the <see cref="BaseAsyncHttpConnector.ListGraphs(AsyncStorageCallback, Object)">ListGraphs()</see> method
         /// </summary>
         public abstract bool ListGraphsSupported
         {

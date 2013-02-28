@@ -40,7 +40,10 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
-    public class AutoCompleteManager
+    /// <summary>
+    /// Registry which manages auto-completers
+    /// </summary>
+    public static class AutoCompleteManager
     {
         private static bool _init = false;
 
@@ -94,21 +97,34 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         private static HashSet<String> _loadedNamespaces = new HashSet<String>();
         private static LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
+        /// <summary>
+        /// Initialise the registry
+        /// </summary>
         public static void Initialise()
         {
-            if (_init) return;
-            _init = true;
-
-            //Have to intialise the Syntax Manager first
-            SyntaxManager.Initialise();
-
-            //Then start lazy loading Namespace Terms
-            foreach (VocabularyDefinition vocab in _builtInVocabs)
+            lock (_loadedNamespaces)
             {
-                _namespaceLoader.BeginInvoke(vocab.NamespaceUri, InitialiseNamepaceTerms, null);
+                if (_init) return;
+                _init = true;
+
+                //Have to intialise the Syntax Manager first
+                SyntaxManager.Initialise();
+
+                //Then start lazy loading Namespace Terms
+                foreach (VocabularyDefinition vocab in _builtInVocabs)
+                {
+                    _namespaceLoader.BeginInvoke(vocab.NamespaceUri, InitialiseNamepaceTerms, null);
+                }
             }
         }
 
+        /// <summary>
+        /// Gets the auto-completer for a given text editor
+        /// </summary>
+        /// <typeparam name="T">Control Type</typeparam>
+        /// <param name="name">Syntax Name</param>
+        /// <param name="editor">Text Editor</param>
+        /// <returns>Auto-Completer if available, null otherwise</returns>
         public static IAutoCompleter<T> GetAutoCompleter<T>(String name, ITextEditorAdaptor<T> editor)
         {
             foreach (AutoCompleteDefinition def in _builtinCompleters)
@@ -122,7 +138,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                         IAutoCompleter<T> completer = (IAutoCompleter<T>)Activator.CreateInstance(target, new Object[] { editor });
                         return completer;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         //Ignore errors as we'll try further definitions (if applicable)
                         //or return null at the end
@@ -132,6 +148,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return null;
         }
 
+        /// <summary>
+        /// Initialise namespace terms
+        /// </summary>
+        /// <param name="result">Async Result</param>
         private static void InitialiseNamepaceTerms(IAsyncResult result)
         {
             try
@@ -144,6 +164,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets known vocabularies
+        /// </summary>
         public static IEnumerable<VocabularyDefinition> Vocabularies
         {
             get
@@ -154,6 +177,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         private delegate IEnumerable<NamespaceTerm> LoadNamespaceTermsDelegate(String namespaceUri);
 
+        /// <summary>
+        /// Loads the terms from a given namespace
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
         public static IEnumerable<NamespaceTerm> LoadNamespaceTerms(String namespaceUri)
         {
             //Don't load if already loaded
@@ -239,21 +267,22 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     _terms.AddRange(terms.Distinct());
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 //Ignore Exceptions - just means we won't have those namespace terms available
             }
-            try
+            lock (_loadedNamespaces)
             {
                 _loadedNamespaces.Add(namespaceUri);
-            }
-            catch (NullReferenceException)
-            {
-                //For some reason .Net sometimes throws a NullReferenceException here which we shall ignore
             }
             return GetNamespaceTerms(namespaceUri);
         }
 
+        /// <summary>
+        /// Gets the terms for a given namespace
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns>Terms in the namespace</returns>
         public static IEnumerable<NamespaceTerm> GetNamespaceTerms(String namespaceUri)
         {
             return (from t in _terms
@@ -261,6 +290,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
                     select t);
         }
 
+        /// <summary>
+        /// Gets the default prefix for a namespace
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns>Default Prefix, empty if not known</returns>
         public static String GetDefaultPrefix(String namespaceUri)
         {
             foreach (VocabularyDefinition vocab in _builtInVocabs)

@@ -36,6 +36,9 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Utilities.Editor.Syntax
 {
+    /// <summary>
+    /// The Syntax Manager is the central registry of supported syntaxes
+    /// </summary>
     public static class SyntaxManager
     {
         private static bool _init = false;
@@ -62,34 +65,43 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             new SyntaxDefinition("TriX", "trix.xshd", new String[] { ".xml" }, new RdfDatasetSyntaxValidator(new TriXParser()))
         };
 
+        /// <summary>
+        /// Initialize the Syntax Manager
+        /// </summary>
         public static void Initialise()
         {
-            if (_init) return;
-            _init = true;
+            lock (_builtinDefs)
+            {
+                if (_init) return;
+                _init = true;
 
-            //Set Comment Settings
-            SetCommentCharacters("RdfXml", null, "<!--", "-->");
-            SetCommentCharacters("Turtle", "#", null, null);
-            SetCommentCharacters("NTriples", "Turtle");
-            SetCommentCharacters("Notation3", "Turtle");
-            SetCommentCharacters("RdfJson", "//", "/*", "*/");
-            SetCommentCharacters("XHtmlRdfA", "RdfXml");
-            SetCommentCharacters("SparqlQuery10", "Turtle");
-            SetCommentCharacters("SparqlQuery11", "Turtle");
-            SetCommentCharacters("SparqlResultsXml", "RdfXml");
-            SetCommentCharacters("SparqlResultsJson", "RdfJson");
-            SetCommentCharacters("SparqlUpdate11", "Turtle");
-            SetCommentCharacters("NQuads", "Turtle");
-            SetCommentCharacters("TriG", "Turtle");
-            SetCommentCharacters("TriX", "RdfXml");
+                //Set Comment Settings
+                SetCommentCharacters("RdfXml", null, "<!--", "-->");
+                SetCommentCharacters("Turtle", "#", null, null);
+                SetCommentCharacters("NTriples", "Turtle");
+                SetCommentCharacters("Notation3", "Turtle");
+                SetCommentCharacters("RdfJson", "//", "/*", "*/");
+                SetCommentCharacters("XHtmlRdfA", "RdfXml");
+                SetCommentCharacters("SparqlQuery10", "Turtle");
+                SetCommentCharacters("SparqlQuery11", "Turtle");
+                SetCommentCharacters("SparqlResultsXml", "RdfXml");
+                SetCommentCharacters("SparqlResultsJson", "RdfJson");
+                SetCommentCharacters("SparqlUpdate11", "Turtle");
+                SetCommentCharacters("NQuads", "Turtle");
+                SetCommentCharacters("TriG", "Turtle");
+                SetCommentCharacters("TriX", "RdfXml");
 
-            //Set XML Formats
-            SetXmlFormat("RdfXml");
-            SetXmlFormat("XHtmlRdfA");
-            SetXmlFormat("SparqlResultsXml");
-            SetXmlFormat("TriX");
+                //Set XML Formats
+                SetXmlFormat("RdfXml");
+                SetXmlFormat("XHtmlRdfA");
+                SetXmlFormat("SparqlResultsXml");
+                SetXmlFormat("TriX");
+            }
         }
 
+        /// <summary>
+        /// Gets the available syntax definitions
+        /// </summary>
         public static IEnumerable<SyntaxDefinition> Definitions
         {
             get
@@ -99,6 +111,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the syntax validator associated with a given syntax (if any)
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <returns>Validator if available, null otherwise</returns>
         public static ISyntaxValidator GetValidator(String name)
         {
             foreach (SyntaxDefinition def in _builtinDefs)
@@ -108,6 +125,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             return null;
         }
 
+        /// <summary>
+        /// Gets the RDF parser associated with a given syntax (if any)
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <returns>RDF Parser if available, null otherwise</returns>
         public static IRdfReader GetParser(String name)
         {
             foreach (SyntaxDefinition def in _builtinDefs)
@@ -117,6 +139,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             return null;
         }
 
+        /// <summary>
+        /// Gets the RDF writer associated with a given syntax (if any)
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <returns>RDF Writer if available, null otherwise</returns>
         public static IRdfWriter GetWriter(String name)
         {
             foreach (SyntaxDefinition def in _builtinDefs)
@@ -126,6 +153,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             return null;
         }
 
+        /// <summary>
+        /// Gets a syntax definition
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <returns>Definition or null if the syntax name is not known</returns>
         public static SyntaxDefinition GetDefinition(String name)
         {
             foreach (SyntaxDefinition def in _builtinDefs)
@@ -135,6 +167,13 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             return null;
         }
 
+        /// <summary>
+        /// Sets the comment characters for a given syntax
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <param name="singleLineComment">Single Line comment</param>
+        /// <param name="multiLineCommentStart">Multi-line comment start</param>
+        /// <param name="multiLineCommentEnd">Multi-line comment end</param>
         public static void SetCommentCharacters(String name, String singleLineComment, String multiLineCommentStart, String multiLineCommentEnd)
         {
             SyntaxDefinition def = GetDefinition(name);
@@ -146,6 +185,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Sets the comment characters for a given syntax copying from another syntax
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
+        /// <param name="copyFrom">Syntax to copy from</param>
         public static void SetCommentCharacters(String name, String copyFrom)
         {
             SyntaxDefinition def = GetDefinition(name);
@@ -158,6 +202,10 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Sets that a syntax is an XML format
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         public static void SetXmlFormat(String name)
         {
             SyntaxDefinition def = GetDefinition(name);

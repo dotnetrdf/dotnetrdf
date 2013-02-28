@@ -35,9 +35,15 @@ using ICSharpCode.AvalonEdit.Utils;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
-    public class FakeTextRunContext
+    /// <summary>
+    /// Fake text run context needed for some operations
+    /// </summary>
+    class FakeTextRunContext
         : ITextRunConstructionContext
     {
+        /// <summary>
+        /// Gets the document
+        /// </summary>
         public ICSharpCode.AvalonEdit.Document.TextDocument Document
         {
             get 
@@ -46,6 +52,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the properties
+        /// </summary>
         public TextRunProperties GlobalTextRunProperties
         {
             get 
@@ -54,6 +63,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the text view
+        /// </summary>
         public TextView TextView
         {
             get 
@@ -62,6 +74,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the visual line
+        /// </summary>
         public VisualLine VisualLine
         {
             get 
@@ -70,6 +85,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             }
         }
 
+        /// <summary>
+        /// Gets the text
+        /// </summary>
+        /// <param name="offset">Offset</param>
+        /// <param name="length">Length</param>
+        /// <returns>Text</returns>
         public StringSegment GetText(int offset, int length)
         {
             return new StringSegment();

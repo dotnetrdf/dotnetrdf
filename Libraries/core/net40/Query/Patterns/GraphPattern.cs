@@ -424,7 +424,7 @@ namespace VDS.RDF.Query.Patterns
         /// Gets whether Optimisation has been applied to this query
         /// </summary>
         /// <remarks>
-        /// This only indicates that an Optimiser has been applied to the Pattern.  You can always reoptimise by calling the <see cref="SparqlQuert.Optimise">Optimise()</see> method with an optimiser of your choice on the query to which this Pattern belongs
+        /// This only indicates that an Optimiser has been applied to the Pattern.  You can always reoptimise by calling the <see cref="SparqlQuery.Optimise()">Optimise()</see> method with an optimiser of your choice on the query to which this Pattern belongs
         /// </remarks>
         public bool IsOptimised
         {

@@ -36,15 +36,28 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Auto-complete implementation for Turtle
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class TurtleAutoCompleter<T>
         : BaseAutoCompleter<T>
     {
         private const String PrefixDeclaration = "prefix";
         private const String BaseDeclaration = "base";
+        /// <summary>
+        /// Regular expression pattern for prefix declarations
+        /// </summary>
         protected String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
+        /// <summary>
+        /// Regular expression pattern for blank node IDs
+        /// </summary>
         protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
         private LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 
+        /// <summary>
+        /// Keywords that the completer permits
+        /// </summary>
         protected List<ICompletionData> _keywords = new List<ICompletionData>()
         {
             new KeywordData("a", "Shorthand for RDF type predicate - equivalent to the URI <" + RdfSpecsHelper.RdfType + ">"),
@@ -57,11 +70,18 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
         private BlankNodeMapper _bnodemap = new BlankNodeMapper();
 
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public TurtleAutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor) { }
 
         #region State Detection
 
+        /// <summary>
+        /// Detects the state of the auto-completer
+        /// </summary>
         protected override void DetectStateInternal()
         {
             //Look for defined Prefixes - we have to clear the list of namespaces and prefixes since they might have been altered
@@ -69,6 +89,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this.DetectBlankNodes();
         }
 
+        /// <summary>
+        /// Detects declared namespaces
+        /// </summary>
         protected virtual void DetectNamespaces()
         {
             this._nsmap.Clear();
@@ -101,6 +124,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets whether new terms can be declared
+        /// </summary>
         protected virtual bool CanDeclareNewTerms
         {
             get
@@ -109,6 +135,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Detects declared blank nodes
+        /// </summary>
         protected virtual void DetectBlankNodes()
         {
             this._bnodes.Clear();
@@ -123,8 +152,17 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Delegate for requesting namespace terms
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns>Namespace Terms</returns>
         private delegate IEnumerable<NamespaceTerm> LoadNamespaceTermsDelegate(String namespaceUri);
 
+        /// <summary>
+        /// Callback to fire when namespace terms are received
+        /// </summary>
+        /// <param name="result">Async Result</param>
         private void LoadNamespaceTermsCallback(IAsyncResult result)
         {
             try
@@ -151,6 +189,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Start Auto-completion
 
+        /// <summary>
+        /// Start literal completion
+        /// </summary>
+        /// <param name="newText">New text</param>
         protected virtual void StartLiteralCompletion(String newText)
         {
             if (this.TemporaryState == AutoCompleteState.Literal || this.TemporaryState == AutoCompleteState.LongLiteral)
@@ -164,16 +206,28 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Start comment completion
+        /// </summary>
+        /// <param name="newText">New text</param>
         protected virtual void StartCommentCompletion(String newText)
         {
             this.State = AutoCompleteState.Comment;
         }
 
+        /// <summary>
+        /// Start URI completion
+        /// </summary>
+        /// <param name="newText">New text</param>
         protected virtual void StartUriCompletion(String newText)
         {
             this.State = AutoCompleteState.Uri;
         }
 
+        /// <summary>
+        /// Start QName completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartQNameCompletion(String newText)
         {
             this.State = AutoCompleteState.QName;
@@ -181,6 +235,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._editor.Suggest(this.GetQNameCompletionData());
         }
 
+        /// <summary>
+        /// Start Blank Node completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartBNodeCompletion(String newText)
         {
             this.State = AutoCompleteState.BNode;
@@ -188,6 +246,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._editor.Suggest(new NewBlankNodeData(this._bnodemap.GetNextID()).AsEnumerable<ICompletionData>().Concat(this._bnodes));
         }
 
+        /// <summary>
+        /// Start Keyword or QName completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartKeywordOrQNameCompletion(String newText)
         {
             //Backtrack start point
@@ -205,6 +267,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Start declaration completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartDeclarationCompletion(String newText)
         {
             this.State = AutoCompleteState.Declaration;
@@ -239,6 +305,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Auto-completion
 
+        /// <summary>
+        /// Try to auto-complete
+        /// </summary>
+        /// <param name="newText">New Text</param>
         public override void TryAutoComplete(String newText)
         {
             //Don't do anything if auto-complete not currently active
@@ -362,6 +432,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to auto-complete a long literal
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryLongLiteralCompletion(String newText)
         {
             if (newText == "\"")
@@ -379,6 +453,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to auto-complete a literal
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryLiteralCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -429,6 +507,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a URI
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryUriCompletion(String newText)
         {
             if (newText == ">")
@@ -442,6 +524,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a BNode
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryBNodeCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -467,6 +553,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a QName
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryQNameCompletion(String newText)
         {
             if (this.IsValidPartialKeyword(this.CurrentText))
@@ -486,6 +576,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a Keyword or QName
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryKeywordOrQNameCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -513,6 +607,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a declaration
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryDeclarationCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -541,6 +639,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a prefix declaration
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryPrefixCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -571,6 +673,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a base declaration
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryBaseCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -592,6 +698,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try to complete a comment
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryCommentCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -605,7 +715,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Helper Functions
 
-        public virtual bool IsValidPartialKeyword(String value)
+        /// <summary>
+        /// Is something a valid partial keyword?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidPartialKeyword(String value)
         {
             foreach (KeywordData keyword in this._keywords.OfType<KeywordData>())
             {
@@ -616,7 +731,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return false;
         }
 
-        public virtual bool IsValidPartialQName(String value)
+        /// <summary>
+        /// Is something a valid partial QName?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidPartialQName(String value)
         {
             String ns, localname;
             if (value.Contains(':'))
@@ -701,7 +821,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return true;
         }
 
-        public virtual bool IsValidPartialBlankNodeID(String value)
+        /// <summary>
+        /// Is something a valid partial Blank Node ID?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidPartialBlankNodeID(String value)
         {
             if (value.Equals(String.Empty))
             {
@@ -733,11 +858,20 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Is something a new line
+        /// </summary>
+        /// <param name="text">Value</param>
+        /// <returns></returns>
         protected bool IsNewLine(String text)
         {
             return text.Equals("\n") || text.Equals("\r") || text.Equals("\r\n") || text.Equals("\n\r");
         }
 
+        /// <summary>
+        /// Get QName completion data
+        /// </summary>
+        /// <returns></returns>
         protected virtual IEnumerable<ICompletionData> GetQNameCompletionData()
         {
             //Set Current Offset to scope the Namespace Mapper properly
@@ -767,6 +901,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return qnames;
         }
 
+        /// <summary>
+        /// Backtrack the start offset while a function is true
+        /// </summary>
+        /// <param name="testFunc">Test function</param>
         protected void BacktrackStartOffset(Func<String, bool> testFunc)
         {
             int offset = this.StartOffset - 1;

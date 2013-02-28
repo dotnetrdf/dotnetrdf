@@ -30,20 +30,43 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public abstract class BaseDefaultPrefixDeclarationData : BaseCompletionData
+    /// <summary>
+    /// Abstract completion data for default prefix declarations
+    /// </summary>
+    public abstract class BaseDefaultPrefixDeclarationData 
+        : BaseCompletionData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="postfix">Postfix</param>
         public BaseDefaultPrefixDeclarationData(String prefix, String postfix)
             : base("<New Default Prefix Declaration>", prefix + ": <Enter Default Namespace URI here>" + postfix, "Inserts a new Default Prefix declaration", 100.0d) { }
     }
 
-    public class TurtleStyleDefaultPrefixDeclarationData : BaseDefaultPrefixDeclarationData
+    /// <summary>
+    /// Completion data for Turtle style default prefix declaration
+    /// </summary>
+    public class TurtleStyleDefaultPrefixDeclarationData
+        : BaseDefaultPrefixDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
         public TurtleStyleDefaultPrefixDeclarationData()
             : base("@prefix ", ".") { }
     }
 
-    public class SparqlStyleDefaultPrefixDeclarationData : BaseDefaultPrefixDeclarationData
+    /// <summary>
+    /// Completion data for SPARQL style default prefix declaration
+    /// </summary>
+    public class SparqlStyleDefaultPrefixDeclarationData
+        : BaseDefaultPrefixDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
         public SparqlStyleDefaultPrefixDeclarationData()
             : base("PREFIX ", String.Empty) { }
     }

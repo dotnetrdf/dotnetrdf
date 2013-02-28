@@ -48,6 +48,12 @@ namespace VDS.RDF.Utilities.Editor.Syntax
 
         #region Constructors which lazily load the Highlighting Definition
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions)
         {
             this._name = name;
@@ -55,36 +61,82 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             this._extensions = fileExtensions;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="defaultParser">Default RDF parser</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser)
             : this(name, definitionFile, fileExtensions)
         {
             this._parser = defaultParser;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="defaultParser">Default RDF parser</param>
+        /// <param name="defaultWriter">Default RDF writer</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter)
             : this(name, definitionFile, fileExtensions, defaultParser)
         {
             this._writer = defaultWriter;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="defaultWriter">Default RDF writer</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfWriter defaultWriter)
             : this(name, definitionFile, fileExtensions)
         {
             this._writer = defaultWriter;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="defaultParser">Default RDF parser</param>
+        /// <param name="defaultWriter">Default RDF writer</param>
+        /// <param name="validator">Syntax Validator</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfReader defaultParser, IRdfWriter defaultWriter, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions, defaultParser, defaultWriter)
         {
             this._validator = validator;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="defaultWriter">Default RDF writer</param>
+        /// <param name="validator">Syntax Validator</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, IRdfWriter defaultWriter, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions, defaultWriter)
         {
             this._validator = validator;
         }
 
+        /// <summary>
+        /// Creates a new syntax definition
+        /// </summary>
+        /// <param name="name">Name</param>
+        /// <param name="definitionFile">Definition File</param>
+        /// <param name="fileExtensions">Associated File Extensions</param>
+        /// <param name="validator">Syntax Validator</param>
         public SyntaxDefinition(String name, String definitionFile, String[] fileExtensions, ISyntaxValidator validator)
             : this(name, definitionFile, fileExtensions)
         {
