@@ -53,9 +53,13 @@ we use as a central repository of our project releases and source code.
  - [https://bitbucket.org/dotnetrdf/dotnetrdf][100]
  - [https://bitbucket.org/dotnetrdf/dotnetrdf/wiki][101]
 
+### CodePlex
+
+ - [https://hg.codeplex.com/dotnetrdf][102]
+
 ### SourceForge
 
- - [http://hg.code.sf.net/p/dotnetrdf/code][102]
+ - [http://hg.code.sf.net/p/dotnetrdf/code][103]
  - [http://hg.code.sf.net/p/dotnetrdf/binaries-stable][104]
  - [http://hg.code.sf.net/p/dotnetrdf/binaries-nightly][105]
 
@@ -88,7 +92,8 @@ was not consistent with the standard SVN layout prior to that.
 
 [100]: https://bitbucket.org/dotnetrdf/dotnetrdf
 [101]: https://bitbucket.org/dotnetrdf/dotnetrdf/wiki
-[102]: http://hg.code.sf.net/p/dotnetrdf/dotnetrdf
+[102]: https://hg.codeplex.com/dotnetrdf
+[103]: http://hg.code.sf.net/p/dotnetrdf/dotnetrdf
 [104]: http://hg.code.sf.net/p/dotnetrdf/binaries-stable
 [105]: http://hg.code.sf.net/p/dotnetrdf/binaries-nightly
 [106]: http://svn.code.sf.net/p/dotnetrdf/svn/
