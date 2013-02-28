@@ -257,21 +257,34 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region Visual Manipulation
 
+        /// <summary>
+        /// Scroll to a specific line
+        /// </summary>
+        /// <param name="line">Line</param>
         public override void ScrollToLine(int line)
         {
             this.Control.ScrollToLine(line);
         }
 
+        /// <summary>
+        /// Refresh the editor
+        /// </summary>
         public override void Refresh()
         {
             this.Control.TextArea.InvalidateVisual();
         }
 
+        /// <summary>
+        /// Begins an update on the editor
+        /// </summary>
         public override void BeginUpdate()
         {
             this.Control.Document.BeginUpdate();
         }
 
+        /// <summary>
+        /// Ends an update on the editor
+        /// </summary>
         public override void EndUpdate()
         {
             this.Control.Document.EndUpdate();
@@ -281,51 +294,93 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region Text Manipulation
 
+        /// <summary>
+        /// Gets the character at a given offset
+        /// </summary>
+        /// <param name="offset">Offset</param>
+        /// <returns>Character</returns>
         public override char GetCharAt(int offset)
         {
             return this.Control.Document.GetCharAt(offset);
         }
 
+        /// <summary>
+        /// Gets the line number for an offset
+        /// </summary>
+        /// <param name="offset">Offset</param>
+        /// <returns>Line Number</returns>
         public override int GetLineByOffset(int offset)
         {
             return this.Control.Document.GetLineByOffset(offset).LineNumber;
         }
 
+        /// <summary>
+        /// Gets some text
+        /// </summary>
+        /// <param name="offset">Offset to start at</param>
+        /// <param name="length">Length of the text to retrive</param>
+        /// <returns>Text</returns>
         public override string GetText(int offset, int length)
         {
             return this.Control.Document.GetText(offset, length);
         }
 
+        /// <summary>
+        /// Selects some text
+        /// </summary>
+        /// <param name="offset">Offset to start selection at</param>
+        /// <param name="length">Length of the text to select</param>
         public override void Select(int offset, int length)
         {
             this.Control.Select(offset, length);
         }
 
+        /// <summary>
+        /// Replaces some text
+        /// </summary>
+        /// <param name="offset">Offset to start replacement at</param>
+        /// <param name="length">Length of the text to replace</param>
+        /// <param name="text">Text to replace with</param>
         public override void Replace(int offset, int length, string text)
         {
             this.Control.Document.Replace(offset, length, text);
         }
 
+        /// <summary>
+        /// Cut the current selection
+        /// </summary>
         public override void Cut()
         {
             this.Control.Cut();
         }
 
+        /// <summary>
+        /// Copy the current selection
+        /// </summary>
         public override void Copy()
         {
             this.Control.Copy();
         }
 
+        /// <summary>
+        /// Paste the current clipboard contents
+        /// </summary>
         public override void Paste()
         {
             this.Control.Paste();
         }
 
+        /// <summary>
+        /// Undo the last operation
+        /// </summary>
         public override void Undo()
         {
             this.Control.Undo();
         }
 
+        /// <summary>
+        /// Redo the last undone operation
+        /// </summary>
         public override void Redo()
         {
             this.Control.Redo();
@@ -335,6 +390,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region Highlighting
 
+        /// <summary>
+        /// Gets the error to higlight
+        /// </summary>
         public Exception ErrorToHighlight
         {
             get
@@ -343,6 +401,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Sets the syntax highlighter to use
+        /// </summary>
+        /// <param name="name">Syntax Name</param>
         public override void SetHighlighter(string name)
         {
             if (name == null || name.Equals(String.Empty) || name.Equals("None"))
@@ -355,11 +417,18 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Adds error highlighting for the given error
+        /// </summary>
+        /// <param name="ex"></param>
         public override void AddErrorHighlight(Exception ex)
         {
             this._currError = ex;
         }
 
+        /// <summary>
+        /// Clears error highlights
+        /// </summary>
         public override void ClearErrorHighlights()
         {
             this._currError = null;
@@ -371,6 +440,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         //TODO: Refactor auto-completion appropriately
 
+        /// <summary>
+        /// Gets that auto-completion is supported
+        /// </summary>
         public override bool CanAutoComplete
         {
             get
@@ -379,6 +451,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Makes suggestsions for auto-completion
+        /// </summary>
+        /// <param name="suggestions">Suggestions</param>
         public override void Suggest(IEnumerable<ICompletionData> suggestions)
         {
             bool mustShow = false;
@@ -431,6 +507,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             if (mustShow) this._c.Show();
         }
 
+        /// <summary>
+        /// Ends auto-complete suggestion
+        /// </summary>
         public override void EndSuggestion()
         {
             if (this._c != null)
@@ -448,11 +527,21 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region Event Handling
 
+        /// <summary>
+        /// Handles the text changed event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Event Arguments</param>
         private void HandleTextChanged(Object sender, EventArgs args)
         {
             this.RaiseTextChanged(sender);
         }
 
+        /// <summary>
+        /// Handles the text entered event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Event Arguments</param>
         private void HandleTextEntered(Object sender, TextCompositionEventArgs args)
         {
             if (this.CanAutoComplete && this.AutoCompleter != null)
@@ -461,6 +550,11 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Handles the double click event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Event Arguments</param>
         private void HandleDoubleClick(Object sender, MouseButtonEventArgs args)
         {
             this.RaiseDoubleClick(sender);

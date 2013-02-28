@@ -32,14 +32,25 @@ using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
+    /// <summary>
+    /// A Text Editor factory that generates AvalonEdit based text editors
+    /// </summary>
     public class WpfEditorFactory
         : IVisualTextEditorAdaptorFactory<TextEditor, FontFamily, Color>
     {
+        /// <summary>
+        /// Creates a new text editor
+        /// </summary>
+        /// <returns>Text Editor</returns>
         public ITextEditorAdaptor<TextEditor> CreateAdaptor()
         {
             return new WpfEditorAdaptor();
         }
 
+        /// <summary>
+        /// Gets the default visual options
+        /// </summary>
+        /// <returns>Default Visual Options</returns>
         public VisualOptions<FontFamily, Color> GetDefaultVisualOptions()
         {
             return new WpfVisualOptions();
