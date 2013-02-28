@@ -132,7 +132,10 @@ namespace VDS.RDF.Configuration.Permissions
 namespace VDS.RDF.Nodes
 {
     /// <summary>
-    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, these implementations are primarily used internally in the SPARQL engine.  These all derive from the standard Node implementations so can be used interchangeably with those if desired.
+    /// Namespace for specialised node implementations and the <see cref="IValuedNode"/> interface, this is an extension of the <see cref="INode"/> interface that provides strongly typed access to the value of a node.
+    /// <para>
+    /// These implementations are primarily used internally in the SPARQL engine, however as these all derive from the standard <see cref="INode"/> implementations they can be used interchangeably with those if desired.
+    /// </para>
     /// </summary>
     class NamespaceDoc
     {
@@ -144,13 +147,10 @@ namespace VDS.RDF.Ontology
 {
     /// <summary>
     /// <para>
-    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a> and is an experimental part of the library.  It allows for a more resource-centric way of manipulating RDF graphs within the dotNetRDF API.
+    /// The Ontology Namespace is based upon <a href="http://jena.sourceforge.net/ontology/">Jena's Ontology API</a>.  It allows for a more ontology-centric way of manipulating RDF graphs within the dotNetRDF API.
     /// </para>
     /// <para>
     /// The <see cref="OntologyResource">OntologyResource</see> is the base class of resources and allows for the retrieval and manipulation of various common properties of a resource.  More specialised classes like <see cref="OntologyClass">OntologyClass</see> and <see cref="OntologyProperty">OntologyProperty</see> are used to work with classes and properties etc.
-    /// </para>
-    /// <para>
-    /// One key feature of this part of the API is the <see cref="ReasonerGraph">ReasonerGraph</see> which allows you to wrap an existing Graph with a reasoner to get a unified view over the original Triples and materialised inferences without modifying your original Graph.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -163,7 +163,7 @@ namespace VDS.RDF.Parsing
 {
     /// <summary>
     /// <para>
-    /// Namespace for Parsing Classes and variety of supporting Classes.
+    /// Namespace for Parsing classes and variety of supporting Classes.
     /// </para>
     /// <para>
     /// Classes here are primarily implementations of <see cref="IRdfReader">IRdfReader</see> with some implementations of <see cref="IStoreReader">IStoreReader</see> and a few other specialised classes.
@@ -209,7 +209,7 @@ namespace VDS.RDF.Parsing.Handlers
     /// Namespace for RDF and SPARQL Results Handlers
     /// </para>
     /// <para>
-    /// Handlers are part of a major parser subsystem rewrite introduced in the 0.4.1 release.  They allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can both take arbitrary actions with the data and choose to end parsing early.
+    /// Handlers are a powerful low level part of the parsers API, they allow you to parse RDF, RDF Datasets and SPARQL Results in such a way that you can take arbitrary actions with the data and choose to end parsing as soon as desired.
     /// </para>
     /// </summary>
     class NamespaceDoc
@@ -248,7 +248,7 @@ namespace VDS.RDF.Query
 {
     /// <summary>
     /// <para>
-    /// Namespace for Query Classes which provide Querying capabilities on RDF Graphs
+    /// Namespace for Query Classes which provide querying capabilities on RDF
     /// </para>
     /// <para>
     /// Query capabilities are centered around support for the SPARQL standard.  You can execute full SPARQL 1.1 queries over in-memory data or submit queries to remote SPARQL endpoints.
