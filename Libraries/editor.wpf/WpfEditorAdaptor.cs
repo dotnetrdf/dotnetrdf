@@ -40,12 +40,18 @@ using VDS.RDF.Utilities.Editor.Wpf.AutoComplete;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
+    /// <summary>
+    /// A Text Editor build with AvalonEdit
+    /// </summary>
     public class WpfEditorAdaptor
         : BaseTextEditorAdaptor<TextEditor>
     {
         private Exception _currError;
         private AvComplete.CompletionWindow _c;
 
+        /// <summary>
+        /// Creates a new text editor
+        /// </summary>
         public WpfEditorAdaptor()
             : base(new TextEditor())
         {
@@ -55,6 +61,12 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             this.Control.FontFamily = new FontFamily("Consolas");
         }
 
+        /// <summary>
+        /// Applies visual options to the editor
+        /// </summary>
+        /// <typeparam name="TFont">Font Type</typeparam>
+        /// <typeparam name="TColor">Colour Type</typeparam>
+        /// <param name="options">Visual Options</param>
         public override void Apply<TFont, TColor>(VisualOptions<TFont, TColor> options)
         {
             try
@@ -67,6 +79,10 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Applies visual options to the editor
+        /// </summary>
+        /// <param name="options">Visual Options</param>
         public void Apply(VisualOptions<FontFamily, Color> options)
         {
             if (options == null) return;
@@ -91,6 +107,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
 
         #region State
 
+        /// <summary>
+        /// Gets/Sets the text
+        /// </summary>
         public override string Text
         {
             get
@@ -103,6 +122,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets the text length
+        /// </summary>
         public override int TextLength
         {
             get 
@@ -111,6 +133,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets the current caret position
+        /// </summary>
         public override int CaretOffset
         {
             get
@@ -123,6 +148,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the current selection start (if any)
+        /// </summary>
         public override int SelectionStart
         {
             get
@@ -135,6 +163,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the current selection length (if any)
+        /// </summary>
         public override int SelectionLength
         {
             get
@@ -147,6 +178,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets word wrapping
+        /// </summary>
         public override bool WordWrap
         {
             get
@@ -159,6 +193,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show line numbers
+        /// </summary>
         public override bool ShowLineNumbers
         {
             get
@@ -171,6 +208,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show new line characters
+        /// </summary>
         public override bool ShowEndOfLine
         {
             get
@@ -183,6 +223,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show spaces
+        /// </summary>
         public override bool ShowSpaces
         {
             get
@@ -195,6 +238,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether to show tabs
+        /// </summary>
         public override bool ShowTabs
         {
             get
