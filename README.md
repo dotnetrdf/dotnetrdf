@@ -42,7 +42,7 @@ For more information on our developers see the [Developers][30] page.  dotNetRDF
 
 ## Source Code
 
-The dotNetRDF Project has recently migrated to Mercurial as our VCS.
+The dotNetRDF Project uses Mercurial as our VCS.
 
 Currently we our maintaining the following repositories as our official repositories.  We use BitBucket
 for our day to day development and periodically push changes to the repositories at SourceForge which
@@ -51,14 +51,13 @@ we use as a central repository of our project releases and source code.
 ### BitBucket
 
  - [https://bitbucket.org/dotnetrdf/dotnetrdf][100]
- - [https://bitbucket.org/dotnetrdf/documentation][101]
+ - [https://bitbucket.org/dotnetrdf/dotnetrdf/wiki][101]
 
 ### SourceForge
 
- - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/dotnetrdf][102]
- - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/documentation][103]
- - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-stable][104]
- - [http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-nightly][105]
+ - [http://hg.code.sf.net/p/dotnetrdf/code][102]
+ - [http://hg.code.sf.net/p/dotnetrdf/binaries-stable][104]
+ - [http://hg.code.sf.net/p/dotnetrdf/binaries-nightly][105]
 
 Note that our developers may be maintaining their own additional public/private repositories in order 
 to work on new features.
@@ -66,7 +65,7 @@ to work on new features.
 ### Old Subversion
 
 You can find our old source code in our SVN repository at
-[https://dotnetrdf.svn.sourceforge.net/svnroot/dotnetrdf][106]
+[http://svn.code.sf.net/p/dotnetrdf/svn/][106]
 
 Note that the majority of the commit history should be present in our Mercurial repositories as we did a conversion
 of our SVN repository when we moved to Mercurial.  Some commits pre 2010 are missing because our SVN layout
@@ -88,9 +87,8 @@ was not consistent with the standard SVN layout prior to that.
 [31]: https://bitbucket.org/dotnetrdf/dotnetrdf/src/tip/Acknowledgments.txt?at=default
 
 [100]: https://bitbucket.org/dotnetrdf/dotnetrdf
-[101]: https://bitbucket.org/dotnetrdf/documentation
-[102]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/dotnetrdf
-[103]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/documentation
-[104]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-stable
-[105]: http://dotnetrdf.hg.sourceforge.net:8000/hgroot/dotnetrdf/binaries-nightly
-[106]: https://dotnetrdf.svn.sourceforge.net/svnroot/dotnetrdf
+[101]: https://bitbucket.org/dotnetrdf/dotnetrdf/wiki
+[102]: http://hg.code.sf.net/p/dotnetrdf/dotnetrdf
+[104]: http://hg.code.sf.net/p/dotnetrdf/binaries-stable
+[105]: http://hg.code.sf.net/p/dotnetrdf/binaries-nightly
+[106]: http://svn.code.sf.net/p/dotnetrdf/svn/
