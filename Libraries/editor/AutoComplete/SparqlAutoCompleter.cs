@@ -339,7 +339,7 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return;
         }
 
-        public override bool IsValidPartialQName(string value)
+        protected override bool IsValidPartialQName(string value)
         {
             String ns, localname;
             if (value.Contains(':'))
