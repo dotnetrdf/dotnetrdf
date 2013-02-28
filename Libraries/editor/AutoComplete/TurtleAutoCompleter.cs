@@ -45,7 +45,13 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
     {
         private const String PrefixDeclaration = "prefix";
         private const String BaseDeclaration = "base";
+        /// <summary>
+        /// Regular expression pattern for prefix declarations
+        /// </summary>
         protected String PrefixRegexPattern = @"@prefix\s+(\p{L}(\p{L}|\p{N}|-|_)*)?:\s+<((\\>|[^>])*)>\s*\.";
+        /// <summary>
+        /// Regular expression pattern for blank node IDs
+        /// </summary>
         protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
         private LoadNamespaceTermsDelegate _namespaceLoader = new LoadNamespaceTermsDelegate(AutoCompleteManager.LoadNamespaceTerms);
 

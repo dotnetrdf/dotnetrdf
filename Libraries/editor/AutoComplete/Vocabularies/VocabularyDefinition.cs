@@ -30,10 +30,19 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
 {
+    /// <summary>
+    /// Represents a vocabulary definition
+    /// </summary>
     public class VocabularyDefinition
     {
         private String _prefix, _uri, _descrip;
 
+        /// <summary>
+        /// Creates a new vocabulary definition
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="uri">Namespace URI</param>
+        /// <param name="description">Description</param>
         public VocabularyDefinition(String prefix, String uri, String description)
         {
             this._prefix = prefix;
@@ -41,6 +50,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
             this._descrip = description;
         }
 
+        /// <summary>
+        /// Gets the prefix
+        /// </summary>
         public String Prefix
         {
             get
@@ -49,6 +61,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
             }
         }
 
+        /// <summary>
+        /// Gets the namespace URI
+        /// </summary>
         public String NamespaceUri
         {
             get
@@ -57,6 +72,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies
             }
         }
 
+        /// <summary>
+        /// Gets the description
+        /// </summary>
         public String Description
         {
             get

@@ -30,11 +30,16 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public class VariableData : BaseCompletionData
+    /// <summary>
+    /// Completion data for variables
+    /// </summary>
+    public class VariableData
+        : BaseCompletionData
     {
-        private String _var;
-        private double _priority = 0.0d;
-
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="var">Variable</param>
         public VariableData(String var)
             : base(var, var, "Variable " + var) { }
     }
