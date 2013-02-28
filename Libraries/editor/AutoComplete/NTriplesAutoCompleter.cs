@@ -42,6 +42,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
     public class NTriplesAutoCompleter<T>
         : BaseAutoCompleter<T>
     {
+        /// <summary>
+        /// Regular Expression Pattern for valid blank node identifiers
+        /// </summary>
         protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
 
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
