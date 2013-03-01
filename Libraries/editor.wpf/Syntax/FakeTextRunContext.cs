@@ -38,9 +38,14 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
     /// <summary>
     /// Fake text run context needed for some operations
     /// </summary>
-    class FakeTextRunContext
+    public class FakeTextRunContext
         : ITextRunConstructionContext
     {
+        /// <summary>
+        /// Creates a new fake context
+        /// </summary>
+        public FakeTextRunContext() { }
+
         /// <summary>
         /// Gets the document
         /// </summary>
