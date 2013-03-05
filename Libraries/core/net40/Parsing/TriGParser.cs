@@ -39,10 +39,11 @@ namespace VDS.RDF.Parsing
     /// </summary>
     /// <remarks>The Default Graph (if any) will be given the special Uri <strong>trig:default-graph</strong></remarks>
     public class TriGParser
-        : IStoreReader, ITraceableTokeniser
+        : IStoreReader, ITraceableTokeniser, ITokenisingParser
     {
         private bool _tracetokeniser = false;
         private TriGSyntax _syntax = TriGSyntax.MemberSubmission;
+        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
 
         /// <summary>
         /// Creates a TriG Parser than uses the default syntax
@@ -86,6 +87,21 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._syntax = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the token queue mode used
+        /// </summary>
+        public TokenQueueMode TokenQueueMode
+        {
+            get
+            {
+                return this._queueMode;
+            }
+            set
+            {
+                this._queueMode = value;
             }
         }
 
@@ -136,7 +152,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 //Create the Parser Context and Invoke the Parser
-                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), TokenQueueMode.SynchronousBufferDuringParsing, false, this._tracetokeniser);
+                TriGParserContext context = new TriGParserContext(handler, new TriGTokeniser(input, this._syntax), this._queueMode, false, this._tracetokeniser);
                 context.Syntax = this._syntax;
                 this.Parse(context);
             }
