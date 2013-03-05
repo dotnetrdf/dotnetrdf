@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 using VDS.RDF.Query;
 
@@ -86,6 +87,7 @@ namespace VDS.RDF
         private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
         private static bool _forceBlockingIO = false;
         private static bool _forceHttpBasicAuth = false;
+        private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
@@ -490,6 +492,21 @@ namespace VDS.RDF
             set
             {
                 _internUris = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the default token queue mode used for tokeniser based parsers
+        /// </summary>
+        public static TokenQueueMode DefaultTokenQueueMode
+        {
+            get
+            {
+                return _defaultTokenQueueMode;
+            }
+            set
+            {
+                _defaultTokenQueueMode = value;
             }
         }
 

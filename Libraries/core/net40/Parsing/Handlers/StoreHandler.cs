@@ -38,6 +38,7 @@ namespace VDS.RDF.Parsing.Handlers
         : BaseRdfHandler
     {
         private ITripleStore _store;
+        private INamespaceMapper _nsmap = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new Store Handler
@@ -62,6 +63,18 @@ namespace VDS.RDF.Parsing.Handlers
         }
 
         #region IRdfHandler Members
+
+        /// <summary>
+        /// Handles namespaces by adding them to each graph
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
+        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+        {
+            this._nsmap.AddNamespace(prefix, namespaceUri);
+            return true;
+        }
 
         /// <summary>
         /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary
@@ -92,6 +105,27 @@ namespace VDS.RDF.Parsing.Handlers
             IGraph target = this._store[q.Graph];
             target.Assert(q.AsTriple());
             return true;
+        }
+
+        /// <summary>
+        /// Starts handling RDF
+        /// </summary>
+        protected override void StartRdfInternal()
+        {
+            this._nsmap.Clear();
+        }
+
+        /// <summary>
+        /// Ends RDF handling and propogates all discovered namespaces to all discovered graphs
+        /// </summary>
+        /// <param name="ok">Whether parsing completed successfully</param>
+        protected override void EndRdfInternal(bool ok)
+        {
+            //Propogate discovered namespaces to all graphs
+            foreach (IGraph g in this._store.Graphs)
+            {
+                g.NamespaceMap.Import(this._nsmap);
+            }
         }
 
         /// <summary>

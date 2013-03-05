@@ -123,6 +123,34 @@ namespace VDS.RDF.Query
         }
 
         [TestMethod]
+        public void SparqlParsingNumericExpression1()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:long) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingNumericExpression2()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:short) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingNumericExpression3()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:byte) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
+        public void SparqlParsingNumericExpression4()
+        {
+            String query = "PREFIX xsd: <" + NamespaceMapper.XMLSCHEMA + "> SELECT * WHERE { ?s ?p ?o . FILTER(1 + '3'^^xsd:nonPositiveInteger) }";
+            TestQuery(query);
+        }
+
+        [TestMethod]
         public void SparqlParsingPropertyPathsNegatedSetSimple()
         {
             String query = "SELECT * WHERE { ?s !a ?o }";

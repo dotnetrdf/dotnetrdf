@@ -52,9 +52,24 @@ namespace VDS.RDF.Parsing
     /// </para>
     /// </remarks>
     public class NQuadsParser 
-        : IStoreReader, ITraceableTokeniser
+        : IStoreReader, ITraceableTokeniser, ITokenisingParser
     {
+        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
         private bool _tracetokeniser = false;
+
+        /// <summary>
+        /// Creates a new NQuads parser
+        /// </summary>
+        public NQuadsParser() { }
+
+        /// <summary>
+        /// Creates a new NQuads parser
+        /// </summary>
+        /// <param name="queueMode">Token Queue Mode</param>
+        public NQuadsParser(TokenQueueMode queueMode)
+        {
+            this._queueMode = queueMode;
+        }
 
         /// <summary>
         /// Gets/Sets whether Tokeniser Tracing is used
@@ -68,6 +83,21 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._tracetokeniser = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the token queue mode used
+        /// </summary>
+        public TokenQueueMode TokenQueueMode
+        {
+            get
+            {
+                return this._queueMode;
+            }
+            set
+            {
+                this._queueMode = value;
             }
         }
 
@@ -128,8 +158,20 @@ namespace VDS.RDF.Parsing
                 //Setup Token Queue and Tokeniser
                 NTriplesTokeniser tokeniser = new NTriplesTokeniser(input);
                 tokeniser.NQuadsMode = true;
-                TokenQueue tokens = new TokenQueue();
-                tokens.Tokeniser = tokeniser;
+                ITokenQueue tokens;
+                switch (this._queueMode)
+                {
+                    case TokenQueueMode.AsynchronousBufferDuringParsing:
+                        tokens = new AsynchronousBufferedTokenQueue(tokeniser);
+                        break;
+                    case TokenQueueMode.QueueAllBeforeParsing:
+                        tokens = new TokenQueue(tokeniser);
+                        break;
+                    case TokenQueueMode.SynchronousBufferDuringParsing:
+                    default:
+                        tokens = new BufferedTokenQueue(tokeniser);
+                        break;
+                }
                 tokens.Tracing = this._tracetokeniser;
                 tokens.InitialiseBuffer();
 
