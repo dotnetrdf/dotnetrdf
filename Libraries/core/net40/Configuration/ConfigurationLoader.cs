@@ -307,6 +307,7 @@ namespace VDS.RDF.Configuration
 
 #endif
 
+#if !NO_FILE
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
         /// </summary>
@@ -329,6 +330,7 @@ namespace VDS.RDF.Configuration
             FileLoader.Load(g, file);
             return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
+#endif
 
         /// <summary>
         /// Loads a Configuration Graph and applies auto-configuration
@@ -406,6 +408,7 @@ namespace VDS.RDF.Configuration
                         }
                         break;
 #endif
+#if !NO_FILE
                     case NodeType.Literal:
                         if (!imported.Contains(importData))
                         {
@@ -413,7 +416,7 @@ namespace VDS.RDF.Configuration
                             imported.Add(importData);
                         }
                         break;
-
+#endif
                     default:
                         throw new DotNetRdfConfigurationException("Invalid dnr:imports target " + importData.ToString() + ", dnr:imports may only be used to point to an object which is a URI/Literal.  If sing Silverlight only Literals are currently permitted.");
                 }

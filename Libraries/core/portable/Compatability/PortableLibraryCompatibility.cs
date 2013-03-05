@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Xml;
 
 namespace VDS.RDF
 {
@@ -52,6 +53,21 @@ namespace VDS.RDF
           
         }
 
+        /// <summary>
+        /// Provides a default no-op implementation of XmlWriter.Close() for the Portable Class Library
+        /// </summary>
+        /// <param name="writer"></param>
+        public static void Close(this XmlWriter writer)
+        {
+            
+        }
+
+        public static void Close(this StreamReader reader){}
+
+        public static void Close(this TextReader reader)
+        {
+        }
+
         public static WebResponse GetResponse(this HttpWebRequest request)
         {
             var asyncResult = request.BeginGetResponse(ar => { }, null);
@@ -69,6 +85,26 @@ namespace VDS.RDF
         {
             // No-op    
         }
+
+        public static void ForEach<T>(this List<T> theList, Action<T> action)
+        {
+            foreach (var item in theList)
+            {
+                action(item);
+            }
+        }
+
+        /// <summary>
+        /// Replacement for the static String.Copy(string) method
+        /// that is not present in the Portable Class Library
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string Copy(this string s)
+        {
+            return new string(s.ToCharArray());
+        }
+
     }
 
     /// <summary>
@@ -77,9 +113,62 @@ namespace VDS.RDF
     /// </summary>
     public class Console
     {
+        public static void WriteLine()
+        {
+            Error.WriteLine();
+        }
+
+        public static void Write(string fmt, params object[] args)
+        {
+            Error.Write(fmt, args);
+        }
+        public static void WriteLine(string fmt, params object[] args)
+        {
+            Error.WriteLine(fmt, args);
+        }
+
+        public static readonly ConsoleStream Error = new ConsoleStream();
+    }
+
+    public class ConsoleStream
+    {
+        public void WriteLine()
+        {
+            System.Diagnostics.Debug.WriteLine(String.Empty);
+        }
+
         public void WriteLine(string fmt, params object[] args)
         {
             System.Diagnostics.Debug.WriteLine(fmt, args);
+        }
+
+        public void Write(string fmt, params object[] args)
+        {
+            System.Diagnostics.Debug.WriteLine(fmt, args); // No Write method to use
+        }
+    }
+
+    public static class Path
+    {
+        public static char DirectorySeparatorChar = '/';
+        public static string GetFileName(string path)
+        {
+            var ix = path.LastIndexOf(DirectorySeparatorChar) + 1;
+            if (ix < path.Length)
+            {
+                return path.Substring(ix);
+            }
+            return null;
+        }
+
+        public static string GetExtension(string path)
+        {
+            var fileName = GetFileName(path);
+            if (fileName != null && fileName.Contains('.'))
+            {
+                return fileName.Substring(fileName.LastIndexOf('.'));
+            }
+            return null;
         }
     }
 }

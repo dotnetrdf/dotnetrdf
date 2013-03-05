@@ -71,6 +71,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
         /// </summary>
@@ -85,6 +86,7 @@ namespace VDS.RDF.Parsing
             this.Load(store, new StreamReader(filename));
 #endif
         }
+#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input into the given Triple Store
@@ -98,6 +100,7 @@ namespace VDS.RDF.Parsing
             this.Load(new StoreHandler(store), input);
         }
 
+#if !NO_FILE
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler
         /// </summary>
@@ -112,6 +115,7 @@ namespace VDS.RDF.Parsing
             this.Load(handler, new StreamReader(filename));
 #endif
         }
+#endif
 
         /// <summary>
         /// Loads a RDF Dataset from the NQuads input using a RDF Handler

@@ -172,6 +172,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Graph to a file using Turtle Syntax
         /// </summary>
@@ -181,6 +182,7 @@ namespace VDS.RDF.Writing
         {
             this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
+#endif
 
         /// <summary>
         /// Saves a Graph to the given Stream using Turtle Syntax

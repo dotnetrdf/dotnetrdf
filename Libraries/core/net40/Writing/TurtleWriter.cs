@@ -105,6 +105,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Graph to a File
         /// </summary>
@@ -114,6 +115,7 @@ namespace VDS.RDF.Writing
         {
             this.Save(g, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
+#endif
 
         /// <summary>
         /// Saves a Graph using an arbitrary <see cref="TextWriter">TextWriter</see>

@@ -30,6 +30,7 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Parsing
 {
+#if !NO_FILE
     /// <summary>
     /// Static Helper Class for loading RDF Files into Graphs/Triple Stores
     /// </summary>
@@ -336,4 +337,5 @@ namespace VDS.RDF.Parsing
         /// </summary>
         public static event StoreReaderWarning StoreWarning;
     }
+#endif
 }

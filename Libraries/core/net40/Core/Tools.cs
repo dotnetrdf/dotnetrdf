@@ -186,7 +186,11 @@ namespace VDS.RDF
                 {
                     return new Uri(Tools.FixMalformedUriStrings(uriref), UriKind.Absolute).AbsoluteUri;
                 }
+#if PORTABLE
+                catch(FormatException)
+#else
                 catch (UriFormatException)
+#endif
                 {
                     throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
                 }

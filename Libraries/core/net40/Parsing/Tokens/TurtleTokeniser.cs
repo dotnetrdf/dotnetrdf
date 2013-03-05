@@ -930,7 +930,11 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
+#if PORTABLE
+                        if (this.Value.Equals("prefix", StringComparison.OrdinalIgnoreCase))
+#else
                         if (this.Value.Equals("prefix", StringComparison.InvariantCultureIgnoreCase))
+#endif
                         {
                             //Got a Prefix Directive
                             this.LastTokenType = Token.PREFIXDIRECTIVE;
@@ -947,7 +951,11 @@ namespace VDS.RDF.Parsing.Tokens
                         {
                             this.ConsumeCharacter();
                         }
+#if PORTABLE
+                        if (this.Value.Equals("base", StringComparison.OrdinalIgnoreCase))
+#else                        
                         if (this.Value.Equals("base", StringComparison.InvariantCultureIgnoreCase))
+#endif
                         {
                             //Got a Base Directive
                             this.LastTokenType = Token.BASEDIRECTIVE;

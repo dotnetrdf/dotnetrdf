@@ -83,7 +83,11 @@ namespace VDS.RDF
         /// <returns></returns>
         public static bool IsFile(this Uri u)
         {
+#if PORTABLE
+            return u.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase);
+#else
             return u.Scheme.Equals(Uri.UriSchemeFile);
+#endif
         }
 
         /// <summary>

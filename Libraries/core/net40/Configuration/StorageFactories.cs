@@ -130,7 +130,7 @@ namespace VDS.RDF.Configuration
                         storageServer = new AllegroGraphServer(server, catalog);
                     }
                     break;
-
+#if !PORTABLE
                 case DatasetFile:
                     //Get the Filename and whether the loading should be done asynchronously
                     String file = ConfigurationLoader.GetConfigurationString(g, objNode, g.CreateUriNode(UriFactory.Create(ConfigurationLoader.PropertyFromFile)));
@@ -139,6 +139,7 @@ namespace VDS.RDF.Configuration
                     isAsync = ConfigurationLoader.GetConfigurationBoolean(g, objNode, propAsync, false);
                     storageProvider = new DatasetFileManager(file, isAsync);
                     break;
+#endif
 
                 case Dydra:
                     //Get the Account Name and Store

@@ -81,8 +81,7 @@ namespace System.Security.Cryptography {
 				throw new ArgumentException ("count", "< 0");
 			// ordered to avoid possible integer overflow
 			if (offset > buffer.Length - count) {
-				throw new ArgumentException ("offset + count", 
-					Locale.GetText ("Overflow"));
+				throw new ArgumentException ("offset + count", "Overflow");
 			}
 
 			HashCore (buffer, offset, count);
@@ -127,7 +126,7 @@ namespace System.Security.Cryptography {
 			get { 
 				if (HashValue == null) {
 					throw new CryptographicUnexpectedOperationException (
-						Locale.GetText ("No hash value computed."));
+						"No hash value computed.");
 				}
 				return HashValue; 
 			}
@@ -189,7 +188,7 @@ namespace System.Security.Cryptography {
 				// ordered to avoid possible integer overflow
 				if (outputOffset > outputBuffer.Length - inputCount) {
 					throw new ArgumentException ("outputOffset + inputCount", 
-						Locale.GetText ("Overflow"));
+						"Overflow");
 				}
 			}
 
@@ -210,7 +209,7 @@ namespace System.Security.Cryptography {
 			// ordered to avoid possible integer overflow
 			if (inputOffset > inputBuffer.Length - inputCount) {
 				throw new ArgumentException ("inputOffset + inputCount", 
-					Locale.GetText ("Overflow"));
+					"Overflow");
 			}
 
 			byte[] outputBuffer = new byte [inputCount];

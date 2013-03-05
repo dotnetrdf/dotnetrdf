@@ -134,6 +134,7 @@ namespace VDS.RDF.Writing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format
         /// </summary>
@@ -144,6 +145,7 @@ namespace VDS.RDF.Writing
             if (filename == null) throw new RdfOutputException("Cannot output to a null file");
             this.Save(store, new StreamWriter(filename, false, new UTF8Encoding(Options.UseBomForUtf8)));
         }
+#endif
 
         /// <summary>
         /// Saves a Store in TriG (Turtle with Named Graphs) format
@@ -485,6 +487,7 @@ namespace VDS.RDF.Writing
                     }
                 }
             }
+#if !PORTABLE  // PCL has no Thread.Abort() method or ThreadAbortException
             catch (ThreadAbortException)
             {
                 //We've been terminated, don't do anything
@@ -492,6 +495,7 @@ namespace VDS.RDF.Writing
                 Thread.ResetAbort();
 #endif
             }
+#endif
             catch (Exception ex)
             {
                 throw new RdfStorageException("Error in Threaded Writer in Thread ID " + Thread.CurrentThread.ManagedThreadId, ex);

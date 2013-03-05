@@ -197,6 +197,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_FILE
         /// <summary>
         /// Parses a SPARQL Update Command Set from the given file
         /// </summary>
@@ -207,6 +208,7 @@ namespace VDS.RDF.Parsing
             if (file == null) throw new RdfParseException("Cannot parse SPARQL Update Commands from a null File");
             return this.Parse(new StreamReader(file, Encoding.UTF8));
         }
+#endif
 
         /// <summary>
         /// Parses a SPARQL Update Command Set from the given String

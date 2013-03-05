@@ -56,6 +56,7 @@ namespace VDS.RDF
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IGraph g, TextReader input);
 
+#if !NO_FILE
         /// <summary>
         /// Method for Loading a Graph from some Concrete RDF Syntax from a given File
         /// </summary>
@@ -65,6 +66,7 @@ namespace VDS.RDF
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the File</exception>
         void Load(IGraph g, String filename);
+#endif
 
         /// <summary>
         /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax via some arbitrary Stream
@@ -86,6 +88,7 @@ namespace VDS.RDF
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, TextReader input);
 
+#if !NO_FILE
         /// <summary>
         /// Method for Loading RDF using a RDF Handler from some Concrete RDF Syntax from a given File
         /// </summary>
@@ -95,6 +98,7 @@ namespace VDS.RDF
         /// <exception cref="Parsing.RdfParseException">Thrown if the Parser cannot Parse the Input</exception>
         /// <exception cref="System.IO.IOException">Thrown if the Parser encounters an IO Error while trying to access/parse the Stream</exception>
         void Load(IRdfHandler handler, String filename);
+#endif
 
         /// <summary>
         /// Event which Readers can raise when they notice syntax that is ambigious/deprecated etc which can still be parsed

@@ -52,29 +52,29 @@ public partial class CryptoConfig {
 
 	private const string defaultNamespace = "System.Security.Cryptography.";
 	static Type defaultSHA1 = typeof (SHA1CryptoServiceProvider);
-	static Type defaultMD5 = typeof (MD5CryptoServiceProvider);
+	//static Type defaultMD5 = typeof (MD5CryptoServiceProvider);
 	static Type defaultSHA256 = typeof (SHA256Managed);
-	static Type defaultSHA384 = typeof (SHA384Managed);
-	static Type defaultSHA512 = typeof (SHA512Managed);
-	static Type defaultRSA = typeof (RSACryptoServiceProvider);
-	static Type defaultDSA = typeof (DSACryptoServiceProvider);
-	static Type defaultDES = typeof (DESCryptoServiceProvider);
-	static Type default3DES = typeof (TripleDESCryptoServiceProvider);
-	static Type defaultRC2 = typeof (RC2CryptoServiceProvider);
-	static Type defaultAES = typeof (RijndaelManaged);
+	//static Type defaultSHA384 = typeof (SHA384Managed);
+	//static Type defaultSHA512 = typeof (SHA512Managed);
+	//static Type defaultRSA = typeof (RSACryptoServiceProvider);
+	//static Type defaultDSA = typeof (DSACryptoServiceProvider);
+	//static Type defaultDES = typeof (DESCryptoServiceProvider);
+	//static Type default3DES = typeof (TripleDESCryptoServiceProvider);
+	//static Type defaultRC2 = typeof (RC2CryptoServiceProvider);
+	//static Type defaultAES = typeof (RijndaelManaged);
 	// LAMESPEC: undocumented names in CryptoConfig
-	static Type defaultRNG = typeof (RNGCryptoServiceProvider);
-	static Type defaultHMAC = typeof (HMACSHA1);
-	static Type defaultMAC3DES = typeof (MACTripleDES);
+    //static Type defaultRNG = typeof (RNGCryptoServiceProvider);
+    //static Type defaultHMAC = typeof (HMACSHA1);
+    //static Type defaultMAC3DES = typeof (MACTripleDES);
 	// LAMESPEC: undocumented classes (also undocumented in CryptoConfig ;-)
-	static Type defaultDSASigDesc = typeof (DSASignatureDescription);
-	static Type defaultRSASigDesc = typeof (RSAPKCS1SHA1SignatureDescription);
-	static Type defaultRIPEMD160 = typeof (RIPEMD160Managed);
-	static Type defaultHMACMD5 = typeof (HMACMD5);
-	static Type defaultHMACRIPEMD160 = typeof (HMACRIPEMD160);
-	static Type defaultHMACSHA256 = typeof (HMACSHA256);
-	static Type defaultHMACSHA384 = typeof (HMACSHA384);
-	static Type defaultHMACSHA512 = typeof (HMACSHA512);
+    //static Type defaultDSASigDesc = typeof (DSASignatureDescription);
+    //static Type defaultRSASigDesc = typeof (RSAPKCS1SHA1SignatureDescription);
+    //static Type defaultRIPEMD160 = typeof (RIPEMD160Managed);
+    //static Type defaultHMACMD5 = typeof (HMACMD5);
+    //static Type defaultHMACRIPEMD160 = typeof (HMACRIPEMD160);
+    //static Type defaultHMACSHA256 = typeof (HMACSHA256);
+    //static Type defaultHMACSHA384 = typeof (HMACSHA384);
+    //static Type defaultHMACSHA512 = typeof (HMACSHA512);
 
 
 	private const string managedSHA1 = defaultNamespace + "SHA1Managed";
@@ -249,67 +249,67 @@ public partial class CryptoConfig {
 		algorithms.Add (nameSHA1c, defaultSHA1);
 		algorithms.Add (nameSHA1d, defaultSHA1);
 
-		algorithms.Add (nameMD5a, defaultMD5);
-		algorithms.Add (nameMD5b, defaultMD5);
+        //algorithms.Add (nameMD5a, defaultMD5);
+        //algorithms.Add (nameMD5b, defaultMD5);
 
 		algorithms.Add (nameSHA256a, defaultSHA256);
 		algorithms.Add (nameSHA256b, defaultSHA256);
 		algorithms.Add (nameSHA256c, defaultSHA256);
 
-		algorithms.Add (nameSHA384a, defaultSHA384);
-		algorithms.Add (nameSHA384b, defaultSHA384);
-		algorithms.Add (nameSHA384c, defaultSHA384);
+        //algorithms.Add (nameSHA384a, defaultSHA384);
+        //algorithms.Add (nameSHA384b, defaultSHA384);
+        //algorithms.Add (nameSHA384c, defaultSHA384);
 
-		algorithms.Add (nameSHA512a, defaultSHA512);
-		algorithms.Add (nameSHA512b, defaultSHA512);
-		algorithms.Add (nameSHA512c, defaultSHA512);
+        //algorithms.Add (nameSHA512a, defaultSHA512);
+        //algorithms.Add (nameSHA512b, defaultSHA512);
+        //algorithms.Add (nameSHA512c, defaultSHA512);
 
-		algorithms.Add (nameRSAa, defaultRSA);
-		algorithms.Add (nameRSAb, defaultRSA); 
-		algorithms.Add (nameRSAc, defaultRSA);
+        //algorithms.Add (nameRSAa, defaultRSA);
+        //algorithms.Add (nameRSAb, defaultRSA); 
+        //algorithms.Add (nameRSAc, defaultRSA);
 
-		algorithms.Add (nameDSAa, defaultDSA);  
-		algorithms.Add (nameDSAb, defaultDSA);  
+        //algorithms.Add (nameDSAa, defaultDSA);  
+        //algorithms.Add (nameDSAb, defaultDSA);  
 
-		algorithms.Add (nameDESa, defaultDES);
-		algorithms.Add (nameDESb, defaultDES);
+        //algorithms.Add (nameDESa, defaultDES);
+        //algorithms.Add (nameDESb, defaultDES);
 
-		algorithms.Add (name3DESa, default3DES);
-		algorithms.Add (name3DESb, default3DES);
-		algorithms.Add (name3DESc, default3DES);
-		algorithms.Add (name3DESd, default3DES);
+        //algorithms.Add (name3DESa, default3DES);
+        //algorithms.Add (name3DESb, default3DES);
+        //algorithms.Add (name3DESc, default3DES);
+        //algorithms.Add (name3DESd, default3DES);
 
-		algorithms.Add (nameRC2a, defaultRC2);
-		algorithms.Add (nameRC2b, defaultRC2);
+        //algorithms.Add (nameRC2a, defaultRC2);
+        //algorithms.Add (nameRC2b, defaultRC2);
 
-		algorithms.Add (nameAESa, defaultAES);  
-		algorithms.Add (nameAESb, defaultAES);
+        //algorithms.Add (nameAESa, defaultAES);  
+        //algorithms.Add (nameAESb, defaultAES);
 		// LAMESPEC SymmetricAlgorithm documented as TripleDESCryptoServiceProvider
-		algorithms.Add (nameAESc, defaultAES);
+        //algorithms.Add (nameAESc, defaultAES);
 
 		// LAMESPEC These names aren't documented but (hint) the classes also have
 		// static Create methods. So logically they should (and are) here.
-		algorithms.Add (nameRNGa, defaultRNG);
-		algorithms.Add (nameRNGb, defaultRNG);
-		algorithms.Add (nameKeyHasha, defaultHMAC);
-		algorithms.Add (nameHMACSHA1a, defaultHMAC);
-		algorithms.Add (nameHMACSHA1b, defaultHMAC);
-		algorithms.Add (nameMAC3DESa, defaultMAC3DES);
-		algorithms.Add (nameMAC3DESb, defaultMAC3DES);
-		algorithms.Add (nameRIPEMD160a, defaultRIPEMD160);
-		algorithms.Add (nameRIPEMD160b, defaultRIPEMD160);
-		algorithms.Add (nameRIPEMD160c, defaultRIPEMD160);
-		algorithms.Add (nameHMACb, defaultHMAC);
-		algorithms.Add (nameHMACMD5a, defaultHMACMD5);
-		algorithms.Add (nameHMACMD5b, defaultHMACMD5);
-		algorithms.Add (nameHMACRIPEMD160a, defaultHMACRIPEMD160);
-		algorithms.Add (nameHMACRIPEMD160b, defaultHMACRIPEMD160);
-		algorithms.Add (nameHMACSHA256a, defaultHMACSHA256);
-		algorithms.Add (nameHMACSHA256b, defaultHMACSHA256);
-		algorithms.Add (nameHMACSHA384a, defaultHMACSHA384);
-		algorithms.Add (nameHMACSHA384b, defaultHMACSHA384);
-		algorithms.Add (nameHMACSHA512a, defaultHMACSHA512);
-		algorithms.Add (nameHMACSHA512b, defaultHMACSHA512);
+        //algorithms.Add (nameRNGa, defaultRNG);
+        //algorithms.Add (nameRNGb, defaultRNG);
+        //algorithms.Add (nameKeyHasha, defaultHMAC);
+        //algorithms.Add (nameHMACSHA1a, defaultHMAC);
+        //algorithms.Add (nameHMACSHA1b, defaultHMAC);
+        //algorithms.Add (nameMAC3DESa, defaultMAC3DES);
+        //algorithms.Add (nameMAC3DESb, defaultMAC3DES);
+        //algorithms.Add (nameRIPEMD160a, defaultRIPEMD160);
+        //algorithms.Add (nameRIPEMD160b, defaultRIPEMD160);
+        //algorithms.Add (nameRIPEMD160c, defaultRIPEMD160);
+        //algorithms.Add (nameHMACb, defaultHMAC);
+        //algorithms.Add (nameHMACMD5a, defaultHMACMD5);
+        //algorithms.Add (nameHMACMD5b, defaultHMACMD5);
+        //algorithms.Add (nameHMACRIPEMD160a, defaultHMACRIPEMD160);
+        //algorithms.Add (nameHMACRIPEMD160b, defaultHMACRIPEMD160);
+        //algorithms.Add (nameHMACSHA256a, defaultHMACSHA256);
+        //algorithms.Add (nameHMACSHA256b, defaultHMACSHA256);
+        //algorithms.Add (nameHMACSHA384a, defaultHMACSHA384);
+        //algorithms.Add (nameHMACSHA384b, defaultHMACSHA384);
+        //algorithms.Add (nameHMACSHA512a, defaultHMACSHA512);
+        //algorithms.Add (nameHMACSHA512b, defaultHMACSHA512);
 			
 		// we do not want to load the types (and assemblies) unless we really need them
 		// so we keep those names as strings
@@ -318,16 +318,16 @@ public partial class CryptoConfig {
 		// LAMESPEC These URLs aren't documented but (hint) installing the WSDK
 		// add some of the XMLDSIG urls into machine.config (and they make a LOT
 		// of sense for implementing XMLDSIG in System.Security.Cryptography.Xml)
-		algorithms.Add (urlDSASHA1, defaultDSASigDesc); 
-		algorithms.Add (urlRSASHA1, defaultRSASigDesc);
+        //algorithms.Add (urlDSASHA1, defaultDSASigDesc); 
+        //algorithms.Add (urlRSASHA1, defaultRSASigDesc);
 		algorithms.Add (urlSHA1, defaultSHA1);
 		algorithms.Add (urlSHA256, defaultSHA256);
 		// xmlenc does not include a definition for SHA384
-		algorithms.Add (urlSHA512, defaultSHA512);
-		algorithms.Add (urlHMACSHA256, defaultHMACSHA256);
-		algorithms.Add (urlHMACSHA384, defaultHMACSHA384);
-		algorithms.Add (urlHMACSHA512, defaultHMACSHA512);
-		algorithms.Add (urlHMACRIPEMD160, defaultHMACRIPEMD160);
+        //algorithms.Add (urlSHA512, defaultSHA512);
+        //algorithms.Add (urlHMACSHA256, defaultHMACSHA256);
+        //algorithms.Add (urlHMACSHA384, defaultHMACSHA384);
+        //algorithms.Add (urlHMACSHA512, defaultHMACSHA512);
+        //algorithms.Add (urlHMACRIPEMD160, defaultHMACRIPEMD160);
 #if NET_4_0
 		unresolved_algorithms.Add (nameAES_1, defaultAES_1);
 		unresolved_algorithms.Add (nameAES_2, defaultAES_1);
