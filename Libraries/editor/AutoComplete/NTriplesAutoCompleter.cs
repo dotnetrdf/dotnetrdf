@@ -35,25 +35,42 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Auto-completer for NTriples
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class NTriplesAutoCompleter<T>
         : BaseAutoCompleter<T>
     {
+        /// <summary>
+        /// Regular Expression Pattern for valid blank node identifiers
+        /// </summary>
         protected String BlankNodePattern = @"_:\p{L}(\p{L}|\p{N}|-|_)*";
 
         private HashSet<ICompletionData> _bnodes = new HashSet<ICompletionData>();
         private BlankNodeMapper _bnodemap = new BlankNodeMapper();
 
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public NTriplesAutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor) { }
 
         #region State Detection
 
+        /// <summary>
+        /// Detects the auto-complete state
+        /// </summary>
         protected override void DetectStateInternal()
         {
             //Look for Blank Nodes
             this.DetectBlankNodes();
         }
 
+        /// <summary>
+        /// Detect declared blank nodes
+        /// </summary>
         protected virtual void DetectBlankNodes()
         {
             this._bnodes.Clear();
@@ -72,6 +89,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Start Auto-completion
 
+        /// <summary>
+        /// Start literal completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartLiteralCompletion(String newText)
         {
             if (this.TemporaryState == AutoCompleteState.Literal || this.TemporaryState == AutoCompleteState.LongLiteral)
@@ -85,16 +106,28 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Start comment completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartCommentCompletion(String newText)
         {
             this.State = AutoCompleteState.Comment;
         }
 
+        /// <summary>
+        /// Start URI completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartUriCompletion(String newText)
         {
             this.State = AutoCompleteState.Uri;
         }
 
+        /// <summary>
+        /// Start BNode completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartBNodeCompletion(String newText)
         {
             this.State = AutoCompleteState.BNode;
@@ -105,6 +138,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Auto-completion
 
+        /// <summary>
+        /// Try to auto-complete
+        /// </summary>
+        /// <param name="newText">New Text</param>
         public override void TryAutoComplete(String newText)
         {
             //Don't do anything if auto-complete not currently active
@@ -189,6 +226,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try literal completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryLiteralCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -225,6 +266,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try URI completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryUriCompletion(String newText)
         {
             if (newText == ">")
@@ -238,6 +283,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try Blank Node completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryBNodeCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -264,6 +313,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try comment completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryCommentCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -277,7 +330,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
 
         #region Helper Functions
 
-        public virtual bool IsValidPartialBlankNodeID(String value)
+        /// <summary>
+        /// Is something a valid partial blank node ID?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidPartialBlankNodeID(String value)
         {
             if (value.Equals(String.Empty))
             {
@@ -309,6 +367,11 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Is something a new line?
+        /// </summary>
+        /// <param name="text">Value</param>
+        /// <returns></returns>
         protected bool IsNewLine(String text)
         {
             return text.Equals("\n") || text.Equals("\r") || text.Equals("\r\n") || text.Equals("\n\r");

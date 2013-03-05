@@ -126,13 +126,13 @@ namespace VDS.RDF.Writing
         /// </summary>
         /// <remarks>
         /// <para>
-        /// If the Compression Level is set to <see cref="WriterCompressionLevels.None">None</see> then High Speed mode will always be used regardless of the input Graph and the <see cref="CompressingTurtleWriter.HighSpeedModePermitted">HighSpeedMorePermitted</see> property.
+        /// If the Compression Level is set to <see cref="WriterCompressionLevel.None">None</see> then High Speed mode will always be used regardless of the input Graph and the <see cref="CompressingTurtleWriter.HighSpeedModePermitted">HighSpeedMorePermitted</see> property.
         /// </para>
         /// <para>
-        /// If the Compression Level is set to <see cref="WriterCompressionLevels.Minimal">Minimal</see> or above then full Predicate Object lists will be used for Triples.
+        /// If the Compression Level is set to <see cref="WriterCompressionLevel.Minimal">Minimal</see> or above then full Predicate Object lists will be used for Triples.
         /// </para>
         /// <para>
-        /// If the Compression Level is set to <see cref="WriterCompressionLevels.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
+        /// If the Compression Level is set to <see cref="WriterCompressionLevel.More">More</see> or above then Blank Node Collections and Collection syntax will be used if the Graph contains Triples that can be compressed in that way.</para>
         /// </remarks>
         public int CompressionLevel
         {

@@ -1084,6 +1084,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Applies global options to a parser
+        /// </summary>
+        /// <param name="parser">Parser</param>
+        public static void ApplyParserOptions(Object parser)
+        {
+            if (parser is ITokenisingParser)
+            {
+                ((ITokenisingParser)parser).TokenQueueMode = Options.DefaultTokenQueueMode;
+            }
+        }
+
+        /// <summary>
         /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
@@ -1136,7 +1148,7 @@ namespace VDS.RDF
 
             //Default to Turtle
             contentType = MimeTypesHelper.Turtle[0];
-            IRdfWriter defaultWriter = new TurtleWriter();
+            IRdfWriter defaultWriter = new CompressingTurtleWriter();
             MimeTypesHelper.ApplyWriterOptions(defaultWriter);
             return defaultWriter;
         }
@@ -1263,7 +1275,9 @@ namespace VDS.RDF
                 {
                     if (definition.CanParseRdf)
                     {
-                        return definition.GetRdfParser();
+                        IRdfReader parser = definition.GetRdfParser();
+                        MimeTypesHelper.ApplyParserOptions(parser);
+                        return parser;
                     }
                 }
             }
@@ -1296,6 +1310,7 @@ namespace VDS.RDF
                 if (def.CanParseRdf)
                 {
                     IRdfReader parser = def.GetRdfParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1315,13 +1330,17 @@ namespace VDS.RDF
             {
                 if (definition.CanParseSparqlResults)
                 {
-                    return definition.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = definition.GetSparqlResultsParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
             if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
             {
-                return new SparqlBooleanParser();
+                ISparqlResultsReader bParser = new SparqlBooleanParser();
+                MimeTypesHelper.ApplyParserOptions(bParser);
+                return bParser;
             }
             else
             {
@@ -1364,7 +1383,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseSparqlResults)
                 {
-                    return def.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = def.GetSparqlResultsParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
@@ -1521,7 +1542,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    return def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
@@ -1552,7 +1575,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    return def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
@@ -1737,7 +1762,7 @@ namespace VDS.RDF
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// This is an alternative to using <see cref="Path.GetExtension()"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example <strong>.gz</strong>
+        /// This is an alternative to using <see cref="System.IO.Path.GetExtension(String)"/> which is designed to take into account known extensions which are used in conjunction with other extensions and mask the true extension, for example <strong>.gz</strong>
         /// </para>
         /// <para>
         /// Consider the filename <strong>example.ttl.gz</strong>, obtaining the extension the standard way gives only <strong>.gz</strong> which is unhelpful since it doesn't actually tell us the underlying format of the data only that it is GZipped and if it is GZipped we almost certainly want to stream the data rather than read all into memory and heuristically detect the actual format.  Instead we'd like to get <strong>.ttl.gz</strong> as the file extension which is much more useful and this is what this function does.

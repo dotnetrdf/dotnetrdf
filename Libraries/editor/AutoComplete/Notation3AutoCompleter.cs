@@ -31,13 +31,26 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// An auto-completer for Notation 3
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class Notation3AutoCompleter<T>
         : TurtleAutoCompleter<T>
     {
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public Notation3AutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor) { }
 
-        public override bool IsValidPartialQName(string value)
+        /// <summary>
+        /// Determines whether something is a valid partial QName
+        /// </summary>
+        /// <param name="value">value</param>
+        /// <returns></returns>
+        protected override bool IsValidPartialQName(string value)
         {
             String ns, localname;
             if (value.Contains(':'))

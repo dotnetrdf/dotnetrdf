@@ -287,8 +287,8 @@ namespace VDS.RDF.Utilities.Server
             ConfigurationLoader.PathResolver = new RdfServerPathResolver(server);
 
             //Need to load up the Configuration Graph and add to Server State
-            server.State["ConfigurationGraph"] = this.LoadConfigurationGraph();
-            if (server.State["ConfigurationGraph"] == null)
+            server.Context["ConfigurationGraph"] = this.LoadConfigurationGraph();
+            if (server.Context["ConfigurationGraph"] == null)
             {
                 throw new HttpServerException("Unable to create a HttpServer instance as the Configuration Graph for the server could not be loaded");
             }

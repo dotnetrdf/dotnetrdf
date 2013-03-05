@@ -39,11 +39,11 @@ namespace VDS.RDF.Parsing
     /// </summary>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
     public class TurtleParser 
-        : IRdfReader, ITraceableParser, ITraceableTokeniser
+        : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
         private bool _traceParsing = false;
         private bool _traceTokeniser = false;
-        private TokenQueueMode _queueMode = TokenQueueMode.SynchronousBufferDuringParsing;
+        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
         private TurtleSyntax _syntax = TurtleSyntax.W3C;
 
         /// <summary>
@@ -107,6 +107,21 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._traceTokeniser = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the token queue mode used
+        /// </summary>
+        public TokenQueueMode TokenQueueMode
+        {
+            get
+            {
+                return this._queueMode;
+            }
+            set
+            {
+                this._queueMode = value;
             }
         }
 

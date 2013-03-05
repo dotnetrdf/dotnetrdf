@@ -54,7 +54,7 @@ namespace VDS.RDF
         /// </summary>
         public GraphCollection()
         {
-            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), new UriComparer(), MultiDictionaryMode.AVL);
+            this._graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : DefaultGraphID), true, new UriComparer(), MultiDictionaryMode.AVL);
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <strong>Dispose()</strong> method of all Graphs contained in the Collection</remarks>
         public override void Dispose()
         {
             this._graphs.Clear();
@@ -407,7 +407,7 @@ namespace VDS.RDF
         /// <summary>
         /// Disposes of the Graph Collection
         /// </summary>
-        /// <remarks>Invokes the <see cref="IGraph.Dipose">Dispose()</see> method of all Graphs contained in the Collection</remarks>
+        /// <remarks>Invokes the <strong>Dispose()</strong> method of all Graphs contained in the Collection</remarks>
         public override void Dispose()
         {
             try

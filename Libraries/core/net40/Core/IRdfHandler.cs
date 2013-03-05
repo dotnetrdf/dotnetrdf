@@ -31,12 +31,13 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Handlers which handle the RDF produced by parsers
     /// </summary>
-    public interface IRdfHandler : INodeFactory
+    public interface IRdfHandler
+        : INodeFactory
     {
         /// <summary>
         /// Start the Handling of RDF
         /// </summary>
-        /// <exception cref="RdfParseException">May be thrown if the Handler is already in use and the implementation is not thread-safe</exception>
+        /// <exception cref="VDS.RDF.Parsing.RdfParseException">May be thrown if the Handler is already in use and the implementation is not thread-safe</exception>
         void StartRdf();
 
         /// <summary>
@@ -79,7 +80,8 @@ namespace VDS.RDF
     /// <summary>
     /// Interface for Handlers which wrap other Handlers
     /// </summary>
-    public interface IWrappingRdfHandler : IRdfHandler
+    public interface IWrappingRdfHandler 
+        : IRdfHandler
     {
         /// <summary>
         /// Gets the Inner Handlers used by this Handler

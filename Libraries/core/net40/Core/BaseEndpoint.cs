@@ -132,7 +132,7 @@ namespace VDS.RDF
 #if !NO_PROXY
 
         /// <summary>
-        /// Controls whether the Credentials set with the <see cref="BaseEndpoint.SetCredentials">SetCredentials()</see> method or the <see cref="BaseEndpoint.Credentials">Credentials</see>are also used for a Proxy (if used)
+        /// Controls whether the Credentials set with the <see cref="BaseEndpoint.SetCredentials(String,String)">SetCredentials()</see> method or the <see cref="BaseEndpoint.Credentials">Credentials</see>are also used for a Proxy (if used)
         /// </summary>
         public bool UseCredentialsForProxy
         {

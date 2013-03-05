@@ -34,8 +34,8 @@ namespace VDS.RDF.Parsing.Tokens
     /// <summary>
     /// Basic Token Queue which provides no Buffering except in the sense that it queues all possible Tokens when the InitialiseBuffer method is called
     /// </summary>
-    /// <remarks>This is the recommended Token Queue and the one used by default in the Parser implementations</remarks>
-    public class TokenQueue : BaseTokenQueue
+    public class TokenQueue 
+        : BaseTokenQueue
     {
         /// <summary>
         /// Internal Queue object which this class is a wrapper around

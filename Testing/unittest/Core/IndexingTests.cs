@@ -49,10 +49,10 @@ namespace VDS.RDF
             ILiteralNode alternate = g.CreateLiteralNode("01", UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger));
 
             //Use a dud hash function to put everything into a single bucket
-            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1);
+            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false);
             dictionary.Add(canonical, 1);
             Assert.AreEqual(1, dictionary[canonical]);
-            dictionary.Add(alternate, 2);
+            dictionary[alternate] = 2;
 
             //With everything in a single bucket the keys should be considered
             //equal by the default comparer hence the key count will only be one
@@ -86,7 +86,7 @@ namespace VDS.RDF
 
             //Use a dud hash function to put everything into a single bucket and use
             //the FastNodeComparer
-            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, new FastNodeComparer(), MultiDictionaryMode.AVL);
+            MultiDictionary<INode, int> dictionary = new MultiDictionary<INode, int>(n => 1, false, new FastNodeComparer(), MultiDictionaryMode.AVL);
             dictionary.Add(canonical, 1);
             Assert.AreEqual(1, dictionary[canonical]);
             dictionary.Add(alternate, 2);
@@ -111,7 +111,7 @@ namespace VDS.RDF
             
             tree.Add(canonical, 1);
             Assert.AreEqual(1, tree[canonical]);
-            tree.Add(alternate, 2);
+            tree[alternate] = 2;
 
             //Since the default comparer considers the keys to be equal
             //lookup via either key should now give the value 2 rather than the originally
@@ -162,7 +162,7 @@ namespace VDS.RDF
 
             tree.Add(a, 1);
             Assert.AreEqual(1, tree[a]);
-            tree.Add(b, 2);
+            tree[b] = 2;
 
             //Since the default comparer considers the keys to be equal
             //lookup via either key should now give the value 2 rather than the originally

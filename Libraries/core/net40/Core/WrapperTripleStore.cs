@@ -174,17 +174,6 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="graphUri">Graph URI</param>
         /// <returns></returns>
-        [Obsolete("This method is obsolete, use the indexer (this[graphUri]) to access Graphs instead", false)]
-        public virtual IGraph Graph(Uri graphUri)
-        {
-            return this._store.Graph(graphUri);
-        }
-
-        /// <summary>
-        /// Gets a Graph from the store
-        /// </summary>
-        /// <param name="graphUri">Graph URI</param>
-        /// <returns></returns>
         public virtual IGraph this[Uri graphUri]
         {
             get

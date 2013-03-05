@@ -30,10 +30,16 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public class NewBlankNodeData : BaseCompletionData
+    /// <summary>
+    /// Completion data for a new blank node
+    /// </summary>
+    public class NewBlankNodeData
+        : BaseCompletionData
     {
-        private String _id;
-
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="id">Next Node ID</param>
         public NewBlankNodeData(String id)
             : base("<New Blank Node>", "_:" + id, "Inserts a new Blank Node", 50.0d) { }
     }

@@ -193,7 +193,7 @@ namespace VDS.RDF.Query.Datasets
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraph">GetModifiableGraph()</see> method
+        /// For In-Memory datasets the Graph returned from this property is no different from the Graph returned by the <see cref="InMemoryDataset.GetModifiableGraphInternal(Uri)">GetModifiableGraphInternal()</see> method
         /// </para>
         /// </remarks>
         protected override IGraph GetGraphInternal(Uri graphUri)
@@ -312,7 +312,7 @@ namespace VDS.RDF.Query.Datasets
         #endregion       
 
         /// <summary>
-        /// If there have been changes made to the Dataset and the underlying in-memory store is a <see cref="IFlushableStore">IFlushableStore</see> ensures the underlying store is notified to flush those changes
+        /// If there have been changes made to the Dataset and the underlying in-memory store is a <see cref="ITransactionalStore">ITransactionalStore</see> ensures the underlying store is notified to flush those changes
         /// </summary>
         protected override void FlushInternal()
         {

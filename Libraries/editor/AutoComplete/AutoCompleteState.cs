@@ -30,31 +30,88 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Auto-Completion States
+    /// </summary>
     public enum AutoCompleteState
     {
+        /// <summary>
+        /// Disabled
+        /// </summary>
         Disabled,
+        /// <summary>
+        /// None
+        /// </summary>
         None,
+        /// <summary>
+        /// Inserted
+        /// </summary>
         Inserted,
 
+        /// <summary>
+        /// Prefix
+        /// </summary>
         Prefix,
+        /// <summary>
+        /// Base
+        /// </summary>
         Base,
+        /// <summary>
+        /// Other Declaration
+        /// </summary>
         Declaration,
 
+        /// <summary>
+        /// URI
+        /// </summary>
         Uri,
+        /// <summary>
+        /// QName
+        /// </summary>
         QName,
+        /// <summary>
+        /// Keyword
+        /// </summary>
         Keyword,
+        /// <summary>
+        /// Keyword or QName
+        /// </summary>
         KeywordOrQName,
 
+        /// <summary>
+        /// Blank Node
+        /// </summary>
         BNode,
 
+        /// <summary>
+        /// Variable
+        /// </summary>
         Variable,
 
+        /// <summary>
+        /// Literal
+        /// </summary>
         Literal,
+        /// <summary>
+        /// Long Literal
+        /// </summary>
         LongLiteral,
+        /// <summary>
+        /// Alternative Literal
+        /// </summary>
         AlternateLiteral,
+        /// <summary>
+        /// Alternative Long Literal
+        /// </summary>
         AlternateLongLiteral,
+        /// <summary>
+        /// Numeric Literal
+        /// </summary>
         NumericLiteral,
 
+        /// <summary>
+        /// Comment
+        /// </summary>
         Comment
     }
 }

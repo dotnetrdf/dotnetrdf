@@ -36,7 +36,7 @@ namespace VDS.RDF
     /// </summary>
     public static class UriFactory
     {
-        private static StringTrie<Uri> _uris = new StringTrie<Uri>();
+        private static ITrie<String, char, Uri> _uris = new StringTrie<Uri>();
 
         /// <summary>
         /// Creates a URI interning it if interning is enabled via the <see cref="Options.InternUris">Options.InternUris</see>
@@ -50,7 +50,7 @@ namespace VDS.RDF
         {
             if (Options.InternUris)
             {
-                TrieNode<char, Uri> node = _uris.MoveToNode(uri);
+                ITrieNode<char, Uri> node = _uris.MoveToNode(uri);
                 if (node.HasValue)
                 {
                     return node.Value;

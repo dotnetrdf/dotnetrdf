@@ -208,7 +208,7 @@ namespace VDS.RDF.Query
         /// </summary>
         /// <param name="variable">Variable Name</param>
         /// <returns>True if the variable is present, false otherwise</returns>
-        /// <remarks>Returns true even if the value is null, use <see cref="SparqlResult.HashBoundValue"/> instead to see whether a non-null value is present for a variable.</remarks>
+        /// <remarks>Returns true even if the value is null, use <see cref="SparqlResult.HasBoundValue"/> instead to see whether a non-null value is present for a variable.</remarks>
         public bool HasValue(string variable)
         {
             return this._resultValues.ContainsKey(variable);

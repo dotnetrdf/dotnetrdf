@@ -40,7 +40,7 @@ using SysConfig = System.Configuration;
 namespace VDS.RDF.Configuration
 {
     /// <summary>
-    /// The Configuration Loader is responsible for the loading of Configuration information and objects based upon information encoded in a Graph but more generally may be used for the loading of any type of object whose configuration has been loaded in a Graph and for which a relevant <see cref="IObjectLoader">IObjectLoader</see> is available.
+    /// The Configuration Loader is responsible for the loading of Configuration information and objects based upon information encoded in a Graph but more generally may be used for the loading of any type of object whose configuration has been loaded in a Graph and for which a relevant <see cref="IObjectFactory">IObjectFactory</see> is available.
     /// </summary>
     /// <remarks>
     /// <para></para>
@@ -158,12 +158,6 @@ namespace VDS.RDF.Configuration
                             ;
 
         /// <summary>
-        /// URI Constants for <strong>obsolete usable</strong> configuration properties
-        /// </summary>
-        [Obsolete(ConfigurationNamespace + "genericManager is considered deprecated, use dnr:storageProvider instead", true)]
-        public const String PropertyGenericManager = ConfigurationNamespace + "genericManager";
-
-        /// <summary>
         /// URI Constants for configuration classes
         /// </summary>
         public const String ClassObjectFactory = ConfigurationNamespace + "ObjectFactory",
@@ -203,13 +197,6 @@ namespace VDS.RDF.Configuration
                             ClassRdfWriter = ConfigurationNamespace + "RdfWriter",
                             ClassDatasetWriter = ConfigurationNamespace + "DatasetWriter",
                             ClassSparqlResultsWriter = ConfigurationNamespace + "SparqlResultsWriter";
-
-
-        /// <summary>
-        /// URI Constants for <strong>obsolete usable</strong> configuration classes
-        /// </summary>
-        [Obsolete(ConfigurationNamespace + "GenericIOManager is deprecated, use dnr:StorageProvider instead", true)]
-        public const String ClassGenericManager = ConfigurationNamespace + "GenericIOManager";
 
         /// <summary>
         /// QName Constants for Default Types for some configuration classes
@@ -452,16 +439,6 @@ namespace VDS.RDF.Configuration
         /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
         /// </summary>
         /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureObjectFactories() which has the same functionality", true)]
-        public static void AutoDetectObjectFactories(IGraph g)
-        {
-            ConfigurationLoader.AutoConfigureObjectFactories(g);
-        }
-
-        /// <summary>
-        /// Given a Configuration Graph will detect and configure Object Factories defined in the configuration
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
         public static void AutoConfigureObjectFactories(IGraph g)
         {
             IUriNode rdfType = g.CreateUriNode(UriFactory.Create(RdfSpecsHelper.RdfType));
@@ -479,16 +456,6 @@ namespace VDS.RDF.Configuration
                     throw new DotNetRdfConfigurationException("Auto-detection of Object Loaders failed as the Node '" + objNode.ToString() + "' was stated to be rdf:type of dnr:ObjectFactory but failed to load as an object which implements the IObjectFactory interface");
                 }
             }
-        }
-
-        /// <summary>
-        /// Given a Configuration Graph will detect Readers and Writers for RDF and SPARQL syntaxes and register them with <see cref="MimeTypesHelper">MimeTypesHelper</see>.  This will cause the library defaults to be overridden where appropriate.
-        /// </summary>
-        /// <param name="g">Configuration Graph</param>
-        [Obsolete("This method is deprecated, use the new method name AutoConfigureReadersAndWriters() which has the same functionality", true)]
-        public static void AutoDetectReadersAndWriters(IGraph g)
-        {
-            ConfigurationLoader.AutoConfigureReadersAndWriters(g);
         }
 
         /// <summary>
@@ -892,7 +859,7 @@ namespace VDS.RDF.Configuration
         /// String value of the first instance of the property or a null if no values or not a literal value
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,INode)">GetConfigurationValue</see> function instead
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, INode property)
@@ -929,7 +896,7 @@ namespace VDS.RDF.Configuration
         /// String value of the first instance of the first property or a null if no values or not a literal value
         /// </para>
         /// <para>
-        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue">GetConfigurationValue</see> function instead
+        /// If you want the String value regardless of Node type then use the <see cref="ConfigurationLoader.GetConfigurationValue(IGraph,INode,IEnumerable{INode})">GetConfigurationValue</see> function instead
         /// </para>
         /// </returns>
         public static String GetConfigurationString(IGraph g, INode objNode, IEnumerable<INode> properties)
@@ -1266,7 +1233,7 @@ namespace VDS.RDF.Configuration
         /// <returns></returns>
         /// <remarks>
         /// <para>
-        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectLoader">IObjectLoader</see> are potentially capable of creating the desired Object
+        /// Callers of this method should be careful to check that the Object returned is of a usable type to them.  The Target Type parameter does not guarantee that the return value is of that type it is only used to determine which registered instances of <see cref="IObjectFactory">IObjectFactory</see> are potentially capable of creating the desired Object
         /// </para>
         /// <para>
         /// Callers should also take care that any Objects returned from this method are disposed of when the caller no longer has a use for them as otherwise the reference kept in the cache here will cause the Object to remain in-memory consuming resources

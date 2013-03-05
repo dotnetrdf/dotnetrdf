@@ -1,6 +1,29 @@
 ﻿Change Log
 ==========
 
+1.0.0
+-----
+
+Changed
+- Bug Fixes
+ - Fix for one form of AllegroGraphConnector constructor confusing Store and Catalog IDs
+ - StoreHandler did not propogate namespaces to all graphs (CORE-334)
+ - SPARQL expression parsing could occassionally reject some numeric literals incorrectly (CORE-332)
+- Dependencies
+ - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
+- Documentation
+ - Documentation was moved to BitBucket wiki at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki (DOCS-306)
+- Core API
+ - TreeIndexedTripleCollection now supports completely configurable indices (CORE-309)
+- Storage API
+ - SesameNativeTemplate is now a public class
+ - AllegroGraphConnector now implements IUpdateableStorage and IAsyncUpdateableStorage (CORE-308)
+
+Removed
+- Removed defunct TalisException
+- Removed defunct internal class InternalXmlWriter
+
+
 0.9.0 RC4
 ---------
 
@@ -14,7 +37,6 @@ Added
  - Added Owl/Rdf/All Classes and Properties properties on OntologyGraph (CORE-293)
  - Added AsClass() and AsProperty() methods on OntologyResource (CORE-293)
 
-
 Changed
 - Bug Fixes
  - Fix a bug to allow OrderByVariable to take variable name with/without leading ?/$ 
@@ -26,14 +48,24 @@ Changed
  - Fix a bug with the XPath Replace function (CORE-299)
  - Fix a bug with applying aggregates over empty intermediate results giving incorrect results (CORE-304)
  - Add an opt-in workaround for HTTP Basic Authentication against badly behaved server (CORE-301)
+ - Fix a bug with loss of precision when converting DateTime to xsd:dateTime literals (CORE-305)
 - Dependencies
  - Externalized the VDS.Web.Server library as a dependency version 1.0.0
  - Updated VDS.Common to 1.1.2
 - Build
- - Improved our test architecture significantly
+ - Improved our test architecture significantly (CORE-216)
  - NuGet packages now include PDBs to aid consumers in debugging issues with dotNetRDF (CORE-292)
 - Storage, Query and Update
  - Always enable PreAuthenticate for HTTP requests where possible to reduce HTTP requests (CORE-302)
+ 
+Removed
+- Removed the obsolete JosekiConnector as obsolete unusable
+- Removed some obsolete property and class constants in ConfigurationLoader as obsolete unusable
+- Removed the obsolete Graph() method of ITripleStore as obsolete unusable (superceded by indexer access)
+- Removed the obsolete IndexingHelper static class as obsolete unusable
+- Removed the obsolete ConfigurationLoader.AutoDetectX() overloads as obsolete unusable
+- Removed the obsolete Tools.StreamCopy() method as obsolete unusable
+- Removed the obsolete FastRdfXmlWriter as obsolete unusable
 
 0.8.2 RC3
 ---------

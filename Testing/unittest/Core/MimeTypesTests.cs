@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using VDS.RDF.Parsing;
+using VDS.RDF.Parsing.Tokens;
 using VDS.RDF.Writing;
 
 namespace VDS.RDF.Core
@@ -2466,6 +2467,74 @@ namespace VDS.RDF.Core
             finally
             {
                 Options.DefaultCompressionLevel = compressionLevel;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions1()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IRdfReader parser = MimeTypesHelper.GetParser("application/turtle");
+                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions2()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IRdfReader parser = MimeTypesHelper.GetParserByFileExtension(".ttl");
+                Assert.IsInstanceOfType(parser, typeof(TurtleParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions3()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IStoreReader parser = MimeTypesHelper.GetStoreParser("text/x-nquads");
+                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
+            }
+        }
+
+        [TestMethod]
+        public void MimeTypesApplyParserOptions4()
+        {
+            TokenQueueMode queueMode = Options.DefaultTokenQueueMode;
+            try
+            {
+                Options.DefaultTokenQueueMode = TokenQueueMode.AsynchronousBufferDuringParsing;
+                IStoreReader parser = MimeTypesHelper.GetStoreParserByFileExtension(".nq");
+                Assert.IsInstanceOfType(parser, typeof(NQuadsParser));
+                Assert.AreEqual(TokenQueueMode.AsynchronousBufferDuringParsing, ((ITokenisingParser)parser).TokenQueueMode);
+            }
+            finally
+            {
+                Options.DefaultTokenQueueMode = queueMode;
             }
         }
 

@@ -255,7 +255,7 @@ namespace VDS.RDF.Update.Commands
                 }
 
                 //Keep a record of graphs to which we insert
-                MultiDictionary<Uri, IGraph> graphs = new MultiDictionary<Uri, IGraph>(u => u.GetEnhancedHashCode(), new UriComparer(), MultiDictionaryMode.AVL);
+                MultiDictionary<Uri, IGraph> graphs = new MultiDictionary<Uri, IGraph>(u => (u != null ? u.GetEnhancedHashCode() : 0), true, new UriComparer(), MultiDictionaryMode.AVL);
 
                 //Insert the Triples for each Solution
                 foreach (ISet s in queryContext.OutputMultiset.Sets)

@@ -139,7 +139,7 @@ namespace VDS.RDF
 #endif
 
         /// <summary>
-        /// Destructor for the wrapper to ensure that <see cref="Dispose">Dispose()</see> is called and thus that persistence happens
+        /// Destructor for the wrapper to ensure that <see cref="GraphPersistenceWrapper.Dispose()">Dispose()</see> is called and thus that persistence happens
         /// </summary>
         ~GraphPersistenceWrapper()
         {

@@ -32,6 +32,9 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// A RDF Handler designed to detect terms defined in the data
+    /// </summary>
     public class TermDetectionHandler
         : BaseRdfHandler
     {
@@ -40,6 +43,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         private Dictionary<INode, String> _termLabels, _termComments;
         private NamespaceMapper _nsmap;
 
+        /// <summary>
+        /// Creates a new handler
+        /// </summary>
         public TermDetectionHandler()
         {
             this._rdfType = this.CreateUriNode(new Uri(RdfSpecsHelper.RdfType));
@@ -50,6 +56,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._rdfsComment = this.CreateUriNode(new Uri(NamespaceMapper.RDFS + "comment"));
         }
 
+        /// <summary>
+        /// Gets the detected terms
+        /// </summary>
         public IEnumerable<NamespaceTerm> DetectedTerms
         {
             get
@@ -78,6 +87,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Starts RDF handling
+        /// </summary>
         protected override void StartRdfInternal()
         {
             this._terms = new HashSet<INode>();
@@ -86,12 +98,23 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._nsmap = new NamespaceMapper(true);
         }
 
+        /// <summary>
+        /// Handles namespace declarations
+        /// </summary>
+        /// <param name="prefix">Prefix</param>
+        /// <param name="namespaceUri">URI</param>
+        /// <returns></returns>
         protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
         {
             this._nsmap.AddNamespace(prefix, namespaceUri);
             return true;
         }
 
+        /// <summary>
+        /// Handles triple declarations
+        /// </summary>
+        /// <param name="t">Triple</param>
+        /// <returns></returns>
         protected override bool HandleTripleInternal(Triple t)
         {
             if (t.Subject.NodeType == NodeType.Uri)
@@ -124,6 +147,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return true;
         }
 
+        /// <summary>
+        /// Gets that this handler accepts all inputs
+        /// </summary>
         public override bool AcceptsAll
         {
             get 

@@ -31,10 +31,16 @@ using VDS.RDF.Utilities.Editor.Selection;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Static Class containing global options for editors
+    /// </summary>
     public static class GlobalOptions
     {
         private static bool _useBomForUtf8 = false;
 
+        /// <summary>
+        /// Gets/Sets whether to use the BOM on UTF-8 output
+        /// </summary>
         public static bool UseBomForUtf8
         {
             get
@@ -48,6 +54,10 @@ namespace VDS.RDF.Utilities.Editor
         }
     }
 
+    /// <summary>
+    /// Document Manager options
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class ManagerOptions<T>
     {
         //Syntax Highlighting
@@ -67,6 +77,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Syntax Highlighting
 
+        /// <summary>
+        /// Gets/Sets whether syntax highlighting is enabled
+        /// </summary>
         public bool IsSyntaxHighlightingEnabled
         {
             get
@@ -215,14 +228,29 @@ namespace VDS.RDF.Utilities.Editor
 
         #endregion
 
+        /// <summary>
+        /// Event which is raised when highlighting is toggled
+        /// </summary>
         public event OptionsChanged HighlightingToggled;
 
+        /// <summary>
+        /// Event which is raised when error highlighting is toggled
+        /// </summary>
         public event OptionsChanged HighlightErrorsToggled;
 
+        /// <summary>
+        /// Event which is raised when auto-completion is toggled
+        /// </summary>
         public event OptionsChanged AutoCompleteToggled;
 
+        /// <summary>
+        /// Event which is raised when symbol selection is toggled
+        /// </summary>
         public event OptionsChanged SymbolSelectionToggled;
 
+        /// <summary>
+        /// Event which is raised when the symbol selector is changed
+        /// </summary>
         public event OptionsChanged SymbolSelectorChanged;
 
         private void RaiseEvent(OptionsChanged evt)

@@ -34,10 +34,11 @@ namespace VDS.RDF.Configuration
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This essentially reflexive implementation allows for defining additional <see cref="IObjectFactory">IObjectFactory</see> instances that can load custom/user defined types based on user definable Configuration.  If your Configuration Graphs contain custom object factory definitions then you should call <see cref="ConfigurationLoader.AutoDetectObjectFactories">ConfigurationLoader.AutoDetectObjectFactories()</see> before attempting to load any Configuration.
+    /// This essentially reflexive implementation allows for defining additional <see cref="IObjectFactory">IObjectFactory</see> instances that can load custom/user defined types based on user definable Configuration.  If your Configuration Graphs contain custom object factory definitions then you should call <see cref="ConfigurationLoader.AutoConfigureObjectFactories">ConfigurationLoader.AutoConfigureObjectFactories()</see> before attempting to load any Configuration.
     /// </para>
     /// </remarks>
-    public class ObjectFactoryFactory : IObjectFactory
+    public class ObjectFactoryFactory
+        : IObjectFactory
     {
         /// <summary>
         /// Tries to load an Object Factory based on information from the Configuration Graph

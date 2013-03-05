@@ -35,6 +35,10 @@ using VDS.RDF.Utilities.Editor.Syntax;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Represents a document in the editor
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class Document<T>
     {
         //General State
@@ -49,12 +53,27 @@ namespace VDS.RDF.Utilities.Editor
         private ISyntaxValidator _validator;
         private Exception _lastError = null;
 
+        /// <summary>
+        /// Creates a document
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         internal Document(ITextEditorAdaptor<T> editor)
             : this(editor, null, null) { }
 
+        /// <summary>
+        /// Creates a document
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
+        /// <param name="filename">Filename</param>
         internal Document(ITextEditorAdaptor<T> editor, String filename)
             : this(editor, filename, Path.GetFileName(filename)) { }
 
+        /// <summary>
+        /// Creates a document
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
+        /// <param name="filename">Filename</param>
+        /// <param name="title">Title</param>
         internal Document(ITextEditorAdaptor<T> editor, String filename, String title)
         {
             if (editor == null) throw new ArgumentNullException("editor");
@@ -69,6 +88,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region General State
 
+        /// <summary>
+        /// Gets the text editor for the document
+        /// </summary>
         public ITextEditorAdaptor<T> TextEditor
         {
             get
@@ -77,6 +99,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether the document has changed
+        /// </summary>
         public bool HasChanged
         {
             get
@@ -135,6 +160,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets the text of the document
+        /// </summary>
         public String Text
         {
             get
@@ -147,6 +175,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the length of the document
+        /// </summary>
         public int TextLength
         {
             get
@@ -155,6 +186,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the current caret position in the document
+        /// </summary>
         public int CaretOffset
         {
             get
@@ -163,6 +197,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the current selection start
+        /// </summary>
         public int SelectionStart
         {
             get
@@ -171,6 +208,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets the current selection length
+        /// </summary>
         public int SelectionLength
         {
             get
@@ -183,6 +223,9 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Syntax Highlighting and Validation
 
+        /// <summary>
+        /// Gets/Sets the syntax for the document
+        /// </summary>
         public String Syntax
         {
             get
@@ -199,6 +242,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Requests that the document auto-detect its syntax
+        /// </summary>
         public void AutoDetectSyntax()
         {
             if (this._filename != null && !this._filename.Equals(String.Empty))
@@ -253,6 +299,10 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Sets the syntax configuring the associated text editor as appropriate
+        /// </summary>
+        /// <param name="syntax">Syntax</param>
         private void SetSyntax(String syntax)
         {
             if (this._enableHighlighting)
@@ -275,6 +325,10 @@ namespace VDS.RDF.Utilities.Editor
             this.RaiseEvent(this.SyntaxChanged);
         }
 
+        /// <summary>
+        /// Validates the document
+        /// </summary>
+        /// <returns>Syntax Validation Results if available, null otherwise</returns>
         public ISyntaxValidationResults Validate()
         {
             if (this._validator != null)
@@ -320,6 +374,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether highlighting is enabled
+        /// </summary>
         public bool IsHighlightingEnabled
         {
             get
@@ -343,6 +400,9 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Gets/Sets whether auto-completion is enabled
+        /// </summary>
         public bool IsAutoCompleteEnabled
         {
             get
@@ -370,6 +430,10 @@ namespace VDS.RDF.Utilities.Editor
 
         #region File Actions
 
+        /// <summary>
+        /// Gets the encoding in which the document should be saved
+        /// </summary>
+        /// <returns></returns>
         private Encoding GetEncoding()
         {
             if (this._encoding.Equals(Encoding.UTF8))
@@ -382,11 +446,13 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Saves the document assuming it has a file associated with it
+        /// </summary>
         public void Save()
         {
             if (this._filename != null && !this._filename.Equals(String.Empty))
             {
-                //TODO: Get the target Encoding from somewhere
                 using (StreamWriter writer = new StreamWriter(this._filename, false, this.GetEncoding()))
                 {
                     writer.Write(this.Text);
@@ -397,6 +463,10 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Saves the document with the given filename
+        /// </summary>
+        /// <param name="filename">Filename</param>
         public void SaveAs(String filename)
         {
             if (filename == null) throw new ArgumentNullException("filename");
@@ -406,6 +476,10 @@ namespace VDS.RDF.Utilities.Editor
             this.Save();
         }
 
+        /// <summary>
+        /// Opens the document from a file
+        /// </summary>
+        /// <param name="filename">Filename</param>
         public void Open(String filename)
         {
             this.Filename = filename;
@@ -420,6 +494,9 @@ namespace VDS.RDF.Utilities.Editor
             this.RaiseEvent(this.Opened);
         }
 
+        /// <summary>
+        /// Reloads the document
+        /// </summary>
         public void Reload()
         {
 
@@ -429,12 +506,22 @@ namespace VDS.RDF.Utilities.Editor
 
         #region Text Editor Events
 
+        /// <summary>
+        /// Handler for the TextChanged event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         private void HandleTextChanged(Object sender, TextEditorEventArgs<T> args)
         {
             this.HasChanged = true;
             this.RaiseEvent(sender, this.TextChanged);
         }
 
+        /// <summary>
+        /// Handler for the DoubleClick event
+        /// </summary>
+        /// <param name="sender">Sender</param>
+        /// <param name="args">Arguments</param>
         private void HandleDoubleClick(Object sender, TextEditorEventArgs<T> args)
         {
             if (this._editor.SymbolSelector != null)
@@ -469,22 +556,49 @@ namespace VDS.RDF.Utilities.Editor
             }
         }
 
+        /// <summary>
+        /// Event which is raised when the document text changes
+        /// </summary>
         public event DocumentChangedHandler<T> TextChanged;
 
+        /// <summary>
+        /// Event which is raised when the document is reloaded
+        /// </summary>
         public event DocumentChangedHandler<T> Reloaded;
 
+        /// <summary>
+        /// Event which is raised when the document is opened
+        /// </summary>
         public event DocumentChangedHandler<T> Opened;
 
+        /// <summary>
+        /// Event which is raised when the syntax for the document is changed
+        /// </summary>
         public event DocumentChangedHandler<T> SyntaxChanged;
 
+        /// <summary>
+        /// Event which is raised when the filename for the document is changed
+        /// </summary>
         public event DocumentChangedHandler<T> FilenameChanged;
 
+        /// <summary>
+        /// Event which is raised when the title of the document is changed
+        /// </summary>
         public event DocumentChangedHandler<T> TitleChanged;
 
+        /// <summary>
+        /// Event which is raised when the document is saved
+        /// </summary>
         public event DocumentChangedHandler<T> Saved;
 
+        /// <summary>
+        /// Event which is raised when the syntax validator for the document is changed
+        /// </summary>
         public event DocumentChangedHandler<T> ValidatorChanged;
 
+        /// <summary>
+        /// Event which is raised when the document is validated
+        /// </summary>
         public event DocumentValidatedHandler<T> Validated;
 
         #endregion

@@ -32,15 +32,25 @@ using ICSharpCode.AvalonEdit;
 
 namespace VDS.RDF.Utilities.Editor.Wpf
 {
+    /// <summary>
+    /// Find and Replace implementation for WPF
+    /// </summary>
     public class WpfFindAndReplace
         : FindAndReplace<TextEditor>
     {
-
+        /// <summary>
+        /// Shows a dialogue asking the user if they want to restart their search from the start
+        /// </summary>
+        /// <returns>True if the user says yes, false otherwise</returns>
         protected override bool ShouldRestartSearchFromStart()
         {
             return (MessageBox.Show("No further instances of the Find Text were found.  Would you like to restart the search from beginning of document?", "Text Not Found", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
         }
 
+        /// <summary>
+        /// Shows a message to the user
+        /// </summary>
+        /// <param name="message">Message</param>
         protected override void ShowMessage(string message)
         {
             MessageBox.Show(message, "Find and Replace");

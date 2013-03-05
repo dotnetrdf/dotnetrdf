@@ -542,7 +542,7 @@ namespace VDS.RDF
         /// <param name="n">Node to copy</param>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph)">Tools.CopyNode()</see> method</remarks>
         public static INode CopyNode(this INode n, IGraph target)
         {
             return Tools.CopyNode(n, target);
@@ -555,7 +555,7 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyNode">Tools.CopyNode()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyNode(INode, IGraph, bool)">Tools.CopyNode()</see> method</remarks>
         public static INode CopyNode(this INode n, IGraph target, bool keepOriginalGraphUri)
         {
             return Tools.CopyNode(n, target, keepOriginalGraphUri);
@@ -568,7 +568,7 @@ namespace VDS.RDF
         /// <param name="t">Triple to copy</param>
         /// <param name="target">Target Graph</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph)">Tools.CopyTriple()</see> method</remarks>
         public static Triple CopyTriple(this Triple t, IGraph target)
         {
             return Tools.CopyTriple(t, target);
@@ -581,7 +581,7 @@ namespace VDS.RDF
         /// <param name="target">Target Graph</param>
         /// <param name="keepOriginalGraphUri">Indicates whether Nodes should preserve the Graph Uri of the Graph they originated from</param>
         /// <returns></returns>
-        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple">Tools.CopyTriple()</see> method</remarks>
+        /// <remarks>Shorthand for the <see cref="Tools.CopyTriple(Triple, IGraph, bool)">Tools.CopyTriple()</see> method</remarks>
         public static Triple CopyTriple(this Triple t, IGraph target, bool keepOriginalGraphUri)
         {
             return Tools.CopyTriple(t, target, keepOriginalGraphUri);
@@ -1363,7 +1363,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="b">Boolean</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the boolean</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this bool b, INodeFactory factory)
         {
@@ -1377,7 +1377,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="b">Byte</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the byte</returns>
         /// <remarks>
         /// Byte in .Net is actually equivalent to Unsigned Byte in XML Schema so depending on the value of the Byte the type will either be xsd:byte if it fits or xsd:usignedByte
         /// </remarks>
@@ -1402,7 +1402,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="b">Byte</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the signed bytes</returns>
         /// <remarks>
         /// SByte in .Net is directly equivalent to Byte in XML Schema so the type will always be xsd:byte
         /// </remarks>
@@ -1418,13 +1418,53 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="dt">Date Time</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the date time</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this DateTime dt, INodeFactory factory)
         {
+            return ToLiteral(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Date Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the date time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTime dt, INodeFactory factory, bool precise)
+        {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateTimeFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaDateTimeFormat : XmlSpecsHelper.XmlSchemaDateTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
+        }
+
+        /// <summary>
+        /// Creates a new Date Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns>Literal representing the date time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTimeOffset dt, INodeFactory factory)
+        {
+            return ToLiteral(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Date Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the date time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteral(this DateTimeOffset dt, INodeFactory factory, bool precise)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaDateTimeFormat : XmlSpecsHelper.XmlSchemaDateTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDateTime));
         }
 
         /// <summary>
@@ -1442,25 +1482,53 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Creates a new Time typed literal
+        /// Creates a new Date typed literal
         /// </summary>
         /// <param name="dt">Date Time</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
-        public static ILiteralNode ToLiteralTime(this DateTime dt, INodeFactory factory)
+        public static ILiteralNode ToLiteralDate(this DateTimeOffset dt, INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
 
-            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaTimeFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime));
+            return factory.CreateLiteralNode(dt.ToString(XmlSpecsHelper.XmlSchemaDateFormat), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDate));
         }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTime dt, INodeFactory factory)
+        {
+            return ToLiteralTime(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTime dt, INodeFactory factory, bool precise)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaTimeFormat : XmlSpecsHelper.XmlSchemaTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime));
+        }
+
         
         /// <summary>
         /// Creates a new duration typed literal
         /// </summary>
         /// <param name="t">Time Span</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the time span</returns>
         public static ILiteralNode ToLiteral(this TimeSpan t, INodeFactory factory)
         {
             if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
@@ -1469,11 +1537,38 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTimeOffset dt, INodeFactory factory)
+        {
+            return ToLiteralTime(dt, factory, true);
+        }
+
+        /// <summary>
+        /// Creates a new Time typed literal
+        /// </summary>
+        /// <param name="dt">Date Time</param>
+        /// <param name="factory">Node Factory to use for Node creation</param>
+        /// <param name="precise">Whether to preserve precisely i.e. include fractional seconds</param>
+        /// <returns>Literal representing the time</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
+        public static ILiteralNode ToLiteralTime(this DateTimeOffset dt, INodeFactory factory, bool precise)
+        {
+            if (factory == null) throw new ArgumentNullException("factory", "Cannot create a Literal Node in a null Node Factory");
+
+            return factory.CreateLiteralNode(dt.ToString(precise ? XmlSpecsHelper.XmlSchemaTimeFormat : XmlSpecsHelper.XmlSchemaTimeFormatImprecise), UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeTime));
+        }
+
+        /// <summary>
         /// Creates a new Decimal typed literal
         /// </summary>
         /// <param name="d">Decimal</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the decimal</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this decimal d, INodeFactory factory)
         {
@@ -1487,7 +1582,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="d">Double</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the double</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this double d, INodeFactory factory)
         {
@@ -1501,7 +1596,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="f">Float</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the float</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this float f, INodeFactory factory)
         {
@@ -1515,7 +1610,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="i">Integer</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the short</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this short i, INodeFactory factory)
         {
@@ -1529,7 +1624,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="i">Integer</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the integer</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this int i, INodeFactory factory)
         {
@@ -1543,7 +1638,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="l">Integer</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the integer</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Factory argument is null</exception>
         public static ILiteralNode ToLiteral(this long l, INodeFactory factory)
         {
@@ -1557,7 +1652,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="s">String</param>
         /// <param name="factory">Node Factory to use for Node creation</param>
-        /// <returns></returns>
+        /// <returns>Literal representing the string</returns>
         /// <exception cref="ArgumentNullException">Thrown if the Graph/String argument is null</exception>
         public static ILiteralNode ToLiteral(this String s, INodeFactory factory)
         {

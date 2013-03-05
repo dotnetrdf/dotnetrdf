@@ -36,21 +36,37 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Data;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
 {
+    /// <summary>
+    /// Wrapper around standard <see cref="ICompletionData"/> to put it into the AvalonEdit framework
+    /// </summary>
     public class WpfCompletionData
         : AvComplete.ICompletionData
     {
         private ICompletionData _data;
 
+        /// <summary>
+        /// Create new completion data
+        /// </summary>
+        /// <param name="data">Underlying data</param>
         public WpfCompletionData(ICompletionData data)
         {
             this._data = data;
         }
 
+        /// <summary>
+        /// Perform auto-complete
+        /// </summary>
+        /// <param name="textArea">Text Area</param>
+        /// <param name="completionSegment">Completion Segmnet</param>
+        /// <param name="insertionRequestEventArgs">Event Arguments</param>
         public void Complete(TextArea textArea, ISegment completionSegment, EventArgs insertionRequestEventArgs)
         {
             textArea.Document.Replace(completionSegment, this.Text);
         }
 
+        /// <summary>
+        /// Gets the content to display
+        /// </summary>
         public object Content
         {
             get 
@@ -59,6 +75,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets the description to display
+        /// </summary>
         public object Description
         {
             get 
@@ -67,6 +86,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets the image to display
+        /// </summary>
         public ImageSource Image
         {
             get 
@@ -75,6 +97,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets the priority of the data
+        /// </summary>
         public double Priority
         {
             get 
@@ -83,6 +108,9 @@ namespace VDS.RDF.Utilities.Editor.Wpf.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Gets the actual text to insert
+        /// </summary>
         public string Text
         {
             get 
