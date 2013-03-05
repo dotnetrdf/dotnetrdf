@@ -1273,7 +1273,9 @@ namespace VDS.RDF
                 {
                     if (definition.CanParseRdf)
                     {
-                        return definition.GetRdfParser();
+                        IRdfReader parser = definition.GetRdfParser();
+                        MimeTypesHelper.ApplyParserOptions(parser);
+                        return parser;
                     }
                 }
             }
@@ -1306,6 +1308,7 @@ namespace VDS.RDF
                 if (def.CanParseRdf)
                 {
                     IRdfReader parser = def.GetRdfParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
                     return parser;
                 }
             }
@@ -1325,13 +1328,17 @@ namespace VDS.RDF
             {
                 if (definition.CanParseSparqlResults)
                 {
-                    return definition.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = definition.GetSparqlResultsParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
             if (allowPlainTextResults && (ctypes.Contains("text/plain") || ctypes.Contains("text/boolean")))
             {
-                return new SparqlBooleanParser();
+                ISparqlResultsReader bParser = new SparqlBooleanParser();
+                MimeTypesHelper.ApplyParserOptions(bParser);
+                return bParser;
             }
             else
             {
@@ -1374,7 +1381,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseSparqlResults)
                 {
-                    return def.GetSparqlResultsParser();
+                    ISparqlResultsReader parser = def.GetSparqlResultsParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
@@ -1531,7 +1540,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    return def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 
@@ -1562,7 +1573,9 @@ namespace VDS.RDF
             {
                 if (def.CanParseRdfDatasets)
                 {
-                    return def.GetRdfDatasetParser();
+                    IStoreReader parser = def.GetRdfDatasetParser();
+                    MimeTypesHelper.ApplyParserOptions(parser);
+                    return parser;
                 }
             }
 

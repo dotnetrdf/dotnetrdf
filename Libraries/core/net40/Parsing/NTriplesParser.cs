@@ -61,7 +61,7 @@ namespace VDS.RDF.Parsing
         /// <param name="qmode">Token Queue Mode</param>
         public NTriplesParser(TokenQueueMode qmode)
         {
-            this._queuemode = qmode;
+            this._queueMode = qmode;
         }
 
         /// <summary>
