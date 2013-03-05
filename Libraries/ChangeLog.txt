@@ -4,6 +4,11 @@
 1.0.0
 -----
 
+Added
+- Parsing API
+ - New ITokenisingParser interface which exposes a TokenQueueMode property (CORE-332)
+- Global Options - new Options.DefaultTokenQueueMode (CORE-332)
+
 Changed
 - Bug Fixes
  - Fix for one form of AllegroGraphConnector constructor confusing Store and Catalog IDs
