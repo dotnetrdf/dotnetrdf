@@ -1082,6 +1082,18 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Applies global options to a parser
+        /// </summary>
+        /// <param name="parser">Parser</param>
+        public static void ApplyParserOptions(Object parser)
+        {
+            if (parser is ITokenisingParser)
+            {
+                ((ITokenisingParser)parser).TokenQueueMode = Options.DefaultTokenQueueMode;
+            }
+        }
+
+        /// <summary>
         /// Selects an appropriate <see cref="IRdfWriter">IRdfWriter</see> based on the given MIME Types
         /// </summary>
         /// <param name="ctypes">MIME Types</param>
