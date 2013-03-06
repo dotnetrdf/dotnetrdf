@@ -36,9 +36,9 @@ using VDS.RDF.Writing;
 namespace VDS.RDF
 {
     /// <summary>
-    /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
+    /// Static class which acts as a central registry and helper for IO related activities
     /// </summary>
-    public static class MimeTypesHelper
+    public static class IOManager
     {
         #region Constants
 
