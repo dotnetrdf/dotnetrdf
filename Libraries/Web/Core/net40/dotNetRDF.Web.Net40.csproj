@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>7f29ad18-955a-4264-abe1-4f9446e650f5</ProjectGuid>
+    <ProjectGuid>{4B3629A2-AEF7-448C-9223-A4CD713CAD65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>net40</RootNamespace>
@@ -34,14 +34,24 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
+      <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
+      <Name>dotNetRDF.IO.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Sparql\Core\net40\dotNetRDF.Sparql.Net40.csproj">
+      <Project>{C730A95A-290F-4A07-BB9B-54FBF314239D}</Project>
+      <Name>dotNetRDF.Sparql.Net40</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

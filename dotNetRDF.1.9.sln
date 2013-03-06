@@ -128,6 +128,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Storage.Net40", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Sparql.Net40", "Libraries\Sparql\Core\net40\dotNetRDF.Sparql.Net40.csproj", "{C730A95A-290F-4A07-BB9B-54FBF314239D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dotNetRDF.Web.Net40", "Libraries\Web\Core\net40\dotNetRDF.Web.Net40.csproj", "{4B3629A2-AEF7-448C-9223-A4CD713CAD65}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = dotNetRDF.vsmdi
@@ -371,6 +373,18 @@ Global
 		{C730A95A-290F-4A07-BB9B-54FBF314239D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C730A95A-290F-4A07-BB9B-54FBF314239D}.Release|x64.ActiveCfg = Release|Any CPU
 		{C730A95A-290F-4A07-BB9B-54FBF314239D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|x64.ActiveCfg = Release|Any CPU
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -417,5 +431,6 @@ Global
 		{FADE13BE-82B7-4DAF-BB7C-8F4F10806691} = {83B0A7DE-1541-4E2D-8274-0361C9CBE657}
 		{B472DC0E-A41B-413F-9AFB-CCB997D82CD2} = {C69E46CD-863A-4A46-A9AE-40156CBE864A}
 		{96822486-474D-4ACA-AEFA-A392F7B2BAF2} = {C69E46CD-863A-4A46-A9AE-40156CBE864A}
+		{4B3629A2-AEF7-448C-9223-A4CD713CAD65} = {B472DC0E-A41B-413F-9AFB-CCB997D82CD2}
 	EndGlobalSection
 EndGlobal
