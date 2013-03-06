@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FECFDB58-4414-4E15-B12E-2391A65F6E78}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>net40</RootNamespace>
+    <AssemblyName>net40</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Storage\AllegroGraphConnector.cs" />
+    <Compile Include="Storage\AsyncStorageExtensions.cs" />
+    <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
+    <Compile Include="Storage\BaseHttpConnector.cs" />
+    <Compile Include="Storage\BatchTriple.cs" />
+    <Compile Include="Storage\DatasetFileManager.cs" />
+    <Compile Include="Storage\DydraConnector.cs" />
+    <Compile Include="Storage\FourStoreConnector.cs" />
+    <Compile Include="Storage\FusekiConnector.cs" />
+    <Compile Include="Storage\InMemoryManager.cs" />
+    <Compile Include="Storage\IOBehaviour.cs" />
+    <Compile Include="Storage\IStorageProvider.cs" />
+    <Compile Include="Storage\Management\AllegroGraphServer.cs" />
+    <Compile Include="Storage\Management\IStorageServer.cs" />
+    <Compile Include="Storage\Management\Provisioning\IStoreTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\BaseSesameTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\BaseOwlimTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimLiteTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\Owlim\OwlimSETemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameHttpTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameMemTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Sesame\SesameNativeTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\BaseStardogTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogDiskTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\Stardog\StardogMemTemplate.cs" />
+    <Compile Include="Storage\Management\Provisioning\StoreTemplate.cs" />
+    <Compile Include="Storage\Management\SesameServer.cs" />
+    <Compile Include="Storage\Management\StardogServer.cs" />
+    <Compile Include="Storage\ReadOnlyConnector.cs" />
+    <Compile Include="Storage\SesameHTTPProtocolConnector.cs" />
+    <Compile Include="Storage\SparqlConnector.cs" />
+    <Compile Include="Storage\SparqlHttpProtocolConnector.cs" />
+    <Compile Include="Storage\StardogConnector.cs" />
+    <Compile Include="Storage\StorageCallbacks.cs" />
+    <Compile Include="Storage\StorageHelper.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\IVirtualRdfProvider.cs" />
+    <Compile Include="Storage\Virtualisation\SimpleVirtualNodes.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNode.cs" />
+    <Compile Include="Storage\Virtualisation\VirtualNodeCache.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\IO\Core\net40\dotNetRDF.IO.Net40.csproj">
+      <Project>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</Project>
+      <Name>dotNetRDF.IO.Net40</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
