@@ -44,6 +44,9 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -51,4 +54,14 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="Ontology\Individual.cs" />
+    <Compile Include="Ontology\Ontology.cs" />
+    <Compile Include="Ontology\OntologyClass.cs" />
+    <Compile Include="Ontology\OntologyGraph.cs" />
+    <Compile Include="Ontology\OntologyHelper.cs" />
+    <Compile Include="Ontology\OntologyProperty.cs" />
+    <Compile Include="Ontology\OntologyResource.cs" />
+    <Compile Include="Ontology\ReasonerGraph.cs" />
+  </ItemGroup>
 </Project>

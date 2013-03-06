@@ -122,7 +122,6 @@
     <Compile Include="Parsing\RdfACoreParser.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RDFJSONParser.cs" />
-    <Compile Include="Parsing\RDFSpecsHelper.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
     <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
     <Compile Include="Parsing\SPARQLBooleanParser.cs" />
@@ -230,6 +229,9 @@
     <EmbeddedResource Include="Parsing\trix-1.0.dtd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -237,4 +239,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="IObjectParser.cs" />
+    <Compile Include="IRdfHandler.cs" />
+    <Compile Include="ISparqlResultsHandler.cs" />
+  </ItemGroup>
 </Project>
