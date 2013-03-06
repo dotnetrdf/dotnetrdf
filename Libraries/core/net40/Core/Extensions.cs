@@ -33,6 +33,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Datasets;
+using VDS.RDF.Specifications;
 using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF

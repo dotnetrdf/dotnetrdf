@@ -31,6 +31,7 @@ using System.Xml;
 using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Nodes
 {

@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
 using VDS.RDF.Parsing;
+using VDS.RDF.Specifications;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
 

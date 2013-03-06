@@ -117,7 +117,7 @@ namespace VDS.RDF.Collections
 
         public override void Clear()
         {
-            return this._graphs.Clear();
+            this._graphs.Clear();
         }
 
         /// <summary>

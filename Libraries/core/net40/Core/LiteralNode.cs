@@ -205,7 +205,7 @@ namespace VDS.RDF
                     this._hashcode = (this._nodetype + this.ToString() + DataTypedLiteralHashCodeSalt).GetHashCode();
                     break;
                 default:
-                    throw new RdfParseException("Unable to deserialize a Literal Node");
+                    throw new RdfException("Unable to deserialize a Literal Node");
             }
         }
 

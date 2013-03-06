@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace VDS.RDF
+namespace VDS.RDF.Specifications
 {
     /// <summary>
     /// Helper class with useful constants relating to the RDF Specification

@@ -397,7 +397,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string AsString()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -406,7 +406,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -424,7 +424,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool AsBoolean()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to types");
+            throw new NodeValueException("Cannot cast Variable Nodes to types");
         }
 
 
@@ -461,7 +461,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Cannot cast Variable Nodes to a types");
+            throw new NodeValueException("Cannot cast Variable Nodes to a types");
         }
 
         /// <summary>

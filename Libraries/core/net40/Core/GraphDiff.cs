@@ -137,7 +137,7 @@ namespace VDS.RDF
                 return report;
             }
 
-            report.AreDifferentSizes = (a.Triples.Count != b.Triples.Count);
+            report.AreDifferentSizes = (a.Count != b.Count);
 
             //Next check for changes in Ground Triples
             //Iterate over the Ground Triples in the 1st Graph to find those that have been removed in the 2nd
@@ -187,7 +187,7 @@ namespace VDS.RDF
                 {
                     //Get Candidate MSGs from RHS i.e. those of equal size
                     List<IGraph> candidates = (from g in this._rhsMSGs
-                                               where g.Triples.Count == msg.Triples.Count
+                                               where g.Count == msg.Count
                                                select g).ToList();
 
                     if (candidates.Count == 0)

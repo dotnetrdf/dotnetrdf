@@ -101,7 +101,6 @@
     <Compile Include="Core\IGraphStore.cs" />
     <Compile Include="Core\Quad.cs" />
     <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
-    <Compile Include="Core\RdfSpecsHelper.cs" />
     <Compile Include="Core\WrapperGraph.cs" />
     <Compile Include="Core\Extensions.cs" />
     <Compile Include="Collections\BaseTripleCollection.cs" />
@@ -179,9 +178,6 @@
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Configuration\configuration.ttl" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -226,7 +222,9 @@
     <Compile Include="Core\HttpHelper.cs" />
     <Compile Include="Core\URINode.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Specifications\" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
     <Compile Include="Writing\Serialization\SerializationHelper.cs" />
@@ -239,6 +237,9 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="Core\XmlSpecsHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Specifications\RdfSpecsHelper.cs" />
+    <Compile Include="Specifications\XmlSpecsHelper.cs" />
   </ItemGroup>
 </Project>

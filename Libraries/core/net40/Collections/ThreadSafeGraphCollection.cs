@@ -187,7 +187,7 @@ namespace VDS.RDF.Collections
                 try
                 {
                     this.EnterReadLock();
-                    uris = this._graphs.GraphUris.ToList();
+                    uris = this._graphs.Keys.ToList();
                 }
                 finally
                 {

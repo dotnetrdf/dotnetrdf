@@ -28,59 +28,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using VDS.Common;
+using VDS.Common.Collections;
 
 namespace VDS.RDF
 {
-    /// <summary>
-    /// Mapper class which creates Blank Node IDs and ensures that auto-assigned and user specified IDs don't collide
-    /// </summary>
-    [Obsolete("BlankNodeMapper is no longer required due to changes in how Blank Nodes are identified", true)]
-    public class BlankNodeMapper
-    {
-        private Dictionary<String, String> _remappings = new Dictionary<string, string>();
-        private static long _nextid = 0;
-        private static long _nextremap = 0;
-        private String _prefix = "autos";
-
-        /// <summary>
-        /// Creates a new Blank Node Mapper
-        /// </summary>
-        public BlankNodeMapper()
-        { }
-
-        /// <summary>
-        /// Creates a new Blank Node Mapper that uses a custom Prefix
-        /// </summary>
-        /// <param name="prefix">Prefix</param>
-        public BlankNodeMapper(String prefix)
-        {
-            if (prefix == null || prefix.EndsWith(String.Empty)) prefix = "autos";
-            this._prefix = prefix;
-        }
-
-        /// <summary>
-        /// Gets the next available auto-assigned Blank Node ID
-        /// </summary>
-        /// <returns></returns>
-        public String GetNextID()
-        {
-            throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// Checks that an ID can be used as a Blank Node ID remapping it to another ID if necessary
-        /// </summary>
-        /// <param name="id">ID to be checked</param>
-        /// <remarks>
-        /// If the ID is not known it is added to the ID maps.  If the ID is known but is user-assigned then this can be used fine.  If the ID is known and was auto-assigned then it has to be remapped to a different ID.
-        /// </remarks>
-        public void CheckID(ref String id)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
     /// <summary>
     /// Mapper class which remaps Blank Node GUIDs into string IDs for output
     /// </summary>
