@@ -463,4 +463,7 @@
   <ItemGroup>
     <Folder Include="Writing\Formatting\" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Writing\Formatting\IResultFormatter.cs" />
+  </ItemGroup>
 </Project>
