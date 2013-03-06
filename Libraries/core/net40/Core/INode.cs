@@ -58,7 +58,7 @@ namespace VDS.RDF
         /// </summary>
         GraphLiteral = 3,
         /// <summary>
-        /// A Variable Node (currently only used in N3)
+        /// A Variable Node
         /// </summary>
         Variable = 4
     }
