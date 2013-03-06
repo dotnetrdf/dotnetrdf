@@ -59,9 +59,6 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.9.0.0")]
 [assembly: AssemblyFileVersion("1.9.0.0")]
-#if !NANT
-[assembly: InternalsVisibleTo("dotNetRDF.Test")]
-#endif
 
 
 

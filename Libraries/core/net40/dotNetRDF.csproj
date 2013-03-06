@@ -179,14 +179,6 @@
     <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Indexing.cs" />
-    <Compile Include="Ontology\Individual.cs" />
-    <Compile Include="Ontology\Ontology.cs" />
-    <Compile Include="Ontology\OntologyClass.cs" />
-    <Compile Include="Ontology\OntologyGraph.cs" />
-    <Compile Include="Ontology\OntologyHelper.cs" />
-    <Compile Include="Ontology\OntologyProperty.cs" />
-    <Compile Include="Ontology\OntologyResource.cs" />
-    <Compile Include="Ontology\ReasonerGraph.cs" />
     <Compile Include="Nodes\BooleanNode.cs" />
     <Compile Include="Nodes\ByteNodes.cs" />
     <Compile Include="Nodes\DateTimeNode.cs" />
