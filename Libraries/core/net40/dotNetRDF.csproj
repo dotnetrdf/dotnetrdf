@@ -131,7 +131,6 @@
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
     <Compile Include="Core\BaseNode.cs" />
-    <Compile Include="Core\BlankNodeMapper.cs" />
     <Compile Include="Core\EqualityHelper.cs" />
     <Compile Include="Core\GraphDiff.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
@@ -254,4 +253,5 @@
   <ItemGroup>
     <Compile Include="Writing\WriterUtilities.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
