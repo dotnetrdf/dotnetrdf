@@ -37,6 +37,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parsing\BaseGZipDatasetParser.cs" />
+    <Compile Include="Parsing\BaseGZipParser.cs" />
+    <Compile Include="Parsing\BaseGZipResultsParser.cs" />
+    <Compile Include="Parsing\BlockingStreamReader.cs" />
+    <Compile Include="Parsing\BlockingTextReader.cs" />
+    <Compile Include="Parsing\CommentIgnoringJsonTextReader.cs" />
     <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
     <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
@@ -56,6 +62,8 @@
     <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
     <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
     <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
+    <Compile Include="Parsing\DataUriLoader.cs" />
+    <Compile Include="Parsing\EmbeddedResourceLoader.cs" />
     <Compile Include="Parsing\Events\BaseEvent.cs" />
     <Compile Include="Parsing\Events\DualEventQueue.cs" />
     <Compile Include="Parsing\Events\EventQueue.cs" />
@@ -72,6 +80,7 @@
     <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
     <Compile Include="Parsing\Events\RdfXml\StreamingEventGenerator.cs" />
     <Compile Include="Parsing\Events\RdfXml\XMLEvents.cs" />
+    <Compile Include="Parsing\FileLoader.cs" />
     <Compile Include="Parsing\Handlers\AnyHandler.cs" />
     <Compile Include="Parsing\Handlers\BaseHandler.cs" />
     <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
@@ -93,6 +102,30 @@
     <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
     <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
+    <Compile Include="Parsing\HtmlPlusRdfAParser.cs" />
+    <Compile Include="Parsing\IRdfAVocabulary.cs" />
+    <Compile Include="Parsing\IriSpecsHelper.cs" />
+    <Compile Include="Parsing\IUriLoaderCache.cs" />
+    <Compile Include="Parsing\Notation3Parser.cs" />
+    <Compile Include="Parsing\NQuadsParser.cs" />
+    <Compile Include="Parsing\NTriplesParser.cs" />
+    <Compile Include="Parsing\ParserHelper.cs" />
+    <Compile Include="Parsing\PositionInfo.cs" />
+    <Compile Include="Parsing\RdfACoreParser.cs" />
+    <Compile Include="Parsing\RdfAParser.cs" />
+    <Compile Include="Parsing\RDFJSONParser.cs" />
+    <Compile Include="Parsing\RDFSpecsHelper.cs" />
+    <Compile Include="Parsing\RDFXMLParser.cs" />
+    <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
+    <Compile Include="Parsing\SPARQLBooleanParser.cs" />
+    <Compile Include="Parsing\SparqlCsvParser.cs" />
+    <Compile Include="Parsing\SPARQLJSONParser.cs" />
+    <Compile Include="Parsing\SPARQLQueryParser.cs" />
+    <Compile Include="Parsing\SparqlRdfParser.cs" />
+    <Compile Include="Parsing\SparqlTsvParser.cs" />
+    <Compile Include="Parsing\SparqlUpdateParser.cs" />
+    <Compile Include="Parsing\SPARQLXMLParser.cs" />
+    <Compile Include="Parsing\StringParser.cs" />
     <Compile Include="Parsing\Tokens\BaseToken.cs" />
     <Compile Include="Parsing\Tokens\BaseTokeniser.cs" />
     <Compile Include="Parsing\Tokens\BufferedTokenQueue.cs" />
@@ -111,6 +144,14 @@
     <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
     <Compile Include="Parsing\Tokens\TsvTokeniser.cs" />
     <Compile Include="Parsing\Tokens\TurtleTokeniser.cs" />
+    <Compile Include="Parsing\TriGParser.cs" />
+    <Compile Include="Parsing\TriXParser.cs" />
+    <Compile Include="Parsing\TurtleParser.cs" />
+    <Compile Include="Parsing\TurtleSpecsHelper.cs" />
+    <Compile Include="Parsing\UnicodeSpecsHelper.cs" />
+    <Compile Include="Parsing\URILoader.cs" />
+    <Compile Include="Parsing\UriLoaderAsync.cs" />
+    <Compile Include="Parsing\UriLoaderCache.cs" />
     <Compile Include="Parsing\Validation\ISyntaxValidator.cs" />
     <Compile Include="Parsing\Validation\RdfDatasetSyntaxValidator.cs" />
     <Compile Include="Parsing\Validation\RdfSyntaxValidator.cs" />
@@ -118,6 +159,8 @@
     <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
     <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
     <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
+    <Compile Include="Parsing\XmlPlusRdfAParser.cs" />
+    <Compile Include="Parsing\XMLSpecsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -128,6 +171,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Writing\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parsing\trix-1.0.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
