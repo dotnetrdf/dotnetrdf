@@ -53,7 +53,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets the Number of Triples in the Triple Collection
         /// </summary>
-        public abstract int Count 
+        public abstract long Count 
         { 
             get; 
         }

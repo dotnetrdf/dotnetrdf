@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VDS.RDF.Parsing
+namespace VDS.RDF
 {
     /// <summary>
     /// Static Helper Class which contains a set of Functions which model Name and Character validations as laid

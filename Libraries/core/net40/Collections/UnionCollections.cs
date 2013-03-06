@@ -75,7 +75,7 @@ namespace VDS.RDF.Collections
         /// Adds a Triple to the base collection
         /// </summary>
         /// <param name="t">Triple to add</param>
-        protected internal override bool Add(Triple t)
+        public override bool Add(Triple t)
         {
             return this._baseCollection.Add(t);
         }
@@ -96,7 +96,7 @@ namespace VDS.RDF.Collections
         /// <remarks>
         /// The Count is the total number of Triples, this may be different from the number of distinct triples
         /// </remarks>
-        public override int Count
+        public override long Count
         {
             get 
             {
@@ -105,33 +105,12 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
-        /// Deletes a Triple from the base collection
+        /// Removes a Triple from the base collection
         /// </summary>
-        /// <param name="t">Triple to delete</param>
-        protected internal override bool Delete(Triple t)
+        /// <param name="t">Triple to remove</param>
+        public override bool Remove(Triple t)
         {
-            return this._baseCollection.Delete(t);
-        }
-
-        /// <summary>
-        /// Retrieves a Triple from the union
-        /// </summary>
-        /// <param name="t">Triple to retrieve</param>
-        /// <returns></returns>
-        /// <exception cref="KeyNotFoundException">Thrown if the Triple is not contained in any of the collections this union comprises</exception>
-        public override Triple this[Triple t]
-        {
-            get 
-            {
-                foreach (BaseTripleCollection c in this._collections)
-                {
-                    if (c.Contains(t))
-                    {
-                        return c[t];
-                    }
-                }
-                throw new KeyNotFoundException("The given Triple does not exist in this Triple Collection");
-            }
+            return this._baseCollection.Remove(t);
         }
 
         /// <summary>

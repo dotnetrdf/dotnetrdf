@@ -86,14 +86,14 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="graphUri">Graph Uri to test</param>
         /// <returns></returns>
-        public override bool Contains(Uri graphUri)
+        public override bool ContainsKey(Uri graphUri)
         {
             bool contains = false;
 
             try
             {
                 this.EnterReadLock();
-                contains = this._graphs.Contains(graphUri);
+                contains = this._graphs.ContainsKey(graphUri);
             }
             finally
             {
@@ -106,7 +106,7 @@ namespace VDS.RDF.Collections
         /// Adds a Graph to the Collection
         /// </summary>
         /// <param name="g">Graph to add</param>
-        public override bool Add(IGraph g)
+        public override void Add(Uri graphUri, IGraph g)
         {
             try
             {
@@ -139,7 +139,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets the number of Graphs in the Collection
         /// </summary>
-        public override long Count
+        public override int Count
         {
             get
             {
@@ -161,9 +161,9 @@ namespace VDS.RDF.Collections
         /// Gets the Enumerator for the Collection
         /// </summary>
         /// <returns></returns>
-        public override IEnumerator<IGraph> GetEnumerator()
+        public override IEnumerator<KeyValuePair<Uri, IGraph>> GetEnumerator()
         {
-            List<IGraph> graphs = new List<IGraph>();
+            List<KeyValuePair<Uri, IGraph>> graphs = new List<KeyValuePair<Uri, IGraph>>();
             try
             {
                 this.EnterReadLock();
@@ -179,7 +179,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Provides access to the Graph URIs of Graphs in the Collection
         /// </summary>
-        public override IEnumerable<Uri> GraphUris
+        public override ICollection<Uri> Keys
         {
             get
             {

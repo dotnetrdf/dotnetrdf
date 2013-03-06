@@ -58,6 +58,14 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the number of triples in the graph
+        /// </summary>
+        long Count
+        {
+            get;
+        }
+
+        /// <summary>
         /// Gets whether a Graph is Empty
         /// </summary>
         bool IsEmpty 

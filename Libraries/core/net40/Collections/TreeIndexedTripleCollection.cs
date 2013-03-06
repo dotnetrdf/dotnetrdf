@@ -208,7 +208,7 @@ namespace VDS.RDF.Collections
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Add(Triple t)
+        public override bool Add(Triple t)
         {
             if (!this.Contains(t))
             {
@@ -233,7 +233,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets the count of triples in the collection
         /// </summary>
-        public override int Count
+        public override long Count
         {
             get 
             {
@@ -243,11 +243,11 @@ namespace VDS.RDF.Collections
         }
 
         /// <summary>
-        /// Deletes a triple from the collection
+        /// Removes a triple from the collection
         /// </summary>
         /// <param name="t">Triple</param>
         /// <returns></returns>
-        protected internal override bool Delete(Triple t)
+        public override bool Remove(Triple t)
         {
             if (this._triples.Remove(t))
             {
@@ -258,27 +258,6 @@ namespace VDS.RDF.Collections
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// Gets the specific instance of a Triple in the collection
-        /// </summary>
-        /// <param name="t">Triple</param>
-        /// <returns></returns>
-        public override Triple this[Triple t]
-        {
-            get 
-            {
-                Triple actual;
-                if (this._triples.TryGetKey(t, out actual))
-                {
-                    return actual;
-                }
-                else
-                {
-                    throw new KeyNotFoundException("Given triple does not exist in this collection");
-                }
-            }
         }
 
         /// <summary>

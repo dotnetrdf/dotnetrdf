@@ -91,7 +91,7 @@ namespace VDS.RDF.Collections
         /// <summary>
         /// Gets the Number of Triples in the Triple Collection
         /// </summary>
-        public override int Count
+        public override long Count
         {
             get
             {

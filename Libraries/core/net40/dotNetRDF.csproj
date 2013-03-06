@@ -95,9 +95,6 @@
     <Compile Include="Compatability\HtmlTextWriterTag.cs" />
     <Compile Include="Compatability\HttpUtility.cs" />
     <Compile Include="Compatability\SilverlightCompatability.cs" />
-    <Compile Include="Configuration\CollectionFactory.cs" />
-    <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
-    <Compile Include="Configuration\OperatorFactory.cs" />
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
@@ -135,23 +132,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
-    <Compile Include="Configuration\CachedObjectKey.cs" />
-    <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
-    <Compile Include="Configuration\CredentialsFactory.cs" />
-    <Compile Include="Configuration\DataFactories.cs" />
-    <Compile Include="Configuration\DatasetFactory.cs" />
-    <Compile Include="Configuration\EndpointFactories.cs" />
-    <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
-    <Compile Include="Configuration\OptimiserFactory.cs" />
-    <Compile Include="Configuration\ParserFactory.cs" />
-    <Compile Include="Configuration\PermissionFactories.cs" />
-    <Compile Include="Configuration\Permissions\Permission.cs" />
-    <Compile Include="Configuration\Permissions\UserGroup.cs" />
-    <Compile Include="Configuration\ProcessorFactories.cs" />
-    <Compile Include="Configuration\ObjectFactoryFactory.cs" />
-    <Compile Include="Configuration\ProxyFactory.cs" />
-    <Compile Include="Configuration\ReasonerFactory.cs" />
-    <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
     <Compile Include="Core\EqualityHelper.cs" />
@@ -181,9 +161,6 @@
     <Compile Include="Nodes\LongNode.cs" />
     <Compile Include="Nodes\NumericNode.cs" />
     <Compile Include="Nodes\StringNode.cs" />
-    <Compile Include="Configuration\ConfigurationLoader.cs" />
-    <Compile Include="Configuration\ConfigurationInterfaces.cs" />
-    <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Writing\Formatting\IGraphFormatter.cs" />
     <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
@@ -260,4 +237,9 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Core\XmlSpecsHelper.cs" />
+  </ItemGroup>
 </Project>

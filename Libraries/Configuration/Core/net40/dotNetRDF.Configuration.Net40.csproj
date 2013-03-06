@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9B5A8014-FA95-436A-A78E-2C5D19148B0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>net40</RootNamespace>
+    <AssemblyName>net40</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)Build\SyncProjects\SyncProjects.exe" disk "$(ProjectPath)"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="Configuration\CachedObjectKey.cs" />
+    <Compile Include="Configuration\CollectionFactory.cs" />
+    <Compile Include="Configuration\ConfigurationInterfaces.cs" />
+    <Compile Include="Configuration\ConfigurationLoader.cs" />
+    <Compile Include="Configuration\ConfigurationSerializationContext.cs" />
+    <Compile Include="Configuration\CredentialsFactory.cs" />
+    <Compile Include="Configuration\DataFactories.cs" />
+    <Compile Include="Configuration\DatasetFactory.cs" />
+    <Compile Include="Configuration\EndpointFactories.cs" />
+    <Compile Include="Configuration\ExpressionFactoryFactory.cs" />
+    <Compile Include="Configuration\ObjectFactoryFactory.cs" />
+    <Compile Include="Configuration\OperatorFactory.cs" />
+    <Compile Include="Configuration\OptimiserFactory.cs" />
+    <Compile Include="Configuration\ParserFactory.cs" />
+    <Compile Include="Configuration\PermissionFactories.cs" />
+    <Compile Include="Configuration\ProcessorFactories.cs" />
+    <Compile Include="Configuration\PropertyFunctionFactoryFactory.cs" />
+    <Compile Include="Configuration\ProxyFactory.cs" />
+    <Compile Include="Configuration\ReasonerFactory.cs" />
+    <Compile Include="Configuration\StorageFactories.cs" />
+    <Compile Include="Configuration\Permissions\Permission.cs" />
+    <Compile Include="Configuration\Permissions\UserGroup.cs" />
+  </ItemGroup>
+</Project>
