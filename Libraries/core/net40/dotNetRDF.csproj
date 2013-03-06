@@ -251,4 +251,7 @@
   <ItemGroup>
     <Compile Include="Specifications\SparqlSpecsHelper.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Writing\WriterUtilities.cs" />
+  </ItemGroup>
 </Project>
