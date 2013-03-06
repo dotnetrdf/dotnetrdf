@@ -164,14 +164,11 @@
     <Compile Include="Core\GraphDiff.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
     <Compile Include="Core\INodeFactory.cs" />
-    <Compile Include="Core\GraphPersistenceWrapper.cs" />
     <Compile Include="Core\NestedNamespaceMapper.cs" />
     <Compile Include="Core\NodeFactory.cs" />
     <Compile Include="Core\PersistenceAction.cs" />
-    <Compile Include="Core\PersistentTripleStore.cs" />
     <Compile Include="Core\SubGraphMatcher.cs" />
     <Compile Include="Core\GraphMatcher.cs" />
-    <Compile Include="Core\QueryableGraph.cs" />
     <Compile Include="Core\TripleComparers.cs" />
     <Compile Include="Collections\UnionCollections.cs" />
     <Compile Include="Core\UnionGraph.cs" />
@@ -196,23 +193,19 @@
     <Compile Include="Configuration\ConfigurationInterfaces.cs" />
     <Compile Include="Configuration\StorageFactories.cs" />
     <Compile Include="Writing\Formatting\IGraphFormatter.cs" />
-    <Compile Include="Writing\Formatting\IResultSetFormatter.cs" />
     <Compile Include="Writing\Formatting\RdfXmlFormatter.cs" />
-    <Compile Include="Writing\Formatting\SparqlXmlFormatter.cs" />
     <Compile Include="Writing\Formatting\BaseFormatter.cs" />
     <Compile Include="Writing\Formatting\CsvFormatter.cs" />
     <Compile Include="Writing\Formatting\DeliminatedLineFormatter.cs" />
     <Compile Include="Writing\Formatting\HtmlFormatter.cs" />
     <Compile Include="Writing\Formatting\ICharFormatter.cs" />
     <Compile Include="Writing\Formatting\INamespaceFormatter.cs" />
-    <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
     <Compile Include="Writing\Formatting\IUriFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
     <Compile Include="Writing\Formatting\NQuadsFormatter.cs" />
     <Compile Include="Writing\Formatting\NTriplesFormatter.cs" />
     <Compile Include="Writing\Formatting\QNameFormatter.cs" />
-    <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
     <Compile Include="Writing\Formatting\TsvFormatter.cs" />
     <Compile Include="Writing\Formatting\TurtleFormatter.cs" />
     <Compile Include="Writing\Formatting\INodeFormatter.cs" />
@@ -271,4 +264,8 @@
     <Compile Include="Writing\Serialization\ResultSetDeserializationInfo.cs" />
     <Compile Include="Writing\Serialization\SerializationHelper.cs" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
+  <ItemGroup />
 </Project>

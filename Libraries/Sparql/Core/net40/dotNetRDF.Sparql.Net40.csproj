@@ -465,4 +465,8 @@
     <Compile Include="Writing\Formatting\BaseResultFormatter.cs" />
     <Compile Include="Writing\Formatting\IResultFormatter.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
+    <Compile Include="Writing\Formatting\IResultSetFormatter.cs" />
+  </ItemGroup>
 </Project>

@@ -100,4 +100,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Compile Include="GraphPersistenceWrapper.cs" />
+  </ItemGroup>
 </Project>
