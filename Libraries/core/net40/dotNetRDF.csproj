@@ -97,6 +97,7 @@
     <Compile Include="Compatability\SilverlightCompatability.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
+    <Compile Include="Core\BaseGraphStore.cs" />
     <Compile Include="Core\IGraphStore.cs" />
     <Compile Include="Core\Quad.cs" />
     <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
@@ -219,9 +220,7 @@
     <Compile Include="Core\HttpHelper.cs" />
     <Compile Include="Core\URINode.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Specifications\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
     <Compile Include="Writing\Serialization\SerializationHelper.cs" />
@@ -254,4 +253,7 @@
     <Compile Include="Writing\WriterUtilities.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Writing\BlankNodeOutputMapper.cs" />
+  </ItemGroup>
 </Project>

@@ -30,7 +30,7 @@ using System.Text;
 using System.Threading;
 using VDS.Common.Collections;
 
-namespace VDS.RDF
+namespace VDS.RDF.Writing
 {
     /// <summary>
     /// Mapper class which remaps Blank Node GUIDs into string IDs for output
@@ -110,7 +110,6 @@ namespace VDS.RDF
         private String GetNextID()
         {
             String nextID = this._outputPrefix + Interlocked.Increment(ref this._nextid);
-
             return nextID;
         }
     }

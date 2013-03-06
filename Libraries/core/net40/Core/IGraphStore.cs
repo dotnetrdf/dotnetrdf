@@ -122,6 +122,13 @@ namespace VDS.RDF
         bool Move(Uri srcUri, Uri destUri, bool overwrite);
 
         /// <summary>
+        /// Clears the contents of the given graph
+        /// </summary>
+        /// <param name="graphUri">Graph URI</param>
+        /// <returns>True if a graph is cleared, false otherwise</returns>
+        bool Clear(Uri graphUri);
+
+        /// <summary>
         /// Removes the contents of the given graph from the store using the graphs stated <see cref="IGraph.BaseUri"/> as the Graph URI for the removed Quads
         /// </summary>
         /// <param name="g">Graph</param>
