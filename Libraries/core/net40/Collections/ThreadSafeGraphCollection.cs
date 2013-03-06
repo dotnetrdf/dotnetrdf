@@ -111,7 +111,7 @@ namespace VDS.RDF.Collections
             try
             {
                 this.EnterWriteLock();
-                return this._graphs.Add(g);
+                this._graphs.Add(graphUri, g);
             }
             finally
             {
