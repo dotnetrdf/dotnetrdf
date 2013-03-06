@@ -136,6 +136,7 @@
     <Compile Include="Core\Triple.cs" />
     <Compile Include="Collections\TripleCollection.cs" />
     <Compile Include="Writing\TripleSegment.cs" />
+    <Compile Include="Writing\WriterErrorMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Callbacks.cs" />
@@ -205,7 +206,6 @@
     <Compile Include="Writing\Formatting\ICharFormatter.cs" />
     <Compile Include="Writing\Formatting\INamespaceFormatter.cs" />
     <Compile Include="Writing\Formatting\IQueryFormatter.cs" />
-    <Compile Include="Writing\Formatting\IResultFormatter.cs" />
     <Compile Include="Writing\Formatting\ITripleFormatter.cs" />
     <Compile Include="Writing\Formatting\IUriFormatter.cs" />
     <Compile Include="Writing\Formatting\Notation3Formatter.cs" />
@@ -265,4 +265,5 @@
     <Compile Include="Core\HttpHelper.cs" />
     <Compile Include="Core\URINode.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
