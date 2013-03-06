@@ -38,7 +38,7 @@ namespace VDS.RDF
     /// <summary>
     /// Helper Class containing definitions of MIME Types for the various RDF Concrete Syntaxes and Content Negotation Methods
     /// </summary>
-    public static class MimeTypesHelper
+    public static class IOManager
     {
         #region Constants
 
