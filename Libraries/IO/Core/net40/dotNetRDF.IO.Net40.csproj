@@ -8,8 +8,8 @@
     <ProjectGuid>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.IO</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,6 +37,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IOExceptions.cs" />
     <Compile Include="IOManager.cs" />
     <Compile Include="IRdfReader.cs" />
     <Compile Include="IRdfWriter.cs" />

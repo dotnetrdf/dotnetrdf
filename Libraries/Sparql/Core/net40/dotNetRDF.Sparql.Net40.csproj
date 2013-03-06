@@ -8,8 +8,8 @@
     <ProjectGuid>{C730A95A-290F-4A07-BB9B-54FBF314239D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Sparql</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -424,6 +424,7 @@
     <Compile Include="Query\PropertyFunctions\PropertyFunctionHelper.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
     <Compile Include="SparqlCallbacks.cs" />
+    <Compile Include="SparqlExceptions.cs" />
     <Compile Include="Update\ExplainUpdateProcessor.cs" />
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />

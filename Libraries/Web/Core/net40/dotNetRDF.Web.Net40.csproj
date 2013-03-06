@@ -8,8 +8,8 @@
     <ProjectGuid>{4B3629A2-AEF7-448C-9223-A4CD713CAD65}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Web</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

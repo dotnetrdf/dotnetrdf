@@ -8,8 +8,8 @@
     <ProjectGuid>{FECFDB58-4414-4E15-B12E-2391A65F6E78}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net40</RootNamespace>
-    <AssemblyName>net40</AssemblyName>
+    <RootNamespace>VDS.RDF</RootNamespace>
+    <AssemblyName>dotNetRDF.Storage</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageExceptions.cs" />
     <Compile Include="Storage\AllegroGraphConnector.cs" />
     <Compile Include="Storage\AsyncStorageExtensions.cs" />
     <Compile Include="Storage\BaseAsyncSafeConnector.cs" />
