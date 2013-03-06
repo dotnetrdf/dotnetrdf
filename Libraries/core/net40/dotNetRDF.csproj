@@ -262,7 +262,6 @@
     <Compile Include="Ontology\OntologyProperty.cs" />
     <Compile Include="Ontology\OntologyResource.cs" />
     <Compile Include="Ontology\ReasonerGraph.cs" />
-    <Compile Include="Core\IObjectParser.cs" />
     <Compile Include="Query\Aggregates\BaseAggregate.cs" />
     <Compile Include="Query\Aggregates\LeviathanNumericAggregates.cs" />
     <Compile Include="Query\Aggregates\Leviathan\AllAggregate.cs" />
