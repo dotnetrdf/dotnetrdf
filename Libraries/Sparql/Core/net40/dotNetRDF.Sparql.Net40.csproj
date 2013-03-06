@@ -423,6 +423,7 @@
     <Compile Include="Query\PropertyFunctions\PropertyFunctionFactory.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionHelper.cs" />
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
+    <Compile Include="SparqlCallbacks.cs" />
     <Compile Include="Update\ExplainUpdateProcessor.cs" />
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />

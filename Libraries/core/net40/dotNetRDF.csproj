@@ -116,6 +116,7 @@
     <Compile Include="Collections\WrapperTripleCollection.cs" />
     <Compile Include="Core\WrapperTripleStore.cs" />
     <Compile Include="Exceptions.cs" />
+    <Compile Include="Nodes\SparqlNumericType.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
     <Compile Include="Core\BlankNode.cs" />
     <Compile Include="Core\Graph.cs" />
