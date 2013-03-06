@@ -128,7 +128,6 @@
     <Compile Include="Parsing\SPARQLBooleanParser.cs" />
     <Compile Include="Parsing\SparqlCsvParser.cs" />
     <Compile Include="Parsing\SPARQLJSONParser.cs" />
-    <Compile Include="Parsing\SPARQLQueryParser.cs" />
     <Compile Include="Parsing\SparqlRdfParser.cs" />
     <Compile Include="Parsing\SparqlTsvParser.cs" />
     <Compile Include="Parsing\SparqlUpdateParser.cs" />
@@ -194,9 +193,6 @@
     <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
     <Compile Include="Writing\RDFJSONWriter.cs" />
     <Compile Include="Writing\RdfXmlWriter.cs" />
-    <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
-    <Compile Include="Writing\Serialization\ResultSetDeserializationInfo.cs" />
-    <Compile Include="Writing\Serialization\SerializationHelper.cs" />
     <Compile Include="Writing\SparqlCsvWriter.cs" />
     <Compile Include="Writing\SPARQLHTMLWriter.cs" />
     <Compile Include="Writing\SPARQLJSONWriter.cs" />
@@ -245,4 +241,5 @@
     <Compile Include="IRdfHandler.cs" />
     <Compile Include="ISparqlResultsHandler.cs" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

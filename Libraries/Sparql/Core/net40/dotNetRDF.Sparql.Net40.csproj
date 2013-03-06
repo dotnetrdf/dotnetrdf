@@ -425,6 +425,7 @@
     <Compile Include="Query\PropertyFunctions\PropertyFunctionInfo.cs" />
     <Compile Include="SparqlCallbacks.cs" />
     <Compile Include="SparqlExceptions.cs" />
+    <Compile Include="SparqlExtensions.cs" />
     <Compile Include="Update\ExplainUpdateProcessor.cs" />
     <Compile Include="Update\GenericUpdateProcessor.cs" />
     <Compile Include="Update\ISparqlUpdateProcessor.cs" />
@@ -455,5 +456,8 @@
     <Compile Include="Update\Protocol\ISparqlHttpProtocolProcessor.cs" />
     <Compile Include="Update\Protocol\LeviathanProtocolProcessor.cs" />
     <Compile Include="Update\Protocol\ProtocolToUpdateProcessor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Parsing\SparqlQueryParser.cs" />
   </ItemGroup>
 </Project>

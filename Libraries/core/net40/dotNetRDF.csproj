@@ -266,4 +266,9 @@
     <Compile Include="Core\URINode.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\ResultSetDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\SerializationHelper.cs" />
+  </ItemGroup>
 </Project>
