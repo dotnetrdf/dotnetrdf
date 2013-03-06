@@ -84,7 +84,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Cannot convert Time Spans to other types");
+            throw new NodeValueException("Cannot convert Time Spans to other types");
         }
 
         /// <summary>

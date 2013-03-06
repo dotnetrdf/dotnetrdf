@@ -410,7 +410,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public string AsString()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -419,7 +419,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -428,7 +428,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -446,7 +446,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool AsBoolean()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -464,7 +464,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>
@@ -473,7 +473,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Unable to cast a Blank Node to a type");
+            throw new NodeValueException("Unable to cast a Blank Node to a type");
         }
 
         /// <summary>

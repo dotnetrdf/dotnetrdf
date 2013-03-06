@@ -69,7 +69,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to integer");
+                throw new NodeValueException("Unable to upcast byte to integer");
             }
         }
 
@@ -85,7 +85,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to decimal");
+                throw new NodeValueException("Unable to upcast byte to decimal");
             }
         }
 
@@ -101,7 +101,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to float");
+                throw new NodeValueException("Unable to upcast byte to float");
             }
         }
 
@@ -117,7 +117,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to double");
+                throw new NodeValueException("Unable to upcast byte to double");
             }
         }
     }
@@ -160,7 +160,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to integer");
+                throw new NodeValueException("Unable to upcast byte to integer");
             }
         }
 
@@ -176,7 +176,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to decimal");
+                throw new NodeValueException("Unable to upcast byte to decimal");
             }
         }
 
@@ -192,7 +192,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to float");
+                throw new NodeValueException("Unable to upcast byte to float");
             }
         }
 
@@ -208,7 +208,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast byte to double");
+                throw new NodeValueException("Unable to upcast byte to double");
             }
         }
     }

@@ -58,7 +58,7 @@ namespace VDS.RDF
             if (ReferenceEquals(g, h)) return true;
 
             //If different number of Triples then the Graphs can't be equal
-            if (g.Triples.Count != h.Triples.Count) return false;
+            if (g.Count != h.Count) return false;
 
             int gtCount = 0;
             Dictionary<INode, int> gNodes = new Dictionary<INode, int>();
@@ -117,7 +117,7 @@ namespace VDS.RDF
             if (this._targetTriples.Any(t => t.IsGroundTriple)) return false;
 
             //If there are no Triples left in the other Graph, all our Triples were Ground Triples and there are no Blank Nodes to map the Graphs are equal
-            if (this._targetTriples.Count == 0 && gtCount == g.Triples.Count && gNodes.Count == 0) return true;
+            if (this._targetTriples.Count == 0 && gtCount == g.Count && gNodes.Count == 0) return true;
 
             //Now classify the remaining Triples from the other Graph
             foreach (Triple t in this._targetTriples)

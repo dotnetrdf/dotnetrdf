@@ -58,7 +58,7 @@ namespace VDS.RDF
             if (ReferenceEquals(subgraph, parent)) return true;
 
             //If sub-graph has more Triples can't be a sub-graph
-            if (subgraph.Triples.Count > parent.Triples.Count) return false;
+            if (subgraph.Count > parent.Count) return false;
 
             int gtCount = 0;
             Dictionary<INode, int> subNodes = new Dictionary<INode, int>();
@@ -128,7 +128,7 @@ namespace VDS.RDF
 #endif
 
             //If there are no Triples left in the parent Graph, all our Triples were Ground Triples and there are no Blank Nodes to map then we're a sub-graph
-            if (this._parentTriples.Count == 0 && gtCount == subgraph.Triples.Count && subNodes.Count == 0) return true;
+            if (this._parentTriples.Count == 0 && gtCount == subgraph.Count && subNodes.Count == 0) return true;
 
             //Now classify the remaining Triples from the parent Graph
             foreach (Triple t in this._parentTriples)

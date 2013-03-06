@@ -56,42 +56,42 @@ namespace VDS.RDF.Nodes
         /// Gets the Long value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Long</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Long</exception>
         long AsInteger();
 
         /// <summary>
         /// Gets the Decimal value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Decimal</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Decimal</exception>
         decimal AsDecimal();
 
         /// <summary>
         /// Gets the Float value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Float</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Float</exception>
         float AsFloat();
 
         /// <summary>
         /// Gets the Double value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Double</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Double</exception>
         double AsDouble();
 
         /// <summary>
         /// Gets the Boolean value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Boolean</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Boolean</exception>
         bool AsBoolean();
 
         /// <summary>
         /// Gets the Date Time value of the Node
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="RdfQueryException">Thrown if the Node cannot be converted to a Date Time</exception>
+        /// <exception cref="NodeValueException">Thrown if the Node cannot be converted to a Date Time</exception>
         DateTimeOffset AsDateTime();
 
         /// <summary>

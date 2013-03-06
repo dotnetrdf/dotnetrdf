@@ -148,7 +148,7 @@ namespace VDS.RDF
                         }
                         else
                         {
-                            throw new RdfParseException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
+                            throw new RdfException("Cannot resolve a URI since the Base URI is not a valid for resolving Relative URIs against");
                         }
                     }
                 }
@@ -157,7 +157,7 @@ namespace VDS.RDF
             {
                 if (uriref.Equals(String.Empty))
                 {
-                    throw new RdfParseException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
+                    throw new RdfException("Cannot use an Empty URI to refer to the document Base URI since there is no in-scope Base URI!");
                 }
 
                 try
@@ -166,7 +166,7 @@ namespace VDS.RDF
                 }
                 catch (UriFormatException)
                 {
-                    throw new RdfParseException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
+                    throw new RdfException("Cannot resolve a Relative URI Reference since there is no in-scope Base URI!");
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace VDS.RDF
                     }
                     else
                     {
-                        throw new RdfParseException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
+                        throw new RdfException("Cannot resolve the QName '" + qname + "' in the Default Namespace when there is no in-scope Base URI and no Default Namespace defined.  Did you forget to define a namespace for the : prefix?");
                     }
                 }
             }

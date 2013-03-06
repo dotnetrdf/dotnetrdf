@@ -82,6 +82,31 @@ namespace VDS.RDF.Configuration
     }
 }
 
+namespace VDS.RDF.Nodes
+{
+    /// <summary>
+    /// Exception that may occur when working with <see cref="IValuedNode"/> instances
+    /// </summary>
+    public class NodeValueException
+        : RdfException
+    {
+        /// <summary>
+        /// Creates a new Node Value Exception with the given Message
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        public NodeValueException(String errorMsg)
+            : base(errorMsg) { }
+
+        /// <summary>
+        /// Creates a new Node Value Exception with the given Message and Inner Exception
+        /// </summary>
+        /// <param name="errorMsg">Error Message</param>
+        /// <param name="cause">Inner Exception</param>
+        public NodeValueException(String errorMsg, Exception cause)
+            : base(errorMsg, cause) { }
+    }
+}
+
 namespace VDS.RDF.Ontology
 {
     /// <summary>

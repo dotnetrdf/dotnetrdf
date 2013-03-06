@@ -415,7 +415,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -424,7 +424,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -433,7 +433,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -442,7 +442,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -451,7 +451,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public bool AsBoolean()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -460,7 +460,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Cannot cast a URI to a type");
+            throw new NodeValueException("Cannot cast a URI to a type");
         }
 
         /// <summary>
@@ -469,7 +469,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Cannot case a URI to a type");
+            throw new NodeValueException("Cannot case a URI to a type");
         }
 
         /// <summary>

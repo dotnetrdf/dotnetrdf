@@ -78,7 +78,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
+            throw new NodeValueException("Cannot cast this literal node to a type");
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
+            throw new NodeValueException("Cannot cast this literal node to a type");
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
+            throw new NodeValueException("Cannot cast this literal node to a type");
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
+            throw new NodeValueException("Cannot cast this literal node to a type");
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Cannot cast this literal node to a type");
+            throw new NodeValueException("Cannot cast this literal node to a type");
         }
 
 
@@ -133,7 +133,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Cannot case this literal node to a type");
+            throw new NodeValueException("Cannot case this literal node to a type");
         }
 
         /// <summary>

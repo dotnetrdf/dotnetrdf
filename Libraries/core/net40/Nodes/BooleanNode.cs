@@ -76,7 +76,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Cannot cast Boolean to other types");
+            throw new NodeValueException("Cannot cast Boolean to other types");
         }
 
 
@@ -131,7 +131,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Cannot case Boolean to other types");
+            throw new NodeValueException("Cannot case Boolean to other types");
         }
         /// <summary>
         /// Gets the URI of the datatype this valued node represents as a String

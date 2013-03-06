@@ -68,7 +68,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to downcast Double to Long");
+                throw new RdfException("Unable to downcast Double to Long");
             }
         }
 
@@ -84,7 +84,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to cast Double to Decimal");
+                throw new RdfException("Unable to cast Double to Decimal");
             }
         }
 
@@ -100,7 +100,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to downcast Double to Float");
+                throw new RdfException("Unable to downcast Double to Float");
             }
         }
 

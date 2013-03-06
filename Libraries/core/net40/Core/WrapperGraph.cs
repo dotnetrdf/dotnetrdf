@@ -125,6 +125,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the number of triples in the graph
+        /// </summary>
+        public virtual long Count
+        {
+            get
+            {
+                return this._g.Count;
+            }
+        }
+
+        /// <summary>
         /// Gets whether the Graph is empty
         /// </summary>
         public virtual bool IsEmpty
@@ -996,7 +1007,7 @@ namespace VDS.RDF
             {
                 String graphType = reader.Value;
                 Type t = Type.GetType(graphType);
-                if (t == null) throw new RdfParseException("Invalid graphType attribute, the type '" + graphType + "' is not available in your environment");
+                if (t == null) throw new RdfException("Invalid graphType attribute, the type '" + graphType + "' is not available in your environment");
                 reader.MoveToElement();
 
                 XmlSerializer graphDeserializer = new XmlSerializer(t);
@@ -1011,12 +1022,12 @@ namespace VDS.RDF
                 }
                 else
                 {
-                    throw new RdfParseException("Expected a <graph> element inside a <graph> element");
+                    throw new RdfException("Expected a <graph> element inside a <graph> element");
                 }
             }
             else
             {
-                throw new RdfParseException("Missing graphType attribute on the <graph> element");
+                throw new RdfException("Missing graphType attribute on the <graph> element");
             }
         }
 

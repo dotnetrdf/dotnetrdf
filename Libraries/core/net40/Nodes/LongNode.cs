@@ -86,7 +86,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Double");
+                throw new NodeValueException("Unable to upcast Long to Double");
             }
         }
 
@@ -102,7 +102,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Float");
+                throw new NodeValueException("Unable to upcast Long to Float");
             }
         }
 
@@ -118,7 +118,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Double");
+                throw new NodeValueException("Unable to upcast Long to Double");
             }
         }
     }
@@ -171,7 +171,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to downcast unsigned Long to long");
+                throw new NodeValueException("Unable to downcast unsigned Long to long");
             }
         }
 
@@ -187,7 +187,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Double");
+                throw new NodeValueException("Unable to upcast Long to Double");
             }
         }
 
@@ -203,7 +203,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Float");
+                throw new NodeValueException("Unable to upcast Long to Float");
             }
         }
 
@@ -219,7 +219,7 @@ namespace VDS.RDF.Nodes
             }
             catch
             {
-                throw new RdfQueryException("Unable to upcast Long to Double");
+                throw new NodeValueException("Unable to upcast Long to Double");
             }
         }
     }

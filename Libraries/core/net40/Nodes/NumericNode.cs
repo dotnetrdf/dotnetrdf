@@ -112,7 +112,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public DateTimeOffset AsDateTime()
         {
-            throw new RdfQueryException("Numeric Types cannot be converted into Date Times");
+            throw new NodeValueException("Numeric Types cannot be converted into Date Times");
         }
 
 
@@ -122,7 +122,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Numeric Types cannot be converted into Time spans");
+            throw new NodeValueException("Numeric Types cannot be converted into Time spans");
         }
 
         /// <summary>

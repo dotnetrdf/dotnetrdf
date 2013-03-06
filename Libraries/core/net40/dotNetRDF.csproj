@@ -145,7 +145,6 @@
     <Compile Include="Core\GraphMatcher.cs" />
     <Compile Include="Core\TripleComparers.cs" />
     <Compile Include="Collections\UnionCollections.cs" />
-    <Compile Include="Core\UnionGraph.cs" />
     <Compile Include="Core\UriFactory.cs" />
     <Compile Include="Core\VariableNode.cs" />
     <Compile Include="Events.cs" />

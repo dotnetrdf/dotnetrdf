@@ -817,7 +817,7 @@ namespace VDS.RDF
                 return 1;
             }
 
-            return a.SubGraph.Triples.Count.CompareTo(b.SubGraph.Triples.Count);
+            return a.SubGraph.Count.CompareTo(b.SubGraph.Count);
         }
 
         /// <summary>

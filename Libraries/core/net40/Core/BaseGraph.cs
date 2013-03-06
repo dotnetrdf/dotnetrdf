@@ -182,6 +182,17 @@ namespace VDS.RDF
         }
 
         /// <summary>
+        /// Gets the number of triples in the graph
+        /// </summary>
+        public virtual long Count
+        {
+            get
+            {
+                return this._triples.Count;
+            }
+        }
+
+        /// <summary>
         /// Gets whether a Graph is Empty ie. Contains No Triples or Nodes
         /// </summary>
         public virtual bool IsEmpty
@@ -1101,12 +1112,12 @@ namespace VDS.RDF
                             }
                             else
                             {
-                                throw new RdfParseException("Expected a uri attribute on a <namespace> element");
+                                throw new RdfException("Expected a uri attribute on a <namespace> element");
                             }
                         }
                         else
                         {
-                            throw new RdfParseException("Expected a prefix attribute on a <namespace> element");
+                            throw new RdfException("Expected a prefix attribute on a <namespace> element");
                         }
                     }
                 }
@@ -1134,7 +1145,7 @@ namespace VDS.RDF
             }
             else
             {
-                throw new RdfParseException("Expected a <triples> element inside a <graph> element but got a <" + reader.Name + "> element instead");
+                throw new RdfException("Expected a <triples> element inside a <graph> element but got a <" + reader.Name + "> element instead");
             }
         }
 

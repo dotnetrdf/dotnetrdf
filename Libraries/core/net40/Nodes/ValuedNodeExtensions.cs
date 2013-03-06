@@ -240,7 +240,7 @@ namespace VDS.RDF.Nodes
                     IVariableNode v = (IVariableNode)n;
                     return new VariableNode(v.VariableName);
                 default:
-                    throw new RdfQueryException("Cannot create a valued node for an unknown node type");
+                    throw new NodeValueException("Cannot create a valued node for an unknown node type");
             }
         }
 
@@ -248,11 +248,11 @@ namespace VDS.RDF.Nodes
         /// Tries to get the result of calling <see cref="IValuedNode.AsBoolean()">AsBoolean()</see> on a node throwing an error if the node is null
         /// </summary>
         /// <param name="n">Node</param>
-        /// <exception cref="RdfQueryException">Thrown if the input is null of the specific valued node cannot be cast to a boolean</exception>
+        /// <exception cref="NodeValueException">Thrown if the input is null of the specific valued node cannot be cast to a boolean</exception>
         /// <returns></returns>
         public static bool AsSafeBoolean(this IValuedNode n)
         {
-            if (n == null) throw new RdfQueryException("Cannot cast a null to a boolean");
+            if (n == null) throw new NodeValueException("Cannot cast a null to a boolean");
             return n.AsBoolean();
         }
 

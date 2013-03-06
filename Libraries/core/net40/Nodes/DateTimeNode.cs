@@ -88,7 +88,7 @@ namespace VDS.RDF.Nodes
                 case XmlSpecsHelper.XmlSchemaDataTypeDate:
                     return value.ToString(XmlSpecsHelper.XmlSchemaDateFormat);
                 default:
-                    throw new RdfQueryException("Unable to create a DateTimeNode because datatype URI is invalid");
+                    throw new NodeValueException("Unable to create a DateTimeNode because datatype URI is invalid");
             }
         }
 
@@ -107,7 +107,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public long AsInteger()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public decimal AsDecimal()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public float AsFloat()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>
@@ -134,7 +134,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public double AsDouble()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public bool AsBoolean()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace VDS.RDF.Nodes
         /// <returns></returns>
         public TimeSpan AsTimeSpan()
         {
-            throw new RdfQueryException("Cannot convert Date Times to other types");
+            throw new NodeValueException("Cannot convert Date Times to other types");
         }
 
         /// <summary>

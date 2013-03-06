@@ -456,7 +456,7 @@ namespace VDS.RDF
         /// <returns></returns>
         public int Compare(IGraph x, IGraph y)
         {
-            return x.Triples.Count.CompareTo(y.Triples.Count);
+            return x.Count.CompareTo(y.Count);
         }
     }
 }
