@@ -162,6 +162,46 @@
     <Compile Include="Parsing\XmlPlusRdfAParser.cs" />
     <Compile Include="Parsing\XMLSpecsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
+    <Compile Include="Writing\BaseGZipResultsWriter.cs" />
+    <Compile Include="Writing\BaseGZipWriter.cs" />
+    <Compile Include="Writing\BaseHtmlWriter.cs" />
+    <Compile Include="Writing\CompressingTurtleWriter.cs" />
+    <Compile Include="Writing\Contexts\BaseStoreWriterContexts.cs" />
+    <Compile Include="Writing\Contexts\BaseWriterContexts.cs" />
+    <Compile Include="Writing\Contexts\HtmlWriterContext.cs" />
+    <Compile Include="Writing\Contexts\NTriplesWriterContext.cs" />
+    <Compile Include="Writing\Contexts\RdfXmlWriterContext.cs" />
+    <Compile Include="Writing\Contexts\ThreadedStoreWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TriGWriterContext.cs" />
+    <Compile Include="Writing\Contexts\TurtleWriterContext.cs" />
+    <Compile Include="Writing\CsvWriter.cs" />
+    <Compile Include="Writing\GraphVizGenerator.cs" />
+    <Compile Include="Writing\GraphVizWriter.cs" />
+    <Compile Include="Writing\HtmlSchemaWriter.cs" />
+    <Compile Include="Writing\HtmlWriter.cs" />
+    <Compile Include="Writing\Notation3Writer.cs" />
+    <Compile Include="Writing\NQuadsWriter.cs" />
+    <Compile Include="Writing\NTriplesWriter.cs" />
+    <Compile Include="Writing\PrettyRdfXmlWriter.cs" />
+    <Compile Include="Writing\RDFJSONWriter.cs" />
+    <Compile Include="Writing\RdfXmlWriter.cs" />
+    <Compile Include="Writing\Serialization\GraphDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\ResultSetDeserializationInfo.cs" />
+    <Compile Include="Writing\Serialization\SerializationHelper.cs" />
+    <Compile Include="Writing\SparqlCsvWriter.cs" />
+    <Compile Include="Writing\SPARQLHTMLWriter.cs" />
+    <Compile Include="Writing\SPARQLJSONWriter.cs" />
+    <Compile Include="Writing\SparqlRdfWriter.cs" />
+    <Compile Include="Writing\SparqlTsvWriter.cs" />
+    <Compile Include="Writing\SPARQLXMLWriter.cs" />
+    <Compile Include="Writing\SparqlXsltWriter.cs" />
+    <Compile Include="Writing\StringWriter.cs" />
+    <Compile Include="Writing\TriGWriter.cs" />
+    <Compile Include="Writing\TriXWriter.cs" />
+    <Compile Include="Writing\TsvWriter.cs" />
+    <Compile Include="Writing\TurtleWriter.cs" />
+    <Compile Include="Writing\WriterUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
@@ -169,13 +209,17 @@
       <Name>dotNetRDF</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Writing\" />
+    <EmbeddedResource Include="Parsing\trix-1.0.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Writing\Serialization\SerializationSchema.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Parsing\trix-1.0.xsd">
-      <SubType>Designer</SubType>
-    </None>
+    <EmbeddedResource Include="Parsing\trix-1.0.dtd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
