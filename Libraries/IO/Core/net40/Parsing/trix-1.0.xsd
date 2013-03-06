@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- TriX: RDF Triples In XML -->
+
+<schema xmlns           = "http://www.w3.org/2001/XMLSchema"
+        xmlns:xsd       = "http://www.w3.org/2001/XMLSchema"
+        xmlns:trix      = "http://www.w3.org/2004/03/trix/trix-1/"
+        targetNamespace = "http://www.w3.org/2004/03/trix/trix-1/">
+
+  <import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+
+  <element name="TriX">
+    <complexType>
+      <sequence>
+        <element ref="trix:graph" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="graph">
+    <complexType>
+      <sequence>
+        <element ref="trix:uri" minOccurs="0" maxOccurs="unbounded"/>
+        <element ref="trix:triple" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="triple">
+    <complexType>
+      <sequence>
+        <choice>
+          <element ref="trix:id"/>
+          <element ref="trix:uri"/>
+          <element ref="trix:plainLiteral"/>
+          <element ref="trix:typedLiteral"/> 
+        </choice>
+        <element ref="trix:uri"/>
+        <choice>
+          <element ref="trix:id"/>
+          <element ref="trix:uri"/>
+          <element ref="trix:plainLiteral"/>
+          <element ref="trix:typedLiteral"/>
+        </choice>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="id" type="string"/>
+
+  <element name="uri" type="anyURI"/>
+
+  <element name="plainLiteral">
+    <complexType>
+      <simpleContent>
+        <extension base="xsd:string">
+          <attribute ref="xml:lang"/>
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+
+  <element name="typedLiteral">
+    <complexType>
+      <simpleContent>
+        <extension base="xsd:string">
+          <attribute name="datatype" type="anyURI" use="required"/>
+        </extension>
+      </simpleContent>
+    </complexType>
+  </element>
+
+</schema>
+

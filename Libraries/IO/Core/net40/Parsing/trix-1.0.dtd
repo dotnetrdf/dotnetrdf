@@ -1,0 +1,11 @@
+<!-- TriX: RDF Triples in XML -->
+<!ELEMENT TriX         (graph*)>
+<!ATTLIST TriX         xmlns CDATA #FIXED "http://www.w3.org/2004/03/trix/trix-1/">
+<!ELEMENT graph        (uri*, triple*)>
+<!ELEMENT triple       ((id|uri|plainLiteral|typedLiteral), uri, (id|uri|plainLiteral|typedLiteral))>
+<!ELEMENT id           (#PCDATA)>
+<!ELEMENT uri          (#PCDATA)>
+<!ELEMENT plainLiteral (#PCDATA)>
+<!ATTLIST plainLiteral xml:lang CDATA #IMPLIED>
+<!ELEMENT typedLiteral (#PCDATA)>
+<!ATTLIST typedLiteral datatype CDATA #REQUIRED>

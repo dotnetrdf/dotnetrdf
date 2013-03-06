@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>04e48694-de30-4f5b-8236-7b229fcbe63c</ProjectGuid>
+    <ProjectGuid>{FADE13BE-82B7-4DAF-BB7C-8F4F10806691}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>net40</RootNamespace>
@@ -34,14 +34,100 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Parsing\Contexts\BaseParserContext.cs" />
+    <Compile Include="Parsing\Contexts\BaseResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\BaseStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IEventParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IResultsParserContext.cs" />
+    <Compile Include="Parsing\Contexts\IStoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\JSONParserContext.cs" />
+    <Compile Include="Parsing\Contexts\Notation3ParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfACoreParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfAParserContext.cs" />
+    <Compile Include="Parsing\Contexts\RdfXmlParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlJsonParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlQueryParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlRdfParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlUpdateParserContext.cs" />
+    <Compile Include="Parsing\Contexts\SparqlXmlParserContext.cs" />
+    <Compile Include="Parsing\Contexts\TriGParserContext.cs" />
+    <Compile Include="Parsing\Contexts\TurtleParserContext.cs" />
+    <Compile Include="Parsing\Events\BaseEvent.cs" />
+    <Compile Include="Parsing\Events\DualEventQueue.cs" />
+    <Compile Include="Parsing\Events\EventQueue.cs" />
+    <Compile Include="Parsing\Events\IEvent.cs" />
+    <Compile Include="Parsing\Events\IEventGenerator.cs" />
+    <Compile Include="Parsing\Events\IEventQueue.cs" />
+    <Compile Include="Parsing\Events\IRdfAEvent.cs" />
+    <Compile Include="Parsing\Events\IRDFXMLEvent.cs" />
+    <Compile Include="Parsing\Events\RdfA\HtmlEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfA\IRdfAHostLanguage.cs" />
+    <Compile Include="Parsing\Events\RdfA\RdfAEvents.cs" />
+    <Compile Include="Parsing\Events\RdfA\XHtmlHost.cs" />
+    <Compile Include="Parsing\Events\RdfA\XmlHost.cs" />
+    <Compile Include="Parsing\Events\RdfXml\DomBasedEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfXml\StreamingEventGenerator.cs" />
+    <Compile Include="Parsing\Events\RdfXml\XMLEvents.cs" />
+    <Compile Include="Parsing\Handlers\AnyHandler.cs" />
+    <Compile Include="Parsing\Handlers\BaseHandler.cs" />
+    <Compile Include="Parsing\Handlers\CancellableHandler.cs" />
+    <Compile Include="Parsing\Handlers\ChainedHandler.cs" />
+    <Compile Include="Parsing\Handlers\CountHandler.cs" />
+    <Compile Include="Parsing\Handlers\DataTableHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphHandler.cs" />
+    <Compile Include="Parsing\Handlers\GraphUriRewriteHandler.cs" />
+    <Compile Include="Parsing\Handlers\HandlerExtensions.cs" />
+    <Compile Include="Parsing\Handlers\ListUrisHandler.cs" />
+    <Compile Include="Parsing\Handlers\MultiHandler.cs" />
+    <Compile Include="Parsing\Handlers\MultisetHandler.cs" />
+    <Compile Include="Parsing\Handlers\NullHandler.cs" />
+    <Compile Include="Parsing\Handlers\PagingHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\ResultSetHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreCountHandler.cs" />
+    <Compile Include="Parsing\Handlers\StoreHandler.cs" />
+    <Compile Include="Parsing\Handlers\UniqueBlankNodesHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteThroughHandler.cs" />
+    <Compile Include="Parsing\Handlers\WriteToStoreHandler.cs" />
+    <Compile Include="Parsing\Tokens\BaseToken.cs" />
+    <Compile Include="Parsing\Tokens\BaseTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\BufferedTokenQueue.cs" />
+    <Compile Include="Parsing\Tokens\CsvTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\IToken.cs" />
+    <Compile Include="Parsing\Tokens\ITokeniser.cs" />
+    <Compile Include="Parsing\Tokens\ITokenQueue.cs" />
+    <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
+    <Compile Include="Parsing\Tokens\NTriplesTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\PathToken.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\SparqlTokens.cs" />
+    <Compile Include="Parsing\Tokens\SparqlUpdateTokens.cs" />
+    <Compile Include="Parsing\Tokens\Token.cs" />
+    <Compile Include="Parsing\Tokens\Tokens.cs" />
+    <Compile Include="Parsing\Tokens\TriGTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\TsvTokeniser.cs" />
+    <Compile Include="Parsing\Tokens\TurtleTokeniser.cs" />
+    <Compile Include="Parsing\Validation\ISyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfDatasetSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\RdfSyntaxValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlQueryValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlResultsValidator.cs" />
+    <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
+    <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\core\net40\dotNetRDF.csproj">
+      <Project>{BFBAC159-1E60-4D03-8ACA-D34E31EB83BF}</Project>
+      <Name>dotNetRDF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Writing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
