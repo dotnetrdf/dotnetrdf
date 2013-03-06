@@ -34,9 +34,11 @@ namespace VDS.RDF.Parsing.Handlers
     /// <summary>
     /// A RDF Handler that loads Quads into a <see cref="ITripleStore">ITripleStore</see> instance
     /// </summary>
-    public class StoreHandler : BaseRdfHandler
+    public class StoreHandler
+        : BaseRdfHandler
     {
         private ITripleStore _store;
+        private INamespaceMapper _nsmap = new NamespaceMapper();
 
         /// <summary>
         /// Creates a new Store Handler
@@ -63,6 +65,18 @@ namespace VDS.RDF.Parsing.Handlers
         #region IRdfHandler Members
 
         /// <summary>
+        /// Handles namespaces by adding them to each graph
+        /// </summary>
+        /// <param name="prefix">Namespace Prefix</param>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <returns></returns>
+        protected override bool HandleNamespaceInternal(string prefix, Uri namespaceUri)
+        {
+            this._nsmap.AddNamespace(prefix, namespaceUri);
+            return true;
+        }
+
+        /// <summary>
         /// Handles Triples by asserting them into the appropriate Graph creating the Graph if necessary
         /// </summary>
         /// <param name="t">Triple</param>
@@ -78,6 +92,27 @@ namespace VDS.RDF.Parsing.Handlers
             IGraph target = this._store[t.GraphUri];
             target.Assert(t.CopyTriple(target));
             return true;
+        }
+
+        /// <summary>
+        /// Starts handling RDF
+        /// </summary>
+        protected override void StartRdfInternal()
+        {
+            this._nsmap.Clear();
+        }
+
+        /// <summary>
+        /// Ends RDF handling and propogates all discovered namespaces to all discovered graphs
+        /// </summary>
+        /// <param name="ok">Whether parsing completed successfully</param>
+        protected override void EndRdfInternal(bool ok)
+        {
+            //Propogate discovered namespaces to all graphs
+            foreach (IGraph g in this._store.Graphs)
+            {
+                g.NamespaceMap.Import(this._nsmap);
+            }
         }
 
         /// <summary>

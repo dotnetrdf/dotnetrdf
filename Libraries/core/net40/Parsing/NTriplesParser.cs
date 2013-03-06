@@ -39,13 +39,14 @@ namespace VDS.RDF.Parsing
     /// </summary>
     /// <remarks>The <see cref="NTriplesParser">NTriplesParser</see> class can also be used which is a wrapper to a <see cref="TurtleParser">TurtleParser</see> which can be restricted to only parse NTriples syntax.  This Native Parser should be faster since it uses a NTriples only Tokeniser as opposed to the Turtle Tokeniser which will Tokenise syntax which is invalid in NTriples.  The NTriples specific Tokeniser is able to reject this syntax at the Tokeniser stage whereas the Turtle based parser has to reject at the Parser stage which is potentially slower.</remarks>
     /// <threadsafety instance="true">Designed to be Thread Safe - should be able to call Load from multiple threads on different Graphs without issue</threadsafety>
-    public class NTriplesParser : IRdfReader, ITraceableParser, ITraceableTokeniser
+    public class NTriplesParser
+        : IRdfReader, ITraceableParser, ITraceableTokeniser, ITokenisingParser
     {
         #region Initialisation, Variables and Properties
 
         private bool _tracetokeniser = false;
         private bool _traceparsing = false;
-        private TokenQueueMode _queuemode = TokenQueueMode.QueueAllBeforeParsing;
+        private TokenQueueMode _queueMode = Options.DefaultTokenQueueMode;
 
         /// <summary>
         /// Creates a new Instance of the Parser
@@ -60,7 +61,7 @@ namespace VDS.RDF.Parsing
         /// <param name="qmode">Token Queue Mode</param>
         public NTriplesParser(TokenQueueMode qmode)
         {
-            this._queuemode = qmode;
+            this._queueMode = qmode;
         }
 
         /// <summary>
@@ -90,6 +91,21 @@ namespace VDS.RDF.Parsing
             set
             {
                 this._traceparsing = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets/Sets the token queue mode used
+        /// </summary>
+        public TokenQueueMode TokenQueueMode
+        {
+            get
+            {
+                return this._queueMode;
+            }
+            set
+            {
+                this._queueMode = value;
             }
         }
 
@@ -173,7 +189,7 @@ namespace VDS.RDF.Parsing
 
             try
             {
-                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this._queuemode, this._traceparsing, this._tracetokeniser);
+                TokenisingParserContext context = new TokenisingParserContext(handler, new NTriplesTokeniser(input), this._queueMode, this._traceparsing, this._tracetokeniser);
                 this.Parse(context);
             }
             catch

@@ -183,6 +183,7 @@ namespace VDS.RDF.Utilities.Server
         {
             if (this._writer == null) this._writer = new StreamWriter(this._response.OutputStream, this.ContentEncoding);
             this._writer.Write(data);
+            this._writer.Flush();
         }
 
         public Encoding ContentEncoding

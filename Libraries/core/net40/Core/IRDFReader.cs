@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using VDS.RDF.Parsing.Tokens;
 
 namespace VDS.RDF
 {
@@ -129,6 +130,21 @@ namespace VDS.RDF.Parsing
         /// Gets/Sets whether Parser Tracing is used
         /// </summary>
         bool TraceParsing
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
+    /// Interface for parsers that use token based parsing
+    /// </summary>
+    public interface ITokenisingParser
+    {
+        /// <summary>
+        /// Gets/Sets the token queue mode used
+        /// </summary>
+        TokenQueueMode TokenQueueMode
         {
             get;
             set;

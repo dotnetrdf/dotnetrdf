@@ -27,6 +27,8 @@ This Toolkit provides the following GUI tools:
 - SparqlGUI - A GUI for testing SPARQL queries using dotNetRDF's in-memory Leviathan engine
 - StoreManager - A GUI for performing basic management and query tasks on various Triple Stores
 
+You can find the documentation at http://bitbucket.org/dotnetrdf/dotnetrdf/wiki/UserGuide/Tools
+
 License
 -------
 
