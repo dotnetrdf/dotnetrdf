@@ -120,6 +120,7 @@
     <Compile Include="Parsing\NQuadsParser.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
     <Compile Include="Parsing\ParserHelper.cs" />
+    <Compile Include="Parsing\ParserTools.cs" />
     <Compile Include="Parsing\PositionInfo.cs" />
     <Compile Include="Parsing\RdfACoreParser.cs" />
     <Compile Include="Parsing\RdfAParser.cs" />

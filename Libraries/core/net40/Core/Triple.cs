@@ -156,25 +156,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Context Information for this Triple
-        /// </summary>
-        /// <remarks>
-        /// Context may be null where no Context for the Triple has been defined
-        /// </remarks>
-        [Obsolete("Triples no longer provide a Context", true)]
-        public ITripleContext Context
-        {
-            get
-            {
-                throw new NotSupportedException();
-            }
-            set
-            {
-                throw new NotSupportedException();
-            }
-        }
-
-        /// <summary>
         /// Gets an enumeration of the Nodes in the Triple
         /// </summary>
         /// <remarks>
