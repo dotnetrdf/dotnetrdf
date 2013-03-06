@@ -72,22 +72,9 @@ namespace VDS.RDF
     {
         private static LiteralEqualityMode _litEqualityMode = LiteralEqualityMode.Strict;
         private static bool _litNormalization = false;
-        private static long _queryExecutionTimeout = 180000, _updateExecutionTimeout = 180000;
-        private static int _defaultCompressionLevel = WriterCompressionLevel.More;
         private static bool _fullIndexing = true;
-        private static bool _queryOptimisation = true, _algebraOptimisation = true, _unsafeOptimisation = false;
-        private static SparqlQuerySyntax _queryDefaultSyntax = SparqlQuerySyntax.Sparql_1_1;
-        private static bool _queryAllowUnknownFunctions = true;
-        private static bool _uriLoaderCaching = true;
-        private static int _uriLoaderTimeout = 15000;
-        private static bool _utf8Bom = false;
-        private static bool _useDTDs = true;
-        private static bool _multiThreadedWriting = false;
         private static bool _internUris = true;
-        private static bool _rigorousQueryEvaluation = false, _strictOperators = false;
-        private static bool _forceBlockingIO = false;
         private static bool _forceHttpBasicAuth = false;
-        private static TokenQueueMode _defaultTokenQueueMode = TokenQueueMode.SynchronousBufferDuringParsing;
 
 #if NET40 && !SILVERLIGHT
         private static bool _usePLinq = true;
@@ -130,209 +117,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets the Hard Timeout limit for SPARQL Query Execution (in milliseconds)
-        /// </summary>
-        /// <remarks>
-        /// This is used to stop SPARQL queries running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
-        /// </remarks>
-        public static long QueryExecutionTimeout
-        {
-            get
-            {
-                return _queryExecutionTimeout;
-            }
-            set
-            {
-                _queryExecutionTimeout = Math.Max(value, 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Query Optimisation should be used
-        /// </summary>
-        public static bool QueryOptimisation
-        {
-            get
-            {
-                return _queryOptimisation;
-            }
-            set
-            {
-                _queryOptimisation = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Algebra Optimisation should be used
-        /// </summary>
-        public static bool AlgebraOptimisation
-        {
-            get
-            {
-                return _algebraOptimisation;
-            }
-            set
-            {
-                _algebraOptimisation = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether some Optimisations considered unsafe can be used
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// The notion of unsafe optimisations refers to optimisations that can make significant performance improvements to some types of queries but are disabled normally because they may lead to behaviour which does not strictly align with the SPARQL specification.
-        /// </para>
-        /// <para>
-        /// One example of such an optimisation is an implicit join where the optimiser cannot be sure that the variables involved don't represent literals.
-        /// </para>
-        /// </remarks>
-        public static bool UnsafeOptimisation
-        {
-            get
-            {
-                return _unsafeOptimisation;
-            }
-            set
-            {
-                _unsafeOptimisation = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the default syntax used for parsing SPARQL queries
-        /// </summary>
-        /// <remarks>
-        /// The default is SPARQL 1.1 unless you use this property to change it
-        /// </remarks>
-        public static SparqlQuerySyntax QueryDefaultSyntax
-        {
-            get
-            {
-                return _queryDefaultSyntax;
-            }
-            set
-            {
-                _queryDefaultSyntax = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether functions that can't be parsed into Expressions should be represented by the <see cref="VDS.RDF.Query.Expressions.Functions.UnknownFunction">UnknownFunction</see>
-        /// </summary>
-        /// <remarks>When set to false a Parser Error will be thrown if the Function cannot be parsed into an Expression</remarks>
-        public static bool QueryAllowUnknownFunctions
-        {
-            get
-            {
-                return _queryAllowUnknownFunctions;
-            }
-            set
-            {
-                _queryAllowUnknownFunctions = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether to use rigorous query evaluation
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Rigorous Query evaluation applies more checks to the triples produced by datasets to ensure they actually match the patterns being scanned.  If the underlying index structures are able to guarantee this then rigorous evaluation may be turned off for faster evaluation which it is by default since our default <see cref="TreeIndexedTripleCollection"/> and <see cref="TripleCollection"/> implementations will guarantee this.
-        /// </para>
-        /// </remarks>
-        public static bool RigorousEvaluation
-        {
-            get
-            {
-                return _rigorousQueryEvaluation;
-            }
-            set
-            {
-                _rigorousQueryEvaluation = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether to use strict operators
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Strict Operators refers to the interpretation of certian operators like + and - in SPARQL expression evaluation.  If enabled then the operators will function only as specified in the SPARQL specification, if disabled (which is the default) then certain extensions (which the SPARQL specification allows an implementation to provide) will be allowed e.g. date time arithmetic.
-        /// </para>
-        /// <para>
-        /// The only time you may want to disable this is if you are developing queries locally which you want to ensure are portable to other systems or when running the SPARQL compliance tests.
-        /// </para>
-        /// </remarks>
-        public static bool StrictOperators
-        {
-            get
-            {
-                return _strictOperators;
-            }
-            set
-            {
-                _strictOperators = value;
-            }
-        }
-
-#if NET40 && !SILVERLIGHT
-
-        /// <summary>
-        /// Gets/Sets whether the query engine will try to use PLinq where applicable to evaluate suitable SPARQL constructs in parallel
-        /// </summary>
-        /// <remarks>
-        /// For the 0.6.1 release onwards this was an experimental feature and disabled by default, from 0.7.0 onwards this is enabled by default
-        /// </remarks>
-        public static bool UsePLinqEvaluation
-        {
-            get
-            {
-                return _usePLinq;
-            }
-            set
-            {
-                _usePLinq = value;
-            }
-        }
-
-#endif
-
-        /// <summary>
-        /// Gets/Sets the Hard Timeout limit for SPARQL Update Execution (in milliseconds)
-        /// </summary>
-        /// <remarks>
-        /// This is used to stop SPARQL Updates running away and never completing execution, it defaults to 3 mins (180,000 milliseconds)
-        /// </remarks>
-        public static long UpdateExecutionTimeout
-        {
-            get
-            {
-                return _updateExecutionTimeout;
-            }
-            set
-            {
-                _updateExecutionTimeout = Math.Max(0, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the Default Compression Level used for Writers returned by the <see cref="MimeTypesHelper">MimeTypesHelper</see> class when the writers implement <see cref="ICompressingWriter">ICompressingWriter</see>
-        /// </summary>
-        public static int DefaultCompressionLevel
-        {
-            get
-            {
-                return _defaultCompressionLevel;
-            }
-            set
-            {
-                _defaultCompressionLevel = value;
-            }
-        }
-
-        /// <summary>
         /// Controls whether the indexed triple collections will create full indexes for the Triples inserted into it
         /// </summary>
         /// <remarks>
@@ -352,75 +136,6 @@ namespace VDS.RDF
             set
             {
                 _fullIndexing = value;
-            }
-        }
-
-#if !NO_URICACHE
-
-        /// <summary>
-        /// Gets/Sets whether the <see cref="UriLoader">UriLoader</see> uses caching
-        /// </summary>
-        public static bool UriLoaderCaching
-        {
-            get
-            {
-                return _uriLoaderCaching;
-            }
-            set
-            {
-                _uriLoaderCaching = value;
-            }
-        }
-#endif
-
-        /// <summary>
-        /// Gets/Sets the Timeout for URI Loader requests (Defaults to 15 seconds)
-        /// </summary>
-        public static int UriLoaderTimeout
-        {
-            get
-            {
-                return _uriLoaderTimeout;
-            }
-            set
-            {
-                if (value > 0)
-                {
-                    _uriLoaderTimeout = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether a UTF-8 BOM is used for UTF-8 Streams created by dotNetRDF (this does not affect Streams passed directly to methods as open streams cannot have their encoding changed)
-        /// </summary>
-        public static bool UseBomForUtf8
-        {
-            get
-            {
-                return _utf8Bom;
-            }
-            set
-            {
-                _utf8Bom = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether Blocking IO should be forced
-        /// </summary>
-        /// <remarks>
-        /// Blocking IO refers to how the parsing sub-system reads in inputs, it will use Blocking/Non-Blocking IO depending on the input source.  In most cases the detection of which to use should never cause an issue but theoretically in some rare cases using non-blocking IO may lead to incorrect parsing errors being thrown (premature end of input detected), if you suspect this is the case try enabling this setting.  If you still experience this problem with this setting enabled then there is some other issue with your input.
-        /// </remarks>
-        public static bool ForceBlockingIO
-        {
-            get
-            {
-                return _forceBlockingIO;
-            }
-            set
-            {
-                _forceBlockingIO = value;
             }
         }
 
@@ -448,39 +163,6 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets/Sets whether a DTD should be used for some XML formats to compress output
-        /// </summary>
-        public static bool UseDtd
-        {
-            get
-            {
-                return _useDTDs;
-            }
-            set
-            {
-                _useDTDs = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets whether multi-theaded writing is permitted
-        /// </summary>
-        /// <remarks>
-        /// In some contexts multi-threaded writing may not even work due to restrictions on thread types since we use the <see cref="System.Threading.WaitAll">WaitAll()</see> method which is only valid in <strong>MTA</strong> contexts.
-        /// </remarks>
-        public static bool AllowMultiThreadedWriting
-        {
-            get
-            {
-                return _multiThreadedWriting;
-            }
-            set
-            {
-                _multiThreadedWriting = value;
-            }
-        }
-
-        /// <summary>
         /// Gets/Sets whether the library will attempt to intern URIs to reduce memory usage
         /// </summary>
         public static bool InternUris
@@ -492,21 +174,6 @@ namespace VDS.RDF
             set
             {
                 _internUris = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets/Sets the default token queue mode used for tokeniser based parsers
-        /// </summary>
-        public static TokenQueueMode DefaultTokenQueueMode
-        {
-            get
-            {
-                return _defaultTokenQueueMode;
-            }
-            set
-            {
-                _defaultTokenQueueMode = value;
             }
         }
 
