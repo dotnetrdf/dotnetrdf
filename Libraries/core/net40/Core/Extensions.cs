@@ -935,24 +935,6 @@ namespace VDS.RDF
     }
 
     /// <summary>
-    /// Provides useful Extension Methods for working with Graphs
-    /// </summary>
-    public static class GraphExtensions
-    {
-        /// <summary>
-        /// Turns a Graph into a Triple Store
-        /// </summary>
-        /// <param name="g">Graph</param>
-        /// <returns></returns>
-        internal static IInMemoryQueryableStore AsTripleStore(this IGraph g)
-        {
-            TripleStore store = new TripleStore();
-            store.Add(g);
-            return store;
-        }
-    }
-
-    /// <summary>
     /// Provides extension methods for converting primitive types into appropriately typed Literal Nodes
     /// </summary>
     public static class LiteralExtensions

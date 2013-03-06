@@ -101,7 +101,6 @@
     <Compile Include="Collections\BaseDemandGraphCollection.cs" />
     <Compile Include="Core\BaseGraph.cs" />
     <Compile Include="Collections\BaseGraphCollection.cs" />
-    <Compile Include="Core\BaseTripleStore.cs" />
     <Compile Include="Core\IGraphStore.cs" />
     <Compile Include="Core\Quad.cs" />
     <Compile Include="Collections\SubTreeIndexedTripleCollection.cs" />
@@ -114,7 +113,6 @@
     <Compile Include="Collections\TreeIndexedTripleCollection.cs" />
     <Compile Include="Collections\WrapperGraphCollection.cs" />
     <Compile Include="Collections\WrapperTripleCollection.cs" />
-    <Compile Include="Core\WrapperTripleStore.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="Nodes\SparqlNumericType.cs" />
     <Compile Include="Nodes\TimeSpanNode.cs" />
@@ -125,12 +123,9 @@
     <Compile Include="Writing\Formatting\IQuadFormatter.cs" />
     <Compile Include="Core\IGraph.cs" />
     <Compile Include="Core\INode.cs" />
-    <Compile Include="Core\ITripleContext.cs" />
-    <Compile Include="Core\ITripleStore.cs" />
     <Compile Include="Core\LiteralNode.cs" />
     <Compile Include="NamespaceDocs.cs" />
     <Compile Include="Core\NamespaceMapper.cs" />
-    <Compile Include="Core\TripleStore.cs" />
     <Compile Include="Core\Tools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\Triple.cs" />
@@ -159,7 +154,6 @@
     <Compile Include="Core\BaseEndpoint.cs" />
     <Compile Include="Core\BaseNode.cs" />
     <Compile Include="Core\BlankNodeMapper.cs" />
-    <Compile Include="Core\DiskDemandTripleStore.cs" />
     <Compile Include="Core\EqualityHelper.cs" />
     <Compile Include="Core\GraphDiff.cs" />
     <Compile Include="Core\INamespaceMapper.cs" />
@@ -174,8 +168,6 @@
     <Compile Include="Core\UnionGraph.cs" />
     <Compile Include="Core\UriFactory.cs" />
     <Compile Include="Core\VariableNode.cs" />
-    <Compile Include="Core\VariableContext.cs" />
-    <Compile Include="Core\WebDemandTripleStore.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Indexing.cs" />
     <Compile Include="Nodes\BooleanNode.cs" />

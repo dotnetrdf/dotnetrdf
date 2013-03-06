@@ -87,13 +87,6 @@ namespace VDS.RDF
     /// <param name="args">Graph Event Arguments</param>
     public delegate void CancellableGraphEventHandler(Object sender, CancellableGraphEventArgs args);
 
-    /// <summary>
-    /// Delegate Type for Triple Store events raised by Triple Stores
-    /// </summary>
-    /// <param name="sender">Originator of the event</param>
-    /// <param name="args">Triple Store Event Arguments</param>
-    public delegate void TripleStoreEventHandler(Object sender, TripleStoreEventArgs args);
-
     #endregion
 
     #region Event Argument Classes
@@ -277,66 +270,6 @@ namespace VDS.RDF
             set
             {
                 this._cancel = value;
-            }
-        }
-    }
-    
-    /// <summary>
-    /// Event Arguments for Events regarding Graphs
-    /// </summary>
-    public class TripleStoreEventArgs : EventArgs
-    {
-        private ITripleStore _store;
-        private GraphEventArgs _args;
-
-        /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        public TripleStoreEventArgs(ITripleStore store)
-            : base()
-        {
-            this._store = store;
-        }
-
-        /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="args">Graph Event Arguments</param>
-        public TripleStoreEventArgs(ITripleStore store, GraphEventArgs args)
-            : this(store)
-        {
-            this._args = args;
-        }
-
-        /// <summary>
-        /// Creates a new set of Triple Store Event Arguments
-        /// </summary>
-        /// <param name="store">Triple Store</param>
-        /// <param name="g">Graph</param>
-        public TripleStoreEventArgs(ITripleStore store, IGraph g)
-            : this(store, new GraphEventArgs(g)) { }
-
-        /// <summary>
-        /// Gets the Triple Store
-        /// </summary>
-        public ITripleStore TripleStore
-        {
-            get
-            {
-                return this._store;
-            }
-        }
-
-        /// <summary>
-        /// Gets the Graph Event Arguments (if any)
-        /// </summary>
-        public GraphEventArgs GraphEvent
-        {
-            get
-            {
-                return this._args;
             }
         }
     }

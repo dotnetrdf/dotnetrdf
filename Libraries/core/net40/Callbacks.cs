@@ -40,13 +40,6 @@ namespace VDS.RDF
     public delegate void GraphCallback(IGraph g, Object state);
 
     /// <summary>
-    /// Callback for methods that return a <see cref="ITripleStore">ITripleStore</see> asynchronously
-    /// </summary>
-    /// <param name="store">Triple Store</param>
-    /// <param name="state">State</param>
-    public delegate void TripleStoreCallback(ITripleStore store, Object state);
-
-    /// <summary>
     /// Callback for methods that return a Namespace Map
     /// </summary>
     /// <param name="nsmap">Namespace Map</param>
