@@ -460,10 +460,9 @@
   <ItemGroup>
     <Compile Include="Parsing\SparqlQueryParser.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Writing\Formatting\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="Writing\Formatting\BaseResultFormatter.cs" />
     <Compile Include="Writing\Formatting\IResultFormatter.cs" />
   </ItemGroup>
 </Project>

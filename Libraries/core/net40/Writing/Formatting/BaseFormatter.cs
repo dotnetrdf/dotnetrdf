@@ -32,7 +32,7 @@ namespace VDS.RDF.Writing.Formatting
     /// Abstract Base Class for Formatters
     /// </summary>
     public abstract class BaseFormatter
-        : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter, IResultFormatter
+        : INodeFormatter, ITripleFormatter, IUriFormatter, ICharFormatter
     {
         private String _format;
 
@@ -181,26 +181,6 @@ namespace VDS.RDF.Writing.Formatting
         public virtual String FormatChar(char c)
         {
             return c.ToString();
-        }
-
-        /// <summary>
-        /// Formats a SPARQL Result for the given format
-        /// </summary>
-        /// <param name="result">SPARQL Result</param>
-        /// <returns></returns>
-        public virtual String Format(SparqlResult result)
-        {
-            return result.ToString(this);
-        }
-
-        /// <summary>
-        /// Formats a SPARQL Boolean Result for the given format
-        /// </summary>
-        /// <param name="result">Boolean Result</param>
-        /// <returns></returns>
-        public virtual String FormatBooleanResult(bool result)
-        {
-            return result.ToString().ToLower();
         }
 
         /// <summary>

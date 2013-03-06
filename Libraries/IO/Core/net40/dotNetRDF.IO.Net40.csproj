@@ -38,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IOExceptions.cs" />
+    <Compile Include="IOExtensions.cs" />
     <Compile Include="IOManager.cs" />
     <Compile Include="IRdfReader.cs" />
     <Compile Include="IRdfWriter.cs" />
