@@ -242,4 +242,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Specifications\RdfXmlSpecsHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Specifications\TurtleSpecsHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Specifications\SparqlSpecsHelper.cs" />
+  </ItemGroup>
 </Project>

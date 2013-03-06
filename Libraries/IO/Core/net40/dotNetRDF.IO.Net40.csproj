@@ -127,7 +127,6 @@
     <Compile Include="Parsing\RdfAParser.cs" />
     <Compile Include="Parsing\RDFJSONParser.cs" />
     <Compile Include="Parsing\RDFXMLParser.cs" />
-    <Compile Include="Parsing\RdfXmlSpecsHelper.cs" />
     <Compile Include="Parsing\SPARQLBooleanParser.cs" />
     <Compile Include="Parsing\SparqlCsvParser.cs" />
     <Compile Include="Parsing\SPARQLJSONParser.cs" />
@@ -157,7 +156,6 @@
     <Compile Include="Parsing\TriGParser.cs" />
     <Compile Include="Parsing\TriXParser.cs" />
     <Compile Include="Parsing\TurtleParser.cs" />
-    <Compile Include="Parsing\TurtleSpecsHelper.cs" />
     <Compile Include="Parsing\UnicodeSpecsHelper.cs" />
     <Compile Include="Parsing\URILoader.cs" />
     <Compile Include="Parsing\UriLoaderAsync.cs" />
@@ -170,7 +168,6 @@
     <Compile Include="Parsing\Validation\SparqlUpdateValidator.cs" />
     <Compile Include="Parsing\Validation\SyntaxValidationResults.cs" />
     <Compile Include="Parsing\XmlPlusRdfAParser.cs" />
-    <Compile Include="Parsing\XMLSpecsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Writing\BaseGZipDatasetWriter.cs" />
     <Compile Include="Writing\BaseGZipResultsWriter.cs" />
@@ -243,6 +240,10 @@
     <Compile Include="IObjectParser.cs" />
     <Compile Include="IRdfHandler.cs" />
     <Compile Include="ISparqlResultsHandler.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Collections\BaseDemandGraphCollection.cs" />
   </ItemGroup>
   <ItemGroup />
 </Project>

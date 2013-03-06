@@ -962,5 +962,43 @@ namespace VDS.RDF.Parsing
         {
             return "Turtle";
         }
+
+
+        /// <summary>
+        /// Infers the Type of a Plain Literal
+        /// </summary>
+        /// <param name="p">Plain Literal to infer the Type of</param>
+        /// <param name="syntax">Turtle Syntax</param>
+        /// <returns>A Uri  representing the XML Scheme Data Type for the Plain Literal</returns>
+        public static Uri InferPlainLiteralType(PlainLiteralToken p, TurtleSyntax syntax)
+        {
+            String value = p.Value;
+            StringComparison comparison = (syntax == TurtleSyntax.Original ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
+
+            if (value.Equals("true", comparison) || value.Equals("false", comparison))
+            {
+                //Is a Boolean
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeBoolean);
+            }
+            else if (_validInteger.IsMatch(value))
+            {
+                //Is an Integer
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeInteger);
+            }
+            else if (_validDecimal.IsMatch(value))
+            {
+                //Is a Decimal
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDecimal);
+            }
+            else if (_validDouble.IsMatch(value))
+            {
+                //Is a Double
+                return UriFactory.Create(XmlSpecsHelper.XmlSchemaDataTypeDouble);
+            }
+            else
+            {
+                throw new RdfParseException("Unable to automatically Infer a Type for this PlainLiteralToken.  Plain Literals may only be Booleans, Integers, Decimals or Doubles");
+            }
+        }
     }
 }

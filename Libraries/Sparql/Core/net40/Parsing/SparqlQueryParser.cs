@@ -46,36 +46,6 @@ using VDS.RDF.Query.Paths;
 namespace VDS.RDF.Parsing
 {
     /// <summary>
-    /// Available Query Syntaxes
-    /// </summary>
-    public enum SparqlQuerySyntax
-    {
-        /// <summary>
-        /// Use SPARQL 1.0
-        /// </summary>
-        Sparql_1_0,
-        /// <summary>
-        /// Use SPARQL 1.1
-        /// </summary>
-        Sparql_1_1,
-        /// <summary>
-        /// Use the latest SPARQL specification supported by the library (currently SPARQL 1.1) with some extensions
-        /// </summary>
-        /// <remarks>
-        /// <para>
-        /// Extensions include the following:
-        /// </para>
-        /// <ul>
-        /// <li><strong>LET</strong> assignments (we recommend using the SPARQL 1.1 standards BIND instead)</li>
-        /// <li>Additional aggregates - <strong>NMAX</strong>, <strong>NMIN</strong>, <strong>MEDIAN</strong> and <strong>MODE</strong> (we recommend using the Leviathan Function Library URIs for these instead to make them usable in SPARQL 1.1 mode)</li>
-        /// <li><strong>UNSAID</strong> alias for <strong>NOT EXISTS</strong> (we recommend using the SPARQL 1.1 standard NOT EXISTS instead</li>
-        /// <li><strong>EXISTS</strong> and <strong>NOT EXISTS</strong> are permitted as Graph Patterns (only allowed in FILTERs in SPARQL 1.1)</li>
-        /// </ul>
-        /// </remarks>
-        Extended
-    }
-
-    /// <summary>
     /// Class for parsing SPARQL Queries into <see cref="SparqlQuery">SparqlQuery</see> objects that can be used to query a Graph or Triple Store
     /// </summary>
     public class SparqlQueryParser

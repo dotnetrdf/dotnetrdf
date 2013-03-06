@@ -81,7 +81,6 @@
     <Compile Include="Query\SPARQLResult.cs" />
     <Compile Include="Query\SPARQLResultBinder.cs" />
     <Compile Include="Query\SPARQLResultSet.cs" />
-    <Compile Include="Query\SPARQLSpecsHelper.cs" />
     <Compile Include="Query\SPARQLVariable.cs" />
     <Compile Include="Query\SparqlView.cs" />
     <Compile Include="Query\Aggregates\BaseAggregate.cs" />
@@ -475,5 +474,8 @@
     <Compile Include="QueryableGraph.cs" />
     <Compile Include="Writing\Formatting\SparqlFormatter.cs" />
     <Compile Include="Writing\Formatting\SparqlXmlFormatter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseEndpoint.cs" />
   </ItemGroup>
 </Project>

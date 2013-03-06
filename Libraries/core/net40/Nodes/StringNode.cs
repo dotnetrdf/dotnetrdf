@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text;
 using VDS.RDF.Query;
 using VDS.RDF.Query.Expressions;
+using VDS.RDF.Specifications;
 
 namespace VDS.RDF.Nodes
 {
