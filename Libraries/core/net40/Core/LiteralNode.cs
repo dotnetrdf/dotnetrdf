@@ -627,58 +627,58 @@ namespace VDS.RDF
                              PlainLiteralHashCodeSalt = "plain";
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
-        protected internal LiteralNode(String literal)
+        public LiteralNode(String literal)
             : this(literal, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(String literal, bool normalize)
+        public LiteralNode(String literal, bool normalize)
             : base(literal, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
-        protected internal LiteralNode(String literal, String langspec)
+        public LiteralNode(String literal, String langspec)
             : this(literal, langspec, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="langspec">String value for the Language Specifier for the Literal</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(String literal, String langspec, bool normalize)
+        public LiteralNode(String literal, String langspec, bool normalize)
             : base(literal, langspec, normalize) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
-        protected internal LiteralNode(String literal, Uri datatype)
+        public LiteralNode(String literal, Uri datatype)
             : this(literal, datatype, Options.LiteralValueNormalization) { }
 
         /// <summary>
-        /// Internal Only Constructor for Literal Nodes
+        /// Constructor for Literal Nodes
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="literal">String value of the Literal</param>
         /// <param name="datatype">Uri for the Literals Data Type</param>
         /// <param name="normalize">Whether to Normalize the Literal Value</param>
-        protected internal LiteralNode(String literal, Uri datatype, bool normalize)
+        public LiteralNode(String literal, Uri datatype, bool normalize)
             : base(literal, datatype, normalize) { }
 
 #if !SILVERLIGHT

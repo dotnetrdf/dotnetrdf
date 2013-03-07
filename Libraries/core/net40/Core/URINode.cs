@@ -511,7 +511,7 @@ namespace VDS.RDF
         /// </summary>
         /// <param name="g">Graph this Node is in</param>
         /// <param name="uri">URI for the Node</param>
-        protected internal UriNode(Uri uri)
+        public UriNode(Uri uri)
             : base(uri) { }
 
         /// <summary>
