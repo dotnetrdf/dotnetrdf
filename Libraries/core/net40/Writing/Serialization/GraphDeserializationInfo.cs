@@ -56,7 +56,7 @@ namespace VDS.RDF.Writing.Serialization
             g.Assert(this._triples);
             foreach (KeyValuePair<String, String> ns in this._namespaces)
             {
-                g.NamespaceMap.AddNamespace(ns.Key, UriFactory.Create(ns.Value));
+                g.Namespaces.AddNamespace(ns.Key, UriFactory.Create(ns.Value));
             }
         }
     }

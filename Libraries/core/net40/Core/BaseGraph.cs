@@ -166,7 +166,7 @@ namespace VDS.RDF
         /// Gets the Namespace Mapper for this Graph which contains all in use Namespace Prefixes and their URIs
         /// </summary>
         /// <returns></returns>
-        public virtual INamespaceMapper NamespaceMap
+        public virtual INamespaceMapper Namespaces
         {
             get
             {
@@ -561,7 +561,7 @@ namespace VDS.RDF
             if (!this.RaiseMergeRequested()) return;
 
             //First copy and Prefixes across which aren't defined in this Graph
-            this._nsmapper.Import(g.NamespaceMap);
+            this._nsmapper.Import(g.Namespaces);
 
             //Since Blank Nodes are now truly scoped to their factory we can always just copy triples across directly
             this.Assert(g.Triples);
@@ -1079,8 +1079,8 @@ namespace VDS.RDF
         {
             info.AddValue("base", this.BaseUri.ToSafeString());
             info.AddValue("triples", this.Triples.ToList(), typeof(List<Triple>));
-            IEnumerable<KeyValuePair<String,String>> ns = from p in this.NamespaceMap.Prefixes
-                                                          select new KeyValuePair<String,String>(p, this.NamespaceMap.GetNamespaceUri(p).AbsoluteUri);
+            IEnumerable<KeyValuePair<String,String>> ns = from p in this.Namespaces.Prefixes
+                                                          select new KeyValuePair<String,String>(p, this.Namespaces.GetNamespaceUri(p).AbsoluteUri);
             info.AddValue("namespaces", ns.ToList(), typeof(List<KeyValuePair<String, String>>));
         }
 
@@ -1118,7 +1118,7 @@ namespace VDS.RDF
                             if (reader.MoveToAttribute("uri"))
                             {
                                 Uri u = UriFactory.Create(reader.Value);
-                                this.NamespaceMap.AddNamespace(prefix, u);
+                                this.Namespaces.AddNamespace(prefix, u);
                                 reader.Read();
                             }
                             else
@@ -1176,11 +1176,11 @@ namespace VDS.RDF
 
             //Serialize Namespace Map
             writer.WriteStartElement("namespaces");
-            foreach (String prefix in this.NamespaceMap.Prefixes)
+            foreach (String prefix in this.Namespaces.Prefixes)
             {
                 writer.WriteStartElement("namespace");
                 writer.WriteAttributeString("prefix", prefix);
-                writer.WriteAttributeString("uri", this.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri);
+                writer.WriteAttributeString("uri", this.Namespaces.GetNamespaceUri(prefix).AbsoluteUri);
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();

@@ -64,6 +64,38 @@ namespace VDS.RDF
             Assert.IsFalse(g.IsEmpty);
         }
 
+        [TestMethod]
+        public void GraphContractNamespaces1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.IsNotNull(g.Namespaces);
+        }
+
+        [TestMethod]
+        public void GraphContractNamespaces2()
+        {
+            IGraph g = this.GetInstance();
+            Assert.IsNotNull(g.Namespaces);
+            g.Namespaces.AddNamespace("ex", new Uri("http://example.org"));
+            Assert.IsTrue(g.Namespaces.HasNamespace("ex"));
+            Assert.AreEqual(new Uri("http://example.org"), g.Namespaces.GetNamespaceUri("ex"));
+        }
+
+        [TestMethod]
+        public void GraphContractBaseUri1()
+        {
+            IGraph g = this.GetInstance();
+            Assert.IsNull(g.BaseUri);
+        }
+
+        [TestMethod]
+        public void GraphContractBaseUri2()
+        {
+            IGraph g = this.GetInstance();
+            Assert.IsNull(g.BaseUri);
+            g.BaseUri = new Uri("http://graph");
+            Assert.AreEqual(new Uri("http://graph"), g.BaseUri);
+        }
     }
 
     [TestClass]

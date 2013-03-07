@@ -76,7 +76,7 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Namespace Map for the Graph
         /// </summary>
-        INamespaceMapper NamespaceMap 
+        INamespaceMapper Namespaces 
         {
             get;
         }

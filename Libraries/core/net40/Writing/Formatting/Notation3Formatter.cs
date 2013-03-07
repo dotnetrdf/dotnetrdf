@@ -95,7 +95,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="g">Graph</param>
         public Notation3Formatter(IGraph g)
-            : base("Notation 3", new QNameOutputMapper(g.NamespaceMap)) 
+            : base("Notation 3", new QNameOutputMapper(g.Namespaces)) 
         {
             this._validEscapes = new char[] { '"', 'n', 't', 'u', 'U', 'r', '\\', '0', '\'' };
         }

@@ -149,11 +149,11 @@ namespace VDS.RDF
         /// <summary>
         /// Gets the Namespace Map for the Graph
         /// </summary>
-        public virtual INamespaceMapper NamespaceMap
+        public virtual INamespaceMapper Namespaces
         {
             get
             { 
-                return this._g.NamespaceMap; 
+                return this._g.Namespaces; 
             }
         }
 

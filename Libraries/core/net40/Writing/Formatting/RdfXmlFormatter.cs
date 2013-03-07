@@ -55,20 +55,20 @@ namespace VDS.RDF.Writing.Formatting
         /// <returns></returns>
         public string FormatGraphHeader(IGraph g)
         {
-            this._mapper = new QNameOutputMapper(g.NamespaceMap);
+            this._mapper = new QNameOutputMapper(g.Namespaces);
             StringBuilder output = new StringBuilder();
             output.Append(this.GetGraphHeaderBase());
-            foreach (String prefix in g.NamespaceMap.Prefixes)
+            foreach (String prefix in g.Namespaces.Prefixes)
             {
                 if (!prefix.Equals("rdf"))
                 {
                     if (prefix.Equals(String.Empty))
                     {
-                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
+                        output.Append(" xmlns=\"" + WriterHelper.EncodeForXml(g.Namespaces.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                     else
                     {
-                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(g.NamespaceMap.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
+                        output.Append(" xmlns:" + prefix + "=\"" + WriterHelper.EncodeForXml(g.Namespaces.GetNamespaceUri(prefix).AbsoluteUri) + "\"");
                     }
                 }
             }

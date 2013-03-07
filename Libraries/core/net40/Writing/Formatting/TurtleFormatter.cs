@@ -107,7 +107,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="g">Graph</param>
         public TurtleFormatter(IGraph g)
-            : base("Turtle", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("Turtle", new QNameOutputMapper(g.Namespaces)) { }
 
         /// <summary>
         /// Creates a new Turtle Formatter for the given Namespace Map
@@ -129,7 +129,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="formatName">Format Name</param>
         /// <param name="g">Graph</param>
         protected TurtleFormatter(String formatName, IGraph g)
-            : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
+            : base(formatName, new QNameOutputMapper(g.Namespaces)) { }
 
         /// <summary>
         /// Creates a new Turtle Formatter
@@ -305,7 +305,7 @@ namespace VDS.RDF.Writing.Formatting
         /// </summary>
         /// <param name="g">Graph</param>
         public TurtleW3CFormatter(IGraph g)
-            : base("Turtle (W3C)", new QNameOutputMapper(g.NamespaceMap)) { }
+            : base("Turtle (W3C)", new QNameOutputMapper(g.Namespaces)) { }
 
         /// <summary>
         /// Creates a new Turtle Formatter for the given Namespace Map
@@ -327,7 +327,7 @@ namespace VDS.RDF.Writing.Formatting
         /// <param name="formatName">Format Name</param>
         /// <param name="g">Graph</param>
         protected TurtleW3CFormatter(String formatName, IGraph g)
-            : base(formatName, new QNameOutputMapper(g.NamespaceMap)) { }
+            : base(formatName, new QNameOutputMapper(g.Namespaces)) { }
 
         /// <summary>
         /// Creates a new Turtle Formatter
