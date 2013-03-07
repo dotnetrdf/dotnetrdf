@@ -169,13 +169,24 @@ namespace VDS.RDF
         }
 
         /// <summary>
-        /// Gets the Triple Collection for the Graph
+        /// Gets the triples in the graph
         /// </summary>
         public virtual IEnumerable<Triple> Triples
         {
             get 
             {
                 return this._g.Triples; 
+            }
+        }
+
+        /// <summary>
+        /// Gets the quads in the graph
+        /// </summary>
+        public virtual IEnumerable<Quad> Quads
+        {
+            get
+            {
+                return this._g.Quads;
             }
         }
 

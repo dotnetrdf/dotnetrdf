@@ -128,13 +128,24 @@ namespace VDS.RDF
         #region Properties
 
         /// <summary>
-        /// Gets the set of Triples described in this Graph
+        /// Gets the set of Triples in this Graph
         /// </summary>
         public virtual IEnumerable<Triple> Triples
         {
             get
             {
                 return this._triples;
+            }
+        }
+
+        /// <summary>
+        /// Gets the set of Quads in the graph
+        /// </summary>
+        public virtual IEnumerable<Quad> Quads
+        {
+            get
+            {
+                return this._triples.Select(t => t.AsQuad(this._baseuri));
             }
         }
 

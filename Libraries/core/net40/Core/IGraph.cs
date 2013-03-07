@@ -97,6 +97,14 @@ namespace VDS.RDF
             get; 
         }
 
+        /// <summary>
+        /// Gets the quads for the graph
+        /// </summary>
+        IEnumerable<Quad> Quads
+        {
+            get;
+        }
+
         #endregion
 
         #region Assertion & Retraction

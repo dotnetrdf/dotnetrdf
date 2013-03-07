@@ -153,7 +153,16 @@ namespace VDS.RDF.Core
 
         public bool Clear(Uri graphUri)
         {
-            throw new NotImplementedException();
+            if (this.HasGraph(graphUri))
+            {
+                IGraph g = this[graphUri];
+                g.Clear();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool Remove(IGraph g)
@@ -165,8 +174,8 @@ namespace VDS.RDF.Core
         {
             if (this.HasGraph(graphUri))
             {
-                //foreach (Triple t in this.GetTr
-                throw new NotImplementedException();
+                IGraph dest = this[graphUri];
+                return dest.Retract(g.Triples);
             }
             else
             {
@@ -176,102 +185,153 @@ namespace VDS.RDF.Core
 
         public bool Remove(Uri graphUri)
         {
-            throw new NotImplementedException();
+            return this._graphs.Remove(graphUri);
         }
 
         public bool Remove(Uri graphUri, Triple t)
         {
-            throw new NotImplementedException();
+            if (this.HasGraph(graphUri))
+            {
+                IGraph g = this[graphUri];
+                return g.Retract(t);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public bool Remove(Quad q)
         {
-            throw new NotImplementedException();
+            return this.Remove(q.Graph, q.AsTriple());
         }
 
         public IEnumerable<Triple> Triples
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return (from g in this._graphs.Values
+                        from t in g.Triples
+                        select t);
+            }
         }
 
         public IEnumerable<Triple> GetTriplesWithSubject(IEnumerable<Uri> graphUris, INode subj)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithSubject(subj)
+                    select t);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(IEnumerable<Uri> graphUris, INode subj, INode pred)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithSubjectPredicate(subj, pred)
+                    select t);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectObject(IEnumerable<Uri> graphUris, INode subj, INode obj)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithSubjectObject(subj, obj)
+                    select t);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(IEnumerable<Uri> graphUris, INode pred)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithPredicate(pred)
+                    select t);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicateObject(IEnumerable<Uri> graphUris, INode pred, INode obj)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithPredicateObject(pred, obj)
+                    select t);
         }
 
         public IEnumerable<Triple> GetTriplesWithObject(IEnumerable<Uri> graphUris, INode obj)
         {
-            throw new NotImplementedException();
+            return (from g in graphUris.Select(u => this[u])
+                    from t in g.GetTriplesWithObject(obj)
+                    select t);
         }
 
         public IEnumerable<Quad> Quads
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                return (from g in this._graphs.Values
+                        from q in g.Quads
+                        select q);
+
+            }
         }
 
         public IEnumerable<Quad> GetQuadsWithSubject(INode subj)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithSubject(subj)
+                    select t.AsQuad(kvp.Key));
         }
 
         public IEnumerable<Quad> GetQuadsWithSubjectPredicate(INode subj, INode pred)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithSubjectPredicate(subj, pred)
+                    select t.AsQuad(kvp.Key));
         }
 
-        public IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj)
+        public IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj, INode obj)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithSubjectObject(subj, obj)
+                    select t.AsQuad(kvp.Key));
         }
 
-        public IEnumerable<Quad> GetQuadsWithPredicate(INode subj, INode obj)
+        public IEnumerable<Quad> GetQuadsWithPredicate(INode pred)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithPredicate(pred)
+                    select t.AsQuad(kvp.Key));
         }
 
         public IEnumerable<Quad> GetQuadsWithPredicateObject(INode pred, INode obj)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithPredicateObject(pred, obj)
+                    select t.AsQuad(kvp.Key));
         }
 
         public IEnumerable<Quad> GetQuadsWithObject(INode obj)
         {
-            throw new NotImplementedException();
+            return (from kvp in this._graphs
+                    from t in kvp.Value.GetTriplesWithObject(obj)
+                    select t.AsQuad(kvp.Key));
         }
 
         public bool Contains(Triple t)
         {
-            throw new NotImplementedException();
+            return this._graphs.Values.Any(g => g.ContainsTriple(t));
         }
 
         public bool Contains(IEnumerable<Uri> graphUris, Triple t)
         {
-            throw new NotImplementedException();
+            return (from u in graphUris
+                    select this[u].ContainsTriple(t)).Any();
         }
 
         public bool Contains(Quad q)
         {
-            throw new NotImplementedException();
+            if (this.HasGraph(q.Graph))
+            {
+                return this[q.Graph].ContainsTriple(q.AsTriple());
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

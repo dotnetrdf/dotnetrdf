@@ -248,19 +248,19 @@ namespace VDS.RDF
         IEnumerable<Quad> GetQuadsWithSubjectPredicate(INode subj, INode pred);
 
         /// <summary>
-        /// Get all quads that match the given subject across all graphs
-        /// </summary>
-        /// <param name="subj">Subject</param>
-        /// <returns></returns>
-        IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj);
-
-        /// <summary>
         /// Get all quads that match the given subject and object across all graphs
         /// </summary>
         /// <param name="subj">Subject</param>
         /// <param name="obj">Object</param>
         /// <returns></returns>
-        IEnumerable<Quad> GetQuadsWithPredicate(INode subj, INode obj);
+        IEnumerable<Quad> GetQuadsWithSubjectObject(INode subj, INode obj);
+
+        /// <summary>
+        /// Get all quads that match the given subject and object across all graphs
+        /// </summary>
+        /// <param name="pred">Predicate</param>
+        /// <returns></returns>
+        IEnumerable<Quad> GetQuadsWithPredicate(INode pred);
 
         /// <summary>
         /// Get all quads that match the given subject across all graphs
