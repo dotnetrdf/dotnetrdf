@@ -14,6 +14,8 @@ Changed
  - Fix for one form of AllegroGraphConnector constructor confusing Store and Catalog IDs
  - StoreHandler did not propogate namespaces to all graphs (CORE-334)
  - SPARQL expression parsing could occassionally reject some numeric literals incorrectly (CORE-332)
+ - GROUP BY could interact incorrectly with some operators such as VALUES and GRAPH resulting in incorrect results (CORE-336)
+ - GRAPH ?g { } was interpreted incorrectly (CORE-336)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
 - Documentation
