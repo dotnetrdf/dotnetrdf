@@ -7,7 +7,17 @@
 Changed
 - Core API
  - Nodes are no longer scoped to graphs
- - Simplified data models - INode, Triple, Quad, IGraph and IQuadStore
+ - Simplified data models - INode, Triple, Quad, IGraph and IGraphStore
+ - IGraph changes
+  - New Count property to return triple count
+  - Triples property now returns IEnumerable<Triple>
+  - New Quads property returns IEnumerable<Quad>
+  - NamespaceMap property renamed to Namespaces
+- Core library split out into multiple modules
+
+ Removed
+ - ITripleStore was removed, use IGraphStore instead
+ - ITripleContext was removed
 
 1.0.0
 -----
