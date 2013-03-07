@@ -557,5 +557,16 @@ WHERE
             SparqlQueryParser parser = new SparqlQueryParser();
             parser.ParseFromString(query);
         }
+
+        [TestMethod]
+        public void SparqlGroupByWithValues1()
+        {
+            String query = @"SELECT ?a WHERE { VALUES ( ?a ) { ( 1 ) ( 2 ) } } GROUP BY ?a";
+
+            QueryableGraph g = new QueryableGraph();
+            SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(2, results.Count);
+        }
     }
 }
