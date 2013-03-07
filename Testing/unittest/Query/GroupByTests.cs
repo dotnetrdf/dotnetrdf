@@ -565,8 +565,44 @@ WHERE
 
             QueryableGraph g = new QueryableGraph();
             SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
             Assert.IsFalse(results.IsEmpty);
             Assert.AreEqual(2, results.Count);
+        }
+
+        [TestMethod]
+        public void SparqlGroupByWithValues2()
+        {
+            String query = @"SELECT ?a ?b WHERE { VALUES ( ?a ?b ) { ( 1 2 ) ( 1 UNDEF ) ( UNDEF 2 ) } } GROUP BY ?a ?b";
+
+            QueryableGraph g = new QueryableGraph();
+            SparqlResultSet results = g.ExecuteQuery(query) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+            Assert.AreEqual(3, results.Count);
+        }
+
+        [TestMethod]
+        public void SparqlGroupByWithGraph1()
+        {
+            String query = @"SELECT ?g WHERE { GRAPH ?g { } } GROUP BY ?g";
+
+            TripleStore store = new TripleStore();
+            IGraph def = new Graph();
+            store.Add(def);
+            IGraph named = new Graph();
+            named.BaseUri = new Uri("http://name");
+            store.Add(named);
+
+            Assert.AreEqual(2, store.Graphs.Count);
+
+            SparqlQuery q = new SparqlQueryParser().ParseFromString(query);
+            SparqlResultSet results = store.ExecuteQuery(q) as SparqlResultSet;
+            Assert.IsNotNull(results);
+            Assert.IsFalse(results.IsEmpty);
+
+            //Count only covers named graphs
+            Assert.AreEqual(1, results.Count);
         }
     }
 }

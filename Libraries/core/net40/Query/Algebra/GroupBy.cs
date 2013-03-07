@@ -63,6 +63,7 @@ namespace VDS.RDF.Query.Algebra
         public BaseMultiset Evaluate(SparqlEvaluationContext context)
         {
             BaseMultiset results = context.Evaluate(this._pattern);
+            context.InputMultiset = results;
 
             //Identity/Null yields an empty multiset
             if (context.InputMultiset is IdentityMultiset || context.InputMultiset is NullMultiset)
