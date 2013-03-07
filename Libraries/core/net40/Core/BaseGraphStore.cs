@@ -6,14 +6,27 @@ using VDS.RDF.Collections;
 
 namespace VDS.RDF.Core
 {
+    /// <summary>
+    /// Abstract base implementation of a Graph store that uses a <see cref="IGraphCollection"/> behind the scenes
+    /// </summary>
     public abstract class BaseGraphStore
         : IGraphStore
     {
+        /// <summary>
+        /// The graph collection being used
+        /// </summary>
         protected readonly IGraphCollection _graphs;
 
+        /// <summary>
+        /// Creates a new graph store using the default graph collection implementation
+        /// </summary>
         public BaseGraphStore()
             : this(new GraphCollection()) { }
 
+        /// <summary>
+        /// Creates a new graph store using the given graph collection
+        /// </summary>
+        /// <param name="collection">Graph Collection</param>
         public BaseGraphStore(IGraphCollection collection)
         {
             if (collection == null) throw new ArgumentNullException("collection", "Graph Collection cannot be null");

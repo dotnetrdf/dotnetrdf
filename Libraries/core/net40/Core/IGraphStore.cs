@@ -35,7 +35,7 @@ namespace VDS.RDF
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The IGraphStore interface is a hybrid of the old ITripleStore and ISparqlDataset interfaces from the 1.0 APIs, it allows for data to be manipulated at either the Graph or Quad level as desired.
+    /// This interface is a hybrid of the old ITripleStore and ISparqlDataset interfaces from the 1.0 APIs, it allows for data to be manipulated at either the Graph, Triple or Quad level as desired.
     /// </para>
     /// </remarks>
     public interface IGraphStore
