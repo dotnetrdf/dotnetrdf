@@ -30,57 +30,87 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.Selection
 {
-    public class WhiteSpaceSelector<T> : DefaultSelector<T>
+    /// <summary>
+    /// A selector which adds white space as a deliminator
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    public class WhiteSpaceSelector<T> 
+        : DefaultSelector<T>
     {
+        /// <summary>
+        /// Gets whether the given character is a starting deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is whitespace of a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
             return Char.IsWhiteSpace(c) || base.IsStartingDeliminator(c);
         }
 
+        /// <summary>
+        /// Gets whether the given character is an ending deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is whitespace or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
             return Char.IsWhiteSpace(c) || base.IsEndingDeliminator(c);
         }
-
-        protected override char? RequireMatchingDeliminator(char c)
-        {
-            return null;
-        }
     }
 
-    public class PunctuationSelector<T> : DefaultSelector<T>
+    /// <summary>
+    /// A selector which adds punctuation as a deliminator
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    public class PunctuationSelector<T> 
+        : DefaultSelector<T>
     {
+        /// <summary>
+        /// Gets whether the given character is a starting deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is punctuation or a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
             return Char.IsPunctuation(c) || base.IsStartingDeliminator(c);
         }
 
+        /// <summary>
+        /// Gets whether the given character is an ending deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is punctuation or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
             return Char.IsPunctuation(c) || base.IsEndingDeliminator(c);
         }
-
-        protected override char? RequireMatchingDeliminator(char c)
-        {
-            return null;
-        }
     }
 
-    public class WhiteSpaceOrPunctuationSelection<T> : DefaultSelector<T>
+    /// <summary>
+    /// A selecotr which adds punctuation and white space as a deliminator
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    public class WhiteSpaceOrPunctuationSelection<T> 
+        : DefaultSelector<T>
     {
+        /// <summary>
+        /// Gets whether the given character is a starting deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is punctuation, white space or a standard deliminator, false otherwise</returns>
         protected override bool IsStartingDeliminator(char c)
         {
             return Char.IsWhiteSpace(c) || Char.IsPunctuation(c) || base.IsStartingDeliminator(c);
         }
 
+        /// <summary>
+        /// Gets whether the given character is an ending deliminator
+        /// </summary>
+        /// <param name="c">Character</param>
+        /// <returns>True if the character is punctuation, white space or a standard deliminator, false otherwise</returns>
         protected override bool IsEndingDeliminator(char c)
         {
             return Char.IsWhiteSpace(c) || Char.IsPunctuation(c) || base.IsEndingDeliminator(c);
-        }
-
-        protected override char? RequireMatchingDeliminator(char c)
-        {
-            return null;
         }
     }
 }

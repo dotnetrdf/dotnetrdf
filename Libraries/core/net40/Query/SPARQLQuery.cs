@@ -668,7 +668,7 @@ namespace VDS.RDF.Query
         /// Gets whether Optimisation has been applied to the query
         /// </summary>
         /// <remarks>
-        /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise">Optimise()</see> method.
+        /// This only indicates that an Optimiser has been applied.  You can always reoptimise the query using a different optimiser by using the relevant overload of the <see cref="SparqlQuery.Optimise()">Optimise()</see> method.
         /// </remarks>
         public bool IsOptimised
         {

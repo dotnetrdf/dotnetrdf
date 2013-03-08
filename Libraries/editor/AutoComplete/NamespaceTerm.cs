@@ -30,60 +30,82 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Represents information about a term defined in some namespace
+    /// </summary>
     public class NamespaceTerm
     {
-        private String _namespace, _term, _label = String.Empty;
-
+        /// <summary>
+        /// Creates a new namespace term
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="term">Term</param>
         public NamespaceTerm(String namespaceUri, String term)
-        {
-            this._namespace = namespaceUri;
-            this._term = term;
-        }
+            : this(namespaceUri, term, String.Empty) { }
 
+        /// <summary>
+        /// Creates a new namespace term
+        /// </summary>
+        /// <param name="namespaceUri">Namespace URI</param>
+        /// <param name="term">Term</param>
+        /// <param name="label">Label</param>
         public NamespaceTerm(String namespaceUri, String term, String label)
-            : this(namespaceUri, term)
         {
-            this._label = label;
+            this.NamespaceUri = namespaceUri;
+            this.Term = term;
+            this.Label = label;
         }
 
+        /// <summary>
+        /// Gets the Namespace URI
+        /// </summary>
         public String NamespaceUri
         {
-            get
-            {
-                return this._namespace;
-            }
+            get;
+            private set;
         }
 
+        /// <summary>
+        /// Gets the term
+        /// </summary>
         public String Term
         {
-            get
-            {
-                return this._term;
-            }
+            get;
+            private set;
         }
 
+        /// <summary>
+        /// Gets/Sets the label
+        /// </summary>
         public String Label
         {
-            get
-            {
-                return this._label;
-            }
-            set
-            {
-                this._label = value;
-            }
+            get;
+            set;
         }
 
+        /// <summary>
+        /// Gets the URI string for the term
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
-            return this._namespace + this._term;
+            return this.NamespaceUri + this.Term;
         }
 
+        /// <summary>
+        /// Gets the hash code for the term
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return this.ToString().GetHashCode();
         }
 
+        /// <summary>
+        /// Determines whether a term is equal to some other object
+        /// </summary>
+        /// <param name="obj">Other Object</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null) return false;

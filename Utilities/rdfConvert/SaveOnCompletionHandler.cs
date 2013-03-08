@@ -29,7 +29,8 @@ using VDS.RDF.Parsing.Handlers;
 
 namespace VDS.RDF.Utilities.Convert
 {
-    class SaveOnCompletionHandler : GraphHandler
+    class SaveOnCompletionHandler 
+        : GraphHandler
     {
         private IRdfWriter _writer;
         private String _file;
@@ -71,7 +72,8 @@ namespace VDS.RDF.Utilities.Convert
         }
     }
 
-    class SaveStoreOnCompletionHandler : StoreHandler
+    class SaveStoreOnCompletionHandler
+        : StoreHandler
     {
         private IStoreWriter _writer;
         private String _file;

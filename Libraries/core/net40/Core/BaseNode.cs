@@ -154,7 +154,7 @@ namespace VDS.RDF
         /// Implemented by getting the Hash Code of the result of ToString for a Node prefixed with its Node Type, this is pre-computed for efficiency when a Node is created since Nodes are immutable.  See remarks on ToString for more detail.
         /// </para>
         /// <para>
-        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Triple will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details)
+        /// Since Hash Codes are based on a String representation there is no guarantee of uniqueness though the same Node will always give the same Hash Code (on a given Platform - see the MSDN Documentation for <see cref="string.GetHashCode">string.GetHashCode()</see> for further details)
         /// </para>
         /// </remarks>
         public override int GetHashCode()

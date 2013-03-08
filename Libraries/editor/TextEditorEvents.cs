@@ -30,23 +30,37 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
-    public class TextEditorEventArgs<T> : EventArgs
+    /// <summary>
+    /// Event arguments for text editor events
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    public class TextEditorEventArgs<T> 
+        : EventArgs
     {
-        private ITextEditorAdaptor<T> _editor;
-
+        /// <summary>
+        /// Creates new event arguments
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public TextEditorEventArgs(ITextEditorAdaptor<T> editor)
         {
-            this._editor = editor;
+            this.TextEditor = editor;
         }
 
+        /// <summary>
+        /// Gets the text editor that was affected by the event
+        /// </summary>
         public ITextEditorAdaptor<T> TextEditor
         {
-            get
-            {
-                return this._editor;
-            }
+            get;
+            private set;
         }
     }
 
+    /// <summary>
+    /// Delegate for text editor events
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
+    /// <param name="sender">Sender</param>
+    /// <param name="args">Event Arguments</param>
     public delegate void TextEditorEventHandler<T>(Object sender, TextEditorEventArgs<T> args);
 }

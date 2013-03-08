@@ -37,16 +37,33 @@ using VDS.RDF.Utilities.Editor.AutoComplete.Vocabularies;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete
 {
+    /// <summary>
+    /// Auto-completer implementation for SPARQL
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class SparqlAutoCompleter<T>
         : TurtleAutoCompleter<T>
     {
         private SparqlQuerySyntax _syntax;
         private HashSet<ICompletionData> _vars = new HashSet<ICompletionData>();
+
+        /// <summary>
+        /// Regular expression for Variables
+        /// </summary>
         protected String VariableRegexPattern = @"[?$](_|\p{L}|\d)(_|-|\p{L}|\p{N})*";
 
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public SparqlAutoCompleter(ITextEditorAdaptor<T> editor)
             : this(editor, SparqlQuerySyntax.Sparql_1_1) { }
 
+        /// <summary>
+        /// Creates a new auto-complete for the specific SPARQL syntax
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
+        /// <param name="syntax">SPARQL Syntax</param>
         public SparqlAutoCompleter(ITextEditorAdaptor<T> editor, SparqlQuerySyntax? syntax)
             : base(editor)
         {
@@ -86,6 +103,9 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             this._keywords.Sort();
         }
 
+        /// <summary>
+        /// Indicates that new terms cannot be declared
+        /// </summary>
         protected override bool CanDeclareNewTerms
         {
             get
@@ -94,12 +114,18 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Detects the auto-complete state
+        /// </summary>
         protected override void DetectStateInternal()
         {
             base.DetectStateInternal();
             this.DetectVariables();
         }
 
+        /// <summary>
+        /// Detects declared variables
+        /// </summary>
         protected virtual void DetectVariables()
         {
             this._vars.Clear();
@@ -109,12 +135,20 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Starts declaration completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected override void StartDeclarationCompletion(String newText)
         {
             //We don't start declarations like Turtle does so don't do anything here
             return;
         }
 
+        /// <summary>
+        /// Start alternate literal completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartAlternateLiteralCompletion(String newText)
         {
             if (this.TemporaryState == AutoCompleteState.AlternateLiteral || this.TemporaryState == AutoCompleteState.AlternateLongLiteral)
@@ -128,12 +162,20 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Start variable completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void StartVariableCompletion(String newText)
         {
             this.State = AutoCompleteState.Variable;
             this._editor.Suggest(this._vars);
         }
 
+        /// <summary>
+        /// Try to auto-complete
+        /// </summary>
+        /// <param name="newText">New Text</param>
         public override void TryAutoComplete(String newText)
         {
             base.TryAutoComplete(newText);
@@ -233,6 +275,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try alternate long literal completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryAlternateLongLiteralCompletion(String newText)
         {
             if (newText == "'")
@@ -250,6 +296,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try alternate literal completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryAlternateLiteralCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -298,6 +348,10 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try variable completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected virtual void TryVariableCompletion(String newText)
         {
             if (this.IsNewLine(newText))
@@ -327,19 +381,32 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Try declaration completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected override void TryDeclarationCompletion(String newText)
         {
             //We don't do declarations like Turtle does so don't do anything here
             return;
         }
 
+        /// <summary>
+        /// Try prefix completion
+        /// </summary>
+        /// <param name="newText">New Text</param>
         protected override void TryPrefixCompletion(String newText)
         {
             //We don't do Prefix declarations like Turtle does so don't do anything here
             return;
         }
 
-        public override bool IsValidPartialQName(string value)
+        /// <summary>
+        /// Is something a valid partial QName?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected override bool IsValidPartialQName(string value)
         {
             String ns, localname;
             if (value.Contains(':'))
@@ -424,7 +491,12 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
             return true;
         }
 
-        public virtual bool IsValidPartialVariableName(String value)
+        /// <summary>
+        /// Is something a valid partial variable name?
+        /// </summary>
+        /// <param name="value">Value</param>
+        /// <returns></returns>
+        protected virtual bool IsValidPartialVariableName(String value)
         {
             if (value.Length == 0) return false;
 
@@ -464,16 +536,32 @@ namespace VDS.RDF.Utilities.Editor.AutoComplete
         }
     }
 
+    /// <summary>
+    /// Auto-completer implementation for SPARQL 1.1
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class Sparql11AutoCompleter<T>
         : SparqlAutoCompleter<T>
     {
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public Sparql11AutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor, SparqlQuerySyntax.Sparql_1_1) { }
     }
 
+    /// <summary>
+    /// Auto-completer implementation for SPARQL 1.0
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public class Sparql10AutoCompleter<T>
         : SparqlAutoCompleter<T>
     {
+        /// <summary>
+        /// Creates a new auto-completer
+        /// </summary>
+        /// <param name="editor">Text Editor</param>
         public Sparql10AutoCompleter(ITextEditorAdaptor<T> editor)
             : base(editor, SparqlQuerySyntax.Sparql_1_0) { }
     }

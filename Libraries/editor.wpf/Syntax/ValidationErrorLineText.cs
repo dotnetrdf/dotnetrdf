@@ -34,17 +34,32 @@ using ICSharpCode.AvalonEdit.Rendering;
 
 namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
 {
+    /// <summary>
+    /// Element that represents an error highlight
+    /// </summary>
     public class ValidationErrorLineText
         : VisualLineText
     {
         private VisualOptions<FontFamily, Color> _options;
 
+        /// <summary>
+        /// Creates an element
+        /// </summary>
+        /// <param name="options">Visual Options</param>
+        /// <param name="parentLine">Visual Line</param>
+        /// <param name="length">Element Length</param>
         public ValidationErrorLineText(VisualOptions<FontFamily, Color> options, VisualLine parentLine, int length)
             : base(parentLine, length)
         {
             this._options = options;
         }
 
+        /// <summary>
+        /// Creates a text run
+        /// </summary>
+        /// <param name="startVisualColumn">Staring visual column</param>
+        /// <param name="context">Context</param>
+        /// <returns></returns>
         public override TextRun CreateTextRun(int startVisualColumn, ITextRunConstructionContext context)
         {
             this.TextRunProperties.SetTextDecorations(TextDecorations.Underline);
@@ -76,15 +91,23 @@ namespace VDS.RDF.Utilities.Editor.Wpf.Syntax
             return base.CreateTextRun(startVisualColumn, context);
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="length">Length</param>
+        /// <returns></returns>
         protected override VisualLineText CreateInstance(int length)
         {
             return new ValidationErrorLineText(this._options, this.ParentVisualLine, length);
         }
 
+        /// <summary>
+        /// Handle query cursor event
+        /// </summary>
+        /// <param name="e">Event Arguments</param>
         protected override void OnQueryCursor(System.Windows.Input.QueryCursorEventArgs e)
         {
             e.Handled = true;
-            
         }
     }
 }

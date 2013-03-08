@@ -31,8 +31,16 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Utilities.Editor.Syntax
 {
+    /// <summary>
+    /// Static Helper class with useful syntax extensions
+    /// </summary>
     public static class SyntaxExtensions
     {
+        /// <summary>
+        /// Convert friendly display names for syntax into recognized internal syntax name
+        /// </summary>
+        /// <param name="name">Friendly Name</param>
+        /// <returns>Internal Syntax Name</returns>
         public static String GetSyntaxName(this String name)
         {
             switch (name)
@@ -71,6 +79,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Convert SPARQL results parser into internal syntax name
+        /// </summary>
+        /// <param name="parser">SPARQL Results Parser</param>
+        /// <returns>Internal Syntax Name</returns>
         public static String GetSyntaxName(this ISparqlResultsReader parser)
         {
             if (parser is SparqlJsonParser)
@@ -87,6 +100,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Converts RDF parser into internal syntax name
+        /// </summary>
+        /// <param name="parser">RDF Parser</param>
+        /// <returns>Internal Syntax Name</returns>
         public static String GetSyntaxName(this IRdfReader parser)
         {
             /*if (parser is HtmlPlusRdfAParser)
@@ -123,6 +141,11 @@ namespace VDS.RDF.Utilities.Editor.Syntax
             }
         }
 
+        /// <summary>
+        /// Converts RDF dataset parsers into internal syntax name
+        /// </summary>
+        /// <param name="parser">Dataset Parser</param>
+        /// <returns>Internal Syntax Name</returns>
         public static String GetSyntaxName(this IStoreReader parser)
         {
             if (parser is NQuadsParser)

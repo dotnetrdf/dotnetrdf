@@ -19,6 +19,7 @@ dotNetRDF core library which typically incorporates bug fixes and performance im
 upgrade to these latest versions.
 
 rdfConvert
+- Fix a bug where converting from graph to dataset formats would lose prefixes (TOOLS-333)
 
 rdfEditor (Not available under Mono)
  
@@ -27,14 +28,17 @@ rdfOptStats
 rdfQuery
 
 rdfServer
+- Fix a couple of bugs which meant that SPARQL updates would not work correctly (TOOLS-323, TOOLS-324)
 
 rdfServerGUI
  
 rdfWebDeploy
+- Fix Nuget Dependencies
 
 soh 
 
 SparqlGUI
 
 StoreManager
+- Native SPARQL Update support for AllegroGraph (CORE-308)
 

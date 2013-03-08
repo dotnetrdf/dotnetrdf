@@ -312,7 +312,7 @@ namespace VDS.RDF.Query
                         return new SubtractionExpression(firstTerm, this.TryParseMultiplicativeExpression(tokens));
                     case Token.PLAINLITERAL:
                         tokens.Dequeue();
-                        return new AdditionExpression(firstTerm, this.TryParseNumericLiteral(next,tokens));
+                        return new AdditionExpression(firstTerm, this.TryParseNumericLiteral(next, tokens, true));
                     default:
                         return firstTerm;
                 }
@@ -960,7 +960,7 @@ namespace VDS.RDF.Query
                     if (SparqlSpecsHelper.GetNumericTypeFromDataTypeUri(u) != SparqlNumericType.NaN)
                     {
                         //Should be a Number
-                        return this.TryParseNumericLiteral(dtlit, tokens);
+                        return this.TryParseNumericLiteral(dtlit, tokens, false);
                     }
                     else if (XmlSpecsHelper.XmlSchemaDataTypeBoolean.Equals(u.AbsoluteUri))
                     {
@@ -1008,11 +1008,11 @@ namespace VDS.RDF.Query
             }
             else
             {
-                return this.TryParseNumericLiteral(lit, tokens);
+                return this.TryParseNumericLiteral(lit, tokens, true);
             }
         }
 
-        private ISparqlExpression TryParseNumericLiteral(IToken literal, Queue<IToken> tokens)
+        private ISparqlExpression TryParseNumericLiteral(IToken literal, Queue<IToken> tokens, bool requireValidLexicalForm)
         {
             switch (literal.TokenType)
             {
@@ -1049,26 +1049,16 @@ namespace VDS.RDF.Query
                         dtUri = Tools.ResolveQName(dt, this._nsmapper, this._baseUri);
                     }
 
-                    //Return a Numeric Expression Term if it's an Integer/Decimal/Double
-                    if (XmlSpecsHelper.XmlSchemaDataTypeInteger.Equals(dtUri) && SparqlSpecsHelper.IsInteger(literal.Value))
+                    //Try to return a numeric expression, enforce the need for a valid numeric value where relevant
+                    LiteralNode lit = new LiteralNode(null, literal.Value, dtUri);
+                    IValuedNode value = lit.AsValuedNode();
+                    if (requireValidLexicalForm && value.NumericType == SparqlNumericType.NaN)
                     {
-                        return new ConstantTerm(new LongNode(null, Int64.Parse(literal.Value)));
-                    }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeDecimal.Equals(dtUri) && SparqlSpecsHelper.IsDecimal(literal.Value))
-                    {
-                        return new ConstantTerm(new DecimalNode(null, Decimal.Parse(literal.Value)));
-                    }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeFloat.Equals(dtUri) && SparqlSpecsHelper.IsFloat(literal.Value))
-                    {
-                        return new ConstantTerm(new FloatNode(null, Single.Parse(literal.Value)));
-                    }
-                    else if (XmlSpecsHelper.XmlSchemaDataTypeDouble.Equals(dtUri) && SparqlSpecsHelper.IsDouble(literal.Value))
-                    {
-                        return new ConstantTerm(new DoubleNode(null, Double.Parse(literal.Value)));
+                        throw Error("The Literal '" + literal.Value + "' with Datatype URI '" + dtUri + "' is not a valid Integer, Decimal or Double", literal);
                     }
                     else
                     {
-                        throw Error("The Literal '" + literal.Value + "' with Datatype URI '" + dtUri + "' is not a valid Integer, Decimal or Double", literal);
+                        return new ConstantTerm(value);
                     }
                     
                 case Token.LITERAL:
@@ -1084,7 +1074,7 @@ namespace VDS.RDF.Query
                             LiteralWithDataTypeToken dtlit = new LiteralWithDataTypeToken(literal, datatype);
 
                             //Self-recurse to save replicating code
-                            return this.TryParseNumericLiteral(dtlit, tokens);
+                            return this.TryParseNumericLiteral(dtlit, tokens, true);
                         }
                     }
                     //Use Regex to see if it's a Integer/Decimal/Double

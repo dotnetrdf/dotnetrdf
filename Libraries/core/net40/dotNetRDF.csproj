@@ -271,7 +271,6 @@
     <Compile Include="Core\NamespaceMapper.cs" />
     <Compile Include="Parsing\NTriplesParser.cs" />
     <Compile Include="Parsing\Tokens\Notation3Tokeniser.cs" />
-    <Compile Include="Writing\InternalXmlWriter.cs" />
     <Compile Include="Query\SparqlRemoteEndpoint.cs" />
     <Compile Include="Query\SparqlResultSet.cs" />
     <Compile Include="Query\SparqlSpecsHelper.cs" />

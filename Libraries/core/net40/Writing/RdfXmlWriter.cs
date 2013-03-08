@@ -41,7 +41,7 @@ namespace VDS.RDF.Writing
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML Writers.  While it is faster than the <see cref="FastRdfXmlWriter">FastRdfXmlWriter</see> achieving a speed of around 42,000 Triples/second the syntax produced is not as compressed in some cases as that writer.  The main advantage of this writer is that it is entirely streaming so it uses much less memory than the <see cref="FastRdfXmlWriter">FastRdfXmlWriter</see> which has to build the entire XML DOM in-memory prior to serialization.
+    /// This is a fast writer based on the fast writing technique used in the other non-RDF/XML Writers.
     /// </para>
     /// <para>
     /// <strong>Note:</strong> If the Graph to be serialized makes heavy use of collections it may result in a StackOverflowException.  To address this set the <see cref="RdfXmlWriter.CompressionLevel">CompressionLevel</see> property to &lt; 5

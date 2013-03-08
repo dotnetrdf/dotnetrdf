@@ -30,11 +30,24 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public class KeywordData : BaseCompletionData
+    /// <summary>
+    /// Completion data for keywords
+    /// </summary>
+    public class KeywordData 
+        : BaseCompletionData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="keyword">Keyword</param>
         public KeywordData(String keyword)
             : this(keyword, "The " + keyword + " Keyword") { }
 
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="keyword">Keyword</param>
+        /// <param name="description">Description</param>
         public KeywordData(String keyword, String description)
             : base(keyword, keyword, description) { }
     }

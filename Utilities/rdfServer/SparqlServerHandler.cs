@@ -72,7 +72,7 @@ namespace VDS.RDF.Utilities.Server
             if (this._config == null)
             {
                 //Try and get the Configuration Graph
-                IGraph g = (IGraph)context.Server.State["ConfigurationGraph"];
+                IGraph g = (IGraph)context.Server.Context["ConfigurationGraph"];
                 if (g == null) throw new DotNetRdfConfigurationException("The HTTP Server does not contain a Configuration Graph in its State Information");
 
                 //Generate the expected Path and try and load the Configuration using the appropriate Node
@@ -660,6 +660,7 @@ namespace VDS.RDF.Utilities.Server
         protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex)
         {
             HandlerHelper.HandleQueryErrors(new ServerContext(context), this._config, title, query, ex);
+            context.Response.OutputStream.Flush();
         }
 
         /// <summary>
@@ -673,6 +674,7 @@ namespace VDS.RDF.Utilities.Server
         protected virtual void HandleQueryErrors(HttpServerContext context, String title, String query, Exception ex, int statusCode)
         {
             HandlerHelper.HandleQueryErrors(new ServerContext(context), this._config, title, query, ex, statusCode);
+            context.Response.OutputStream.Flush();
         }
 
         /// <summary>
@@ -685,6 +687,7 @@ namespace VDS.RDF.Utilities.Server
         protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex)
         {
             HandlerHelper.HandleUpdateErrors(new ServerContext(context), this._config, title, update, ex);
+            context.Response.OutputStream.Flush();
         }
 
         /// <summary>
@@ -698,6 +701,7 @@ namespace VDS.RDF.Utilities.Server
         protected virtual void HandleUpdateErrors(HttpServerContext context, String title, String update, Exception ex, int statusCode)
         {
             HandlerHelper.HandleUpdateErrors(new ServerContext(context), this._config, title, update, ex, statusCode);
+            context.Response.OutputStream.Flush();
         }
 
         #endregion
@@ -857,8 +861,9 @@ namespace VDS.RDF.Utilities.Server
 
             //Query Form
             output.AddAttribute(HtmlTextWriterAttribute.Name, "sparqlUpdate");
-            output.AddAttribute("method", "get");
+            output.AddAttribute("method", "post");
             output.AddAttribute("action", context.Request.Url.AbsoluteUri);
+            output.AddAttribute("enctype", MimeTypesHelper.WWWFormURLEncoded);
             output.RenderBeginTag(HtmlTextWriterTag.Form);
 
             if (!this._config.IntroductionText.Equals(String.Empty))

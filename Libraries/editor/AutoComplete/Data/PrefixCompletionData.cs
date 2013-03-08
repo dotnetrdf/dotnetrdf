@@ -30,20 +30,49 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor.AutoComplete.Data
 {
-    public abstract class BasePrefixDeclarationData : BaseCompletionData
+    /// <summary>
+    /// Completion data for prefix declarations
+    /// </summary>
+    public abstract class BasePrefixDeclarationData
+        : BaseCompletionData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="nsPrefix">Namespace Prefix</param>
+        /// <param name="nsUri">Namespace URI</param>
+        /// <param name="prefix">Prefix Text</param>
+        /// <param name="postfix">Postfix Text</param>
         public BasePrefixDeclarationData(String nsPrefix, String nsUri, String prefix, String postfix)
             : base(prefix + nsPrefix + ": <" + nsUri + ">" + postfix, prefix + nsPrefix + ": <" + nsUri + ">" + postfix, "Inserts a prefix declaration for the " + nsPrefix + " prefix which has a namespace URI of " + nsUri) { }
     }
 
-    public class TurtleStylePrefixDeclarationData : BasePrefixDeclarationData
+    /// <summary>
+    /// Completion data for Turtle style prefix declarations
+    /// </summary>
+    public class TurtleStylePrefixDeclarationData
+        : BasePrefixDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="nsPrefix">Namespace Prefix</param>
+        /// <param name="nsUri">Namespace URI</param>
         public TurtleStylePrefixDeclarationData(String nsPrefix, String nsUri)
             : base(nsPrefix, nsUri, "@prefix ", ".") { }
     }
 
-    public class SparqlStylePrefixDeclarationData : BasePrefixDeclarationData
+    /// <summary>
+    /// Completion data for SPARQL style prefix declarations
+    /// </summary>
+    public class SparqlStylePrefixDeclarationData 
+        : BasePrefixDeclarationData
     {
+        /// <summary>
+        /// Creates new completion data
+        /// </summary>
+        /// <param name="nsPrefix">Namespace Prefix</param>
+        /// <param name="nsUri">Namespace URI</param>
         public SparqlStylePrefixDeclarationData(String nsPrefix, String nsUri)
             : base(nsPrefix, nsUri, "PREFIX ", String.Empty) { }
     }

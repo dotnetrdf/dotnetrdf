@@ -30,16 +30,34 @@ using System.Text;
 
 namespace VDS.RDF.Utilities.Editor
 {
+    /// <summary>
+    /// Interface for text editor factories
+    /// </summary>
+    /// <typeparam name="T">Control Type</typeparam>
     public interface ITextEditorAdaptorFactory<T>
     {
+        /// <summary>
+        /// Create a new text editor
+        /// </summary>
+        /// <returns>New Text Editor</returns>
         ITextEditorAdaptor<T> CreateAdaptor();
     }
 
+    /// <summary>
+    /// Interface for text editor factories that support visual options
+    /// </summary>
+    /// <typeparam name="TControl">Control Type</typeparam>
+    /// <typeparam name="TFont">Font Type</typeparam>
+    /// <typeparam name="TColor">Colour Type</typeparam>
     public interface IVisualTextEditorAdaptorFactory<TControl, TFont, TColor>
         : ITextEditorAdaptorFactory<TControl>
           where TFont : class
           where TColor : struct
     {
+        /// <summary>
+        /// Gets the default visual options
+        /// </summary>
+        /// <returns>Default Visual Options</returns>
         VisualOptions<TFont, TColor> GetDefaultVisualOptions();
     }
 }
