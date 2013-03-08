@@ -1477,7 +1477,7 @@ namespace VDS.RDF.Core
         public void MimeTypesGetWriterByTypeUnknown()
         {
             IRdfWriter writer = MimeTypesHelper.GetWriter("application/unknown");
-            Assert.IsInstanceOfType(writer, typeof(TurtleWriter));
+            Assert.IsInstanceOfType(writer, typeof(CompressingTurtleWriter));
         }
 
         [TestMethod]
