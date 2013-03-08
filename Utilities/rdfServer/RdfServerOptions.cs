@@ -358,12 +358,12 @@ namespace VDS.RDF.Utilities.Server
                     }
                 }
             }
-            catch (RdfParserSelectionException selectEx)
+            catch (RdfParserSelectionException)
             {
                 g = null;
                 Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' could not be loaded as a suitable parser was not found");
             }
-            catch (RdfParseException parseEx)
+            catch (RdfParseException)
             {
                 g = null;
                 Console.Error.WriteLine("rdfServer: Error: Configuration File '" + this.ConfigurationFile + "' was not valid RDF");
