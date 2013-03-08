@@ -107,7 +107,6 @@ namespace VDS.RDF.Storage
         /// </summary>
         protected SesameServer _server;
 
-        private StringBuilder _output = new StringBuilder();
         private SparqlQueryParser _parser = new SparqlQueryParser();
         private NTriplesFormatter _formatter = new NTriplesFormatter();
 
@@ -645,7 +644,6 @@ namespace VDS.RDF.Storage
                         //Have to do a DELETE for each individual Triple
                         foreach (Triple t in removals.Distinct())
                         {
-                            this._output.Remove(0, this._output.Length);
                             serviceParams["subj"] = this._formatter.Format(t.Subject);
                             serviceParams["pred"] = this._formatter.Format(t.Predicate);
                             serviceParams["obj"] = this._formatter.Format(t.Object);
@@ -912,7 +910,6 @@ namespace VDS.RDF.Storage
                             serviceParams.Add("context", "null");
                         }
 
-                        this._output.Remove(0, this._output.Length);
                         serviceParams.Add("subj", this._formatter.Format(t.Subject));
                         serviceParams.Add("pred", this._formatter.Format(t.Predicate));
                         serviceParams.Add("obj", this._formatter.Format(t.Object));
