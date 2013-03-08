@@ -174,7 +174,7 @@ namespace VDS.RDF.Storage
                 Options.HttpDebugging = true;
 
                 SesameHttpProtocolConnector sesame = SesameTests.GetConnection();
-                sesame.Update("LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
+                sesame.Update("DROP GRAPH <http://example.org/sparqlUpdateLoad>; LOAD <http://dbpedia.org/resource/Ilkeston> INTO GRAPH <http://example.org/sparqlUpdateLoad>");
 
                 Graph orig = new Graph();
                 orig.LoadFromUri(new Uri("http://dbpedia.org/resource/Ilkeston"));
