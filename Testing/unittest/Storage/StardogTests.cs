@@ -233,7 +233,7 @@ namespace VDS.RDF.Storage
                 INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
 
                 stardog.UpdateGraph(g.BaseUri, null, g.GetTriplesWithPredicate(rdfType));
-                g.Retract(g.GetTriplesWithPredicate(rdfType));
+                g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 Graph h = new Graph();
                 stardog.LoadGraph(h, new Uri("http://example.org/graph"));
@@ -269,7 +269,7 @@ namespace VDS.RDF.Storage
                 INode rdfType = g.CreateUriNode(new Uri(VDS.RDF.Parsing.RdfSpecsHelper.RdfType));
                 Graph types = new Graph();
                 types.Assert(g.GetTriplesWithPredicate(rdfType));
-                g.Retract(g.GetTriplesWithPredicate(rdfType));
+                g.Retract(g.GetTriplesWithPredicate(rdfType).ToList());
 
                 //Save the Graph without the rdf:type triples
                 stardog.SaveGraph(g);
