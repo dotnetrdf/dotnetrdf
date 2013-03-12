@@ -424,6 +424,21 @@ namespace VDS.RDF.Ontology
         }
 
         [TestMethod]
+        public void OntologyProperties()
+        {
+            OntologyGraph g = new OntologyGraph();
+            g.LoadFromFile("ontology.ttl");
+
+            //Check Property Counts
+            Assert.AreEqual(1, g.RdfProperties.Count());
+            Assert.AreEqual(1, g.OwlAnnotationProperties.Count());
+            Assert.AreEqual(1, g.OwlDatatypeProperties.Count());
+            Assert.AreEqual(1, g.OwlObjectProperties.Count());
+            Assert.AreEqual(3, g.OwlProperties.Count());
+            Assert.AreEqual(4, g.AllProperties.Count());
+        }
+
+        [TestMethod]
         public void OntologyClassCount1()
         {
             OntologyGraph g = new OntologyGraph();

@@ -308,6 +308,9 @@
     <Content Include="resources\ntriples\test.nt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\ontology.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\rdfa\webscience.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
