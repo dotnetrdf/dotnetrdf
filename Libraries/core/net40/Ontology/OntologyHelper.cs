@@ -73,7 +73,7 @@ namespace VDS.RDF.Ontology
                             OwlClass = NamespaceMapper.OWL + "Class",
                             RdfsProperty = NamespaceMapper.RDF + "Property",
                             OwlObjectProperty = NamespaceMapper.OWL + "ObjectProperty",
-                            OwlDataProperty = NamespaceMapper.OWL + "DatatypeProperty",
+                            OwlDatatypeProperty = NamespaceMapper.OWL + "DatatypeProperty",
                             OwlAnnotationProperty = NamespaceMapper.OWL + "AnnotationProperty",
                             OwlOntology = NamespaceMapper.OWL + "Ontology";
 

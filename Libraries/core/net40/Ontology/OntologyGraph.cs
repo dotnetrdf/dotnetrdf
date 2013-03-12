@@ -243,7 +243,7 @@ namespace VDS.RDF.Ontology
         {
             get
             {
-                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDataProperty)));
+                return this.GetProperties(this.CreateUriNode(UriFactory.Create(OntologyHelper.OwlDatatypeProperty)));
             }
         }
 
