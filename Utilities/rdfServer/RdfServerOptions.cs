@@ -32,6 +32,7 @@ using VDS.RDF;
 using VDS.RDF.Configuration;
 using VDS.RDF.Parsing;
 using VDS.Web;
+using VDS.Web.Consoles;
 using VDS.Web.Handlers;
 using VDS.Web.Logging;
 
@@ -253,7 +254,7 @@ namespace VDS.RDF.Utilities.Server
             Console.WriteLine();
             Console.WriteLine("-l log.txt");
             Console.WriteLine("-log log.txt");
-            Console.WriteLine(" Sets the log file used for logging");
+            Console.WriteLine(" Sets the log file used for HTTP request logging");
             Console.WriteLine();
             Console.WriteLine("-p port");
             Console.WriteLine("-port port");
@@ -298,7 +299,7 @@ namespace VDS.RDF.Utilities.Server
             {
                 if (definition.FileExtensions.Any())
                 {
-                    server.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
+                    server.MimeTypes.AddMimeType(definition.CanonicalFileExtension, definition.CanonicalMimeType);
                 }
             }
 
@@ -312,17 +313,14 @@ namespace VDS.RDF.Utilities.Server
                 if (!this.QuietMode)
                 {
                     //Console Logging only applies when not in Quiet Mode
-                    if (this.VerboseMode)
-                    {
-                        server.AddLogger(new ConsoleLogger(this.LogFormat));
-                    }
-                    else
-                    {
-                        server.AddLogger(new ConsoleErrorLogger());
-                    }
+                    server.AddLogger(new ConsoleLogger(this.LogFormat));
+                    server.Console = new ProcessConsole();
+                }
+                else
+                {
+                    server.Console = new NullConsole();
                 }
             }
-
 
             return server;
         }
