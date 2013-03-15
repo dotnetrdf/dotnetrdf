@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Text;
 using VDS.Web;
+using VDS.Web.Consoles;
 using VDS.Web.Logging;
 
 namespace VDS.RDF.Utilities.Server.GUI
@@ -99,6 +100,7 @@ namespace VDS.RDF.Utilities.Server.GUI
     {
         private HttpServer _server;
         private MonitorLogger _activeLogger;
+        private MonitorConsole _activeConsole;
         private String _logFormat;
 
         /// <summary>
@@ -175,8 +177,23 @@ namespace VDS.RDF.Utilities.Server.GUI
         public void AttachMonitor(ServerMonitor monitor)
         {
             this.DetachMonitor();
+
+            //Set up logger
             this._activeLogger = new MonitorLogger(monitor, this._logFormat);
             this._server.AddLogger(this._activeLogger);
+
+            //Set up console
+            this._activeConsole = new MonitorConsole(monitor);
+            if (this._server.Console is MulticastConsole)
+            {
+                ((MulticastConsole)this._server.Console).AddConsole(this._activeConsole);
+            }
+            else
+            {
+                IServerConsole current = this._server.Console;
+                IServerConsole multicast = new MulticastConsole(new IServerConsole[] { current, this._activeConsole });
+                this._server.Console = multicast;
+            }
         }
 
         /// <summary>
@@ -187,6 +204,15 @@ namespace VDS.RDF.Utilities.Server.GUI
             if (this._activeLogger != null)
             {
                 this._server.RemoveLogger(this._activeLogger);
+                this._activeLogger = null;
+            }
+            if (this._activeConsole != null)
+            {
+                if (this._server.Console is MulticastConsole)
+                {
+                    ((MulticastConsole)this._server.Console).RemoveConsole(this._activeConsole);
+                }
+                this._activeConsole = null;
             }
         }
 

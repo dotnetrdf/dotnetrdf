@@ -35,6 +35,7 @@ using VDS.RDF.Query;
 using VDS.RDF.Update;
 using VDS.RDF.Update.Commands;
 using VDS.RDF.Web;
+using VDS.RDF.Web.Configuration;
 using VDS.RDF.Web.Configuration.Server;
 using VDS.RDF.Writing;
 using VDS.Web;
@@ -53,13 +54,13 @@ namespace VDS.RDF.Utilities.Server
         private SparqlServerConfiguration _config;
 
         /// <summary>
-        /// Gets that the Handler is reusable
+        /// Gets that the Handler is not reusable
         /// </summary>
         public bool IsReusable
         {
             get 
             { 
-                return true; 
+                return false; 
             }
         }
 
@@ -69,28 +70,28 @@ namespace VDS.RDF.Utilities.Server
         /// <param name="context">Server Context</param>
         public void ProcessRequest(HttpServerContext context)
         {
-            if (this._config == null)
-            {
-                //Try and get the Configuration Graph
-                IGraph g = (IGraph)context.Server.Context["ConfigurationGraph"];
-                if (g == null) throw new DotNetRdfConfigurationException("The HTTP Server does not contain a Configuration Graph in its State Information");
+            //Get the server options
+            RdfServerOptions options = context.Server.AppSettings[RdfServerOptions.ServerOptionsKey] as RdfServerOptions;
+            if (options == null) throw new DotNetRdfConfigurationException("rdfServer Options were not found");
 
-                //Generate the expected Path and try and load the Configuration using the appropriate Node
-                String expectedPath = context.Request.Url.AbsolutePath;
-                if (expectedPath.LastIndexOf('/') > 0)
-                {
-                    expectedPath = expectedPath.Substring(0, expectedPath.LastIndexOf('/'));
-                }
-                else
-                {
-                    expectedPath = "/";
-                }
-                expectedPath += "*";
-                INode objNode = g.GetUriNode(new Uri("dotnetrdf:" + expectedPath));
-                if (objNode == null) throw new DotNetRdfConfigurationException("The Configuration Graph does not contain a URI Node with the expected URI <dotnetrdf:" + expectedPath + ">");
-                this._config = new SparqlServerConfiguration(g, objNode);
+            //Get the configuration graph
+            IGraph g = context.Server.Context[RdfServerOptions.DotNetRdfConfigKey] as IGraph;
+            if (g == null)
+            {
+                g = options.LoadConfigurationGraph();
+                if (g == null) throw new DotNetRdfConfigurationException("The HTTP Server does not contain a Configuration Graph in its State Information");
+                context.Server.Context[RdfServerOptions.DotNetRdfConfigKey] = g;
             }
 
+
+            //Generate the expected Path and try and load the Configuration using the appropriate Node
+            String expectedPath;
+            WebConfigurationLoader.FindObject(g, context.Request.Url, out expectedPath);
+            INode objNode = g.GetUriNode(new Uri("dotnetrdf:" + expectedPath));
+            if (objNode == null) throw new DotNetRdfConfigurationException("The Configuration Graph does not contain a URI Node with the expected URI <dotnetrdf:" + expectedPath + ">");
+            this._config = new SparqlServerConfiguration(g, objNode);
+
+            //Dispath the request appropriately
             String path = context.Request.Url.AbsolutePath;
             path = path.Substring(path.LastIndexOf('/') + 1);
 
@@ -109,7 +110,7 @@ namespace VDS.RDF.Utilities.Server
                 default:
                     //TODO: Can we easily add Protocol Support or not?
                     //this.ProcessProtocolRequest(context);
-                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
             }
         }
