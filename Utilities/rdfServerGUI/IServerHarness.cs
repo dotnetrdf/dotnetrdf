@@ -60,24 +60,6 @@ namespace VDS.RDF.Utilities.Server.GUI
         }
 
         /// <summary>
-        /// Gets whether pausing and resuming the server is supported
-        /// </summary>
-        bool CanPauseAndResume
-        {
-            get;
-        }
-
-        /// <summary>
-        /// Pauses the server
-        /// </summary>
-        void Pause();
-
-        /// <summary>
-        /// Resumes the server
-        /// </summary>
-        void Resume();
-
-        /// <summary>
         /// Attaches a Monitor to the Server
         /// </summary>
         /// <param name="monitor">Monitor</param>
@@ -335,33 +317,6 @@ namespace VDS.RDF.Utilities.Server.GUI
             {
                 return (this._process != null && !this._process.HasExited);
             }
-        }
-
-        /// <summary>
-        /// Returns that pausing and resuming is not supported
-        /// </summary>
-        public bool CanPauseAndResume
-        {
-            get 
-            {
-                return false; 
-            }
-        }
-
-        /// <summary>
-        /// Throws an error as out of process servers cannot be paused
-        /// </summary>
-        public void Pause()
-        {
-            throw new NotSupportedException("Pause not supported by external process servers");
-        }
-
-        /// <summary>
-        /// Throws an error as out of process servers cannot be resumed
-        /// </summary>
-        public void Resume()
-        {
-            throw new NotSupportedException("Resume not supported by external process servers");
         }
 
         /// <summary>

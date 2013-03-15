@@ -305,21 +305,6 @@ namespace VDS.RDF.Utilities.Server
                 handlers.AddMapping(new HttpRequestMapping(HttpRequestMapping.AllVerbs, HttpRequestMapping.AnyPath, typeof(StaticFileHandler)));
             }
 
-            //Print handler mappings
-            foreach (HttpRequestMapping mapping in handlers)
-            {
-                //TODO: Replace with ToString() call when HttpRequestMapping actually supports this
-                StringBuilder info = new StringBuilder();
-                info.Append("HTTP Verb(s): ");
-                info.Append(String.Join(",", mapping.AcceptedVerbs));
-                info.Append(" - Path: ");
-                if (mapping.AcceptedPathMode == PathMode.Extension) info.Append("*");
-                info.Append(mapping.AcceptedPath);
-                if (mapping.AcceptedPathMode == PathMode.WildcardPath) info.Append("*");
-                info.Append(" - Handler: ");
-                info.Append(mapping.HandlerType.FullName);
-            }
-
             //Add MIME Type Mappings for RDF File Types
             foreach (MimeTypeDefinition definition in MimeTypesHelper.Definitions)
             {
@@ -329,21 +314,19 @@ namespace VDS.RDF.Utilities.Server
                 }
             }
 
-            //Setup Logging appropriately
+            //Enable Log file
             if (this.LogFile != null)
             {
                 server.AddLogger(new FileLogger(this.LogFile, this.LogFormat));
             }
-            if (this.Mode == RdfServerConsoleMode.Run)
-            {
-                if (!this.QuietMode)
-                {
-                    //HTTP Request Logging to console only applies when not in Quiet Mode
-                    server.AddLogger(new ConsoleLogger(this.LogFormat));
-                }
 
-                //Always enable process console for general information
-                server.Console = new ProcessConsole();
+            //Always enable process console
+            server.Console = new ProcessConsole();
+
+            //If Quite Mode is off then HTTP Request Logging to console is enabled
+            if (!this.QuietMode)
+            {
+                server.AddLogger(new ConsoleLogger(this.LogFormat));
             }
 
             return server;

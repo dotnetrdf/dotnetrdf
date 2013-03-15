@@ -148,23 +148,12 @@ namespace VDS.RDF.Utilities.Server.GUI
             {
                 this.btnStart.Enabled = false;
                 this.btnStop.Enabled = false;
-                this.btnPauseResume.Enabled = false;
-                this.btnPauseResume.Text = "Pause";
             }
         }
 
         private void UpdateServerControls(IServerHarness server)
         {
             this.btnStart.Enabled = !server.IsRunning;
-            this.btnPauseResume.Enabled = server.CanPauseAndResume;
-            if (server.IsRunning)
-            {
-                this.btnPauseResume.Text = "Pause";
-            }
-            else
-            {
-                this.btnPauseResume.Text = "Resume";
-            }
             this.btnStop.Enabled = server.IsRunning;
         }
 
@@ -189,8 +178,8 @@ namespace VDS.RDF.Utilities.Server.GUI
                 {
                     try
                     {
+                        server.AttachMonitor(this.monServers);
                         server.Start();
-                        if (server.IsRunning) server.AttachMonitor(this.monServers);
                         this._servers.ResetBindings();
                     }
                     catch (Exception ex)
@@ -199,34 +188,6 @@ namespace VDS.RDF.Utilities.Server.GUI
                     }
                     this.UpdateServerControls(server);
 
-                }
-            }
-        }
-
-        private void btnPauseResume_Click(object sender, EventArgs e)
-        {
-            IServerHarness server = this.GetSelectedServer();
-            if (server != null)
-            {
-                if (server.CanPauseAndResume)
-                {
-                    try
-                    {
-                        if (server.IsRunning)
-                        {
-                            server.Pause();
-                        }
-                        else
-                        {
-                            server.Resume();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, "Error Pausing/Resuming Server", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    this._servers.ResetBindings();
-                    this.UpdateServerControls(server);
                 }
             }
         }
