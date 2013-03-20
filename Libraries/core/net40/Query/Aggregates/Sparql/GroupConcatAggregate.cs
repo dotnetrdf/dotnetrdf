@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using VDS.RDF.Nodes;
+using VDS.RDF.Parsing;
 using VDS.RDF.Query.Expressions;
 using VDS.RDF.Query.Expressions.Primary;
 using VDS.RDF.Query.Expressions.Functions.XPath.String;
@@ -105,22 +106,7 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             StringBuilder output = new StringBuilder();
             output.Append("GROUP_CONCAT(");
             if (this._distinct) output.Append("DISTINCT ");
-            if (this._expr is ConcatFunction)
-            {
-                ConcatFunction concatFunc = (ConcatFunction)this._expr;
-                for (int i = 0; i < concatFunc.Arguments.Count(); i++)
-                {
-                    output.Append(concatFunc.Arguments.Skip(i).First().ToString());
-                    if (i < concatFunc.Arguments.Count() - 1)
-                    {
-                        output.Append(", ");
-                    }
-                }
-            }
-            else
-            {
-                output.Append(this._expr.ToString());
-            }
+            output.Append(this._expr.ToString());
             if (this._customSeparator)
             {
                 output.Append(" ; SEPARATOR = ");
@@ -128,6 +114,36 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             }
             output.Append(")");
             return output.ToString();
+        }
+
+        protected override string ValueInternal(SparqlEvaluationContext context, int bindingID)
+        {
+            IValuedNode temp = this._expr.Evaluate(context, bindingID);
+            if (temp == null) throw new RdfQueryException("Cannot do an XPath string-join on a null");
+            switch (temp.NodeType)
+            {
+                case NodeType.Literal:
+                    ILiteralNode l = (ILiteralNode)temp;
+                    if (l.DataType != null)
+                    {
+                        if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
+                        {
+                            return temp.AsString();
+                        }
+                        else
+                        {
+                            throw new RdfQueryException("Cannot do an XPath string-join on a Literal which is not typed as a String");
+                        }
+                    }
+                    else
+                    {
+                        return temp.AsString();
+                    }
+                case NodeType.Uri:
+                    return temp.AsString();
+                default:
+                    throw new RdfQueryException("Cannot do an XPath string-join on a non-Literal Node");
+            }
         }
 
         /// <summary>
