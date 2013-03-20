@@ -20,6 +20,7 @@ namespace VDS.RDF.Query.Aggregates
 
             SparqlResultSet results = processor.ProcessQuery(q) as SparqlResultSet;
             Assert.IsNotNull(results);
+            TestTools.ShowResults(results);
 
             Assert.AreEqual(expected, results.Count);
             Assert.IsTrue(results.Variables.Contains(var));
@@ -78,6 +79,25 @@ WHERE
   }
 }";
             this.RunTest(g, query, 1, "concat", true, "1234");
+        }
+
+        [TestMethod]
+        public void SparqlGroupConcat4()
+        {
+            IGraph g = new Graph();
+
+            String query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+WHERE
+{
+  VALUES ( ?x )
+  {
+    ( 'string' )
+    ( 1234 )
+    ( true )
+    ( 'custom'^^<http://datatype> )
+  }
+}";
+            this.RunTest(g, query, 1, "concat", true, "custom");
         }
     }
 }

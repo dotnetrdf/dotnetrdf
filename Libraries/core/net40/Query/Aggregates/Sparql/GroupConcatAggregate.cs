@@ -123,22 +123,6 @@ namespace VDS.RDF.Query.Aggregates.Sparql
             switch (temp.NodeType)
             {
                 case NodeType.Literal:
-                    ILiteralNode l = (ILiteralNode)temp;
-                    if (l.DataType != null)
-                    {
-                        if (l.DataType.AbsoluteUri.Equals(XmlSpecsHelper.XmlSchemaDataTypeString))
-                        {
-                            return temp.AsString();
-                        }
-                        else
-                        {
-                            throw new RdfQueryException("Cannot do an XPath string-join on a Literal which is not typed as a String");
-                        }
-                    }
-                    else
-                    {
-                        return temp.AsString();
-                    }
                 case NodeType.Uri:
                     return temp.AsString();
                 default:
