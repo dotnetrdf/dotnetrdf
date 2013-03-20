@@ -1469,6 +1469,17 @@ namespace VDS.RDF.Configuration
             _configGraph = configGraph;
         }
 
+        /// <summary>
+        /// Loads the Object identified by the given Node as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode,System.Type)"/> 
+        /// </remarks>
+        public T LoadObject<T>(string blankNodeIdentifier)
+        {
+            return (T) LoadObject(_configGraph, _configGraph.GetBlankNode(blankNodeIdentifier));
+        }
+
         #endregion
 
         /// <summary>

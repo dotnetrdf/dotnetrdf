@@ -25,10 +25,11 @@ _:b a dnr:TripleCollection ;
             
             // when
             var configuration = new ConfigurationLoader(g);
-            var collection = configuration.LoadObject<TripleCollection>("a");
+            var collection = configuration.LoadObject<BaseTripleCollection>("a");
 
             // then
             Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is ThreadSafeTripleCollection);
         }
     }
 }
