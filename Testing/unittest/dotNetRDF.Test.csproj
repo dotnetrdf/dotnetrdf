@@ -94,6 +94,7 @@
     <Compile Include="Configuration\AutoConfigTests.cs" />
     <Compile Include="Configuration\ConfigLookupTests.cs" />
     <Compile Include="Configuration\ConfigSerializationTests.cs" />
+    <Compile Include="Configuration\ConfigurationLoaderInstanceTests.cs" />
     <Compile Include="Configuration\DefaultTypeTests.cs" />
     <Compile Include="Configuration\LoadObjectTests.cs" />
     <Compile Include="Core\AbstractTripleStoreTests.cs" />

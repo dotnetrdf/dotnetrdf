@@ -43,7 +43,7 @@ namespace VDS.RDF.Configuration
     /// <remarks>
     /// <para></para>
     /// </remarks>
-    public static class ConfigurationLoader
+    public class ConfigurationLoader
     {
         #region Constants
 
@@ -1439,6 +1439,34 @@ namespace VDS.RDF.Configuration
                 return g.CreateLiteralNode(SysConfig.ConfigurationManager.AppSettings[key]);
             }
 #endif
+        }
+
+        #endregion
+
+        #region Instance methods
+
+        private readonly IGraph _configGraph;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph)
+            : this(configGraph, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(IGraph configGraph, bool autoConfigure)
+        {
+            if (autoConfigure)
+            {
+                AutoConfigure(configGraph);
+            }
+            _configGraph = configGraph;
         }
 
         #endregion
