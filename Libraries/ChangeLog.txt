@@ -17,6 +17,7 @@ Changed
  - GROUP BY could interact incorrectly with some operators such as VALUES and GRAPH resulting in incorrect results (CORE-336)
  - GRAPH ?g { } was interpreted incorrectly (CORE-336)
  - Fixed a bug where asynchronous UpdateGraph() on Sesame connections would invoke the callback too early
+ - Fixed a bug in GROUP_CONCAT where certain values would not be correctly concatenated together (CORE-340)
 - Dependencies
  - Upgrade VDS.Common to 1.2.0 which resolves an issue that users may encounter under the VS debugger (CORE-317, CORE-292)
 - Documentation
