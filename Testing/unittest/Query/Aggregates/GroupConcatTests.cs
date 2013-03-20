@@ -61,5 +61,23 @@ namespace VDS.RDF.Query.Aggregates
 
             this.RunTest(g, "SELECT (GROUP_CONCAT(?s) AS ?concat) WHERE { ?s ?p ?o }", 1, "concat", true, "subject");
         }
+
+        [TestMethod]
+        public void SparqlGroupConcat3()
+        {
+            IGraph g = new Graph();
+
+            String query = @"SELECT (GROUP_CONCAT(?x) AS ?concat)
+WHERE
+{
+  VALUES ( ?x )
+  {
+    ( 'string' )
+    ( 1234 )
+    ( true )
+  }
+}";
+            this.RunTest(g, query, 1, "concat", true, "1234");
+        }
     }
 }
