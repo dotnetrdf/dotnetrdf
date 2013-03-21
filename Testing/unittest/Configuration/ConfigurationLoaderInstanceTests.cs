@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,6 +32,7 @@ _:b a dnr:TripleCollection ;
             Assert.IsNotNull(collection);
             Assert.IsTrue(collection is ThreadSafeTripleCollection);
         }
+
         [TestMethod]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUri()
         {
@@ -49,6 +51,30 @@ _:b a dnr:TripleCollection ;
 
             // when
             var configuration = new ConfigurationLoader(g);
+            var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
+
+            // then
+            Assert.IsNotNull(collection);
+            Assert.IsTrue(collection is TreeIndexedTripleCollection);
+        }
+
+        [TestMethod]
+        public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
+        {
+            // given
+            String graph = ConfigLookupTests.Prefixes + @"
+@base <http://example.com/> .
+
+<collection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
+  dnr:usingTripleCollection <indexedCollection> .
+<indexedCollection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
+
+            File.WriteAllText("configuration.ttl", graph);
+
+            // when
+            var configuration = new ConfigurationLoader("configuration.ttl");
             var collection = configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/indexedCollection"));
 
             // then

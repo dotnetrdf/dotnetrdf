@@ -1470,6 +1470,42 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file)
+            : this(file, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(string file, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(file, autoConfigure);
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph from file and applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri)
+            : this(graphUri, true)
+        {
+        }
+
+        /// <summary>
+        /// Creates a new instance of <see cref="ConfigurationLoader" />, which
+        /// loads an existing configuration graph and optionally applies auto-configuration
+        /// </summary>
+        public ConfigurationLoader(Uri graphUri, bool autoConfigure)
+        {
+            _configGraph = LoadConfiguration(graphUri, autoConfigure);
+        }
+
+        /// <summary>
         /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
         /// </summary>
         /// <remarks>
