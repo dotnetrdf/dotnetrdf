@@ -1470,14 +1470,25 @@ namespace VDS.RDF.Configuration
         }
 
         /// <summary>
-        /// Loads the Object identified by the given Node as an object of the given type based on information from the Configuration Graph
+        /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
         /// </summary>
         /// <remarks>
-        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode,System.Type)"/> 
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
         /// </remarks>
         public T LoadObject<T>(string blankNodeIdentifier)
         {
-            return (T) LoadObject(_configGraph, _configGraph.GetBlankNode(blankNodeIdentifier));
+            return (T)LoadObject(_configGraph, _configGraph.GetBlankNode(blankNodeIdentifier));
+        }
+
+        /// <summary>
+        /// Loads the Object identified by the given URI as an object of the given type based on information from the Configuration Graph
+        /// </summary>
+        /// <remarks>
+        /// See remarks under <see cref="LoadObject(VDS.RDF.IGraph,VDS.RDF.INode)"/> 
+        /// </remarks>
+        public T LoadObject<T>(Uri objectIdentifier)
+        {
+            return (T)LoadObject(_configGraph, _configGraph.GetUriNode(objectIdentifier));
         }
 
         #endregion
