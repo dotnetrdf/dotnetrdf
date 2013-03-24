@@ -32,19 +32,21 @@ namespace VDS.RDF.Configuration
     [TestClass]
     public class ConfigurationLoaderInstanceTests
     {
+        private const string TestConfigGraph = ConfigLookupTests.Prefixes + @"
+@base <http://example.com/> .
+
+_:a a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
+  dnr:usingTripleCollection <indexedCollection> .
+<indexedCollection> a dnr:TripleCollection ;
+  dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
+
         [TestMethod]
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromBlankNode()
         {
             // given
-            const string graph = ConfigLookupTests.Prefixes + @"
-_:a a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
-  dnr:usingTripleCollection _:b .
-_:b a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
-
             Graph g = new Graph();
-            g.LoadFromString(graph);
+            g.LoadFromString(TestConfigGraph);
 
             // when
             var configuration = new ConfigurationLoader(g);
@@ -59,17 +61,8 @@ _:b a dnr:TripleCollection ;
         public void CanCreateInstanceFromExistingGraphAndLoadObjectFromUri()
         {
             // given
-            const string graph = ConfigLookupTests.Prefixes + @"
-@base <http://example.com/> .
-
-<collection> a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
-  dnr:usingTripleCollection <indexedCollection> .
-<indexedCollection> a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
-
             Graph g = new Graph();
-            g.LoadFromString(graph);
+            g.LoadFromString(TestConfigGraph);
 
             // when
             var configuration = new ConfigurationLoader(g);
@@ -84,16 +77,7 @@ _:b a dnr:TripleCollection ;
         public void CanCreateInstanceFromGraphFileAndLoadObjectFromUri()
         {
             // given
-            const string graph = ConfigLookupTests.Prefixes + @"
-@base <http://example.com/> .
-
-<collection> a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.ThreadSafeTripleCollection"" ;
-  dnr:usingTripleCollection <indexedCollection> .
-<indexedCollection> a dnr:TripleCollection ;
-  dnr:type ""VDS.RDF.TreeIndexedTripleCollection"" .";
-
-            File.WriteAllText("configuration.ttl", graph);
+            File.WriteAllText("configuration.ttl", TestConfigGraph);
 
             // when
             var configuration = new ConfigurationLoader("configuration.ttl");
