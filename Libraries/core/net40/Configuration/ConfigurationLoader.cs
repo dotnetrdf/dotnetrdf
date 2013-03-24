@@ -1512,7 +1512,13 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(string blankNodeIdentifier)
         {
-            return (T)LoadObject(_configGraph, _configGraph.GetBlankNode(blankNodeIdentifier));
+            IBlankNode blankNode = _configGraph.GetBlankNode(blankNodeIdentifier);
+            if (blankNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource _:{0} was not found is configuration graph", blankNode));
+            }
+
+            return (T)LoadObject(_configGraph, blankNode);
         }
 
         /// <summary>
@@ -1523,7 +1529,13 @@ namespace VDS.RDF.Configuration
         /// </remarks>
         public T LoadObject<T>(Uri objectIdentifier)
         {
-            return (T)LoadObject(_configGraph, _configGraph.GetUriNode(objectIdentifier));
+            IUriNode uriNode = _configGraph.GetUriNode(objectIdentifier);
+            if (uriNode == null)
+            {
+                throw new ArgumentException(string.Format("Resource <{0}> was not found is configuration graph", objectIdentifier));
+            }
+
+            return (T)LoadObject(_configGraph, uriNode);
         }
 
         #endregion

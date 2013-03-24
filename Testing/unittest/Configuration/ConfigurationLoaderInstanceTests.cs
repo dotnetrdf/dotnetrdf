@@ -87,5 +87,31 @@ _:a a dnr:TripleCollection ;
             Assert.IsNotNull(collection);
             Assert.IsTrue(collection is TreeIndexedTripleCollection);
         }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException), "Resource <http://example.com/notSuchObject> was not found is configuration graph")]
+        public void ShouldThrowWhenUriNodeIsNotFound()
+        {
+            // given
+            File.WriteAllText("configuration.ttl", TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader("configuration.ttl");
+
+            // then
+            configuration.LoadObject<BaseTripleCollection>(new Uri("http://example.com/notSuchObject"));
+        }
+
+        [TestMethod, ExpectedException(typeof(ArgumentException), "Resource _:store was not found is configuration graph")]
+        public void ShouldThrowWhenBlankNodeIsNotFound()
+        {
+            // given
+            File.WriteAllText("configuration.ttl", TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader("configuration.ttl");
+
+            // then
+            configuration.LoadObject<BaseTripleCollection>("store");
+        } 
     }
 }
