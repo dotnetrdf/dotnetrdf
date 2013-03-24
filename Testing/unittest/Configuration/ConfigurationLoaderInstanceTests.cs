@@ -112,6 +112,19 @@ _:a a dnr:TripleCollection ;
 
             // then
             configuration.LoadObject<BaseTripleCollection>("store");
+        }
+
+        [TestMethod, ExpectedException(typeof(InvalidCastException))]
+        public void ShouldThrowWhenTryingToLoadWrongType()
+        {
+            // given
+            File.WriteAllText("configuration.ttl", TestConfigGraph);
+
+            // when
+            var configuration = new ConfigurationLoader("configuration.ttl");
+
+            // then
+            configuration.LoadObject<TripleStore>(new Uri("http://example.com/indexedCollection"));
         } 
     }
 }
