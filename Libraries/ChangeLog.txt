@@ -8,6 +8,7 @@ Added
 - Parsing API
  - New ITokenisingParser interface which exposes a TokenQueueMode property (CORE-332)
 - Global Options - new Options.DefaultTokenQueueMode (CORE-332)
+- ConfigurationLoader may now be used in a convinience instance mode (CORE-337)
 
 Changed
 - Bug Fixes
