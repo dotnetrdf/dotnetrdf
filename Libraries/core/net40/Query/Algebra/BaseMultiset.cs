@@ -881,5 +881,10 @@ namespace VDS.RDF.Query.Algebra
         {
             get;
         }
+
+        public override string ToString()
+        {
+            return String.Join(", ", this.Variables.ToArray()) + " (" + this.Count + " Results)";
+        }
     }
 }

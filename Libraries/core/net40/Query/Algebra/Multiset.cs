@@ -357,7 +357,8 @@ namespace VDS.RDF.Query.Algebra
                     throw new RdfQueryException("A Set with ID " + id + " does not exist in this Multiset");
                 }
             }
-        }
+        } 
+
     }
 
     internal class SingletonMultiset : Multiset

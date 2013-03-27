@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using VDS.RDF.Query.Patterns;
 
 namespace VDS.RDF.Query.Algebra
 {
@@ -158,6 +159,23 @@ namespace VDS.RDF.Query.Algebra
             BaseMultiset joined = lhs.Join(rhs);
 
             Assert.AreEqual(0, joined.Count);
+        }
+
+        [TestMethod]
+        public void SparqlAlgebraSetDistinctness1()
+        {
+            ISet x = new Set();
+            x.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+            ISet y = new Set();
+            y.Add("a", this._factory.CreateUriNode(UriFactory.Create("http://x")));
+
+
+            SetDistinctnessComparer comparer = new SetDistinctnessComparer(new String[] { "a" });
+            int xHash = comparer.GetHashCode(x);
+            int yHash = comparer.GetHashCode(y);
+
+            Assert.AreEqual(xHash, yHash);
+            Assert.IsTrue(comparer.Equals(x, y));
         }
     }
 }
