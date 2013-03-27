@@ -1486,6 +1486,8 @@ namespace VDS.RDF.Configuration
             _configGraph = LoadConfiguration(file, autoConfigure);
         }
 
+
+#if !SILVERLIGHT
         /// <summary>
         /// Creates a new instance of <see cref="ConfigurationLoader" />, which
         /// loads an existing configuration graph from file and applies auto-configuration
@@ -1503,6 +1505,7 @@ namespace VDS.RDF.Configuration
         {
             _configGraph = LoadConfiguration(graphUri, autoConfigure);
         }
+#endif
 
         /// <summary>
         /// Loads the Object identified by the given blank node identifier as an object of the given type based on information from the Configuration Graph
