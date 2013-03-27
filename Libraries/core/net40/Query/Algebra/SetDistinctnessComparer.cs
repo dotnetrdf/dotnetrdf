@@ -29,7 +29,7 @@ namespace VDS.RDF.Query.Algebra
             }
             else
             {
-                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && y[v] == null) && x[v].Equals(y[v]));
+                return this._vars.All(v => (x[v] == null && y[v] == null) || (x[v] != null && x[v].Equals(y[v])));
             }
         }
 
