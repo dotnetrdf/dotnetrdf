@@ -126,6 +126,7 @@
     <Compile Include="Query\Aggregates\CountDistinctAggregateTests.cs" />
     <Compile Include="Query\Aggregates\GroupConcatTests.cs" />
     <Compile Include="Query\AlgebraReverseTranslation.cs" />
+    <Compile Include="Query\Algebra\JoinTests.cs" />
     <Compile Include="Query\BindingsTests.cs" />
     <Compile Include="Query\BlankNodeVariableTests.cs" />
     <Compile Include="Query\ConstructWithOptionalTests.cs" />
