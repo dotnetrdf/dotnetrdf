@@ -26,6 +26,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
@@ -1201,6 +1202,20 @@ namespace VDS.RDF
             writer.Save(g, file);
         }
 #endif
+        public static void SaveToStream(this IGraph g, TextWriter streamWriter, IRdfWriter writer)
+        {
+            if (writer == null)
+            {
+                throw new ArgumentNullException("writer");
+            }
+            writer.Save(g, streamWriter);
+        }
+
+        public static void SaveToStream(this IGraph g, string filename, TextWriter streamWriter)
+        {
+            var writer = MimeTypesHelper.GetWriterByFileExtension(MimeTypesHelper.GetTrueFileExtension(filename));
+            g.SaveToStream(streamWriter, writer);
+        }
     }
 
     /// <summary>

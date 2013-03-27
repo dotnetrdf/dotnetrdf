@@ -35,6 +35,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
+#if !NO_SYNC_HTTP // The tests here all use the synchronous API
     [TestClass]
     public class DydraTests
     {
@@ -319,5 +320,6 @@ namespace VDS.RDF.Storage
             }
         }
     }
+#endif
 }
 

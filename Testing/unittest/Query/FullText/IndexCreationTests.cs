@@ -23,6 +23,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !NO_FULLTEXT
+
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -340,3 +342,4 @@ namespace VDS.RDF.Query.FullText
         }
     }
 }
+#endif

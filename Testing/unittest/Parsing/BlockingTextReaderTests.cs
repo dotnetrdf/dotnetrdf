@@ -418,13 +418,20 @@ namespace VDS.RDF.Parsing
             reader.Close();
         }
 
+        private void SetUriLoaderCaching(bool cachingEnabled)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = cachingEnabled;
+#endif
+        }
+
         [TestMethod]
         public void ParsingTextReaderBlockingNetworkStreamNotation3()
         {
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
@@ -434,7 +441,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -444,7 +451,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new NTriplesParser());
@@ -453,7 +460,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -462,7 +469,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new TurtleParser());
@@ -471,7 +478,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -480,7 +487,7 @@ namespace VDS.RDF.Parsing
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
                 UriLoader.Load(g, new Uri("http://www.dotnetrdf.org/configuration#"), new RdfJsonParser());
@@ -489,7 +496,7 @@ namespace VDS.RDF.Parsing
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 

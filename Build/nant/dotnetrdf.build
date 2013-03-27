@@ -96,6 +96,15 @@
 	</exec>
   </target>
   
+  <target name="projectsync-test-portable" unless="${dotnetrdf.noportable == 'true' or dotnetrdf.nocompile == 'true'}">
+	<exec program="Build/SyncProjects/SyncProjects.exe">
+		<arg value="sync" />
+		<arg value="Testing/unittest/dotNetRDF.Test.csproj" />
+		<arg value="Testing/portable/dotNetRDF.Portable.Test/dotNetRDF.Portable.Test.csproj" />
+		<arg value="..\..\unittest\" />
+	</exec>
+  </target>
+  
   <target name="projectsync-core-clientprofile-net35" description="Syncs the dotNetRDF Client Profile .Net 3.5 build project file"  unless="${dotnetrdf.nocompile}">
     <!-- This exec task syncs the Client Profile project file with the Core Library -->    
     <exec program="Build/SyncProjects/SyncProjects.exe">

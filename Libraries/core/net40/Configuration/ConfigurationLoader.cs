@@ -317,6 +317,21 @@ namespace VDS.RDF.Configuration
             FileLoader.Load(g, file);
             return ConfigurationLoader.LoadCommon(g, new INode[] { g.CreateLiteralNode(file), g.CreateLiteralNode(Path.GetFileName(file)) }, autoConfigure);
         }
+#else
+        public static IGraph LoadConfiguration(string filename, Uri baseUri, Stream inputStream)
+        {
+            return ConfigurationLoader.LoadConfiguration(filename, baseUri, inputStream, true);
+        }
+
+        public static IGraph LoadConfiguration(string filename, Uri  baseUri, Stream inputStream, bool autoConfigure)
+        {
+            Graph g = new Graph() {BaseUri = baseUri};
+            StreamLoader.Load(g, filename, inputStream);
+            return ConfigurationLoader.LoadCommon(g,
+                                                  new INode[]
+                                                      {g.CreateLiteralNode(filename), g.CreateLiteralNode(baseUri.ToSafeString())},
+                                                  autoConfigure);
+        }
 #endif
 
         /// <summary>

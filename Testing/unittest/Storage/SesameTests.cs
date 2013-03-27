@@ -35,6 +35,7 @@ using VDS.RDF.Storage;
 
 namespace VDS.RDF.Storage
 {
+#if !NO_SYNC_HTTP
     [TestClass]
     public class SesameTests
     {
@@ -166,7 +167,7 @@ namespace VDS.RDF.Storage
                 }
          }
 
-        [TestMethod]
+    [TestMethod]
         public void StorageSesameSparqlUpdate1()
         {
             try
@@ -222,4 +223,5 @@ namespace VDS.RDF.Storage
             }
         }
     }
+#endif
 }

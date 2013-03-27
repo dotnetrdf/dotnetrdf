@@ -34,6 +34,7 @@ using VDS.RDF.Parsing;
 
 namespace VDS.RDF.Parsing
 {
+#if !NO_URICACHE
     [TestClass]
     public class CachingTests
     {
@@ -52,6 +53,7 @@ namespace VDS.RDF.Parsing
 
             Assert.AreEqual(g, h);
         }
+
 
         [TestMethod]
         public void ParsingUriLoaderCustomCache()
@@ -115,4 +117,5 @@ namespace VDS.RDF.Parsing
             }
         }
     }
+#endif
 }

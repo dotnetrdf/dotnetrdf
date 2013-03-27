@@ -138,6 +138,7 @@ namespace VDS.RDF.Query
             Assert.AreEqual("DESCRIBE <http://example.com/some@encoded/uri>", query.ToString(), "The query should contain the encoded form of the given uri");
         }
 
+#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw() 
         [TestMethod]
         public void SparqlDBPedia()
         {
@@ -170,7 +171,10 @@ namespace VDS.RDF.Query
                 Options.HttpDebugging = false;
             }
         }
+#endif
 
+
+#if !PORTABLE // No VirtuosoManager in PCL
         [TestMethod]
         public void SparqlRemoteVirtuosoWithSponging()
         {
@@ -186,7 +190,9 @@ namespace VDS.RDF.Query
             TestTools.ShowGraph(g);
             Assert.IsFalse(g.IsEmpty, "Graph should not be empty");
         }
+#endif
 
+#if !SILVERLIGHT // No SparqlRemoteEndpoint.QueryRaw()
         [TestMethod]
         public void SparqlDbPediaDotIssue()
         {
@@ -243,6 +249,7 @@ where {
                 Options.HttpDebugging = false;
             }
         }
+#endif
 
         [TestMethod]
         public void SparqlResultSetEquality()
@@ -287,7 +294,7 @@ where {
 
             TripleStore store = new TripleStore();
             Graph g = new Graph();
-            FileLoader.Load(g, "json.owl");
+            g.LoadFromFile("json.owl");
             store.Add(g);
 
             Object results = store.ExecuteQuery(query);

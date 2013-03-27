@@ -33,6 +33,7 @@ using VDS.RDF.Writing;
 
 namespace VDS.RDF.Parsing
 {
+#if !NO_HTMLAGILITYPACK
     [TestClass]
     public class RdfATests
     {
@@ -119,4 +120,5 @@ namespace VDS.RDF.Parsing
             Assert.AreEqual(1, g.Triples.Count, "Should only produce 1 Triple");
         }
     }
+#endif
 }

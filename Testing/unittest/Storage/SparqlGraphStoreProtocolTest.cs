@@ -57,10 +57,10 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "Turtle.ttl");
+                g.LoadFromFile("Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Save Graph to SPARQL Uniform Protocol
@@ -102,7 +102,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -111,12 +111,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "Turtle.ttl");
+                g.LoadFromFile("Turtle.ttl");
                 g.BaseUri = new Uri("http://example.org/sparqlTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -155,16 +155,17 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
+#if !NO_SYNC_HTTP // There is currently no async version of HasGraph to delegate to
         [TestMethod]
         public void StorageSparqlUniformHttpProtocolGraphExists()
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
@@ -174,16 +175,17 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
+#endif
 
         [TestMethod]
         public void StorageSparqlUniformHttpProtocolDeleteGraph()
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
@@ -208,7 +210,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -217,13 +219,13 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
 
                 StorageSparqlUniformHttpProtocolSaveGraph();
 
                 Graph g = new Graph();
                 g.Retract(g.Triples.Where(t => !t.IsGroundTriple));
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
 
                 SparqlHttpProtocolConnector sparql = SparqlGraphStoreProtocolTest.GetConnection();
                 sparql.UpdateGraph("http://example.org/sparqlTest", g.Triples, null);
@@ -240,7 +242,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -249,9 +251,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
 
                 try
                 {
@@ -273,7 +275,7 @@ namespace VDS.RDF.Storage
             }
             finally
             {
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -287,7 +289,7 @@ namespace VDS.RDF.Storage
             request.ContentType = "application/rdf+xml";
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
 
             using (StreamWriter writer = new StreamWriter(request.GetRequestStream()))
             {
@@ -328,7 +330,7 @@ namespace VDS.RDF.Storage
             SparqlHttpProtocolConnector connector = SparqlGraphStoreProtocolTest.GetConnection();
 
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
 
             List<Uri> uris = new List<Uri>();
             for (int i = 0; i < 10; i++)
@@ -372,6 +374,19 @@ namespace VDS.RDF.Storage
             }
 
             Assert.IsTrue(uris.Distinct().Count() == 10, "Should have generated 10 distinct URIs");
+        }
+
+        /// <summary>
+        /// Provides a wrapper around the Options.UriLoaderCaching option
+        /// that allows it to be conditionally excluded when building
+        /// tests for platforms that don't support it.
+        /// </summary>
+        /// <param name="cacheEnabled"></param>
+        private void SetUriLoaderCaching(bool cacheEnabled)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = cacheEnabled;
+#endif
         }
     }
 }

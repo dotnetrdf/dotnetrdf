@@ -169,6 +169,7 @@ namespace VDS.RDF.Configuration
             }
         }
 
+#if NET40 && !SILVERLIGHT
         [TestMethod]
         public void ConfigurationStaticOptionsBooleanProperty()
         {
@@ -188,6 +189,7 @@ namespace VDS.RDF.Configuration
                 Options.UsePLinqEvaluation = current;
             }
         }
+#endif
 
         [TestMethod]
         public void ConfigurationAutoOperators1()

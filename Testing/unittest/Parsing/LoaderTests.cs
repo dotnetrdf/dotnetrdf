@@ -90,8 +90,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -114,8 +116,10 @@ namespace VDS.RDF.Parsing
                     Console.WriteLine("OK");
                     Console.WriteLine("Content Length: " + response.ContentLength);
                     Console.WriteLine("Content Type: " + response.ContentType);
+#if !PORTABLE
                     Tools.HttpDebugRequest(request);
                     Tools.HttpDebugResponse(response);
+#endif
                 }
             }
             catch (WebException webEx)
@@ -147,12 +151,18 @@ namespace VDS.RDF.Parsing
             }
         }
 
+        private void SetUriLoaderCaching(bool cachingEnabled)
+        {
+#if !NO_URICACHE
+            Options.UriLoaderCaching = cachingEnabled;
+#endif
+        }
         [TestMethod]
         public void ParsingUriLoaderWithChunkedData()
         {
             try
             {
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Options.HttpDebugging = true;
                 Options.UriLoaderTimeout = 90000;
                 //Options.HttpFullDebugging = true;
@@ -170,7 +180,7 @@ namespace VDS.RDF.Parsing
                 //Options.HttpFullDebugging = false;
                 Options.UriLoaderTimeout = 15000;
                 Options.HttpDebugging = false;
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
             }
         }
 
@@ -181,7 +191,7 @@ namespace VDS.RDF.Parsing
             try
             {
                 Options.HttpDebugging = true;
-                Options.UriLoaderCaching = false;
+                SetUriLoaderCaching(false);
                 Options.UriLoaderTimeout = 45000;
 
                 Graph g = new Graph();
@@ -196,7 +206,7 @@ namespace VDS.RDF.Parsing
             finally
             {
                 Options.HttpDebugging = false;
-                Options.UriLoaderCaching = true;
+                SetUriLoaderCaching(true);
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -252,6 +262,7 @@ namespace VDS.RDF.Parsing
             g.SaveToFile("fileloader-graph-to-store.ttl");
 
             TripleStore store = new TripleStore();
+            
             store.LoadFromFile("fileloader-graph-to-store.ttl");
 
             Assert.IsTrue(store.Triples.Count() > 0);

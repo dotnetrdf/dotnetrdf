@@ -54,7 +54,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile( "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -81,7 +81,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile( "InferenceTest.ttl");
                 g.BaseUri = null;
                 store.Add(g, true);
 
@@ -108,7 +108,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile( "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -135,7 +135,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile( "InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -160,6 +160,7 @@ namespace VDS.RDF.Query
                 TestTools.ShowGraph(view);
         }
 
+#if !NO_SYNC_HTTP // AllegroGraphConnector does  not implement IStorageProvider
         [TestMethod]
         public void SparqlViewNativeAllegroGraph()
         {
@@ -178,6 +179,7 @@ namespace VDS.RDF.Query
                 TestTools.ShowGraph(view);
                 Console.WriteLine();
         }
+#endif
 
         [TestMethod]
         public void SparqlViewGraphScope()
@@ -193,7 +195,7 @@ namespace VDS.RDF.Query
 
                 //Load a Graph into the Store to cause the SPARQL View to update
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/data");
                 store.Add(g);
 
@@ -209,7 +211,7 @@ namespace VDS.RDF.Query
                 //Load another Graph with a different URI into the Store
                 Graph h = new Graph();
                 h.BaseUri = new Uri("http://example.org/2");
-                FileLoader.Load(h, "Turtle.ttl");
+                h.LoadFromFile("Turtle.ttl");
                 store.Add(h);
 
                 Thread.Sleep(500);

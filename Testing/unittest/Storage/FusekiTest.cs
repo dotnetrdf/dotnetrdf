@@ -39,6 +39,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
+//#if !NO_SYNC_HTTP
     [TestClass]
     public class FusekiTest
     {
@@ -58,10 +59,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Save Graph to Fuseki
@@ -83,7 +86,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -92,10 +97,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -118,7 +125,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -127,10 +136,12 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
                 g.BaseUri = null;
 
                 //Save Graph to Fuseki
@@ -153,7 +164,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -162,13 +175,14 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 //Ensure that the Graph will be there using the SaveGraph() test
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
-                FileLoader.Load(g, "InferenceTest.ttl");
+                g.LoadFromFile("InferenceTest.ttl");
                 g.BaseUri = new Uri("http://example.org/fusekiTest");
 
                 //Try to load the relevant Graph back from the Store
@@ -187,7 +201,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -196,7 +212,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
 
                 StorageFusekiSaveGraph();
 
@@ -220,7 +238,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -229,8 +249,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveDefaultGraph();
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -253,7 +274,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -262,8 +285,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveDefaultGraph();
 
                 FusekiConnector fuseki = FusekiTest.GetConnection();
@@ -286,7 +310,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -295,8 +321,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
@@ -311,7 +338,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -320,8 +349,9 @@ namespace VDS.RDF.Storage
         {
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
-
+#endif
                 StorageFusekiSaveGraph();
 
                 Graph g = new Graph();
@@ -336,7 +366,9 @@ namespace VDS.RDF.Storage
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
             }
         }
 
@@ -419,4 +451,5 @@ namespace VDS.RDF.Storage
             }
         }
     }
+//#endif
 }

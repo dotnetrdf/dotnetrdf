@@ -35,6 +35,8 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Storage
 {
+#if !NO_SYNC_HTTP // The tests here all use the synchronous API
+
     /// <summary>
     /// Summary description for FourStoreTest
     /// </summary>
@@ -155,4 +157,5 @@ namespace VDS.RDF.Storage
             Assert.AreNotEqual(g, h, "Graphs should not be equal");
         }
     }
+#endif
 }

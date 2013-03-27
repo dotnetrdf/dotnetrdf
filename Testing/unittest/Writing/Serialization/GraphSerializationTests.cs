@@ -352,7 +352,10 @@ namespace VDS.RDF.Writing.Serialization
 
     [Serializable]
     public class MockWrapperGraph
-        : WrapperGraph, ISerializable
+        : WrapperGraph
+#if !PORTABLE
+        , ISerializable
+#endif
     {
         protected MockWrapperGraph()
             : base() { }
@@ -360,7 +363,9 @@ namespace VDS.RDF.Writing.Serialization
         public MockWrapperGraph(IGraph g)
             : base(g) { }
 
+#if !PORTABLE
         protected MockWrapperGraph(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
+#endif
     }
 }

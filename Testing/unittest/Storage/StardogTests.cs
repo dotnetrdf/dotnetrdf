@@ -40,6 +40,7 @@ using VDS.RDF.Update;
 
 namespace VDS.RDF.Storage
 {
+#if !NO_SYNC_HTTP // Many of these tests require a synchronous API
     [TestClass]
     public class StardogTests
         : GenericUpdateProcessorTests
@@ -480,4 +481,5 @@ namespace VDS.RDF.Storage
             stardog.Dispose();
         }
     }
+#endif
 }

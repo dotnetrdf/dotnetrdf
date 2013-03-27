@@ -67,7 +67,7 @@ namespace VDS.RDF.Query
         public void SparqlParsingSubQueryWithLimitAndOrderBy()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
 
             String query = "SELECT * WHERE { { SELECT * WHERE {?s ?p ?o} ORDER BY ?p ?o LIMIT 2 } }";
             SparqlQueryParser parser = new SparqlQueryParser();

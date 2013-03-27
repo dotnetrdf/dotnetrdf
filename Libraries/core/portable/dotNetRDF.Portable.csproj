@@ -35,6 +35,8 @@
   <ItemGroup>
     <Compile Include="Compatability\CryptoConfig.cs" />
     <Compile Include="Compatability\PortableLibraryCompatibility.cs" />
+    <Compile Include="Compatability\SparqlRemoteEndpointExtensions.cs" />
+    <Compile Include="Compatability\UriLoaderAsyncExtensions.cs" />
     <Compile Include="Crypto\CryptographicException.cs" />
     <Compile Include="Crypto\CryptographicUnexpectedOperationExcpetion.cs" />
     <Compile Include="Crypto\HashAlgorithm.cs" />
@@ -45,6 +47,7 @@
     <Compile Include="Crypto\SHA256.cs" />
     <Compile Include="Crypto\SHA256Managed.cs" />
     <Compile Include="Crypto\SHAConstants.cs" />
+    <Compile Include="Parsing\StreamLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

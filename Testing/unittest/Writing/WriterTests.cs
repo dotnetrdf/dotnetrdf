@@ -194,7 +194,7 @@ namespace VDS.RDF.Writing
         public void WritingOwlCharEscaping()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "charescaping.owl");
+            g.LoadFromFile("charescaping.owl");
 
             Console.WriteLine("Original Triples");
             foreach (Triple t in g.Triples)
@@ -219,11 +219,12 @@ namespace VDS.RDF.Writing
             Assert.AreEqual(g, h, "Graphs should have been equal");
         }
 
+#if !NO_HTMLAGILITYPACK
         [TestMethod]
         public void WritingHtmlWriter()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
 
             HtmlWriter writer = new HtmlWriter();
             String data = VDS.RDF.Writing.StringWriter.Write(g, writer);
@@ -245,16 +246,24 @@ namespace VDS.RDF.Writing
 
             Assert.AreEqual(g, h, "Graphs should have been the same");
         }
+#endif
 
         [TestMethod]
         public void WritingCollections()
         {
             Graph g = new Graph();
+#if !NO_URICACHE
             Options.UriLoaderCaching = false;
+#endif
             UriLoader.Load(g, new Uri("http://www.wurvoc.org/vocabularies/om-1.6/Kelvin_scale"));
 
             CompressingTurtleWriter ttlwriter = new CompressingTurtleWriter(WriterCompressionLevel.High);
+#if PORTABLE
+            var tmpWriter = new StreamWriter(new MemoryStream());
+            ttlwriter.Save(g, tmpWriter);
+#else
             ttlwriter.Save(g, Console.Out);
+#endif
         }
 
         [TestMethod]
@@ -377,7 +386,9 @@ namespace VDS.RDF.Writing
             {
                 new TurtleParser(),
                 new RdfXmlParser(),
+#if !NO_HTMLAGILITYPACK
                 new RdfAParser(),
+#endif
                 new Notation3Parser(),
                 new NTriplesParser(),
                 new RdfXmlParser(),

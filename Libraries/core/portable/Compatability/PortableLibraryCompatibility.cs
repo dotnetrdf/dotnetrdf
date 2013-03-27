@@ -120,37 +120,63 @@ namespace VDS.RDF
 
         public static void Write(string fmt, params object[] args)
         {
-            Error.Write(fmt, args);
+            Out.Write(fmt, args);
         }
         public static void WriteLine(string fmt, params object[] args)
         {
-            Error.WriteLine(fmt, args);
+            Out.WriteLine(fmt, args);
+        }
+
+        public static void WriteLine(object o)
+        {
+            Out.WriteLine(o.ToString());
         }
 
         public static readonly ConsoleStream Error = new ConsoleStream();
+        public static readonly ConsoleStream Out = new ConsoleStream();
     }
 
-    public class ConsoleStream
+    public class ConsoleStream : TextWriter
     {
-        public void WriteLine()
+        // TODO: Make this a more robust implementation of TextWriter.
+
+        public override void WriteLine()
         {
             System.Diagnostics.Debug.WriteLine(String.Empty);
         }
 
-        public void WriteLine(string fmt, params object[] args)
+        public override void WriteLine(string fmt, params object[] args)
         {
             System.Diagnostics.Debug.WriteLine(fmt, args);
         }
 
-        public void Write(string fmt, params object[] args)
+        public override Encoding Encoding
+        {
+            get { return Encoding.Unicode; }
+        }
+
+        public override void Write(string fmt, params object[] args)
         {
             System.Diagnostics.Debug.WriteLine(fmt, args); // No Write method to use
         }
+
+        public void Flush()
+        {
+        }
+
+        public override void Write(char value)
+        {
+            System.Diagnostics.Debug.WriteLine(value);
+        }
+
     }
 
     public static class Path
     {
         public static char DirectorySeparatorChar = '/';
+        public static char AltDirectorySeparatorChar = '\\';
+        public static char VolumeSeparatorChar = ':';
+
         public static string GetFileName(string path)
         {
             var ix = path.LastIndexOf(DirectorySeparatorChar) + 1;
@@ -169,6 +195,37 @@ namespace VDS.RDF
                 return fileName.Substring(fileName.LastIndexOf('.'));
             }
             return null;
+        }
+
+        public static string GetFileNameWithoutExtension(string path)
+        {
+            var fileName = GetFileName(path);
+            if (fileName != null && fileName.Contains('.'))
+            {
+                return fileName.Substring(0, fileName.LastIndexOf('.'));
+            }
+            return null;
+        }
+
+        public static string GetDirectoryName(string path)
+        {
+            var ix = path.LastIndexOfAny(new char[] {DirectorySeparatorChar, AltDirectorySeparatorChar});
+            if (ix > 0)
+            {
+                return path.Substring(0, ix);
+            }
+            return null;
+        }
+
+        public static string Combine(string path1, string path2)
+        {
+            if (path2[0] == DirectorySeparatorChar || path2[0] == AltDirectorySeparatorChar ||
+                (path2.Length > 1 && path2[1] == VolumeSeparatorChar))
+            {
+                // path2 is absolute so just return path2
+                return path2;
+            }
+            return path1 + DirectorySeparatorChar + path2;
         }
     }
 }

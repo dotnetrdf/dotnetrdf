@@ -35,6 +35,7 @@ using VDS.RDF.Query.Inference.Pellet.Services;
 
 namespace VDS.RDF
 {
+#if !SILVERLIGHT
     [TestClass]
     public class PelletTests
     {
@@ -375,5 +376,6 @@ namespace VDS.RDF
                 }
         }
     }
+#endif
 }
 

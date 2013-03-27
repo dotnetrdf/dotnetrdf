@@ -338,4 +338,5 @@ namespace VDS.RDF.Parsing
         public static event StoreReaderWarning StoreWarning;
     }
 #endif
+
 }

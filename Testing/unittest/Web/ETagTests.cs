@@ -34,6 +34,7 @@ using VDS.RDF.Web;
 
 namespace VDS.RDF.Web
 {
+#if !NO_ASP
     [TestClass]
     public class ETagTests
     {
@@ -44,7 +45,6 @@ namespace VDS.RDF.Web
             {
                 Graph g = new Graph();
                 FileLoader.Load(g, "InferenceTest.ttl");
-
                 Stopwatch timer = new Stopwatch();
                 timer.Start();
                 String etag = g.GetETag();
@@ -88,4 +88,5 @@ namespace VDS.RDF.Web
             }
         }
     }
+#endif
 }

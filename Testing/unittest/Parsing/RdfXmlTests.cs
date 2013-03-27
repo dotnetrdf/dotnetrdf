@@ -64,6 +64,7 @@ namespace VDS.RDF.Parsing
             }
         }
 
+#if !NO_XMLDOM
         [TestMethod]
         public void ParsingRdfXmlEmptyStrings()
         {
@@ -93,6 +94,7 @@ namespace VDS.RDF.Parsing
 
             Assert.AreEqual(g, h, "Graphs should be equal");
         }
+#endif
 
         private void TestRdfXmlSequence(IRdfReader parser, String file)
         {
@@ -113,12 +115,14 @@ namespace VDS.RDF.Parsing
             this.TestRdfXmlSequence(parser, "sequence.rdf");
         }
 
+#if !NO_XMLDOM
         [TestMethod]
         public void ParsingRdfXmlSequenceDom()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
             this.TestRdfXmlSequence(parser, "sequence.rdf");
         }
+#endif
 
         [TestMethod]
         public void ParsingRdfXmlSequenceStreaming2()
@@ -127,13 +131,16 @@ namespace VDS.RDF.Parsing
             this.TestRdfXmlSequence(parser, "sequence2.rdf");
         }
 
+#if !NO_XMLDOM
         [TestMethod]
         public void ParsingRdfXmlSequenceDom2()
         {
             RdfXmlParser parser = new RdfXmlParser(RdfXmlParserMode.DOM);
             this.TestRdfXmlSequence(parser, "sequence2.rdf");
         }
+#endif
 
+#if !NO_XMLDOM
         [TestMethod]
         public void ParsingRdfXmlWithUrlEscapedNodes()
         {
@@ -162,7 +169,9 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(encodedNode, pred, g.CreateLiteralNode("true"))), "The encoded node should have the property 'true' from the file");
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
         }
+#endif
 
+#if !NO_XMLDOM
         [TestMethod]
         public void ParsingRdfXmlWithUrlEscapedNodes2()
         {
@@ -192,6 +201,7 @@ namespace VDS.RDF.Parsing
             Assert.IsTrue(g.ContainsTriple(new Triple(unencodedNode, pred, g.CreateLiteralNode("false"))), "The unencoded node should have the property 'false' from the file");
 
         }
+#endif
 
         [TestMethod, ExpectedException(typeof(RdfParseException))]
         public void ParsingRdfXmlPropertyInDefaultNamespaceBad()

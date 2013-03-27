@@ -35,7 +35,7 @@ using VDS.RDF.Writing.Formatting;
 
 namespace VDS.RDF.Parsing.Suites
 {
-   
+#if !NO_XMLDOM
     [TestClass]
     public class RdfXmlDomParser
         : BaseRdfParserSuite
@@ -70,6 +70,7 @@ namespace VDS.RDF.Parsing.Suites
             this._parser.Load(g, "rdfxml\\xmlbase\\test014.rdf");
         }
     }
+#endif
 
     [TestClass]
     public class RdfXmlStreamingParser

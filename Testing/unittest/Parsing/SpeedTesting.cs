@@ -85,7 +85,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "10thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
             } 
             finally 
@@ -110,7 +110,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "100thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
             }
             finally
@@ -135,7 +135,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "500thou.ttl");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(500000, watch);
             }
             finally
@@ -157,10 +157,17 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
+#if PORTABLE
+                using (var input = new StreamReader("10thou.ttl"))
+                {
+                    parser.Load(handler, input);
+                }
+#else
                 parser.Load(handler, "10thou.ttl");
+#endif
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
 
                 Assert.AreEqual(10000, handler.Count);
@@ -184,10 +191,17 @@ namespace VDS.RDF.Parsing
                 TurtleParser parser = new TurtleParser();
 
                 watch.Start();
+#if PORTABLE
+                using (var input = new StreamReader("100thou.ttl"))
+                {
+                    parser.Load(handler, input);
+                }
+#else
                 parser.Load(handler, "100thou.ttl");
+#endif
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
 
                 Assert.AreEqual(100000, handler.Count);
@@ -214,7 +228,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "10thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(10000, watch);
             }
             finally
@@ -239,7 +253,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "100thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(100000, watch);
             }
             finally
@@ -264,7 +278,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "500thou.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(500000, watch);
             }
             finally
@@ -289,7 +303,7 @@ namespace VDS.RDF.Parsing
                 parser.Load(g, "million.nt");
                 watch.Stop();
 
-                Console.WriteLine(watch.Elapsed);
+                Console.WriteLine(watch.Elapsed.ToString());
                 this.CalculateSpeed(1000000, watch);
             }
             finally

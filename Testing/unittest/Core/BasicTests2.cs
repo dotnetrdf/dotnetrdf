@@ -110,7 +110,7 @@ namespace VDS.RDF
         public void GraphSubGraphMatching()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "InferenceTest.ttl");
+            parent.LoadFromFile("InferenceTest.ttl");
             Graph subgraph = new Graph();
             subgraph.NamespaceMap.Import(parent.NamespaceMap);
             subgraph.Assert(parent.GetTriplesWithSubject(parent.CreateUriNode("eg:FordFiesta")));
@@ -159,7 +159,7 @@ namespace VDS.RDF
         public void GraphSubGraphMatchingWithBNodes()
         {
             Graph parent = new Graph();
-            FileLoader.Load(parent, "Turtle.ttl");
+            parent.LoadFromFile("Turtle.ttl");
             Graph subgraph = new Graph();
             subgraph.Assert(parent.Triples.Where(t => !t.IsGroundTriple));
 
@@ -233,7 +233,9 @@ namespace VDS.RDF
             int defaultTimeout = Options.UriLoaderTimeout;
             try
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = false;
+#endif
                 Options.UriLoaderTimeout = 45000;
 
                 List<Uri> testUris = new List<Uri>() {
@@ -273,7 +275,9 @@ namespace VDS.RDF
             }
             finally
             {
+#if !NO_URICACHE
                 Options.UriLoaderCaching = true;
+#endif
                 Options.UriLoaderTimeout = defaultTimeout;
             }
         }
@@ -334,11 +338,12 @@ namespace VDS.RDF
             }
         }
 
+#if !NO_DATA
         [TestMethod]
         public void GraphToDataTable()
         {
             Graph g = new Graph();
-            FileLoader.Load(g, "InferenceTest.ttl");
+            g.LoadFromFile("InferenceTest.ttl");
 
             DataTable table = (DataTable)g;
 
@@ -374,6 +379,7 @@ namespace VDS.RDF
                 Console.WriteLine();
             }
         }
+#endif
 
         [TestMethod]
         public void GraphPersistenceWrapperNodeCreation()
