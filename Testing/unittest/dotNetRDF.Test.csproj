@@ -1577,6 +1577,12 @@
     <Content Include="resources\swrc.owl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="resources\learning-problem.rq">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\LearningStyles.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="resources\trig\bad1.trig">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
