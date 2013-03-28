@@ -369,6 +369,9 @@
     <Compile Include="Query\FullText\IndexCreationTests.cs" />
     <Compile Include="Query\FullText\IndexSearchTests.cs" />
     <Compile Include="Query\FullText\LuceneTestHarness.cs" />
+    <Content Include="resources\schema-org.ttl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="resources\trix\curies.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1581,6 +1584,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="resources\LearningStyles.rdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="resources\schema-org.rq">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="resources\trig\bad1.trig">
